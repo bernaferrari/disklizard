@@ -93,6 +93,7 @@ export default function DiskUtilityPage() {
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
   let scanUnsub: (() => void) | undefined
   let scanToken = 0
+  let scanMaxBytes = 0
 
   const crumbs = createMemo(() => buildCrumbs(treeRoot(), viewNode()))
   const reclaim = createMemo<ReclaimSummary>(() => computeReclaim(treeRoot()))
@@ -212,13 +213,11 @@ export default function DiskUtilityPage() {
     if (!api) return
     scanUnsub?.()
     const token = ++scanToken
-    setView("scan")
-    setScanLabel(label)
-    setScanTotal(total)
     setScanning(true)
     setScanFiles(0)
     setScanPct(0)
     setScanBytes(0)
+    scanMaxBytes = 0
     setScanTail("")
     setTreeRoot(null)
     setViewNode(null)
@@ -230,9 +229,10 @@ export default function DiskUtilityPage() {
       if (token !== scanToken) return
       setScanFiles(p.filesScanned)
       setScanTail(truncatePath(p.currentPath, 56))
-      if (p.size > 0) {
-        setScanBytes(p.size)
-        if (total > 0) setScanPct(Math.min(99, (p.size / total) * 100))
+      if (p.size > scanMaxBytes) {
+        scanMaxBytes = p.size
+        setScanBytes(scanMaxBytes)
+        if (total > 0) setScanPct(Math.min(99, (scanMaxBytes / total) * 100))
       }
     })
     try {
@@ -552,7 +552,7 @@ export default function DiskUtilityPage() {
                   >
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       <For each={drives()}>
-                        {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.label || drive.name, drive.total)} />}
+                        {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.name, drive.total)} />}
                       </For>
                     </div>
                   </Show>

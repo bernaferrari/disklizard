@@ -116,7 +116,7 @@ function emitProgress(st: WalkState, currentPath: string, size: number, force = 
     filesScanned: st.filesScanned,
     dirsScanned: st.dirsScanned,
     currentPath,
-    size: size || st.scannedBytes,
+    size: st.scannedBytes,
   })
 }
 
