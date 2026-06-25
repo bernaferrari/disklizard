@@ -7,7 +7,7 @@ import { readdir, stat, rm, access } from "node:fs/promises"
 import { basename, sep } from "node:path"
 import { execFile } from "node:child_process"
 import { promisify } from "node:util"
-import { platform, homedir, cpus } from "node:os"
+import { platform, cpus } from "node:os"
 import { constants as fsConstants, type Dirent } from "node:fs"
 import { Worker } from "node:worker_threads"
 import type { DiskNode, DriveInfo, ScanOptions, ScanProgress } from "./types"
@@ -610,7 +610,6 @@ export async function getDrives(): Promise<DriveInfo[]> {
   }
 
   // macOS / Linux — fast local volumes only (no network mount walk)
-  const home = homedir()
   const drives: DriveInfo[] = []
 
   try {
@@ -620,20 +619,30 @@ export async function getDrives(): Promise<DriveInfo[]> {
       const parts = line.trim().split(/\s+/)
       if (parts.length < 6) continue
       const totalK = Number(parts[1]) || 0
-      const usedK = Number(parts[2]) || 0
       const freeK = Number(parts[3]) || 0
       const mount = parts[parts.length - 1]
-      // Skip pseudo / tiny mounts
       if (!mount.startsWith("/")) continue
-      if (mount.startsWith("/dev") || mount.startsWith("/System/Volumes/VM")) continue
-      if (mount.startsWith("/System/Volumes/Preboot") || mount.startsWith("/System/Volumes/Update")) continue
-      if (mount === "/private/var/vm") continue
-      if (totalK < 1024 * 100) continue // < ~100MB
+      if (totalK < 1024 * 100) continue // < ~100MB: ramdisks, dev pseudo-volumes
+
+      const baseName = mount.split("/").filter(Boolean).pop() || ""
+      // macOS APFS: '/' already represents the entire startup-disk container, so
+      // hide the system/data role volumes and Xcode/simulator runtime cruft that
+      // `df` reports separately. This is what keeps the list to real disks.
+      if (mount !== "/" && mount.startsWith("/System/Volumes/")) continue
+      if (mount.startsWith("/private/") || mount.startsWith("/dev")) continue
+      if (
+        /^(com\.apple\..+|SimRuntimeBundle.*|Recovery|Preboot|Update|VM|Hardware|xarts|iSCPreboot|iOS_.*)$/i.test(
+          baseName,
+        )
+      )
+        continue
 
       const total = totalK * 1024
       const free = freeK * 1024
-      const used = usedK * 1024
-      const name = mount === "/" ? "Macintosh HD" : mount.split("/").filter(Boolean).pop() || mount
+      // `df`'s "Used" column is per-volume; on an APFS container the read-only
+      // system volume ("/") wildly underreports. Real physical usage = total - free.
+      const used = Math.max(0, total - free)
+      const name = mount === "/" ? "Macintosh HD" : baseName
       drives.push({
         path: mount,
         name,
@@ -652,10 +661,6 @@ export async function getDrives(): Promise<DriveInfo[]> {
     drives.push({ path: "/", name: "System", label: "System (/)", total: 0, free: 0, used: 0, type: "local" })
   }
 
-  // Always offer home as a quick scan target if not already listed as a mount root
-  if (!drives.some((d) => d.path === home)) {
-    drives.push({ path: home, name: "Home", label: `Home (${home})`, total: 0, free: 0, used: 0, type: "local" })
-  }
 
   return drives
 }

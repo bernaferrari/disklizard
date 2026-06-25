@@ -776,71 +776,90 @@ function CenterOverlay(props: { node: DiskScanNode | null; parentSize: number })
   )
 }
 
-/** Drive card with an animated SVG donut showing used vs free. */
+/** Drive card — click-to-scan, with a hero free-space figure. */
 function DriveCard(props: { drive: DiskDriveInfo; onScan: () => void }) {
   const accent = () => DRIVE_ACCENT[props.drive.type] ?? DRIVE_ACCENT.local
-  const usedPct = () => (props.drive.total ? (props.drive.used / props.drive.total) * 100 : 0)
-  const r = 30
+  const hasTotal = () => props.drive.total > 0
+  const usedPct = () => (hasTotal() ? (props.drive.used / props.drive.total) * 100 : 0)
+  const freePct = () => (hasTotal() ? (props.drive.free / props.drive.total) * 100 : 0)
+  // The free-space figure is the hero; color it by how little room is left.
+  const freeColor = () =>
+    freePct() < 10
+      ? "text-[color-mix(in_oklch,#cf222e_70%,var(--text-strong))]"
+      : freePct() < 25
+        ? "text-[color-mix(in_oklch,#9a6700_70%,var(--text-strong))]"
+        : "text-text-strong"
+  const r = 26
   const c = 2 * Math.PI * r
   const progress = createSpring(0, MOTION.lush)
 
   onMount(() => {
-    const id = setTimeout(() => progress.set(usedPct() / 100), 60)
+    const id = setTimeout(() => progress.set(usedPct() / 100), 80)
     onCleanup(() => clearTimeout(id))
   })
 
   return (
-    <div class="dl-card group relative overflow-hidden rounded-xl border border-border-weaker-base bg-surface-panel p-4 transition-shadow hover:shadow-md">
-      <div class="flex items-start gap-3">
-        {/* Donut */}
-        <div class="relative grid size-[76px] shrink-0 place-items-center">
-          <svg viewBox="0 0 76 76" class="size-[76px] -rotate-90">
-            <circle cx="38" cy="38" r={r} fill="none" stroke="oklch(0.6 0.01 0 / 0.14)" stroke-width="7" />
+    <div
+      role="button"
+      tabindex="0"
+      onClick={props.onScan}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") props.onScan()
+      }}
+      class="dl-card group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-2xl border border-border-weaker-base bg-surface-panel p-5 outline-none transition-all hover:-translate-y-0.5 hover:border-border-base hover:shadow-xl focus-visible:ring-2 focus-visible:ring-[oklch(0.7_0.15_270/0.6)]"
+    >
+      <div class="flex items-center gap-4">
+        <div class="relative grid size-16 shrink-0 place-items-center">
+          <svg viewBox="0 0 64 64" class="size-16 -rotate-90">
+            <circle cx="32" cy="32" r={r} fill="none" stroke="oklch(0.6 0.01 0 / 0.12)" stroke-width="6" />
             <circle
-              cx="38"
-              cy="38"
+              cx="32"
+              cy="32"
               r={r}
               fill="none"
-              stroke={props.drive.total ? usageStroke(props.drive.used, props.drive.total) : accent().stroke}
-              stroke-width="7"
+              stroke={hasTotal() ? usageStroke(props.drive.used, props.drive.total) : accent().stroke}
+              stroke-width="6"
               stroke-linecap="round"
               stroke-dasharray={`${c}`}
               stroke-dashoffset={`${c * (1 - progress())}`}
             />
           </svg>
-          <div class="absolute text-center">
-            <div class="text-13-semibold tabular-nums text-text-strong">{props.drive.total ? `${Math.round(usedPct())}%` : "—"}</div>
-            <div class="text-9-regular uppercase tracking-wide text-text-weak">used</div>
+          <div class="absolute text-11-semibold tabular-nums text-text-weak">
+            {hasTotal() ? `${Math.round(usedPct())}%` : "—"}
           </div>
         </div>
-
-        {/* Meta */}
         <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-1.5">
-            <span class={`size-2 shrink-0 rounded-full ${accent().dot}`} />
-            <span class="truncate text-13-semibold text-text-strong">{props.drive.label || props.drive.name}</span>
+          <div class="flex items-center gap-2">
+            <span class={`size-1.5 shrink-0 rounded-full ${accent().dot}`} />
+            <span class="truncate text-14-semibold text-text-strong">{props.drive.name}</span>
           </div>
-          <p class="mt-0.5 truncate font-mono text-10-regular text-text-weak">{props.drive.path}</p>
-          <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
-            <span class={`rounded-full px-1.5 py-0.5 text-9-semibold uppercase tracking-wide ring-1 ring-inset ${accent().pill}`}>
-              {props.drive.type}
-            </span>
-            <Show when={props.drive.total > 0}>
-              <span class={`rounded-full px-1.5 py-0.5 text-9-semibold tabular-nums ring-1 ring-inset ${usageTone(props.drive.used, props.drive.total)}`}>
-                {formatBytes(props.drive.free)} free
-              </span>
-            </Show>
-          </div>
-          <Show when={props.drive.total > 0}>
-            <p class="mt-1.5 text-10-regular tabular-nums text-text-weak">
-              {formatBytes(props.drive.used)} used · {formatBytes(props.drive.total)} total
-            </p>
-          </Show>
+          <p class="mt-1 truncate text-11-regular text-text-weak">
+            {hasTotal() ? props.drive.path : "Ready to scan"}
+          </p>
         </div>
       </div>
-      <Button class="mt-3 w-full" size="small" variant="secondary" icon="dot-grid" onClick={props.onScan}>
+
+      <Show when={hasTotal()}>
+        <div class="flex items-end justify-between gap-3 border-t border-border-weaker-base pt-3">
+          <div>
+            <p class={`text-20-medium leading-none tabular-nums ${freeColor()}`}>{formatBytes(props.drive.free)}</p>
+            <p class="mt-1.5 text-11-regular tabular-nums text-text-weak">
+              free of {formatBytes(props.drive.total)}
+            </p>
+          </div>
+          <span
+            class={`shrink-0 rounded-full px-2 py-1 text-10-semibold tabular-nums ring-1 ring-inset ${usageTone(props.drive.used, props.drive.total)}`}
+          >
+            {formatBytes(props.drive.used)} used
+          </span>
+        </div>
+      </Show>
+
+      <div class="flex items-center justify-center gap-1 text-12-semibold text-text-weak transition-colors group-hover:text-text-strong">
+        <Icon name="dot-grid" class="size-3.5" />
         Scan
-      </Button>
+        <Icon name="chevron-right" class="size-3 opacity-0 transition-opacity group-hover:opacity-100" />
+      </div>
     </div>
   )
 }
