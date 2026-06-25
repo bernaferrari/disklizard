@@ -76,6 +76,9 @@ export default function DiskUtilityPage() {
   const [scanLabel, setScanLabel] = createSignal("")
   const [scanning, setScanning] = createSignal(false)
   const [scanFiles, setScanFiles] = createSignal(0)
+  const [scanTotal, setScanTotal] = createSignal(0)
+  const [scanPct, setScanPct] = createSignal(0)
+  const [scanBytes, setScanBytes] = createSignal(0)
   const [scanTail, setScanTail] = createSignal("")
   const [selectedPath, setSelectedPath] = createSignal<string>()
   const [hoveredPath, setHoveredPath] = createSignal<string | null>(null)
@@ -89,6 +92,7 @@ export default function DiskUtilityPage() {
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
   let scanUnsub: (() => void) | undefined
+  let scanToken = 0
 
   const crumbs = createMemo(() => buildCrumbs(treeRoot(), viewNode()))
   const reclaim = createMemo<ReclaimSummary>(() => computeReclaim(treeRoot()))
@@ -203,14 +207,18 @@ export default function DiskUtilityPage() {
     if (path) await startScan(path, path.split(/[/\\]/).pop() || path)
   }
 
-  async function startScan(path: string, label: string) {
+  async function startScan(path: string, label: string, total = 0) {
     const api = disk()
     if (!api) return
     scanUnsub?.()
+    const token = ++scanToken
     setView("scan")
     setScanLabel(label)
+    setScanTotal(total)
     setScanning(true)
     setScanFiles(0)
+    setScanPct(0)
+    setScanBytes(0)
     setScanTail("")
     setTreeRoot(null)
     setViewNode(null)
@@ -219,23 +227,42 @@ export default function DiskUtilityPage() {
     setQuery("")
     setFocusIdx(0)
     scanUnsub = api.onScanProgress((p) => {
+      if (token !== scanToken) return
       setScanFiles(p.filesScanned)
       setScanTail(truncatePath(p.currentPath, 56))
+      if (p.size > 0) {
+        setScanBytes(p.size)
+        if (total > 0) setScanPct(Math.min(99, (p.size / total) * 100))
+      }
     })
     try {
       const tree = await api.scanPath(path, { maxDepth: 9 })
+      if (token !== scanToken) return // superseded or cancelled
       tree._label = label
+      setScanPct(100)
       setTreeRoot(tree)
       setViewNode(tree)
     } catch (err) {
+      if (token !== scanToken) return
       const message = err instanceof Error ? err.message : String(err)
       showToast({ variant: "error", title: "Scan failed", description: message })
       setView("drives")
     } finally {
-      setScanning(false)
-      scanUnsub?.()
-      scanUnsub = undefined
+      if (token === scanToken) {
+        setScanning(false)
+        scanUnsub?.()
+        scanUnsub = undefined
+      }
     }
+  }
+
+  /** Abort the in-flight scan: invalidate its token and return to the volume list. */
+  function cancelScan() {
+    scanToken++
+    scanUnsub?.()
+    scanUnsub = undefined
+    setScanning(false)
+    backToDrives()
   }
 
   function drill(node: DiskScanNode) {
@@ -249,7 +276,10 @@ export default function DiskUtilityPage() {
   }
 
   function goUp() {
-    if (scanning()) return
+    if (scanning()) {
+      cancelScan()
+      return
+    }
     const list = crumbs()
     if (list.length <= 1) {
       backToDrives()
@@ -357,7 +387,14 @@ export default function DiskUtilityPage() {
         if (e.key === "Enter") void confirmDelete()
         return
       }
-      if (view() !== "scan" || scanning()) return
+      if (view() !== "scan") return
+      if (scanning()) {
+        if (e.key === "Escape" || e.key === "Backspace") {
+          e.preventDefault()
+          cancelScan()
+        }
+        return
+      }
       if (e.key === "ArrowDown" || e.key === "j") {
         e.preventDefault()
         moveFocus(1)
@@ -515,7 +552,7 @@ export default function DiskUtilityPage() {
                   >
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       <For each={drives()}>
-                        {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.label || drive.name)} />}
+                        {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.label || drive.name, drive.total)} />}
                       </For>
                     </div>
                   </Show>
@@ -532,15 +569,21 @@ export default function DiskUtilityPage() {
               <Show
                 when={!scanning()}
                 fallback={
-                  <div class="flex h-full flex-col items-center justify-center gap-5 px-6">
-                    <div class="dl-pulse relative size-16 rounded-full">
-                      <span class="absolute inset-0 rounded-full bg-gradient-to-br from-[oklch(0.72_0.17_270)] to-[oklch(0.62_0.2_210)] opacity-90" />
-                    </div>
-                    <div class="text-center">
+                  <div class="flex h-full flex-col items-center justify-center gap-6 px-6">
+                    <ScanProgress pct={scanTotal() > 0 ? scanPct() : null} />
+                    <div class="max-w-md text-center">
                       <p class="text-14-semibold text-text-strong">Scanning {scanLabel()}</p>
-                      <p class="mt-1 text-12-regular tabular-nums text-text-weak">{formatCount(scanFiles())} items</p>
-                      <p class="dl-tail mt-2 max-w-lg truncate font-mono text-11-regular text-text-weaker">{scanTail() || "warming up…"}</p>
+                      <p class="mt-1.5 text-12-regular tabular-nums text-text-weak">
+                        {formatCount(scanFiles())} items
+                        {scanBytes() > 0 ? ` · ${shortBytes(scanBytes())}` : ""}
+                      </p>
+                      <p class="dl-tail mx-auto mt-2 max-w-lg truncate font-mono text-11-regular text-text-weaker">
+                        {scanTail() || "warming up…"}
+                      </p>
                     </div>
+                    <Button variant="secondary" size="small" icon="chevron-left" onClick={cancelScan}>
+                      Back to volumes
+                    </Button>
                   </div>
                 }
               >
@@ -746,6 +789,50 @@ function Placeholder(props: { icon: string; title: string; body: string }) {
         </div>
         <h2 class="text-16-medium text-text-strong">{props.title}</h2>
         <p class="mt-2 text-13-regular text-text-weak">{props.body}</p>
+      </div>
+    </div>
+  )
+}
+
+/** Circular scan-progress ring. `pct === null` → indeterminate (folder scan). */
+function ScanProgress(props: { pct: number | null }) {
+  const r = 52
+  const circ = 2 * Math.PI * r
+  const offset = () => (props.pct == null ? circ * 0.78 : circ * (1 - Math.min(100, props.pct) / 100))
+  return (
+    <div class="relative grid size-32 place-items-center">
+      <svg viewBox="0 0 120 120" class="size-32 -rotate-90">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="oklch(0.6 0.01 0 / 0.12)" stroke-width="8" />
+        <circle
+          cx="60"
+          cy="60"
+          r={r}
+          fill="none"
+          stroke="url(#dl-scan-grad)"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-dasharray={`${circ}`}
+          stroke-dashoffset={`${offset()}`}
+          style={{ transition: props.pct == null ? "none" : "stroke-dashoffset 0.3s ease-out" }}
+        />
+        <defs>
+          <linearGradient id="dl-scan-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="oklch(0.72 0.17 270)" />
+            <stop offset="100%" stop-color="oklch(0.62 0.2 210)" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="absolute text-center">
+        <Show
+          when={props.pct != null}
+          fallback={<span class="dl-pulse mx-auto block size-2.5 rounded-full bg-[oklch(0.72_0.17_270)]" />}
+        >
+          <div class="text-20-medium leading-none tabular-nums text-text-strong">
+            {Math.round(props.pct!)}
+            <span class="ml-0.5 text-12-medium text-text-weak">%</span>
+          </div>
+        </Show>
+        <div class="mt-1.5 text-9-regular uppercase tracking-wider text-text-weak">scanned</div>
       </div>
     </div>
   )
