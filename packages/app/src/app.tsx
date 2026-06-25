@@ -631,7 +631,6 @@ function Routes(props: { serverScoped?: JSX.Element }) {
             </>
           }
         </Show>
-        <Route path="/disk" component={DiskUtilityRoute} />
         <Route path="/:dir" component={DirectoryLayout}>
           <Route path="/" component={() => <Navigate href="session" />} />
           <Route path="/session/:id?" component={SessionRoute} />
@@ -643,6 +642,7 @@ function Routes(props: { serverScoped?: JSX.Element }) {
         <Route path="/server/:serverKey/session/:id" component={TargetSessionRoute} />
       </Show>
       <Route path="/new-session" component={DraftRoute} />
+      <Route path="/disk" component={DiskUtilityRoute} />
     </>
   )
 }

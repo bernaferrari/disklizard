@@ -948,7 +948,7 @@ export default function LegacyLayout(props: ParentProps) {
         id: "disk.open",
         title: "Disk Utility",
         category: language.t("command.category.settings"),
-        onSelect: () => navigate(params.dir ? `/${params.dir}/disk` : "/disk"),
+        onSelect: () => navigate("/disk"),
       },
       {
         id: "session.previous",

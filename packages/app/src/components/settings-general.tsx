@@ -93,9 +93,7 @@ export const SettingsGeneral: Component = () => {
   const settings = useSettings()
 
   function openDiskUtilityInApp() {
-    // Always stay in the main OpenCode window (theme + fonts). No separate chrome.
-    if (params.dir) navigate(`/${params.dir}/disk`)
-    else navigate("/disk")
+    navigate("/disk")
   }
 
   const updater = useUpdaterAction()
