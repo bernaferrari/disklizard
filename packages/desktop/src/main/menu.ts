@@ -22,9 +22,9 @@ export function createMenu(deps: Deps) {
   if (process.platform !== "darwin") return
 
   const template = DESKTOP_MENU.filter((menu) => desktopMenuVisible(menu, "macos")).map((menu) => {
-    if (menu.role) return { role: nativeRole(menu.role), label: nativeT(menu.labelKey) }
+    if (menu.role) return { role: nativeRole(menu.role), label: menu.label ?? (menu.labelKey ? nativeT(menu.labelKey) : undefined) }
     return {
-      label: nativeT(menu.labelKey),
+      label: menu.label ?? (menu.labelKey ? nativeT(menu.labelKey) : undefined),
       submenu: menu.items
         ?.filter((entry) => desktopMenuVisible(entry, "macos"))
         .map((entry) => nativeItem(entry, deps)),

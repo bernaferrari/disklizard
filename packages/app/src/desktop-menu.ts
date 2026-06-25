@@ -66,7 +66,8 @@ export type DesktopMenuEntry = DesktopMenuItem | DesktopMenuSeparator
 
 export type DesktopMenu = {
   id: string
-  labelKey: DesktopNativeKey
+  labelKey?: DesktopNativeKey
+  label?: string
   role?: DesktopMenuRole
   items?: DesktopMenuEntry[]
   platforms?: DesktopMenuPlatform[]
@@ -112,12 +113,6 @@ export const DESKTOP_MENU: DesktopMenu[] = [
         labelKey: "desktop.menu.openProject",
         command: "project.open",
         accelerator: { macos: "Cmd+O" },
-      },
-      {
-        type: "item",
-        label: "Disk Utility…",
-        command: "disk.open",
-        accelerator: { macos: "Cmd+Shift+D", windows: "Ctrl+Shift+D" },
       },
       {
         type: "item",
@@ -280,6 +275,18 @@ export const DESKTOP_MENU: DesktopMenu[] = [
       { type: "item", labelKey: "desktop.menu.maximize", action: "window.toggleMaximize" },
       { type: "separator" },
       { type: "item", labelKey: "desktop.menu.closeWindow", action: "window.close" },
+    ],
+  },
+  {
+    id: "tools",
+    label: "Tools",
+    items: [
+      {
+        type: "item",
+        label: "Disk Utility…",
+        command: "disk.open",
+        accelerator: { macos: "Cmd+Shift+D", windows: "Ctrl+Shift+D" },
+      },
     ],
   },
   {
