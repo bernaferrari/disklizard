@@ -7,7 +7,7 @@ import { readdir, stat, rm, access } from "node:fs/promises"
 import { basename, sep } from "node:path"
 import { execFile } from "node:child_process"
 import { promisify } from "node:util"
-import { platform, cpus } from "node:os"
+import { homedir, platform, cpus } from "node:os"
 import { constants as fsConstants, type Dirent } from "node:fs"
 import { Worker } from "node:worker_threads"
 import type { DiskNode, DriveInfo, ScanOptions, ScanProgress } from "./types"
@@ -625,11 +625,12 @@ export async function getDrives(): Promise<DriveInfo[]> {
       if (totalK < 1024 * 100) continue // < ~100MB: ramdisks, dev pseudo-volumes
 
       const baseName = mount.split("/").filter(Boolean).pop() || ""
-      // macOS APFS: '/' already represents the entire startup-disk container, so
-      // hide the system/data role volumes and Xcode/simulator runtime cruft that
-      // `df` reports separately. This is what keeps the list to real disks.
+      // macOS APFS: '/' already represents the whole startup-disk container, so
+      // hide the system/data role volumes, /private, /dev, and Xcode/simulator
+      // runtime cruft that `df` reports separately. This keeps the list to real disks.
       if (mount !== "/" && mount.startsWith("/System/Volumes/")) continue
       if (mount.startsWith("/private/") || mount.startsWith("/dev")) continue
+      if (mount.startsWith(`${homedir()}/Library/Developer/`)) continue
       if (
         /^(com\.apple\..+|SimRuntimeBundle.*|Recovery|Preboot|Update|VM|Hardware|xarts|iSCPreboot|iOS_.*)$/i.test(
           baseName,
