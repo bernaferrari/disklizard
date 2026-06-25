@@ -15,6 +15,7 @@ import { getProjectAvatarVariant, type HomeProjectSelection, type LocalProject }
 import { ServerConnection } from "@/context/server"
 import { useLanguage } from "@/context/language"
 import { usePlatform } from "@/context/platform"
+import { useNavigate } from "@solidjs/router"
 import { displayName, getProjectAvatarSource } from "@/pages/layout/helpers"
 import { ServerRowMenuView, serverMenuLabels } from "@/components/server/server-row-menu"
 import { ServerHealthIndicator } from "@/components/server/server-row"
@@ -160,6 +161,8 @@ export function HomeUtilityNav(props: {
   onOpenHelp: () => void
   language: ReturnType<typeof useLanguage>
 }) {
+  const navigate = useNavigate()
+  const platform = usePlatform()
   return (
     <div class={`${props.class ?? ""} min-w-0 flex-col gap-1 pr-3`}>
       <HomeProjectNavButton
@@ -170,6 +173,16 @@ export function HomeUtilityNav(props: {
         <IconV2 name="settings-gear" size="small" />
         <span class={HOME_PROJECT_NAV_LABEL}>{props.language.t("sidebar.settings")}</span>
       </HomeProjectNavButton>
+      <Show when={platform.platform === "desktop"}>
+        <HomeProjectNavButton
+          type="button"
+          class="text-v2-text-text-faint [&>[data-slot=icon-svg]]:text-v2-icon-icon-muted"
+          onClick={() => navigate("/disk")}
+        >
+          <IconV2 name="archive" size="small" />
+          <span class={HOME_PROJECT_NAV_LABEL}>Disk Utility</span>
+        </HomeProjectNavButton>
+      </Show>
       <HomeProjectNavButton
         type="button"
         class="text-v2-text-text-faint [&>[data-slot=icon-svg]]:text-v2-icon-icon-muted"
