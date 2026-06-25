@@ -652,7 +652,7 @@ export default function DiskUtilityPage() {
                                     <div
                                       role="button"
                                       tabindex="0"
-                                      class="group relative flex cursor-pointer items-center gap-2.5 px-3 py-2 transition-colors hover:bg-surface-raised-base/50"
+                                      class="group relative flex cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-surface-raised-base/55 focus-visible:bg-surface-raised-base/55 focus-visible:outline-none"
                                       classList={{ "bg-surface-raised-base/70": isActive() }}
                                       onClick={() => selectPath(entry.node.path)}
                                       onDblClick={() => drill(entry.node)}
@@ -663,6 +663,15 @@ export default function DiskUtilityPage() {
                                       }}
                                     >
                                       <span
+                                        aria-hidden
+                                        class="absolute inset-y-0 left-0 w-1 origin-left rounded-r-full scale-x-0 transition-transform duration-200 ease-out motion-reduce:transition-none"
+                                        style={{ background: primarySegmentColor(entry.index) }}
+                                        classList={{
+                                          "scale-x-100": isActive(),
+                                          "group-hover:scale-x-100": !isActive(),
+                                        }}
+                                      />
+                                      <span
                                         class="size-2.5 shrink-0 rounded-full ring-1 ring-inset ring-white/20"
                                         style={{ background: primarySegmentColor(entry.index) }}
                                       />
@@ -672,7 +681,7 @@ export default function DiskUtilityPage() {
                                             name={entry.node.isDir ? "folder" : "code-lines"}
                                             class="size-3 shrink-0 text-icon-weak"
                                           />
-                                          <span class="truncate text-12-semibold text-text-strong">{entry.node.name}</span>
+                                          <span class="truncate text-13-semibold text-text-strong">{entry.node.name}</span>
                                           <Show when={rec().tag}>
                                             <span class={`shrink-0 rounded px-1.5 py-0.5 text-9-semibold uppercase tracking-wide ring-1 ring-inset ${SAFETY_ACCENT[rec().safety].pill}`}>
                                               {rec().tag}
@@ -700,9 +709,6 @@ export default function DiskUtilityPage() {
                                             drill(entry.node)
                                           }}
                                         />
-                                      </Show>
-                                      <Show when={isHover()}>
-                                        <span class="absolute inset-y-0 left-0 w-0.5 rounded-full" style={{ background: primarySegmentColor(entry.index) }} />
                                       </Show>
                                     </div>
                                   </li>
