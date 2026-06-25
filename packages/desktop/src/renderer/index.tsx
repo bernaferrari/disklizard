@@ -178,6 +178,15 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
       })
     },
 
+    diskUtility: {
+      getDrives: () => window.api.disklizard.getDrives(),
+      scanPath: (path, options) => window.api.disklizard.scanPath(path, options),
+      deletePath: (path) => window.api.disklizard.deletePath(path),
+      revealPath: (path) => window.api.disklizard.revealPath(path),
+      chooseFolder: () => window.api.disklizard.chooseFolder(),
+      onScanProgress: (cb) => window.api.disklizard.onScanProgress(cb),
+    },
+
     async openAttachmentPickerDialog(opts, onFile) {
       const result = await window.api.openFilePicker({
         multiple: opts?.multiple ?? false,

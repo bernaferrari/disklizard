@@ -383,6 +383,7 @@
       "name": "@opencode-ai/desktop",
       "version": "1.18.21",
       "dependencies": {
+        "@opencode-ai/disklizard": "workspace:*",
         "@zip.js/zip.js": "2.7.62",
         "drizzle-orm": "catalog:",
         "effect": "catalog:",
@@ -431,6 +432,18 @@
         "@parcel/watcher-linux-x64-musl": "2.5.1",
         "@parcel/watcher-win32-arm64": "2.5.1",
         "@parcel/watcher-win32-x64": "2.5.1",
+      },
+    },
+    "packages/disklizard": {
+      "name": "@opencode-ai/disklizard",
+      "version": "1.17.10",
+      "bin": {
+        "disklizard": "./bin/disklizard.ts",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "@typescript/native-preview": "catalog:",
+        "typescript": "catalog:",
       },
     },
     "packages/effect-drizzle-sqlite": {
@@ -1966,6 +1979,8 @@
     "@opencode-ai/core": ["@opencode-ai/core@workspace:packages/core"],
 
     "@opencode-ai/desktop": ["@opencode-ai/desktop@workspace:packages/desktop"],
+
+    "@opencode-ai/disklizard": ["@opencode-ai/disklizard@workspace:packages/disklizard"],
 
     "@opencode-ai/effect-drizzle-sqlite": ["@opencode-ai/effect-drizzle-sqlite@workspace:packages/effect-drizzle-sqlite"],
 

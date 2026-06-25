@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "bun run --cwd packages/opencode --conditions=browser src/index.ts",
     "dev:desktop": "bun --cwd packages/desktop dev",
+    "dev:disklizard": "bun packages/disklizard/bin/disklizard.ts",
+    "disklizard": "bun packages/disklizard/bin/disklizard.ts",
     "dev:web": "bun --cwd packages/app dev",
     "dev:console": "ulimit -n 10240 2>/dev/null; bun run --cwd packages/console/app dev",
     "dev:stats": "bun sst shell --stage=production -- bun run --cwd packages/stats/app dev",

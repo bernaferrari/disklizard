@@ -34,6 +34,44 @@ export type TitlebarTheme = {
   mode: "light" | "dark"
   scheme?: "system" | "light" | "dark"
 }
+export type DiskLizardDrive = {
+  path: string
+  name: string
+  label: string
+  total: number
+  free: number
+  used: number
+  type: "local" | "removable" | "network"
+}
+
+export type DiskLizardNode = {
+  name: string
+  path: string
+  size: number
+  isDir: boolean
+  children: DiskLizardNode[]
+  ext: string
+  isOther?: boolean
+  _label?: string
+}
+
+export type DiskLizardScanProgress = {
+  filesScanned: number
+  dirsScanned?: number
+  currentPath: string
+  size: number
+  done?: boolean
+}
+
+export type DiskLizardAPI = {
+  getDrives: () => Promise<DiskLizardDrive[]>
+  scanPath: (path: string, options?: { maxDepth?: number }) => Promise<DiskLizardNode>
+  deletePath: (path: string) => Promise<{ ok: true }>
+  revealPath: (path: string) => Promise<void>
+  chooseFolder: () => Promise<string | null>
+  onScanProgress: (cb: (progress: DiskLizardScanProgress) => void) => () => void
+}
+
 export type FatalRendererError = {
   error: string
   url: string
@@ -43,6 +81,7 @@ export type FatalRendererError = {
 }
 
 export type ElectronAPI = {
+  disklizard: DiskLizardAPI
   killSidecar: () => Promise<void>
   installCli: () => Promise<string>
   awaitInitialization: () => Promise<ServerReadyData>

@@ -1,0 +1,29 @@
+{
+  "name": "@opencode-ai/disklizard",
+  "version": "1.17.10",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Shared disk space map — fast scanner + viz primitives for Desktop & TUI",
+  "exports": {
+    ".": "./src/index.ts",
+    "./scan": "./src/scan.ts",
+    "./format": "./src/format.ts",
+    "./tree": "./src/tree.ts",
+    "./tui": "./src/tui/app.ts"
+  },
+  "bin": {
+    "disklizard": "./bin/disklizard.ts"
+  },
+  "scripts": {
+    "start": "bun ./bin/disklizard.ts",
+    "tui": "bun ./bin/disklizard.ts",
+    "typecheck": "tsgo --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "typescript": "catalog:"
+  }
+}

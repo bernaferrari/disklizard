@@ -24,6 +24,7 @@ import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
 import { createDesktopDraftStore } from "./draft-store"
 import { nativeT } from "./native-translations"
+import { deleteDiskPath, getDrives, scanPath } from "./disk-scanner"
 
 const pickerFilters = (ext?: string[]) => {
   if (!ext || ext.length === 0) return undefined
@@ -61,6 +62,32 @@ export function registerIpcHandlers(deps: Deps) {
   app.on("before-quit", () => drafts.flush())
   app.once("will-quit", () => drafts.close())
   app.on("browser-window-created", (_event, win) => win.on("session-end", () => drafts.flush()))
+
+  ipcMain.handle("disklizard:get-drives", () => getDrives())
+  ipcMain.handle(
+    "disklizard:scan-path",
+    async (event: IpcMainInvokeEvent, targetPath: string, options?: { maxDepth?: number; concurrency?: number }) =>
+      scanPath(targetPath, {
+        maxDepth: options?.maxDepth ?? 10,
+        concurrency: options?.concurrency,
+        maxChildren: 48,
+        progressIntervalMs: 120,
+        useWorker: true,
+        onProgress: (progress) => {
+          if (!event.sender.isDestroyed()) event.sender.send("disklizard:scan-progress", progress)
+        },
+      }),
+  )
+  ipcMain.handle("disklizard:delete-path", (_event: IpcMainInvokeEvent, targetPath: string) => deleteDiskPath(targetPath))
+  ipcMain.handle("disklizard:reveal-path", (_event: IpcMainInvokeEvent, targetPath: string) => shell.showItemInFolder(targetPath))
+  ipcMain.handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const result = await dialog.showOpenDialog(win ?? undefined!, {
+      properties: ["openDirectory"],
+      title: "Choose folder to scan",
+    })
+    return result.canceled || !result.filePaths[0] ? null : result.filePaths[0]
+  })
 
   ipcMain.handle("kill-sidecar", () => deps.killSidecar())
   ipcMain.handle("await-initialization", () => deps.awaitInitialization())

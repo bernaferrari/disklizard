@@ -28,6 +28,45 @@ export type FatalRendererErrorLog = {
   os?: DesktopOS
 }
 
+/** Desktop disk utility (DiskLizard) — IPC from Electron main */
+export type DiskDriveInfo = {
+  path: string
+  name: string
+  label: string
+  total: number
+  free: number
+  used: number
+  type: "local" | "removable" | "network"
+}
+
+export type DiskScanNode = {
+  name: string
+  path: string
+  size: number
+  isDir: boolean
+  children: DiskScanNode[]
+  ext: string
+  isOther?: boolean
+  _label?: string
+}
+
+export type DiskScanProgress = {
+  filesScanned: number
+  dirsScanned?: number
+  currentPath: string
+  size: number
+  done?: boolean
+}
+
+export type DiskUtilityAPI = {
+  getDrives(): Promise<DiskDriveInfo[]>
+  scanPath(path: string, options?: { maxDepth?: number }): Promise<DiskScanNode>
+  deletePath(path: string): Promise<{ ok: true }>
+  revealPath(path: string): Promise<void>
+  chooseFolder(): Promise<string | null>
+  onScanProgress(cb: (progress: DiskScanProgress) => void): () => void
+}
+
 type PlatformBase = {
   /** App version */
   version?: string
@@ -130,6 +169,8 @@ export type Platform = PlatformBase &
         platform: "desktop"
         os?: DesktopOS
         openDirectoryPickerDialog(opts?: OpenDirectoryPickerOptions): Promise<PickerPaths>
+        /** In-app disk space utility, opened at the /disk route (desktop only) */
+        diskUtility?: DiskUtilityAPI
       }
   )
 

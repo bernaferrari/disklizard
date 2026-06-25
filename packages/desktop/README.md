@@ -1,12 +1,28 @@
-# OpenCode Desktop
+# DiskLizard Desktop (OpenCode shell)
 
-The OpenCode Desktop app, built with Electron.
+DaisyDisk-style disk visualizer built on the OpenCode Electron desktop shell,
+reusing `@opencode-ai/ui` themes (OC-2), window chrome, IPC, and preload.
 
 ## Development
+
+From repo root:
+
+```bash
+bun install
+bun dev:desktop
+```
+
+Or from this package:
 
 ```bash
 bun install
 bun dev
+```
+
+Windows package:
+
+```bash
+bun run build && bun run package:win
 ```
 
 ## Build

@@ -8,7 +8,7 @@ import { Tooltip } from "@opencode-ai/ui/tooltip"
 import { Tag } from "@opencode-ai/ui/v2/badge-v2"
 import { useTheme, type ColorScheme } from "@opencode-ai/ui/theme/context"
 import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { useParams } from "@solidjs/router"
+import { useNavigate, useParams } from "@solidjs/router"
 import { useLanguage } from "@/context/language"
 import { usePermission } from "@/context/permission"
 import { usePlatform, type DisplayBackend } from "@/context/platform"
@@ -89,7 +89,14 @@ export const SettingsGeneral: Component = () => {
   const platform = usePlatform()
   const dialog = useDialog()
   const params = useParams()
+  const navigate = useNavigate()
   const settings = useSettings()
+
+  function openDiskUtilityInApp() {
+    // Always stay in the main OpenCode window (theme + fonts). No separate chrome.
+    if (params.dir) navigate(`/${params.dir}/disk`)
+    else navigate("/disk")
+  }
 
   const updater = useUpdaterAction()
 
@@ -454,6 +461,27 @@ export const SettingsGeneral: Component = () => {
     </div>
   )
 
+  const ToolsSection = () => (
+    <div class="flex flex-col gap-1">
+      <h3 class="text-14-medium text-text-strong pb-2">Tools</h3>
+      <SettingsList>
+        <SettingsRow
+          title="Disk utility"
+          description="See what's using space on this computer — same UI as the rest of OpenCode."
+        >
+          <Button
+            size="small"
+            variant="secondary"
+            data-action="settings-open-disk-utility"
+            onClick={openDiskUtilityInApp}
+          >
+            Open
+          </Button>
+        </SettingsRow>
+      </SettingsList>
+    </div>
+  )
+
   const AppearanceSection = () => (
     <div class="flex flex-col gap-1">
       <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.general.section.appearance")}</h3>
@@ -759,6 +787,10 @@ export const SettingsGeneral: Component = () => {
         <GeneralSection />
 
         <AppearanceSection />
+
+        <Show when={platform.platform === "desktop" && platform.diskUtility}>
+          <ToolsSection />
+        </Show>
 
         <NotificationsSection />
 

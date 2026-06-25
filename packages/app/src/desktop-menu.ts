@@ -47,6 +47,7 @@ export type DesktopMenuRole =
 export type DesktopMenuItem = {
   type: "item"
   labelKey?: DesktopNativeKey
+  label?: string
   command?: string
   action?: DesktopMenuAction
   role?: DesktopMenuRole
@@ -111,6 +112,12 @@ export const DESKTOP_MENU: DesktopMenu[] = [
         labelKey: "desktop.menu.openProject",
         command: "project.open",
         accelerator: { macos: "Cmd+O" },
+      },
+      {
+        type: "item",
+        label: "Disk Utility…",
+        command: "disk.open",
+        accelerator: { macos: "Cmd+Shift+D", windows: "Ctrl+Shift+D" },
       },
       {
         type: "item",

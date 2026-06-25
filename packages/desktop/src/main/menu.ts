@@ -39,7 +39,7 @@ function nativeItem(entry: DesktopMenuEntry, deps: Deps): MenuItemConstructorOpt
   if (entry.role) return { role: nativeRole(entry.role), label: entry.labelKey ? nativeT(entry.labelKey) : undefined }
 
   const item: MenuItemConstructorOptions = {
-    label: entry.labelKey ? nativeT(entry.labelKey) : undefined,
+    label: entry.label ?? (entry.labelKey ? nativeT(entry.labelKey) : undefined),
     accelerator: entry.accelerator?.macos,
     enabled: entry.enabled === "updater" ? UPDATER_ENABLED : undefined,
   }

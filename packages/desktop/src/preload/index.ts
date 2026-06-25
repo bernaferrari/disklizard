@@ -11,6 +11,18 @@ const updaterHandler = (_: unknown, state: UpdaterState) => {
 }
 
 const api: ElectronAPI = {
+  disklizard: {
+    getDrives: () => ipcRenderer.invoke("disklizard:get-drives"),
+    scanPath: (path, options) => ipcRenderer.invoke("disklizard:scan-path", path, options),
+    deletePath: (path) => ipcRenderer.invoke("disklizard:delete-path", path),
+    revealPath: (path) => ipcRenderer.invoke("disklizard:reveal-path", path),
+    chooseFolder: () => ipcRenderer.invoke("disklizard:choose-folder"),
+    onScanProgress: (cb) => {
+      const handler = (_: unknown, progress: Parameters<typeof cb>[0]) => cb(progress)
+      ipcRenderer.on("disklizard:scan-progress", handler)
+      return () => ipcRenderer.removeListener("disklizard:scan-progress", handler)
+    },
+  },
   killSidecar: () => ipcRenderer.invoke("kill-sidecar"),
   installCli: () => ipcRenderer.invoke("install-cli"),
   awaitInitialization: () => ipcRenderer.invoke("await-initialization"),
