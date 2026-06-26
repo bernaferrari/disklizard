@@ -19,7 +19,7 @@ import { Sunburst, primarySegmentColor } from "./sunburst"
 import { createSpring, animateCount, MOTION } from "./motion"
 import { computeReclaim, recognize, type ReclaimSummary } from "./recognize"
 import { formatBytes, shortBytes, formatPct, formatCount, truncatePath } from "./format"
-import { DRIVE_ACCENT, SAFETY_ACCENT, usageTone, usageStroke } from "./ui-tokens"
+import { DRIVE_ACCENT, SAFETY_ACCENT, usageStroke } from "./ui-tokens"
 
 type ViewMode = "drives" | "scan"
 type ScanMode = "map" | "list"
@@ -519,47 +519,56 @@ export default function DiskUtilityPage() {
             {/* ── DRIVES ── */}
             <Show when={view() === "drives"}>
               <ScrollView class="h-full">
-                <div class="mx-auto w-full max-w-5xl px-5 py-6">
-                  <Show when={drivesLoading()}>
-                    <div class="mb-4 flex items-center gap-2 text-12-regular text-text-weak">
-                      <span class="dl-spin size-3.5 rounded-full border-2 border-border-weaker-base border-t-text-strong" />
-                      Loading volumes…
-                    </div>
-                  </Show>
-                  <Show when={drivesError()}>
-                    <div class="mb-4 rounded-lg border border-border-weaker-base bg-surface-panel px-3 py-2 text-12-regular text-text-weak">
-                      {drivesError()} — showing fallback.
-                    </div>
-                  </Show>
-
-                  <div class="mb-3 flex items-center gap-2">
-                    <span class="grid size-5 place-items-center rounded-md bg-surface-raised-base ring-1 ring-inset ring-border-weaker-base">
-                      <Icon name="server" class="size-3 text-text-weak" />
-                    </span>
-                    <h2 class="text-12-semibold uppercase tracking-wider text-text-strong">Volumes</h2>
-                    <span class="rounded-full bg-surface-raised-base px-1.5 py-0.5 text-10-semibold tabular-nums text-text-weak ring-1 ring-inset ring-border-weaker-base">
-                      {drives().length}
-                    </span>
-                  </div>
-
+                <div class="mx-auto flex min-h-full w-full max-w-5xl flex-col px-5 py-6">
                   <Show
-                    when={drives().length > 0}
+                    when={!drivesLoading() && drives().length > 0}
                     fallback={
-                      <div class="rounded-xl border border-dashed border-border-weaker-base bg-surface-panel px-6 py-14 text-center text-13-regular text-text-weak">
-                        No volumes found. Use <span class="text-text-strong">Choose folder…</span> to scan.
+                      <div class="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
+                        <Show
+                          when={drivesError()}
+                          fallback={
+                            <Show
+                              when={drivesLoading()}
+                              fallback={
+                                <div class="rounded-xl border border-dashed border-border-weaker-base bg-surface-panel px-8 py-12 text-13-regular text-text-weak">
+                                  No volumes found. Use <span class="text-text-strong">Choose folder…</span> to scan.
+                                </div>
+                              }
+                            >
+                              <div class="flex items-center gap-2 text-12-regular text-text-weak">
+                                <span class="dl-spin size-3.5 rounded-full border-2 border-border-weaker-base border-t-text-strong" />
+                                Loading volumes…
+                              </div>
+                            </Show>
+                          }
+                        >
+                          <div class="max-w-sm rounded-lg border border-border-weaker-base bg-surface-panel px-4 py-3 text-12-regular text-text-weak">
+                            {drivesError()} — showing fallback.
+                          </div>
+                        </Show>
                       </div>
                     }
                   >
+                    <div class="mb-3 flex items-center gap-2">
+                      <span class="grid size-5 place-items-center rounded-md bg-surface-raised-base ring-1 ring-inset ring-border-weaker-base">
+                        <Icon name="server" class="size-3 text-text-weak" />
+                      </span>
+                      <h2 class="text-12-semibold uppercase tracking-wider text-text-strong">Volumes</h2>
+                      <span class="rounded-full bg-surface-raised-base px-1.5 py-0.5 text-10-semibold tabular-nums text-text-weak ring-1 ring-inset ring-border-weaker-base">
+                        {drives().length}
+                      </span>
+                    </div>
+
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       <For each={drives()}>
                         {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.name, drive.total)} />}
                       </For>
                     </div>
-                  </Show>
 
-                  <p class="mt-6 text-center text-11-regular text-text-weak">
-                    Pick a volume or choose any folder. Everything runs locally — nothing leaves your machine.
-                  </p>
+                    <p class="mt-6 text-center text-11-regular text-text-weak">
+                      Pick a volume or choose any folder. Everything runs locally — nothing leaves your machine.
+                    </p>
+                  </Show>
                 </div>
               </ScrollView>
             </Show>
@@ -874,16 +883,9 @@ function DriveCard(props: { drive: DiskDriveInfo; onScan: () => void }) {
   const accent = () => DRIVE_ACCENT[props.drive.type] ?? DRIVE_ACCENT.local
   const hasTotal = () => props.drive.total > 0
   const usedPct = () => (hasTotal() ? (props.drive.used / props.drive.total) * 100 : 0)
-  const freePct = () => (hasTotal() ? (props.drive.free / props.drive.total) * 100 : 0)
-  // The free-space figure is the hero; color it by how little room is left.
-  const freeColor = () =>
-    freePct() < 10
-      ? "text-[color-mix(in_oklch,#cf222e_70%,var(--text-strong))]"
-      : freePct() < 25
-        ? "text-[color-mix(in_oklch,#9a6700_70%,var(--text-strong))]"
-        : "text-text-strong"
-  const r = 26
-  const c = 2 * Math.PI * r
+  const sevStroke = () => (hasTotal() ? usageStroke(props.drive.used, props.drive.total) : accent().stroke)
+  const r = 22
+  const circ = 2 * Math.PI * r
   const progress = createSpring(0, MOTION.lush)
 
   onMount(() => {
@@ -899,59 +901,57 @@ function DriveCard(props: { drive: DiskDriveInfo; onScan: () => void }) {
       onKeyDown={(e) => {
         if (e.key === "Enter") props.onScan()
       }}
-      class="dl-card group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-2xl border border-border-weaker-base bg-surface-panel p-5 outline-none transition-all hover:-translate-y-0.5 hover:border-border-base hover:shadow-xl focus-visible:ring-2 focus-visible:ring-[oklch(0.7_0.15_270/0.6)]"
+      class="dl-card group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border-weaker-base bg-surface-panel p-5 outline-none transition-all hover:-translate-y-0.5 hover:border-border-base hover:shadow-xl focus-visible:ring-2 focus-visible:ring-[oklch(0.7_0.15_270/0.6)]"
     >
-      <div class="flex items-center gap-4">
-        <div class="relative grid size-16 shrink-0 place-items-center">
-          <svg viewBox="0 0 64 64" class="size-16 -rotate-90">
-            <circle cx="32" cy="32" r={r} fill="none" stroke="oklch(0.6 0.01 0 / 0.12)" stroke-width="6" />
-            <circle
-              cx="32"
-              cy="32"
-              r={r}
-              fill="none"
-              stroke={hasTotal() ? usageStroke(props.drive.used, props.drive.total) : accent().stroke}
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-dasharray={`${c}`}
-              stroke-dashoffset={`${c * (1 - progress())}`}
-            />
-          </svg>
-          <div class="absolute text-11-semibold tabular-nums text-text-weak">
-            {hasTotal() ? `${Math.round(usedPct())}%` : "—"}
+      {/* Severity accent line — the single colored cue, grows on hover. */}
+      <span
+        aria-hidden
+        class="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"
+        style={{ background: sevStroke() }}
+      />
+
+      <div class="flex items-start justify-between gap-3">
+        <span
+          class={`inline-flex shrink-0 items-center gap-1 rounded-full px-1.5 py-0.5 text-10-semibold uppercase tracking-wide ring-1 ring-inset ${accent().pill}`}
+        >
+          {props.drive.type}
+        </span>
+        <Show when={hasTotal()}>
+          <div class="relative grid size-12 shrink-0 place-items-center">
+            <svg viewBox="0 0 56 56" class="size-12 -rotate-90">
+              <circle cx="28" cy="28" r={r} fill="none" stroke="oklch(0.6 0.01 0 / 0.14)" stroke-width="5" />
+              <circle
+                cx="28"
+                cy="28"
+                r={r}
+                fill="none"
+                stroke={sevStroke()}
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-dasharray={`${circ}`}
+                stroke-dashoffset={`${circ * (1 - progress())}`}
+              />
+            </svg>
+            <div class="absolute text-10-semibold tabular-nums text-text-weak">{Math.round(usedPct())}%</div>
           </div>
-        </div>
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
-            <span class={`size-1.5 shrink-0 rounded-full ${accent().dot}`} />
-            <span class="truncate text-14-semibold text-text-strong">{props.drive.name}</span>
-          </div>
-          <p class="mt-1 truncate text-11-regular text-text-weak">
-            {hasTotal() ? props.drive.path : "Ready to scan"}
-          </p>
-        </div>
+        </Show>
       </div>
 
-      <Show when={hasTotal()}>
-        <div class="flex items-end justify-between gap-3 border-t border-border-weaker-base pt-3">
-          <div>
-            <p class={`text-20-medium leading-none tabular-nums ${freeColor()}`}>{formatBytes(props.drive.free)}</p>
-            <p class="mt-1.5 text-11-regular tabular-nums text-text-weak">
-              free of {formatBytes(props.drive.total)}
-            </p>
-          </div>
-          <span
-            class={`shrink-0 rounded-full px-2 py-1 text-10-semibold tabular-nums ring-1 ring-inset ${usageTone(props.drive.used, props.drive.total)}`}
-          >
-            {formatBytes(props.drive.used)} used
-          </span>
-        </div>
+      <h3 class="mt-3 text-14-semibold leading-snug text-text-strong [text-wrap:balance]">{props.drive.name}</h3>
+
+      <Show when={hasTotal()} fallback={<p class="mt-1.5 text-12-regular text-text-weak">Ready to scan</p>}>
+        <p class="mt-1.5 text-12-regular tabular-nums text-text-weak">
+          <span class="text-text-strong">{formatBytes(props.drive.free)}</span> free of {formatBytes(props.drive.total)}
+        </p>
       </Show>
 
-      <div class="flex items-center justify-center gap-1 text-12-semibold text-text-weak transition-colors group-hover:text-text-strong">
-        <Icon name="dot-grid" class="size-3.5" />
-        Scan
-        <Icon name="chevron-right" class="size-3 opacity-0 transition-opacity group-hover:opacity-100" />
+      <div class="mt-4 flex items-center justify-between gap-2 border-t border-border-weaker-base/60 pt-3">
+        <span class="truncate font-mono text-10-regular text-text-weaker">{props.drive.path}</span>
+        <span class="flex shrink-0 items-center gap-1 text-11-semibold text-text-weak transition-colors group-hover:text-text-strong">
+          <Icon name="dot-grid" class="size-3" />
+          Scan
+          <Icon name="chevron-right" class="size-3 opacity-0 transition-opacity group-hover:opacity-100" />
+        </span>
       </div>
     </div>
   )
