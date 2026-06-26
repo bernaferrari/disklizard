@@ -606,7 +606,7 @@ export default function DiskUtilityPage() {
                     {/* MAP */}
                     <Show when={scanMode() === "map"}>
                       <div class="relative grid min-w-0 flex-1 place-items-center overflow-hidden p-4">
-                        <div class="relative aspect-square w-full max-w-[min(100%,calc(100vh-15rem))]">
+                        <div class="relative aspect-square h-full max-w-full">
                           <canvas ref={(el: HTMLCanvasElement) => setCanvasEl(el)} class="absolute inset-0 h-full w-full" />
                           <CenterOverlay
                             node={focusNode()}
@@ -636,7 +636,7 @@ export default function DiskUtilityPage() {
                         <Show
                           when={entries().length > 0}
                           fallback={
-                            <div class="px-6 py-12 text-center text-13-regular text-text-weak">
+                            <div class="grid min-h-full place-items-center px-6 py-12 text-center text-13-regular text-text-weak">
                               {query() ? "No matching items." : "This folder is empty."}
                             </div>
                           }
