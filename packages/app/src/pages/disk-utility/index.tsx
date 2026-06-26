@@ -213,6 +213,7 @@ export default function DiskUtilityPage() {
     if (!api) return
     scanUnsub?.()
     const token = ++scanToken
+    setView("scan")
     setScanning(true)
     setScanFiles(0)
     setScanPct(0)
