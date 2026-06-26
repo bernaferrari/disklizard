@@ -559,15 +559,11 @@ export default function DiskUtilityPage() {
                       </span>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                       <For each={drives()}>
                         {(drive) => <DriveCard drive={drive} onScan={() => void startScan(drive.path, drive.name, drive.total)} />}
                       </For>
                     </div>
-
-                    <p class="mt-6 text-center text-11-regular text-text-weak">
-                      Pick a volume or choose any folder. Everything runs locally — nothing leaves your machine.
-                    </p>
                   </Show>
                 </div>
               </ScrollView>
@@ -884,39 +880,36 @@ function DriveCard(props: { drive: DiskDriveInfo; onScan: () => void }) {
   const usedPct = () => (hasTotal() ? (props.drive.used / props.drive.total) * 100 : 0)
   const barColor = () => (hasTotal() ? usageStroke(props.drive.used, props.drive.total) : "oklch(0.65 0.13 270)")
   return (
-    <div
-      role="button"
-      tabindex="0"
+    <button
+      type="button"
       onClick={props.onScan}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") props.onScan()
-      }}
-      class="dl-card group flex cursor-pointer items-center gap-4 rounded-xl border border-border-weaker-base bg-surface-panel p-4 outline-none transition-all hover:border-border-base hover:bg-surface-raised-base/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[oklch(0.7_0.15_270/0.5)]"
+      class="dl-card group flex w-full cursor-pointer items-center gap-5 rounded-2xl border border-border-weaker-base bg-surface-panel p-5 text-left outline-none transition-all hover:-translate-y-0.5 hover:border-border-base hover:bg-surface-raised-base/30 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[oklch(0.7_0.15_270/0.5)]"
     >
-      <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak ring-1 ring-inset ring-border-weaker-base">
-        <Icon name="server" class="size-4" />
+      <span class="grid size-14 shrink-0 place-items-center rounded-2xl bg-surface-raised-base text-text-weak ring-1 ring-inset ring-border-weaker-base transition-colors group-hover:text-text-base">
+        <Icon name="server" class="size-6" />
       </span>
       <div class="min-w-0 flex-1">
         <div class="flex items-baseline justify-between gap-3">
-          <span class="truncate text-14-semibold text-text-strong">{props.drive.name}</span>
+          <span class="truncate text-16-medium text-text-strong">{props.drive.name}</span>
           <Show when={hasTotal()}>
-            <span class="shrink-0 text-14-semibold tabular-nums text-text-strong">{formatBytes(props.drive.free)}</span>
+            <span class="shrink-0 text-11-regular tabular-nums text-text-weak">{formatBytes(props.drive.total)} total</span>
           </Show>
         </div>
-        <Show when={hasTotal()} fallback={<p class="mt-1 text-11-regular text-text-weak">Ready to scan</p>}>
-          <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-raised-base">
+        <Show when={hasTotal()} fallback={<p class="mt-1.5 text-12-regular text-text-weak">Ready to scan</p>}>
+          <div class="mt-2 flex items-center gap-2.5">
+            <span class="text-20-medium leading-none tabular-nums text-text-strong">{formatBytes(props.drive.free)}</span>
+            <span class="text-11-regular text-text-weak">free</span>
+            <span class="ml-auto text-11-semibold tabular-nums text-text-weak">{Math.round(usedPct())}% used</span>
+          </div>
+          <div class="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-raised-base">
             <div
               class="h-full rounded-full transition-[width] duration-700 ease-out"
               style={{ width: `${usedPct()}%`, background: barColor() }}
             />
           </div>
-          <p class="mt-1.5 truncate text-11-regular tabular-nums text-text-weak">
-            {formatBytes(props.drive.total)} total · {Math.round(usedPct())}% used
-          </p>
         </Show>
       </div>
-      <Icon name="chevron-right" class="size-4 shrink-0 text-text-weaker transition-all group-hover:translate-x-0.5 group-hover:text-text-weak" />
-    </div>
+    </button>
   )
 }
 
