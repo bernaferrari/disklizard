@@ -39,6 +39,8 @@ export interface Settings {
     agentVisibilityInitialized?: boolean
     newInterfaceNoticeDismissed?: boolean
     shouldDisplayTabsToast?: boolean
+    /** Bypass the OS Trash for Disk Utility deletes. Defaults to recoverable deletion. */
+    diskPermanentDelete?: boolean
   }
   appearance: {
     fontSize: number
@@ -195,6 +197,7 @@ const defaultSettings: Settings = {
     editToolPartsExpanded: false,
     showCustomAgents: false,
     mobileTitlebarPosition: "top",
+    diskPermanentDelete: false,
   },
   appearance: {
     fontSize: 14,
@@ -450,6 +453,13 @@ export const { use: useSettings, provider: SettingsProvider } = createSimpleCont
         shouldDisplayTabsToast: withFallback(() => store.general?.shouldDisplayTabsToast, false),
         dismissTabsToast() {
           setStore("general", "shouldDisplayTabsToast", false)
+        },
+        diskPermanentDelete: withFallback(
+          () => store.general?.diskPermanentDelete,
+          defaultSettings.general.diskPermanentDelete,
+        ),
+        setDiskPermanentDelete(value: boolean) {
+          setStore("general", "diskPermanentDelete", value)
         },
       },
       visibility: {

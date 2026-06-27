@@ -66,7 +66,7 @@ export type DiskLizardScanProgress = {
 export type DiskLizardAPI = {
   getDrives: () => Promise<DiskLizardDrive[]>
   scanPath: (path: string, options?: { maxDepth?: number }) => Promise<DiskLizardNode>
-  deletePath: (path: string) => Promise<{ ok: true }>
+  deletePath: (path: string, options?: { permanent?: boolean }) => Promise<{ ok: true }>
   revealPath: (path: string) => Promise<void>
   chooseFolder: () => Promise<string | null>
   onScanProgress: (cb: (progress: DiskLizardScanProgress) => void) => () => void

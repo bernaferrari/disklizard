@@ -61,7 +61,7 @@ export type DiskScanProgress = {
 export type DiskUtilityAPI = {
   getDrives(): Promise<DiskDriveInfo[]>
   scanPath(path: string, options?: { maxDepth?: number }): Promise<DiskScanNode>
-  deletePath(path: string): Promise<{ ok: true }>
+  deletePath(path: string, options?: { permanent?: boolean }): Promise<{ ok: true }>
   revealPath(path: string): Promise<void>
   chooseFolder(): Promise<string | null>
   onScanProgress(cb: (progress: DiskScanProgress) => void): () => void

@@ -15,6 +15,7 @@ import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { showToast } from "@opencode-ai/ui/toast"
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, untrack } from "solid-js"
 import { usePlatform, type DiskDriveInfo, type DiskScanNode } from "@/context/platform"
+import { useSettings } from "@/context/settings"
 import { Sunburst, primarySegmentColor } from "./sunburst"
 import { animateCount } from "./motion"
 import { computeReclaim, recognize, type ReclaimSummary } from "./recognize"
@@ -61,6 +62,7 @@ function buildCrumbs(root: DiskScanNode | null, view: DiskScanNode | null): Crum
 
 export default function DiskUtilityPage() {
   const platform = usePlatform()
+  const settings = useSettings()
   const isDesktop = () => platform.platform === "desktop"
   const disk = () => (platform.platform === "desktop" ? platform.diskUtility : undefined)
 
@@ -360,8 +362,8 @@ export default function DiskUtilityPage() {
     if (!api) return
     setDeleting(true)
     try {
-      await api.deletePath(node.path)
-      showToast({ variant: "success", title: "Moved to trash", description: node.name })
+      await api.deletePath(node.path, { permanent: settings.general.diskPermanentDelete() })
+      showToast({ variant: "success", title: settings.general.diskPermanentDelete() ? "Deleted" : "Moved to trash", description: node.name })
       const root = treeRoot()
       if (root) await startScan(root.path, scanLabel())
     } catch (err) {
@@ -753,16 +755,40 @@ export default function DiskUtilityPage() {
                   <Icon name="trash" class="size-4 text-[#cf222e]" />
                 </div>
                 <div class="min-w-0 flex-1">
-                  <h3 class="text-14-semibold text-text-strong">Move to trash?</h3>
+                  <h3 class="text-14-semibold text-text-strong">
+                    {settings.general.diskPermanentDelete() ? "Permanently delete?" : "Move to trash?"}
+                  </h3>
                   <p class="mt-1 truncate text-13-regular text-text-strong">{node().name}</p>
                   <p class="mt-0.5 truncate font-mono text-11-regular text-text-weak">{node().path}</p>
                   <p class="mt-2 text-12-regular tabular-nums text-text-weak">{formatBytes(node().size)}</p>
+                  <label class="mt-3 flex cursor-pointer items-center gap-2 text-12-regular text-text-weak select-none">
+                    <input
+                      type="checkbox"
+                      class="size-3.5 accent-[oklch(0.66_0.22_25)]"
+                      checked={settings.general.diskPermanentDelete()}
+                      onChange={(e) => settings.general.setDiskPermanentDelete(e.currentTarget.checked)}
+                    />
+                    Delete permanently (bypass Trash)
+                  </label>
+                  <Show when={settings.general.diskPermanentDelete()}>
+                    <p class="mt-1.5 text-11-regular text-[color-mix(in_oklch,#cf222e_70%,var(--text-strong))]">
+                      Permanent deletion can't be undone.
+                    </p>
+                  </Show>
                 </div>
               </div>
               <div class="mt-5 flex justify-end gap-2">
-                <Button size="small" variant="secondary" disabled={deleting()} onClick={() => setPendingDelete(null)}>Cancel</Button>
+                <Button size="small" variant="secondary" disabled={deleting()} onClick={() => setPendingDelete(null)}>
+                  Cancel
+                </Button>
                 <Button size="small" variant="primary" disabled={deleting()} icon="trash" onClick={() => void confirmDelete()}>
-                  {deleting() ? "Moving…" : "Move to trash"}
+                  {deleting()
+                    ? settings.general.diskPermanentDelete()
+                      ? "Deleting…"
+                      : "Moving…"
+                    : settings.general.diskPermanentDelete()
+                      ? "Delete"
+                      : "Move to trash"}
                 </Button>
               </div>
             </div>

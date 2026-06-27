@@ -78,7 +78,14 @@ export function registerIpcHandlers(deps: Deps) {
         },
       }),
   )
-  ipcMain.handle("disklizard:delete-path", (_event: IpcMainInvokeEvent, targetPath: string) => deleteDiskPath(targetPath))
+  ipcMain.handle(
+    "disklizard:delete-path",
+    async (_event: IpcMainInvokeEvent, targetPath: string, options?: { permanent?: boolean }) => {
+      if (options?.permanent) await deleteDiskPath(targetPath)
+      else await shell.trashItem(targetPath)
+      return { ok: true }
+    },
+  )
   ipcMain.handle("disklizard:reveal-path", (_event: IpcMainInvokeEvent, targetPath: string) => shell.showItemInFolder(targetPath))
   ipcMain.handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)

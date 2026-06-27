@@ -14,7 +14,7 @@ const api: ElectronAPI = {
   disklizard: {
     getDrives: () => ipcRenderer.invoke("disklizard:get-drives"),
     scanPath: (path, options) => ipcRenderer.invoke("disklizard:scan-path", path, options),
-    deletePath: (path) => ipcRenderer.invoke("disklizard:delete-path", path),
+    deletePath: (path, options) => ipcRenderer.invoke("disklizard:delete-path", path, options),
     revealPath: (path) => ipcRenderer.invoke("disklizard:reveal-path", path),
     chooseFolder: () => ipcRenderer.invoke("disklizard:choose-folder"),
     onScanProgress: (cb) => {
