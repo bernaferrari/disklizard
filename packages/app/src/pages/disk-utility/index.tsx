@@ -17,13 +17,14 @@ import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, 
 import { usePlatform, type DiskDriveInfo, type DiskScanNode } from "@/context/platform"
 import { useSettings } from "@/context/settings"
 import { Sunburst, primarySegmentColor } from "./sunburst"
+import { Treemap } from "./TreemapPanel"
 import { animateCount } from "./motion"
 import { computeReclaim, recognize, type ReclaimSummary } from "./recognize"
 import { formatBytes, shortBytes, formatPct, formatCount, truncatePath } from "./format"
 import { SAFETY_ACCENT, usageStroke } from "./ui-tokens"
 
 type ViewMode = "drives" | "scan"
-type ScanMode = "map" | "list"
+type ScanMode = "map" | "list" | "grid"
 type Crumb = { name: string; path: string; node?: DiskScanNode }
 type Entry = { node: DiskScanNode; index: number }
 
@@ -461,6 +462,7 @@ export default function DiskUtilityPage() {
             <Show when={view() === "scan" && !scanning()}>
               <div class="flex items-center gap-0.5 rounded-md bg-surface-raised-base p-0.5 ring-1 ring-inset ring-border-weaker-base">
                 <SegmentedButton active={scanMode() === "map"} onClick={() => setScanMode("map")} icon="dot-grid" label="Map" />
+                <SegmentedButton active={scanMode() === "grid"} onClick={() => setScanMode("grid")} icon="file-tree" label="Grid" />
                 <SegmentedButton active={scanMode() === "list"} onClick={() => setScanMode("list")} icon="bullet-list" label="List" />
               </div>
               <div class="flex items-center gap-1.5 rounded-md bg-surface-raised-base px-2 py-1 ring-1 ring-inset ring-border-weaker-base">
@@ -606,16 +608,25 @@ export default function DiskUtilityPage() {
                   </Show>
 
                   <div class="flex min-h-0 flex-1">
-                    {/* MAP */}
-                    <Show when={scanMode() === "map"}>
+                    {/* MAP / GRID */}
+                    <Show when={scanMode() !== "list"}>
                       <div class="relative grid min-w-0 flex-1 place-items-center overflow-hidden p-4">
-                        <div class="relative aspect-square h-full max-w-full">
-                          <canvas ref={(el: HTMLCanvasElement) => setCanvasEl(el)} class="absolute inset-0 h-full w-full" />
-                          <CenterOverlay
-                            node={focusNode()}
-                            parentSize={parentSize()}
+                        <Show when={scanMode() === "map"}>
+                          <div class="relative aspect-square h-full max-w-full">
+                            <canvas ref={(el: HTMLCanvasElement) => setCanvasEl(el)} class="absolute inset-0 h-full w-full" />
+                            <CenterOverlay node={focusNode()} parentSize={parentSize()} />
+                          </div>
+                        </Show>
+                        <Show when={scanMode() === "grid"}>
+                          <Treemap
+                            children={sortedChildren()}
+                            hoveredPath={hoveredPath()}
+                            selectedPath={selectedPath()}
+                            onHover={hoverEntry}
+                            onSelect={(p: string) => selectPath(p)}
+                            onDrill={drill}
                           />
-                        </div>
+                        </Show>
                       </div>
                     </Show>
 
@@ -623,7 +634,7 @@ export default function DiskUtilityPage() {
                     <aside
                       class="flex min-h-0 flex-col border-border-weaker-base bg-surface-panel/40"
                       classList={{
-                        "w-[clamp(280px,28vw,360px)] shrink-0 border-l": scanMode() === "map",
+                        "w-[clamp(280px,28vw,360px)] shrink-0 border-l": scanMode() !== "list",
                         "flex-1": scanMode() === "list",
                       }}
                     >
