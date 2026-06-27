@@ -201,10 +201,11 @@ export class Sunburst {
     this.ro.observe(canvas)
 
     this._resize()
-    this._loop()
+    this.requestFrame()
   }
 
   destroy() {
+    this.running = false
     this.canvas.removeEventListener("mousemove", this._onMouseMove)
     this.canvas.removeEventListener("mouseleave", this._onMouseLeave)
     this.canvas.removeEventListener("click", this._onClick)
@@ -227,6 +228,7 @@ export class Sunburst {
 
   _onResize() {
     this._resize()
+    this.requestFrame()
   }
 
   _radiiForDepth(depth: number) {
@@ -291,10 +293,12 @@ export class Sunburst {
 
   setHighlight(path: string | null) {
     this.highlightPath = path
+    this.requestFrame()
   }
 
   setSelected(path: string | null) {
     this.selectedPath = path
+    this.requestFrame()
   }
 
   /**
@@ -413,6 +417,7 @@ export class Sunburst {
     this.animating = true
     this.entering = mode === "enter"
     this.pulseT = 0
+    this.requestFrame()
   }
 
   _tick(now: number) {
@@ -458,12 +463,33 @@ export class Sunburst {
     }
   }
 
-  _loop() {
-    this.raf = requestAnimationFrame((t) => {
-      this._tick(t)
-      this._draw()
-      this._loop()
-    })
+  private running = false
+
+  /** Schedule a frame iff one isn't already pending. Idempotent — call from every state change. */
+  private requestFrame() {
+    if (this.running) return
+    this.running = true
+    this.raf = requestAnimationFrame((t) => this._frame(t))
+  }
+
+  private _frame(t: number) {
+    this._tick(t)
+    this._draw()
+    if (this._needsFrame()) {
+      this.raf = requestAnimationFrame((n) => this._frame(n))
+    } else {
+      this.running = false
+      this.raf = null
+    }
+  }
+
+  /** True when there is animation, an enter pulse, or an unsettled hover spring. */
+  private _needsFrame(): boolean {
+    if (this.animating || this.entering) return true
+    for (const s of this.segments) {
+      if (s.depth === 0 && Math.abs(s.hover - s.targetHover) > 0.001) return true
+    }
+    return false
   }
 
   _draw() {
@@ -632,20 +658,23 @@ export class Sunburst {
     const hit = this._hitTest(e.clientX, e.clientY)
     const prev = this.hovered
     if (!hit || hit.type === "center") {
-      this.hovered = hit?.type === "center" ? null : null
+      this.hovered = null
       this.canvas.style.cursor = hit?.type === "center" && this._canGoUp() ? "pointer" : "default"
       if (prev) this.options.onHover?.(null)
+      this.requestFrame()
       return
     }
     this.hovered = hit.segment
     this.canvas.style.cursor = hit.segment.node.isDir ? "pointer" : "grab"
     if (prev?.path !== hit.segment.path) this.options.onHover?.(hit.segment)
+    this.requestFrame()
   }
 
   _onMouseLeave() {
     this.hovered = null
     this.canvas.style.cursor = "default"
     this.options.onHover?.(null)
+    this.requestFrame()
   }
 
   _canGoUp() {
@@ -661,6 +690,7 @@ export class Sunburst {
     }
     this.selectedPath = hit.segment.path
     this.options.onClick?.(hit.segment)
+    this.requestFrame()
   }
 
   getViewNode() {
