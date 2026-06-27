@@ -27,6 +27,7 @@ type ViewMode = "drives" | "scan"
 type ScanMode = "map" | "list" | "grid"
 type Crumb = { name: string; path: string; node?: DiskScanNode }
 type Entry = { node: DiskScanNode; index: number }
+type ScanTab = { id: string; label: string; tree: DiskScanNode; view: DiskScanNode }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   const { promise: timed, resolve, reject } = Promise.withResolvers<T>()
@@ -92,6 +93,7 @@ export default function DiskUtilityPage() {
   const [cleanupMode, setCleanupMode] = createSignal(false)
   const [reviewOpen, setReviewOpen] = createSignal(false)
   const [reclaimDisplay, setReclaimDisplay] = createSignal(0)
+  const [tabs, setTabs] = createSignal<ScanTab[]>([])
 
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
@@ -213,10 +215,41 @@ export default function DiskUtilityPage() {
     if (path) await startScan(path, path.split(/[/\\]/).pop() || path)
   }
 
+  /** Snapshot the current completed scan as a background tab before replacing it. */
+  function saveCurrentTab() {
+    const root = treeRoot()
+    if (!root) return
+    setTabs((prev) => [
+      ...prev,
+      { id: `tab-${Date.now()}-${prev.length}`, label: scanLabel() || root.name, tree: root, view: viewNode() ?? root },
+    ])
+  }
+
+  /** Restore a background tab into the live state, saving the current one first. */
+  function switchToTab(id: string) {
+    if (scanning()) return
+    const tab = tabs().find((t) => t.id === id)
+    if (!tab) return
+    saveCurrentTab()
+    setTabs((prev) => prev.filter((t) => t.id !== id))
+    setTreeRoot(tab.tree)
+    setViewNode(tab.view)
+    setScanLabel(tab.label)
+    setSelectedPath(undefined)
+    setHoveredPath(null)
+    setQuery("")
+    setFocusIdx(0)
+  }
+
+  function closeTab(id: string) {
+    setTabs((prev) => prev.filter((t) => t.id !== id))
+  }
+
   async function startScan(path: string, label: string, total = 0) {
     const api = disk()
     if (!api) return
     scanUnsub?.()
+    saveCurrentTab()
     const token = ++scanToken
     setView("scan")
     setScanning(true)
@@ -304,7 +337,7 @@ export default function DiskUtilityPage() {
   }
 
   function backToDrives() {
-    setView("drives")
+    saveCurrentTab()
     setTreeRoot(null)
     setViewNode(null)
     setSelectedPath(undefined)
@@ -523,6 +556,38 @@ export default function DiskUtilityPage() {
           </nav>
         </Show>
       </header>
+      <Show when={tabs().length > 0 || (view() === "scan" && treeRoot())}>
+        <div class="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-border-weaker-base bg-background-base px-3 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <Show when={view() === "scan" && treeRoot()}>
+            <span class="shrink-0 rounded-md bg-surface-raised-base px-2.5 py-1 text-11-semibold text-text-strong ring-1 ring-inset ring-border-weaker-base">
+              {scanLabel() || "Current"}
+            </span>
+          </Show>
+          <For each={tabs()}>
+            {(tab) => (
+              <button
+                type="button"
+                class="group flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1 text-11-regular text-text-weak transition-colors hover:bg-surface-raised-base hover:text-text-strong"
+                onClick={() => {
+                  switchToTab(tab.id)
+                  if (view() !== "scan") setView("scan")
+                }}
+              >
+                <span class="max-w-[120px] truncate">{tab.label}</span>
+                <span
+                  class="grid size-4 place-items-center rounded opacity-0 transition-opacity hover:bg-[#da3633]/14 group-hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeTab(tab.id)
+                  }}
+                >
+                  <Icon name="close-small" class="size-2.5" />
+                </span>
+              </button>
+            )}
+          </For>
+        </div>
+      </Show>
 
       {/* ── Body ────────────────────────────────────────────────────────── */}
       <div class="relative min-h-0 flex-1 overflow-hidden">
