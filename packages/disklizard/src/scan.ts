@@ -107,7 +107,7 @@ type WalkState = {
   scannedBytes: number
 }
 
-function emitProgress(st: WalkState, currentPath: string, size: number, force = false) {
+function emitProgress(st: WalkState, currentPath: string, force = false) {
   if (!st.onProgress) return
   const now = performance.now()
   if (!force && now - st.lastProgressAt < st.progressIntervalMs) return
@@ -186,7 +186,7 @@ async function sizeOnly(dirPath: string, st: WalkState, depth: number): Promise<
   }
 
   if (tasks.length) await Promise.all(tasks)
-  emitProgress(st, dirPath, total)
+  emitProgress(st, dirPath)
   return total
 }
 
@@ -214,7 +214,7 @@ async function walkDir(dirPath: string, name: string, st: WalkState, depth: numb
   }
 
   st.dirsScanned++
-  emitProgress(st, dirPath, st.scannedBytes)
+  emitProgress(st, dirPath)
 
   const fileTasks: Promise<DiskNode | null>[] = []
   const dirTasks: Promise<DiskNode>[] = []
@@ -324,7 +324,7 @@ async function walkDir(dirPath: string, name: string, st: WalkState, depth: numb
   }
 
   node.size = totalSize
-  emitProgress(st, dirPath, totalSize)
+  emitProgress(st, dirPath)
   return node
 }
 

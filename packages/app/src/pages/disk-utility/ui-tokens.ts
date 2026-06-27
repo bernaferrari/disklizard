@@ -11,30 +11,6 @@ export type Accent = {
   stroke: string
 }
 
-/** Drive-type accents — the volume picker. */
-export const DRIVE_ACCENT: Record<"local" | "removable" | "network", Accent> = {
-  local: {
-    dot: "bg-[#3fb950]",
-    text: "text-[#1a7f37]",
-    pill: "bg-[#238636]/14 text-[color-mix(in_oklch,#1a7f37_62%,var(--text-strong))] ring-[#3fb950]/45",
-    bar: "bg-[#3fb950]",
-    stroke: "oklch(0.72 0.17 145)",
-  },
-  removable: {
-    dot: "bg-[#58a6ff]",
-    text: "text-[#0969da]",
-    pill: "bg-[#58a6ff]/14 text-[color-mix(in_oklch,#0969da_62%,var(--text-strong))] ring-[#58a6ff]/45",
-    bar: "bg-[#58a6ff]",
-    stroke: "oklch(0.7 0.15 245)",
-  },
-  network: {
-    dot: "bg-[#8957e5]",
-    text: "text-[#8250df]",
-    pill: "bg-[#8957e5]/14 text-[color-mix(in_oklch,#8250df_62%,var(--text-strong))] ring-[#a371f7]/45",
-    bar: "bg-[#8957e5]",
-    stroke: "oklch(0.65 0.18 300)",
-  },
-}
 
 /**
  * Safety verdicts — the heart of the "Reclaim" feature. Each maps to one OKLCH

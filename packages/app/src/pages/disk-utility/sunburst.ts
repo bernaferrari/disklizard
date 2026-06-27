@@ -703,7 +703,3 @@ export class Sunburst {
       .sort((a, b) => b.node.size - a.node.size)
   }
 }
-
-export function isDiskScanNode(n: unknown): n is DiskScanNode {
-  return typeof n === "object" && n !== null && "path" in n && "size" in n && "children" in n
-}
