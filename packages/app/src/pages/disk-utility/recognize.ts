@@ -145,8 +145,14 @@ export type ReclaimSummary = {
  */
 export function computeReclaim(root: DiskScanNode | null): ReclaimSummary {
   const buckets = new Map<Safety, ReclaimBucket>()
-  const bucket = (s: Safety) =>
-    buckets.get(s) ?? { safety: s, bytes: 0, count: 0, items: [] }
+  const bucket = (s: Safety): ReclaimBucket => {
+    let b = buckets.get(s)
+    if (!b) {
+      b = { safety: s, bytes: 0, count: 0, items: [] }
+      buckets.set(s, b)
+    }
+    return b
+  }
 
   function walk(node: DiskScanNode) {
     const r = recognize(node)
