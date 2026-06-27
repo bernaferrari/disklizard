@@ -94,6 +94,7 @@ export default function DiskUtilityPage() {
   const [reviewOpen, setReviewOpen] = createSignal(false)
   const [reclaimDisplay, setReclaimDisplay] = createSignal(0)
   const [tabs, setTabs] = createSignal<ScanTab[]>([])
+  const [collection, setCollection] = createSignal<DiskScanNode[]>([])
 
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
@@ -122,6 +123,7 @@ export default function DiskUtilityPage() {
     if (!path) return null
     return sortedChildren().find((n) => n.path === path) ?? null
   })
+  const collectionSize = createMemo(() => collection().reduce((s, n) => s + n.size, 0))
 
   /** The node the sunburst center + list header should describe right now. */
   const focusNode = createMemo<DiskScanNode | null>(() => {
@@ -414,6 +416,37 @@ export default function DiskUtilityPage() {
     if (!node) return
     setPendingDelete(null)
     await trashNode(node)
+  }
+
+  function toggleCollect(node: DiskScanNode) {
+    setCollection((prev) => {
+      const exists = prev.some((n) => n.path === node.path)
+      return exists ? prev.filter((n) => n.path !== node.path) : [...prev, node]
+    })
+  }
+  const isCollected = (path: string) => collection().some((n) => n.path === path)
+  function clearCollection() { setCollection([]) }
+  async function deleteCollected() {
+    const api = disk()
+    if (!api || !collection().length) return
+    setDeleting(true)
+    try {
+      for (const node of collection()) {
+        await api.deletePath(node.path, { permanent: settings.general.diskPermanentDelete() })
+      }
+      showToast({
+        variant: "success",
+        title: `Cleared ${formatBytes(collectionSize())}`,
+        description: `${collection().length} items ${settings.general.diskPermanentDelete() ? "deleted" : "trashed"}`,
+      })
+      setCollection([])
+      const root = treeRoot()
+      if (root) await startScan(root.path, scanLabel())
+    } catch (err) {
+      showToast({ variant: "error", title: "Delete failed", description: err instanceof Error ? err.message : String(err) })
+    } finally {
+      setDeleting(false)
+    }
   }
 
   // Keyboard navigation
@@ -796,6 +829,17 @@ export default function DiskUtilityPage() {
                                         </div>
                                       </div>
                                       <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">{shortBytes(entry.node.size)}</span>
+                                      <button
+                                        type="button"
+                                        class={`grid size-5 shrink-0 place-items-center rounded transition-colors ${isCollected(entry.node.path) ? "bg-[#238636]/14 text-[#3fb950]" : "text-text-weaker opacity-0 hover:text-text-weak group-hover:opacity-100"}`}
+                                        onClick={(e: MouseEvent) => {
+                                          e.stopPropagation()
+                                          toggleCollect(entry.node)
+                                        }}
+                                        title={isCollected(entry.node.path) ? "Remove from collection" : "Add to collection"}
+                                      >
+                                        <Icon name={isCollected(entry.node.path) ? "circle-check" : "plus-small"} class="size-3" />
+                                      </button>
                                       <Show when={entry.node.isDir && !entry.node.isOther}>
                                         <Button
                                           size="small"
@@ -818,9 +862,32 @@ export default function DiskUtilityPage() {
                     </aside>
                   </div>
 
-                  {/* Detail / action bar */}
-                  <Show when={selectedNode()}>
-                    {(node) => <DetailBar node={node()} parentSize={parentSize()} onReveal={() => void reveal(node().path)} onOpen={() => drill(node())} onTrash={() => setPendingDelete(node())} />}
+                  {/* Collection bar — replaces the detail bar when items are staged */}
+                  <Show
+                    when={collection().length > 0}
+                    fallback={
+                      <Show when={selectedNode()}>
+                        {(node) => <DetailBar node={node()} parentSize={parentSize()} onReveal={() => void reveal(node().path)} onOpen={() => drill(node())} onTrash={() => setPendingDelete(node())} />}
+                      </Show>
+                    }
+                  >
+                    <div class="dl-slide-up shrink-0 border-t border-[oklch(0.72_0.17_145/0.3)] bg-[oklch(0.72_0.17_145/0.07)] px-4 py-2.5">
+                      <div class="mx-auto flex max-w-5xl items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                          <span class="grid size-5 place-items-center rounded-md bg-[oklch(0.72_0.17_145/0.16)] ring-1 ring-inset ring-[#3fb950]/40">
+                            <Icon name="circle-check" class="size-3 text-[#1a7f37]" />
+                          </span>
+                          <span class="text-13-semibold text-text-strong">{collection().length} collected</span>
+                          <span class="text-12-semibold tabular-nums text-[color-mix(in_oklch,#1a7f37_62%,var(--text-strong))]">{formatBytes(collectionSize())}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <Button size="small" variant="ghost" onClick={clearCollection}>Clear</Button>
+                          <Button size="small" variant="primary" icon="trash" disabled={deleting()} onClick={() => void deleteCollected()}>
+                            {deleting() ? "Deleting…" : `Delete ${collection().length}`}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   </Show>
                 </div>
               </Show>
