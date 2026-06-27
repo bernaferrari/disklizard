@@ -807,13 +807,9 @@ export default function DiskUtilityPage() {
                                       />
                                       <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-1.5">
-                                          <Icon
-                                            name={entry.node.isDir ? "folder" : "code-lines"}
-                                            class="size-3 shrink-0 text-icon-weak"
-                                          />
                                           <span class="truncate text-13-semibold text-text-strong">{entry.node.name}</span>
                                           <Show when={rec().tag}>
-                                            <span class={`shrink-0 rounded px-1.5 py-0.5 text-9-semibold uppercase tracking-wide ring-1 ring-inset ${SAFETY_ACCENT[rec().safety].pill}`}>
+                                            <span class={`shrink-0 rounded px-1.5 py-0.5 text-9-semibold uppercase tracking-wide ring-1 ring-inset opacity-50 transition-opacity group-hover:opacity-100 ${SAFETY_ACCENT[rec().safety].pill}`}>
                                               {rec().tag}
                                             </span>
                                           </Show>
@@ -1023,7 +1019,7 @@ function ScanProgress(props: { pct: number | null }) {
         >
           <div class="text-20-medium leading-none tabular-nums text-text-strong">
             {Math.round(props.pct!)}
-            <span class="ml-0.5 text-12-medium text-text-weak">%</span>
+            <span class="ml-0.5 text-12-regular text-text-weak">%</span>
           </div>
         </Show>
         <div class="mt-1.5 text-9-regular uppercase tracking-wider text-text-weak">scanned</div>
@@ -1066,7 +1062,7 @@ function DriveCard(props: { drive: DiskDriveInfo; onScan: () => void }) {
     <button
       type="button"
       onClick={props.onScan}
-      class="dl-card group flex w-full cursor-pointer items-center gap-5 rounded-2xl border border-border-weaker-base bg-surface-panel p-5 text-left outline-none transition-all hover:-translate-y-0.5 hover:border-border-base hover:bg-surface-raised-base/30 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[oklch(0.7_0.15_270/0.5)]"
+      class="dl-card group flex w-full cursor-pointer items-center gap-5 rounded-2xl border border-border-weaker-base bg-surface-panel p-5 text-left outline-none transition-[transform,background-color,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-border-base hover:bg-surface-raised-base/30 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[oklch(0.7_0.15_270/0.5)]"
     >
       <span class="grid size-14 shrink-0 place-items-center rounded-2xl bg-surface-raised-base text-text-weak ring-1 ring-inset ring-border-weaker-base transition-colors group-hover:text-text-base">
         <Icon name="server" class="size-6" />
@@ -1200,7 +1196,7 @@ function ReclaimDrawer(props: {
                   <ul class="overflow-hidden rounded-lg border border-border-weaker-base bg-background-base">
                     <For each={bucket.items}>
                       {(item) => (
-                        <li class="flex items-center gap-2 border-b border-border-weaker-base px-2.5 py-2 last:border-b-0">
+                        <li class="flex items-center gap-2 border-b border-border-weaker-base px-2.5 py-2.5 last:border-b-0">
                           <Icon name={item.node.isDir ? "folder" : "code-lines"} class="size-3.5 shrink-0 text-icon-weak" />
                           <div class="min-w-0 flex-1">
                             <p class="truncate text-12-semibold text-text-strong">{item.node.name}</p>
