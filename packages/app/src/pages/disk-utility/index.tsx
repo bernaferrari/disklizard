@@ -19,7 +19,7 @@ import { useSettings } from "@/context/settings"
 import { Sunburst, primarySegmentColor } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
 import { animateCount } from "./motion"
-import { computeReclaim, recognize, type ReclaimSummary } from "./recognize"
+import { computeReclaim, recognize, isReclaimable, type ReclaimSummary } from "./recognize"
 import { formatBytes, shortBytes, formatPct, formatCount, truncatePath } from "./format"
 import { SAFETY_ACCENT, usageStroke } from "./ui-tokens"
 
@@ -89,6 +89,7 @@ export default function DiskUtilityPage() {
   const [pendingDelete, setPendingDelete] = createSignal<DiskScanNode | null>(null)
   const [deleting, setDeleting] = createSignal(false)
   const [query, setQuery] = createSignal("")
+  const [cleanupMode, setCleanupMode] = createSignal(false)
   const [reviewOpen, setReviewOpen] = createSignal(false)
   const [reclaimDisplay, setReclaimDisplay] = createSignal(0)
 
@@ -110,7 +111,8 @@ export default function DiskUtilityPage() {
   })
   const entries = createMemo<Entry[]>(() => {
     const q = query().trim().toLowerCase()
-    const list = sortedChildren().map((node, index) => ({ node, index }))
+    let list = sortedChildren().map((node, index) => ({ node, index }))
+    if (cleanupMode()) list = list.filter(({ node }) => isReclaimable(recognize(node)))
     return q ? list.filter(({ node }) => node.name.toLowerCase().includes(q)) : list
   })
   const selectedNode = createMemo(() => {
@@ -465,6 +467,17 @@ export default function DiskUtilityPage() {
                 <SegmentedButton active={scanMode() === "grid"} onClick={() => setScanMode("grid")} icon="file-tree" label="Grid" />
                 <SegmentedButton active={scanMode() === "list"} onClick={() => setScanMode("list")} icon="bullet-list" label="List" />
               </div>
+              <button
+                type="button"
+                class="rounded-md px-2 py-1 text-11-semibold transition-colors ring-1 ring-inset"
+                classList={{
+                  "bg-[#238636]/14 text-[color-mix(in_oklch,#1a7f37_62%,var(--text-strong))] ring-[#3fb950]/45": cleanupMode(),
+                  "bg-surface-raised-base text-text-weak ring-border-weaker-base hover:text-text-strong": !cleanupMode(),
+                }}
+                onClick={() => setCleanupMode(!cleanupMode())}
+              >
+                Cleanup
+              </button>
               <div class="flex items-center gap-1.5 rounded-md bg-surface-raised-base px-2 py-1 ring-1 ring-inset ring-border-weaker-base">
                 <Icon name="magnifying-glass" class="size-3 text-icon-weak" />
                 <input

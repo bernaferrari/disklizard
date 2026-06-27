@@ -56,6 +56,13 @@ const DIR_RULES: Rule[] = [
   // — Trash —
   { re: /^\.trash(es)?$|^trash$/, safety: "trash", tag: "Trash", hint: "Already-deleted — empty it" },
 
+  // — Stale toolchain caches (re-download or re-derive) —
+  { re: /^CoreSimulator$/, safety: "cache", tag: "Xcode Simulator runtimes", hint: "Re-download via Xcode" },
+  { re: /^\.docker$/i, safety: "cache", tag: "Docker data", hint: "Re-pull images as needed" },
+  { re: /^\.IntelliJIdea.+$|^\.CLion.+$|^\.Rider.+$|^\.AndroidStudio.+$|^JetBrains$/i, safety: "cache", tag: "IDE caches", hint: "IDE rebuilds its indices" },
+  { re: /^\.nuget$/i, safety: "cache", tag: "NuGet cache" },
+  { re: /^\.rustup$/i, safety: "cache", tag: "Rust toolchain", hint: "Re-install via rustup" },
+
   // — Keep: don't nuke these —
   { re: /^\.git$|^\.hg$|^\.svn$/, safety: "version-control", tag: "Version history", hint: "Your git history — keep it" },
   { re: /^\.venv$|^venv$|^env$/, safety: "system", tag: "Virtualenv", hint: "Recreatable but project-specific" },
