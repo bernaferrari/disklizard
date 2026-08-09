@@ -181,10 +181,14 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
     diskUtility: {
       getDrives: () => window.api.disklizard.getDrives(),
       scanPath: (path, options) => window.api.disklizard.scanPath(path, options),
-      deletePath: (path) => window.api.disklizard.deletePath(path),
+      cancelScan: () => window.api.disklizard.cancelScan(),
+      stopWatching: () => window.api.disklizard.stopWatching(),
+      deletePath: (path, options) => window.api.disklizard.deletePath(path, options),
+      previewPath: (path) => window.api.disklizard.previewPath(path),
       revealPath: (path) => window.api.disklizard.revealPath(path),
       chooseFolder: () => window.api.disklizard.chooseFolder(),
       onScanProgress: (cb) => window.api.disklizard.onScanProgress(cb),
+      onScanUpdate: (cb) => window.api.disklizard.onScanUpdate(cb),
     },
 
     async openAttachmentPickerDialog(opts, onFile) {

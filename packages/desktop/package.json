@@ -20,11 +20,12 @@
     "package:mac": "electron-builder --mac --config electron-builder.config.ts",
     "package:win": "electron-builder --win --config electron-builder.config.ts",
     "package:linux": "electron-builder --linux --config electron-builder.config.ts",
-    "native:build": "bun install --cwd native"
+    "native:build": "bun ../disklizard/scripts/build-native.ts"
   },
   "main": "./out/main/index.js",
   "dependencies": {
     "@opencode-ai/disklizard": "workspace:*",
+    "@parcel/watcher": "2.5.1",
     "@zip.js/zip.js": "2.7.62",
     "effect": "catalog:",
     "electron-context-menu": "4.1.2",

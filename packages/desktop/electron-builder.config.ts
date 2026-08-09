@@ -69,7 +69,14 @@ const getBase = (appId: string): Configuration => ({
     {
       from: "native/",
       to: "native/",
-      filter: ["index.js", "index.d.ts", "build/Release/mac_window.node", "swift-build/**"],
+      filter: [
+        "index.js",
+        "index.d.ts",
+        "build/Release/mac_window.node",
+        "swift-build/**",
+        "disklizard-scanner",
+        "disklizard-scanner.exe",
+      ],
     },
   ],
   mac: {

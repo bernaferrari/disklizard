@@ -48,10 +48,17 @@ export type DiskLizardNode = {
   name: string
   path: string
   size: number
+  logicalSize?: number
+  modifiedAt?: number
+  hardLink?: "primary" | "secondary"
   isDir: boolean
   children: DiskLizardNode[]
   ext: string
   isOther?: boolean
+  isHidden?: boolean
+  isCollapsed?: boolean
+  signatures?: string[]
+  scanIssues?: { unreadableCount: number; samplePaths: string[] }
   _label?: string
 }
 
@@ -60,16 +67,41 @@ export type DiskLizardScanProgress = {
   dirsScanned?: number
   currentPath: string
   size: number
+  discovery?: Pick<DiskLizardNode, "name" | "path" | "size" | "modifiedAt" | "isDir">
   done?: boolean
 }
 
+export type DiskLizardScanUpdate = {
+  rootPath: string
+  root: DiskLizardNode
+  changedPaths: string[]
+}
+
+export type DiskLizardFilePreview =
+  | { kind: "image"; mime: string; dataUrl: string; bytes: number }
+  | { kind: "text"; text: string; bytes: number; truncated: boolean }
+  | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
+
 export type DiskLizardAPI = {
   getDrives: () => Promise<DiskLizardDrive[]>
-  scanPath: (path: string, options?: { maxDepth?: number }) => Promise<DiskLizardNode>
+  scanPath: (
+    path: string,
+    options?: {
+      maxDepth?: number
+      sizeMode?: "physical" | "logical"
+      preserveNames?: string[]
+      collapseNames?: string[]
+      signatureNames?: string[]
+    },
+  ) => Promise<DiskLizardNode>
+  cancelScan: () => Promise<void>
+  stopWatching: () => Promise<void>
   deletePath: (path: string, options?: { permanent?: boolean }) => Promise<{ ok: true }>
+  previewPath: (path: string) => Promise<DiskLizardFilePreview>
   revealPath: (path: string) => Promise<void>
   chooseFolder: () => Promise<string | null>
   onScanProgress: (cb: (progress: DiskLizardScanProgress) => void) => () => void
+  onScanUpdate: (cb: (update: DiskLizardScanUpdate) => void) => () => void
 }
 
 export type FatalRendererError = {

@@ -1,5 +1,13 @@
 import { describe, it, expect } from "bun:test"
-import { formatBytes, shortBytes, formatPct, truncatePath } from "./format"
+import {
+  daysSinceChanged,
+  formatBytes,
+  formatLastChanged,
+  isDormant,
+  shortBytes,
+  formatPct,
+  truncatePath,
+} from "./format"
 
 describe("formatBytes", () => {
   it("zero", () => {
@@ -51,5 +59,31 @@ describe("truncatePath", () => {
     const out = truncatePath(s, 20)
     expect(out.startsWith("…")).toBe(true)
     expect(out.length).toBe(20)
+  })
+})
+
+describe("developer artifact age", () => {
+  const now = Date.UTC(2026, 7, 9, 12)
+  const daysAgo = (days: number) => now - days * 24 * 60 * 60 * 1_000
+
+  it("formats age at useful human-scale boundaries", () => {
+    expect(formatLastChanged(undefined, now)).toBe("Change date unavailable")
+    expect(formatLastChanged(daysAgo(0), now)).toBe("Changed today")
+    expect(formatLastChanged(daysAgo(1), now)).toBe("Changed yesterday")
+    expect(formatLastChanged(daysAgo(8), now)).toBe("Changed 8d ago")
+    expect(formatLastChanged(daysAgo(35), now)).toBe("Changed 5w ago")
+    expect(formatLastChanged(daysAgo(120), now)).toBe("Changed 4mo ago")
+    expect(formatLastChanged(daysAgo(800), now)).toBe("Changed 2y ago")
+  })
+
+  it("treats unknown and future timestamps conservatively", () => {
+    expect(daysSinceChanged(undefined, now)).toBeNull()
+    expect(daysSinceChanged(now + 1_000, now)).toBe(0)
+    expect(isDormant(undefined, now)).toBe(false)
+  })
+
+  it("marks developer data dormant after ninety days", () => {
+    expect(isDormant(daysAgo(89), now)).toBe(false)
+    expect(isDormant(daysAgo(90), now)).toBe(true)
   })
 })

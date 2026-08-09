@@ -11,7 +11,6 @@ export type Accent = {
   stroke: string
 }
 
-
 /**
  * Safety verdicts — the heart of the "Reclaim" feature. Each maps to one OKLCH
  * accent used consistently across the banner, list badges, and review drawer.

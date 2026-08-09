@@ -41,6 +41,7 @@ export interface Settings {
     shouldDisplayTabsToast?: boolean
     /** Bypass the OS Trash for Disk Utility deletes. Defaults to recoverable deletion. */
     diskPermanentDelete?: boolean
+    diskPinnedLocations?: DiskPinnedLocation[]
   }
   appearance: {
     fontSize: number
@@ -56,9 +57,15 @@ export interface Settings {
   sounds: SoundSettings
 }
 
+export type DiskPinnedLocation = {
+  path: string
+  label: string
+}
+
 export const monoDefault = "System Mono"
 export const sansDefault = "System Sans"
 export const terminalDefault = "JetBrainsMono Nerd Font Mono"
+export const diskPinnedLocationsDefault: DiskPinnedLocation[] = []
 const legacyNewLayoutDesignsDefault = import.meta.env.VITE_OPENCODE_CHANNEL !== "prod"
 export const newLayoutDesignsDefault = true
 // Existing users can switch layouts until local midnight on this date. Set new Date(YYYY, M-1, D) to show.
@@ -198,6 +205,7 @@ const defaultSettings: Settings = {
     showCustomAgents: false,
     mobileTitlebarPosition: "top",
     diskPermanentDelete: false,
+    diskPinnedLocations: diskPinnedLocationsDefault,
   },
   appearance: {
     fontSize: 14,
@@ -460,6 +468,10 @@ export const { use: useSettings, provider: SettingsProvider } = createSimpleCont
         ),
         setDiskPermanentDelete(value: boolean) {
           setStore("general", "diskPermanentDelete", value)
+        },
+        diskPinnedLocations: withFallback(() => store.general?.diskPinnedLocations, diskPinnedLocationsDefault),
+        setDiskPinnedLocations(value: DiskPinnedLocation[]) {
+          setStore("general", "diskPinnedLocations", value)
         },
       },
       visibility: {

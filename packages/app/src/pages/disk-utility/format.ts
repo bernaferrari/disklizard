@@ -1,6 +1,8 @@
 /** Human-readable sizes & numbers for the disk utility UI. */
 
 const UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
+const DAY_MS = 24 * 60 * 60 * 1_000
+export const DORMANT_AFTER_DAYS = 90
 
 export function formatBytes(bytes: number): string {
   if (!bytes || bytes === 0) return "0 B"
@@ -34,4 +36,25 @@ export function formatCount(n: number): string {
 export function truncatePath(s: string, n = 56): string {
   if (s.length <= n) return s
   return "…" + s.slice(-(n - 1))
+}
+
+export function daysSinceChanged(modifiedAt?: number, now = Date.now()): number | null {
+  if (!modifiedAt || !Number.isFinite(modifiedAt)) return null
+  return Math.max(0, Math.floor((now - modifiedAt) / DAY_MS))
+}
+
+export function isDormant(modifiedAt?: number, now = Date.now()): boolean {
+  const days = daysSinceChanged(modifiedAt, now)
+  return days !== null && days >= DORMANT_AFTER_DAYS
+}
+
+export function formatLastChanged(modifiedAt?: number, now = Date.now()): string {
+  const days = daysSinceChanged(modifiedAt, now)
+  if (days === null) return "Change date unavailable"
+  if (days === 0) return "Changed today"
+  if (days === 1) return "Changed yesterday"
+  if (days < 14) return `Changed ${days}d ago`
+  if (days < 60) return `Changed ${Math.floor(days / 7)}w ago`
+  if (days < 730) return `Changed ${Math.floor(days / 30)}mo ago`
+  return `Changed ${Math.floor(days / 365)}y ago`
 }

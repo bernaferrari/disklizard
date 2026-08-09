@@ -43,10 +43,17 @@ export type DiskScanNode = {
   name: string
   path: string
   size: number
+  logicalSize?: number
+  modifiedAt?: number
+  hardLink?: "primary" | "secondary"
   isDir: boolean
   children: DiskScanNode[]
   ext: string
   isOther?: boolean
+  isHidden?: boolean
+  isCollapsed?: boolean
+  signatures?: string[]
+  scanIssues?: { unreadableCount: number; samplePaths: string[] }
   _label?: string
 }
 
@@ -55,16 +62,41 @@ export type DiskScanProgress = {
   dirsScanned?: number
   currentPath: string
   size: number
+  discovery?: Pick<DiskScanNode, "name" | "path" | "size" | "modifiedAt" | "isDir">
   done?: boolean
 }
 
+export type DiskScanUpdate = {
+  rootPath: string
+  root: DiskScanNode
+  changedPaths: string[]
+}
+
+export type DiskFilePreview =
+  | { kind: "image"; mime: string; dataUrl: string; bytes: number }
+  | { kind: "text"; text: string; bytes: number; truncated: boolean }
+  | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
+
 export type DiskUtilityAPI = {
   getDrives(): Promise<DiskDriveInfo[]>
-  scanPath(path: string, options?: { maxDepth?: number }): Promise<DiskScanNode>
+  scanPath(
+    path: string,
+    options?: {
+      maxDepth?: number
+      sizeMode?: "physical" | "logical"
+      preserveNames?: string[]
+      collapseNames?: string[]
+      signatureNames?: string[]
+    },
+  ): Promise<DiskScanNode>
+  cancelScan(): Promise<void>
+  stopWatching(): Promise<void>
   deletePath(path: string, options?: { permanent?: boolean }): Promise<{ ok: true }>
+  previewPath(path: string): Promise<DiskFilePreview>
   revealPath(path: string): Promise<void>
   chooseFolder(): Promise<string | null>
   onScanProgress(cb: (progress: DiskScanProgress) => void): () => void
+  onScanUpdate(cb: (update: DiskScanUpdate) => void): () => void
 }
 
 type PlatformBase = {

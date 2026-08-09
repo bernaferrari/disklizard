@@ -1,0 +1,245 @@
+import { Button } from "@opencode-ai/ui/button"
+import { Icon } from "@opencode-ai/ui/icon"
+import { Show, onMount } from "solid-js"
+import type { DiskFilePreview, DiskScanNode } from "@/context/platform"
+import { formatBytes, formatLastChanged } from "./format"
+import type { SurfacePhase } from "./motion"
+
+const focusable =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported" }>) {
+  if (preview.reason === "too-large") {
+    return {
+      title: "This image is too large for instant preview",
+      detail: "DiskLizard caps in-app image previews at 5 MB to keep inspection fast and memory use predictable.",
+    }
+  }
+  if (preview.reason === "binary") {
+    return {
+      title: "This file contains binary data",
+      detail: "Open it in its default application to inspect it safely.",
+    }
+  }
+  return {
+    title: "Preview is not available for this format",
+    detail: "DiskLizard previews common images, source code, configuration, logs, and plain-text files.",
+  }
+}
+
+export function PreviewDialog(props: {
+  phase: SurfacePhase
+  node: DiskScanNode
+  preview?: DiskFilePreview
+  loading: boolean
+  error?: string
+  position: number
+  total: number
+  onClose: () => void
+  onPrevious?: () => void
+  onNext?: () => void
+  onReveal: () => void
+  onOpen: () => void
+}) {
+  let panel!: HTMLDivElement
+
+  onMount(() => queueMicrotask(() => panel.focus({ preventScroll: true })))
+
+  const trapFocus = (event: KeyboardEvent) => {
+    if (event.target === panel && event.key === "ArrowLeft" && props.onPrevious) {
+      event.preventDefault()
+      props.onPrevious()
+      return
+    }
+    if (event.target === panel && event.key === "ArrowRight" && props.onNext) {
+      event.preventDefault()
+      props.onNext()
+      return
+    }
+    if (event.key !== "Tab") return
+    const items = [...panel.querySelectorAll<HTMLElement>(focusable)]
+    if (!items.length) {
+      event.preventDefault()
+      panel.focus()
+      return
+    }
+    const first = items[0]
+    const last = items.at(-1)!
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+
+  return (
+    <div
+      class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/68 p-3 backdrop-blur-md sm:p-6"
+      data-state={props.phase}
+      onClick={props.onClose}
+      role="presentation"
+    >
+      <div
+        ref={panel}
+        class="dl-dialog-panel flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_28px_90px_rgb(0_0_0/0.28)] sm:h-[min(760px,calc(100dvh-48px))]"
+        tabIndex={-1}
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={trapFocus}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="preview-title"
+        aria-describedby="preview-description"
+      >
+        <header class="flex shrink-0 items-start gap-3 border-b border-border-weaker-base px-4 py-3.5 sm:px-5">
+          <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.72_0.12_176/0.14)]">
+            <Icon name={props.preview?.kind === "image" ? "photo" : "code-lines"} class="size-4" />
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Private local preview</p>
+            <h2 id="preview-title" class="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
+              {props.node.name}
+            </h2>
+            <p id="preview-description" class="mt-0.5 truncate font-mono text-9-regular text-text-weaker">
+              {props.node.path}
+            </p>
+          </div>
+          <Button
+            class="dl-touch-target"
+            size="small"
+            variant="ghost"
+            icon="close"
+            onClick={props.onClose}
+            aria-label="Close preview"
+          />
+        </header>
+
+        <main class="relative min-h-0 flex-1 overflow-hidden bg-background-base/55">
+          <Show when={props.loading}>
+            <div class="grid size-full place-items-center" role="status" aria-live="polite">
+              <div class="flex flex-col items-center gap-3 text-text-weak">
+                <span class="dl-spin size-5 rounded-full border border-border-weaker-base border-t-current" />
+                <p class="text-11-regular">Preparing a bounded preview…</p>
+              </div>
+            </div>
+          </Show>
+
+          <Show when={!props.loading && props.error}>
+            {(message) => (
+              <div class="grid size-full place-items-center p-8 text-center" role="alert">
+                <div class="max-w-sm">
+                  <span class="dl-critical-text mx-auto grid size-12 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.1)]">
+                    <Icon name="warning" class="size-4.5" />
+                  </span>
+                  <h3 class="mt-4 text-14-semibold text-text-strong">DiskLizard could not read this file</h3>
+                  <p class="mt-2 text-11-regular leading-relaxed text-text-weak">{message()}</p>
+                </div>
+              </div>
+            )}
+          </Show>
+
+          <Show when={!props.loading && !props.error && props.preview}>
+            {(loaded) => {
+              const preview = loaded()
+              if (preview.kind === "image") {
+                return (
+                  <div class="dl-preview-image-stage grid size-full place-items-center overflow-auto p-5 sm:p-8">
+                    <img
+                      class="max-h-full max-w-full rounded-xl object-contain shadow-[0_0_0_1px_rgb(127_127_127/0.16),0_18px_50px_rgb(0_0_0/0.18)]"
+                      src={preview.dataUrl}
+                      alt={`Preview of ${props.node.name}`}
+                      decoding="async"
+                      draggable={false}
+                    />
+                  </div>
+                )
+              }
+              if (preview.kind === "text") {
+                return (
+                  <div class="flex size-full min-h-0 flex-col">
+                    <div class="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-9-regular text-text-weaker">
+                      <span>{preview.text.split("\n").length.toLocaleString()} lines shown</span>
+                      <Show when={preview.truncated}>
+                        <span class="rounded-full bg-surface-raised-base px-2 py-1 text-9-semibold text-text-weak">
+                          Preview truncated
+                        </span>
+                      </Show>
+                    </div>
+                    <pre
+                      class="min-h-0 flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.65] text-text-base outline-none selection:bg-[oklch(0.72_0.12_176/0.24)] sm:p-5"
+                      tabIndex={0}
+                      aria-label={`Text preview of ${props.node.name}`}
+                    >
+                      {preview.text}
+                    </pre>
+                  </div>
+                )
+              }
+              const copy = unsupportedCopy(preview)
+              return (
+                <div class="grid size-full place-items-center p-8 text-center">
+                  <div class="max-w-sm">
+                    <span class="mx-auto grid size-12 place-items-center rounded-full bg-surface-raised-base text-text-weak">
+                      <Icon name="open-file" class="size-4.5" />
+                    </span>
+                    <h3 class="mt-4 text-14-semibold text-text-strong">{copy.title}</h3>
+                    <p class="mt-2 text-11-regular leading-relaxed text-text-weak">{copy.detail}</p>
+                  </div>
+                </div>
+              )
+            }}
+          </Show>
+        </main>
+
+        <footer class="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
+          <div class="flex shrink-0 items-center gap-1" role="group" aria-label="Preview navigation">
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              icon="chevron-left"
+              disabled={!props.onPrevious}
+              onClick={props.onPrevious}
+              aria-label="Preview previous file"
+            />
+            <span class="min-w-12 text-center text-9-regular tabular-nums text-text-weaker">
+              {props.position} of {props.total}
+            </span>
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              icon="chevron-right"
+              disabled={!props.onNext}
+              onClick={props.onNext}
+              aria-label="Preview next file"
+            />
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-10-semibold tabular-nums text-text-strong">
+              {formatBytes(props.preview?.bytes ?? props.node.size)}
+            </p>
+            <p class="mt-0.5 text-9-regular text-text-weaker">
+              <Show when={props.node.modifiedAt} fallback="Read locally · Nothing uploaded">
+                {(changed) => `${formatLastChanged(changed())} · Nothing uploaded`}
+              </Show>
+            </p>
+          </div>
+          <Button
+            class="dl-touch-target"
+            size="small"
+            variant="secondary"
+            icon="square-arrow-top-right"
+            onClick={props.onReveal}
+          >
+            Reveal
+          </Button>
+          <Button class="dl-touch-target" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
+            Open file
+          </Button>
+        </footer>
+      </div>
+    </div>
+  )
+}

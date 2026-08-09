@@ -1,6 +1,14 @@
 import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "@/context/platform"
-import { recognize, isReclaimable, computeReclaim, fileKind } from "./recognize"
+import {
+  recognize,
+  isReclaimable,
+  computeDeveloperSummary,
+  computeDormantDeveloperSummary,
+  computeReclaim,
+  developerArtifactContext,
+  fileKind,
+} from "./recognize"
 
 const dir = (name: string, size: number, children: DiskScanNode[] = []): DiskScanNode => ({
   name,
@@ -18,12 +26,14 @@ const file = (name: string, size: number, ext: string): DiskScanNode => ({
   children: [],
   ext,
 })
+const at = (node: DiskScanNode, path: string): DiskScanNode => ({ ...node, path })
 
 describe("recognize — directory rules", () => {
   it("flags node_modules as regenerable", () => {
     const r = recognize(dir("node_modules", 100))
     expect(r.safety).toBe("regenerable")
     expect(r.tag).toBe("Node dependencies")
+    expect(r.developer).toBe("dependencies")
   })
   it("flags __pycache__ as regenerable", () => {
     expect(recognize(dir("__pycache__", 10)).safety).toBe("regenerable")
@@ -43,13 +53,136 @@ describe("recognize — directory rules", () => {
   it("flags Logs as logs", () => {
     expect(recognize(dir("Logs", 10)).safety).toBe("logs")
   })
-  it("flags .Trash as trash", () => {
+  it("flags each operating system's Trash container as protected trash", () => {
     expect(recognize(dir(".Trash", 10)).safety).toBe("trash")
+    expect(recognize(dir("$Recycle.Bin", 10))).toMatchObject({ safety: "trash", tag: "Recycle Bin" })
   })
   it("returns unknown for an unrecognized directory", () => {
     const r = recognize(dir("vacation-photos", 10))
     expect(r.safety).toBe("unknown")
     expect(r.tag).toBeUndefined()
+  })
+})
+
+describe("recognize — developer storage", () => {
+  it("distinguishes build output and toolchain caches", () => {
+    expect(recognize(dir("target", 100, [dir("debug", 90)]))).toMatchObject({
+      developer: "build-output",
+      safety: "regenerable",
+      tag: "Rust build target",
+    })
+    expect(recognize(dir(".gradle", 100))).toMatchObject({ developer: "toolchain-cache", safety: "system" })
+    expect(recognize(at(dir("repository", 100), "/Users/dev/.m2/repository"))).toMatchObject({
+      developer: "toolchain-cache",
+      tag: "Maven repository",
+    })
+    expect(recognize(at(dir("mod", 100), "C:\\Users\\dev\\go\\pkg\\mod"))).toMatchObject({
+      developer: "toolchain-cache",
+      tag: "Go module cache",
+    })
+  })
+
+  it("identifies collapsed build trees from bounded scanner signatures", () => {
+    const rust = { ...dir("target", 100), isCollapsed: true, signatures: [".rustc_info.json", "debug"] }
+    const maven = { ...dir("target", 90), isCollapsed: true, signatures: ["classes", "surefire-reports"] }
+    const gradle = { ...dir("build", 80), isCollapsed: true, signatures: ["classes", "kotlin"] }
+    const cmake = { ...dir("build", 70), isCollapsed: true, signatures: ["build.ninja"] }
+    const gradleHome = { ...dir(".gradle", 60), isCollapsed: true, signatures: ["caches", "wrapper"] }
+
+    expect(recognize(rust)).toMatchObject({ safety: "regenerable", tag: "Rust build target" })
+    expect(recognize(maven)).toMatchObject({ safety: "regenerable", tag: "Maven build target" })
+    expect(recognize(gradle)).toMatchObject({ safety: "regenerable", tag: "Generated build output" })
+    expect(recognize(cmake)).toMatchObject({ safety: "regenerable", tag: "Generated build output" })
+    expect(recognize(gradleHome)).toMatchObject({ safety: "system", tag: "Gradle user data" })
+    expect(developerArtifactContext(rust).disposition).toBe("Rebuildable")
+  })
+
+  it("protects tool roots and generic folder names while allowing precise disposable subtrees", () => {
+    for (const name of [".gradle", ".m2", ".cargo", ".bun", ".docker", ".nuget", ".rustup"]) {
+      expect(isReclaimable(recognize(dir(name, 100)))).toBe(false)
+    }
+    expect(isReclaimable(recognize(dir("target", 100)))).toBe(false)
+    expect(isReclaimable(recognize(dir("build", 100)))).toBe(false)
+    expect(isReclaimable(recognize(at(dir("caches", 100), "/Users/dev/.gradle/caches")))).toBe(true)
+    expect(isReclaimable(recognize(at(dir("cache", 100), "/Users/dev/.bun/install/cache")))).toBe(true)
+    expect(isReclaimable(recognize(at(dir("packages", 100), "C:\\Users\\dev\\.nuget\\packages")))).toBe(true)
+    expect(isReclaimable(recognize(dir("CoreSimulator", 100)))).toBe(false)
+  })
+
+  it("surfaces coding-agent data without calling it reclaimable", () => {
+    for (const [name, tag] of [
+      [".codex", "Codex data"],
+      [".claude", "Claude Code data"],
+      [".opencode", "Coding agent data"],
+    ] as const) {
+      const result = recognize(dir(name, 100))
+      expect(result).toMatchObject({ developer: "agent-data", safety: "system", tag })
+      expect(isReclaimable(result)).toBe(false)
+    }
+  })
+
+  it("recognizes agent worktree containers and linked Git checkouts", () => {
+    const agentWorktrees = recognize(at(dir("worktrees", 200), "/Users/dev/.codex/worktrees"))
+    expect(agentWorktrees).toMatchObject({ developer: "worktree", safety: "version-control" })
+
+    const linked = dir("feature-payments", 300, [at(file(".git", 40, ""), "/code/feature-payments/.git")])
+    expect(recognize(linked)).toMatchObject({ developer: "worktree", tag: "Git worktree" })
+    expect(isReclaimable(recognize(linked))).toBe(false)
+  })
+})
+
+describe("developer artifact context", () => {
+  it("names the owning project across POSIX, Windows, and UNC paths", () => {
+    const nodeModules = at(dir("node_modules", 100), "/home/alex/storefront/node_modules")
+    const rustTarget = at(dir("target", 80, [dir("debug", 80)]), "C:\\Users\\Alex\\engine\\target")
+    const history = at(dir(".git", 30), "\\\\server\\share\\apps\\cli\\.git")
+
+    expect(developerArtifactContext(nodeModules)).toEqual({
+      scope: "Project · storefront",
+      disposition: "Reinstallable",
+    })
+    expect(developerArtifactContext(rustTarget)).toEqual({ scope: "Project · engine", disposition: "Rebuildable" })
+    expect(developerArtifactContext(history)).toEqual({ scope: "Project · cli", disposition: "Keep" })
+  })
+
+  it("distinguishes global tool data from project-local caches", () => {
+    const gradle = at(dir("caches", 90), "C:\\Users\\Alex\\.gradle\\caches")
+    const pytest = at(dir(".pytest_cache", 20), "/work/api/.pytest_cache")
+
+    expect(developerArtifactContext(gradle)).toEqual({ scope: "Gradle user data", disposition: "Redownloadable" })
+    expect(developerArtifactContext(pytest)).toEqual({ scope: "Project · api", disposition: "Rebuildable" })
+  })
+
+  it("makes agent homes and managed worktrees explicit without advertising deletion", () => {
+    const claude = at(dir(".claude", 120), "C:\\Users\\Alex\\.claude")
+    const codexWorktrees = at(dir("worktrees", 80), "/Users/alex/.codex/worktrees")
+
+    expect(developerArtifactContext(claude)).toEqual({ scope: "Claude Code agent home", disposition: "Protected" })
+    expect(developerArtifactContext(codexWorktrees)).toEqual({
+      scope: "Codex-managed checkout",
+      disposition: "Manage with Git",
+    })
+  })
+
+  it("keeps ambiguous generated-looking names in review-first territory", () => {
+    expect(developerArtifactContext(at(dir("target", 40), "/data/archive/target"))).toEqual({
+      scope: "Project · archive",
+      disposition: "Review first",
+    })
+  })
+})
+
+describe("recognize — shared and hidden storage", () => {
+  it("protects synthetic hidden space from cleanup suggestions", () => {
+    expect(
+      recognize({ ...dir("Hidden space", 40), path: "disklizard:hidden:/", isHidden: true, isOther: true }),
+    ).toMatchObject({ safety: "system", tag: "Hidden space" })
+  })
+
+  it("explains why deleting one hard link may not reclaim bytes", () => {
+    const linked = { ...file("archive.bin", 4096, "bin"), hardLink: "primary" as const }
+    expect(recognize(linked)).toMatchObject({ safety: "system", tag: "Hard-linked file" })
+    expect(isReclaimable(recognize(linked))).toBe(false)
   })
 })
 
@@ -68,16 +201,16 @@ describe("recognize — files via extension", () => {
 })
 
 describe("isReclaimable", () => {
-  it("is true for regenerable / cache / logs / trash", () => {
+  it("is true for regenerable, cache, and logs", () => {
     expect(isReclaimable(recognize(dir("node_modules", 1)))).toBe(true)
     expect(isReclaimable(recognize(dir(".cache", 1)))).toBe(true)
     expect(isReclaimable(recognize(dir("Logs", 1)))).toBe(true)
-    expect(isReclaimable(recognize(dir(".Trash", 1)))).toBe(true)
   })
-  it("is false for version-control / system / media / unknown", () => {
+  it("is false for version-control, system, media, trash, and unknown", () => {
     expect(isReclaimable(recognize(dir(".git", 1)))).toBe(false)
     expect(isReclaimable(recognize(dir(".venv", 1)))).toBe(false)
     expect(isReclaimable(recognize(file("x.mp4", 1, "mp4")))).toBe(false)
+    expect(isReclaimable(recognize(dir(".Trash", 1)))).toBe(false)
     expect(isReclaimable(recognize(dir("misc", 1)))).toBe(false)
   })
 })
@@ -105,7 +238,80 @@ describe("computeReclaim — non-double-counting walk", () => {
   it("sorts buckets by bytes descending", () => {
     const tree = dir("root", 0, [dir("Logs", 5, []), dir("node_modules", 100, []), dir(".cache", 20, [])])
     const sum = computeReclaim(tree)
-    expect(sum.buckets.map((b) => b.bytes)).toEqual([...sum.buckets.map((b) => b.bytes)].sort((a, b) => b - a))
+    const bytes = sum.buckets.map((b) => b.bytes)
+    expect(bytes).toEqual(bytes.toSorted((a, b) => b - a))
+  })
+  it("keeps every recognized item available for the virtualized review", () => {
+    const tree = dir(
+      "root",
+      0,
+      Array.from({ length: 40 }, (_, index) => at(dir("node_modules", index + 1), `/project-${index}/node_modules`)),
+    )
+    const sum = computeReclaim(tree)
+
+    expect(sum.totalCount).toBe(40)
+    expect(sum.buckets[0].items).toHaveLength(40)
+  })
+})
+
+describe("computeDeveloperSummary — scan-wide developer index", () => {
+  it("finds nested artifacts, groups them, and does not double count their children", () => {
+    const tree = dir("root", 0, [
+      dir("projects", 0, [
+        dir("web", 0, [dir("node_modules", 120, [dir(".cache", 30)])]),
+        dir("rust", 0, [dir("target", 80)]),
+      ]),
+      dir(".codex", 50, [dir("worktrees", 20)]),
+      dir(".git", 10),
+    ])
+    const summary = computeDeveloperSummary(tree)
+
+    expect(summary.totalBytes).toBe(260)
+    expect(summary.totalCount).toBe(5)
+    expect(summary.items.map((item) => [item.node.name, item.bytes])).toEqual([
+      ["node_modules", 120],
+      ["target", 80],
+      [".codex", 30],
+      ["worktrees", 20],
+      [".git", 10],
+    ])
+    expect(summary.buckets.map((bucket) => bucket.category)).toContainAllValues([
+      "dependencies",
+      "build-output",
+      "agent-data",
+      "worktree",
+      "version-control",
+    ])
+  })
+
+  it("peels precise caches out of protected toolchain roots", () => {
+    const gradle = at(dir(".gradle", 100, [at(dir("caches", 70), "/Users/dev/.gradle/caches")]), "/Users/dev/.gradle")
+    const summary = computeDeveloperSummary(dir("root", 100, [gradle]))
+
+    expect(summary.totalBytes).toBe(100)
+    expect(summary.items.map((item) => [item.node.name, item.bytes])).toEqual([
+      ["caches", 70],
+      [".gradle", 30],
+    ])
+  })
+
+  it("returns an empty developer index for null", () => {
+    expect(computeDeveloperSummary(null)).toEqual({ totalBytes: 0, totalCount: 0, buckets: [], items: [] })
+  })
+
+  it("summarizes only artifacts untouched for at least ninety days", () => {
+    const now = Date.UTC(2026, 7, 9)
+    const nodeModules = { ...dir("node_modules", 40), modifiedAt: now - 120 * 24 * 60 * 60 * 1_000 }
+    const build = { ...dir(".next", 25), modifiedAt: now - 20 * 24 * 60 * 60 * 1_000 }
+    const unknownAge = dir(".pytest_cache", 5)
+
+    const dormant = computeDormantDeveloperSummary(
+      computeDeveloperSummary(dir("root", 70, [nodeModules, build, unknownAge])),
+      now,
+    )
+
+    expect(dormant).toMatchObject({ bytes: 40, count: 1 })
+    expect(dormant.items.map(({ node }) => node.name)).toEqual(["node_modules"])
   })
 })
 

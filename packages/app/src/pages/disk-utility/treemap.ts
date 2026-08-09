@@ -22,6 +22,38 @@ export type TreemapRect = {
 type Item = { node: DiskScanNode; size: number; index: number }
 type Box = { x: number; y: number; w: number; h: number }
 
+export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320): DiskScanNode[] {
+  const visible = children.filter((child) => child.size > 0).toSorted((a, b) => b.size - a.size)
+  if (visible.length <= maxTiles) return visible
+  if (maxTiles < 2) {
+    return [
+      {
+        name: `${visible.length} smaller items`,
+        path: `disklizard:mosaic-more:${visible[0]?.path ?? "unknown"}`,
+        size: visible.reduce((sum, child) => sum + child.size, 0),
+        isDir: true,
+        isOther: true,
+        children: [],
+        ext: "",
+      },
+    ]
+  }
+  const kept = visible.slice(0, maxTiles - 1)
+  const remainder = visible.slice(maxTiles - 1)
+  return [
+    ...kept,
+    {
+      name: `${remainder.length} smaller items`,
+      path: `disklizard:mosaic-more:${remainder[0]?.path ?? "unknown"}`,
+      size: remainder.reduce((sum, child) => sum + child.size, 0),
+      isDir: true,
+      isOther: true,
+      children: [],
+      ext: "",
+    },
+  ]
+}
+
 /** Worst (max) aspect ratio of a row laid along side `s`, row areas `row`. */
 function worstRatio(row: Item[], s: number): number {
   if (!row.length) return Infinity
@@ -61,14 +93,18 @@ function layoutRow(row: Item[], box: Box, out: TreemapRect[]) {
 /**
  * Squarify `children` into the box (default unit square). Sizes <= 0 are skipped.
  */
-export function layoutTreemap(children: DiskScanNode[], box: Box = { x: 0, y: 0, w: 1, h: 1 }): TreemapRect[] {
+export function layoutTreemap(
+  children: DiskScanNode[],
+  box: Box = { x: 0, y: 0, w: 1, h: 1 },
+  preserveRankedIndices = false,
+): TreemapRect[] {
   const items: Item[] = children
-    .map((node) => ({ node, size: node.size, index: 0 }))
+    .map((node, index) => ({ node, size: node.size, index }))
     .filter((it) => it.size > 0)
     .sort((a, b) => b.size - a.size)
   // Key index to sorted order so colors match the ranked list (also sorted desc),
   // mirroring the sunburst's primarySegmentColor(index).
-  items.forEach((it, i) => (it.index = i))
+  if (!preserveRankedIndices) items.forEach((it, i) => (it.index = i))
   // Scale sizes so their sum equals the box area — squarify's geometry assumes that.
   const totalArea = box.w * box.h
   const total = items.reduce((acc, it) => acc + it.size, 0)

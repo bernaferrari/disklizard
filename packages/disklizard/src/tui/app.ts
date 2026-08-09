@@ -92,7 +92,7 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
       selected = 0
       statusLine = `mapped ${formatBytes(tree.size)}`
     } catch (err) {
-      statusLine = `scan failed: ${err instanceof Error ? err.message : err}`
+      statusLine = `scan failed: ${err instanceof Error ? err.message : String(err)}`
     } finally {
       scanning = false
       draw()
@@ -128,7 +128,9 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
     } else if (mode === "confirm-delete" && pendingDelete) {
       lines.push(`${Ansi.RED}${Ansi.BOLD}DELETE${Ansi.RESET} ${pendingDelete.name}`)
       lines.push(`${Ansi.DIM}${pendingDelete.path}${Ansi.RESET}`)
-      lines.push(`${formatBytes(pendingDelete.size)}  — permanent. Confirm? ${Ansi.YELLOW}y${Ansi.RESET}/${Ansi.DIM}N${Ansi.RESET}`)
+      lines.push(
+        `${formatBytes(pendingDelete.size)}  — permanent. Confirm? ${Ansi.YELLOW}y${Ansi.RESET}/${Ansi.DIM}N${Ansi.RESET}`,
+      )
     } else if (view) {
       const { lines: barLines } = renderTuiBars(view, { selected, cols: c, maxRows })
       lines.push(...barLines)
@@ -194,7 +196,7 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
             statusLine = `deleted ${targetDel.name}`
             if (root) await doScan(root.path, root._label)
           } catch (err) {
-            statusLine = `delete failed: ${err instanceof Error ? err.message : err}`
+            statusLine = `delete failed: ${err instanceof Error ? err.message : String(err)}`
             draw()
           }
         }

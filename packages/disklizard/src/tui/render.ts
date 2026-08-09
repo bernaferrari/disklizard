@@ -22,7 +22,22 @@ const SHOW_CURSOR = "\x1b[?25h"
 const CLEAR = "\x1b[2J\x1b[H"
 const CLEAR_LINE = "\x1b[2K"
 
-export const Ansi = { RESET, DIM, BOLD, CYAN, GREEN, YELLOW, RED, MAGENTA, BLUE, INVERSE, HIDE_CURSOR, SHOW_CURSOR, CLEAR, CLEAR_LINE }
+export const Ansi = {
+  RESET,
+  DIM,
+  BOLD,
+  CYAN,
+  GREEN,
+  YELLOW,
+  RED,
+  MAGENTA,
+  BLUE,
+  INVERSE,
+  HIDE_CURSOR,
+  SHOW_CURSOR,
+  CLEAR,
+  CLEAR_LINE,
+}
 
 const BLOCKS = " ▏▎▍▌▋▊▉█"
 const BAR_COLORS = [CYAN, GREEN, BLUE, MAGENTA, YELLOW]
