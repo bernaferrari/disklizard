@@ -13,11 +13,20 @@ const updaterHandler = (_: unknown, state: UpdaterState) => {
 const api: ElectronAPI = {
   disklizard: {
     getDrives: () => ipcRenderer.invoke("disklizard:get-drives"),
-    scanPath: (path, options) => ipcRenderer.invoke("disklizard:scan-path", path, options),
-    cancelScan: () => ipcRenderer.invoke("disklizard:cancel-scan"),
-    stopWatching: () => ipcRenderer.invoke("disklizard:stop-watching"),
+    onDriveFacts: (cb) => {
+      const handler = (_: unknown, update: Parameters<typeof cb>[0]) => cb(update)
+      ipcRenderer.on("disklizard:drive-facts", handler)
+      return () => ipcRenderer.removeListener("disklizard:drive-facts", handler)
+    },
+    getStorageDiagnostics: () => ipcRenderer.invoke("disklizard:get-storage-diagnostics"),
+    openDiskAccessSettings: () => ipcRenderer.invoke("disklizard:open-disk-access-settings"),
+    scanPath: (path, options, scanId) => ipcRenderer.invoke("disklizard:scan-path", path, options, scanId),
+    cancelScan: (scanId) => ipcRenderer.invoke("disklizard:cancel-scan", scanId),
+    stopWatching: (scanId) => ipcRenderer.invoke("disklizard:stop-watching", scanId),
     deletePath: (path, options) => ipcRenderer.invoke("disklizard:delete-path", path, options),
     previewPath: (path) => ipcRenderer.invoke("disklizard:preview-path", path),
+    systemPreviewPath: (path) => ipcRenderer.invoke("disklizard:system-preview-path", path),
+    openTrash: () => ipcRenderer.invoke("disklizard:open-trash"),
     revealPath: (path) => ipcRenderer.invoke("disklizard:reveal-path", path),
     chooseFolder: () => ipcRenderer.invoke("disklizard:choose-folder"),
     onScanProgress: (cb) => {

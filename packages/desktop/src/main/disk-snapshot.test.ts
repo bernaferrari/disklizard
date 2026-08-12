@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, test } from "bun:test"
-import { mkdtemp, readdir, realpath, rm, stat, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, utimes, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
+import { serialize } from "node:v8"
 import type ParcelWatcher from "@parcel/watcher"
 import type { DiskNode } from "../../../disklizard/src/types"
 import { applyDiskDelta, DiskSnapshotManager, deltaRoots, diskSnapshotKey } from "./disk-snapshot"
@@ -18,7 +19,7 @@ async function temp() {
   return realpath(root)
 }
 
-async function scanFixture(targetPath: string): Promise<DiskNode> {
+async function scanFixture(targetPath: string, scanRoot = true): Promise<DiskNode> {
   const metadata = await stat(targetPath)
   if (!metadata.isDirectory()) {
     return {
@@ -29,10 +30,11 @@ async function scanFixture(targetPath: string): Promise<DiskNode> {
       isDir: false,
       children: [],
       ext: path.extname(targetPath).slice(1),
+      ...(scanRoot ? { sharedStorageEvidence: "complete" as const } : {}),
     }
   }
   const names = await readdir(targetPath)
-  const children = await Promise.all(names.map((name) => scanFixture(path.join(targetPath, name))))
+  const children = await Promise.all(names.map((name) => scanFixture(path.join(targetPath, name), false)))
   return {
     name: path.basename(targetPath),
     path: targetPath,
@@ -41,19 +43,22 @@ async function scanFixture(targetPath: string): Promise<DiskNode> {
     isDir: true,
     children,
     ext: "",
+    ...(scanRoot ? { sharedStorageEvidence: "complete" as const } : {}),
   }
 }
 
 function fakeWatcher() {
   let callback: ParcelWatcher.SubscribeCallback | undefined
   let historical: ParcelWatcher.Event[] = []
+  const checkpointReads: string[] = []
   return {
     api: {
       async writeSnapshot(_dir: string, snapshot: string) {
         await writeFile(snapshot, String(Date.now()))
         return snapshot
       },
-      async getEventsSince() {
+      async getEventsSince(_dir: string, checkpoint: string) {
+        checkpointReads.push(checkpoint)
         return historical.splice(0)
       },
       async subscribe(_dir: string, next: ParcelWatcher.SubscribeCallback) {
@@ -67,6 +72,9 @@ function fakeWatcher() {
     emit(events: ParcelWatcher.Event[]) {
       callback?.(null, events)
     },
+    checkpointReads() {
+      return [...checkpointReads]
+    },
   }
 }
 
@@ -75,6 +83,34 @@ describe("disk scan snapshots", () => {
     const first = diskSnapshotKey("/tmp/project", { preserveNames: ["target", "node_modules"] })
     const second = diskSnapshotKey("/tmp/project", { preserveNames: ["node_modules", "target"] })
     expect(first).toBe(second)
+  })
+
+  test("keeps an opt-in developer artifact inventory separate from map-only snapshots", () => {
+    const mapOnly = diskSnapshotKey("/tmp/project", { preserveNames: ["node_modules"] })
+    const inventory = diskSnapshotKey("/tmp/project", {
+      preserveNames: ["node_modules"],
+      developerArtifactInventory: true,
+    })
+    const configuredInventory = diskSnapshotKey("/tmp/project", {
+      preserveNames: ["node_modules"],
+      developerArtifactInventory: {},
+    })
+    expect(inventory).not.toBe(mapOnly)
+    expect(configuredInventory).toBe(inventory)
+  })
+
+  test("canonicalizes developer inventory caps before deriving a snapshot key", () => {
+    const root = "/tmp/project"
+    const defaultInventory = diskSnapshotKey(root, { developerArtifactInventory: true })
+    expect(defaultInventory).toBe(diskSnapshotKey(root, { developerArtifactInventory: {} }))
+    expect(defaultInventory).toBe(diskSnapshotKey(root, { developerArtifactInventory: { maxItems: undefined } }))
+    expect(diskSnapshotKey(root, { developerArtifactInventory: { maxItems: 0 } })).toBe(
+      diskSnapshotKey(root, { developerArtifactInventory: { maxItems: 1 } }),
+    )
+    expect(diskSnapshotKey(root, { developerArtifactInventory: { maxItems: 20_000.8 } })).toBe(
+      diskSnapshotKey(root, { developerArtifactInventory: { maxItems: 20_000 } }),
+    )
+    expect(diskSnapshotKey(root, { developerArtifactInventory: { maxItems: Number.NaN } })).toBe(defaultInventory)
   })
 
   test("restores an unchanged tree without scanning it again", async () => {
@@ -96,6 +132,146 @@ describe("disk scan snapshots", () => {
     expect(restored.source).toBe("snapshot")
     expect(restored.root.size).toBe(12)
     expect(scans).toBe(1)
+    await second.stopAll()
+  })
+
+  test("does not restore an identity-less pre-v6 developer inventory snapshot", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    const watcher = fakeWatcher()
+    const options = { developerArtifactInventory: true }
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return scanFixture(target)
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "win32" })
+    expect((await first.scan(1, root, options, () => {})).source).toBe("scan")
+    await first.stopAll()
+
+    const metadataPath = path.join(cacheDir, diskSnapshotKey(root, options), "metadata.json")
+    const metadata = JSON.parse(await readFile(metadataPath, "utf8")) as { schema: number }
+    await writeFile(metadataPath, JSON.stringify({ ...metadata, schema: 5 }))
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "win32" })
+    expect((await second.scan(2, root, options, () => {})).source).toBe("scan")
+    expect(scans).toBe(2)
+    await second.stopAll()
+  })
+
+  test("treats an out-of-scope or root-only persisted child field as a cache miss", async () => {
+    const root = await temp()
+    const outside = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return scanFixture(target)
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+
+    const snapshotDir = path.join(cacheDir, diskSnapshotKey(root, {}))
+    const metadata = JSON.parse(await readFile(path.join(snapshotDir, "metadata.json"), "utf8")) as { tree: string }
+    const poisoned = await scanFixture(root)
+    const child = poisoned.children[0]!
+    await writeFile(
+      path.join(snapshotDir, metadata.tree),
+      serialize({
+        ...poisoned,
+        children: [{ ...child, path: path.join(outside, "file.bin"), sharedStorageEvidence: "complete" }],
+      }),
+    )
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await second.scan(2, root, {}, () => {})).source).toBe("scan")
+    expect(scans).toBe(2)
+    await second.stopAll()
+  })
+
+  test("never follows an escaped checkpoint path from persisted metadata", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const outside = path.join(await temp(), "outside.snapshot")
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    await writeFile(outside, "not a watcher checkpoint")
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return scanFixture(target)
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+
+    const snapshotDir = path.join(cacheDir, diskSnapshotKey(root, {}))
+    const metadataPath = path.join(snapshotDir, "metadata.json")
+    const metadata = JSON.parse(await readFile(metadataPath, "utf8")) as Record<string, unknown>
+    await writeFile(metadataPath, JSON.stringify({ ...metadata, checkpoint: "../../outside.snapshot" }))
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await second.scan(2, root, {}, () => {})).source).toBe("scan")
+    expect(scans).toBe(2)
+    expect(watcher.checkpointReads()).not.toContain(outside)
+    await second.stopAll()
+  })
+
+  test("preserves fallback shared-storage capability when restoring a local map", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return {
+        ...(await scanFixture(target)),
+        cloneMetadata: { state: "unavailable" as const, reason: "scanner" as const },
+        sharedStorageEvidence: "partial" as const,
+      }
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    const initial = await first.scan(1, root, {}, () => {})
+    expect(initial.root.cloneMetadata).toEqual({
+      state: "unavailable",
+      reason: "scanner",
+    })
+    expect(initial.root.sharedStorageEvidence).toBe("partial")
+    await first.stopAll()
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    const restored = await second.scan(2, root, {}, () => {})
+    expect(restored.source).toBe("snapshot")
+    expect(restored.root.cloneMetadata).toEqual({ state: "unavailable", reason: "scanner" })
+    expect(restored.root.sharedStorageEvidence).toBe("partial")
+    expect(restored.root.children[0]?.cloneMetadata).toBeUndefined()
+    expect(restored.root.children[0]?.sharedStorageEvidence).toBeUndefined()
+    expect(scans).toBe(1)
+    await second.stopAll()
+  })
+
+  test("can force a fresh traversal when cached accounting is no longer safe", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return scanFixture(target)
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await second.scan(2, root, {}, () => {}, true)).source).toBe("scan")
+    expect(scans).toBe(2)
     await second.stopAll()
   })
 
@@ -153,6 +329,28 @@ describe("disk scan snapshots", () => {
     await second.stopAll()
   })
 
+  test("refreshes the whole root when a deep developer inventory is enabled", async () => {
+    const root = await temp()
+    const file = path.join(root, "project", "node_modules", "index.js")
+    await mkdir(path.dirname(file), { recursive: true })
+    await writeFile(file, new Uint8Array(12))
+    const original = await scanFixture(root)
+    const scanned: string[] = []
+
+    const updated = await applyDiskDelta(
+      original,
+      [{ path: file, type: "update" }],
+      async (target) => {
+        scanned.push(target)
+        return scanFixture(target)
+      },
+      { developerArtifactInventory: { maxItems: 200 } },
+    )
+
+    expect(scanned).toEqual([root])
+    expect(updated.changedPaths).toEqual([root])
+  })
+
   test("pushes live changes into the open tree", async () => {
     const root = await temp()
     const cacheDir = await temp()
@@ -172,6 +370,145 @@ describe("disk scan snapshots", () => {
     watcher.emit([{ path: file, type: "update" }])
     await Bun.sleep(40)
     expect(updates.at(-1)?.size).toBe(18)
+    await manager.stopAll()
+  })
+
+  test("keeps snapshot lifecycles isolated for simultaneous scan sessions", async () => {
+    const firstRoot = await temp()
+    const secondRoot = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(firstRoot, "first.bin"), new Uint8Array(4))
+    await writeFile(path.join(secondRoot, "second.bin"), new Uint8Array(8))
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      scan: (target) => scanFixture(target),
+      watcher: fakeWatcher().api,
+      platform: "darwin",
+    })
+
+    await Promise.all([
+      manager.scan("window:scan-a", firstRoot, {}, () => {}),
+      manager.scan("window:scan-b", secondRoot, {}, () => {}),
+    ])
+    expect(manager.activeOwners().sort((a, b) => String(a).localeCompare(String(b)))).toEqual([
+      "window:scan-a",
+      "window:scan-b",
+    ])
+
+    await manager.stop("window:scan-a")
+    expect(manager.activeOwners()).toEqual(["window:scan-b"])
+    await manager.stopAll()
+  })
+
+  test("keeps an active same-key checkpoint through concurrent cleanup and pruning", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(8))
+    const checkpoints: string[] = []
+    let blockNextRead = false
+    let firstReadStarted!: () => void
+    const firstRead = new Promise<void>((resolve) => {
+      firstReadStarted = resolve
+    })
+    let releaseFirstRead!: () => void
+    const releaseGate = new Promise<void>((resolve) => {
+      releaseFirstRead = resolve
+    })
+    const watcher = {
+      async writeSnapshot(_dir: string, snapshot: string) {
+        checkpoints.push(snapshot)
+        await writeFile(snapshot, "checkpoint")
+        return snapshot
+      },
+      async getEventsSince(_dir: string, checkpoint: string) {
+        if (blockNextRead) {
+          blockNextRead = false
+          firstReadStarted()
+          await releaseGate
+        }
+        // This is deliberately after the gate: older cleanup code removed
+        // the cached checkpoint while the first owner was still about to read it.
+        await stat(checkpoint)
+        return [] as ParcelWatcher.Event[]
+      },
+      async subscribe(_dir: string, _next: ParcelWatcher.SubscribeCallback) {
+        return { async unsubscribe() {} }
+      },
+    }
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      scan: (target) => scanFixture(target),
+      watcher,
+      platform: "darwin",
+    })
+
+    await manager.scan("seed", root, {}, () => {})
+    await manager.stop("seed")
+
+    // Put this live cache entry just outside the newest eight. A concurrent
+    // prune must see the active checkpoint lease and leave its directory alone.
+    const future = (Date.now() + 60_000) / 1_000
+    await Promise.all(
+      Array.from({ length: 8 }, async (_, index) => {
+        const noise = path.join(cacheDir, `newer-${index}`)
+        await mkdir(noise)
+        const metadata = path.join(noise, "metadata.json")
+        await writeFile(metadata, "{}")
+        await utimes(metadata, future, future)
+      }),
+    )
+
+    blockNextRead = true
+    const first = manager.scan("first", root, {}, () => {})
+    await firstRead
+    try {
+      const second = await manager.scan("second", root, {}, () => {})
+      expect(second.source).toBe("snapshot")
+      await (manager as unknown as { prune(): Promise<void> }).prune()
+      await expect(stat(checkpoints[1]!)).resolves.toBeDefined()
+
+      releaseFirstRead()
+      expect((await first).source).toBe("snapshot")
+    } finally {
+      releaseFirstRead()
+      await manager.stopAll()
+    }
+  })
+
+  test("does not let superseded cleanup stop the replacement session", async () => {
+    const firstRoot = await temp()
+    const secondRoot = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(secondRoot, "ready.bin"), new Uint8Array(8))
+    const firstController = new AbortController()
+    let started!: () => void
+    const firstStarted = new Promise<void>((resolve) => (started = resolve))
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      scan: (target, options) => {
+        if (target !== firstRoot) return scanFixture(target)
+        return new Promise((_, reject) => {
+          started()
+          options.signal?.addEventListener(
+            "abort",
+            () => setTimeout(() => reject(options.signal?.reason ?? new Error("cancelled")), 10),
+            { once: true },
+          )
+        })
+      },
+      watcher: fakeWatcher().api,
+      platform: "darwin",
+    })
+
+    const first = manager.scan("window:shared", firstRoot, { signal: firstController.signal }, () => {})
+    await firstStarted
+    firstController.abort(new Error("superseded"))
+    const firstRejected = expect(first).rejects.toThrow("superseded")
+    const replacement = await manager.scan("window:shared", secondRoot, {}, () => {})
+    await firstRejected
+
+    expect(replacement.root.size).toBe(8)
+    expect(manager.activeOwners()).toEqual(["window:shared"])
     await manager.stopAll()
   })
 
@@ -274,5 +611,194 @@ describe("disk scan snapshots", () => {
     )
     expect(scanned).toEqual([root.path])
     expect(updated.changedPaths).toEqual([root.path])
+  })
+
+  test("rebases an exact APFS clone group instead of leaving a stale zero-byte secondary", async () => {
+    const clone = (name: string, nodePath: string, size: number, cloneAccounting: "primary" | "secondary"): DiskNode => ({
+      name,
+      path: nodePath,
+      size,
+      ...(cloneAccounting === "secondary" ? { logicalSize: 100 } : {}),
+      clone: { state: "shares-all-blocks", cloneId: "clone-group", reportedFullCloneCount: 2 },
+      cloneAccounting,
+      isDir: false,
+      ext: "bin",
+      children: [],
+    })
+    const primary = clone("primary.bin", "/root/alpha/primary.bin", 100, "primary")
+    const secondary = clone("secondary.bin", "/root/beta/secondary.bin", 0, "secondary")
+    const alpha: DiskNode = {
+      name: "alpha",
+      path: "/root/alpha",
+      size: 100,
+      isDir: true,
+      ext: "",
+      children: [primary],
+    }
+    const beta: DiskNode = {
+      name: "beta",
+      path: "/root/beta",
+      size: 0,
+      logicalSize: 100,
+      isDir: true,
+      ext: "",
+      children: [secondary],
+    }
+    const root: DiskNode = {
+      name: "root",
+      path: "/root",
+      size: 100,
+      logicalSize: 200,
+      isDir: true,
+      ext: "",
+      children: [alpha, beta],
+    }
+    const scanned: string[] = []
+
+    const updated = await applyDiskDelta(
+      root,
+      [{ path: secondary.path, type: "delete" }],
+      async (target) => {
+        scanned.push(target)
+        return root
+      },
+      { sizeMode: "physical" },
+    )
+
+    expect(scanned).toEqual([root.path])
+    expect(updated.changedPaths).toEqual([root.path])
+  })
+
+  test("rescans the whole root when a nested refresh reports partial shared-storage evidence", async () => {
+    const collapsed: DiskNode = {
+      name: "node_modules",
+      path: "/root/project/node_modules",
+      size: 8,
+      logicalSize: 16,
+      isDir: true,
+      isCollapsed: true,
+      ext: "",
+      children: [],
+    }
+    const project: DiskNode = {
+      name: "project",
+      path: "/root/project",
+      size: 8,
+      logicalSize: 16,
+      isDir: true,
+      ext: "",
+      children: [collapsed],
+    }
+    const root: DiskNode = {
+      name: "root",
+      path: "/root",
+      size: 8,
+      logicalSize: 16,
+      sharedStorageEvidence: "complete",
+      isDir: true,
+      ext: "",
+      children: [project],
+    }
+    const partialProject: DiskNode = { ...project, sharedStorageEvidence: "partial" }
+    const rescannedRoot: DiskNode = {
+      ...root,
+      sharedStorageEvidence: "partial",
+      children: [project],
+    }
+    const scanned: string[] = []
+
+    const updated = await applyDiskDelta(
+      root,
+      [{ path: project.path, type: "update" }],
+      async (target) => {
+        scanned.push(target)
+        return target === root.path ? rescannedRoot : partialProject
+      },
+      { sizeMode: "physical" },
+    )
+
+    expect(scanned).toEqual([project.path, root.path])
+    expect(updated.changedPaths).toEqual([root.path])
+    expect(updated.root.sharedStorageEvidence).toBe("partial")
+    expect(updated.root.children[0]?.sharedStorageEvidence).toBeUndefined()
+  })
+
+  test("does not graft partial parent evidence after a changed file disappears", async () => {
+    const file: DiskNode = {
+      name: "shared.bin",
+      path: "/root/project/shared.bin",
+      size: 8,
+      isDir: false,
+      ext: "bin",
+      children: [],
+    }
+    const project: DiskNode = {
+      name: "project",
+      path: "/root/project",
+      size: 8,
+      isDir: true,
+      ext: "",
+      children: [file],
+    }
+    const root: DiskNode = {
+      name: "root",
+      path: "/root",
+      size: 8,
+      sharedStorageEvidence: "complete",
+      isDir: true,
+      ext: "",
+      children: [project],
+    }
+    const partialProject: DiskNode = { ...project, sharedStorageEvidence: "partial" }
+    const rescannedRoot: DiskNode = {
+      ...root,
+      sharedStorageEvidence: "partial",
+      children: [project],
+    }
+    const scanned: string[] = []
+
+    const updated = await applyDiskDelta(
+      root,
+      [{ path: file.path, type: "update" }],
+      async (target) => {
+        scanned.push(target)
+        if (target === file.path) throw new Error("file disappeared")
+        return target === root.path ? rescannedRoot : partialProject
+      },
+      { sizeMode: "physical" },
+    )
+
+    expect(scanned).toEqual([file.path, project.path, root.path])
+    expect(updated.changedPaths).toEqual([root.path])
+    expect(updated.root.sharedStorageEvidence).toBe("partial")
+  })
+
+  test("recalculates apparent size after a localized refresh", async () => {
+    const previous: DiskNode = {
+      name: "sparse.bin",
+      path: "/root/sparse.bin",
+      size: 8,
+      logicalSize: 64,
+      isDir: false,
+      ext: "bin",
+      children: [],
+    }
+    const root: DiskNode = {
+      name: "root",
+      path: "/root",
+      size: 8,
+      logicalSize: 64,
+      isDir: true,
+      ext: "",
+      children: [previous],
+    }
+    const replacement: DiskNode = { ...previous, size: 4, logicalSize: 32 }
+
+    const updated = await applyDiskDelta(root, [{ path: previous.path, type: "update" }], async () => replacement, {
+      sizeMode: "logical",
+    })
+
+    expect(updated.root.size).toBe(4)
+    expect(updated.root.logicalSize).toBe(32)
   })
 })

@@ -41,9 +41,18 @@ describe("shouldHandleDiskShortcut", () => {
     const button = document.createElement("button")
     const icon = document.createElement("span")
     button.append(icon)
+    const editor = document.createElement("div")
+    editor.setAttribute("contenteditable", "plaintext-only")
+    const textbox = document.createElement("div")
+    textbox.setAttribute("role", "textbox")
+    const dialog = document.createElement("div")
+    dialog.setAttribute("role", "dialog")
     expect(shouldHandleDiskShortcut(button, false)).toBe(false)
     expect(shouldHandleDiskShortcut(icon, false)).toBe(false)
     expect(shouldHandleDiskShortcut(document.createElement("input"), false)).toBe(false)
+    expect(shouldHandleDiskShortcut(editor, false)).toBe(false)
+    expect(shouldHandleDiskShortcut(textbox, false)).toBe(false)
+    expect(shouldHandleDiskShortcut(dialog, false)).toBe(false)
   })
 
   it("handles canvas/body shortcuts unless another handler consumed them", () => {
@@ -73,14 +82,36 @@ describe("nativeTrashName", () => {
 describe("describeStorageNode", () => {
   it("announces size, share, and the available keyboard action", () => {
     expect(describeStorageNode(dir("target", "/repo/target"), 4)).toBe(
-      "target, 1.00 B, 25% of this level. Press Enter to explore. Press C to add it to cleanup.",
+      "target, 1.00 B, 25% of this level. Press Enter to explore. Press C to add it to review.",
     )
     expect(describeStorageNode({ ...dir("Other", "disklizard:other"), isOther: true }, 4)).toBe(
       "Other, 1.00 B, 25% of this level.",
     )
     expect(describeStorageNode({ ...dir("main.rs", "/repo/main.rs"), isDir: false }, 4)).toBe(
-      "main.rs, 1.00 B, 25% of this level. Press Space to preview. Press C to add it to cleanup.",
+      "main.rs, 1.00 B, 25% of this level. Press Space to preview. Press C to add it to review.",
+    )
+    expect(
+      describeStorageNode(
+        { ...dir("node_modules", "/repo/deep/node_modules"), inventoryOnly: true } as DiskScanNode & {
+          inventoryOnly: true
+        },
+        4,
+        { canReview: false, requiresRescanBeforeReview: true },
+      ),
+    ).toBe(
+      "node_modules, 1.00 B, 25% of this level. Deep inventory result; it cannot be explored from the map. Rescan before adding it to review.",
     )
     expect(describeStorageNode(null, 4)).toBe("")
+  })
+
+  it("only announces shortcuts that the selected item can perform", () => {
+    const hidden = { ...dir(".env", "/repo/.env"), isDir: false, isHidden: true }
+    expect(describeStorageNode(hidden, 4)).toBe(".env, 1.00 B, 25% of this level. Press C to add it to review.")
+    expect(describeStorageNode({ ...dir("lockfile", "/repo/lockfile"), isDir: false }, 4, { canReview: false })).toBe(
+      "lockfile, 1.00 B, 25% of this level. Press Space to preview.",
+    )
+    expect(describeStorageNode(dir("protected", "/repo/protected"), 4, { canReview: false })).toBe(
+      "protected, 1.00 B, 25% of this level. Press Enter to explore.",
+    )
   })
 })

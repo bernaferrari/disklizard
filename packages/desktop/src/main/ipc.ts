@@ -1,7 +1,7 @@
-import { execFile } from "node:child_process"
-import { stat } from "node:fs/promises"
+import { execFile, spawn } from "node:child_process"
+import { rm, stat } from "node:fs/promises"
 import { basename, join } from "node:path"
-import { app, BrowserWindow, clipboard, dialog, ipcMain, shell } from "electron"
+import { app, BrowserWindow, Notification, clipboard, dialog, ipcMain, shell } from "electron"
 import type { IpcMainEvent, IpcMainInvokeEvent } from "electron"
 import type { DesktopMenuAction } from "@opencode-ai/app/desktop-menu"
 import { parseDesktopNativeBundle, type DesktopNativeBundle } from "@opencode-ai/app/i18n/desktop-native"
@@ -10,6 +10,13 @@ import type { FatalRendererError, ServerReadyData, TitlebarTheme } from "../prel
 import { runDesktopMenuAction } from "./desktop-menu-actions"
 import { setForceFocus } from "./debug"
 import { assertAttachmentBudget, createPickedFileAuthorizations } from "./attachment-picker"
+import { diskAccessSettingsUrl, getDiskStorageDiagnostics } from "./disk-platform"
+import { runGuardedDiskDelete, type DiskDeleteOptions } from "./disk-delete-precondition"
+import { quickLookCommand, readDiskPreview } from "./disk-preview"
+import { publishDriveFacts } from "./disk-drive-facts"
+import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scanPath } from "./disk-scanner"
+import type { ScanOptions, ScanProgress } from "./disk-scanner"
+import { DiskSnapshotManager } from "./disk-snapshot"
 import { getStore, removeStoreFileIfEmpty } from "./store"
 import {
   getPinchZoomEnabled,
@@ -24,10 +31,6 @@ import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
 import { createDesktopDraftStore } from "./draft-store"
 import { nativeT } from "./native-translations"
-import { readDiskPreview } from "./disk-preview"
-import { assertSafeDeletionPath, deleteDiskPath, getDrives, mountExclusions, scanPath } from "./disk-scanner"
-import type { ScanOptions } from "./disk-scanner"
-import { DiskSnapshotManager } from "./disk-snapshot"
 
 const pickerFilters = (ext?: string[]) => {
   if (!ext || ext.length === 0) return undefined
@@ -48,6 +51,7 @@ type Deps = {
   isOldLayoutEligible: () => Promise<boolean> | boolean
   getDisplayBackend: () => Promise<string | null>
   setDisplayBackend: (backend: string | null) => Promise<void> | void
+  parseMarkdown: (markdown: string) => Promise<string> | string
   checkAppExists: (appName: string) => Promise<boolean> | boolean
   resolveAppPath: (appName: string) => Promise<string | null>
   updater: UpdaterController
@@ -61,9 +65,12 @@ type Deps = {
 export function registerIpcHandlers(deps: Deps) {
   const drafts = createDesktopDraftStore(join(app.getPath("userData"), "drafts.sqlite"))
   const updaterSubscriptions = createUpdaterSubscriptions()
-  const diskScans = new Map<number, AbortController>()
+  const diskScans = new Map<string, AbortController>()
   const diskSnapshotCache = join(app.getPath("userData"), "disklizard", "snapshots")
-  const diskSnapshots = new DiskSnapshotManager({ cacheDir: diskSnapshotCache, scan: scanPath })
+  const diskSnapshots = new DiskSnapshotManager({
+    cacheDir: diskSnapshotCache,
+    scan: scanPath,
+  })
   app.once("will-quit", () => {
     updaterSubscriptions.clear()
     void diskSnapshots.stopAll()
@@ -72,15 +79,56 @@ export function registerIpcHandlers(deps: Deps) {
   app.once("will-quit", () => drafts.close())
   app.on("browser-window-created", (_event, win) => win.on("session-end", () => drafts.flush()))
 
-  ipcMain.handle("disklizard:get-drives", () => getDrives())
+  ipcMain.handle("disklizard:get-drives", async (event: IpcMainInvokeEvent) => {
+    const drives = await getDrives()
+    // `getDrives` has a short first-paint budget on macOS. Publish optional
+    // APFS facts when their already-started local probes finish, without ever
+    // delaying the volume chooser or contacting remote storage.
+    if (process.platform === "darwin") {
+      for (const drive of drives) {
+        if (drive.type === "network") continue
+        void getDriveFacts(drive.path)
+          .then((facts) => publishDriveFacts(event.sender, drive.path, facts))
+          .catch(() => undefined)
+      }
+    }
+    return drives
+  })
+  ipcMain.handle("disklizard:get-storage-diagnostics", async () =>
+    getDiskStorageDiagnostics({ drives: await getDrives() }),
+  )
+  ipcMain.handle("disklizard:open-disk-access-settings", async () => {
+    const url = diskAccessSettingsUrl()
+    if (!url) return false
+    await shell.openExternal(url)
+    return true
+  })
   ipcMain.handle(
     "disklizard:scan-path",
-    async (event: IpcMainInvokeEvent, targetPath: string, options?: ScanOptions) => {
+    async (
+      event: IpcMainInvokeEvent,
+      targetPath: string,
+      options?: {
+        maxDepth?: number
+        concurrency?: number
+        sizeMode?: "physical" | "logical"
+        /** Bypass an unchanged persisted map for a one-off exact recomputation. */
+        forceFresh?: boolean
+        preserveNames?: string[]
+        collapseNames?: string[]
+        signatureNames?: string[]
+        developerArtifactInventory?: ScanOptions["developerArtifactInventory"]
+      },
+      requestedScanID?: string,
+    ) => {
       const senderID = event.sender.id
-      diskScans.get(senderID)?.abort(new Error("Superseded by a new scan"))
+      const scanID = requestedScanID || "primary"
+      const owner = `${senderID}:${scanID}`
+      diskScans.get(owner)?.abort(new Error("Superseded by a new scan"))
       const controller = new AbortController()
+      let latestProgress: ScanProgress | undefined
       const onDestroyed = () => controller.abort(new Error("Scan window closed"))
-      diskScans.set(senderID, controller)
+      diskScans.set(owner, controller)
       event.sender.once("destroyed", onDestroyed)
       try {
         const excludePaths = [
@@ -88,10 +136,13 @@ export function registerIpcHandlers(deps: Deps) {
           ...(process.platform === "win32" ? [] : mountExclusions(targetPath, await getDrives(), process.platform)),
         ]
         const scanOptions: ScanOptions = {
-          ...options,
-        maxDepth: options?.maxDepth ?? 10,
-        concurrency: options?.concurrency,
-        maxChildren: 48,
+          maxDepth: options?.maxDepth ?? 10,
+          concurrency: options?.concurrency,
+          maxChildren: 48,
+          preserveNames: options?.preserveNames,
+          collapseNames: options?.collapseNames,
+          signatureNames: options?.signatureNames,
+          developerArtifactInventory: options?.developerArtifactInventory,
           progressIntervalMs: 120,
           useWorker: true,
           sizeMode:
@@ -100,46 +151,132 @@ export function registerIpcHandlers(deps: Deps) {
           signal: controller.signal,
           excludePaths,
           onProgress: (progress) => {
-            if (!event.sender.isDestroyed()) event.sender.send("disklizard:scan-progress", progress)
+            latestProgress = progress
+            if (!event.sender.isDestroyed())
+              event.sender.send("disklizard:scan-progress", { ...progress, scanId: scanID })
           },
         }
-        const result = await diskSnapshots.scan(senderID, targetPath, scanOptions, (update) => {
-          if (event.sender.isDestroyed()) return void diskSnapshots.stop(senderID)
-          event.sender.send("disklizard:scan-update", update)
-        })
-        event.sender.once("destroyed", () => void diskSnapshots.stop(senderID))
-        return result.root
+        try {
+          const result = await diskSnapshots.scan(
+            owner,
+            targetPath,
+            scanOptions,
+            (update) => {
+              if (event.sender.isDestroyed()) {
+                void diskSnapshots.stop(owner)
+                return
+              }
+              event.sender.send("disklizard:scan-update", { ...update, scanId: scanID })
+            },
+            options?.forceFresh === true,
+          )
+          // Snapshot restores deliberately skip traversal. Tell the renderer
+          // the completion source so it never turns cache latency into a
+          // fictional throughput claim.
+          if (!event.sender.isDestroyed()) {
+            event.sender.send("disklizard:scan-progress", {
+              scanId: scanID,
+              filesScanned: latestProgress?.filesScanned ?? 0,
+              dirsScanned: latestProgress?.dirsScanned ?? 0,
+              currentPath: targetPath,
+              size: result.root.size,
+              done: true,
+              source: result.source,
+            })
+          }
+          event.sender.once("destroyed", () => void diskSnapshots.stop(owner))
+          return result.root
+        } catch (error) {
+          if (controller.signal.aborted) return null
+          throw error
+        }
       } finally {
-        if (diskScans.get(senderID) === controller) diskScans.delete(senderID)
+        if (diskScans.get(owner) === controller) diskScans.delete(owner)
         if (!event.sender.isDestroyed()) event.sender.removeListener("destroyed", onDestroyed)
       }
     },
   )
-  ipcMain.handle("disklizard:cancel-scan", (event: IpcMainInvokeEvent) => {
-    diskScans.get(event.sender.id)?.abort(new Error("Scan cancelled"))
-    void diskSnapshots.stop(event.sender.id)
+  ipcMain.handle("disklizard:cancel-scan", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
+    const prefix = `${event.sender.id}:`
+    const owners = requestedScanID
+      ? [`${prefix}${requestedScanID}`]
+      : [
+          ...new Set([
+            ...[...diskScans.keys()].filter((key) => key.startsWith(prefix)),
+            ...diskSnapshots
+              .activeOwners()
+              .filter((owner) => String(owner).startsWith(prefix))
+              .map(String),
+          ]),
+        ]
+    owners.forEach((owner) => diskScans.get(owner)?.abort(new Error("Scan cancelled")))
+    void Promise.all(owners.map((owner) => diskSnapshots.stop(owner)))
   })
-  ipcMain.handle("disklizard:stop-watching", (event: IpcMainInvokeEvent) => diskSnapshots.stop(event.sender.id))
+  ipcMain.handle("disklizard:stop-watching", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
+    const prefix = `${event.sender.id}:`
+    if (requestedScanID) return diskSnapshots.stop(`${prefix}${requestedScanID}`)
+    return Promise.all(
+      [...diskSnapshots.activeOwners()]
+        .filter((owner) => String(owner).startsWith(prefix))
+        .map((owner) => diskSnapshots.stop(owner)),
+    )
+  })
   ipcMain.handle(
     "disklizard:delete-path",
-    async (_event: IpcMainInvokeEvent, targetPath: string, options?: { permanent?: boolean }) => {
-      if (options?.permanent) await deleteDiskPath(targetPath)
-      else {
-        await assertSafeDeletionPath(targetPath)
-        await shell.trashItem(targetPath)
-      }
+    async (_event: IpcMainInvokeEvent, targetPath: string, options?: DiskDeleteOptions) => {
+      await runGuardedDiskDelete(
+        targetPath,
+        options?.precondition,
+        assertSafeDeletionPath,
+        options?.permanent
+          ? async (path) => rm(path, { recursive: true, force: true })
+          : async (path) => shell.trashItem(path),
+      )
       return { ok: true }
     },
   )
-  ipcMain.handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) => readDiskPreview(targetPath))
-  ipcMain.handle("disklizard:reveal-path", (_event: IpcMainInvokeEvent, targetPath: string) => shell.showItemInFolder(targetPath))
+  ipcMain.handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) =>
+    readDiskPreview(targetPath),
+  )
+  ipcMain.handle("disklizard:system-preview-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+    const metadata = await stat(targetPath)
+    if (!metadata.isFile() && !metadata.isDirectory()) throw new Error("Only files and folders can be previewed")
+    const command = quickLookCommand(targetPath)
+    if (command) {
+      const preview = spawn(command.file, command.args, { detached: true, stdio: "ignore" })
+      preview.once("error", () => undefined)
+      preview.unref()
+      return
+    }
+    const error = await shell.openPath(targetPath)
+    if (error) throw new Error(error)
+  })
+  ipcMain.handle("disklizard:open-trash", async () => {
+    if (process.platform === "win32") {
+      const trash = spawn("explorer.exe", ["shell:RecycleBinFolder"], { detached: true, stdio: "ignore" })
+      trash.once("error", () => undefined)
+      trash.unref()
+      return
+    }
+    const path =
+      process.platform === "darwin"
+        ? join(app.getPath("home"), ".Trash")
+        : join(app.getPath("home"), ".local", "share", "Trash", "files")
+    const error = await shell.openPath(path)
+    if (error) throw new Error(error)
+  })
+  ipcMain.handle("disklizard:reveal-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+    await stat(targetPath)
+    shell.showItemInFolder(targetPath)
+  })
   ipcMain.handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     const result = await dialog.showOpenDialog(win ?? undefined!, {
       properties: ["openDirectory"],
       title: "Choose folder to scan",
     })
-    return result.canceled || !result.filePaths[0] ? null : result.filePaths[0]
+    if (result.canceled || !result.filePaths[0]) return null
+    return result.filePaths[0]
   })
 
   ipcMain.handle("kill-sidecar", () => deps.killSidecar())
@@ -158,6 +295,7 @@ export function registerIpcHandlers(deps: Deps) {
   ipcMain.handle("set-display-backend", (_event: IpcMainInvokeEvent, backend: string | null) =>
     deps.setDisplayBackend(backend),
   )
+  ipcMain.handle("parse-markdown", (_event: IpcMainInvokeEvent, markdown: string) => deps.parseMarkdown(markdown))
   ipcMain.handle("check-app-exists", (_event: IpcMainInvokeEvent, appName: string) => deps.checkAppExists(appName))
   ipcMain.handle("resolve-app-path", (_event: IpcMainInvokeEvent, appName: string) => deps.resolveAppPath(appName))
   ipcMain.handle("updater-subscribe", (event) => {
@@ -176,9 +314,7 @@ export function registerIpcHandlers(deps: Deps) {
   ipcMain.handle("updater-install", () => deps.updater.install())
   ipcMain.handle("set-background-color", (_event: IpcMainInvokeEvent, color: string) => deps.setBackgroundColor(color))
   ipcMain.handle("export-debug-logs", () => deps.exportDebugLogs())
-  ipcMain.handle("set-force-focus", (event: IpcMainInvokeEvent, enabled: boolean) =>
-    setForceFocus(event.sender, enabled),
-  )
+  ipcMain.handle("set-force-focus", (event: IpcMainInvokeEvent, enabled: boolean) => setForceFocus(event.sender, enabled))
   ipcMain.handle("record-fatal-renderer-error", (_event: IpcMainInvokeEvent, error: FatalRendererError) =>
     deps.recordFatalRendererError(error),
   )
@@ -212,14 +348,6 @@ export function registerIpcHandlers(deps: Deps) {
     getStore(name).clear()
     void removeStoreFileIfEmpty(name)
   })
-  ipcMain.handle("store-keys", (_event: IpcMainInvokeEvent, name: string) => {
-    const store = getStore(name)
-    return Object.keys(store.store)
-  })
-  ipcMain.handle("store-length", (_event: IpcMainInvokeEvent, name: string) => {
-    const store = getStore(name)
-    return Object.keys(store.store).length
-  })
   ipcMain.handle("draft-get", (_event, key: string) => drafts.get(key))
   ipcMain.handle("draft-set", (_event, key: string, value: string) => drafts.set(key, value))
   ipcMain.handle("draft-delete", (_event, key: string) => drafts.set(key, null))
@@ -227,6 +355,14 @@ export function registerIpcHandlers(deps: Deps) {
   ipcMain.handle("draft-blob-get", (_event, id: string) => {
     const data = drafts.getBlob(id)
     return data ? data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) : null
+  })
+  ipcMain.handle("store-keys", (_event: IpcMainInvokeEvent, name: string) => {
+    const store = getStore(name)
+    return Object.keys(store.store)
+  })
+  ipcMain.handle("store-length", (_event: IpcMainInvokeEvent, name: string) => {
+    const store = getStore(name)
+    return Object.keys(store.store).length
   })
 
   ipcMain.handle(
@@ -288,31 +424,16 @@ export function registerIpcHandlers(deps: Deps) {
     },
   )
 
-  ipcMain.on("open-external", (_event: IpcMainEvent, url: string) => {
-    openExternalURL(url)
-  })
-
-  ipcMain.on("open-local-file", (_event: IpcMainEvent, url: string) => {
-    openLocalFileURL(url)
-  })
+  ipcMain.on("open-external", (_event: IpcMainEvent, url: string) => openExternalURL(url))
+  ipcMain.on("open-local-file", (_event: IpcMainEvent, url: string) => openLocalFileURL(url))
 
   ipcMain.handle("open-path", async (_event: IpcMainInvokeEvent, path: string, app?: string) => {
     if (!app) return shell.openPath(path)
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const [cmd, args] =
         process.platform === "darwin" ? (["open", ["-a", app, path]] as const) : ([app, [path]] as const)
       execFile(cmd, args, (err) => (err ? reject(err) : resolve()))
     })
-  })
-
-  ipcMain.handle("reveal-path", async (_event: IpcMainInvokeEvent, path: string) => {
-    const exists = await stat(path).then(
-      () => true,
-      () => false,
-    )
-    if (!exists) return false
-    shell.showItemInFolder(path)
-    return true
   })
 
   ipcMain.handle("read-clipboard-image", () => {
@@ -323,22 +444,15 @@ export function registerIpcHandlers(deps: Deps) {
     return { buffer, width: size.width, height: size.height }
   })
 
-  ipcMain.handle("get-window-id", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) throw new Error("Window not found")
-    const id = getWindowID(win)
-    if (!id) throw new Error("Window ID not found")
-    return id
+  ipcMain.on("show-notification", (_event: IpcMainEvent, title: string, body?: string) => {
+    new Notification({ title, body }).show()
   })
+
+  ipcMain.handle("get-window-count", () => BrowserWindow.getAllWindows().length)
 
   ipcMain.handle("get-window-focused", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     return win?.isFocused() ?? false
-  })
-
-  ipcMain.handle("get-window-fullscreen", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    return win?.isFullScreen() ?? false
   })
 
   ipcMain.handle("set-window-focus", (event: IpcMainInvokeEvent) => {

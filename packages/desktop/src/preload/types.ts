@@ -1,7 +1,20 @@
 import type { DesktopMenuAction } from "@opencode-ai/app/desktop-menu"
+import type {
+  ApfsSnapshotEvidence,
+  CloneAccounting,
+  CloneEvidence,
+  CloneMetadataCapability,
+  DeveloperArtifact,
+  DeveloperArtifactDirectoryIdentity,
+  DeveloperArtifactInventory,
+  DeveloperArtifactInventoryOptions,
+  DriveFacts,
+  SharedStorageEvidence,
+} from "@opencode-ai/disklizard"
 import type { WslServersPlatform } from "@opencode-ai/app/wsl/types"
 import type { UpdaterState } from "@opencode-ai/app/updater"
 import type { DesktopNativeBundle } from "@opencode-ai/app/i18n/desktop-native"
+import type { DiskStorageDiagnostics } from "../main/disk-platform"
 export type {
   WslDistroProbe,
   WslInstalledDistro,
@@ -32,7 +45,6 @@ export type UpdaterAPI = {
 export type LinuxDisplayBackend = "wayland" | "auto"
 export type TitlebarTheme = {
   mode: "light" | "dark"
-  scheme?: "system" | "light" | "dark"
 }
 export type DiskLizardDrive = {
   path: string
@@ -42,6 +54,13 @@ export type DiskLizardDrive = {
   free: number
   used: number
   type: "local" | "removable" | "network"
+  filesystem?: string
+  sharedFree?: number
+  snapshotCount?: number
+  purgeableSnapshotCount?: number
+  timeMachineSnapshotCount?: number
+  /** Bounded read-only APFS snapshot identities; their byte size is intentionally not estimated. */
+  apfsSnapshots?: ApfsSnapshotEvidence[]
 }
 
 export type DiskLizardNode = {
@@ -51,6 +70,13 @@ export type DiskLizardNode = {
   logicalSize?: number
   modifiedAt?: number
   hardLink?: "primary" | "secondary"
+  clone?: CloneEvidence
+  /** Set only for a clone group completely observed by the scanner. */
+  cloneAccounting?: CloneAccounting
+  /** Scan-root-only capability; without `available`, physical clone reclaim is intentionally unknown. */
+  cloneMetadata?: CloneMetadataCapability
+  /** Scan-root-only boundary; only `complete` permits physical reclaim estimates. */
+  sharedStorageEvidence?: SharedStorageEvidence
   isDir: boolean
   children: DiskLizardNode[]
   ext: string
@@ -59,45 +85,80 @@ export type DiskLizardNode = {
   isCollapsed?: boolean
   signatures?: string[]
   scanIssues?: { unreadableCount: number; samplePaths: string[] }
+  /** Root-only, opt-in deep developer artifact index outside the visual tree. */
+  developerArtifactInventory?: DeveloperArtifactInventory
   _label?: string
 }
 
+/** Fresh-delete proof used only by bounded deep developer-artifact records. */
+export type DiskLizardDeveloperArtifactDeletePrecondition = {
+  kind: "developer-artifact"
+  /** Required by main-process cleanup; absence means rescan, never shape-only Trash. */
+  directoryIdentity?: DeveloperArtifactDirectoryIdentity
+  artifact: Pick<DeveloperArtifact, "name" | "kind" | "ecosystem" | "confidence" | "cleanup">
+}
+
+export type DiskLizardDeleteOptions = {
+  permanent?: boolean
+  precondition?: DiskLizardDeveloperArtifactDeletePrecondition
+}
+
 export type DiskLizardScanProgress = {
+  scanId: string
   filesScanned: number
   dirsScanned?: number
   currentPath: string
   size: number
   discovery?: Pick<DiskLizardNode, "name" | "path" | "size" | "modifiedAt" | "isDir">
   done?: boolean
+  /** Whether this completion traversed the filesystem, restored a cache, or applied a cache delta. */
+  source?: "scan" | "snapshot" | "delta"
 }
 
 export type DiskLizardScanUpdate = {
+  scanId: string
   rootPath: string
   root: DiskLizardNode
   changedPaths: string[]
 }
 
+/** Optional local filesystem facts delivered after a fast drive-list first paint. */
+export type DiskLizardDriveFactsUpdate = {
+  path: string
+  facts: DriveFacts
+}
+
 export type DiskLizardFilePreview =
   | { kind: "image"; mime: string; dataUrl: string; bytes: number }
+  | { kind: "pdf"; dataUrl: string; bytes: number }
   | { kind: "text"; text: string; bytes: number; truncated: boolean }
   | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
 
 export type DiskLizardAPI = {
   getDrives: () => Promise<DiskLizardDrive[]>
+  onDriveFacts: (cb: (update: DiskLizardDriveFactsUpdate) => void) => () => void
+  getStorageDiagnostics: () => Promise<DiskStorageDiagnostics>
+  openDiskAccessSettings: () => Promise<boolean>
   scanPath: (
     path: string,
     options?: {
       maxDepth?: number
       sizeMode?: "physical" | "logical"
+      /** Recompute instead of restoring an otherwise unchanged local map. */
+      forceFresh?: boolean
       preserveNames?: string[]
       collapseNames?: string[]
       signatureNames?: string[]
+      developerArtifactInventory?: boolean | DeveloperArtifactInventoryOptions
     },
-  ) => Promise<DiskLizardNode>
-  cancelScan: () => Promise<void>
-  stopWatching: () => Promise<void>
-  deletePath: (path: string, options?: { permanent?: boolean }) => Promise<{ ok: true }>
+    scanId?: string,
+  ) => Promise<DiskLizardNode | null>
+  cancelScan: (scanId?: string) => Promise<void>
+  stopWatching: (scanId?: string) => Promise<void>
+  deletePath: (path: string, options?: DiskLizardDeleteOptions) => Promise<{ ok: true }>
   previewPath: (path: string) => Promise<DiskLizardFilePreview>
+  systemPreviewPath: (path: string) => Promise<void>
+  openTrash: () => Promise<void>
   revealPath: (path: string) => Promise<void>
   chooseFolder: () => Promise<string | null>
   onScanProgress: (cb: (progress: DiskLizardScanProgress) => void) => () => void
@@ -127,6 +188,7 @@ export type ElectronAPI = {
   isOldLayoutEligible: () => Promise<boolean>
   getDisplayBackend: () => Promise<LinuxDisplayBackend | null>
   setDisplayBackend: (backend: LinuxDisplayBackend | null) => Promise<void>
+  parseMarkdownCommand: (markdown: string) => Promise<string>
   checkAppExists: (appName: string) => Promise<boolean>
   resolveAppPath: (appName: string) => Promise<string | null>
   storeGet: (name: string, key: string) => Promise<string | null>
@@ -135,13 +197,8 @@ export type ElectronAPI = {
   storeClear: (name: string) => Promise<void>
   storeKeys: (name: string) => Promise<string[]>
   storeLength: (name: string) => Promise<number>
-  draftGet: (key: string) => Promise<string | null>
-  draftSet: (key: string, value: string) => Promise<void>
-  draftDelete: (key: string) => Promise<void>
-  draftBlobPut: (data: ArrayBuffer) => Promise<string>
-  draftBlobGet: (id: string) => Promise<ArrayBuffer | null>
 
-  getWindowID: () => Promise<string>
+  getWindowCount: () => Promise<number>
   onMenuCommand: (cb: (id: string) => void) => () => void
   onDeepLink: (cb: (urls: string[]) => void) => () => void
 
@@ -163,11 +220,9 @@ export type ElectronAPI = {
   openExternal: (url: string) => void
   openLocalFile: (url: string) => void
   openPath: (path: string, app?: string) => Promise<void>
-  revealPath: (path: string) => Promise<boolean>
   readClipboardImage: () => Promise<{ buffer: ArrayBuffer; width: number; height: number } | null>
+  showNotification: (title: string, body?: string) => void
   getWindowFocused: () => Promise<boolean>
-  getWindowFullscreen: () => Promise<boolean>
-  onWindowFullscreenChanged: (cb: (fullscreen: boolean) => void) => () => void
   setWindowFocus: () => Promise<void>
   showWindow: () => Promise<void>
   relaunch: () => void
@@ -181,7 +236,6 @@ export type ElectronAPI = {
   runDesktopMenuAction: (action: DesktopMenuAction) => Promise<void>
   setBackgroundColor: (color: string) => Promise<void>
   exportDebugLogs: () => Promise<string>
-  setForceFocus: (enabled: boolean) => Promise<void>
   recordFatalRendererError: (error: FatalRendererError) => Promise<void>
   setNativeTranslations: (bundle: DesktopNativeBundle) => Promise<void>
 }

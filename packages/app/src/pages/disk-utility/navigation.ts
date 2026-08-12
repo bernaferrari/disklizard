@@ -3,15 +3,41 @@ import { formatBytes, formatPct } from "./format"
 
 export type Crumb = { name: string; path: string; node: DiskScanNode }
 
+export type StorageNodeCapabilities = {
+  canPreview?: boolean
+  canReview?: boolean
+  requiresRescanBeforeReview?: boolean
+}
+
 type DesktopOS = "macos" | "windows" | "linux"
 
-const INTERACTIVE_SELECTOR =
-  'button, a, input, textarea, select, summary, [contenteditable="true"], [role="tab"], [role="menuitem"]'
+const INTERACTIVE_SELECTOR = [
+  "button",
+  "a[href]",
+  "input",
+  "textarea",
+  "select",
+  "summary",
+  "iframe",
+  "audio",
+  "video",
+  '[contenteditable]:not([contenteditable="false"])',
+  '[role="textbox"]',
+  '[role="combobox"]',
+  '[role="listbox"]',
+  '[role="menuitem"]',
+  '[role="slider"]',
+  '[role="tab"]',
+  '[role="dialog"]',
+  '[role="alertdialog"]',
+  "dialog",
+  "[data-disk-shortcut-ignore]",
+].join(", ")
 
 /** Global spatial-navigation shortcuts must never steal keys from controls. */
 export function shouldHandleDiskShortcut(target: EventTarget | null, defaultPrevented: boolean): boolean {
   if (defaultPrevented) return false
-  return !(target instanceof HTMLElement && target.closest(INTERACTIVE_SELECTOR))
+  return !(target instanceof Element && target.closest(INTERACTIVE_SELECTOR))
 }
 
 /** A short recovery instruction for scans that hit OS access boundaries. */
@@ -28,12 +54,29 @@ export function nativeTrashName(os?: DesktopOS): "Recycle Bin" | "Trash" {
 }
 
 /** A concise screen-reader update for keyboard navigation inside the canvas map. */
-export function describeStorageNode(node: DiskScanNode | null, parentSize: number): string {
+export function describeStorageNode(
+  node: DiskScanNode | null,
+  parentSize: number,
+  capabilities: StorageNodeCapabilities = {},
+): string {
   if (!node) return ""
   const share = parentSize > 0 ? `, ${formatPct(node.size, parentSize)} of this level` : ""
+  const canPreview = !node.isOther && !node.isHidden && capabilities.canPreview !== false
+  const canReview = !node.isOther && capabilities.canReview !== false
+  const inventoryOnly = (node as DiskScanNode & { inventoryOnly?: boolean }).inventoryOnly === true
   const action =
-    node.isDir && !node.isOther ? " Press Enter to explore." : !node.isOther ? " Press Space to preview." : ""
-  const cleanup = node.isOther ? "" : " Press C to add it to cleanup."
+    inventoryOnly
+      ? " Deep inventory result; it cannot be explored from the map."
+      : node.isDir && !node.isOther
+        ? " Press Enter to explore."
+        : canPreview
+          ? " Press Space to preview."
+          : ""
+  const cleanup = canReview
+    ? " Press C to add it to review."
+    : capabilities.requiresRescanBeforeReview
+      ? " Rescan before adding it to review."
+      : ""
   return `${node.name}, ${formatBytes(node.size)}${share}.${action}${cleanup}`
 }
 

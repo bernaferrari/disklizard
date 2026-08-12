@@ -1,7 +1,7 @@
 import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
 import type { DiskPinnedLocation } from "@/context/settings"
 import { canDeletePath } from "@opencode-ai/disklizard/safety"
-import type { ReclaimSummary } from "./recognize"
+import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 
 function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
   const normalized = path.replace(/\\/g, "/").replace(/\/+$/, "") || "/"
@@ -51,6 +51,28 @@ export function driveForPath(
     })
 }
 
+/** Physical-byte maps need complete shared-storage evidence before they can promise reclaimable space. */
+export function isPhysicalByteAccounting(os?: "macos" | "windows" | "linux", drive?: DiskDriveInfo): boolean {
+  // Scan requests default to physical bytes on every non-Windows platform.
+  // Drive discovery can legitimately lag behind that request, so an unknown
+  // drive stays on the conservative physical path until we explicitly know
+  // it is a network volume (or Windows' logical-accounting path).
+  if (os === "windows") return false
+  return drive?.type !== "network"
+}
+
+export function hasUnverifiedPhysicalCloneAccounting(
+  root: DiskScanNode | null | undefined,
+  os?: "macos" | "windows" | "linux",
+  drive?: DiskDriveInfo,
+): boolean {
+  return (
+    !!root &&
+    isPhysicalByteAccounting(os, drive) &&
+    (root.cloneMetadata?.state !== "available" || root.sharedStorageEvidence !== "complete")
+  )
+}
+
 /**
  * Account for bytes the filesystem reports as used but a metadata scan cannot
  * attribute to visible files (permissions, snapshots, metadata, or clones).
@@ -82,6 +104,8 @@ export function asBrowseableRoot(node: DiskScanNode): DiskScanNode {
     name: "Selected file",
     path: `disklizard:selection:${node.path}`,
     size: node.size,
+    ...(node.cloneMetadata ? { cloneMetadata: node.cloneMetadata } : {}),
+    ...(node.sharedStorageEvidence ? { sharedStorageEvidence: node.sharedStorageEvidence } : {}),
     isDir: true,
     children: [node],
     ext: "",
@@ -95,20 +119,34 @@ export function replaceScanSubtree(
   replacement: DiskScanNode,
   os?: "macos" | "windows" | "linux",
 ): DiskScanNode {
-  if (diskPathEquals(root.path, targetPath, os)) return replacement
-
-  const children = root.children.map((child) => replaceScanSubtree(child, targetPath, replacement, os))
-  if (children.every((child, index) => child === root.children[index])) return root
-
-  const previousSize = root.children.reduce((sum, child) => sum + child.size, 0)
-  const nextSize = children.reduce((sum, child) => sum + child.size, 0)
-  const modifiedAt = children.reduce((latest, child) => Math.max(latest, child.modifiedAt ?? 0), 0)
-  return {
-    ...root,
-    size: Math.max(0, root.size + nextSize - previousSize),
-    modifiedAt: modifiedAt || undefined,
-    children: children.toSorted((a, b) => b.size - a.size),
+  function withoutRootOnlyInventory(node: DiskScanNode): DiskScanNode {
+    if (!node.developerArtifactInventory) return node
+    const { developerArtifactInventory: _inventory, ...subtree } = node
+    return subtree
   }
+
+  function visit(current: DiskScanNode, isScanRoot: boolean): DiskScanNode {
+    if (diskPathEquals(current.path, targetPath, os)) {
+      // A focused expansion must never attach its own root-only inventory to
+      // the materialized child. The existing scan root remains authoritative.
+      return isScanRoot ? replacement : withoutRootOnlyInventory(replacement)
+    }
+
+    const children = current.children.map((child) => visit(child, false))
+    if (children.every((child, index) => child === current.children[index])) return current
+
+    const previousSize = current.children.reduce((sum, child) => sum + child.size, 0)
+    const nextSize = children.reduce((sum, child) => sum + child.size, 0)
+    const modifiedAt = children.reduce((latest, child) => Math.max(latest, child.modifiedAt ?? 0), 0)
+    return {
+      ...current,
+      size: Math.max(0, current.size + nextSize - previousSize),
+      modifiedAt: modifiedAt || undefined,
+      children: children.toSorted((a, b) => b.size - a.size),
+    }
+  }
+
+  return visit(root, true)
 }
 
 /** Remove confirmed filesystem deletions while preserving unaffected tree object identity. */
@@ -148,7 +186,7 @@ export function canActOnNode(node: DiskScanNode, os?: "macos" | "windows" | "lin
 export function actionableReclaimSummary(summary: ReclaimSummary, os?: "macos" | "windows" | "linux"): ReclaimSummary {
   const buckets = summary.buckets
     .flatMap((bucket) => {
-      const items = bucket.items.filter(({ node }) => canActOnNode(node, os))
+      const items = bucket.items.filter(({ node }) => canActOnNode(node, os) && !containsSharedPhysicalStorage(node))
       if (!items.length) return []
       return [{ ...bucket, items, count: items.length, bytes: items.reduce((sum, item) => sum + item.node.size, 0) }]
     })

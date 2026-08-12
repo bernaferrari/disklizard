@@ -12,7 +12,11 @@ export function CollectionDropTarget(props: {
   active: boolean
   count: number
   bytes: number
+  hasSharedPhysicalStorage: boolean
+  hasUnverifiedPhysicalStorage: boolean
+  requiresDeepInventoryRefresh: boolean
   trashName: string
+  setElement?: (element: HTMLElement) => void
   onReview: () => void
   onClear: () => void
   onDragEnter: (event: DragEvent) => void
@@ -21,33 +25,43 @@ export function CollectionDropTarget(props: {
   onDrop: (event: DragEvent) => void
 }) {
   const hasItems = () => props.count > 0
+  const allocationMayRemain = () =>
+    props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
   const title = () => {
-    if (props.active && props.node) return `Drop to add ${props.node.name}`
-    if (props.node) return `Add ${props.node.name} to cleanup`
-    if (hasItems()) return `${props.count} ${props.count === 1 ? "item" : "items"} ready`
-    return "Cleanup basket"
+    if (props.active && props.node) return `Release to select ${props.node.name} for review`
+    if (props.node) return `Drag ${props.node.name} here to select it`
+    if (hasItems()) return `${props.count} ${props.count === 1 ? "item" : "items"} selected for review`
+    return "Select items to review"
   }
   const detail = () => {
-    if (props.node) return `${formatBytes(props.node.size)} · Staged for review—nothing moves yet`
-    if (hasItems()) return `${formatBytes(props.bytes)} · Review before moving anything to ${props.trashName}`
-    return "Drag items here, or select one and press C"
+    if (props.node)
+      return allocationMayRemain()
+        ? `${formatBytes(props.node.size)} selected size · Full map rebuild after move`
+        : `${formatBytes(props.node.size)} · Nothing moves until you approve it`
+    if (hasItems())
+      return allocationMayRemain()
+        ? `${formatBytes(props.bytes)} selected size · Full map rebuild after move`
+        : `${formatBytes(props.bytes)} · Review before moving anything to ${props.trashName}`
+    return "Press C, Shift+Arrow, or drag · Nothing moves until you approve it"
   }
 
   return (
     <section
-      class="dl-cleanup-dock flex min-h-[72px] min-w-0 items-center gap-3 rounded-[14px] px-3.5 py-2.5"
+      ref={(element) => props.setElement?.(element)}
+      class="dl-cleanup-dock flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3.5 py-2"
       classList={{
         "dl-cleanup-dock-active": props.active,
         "dl-cleanup-dock-filled": hasItems() && !props.node,
+        "dl-cleanup-dock-empty": !hasItems() && !props.node,
       }}
       onDragEnter={props.onDragEnter}
       onDragOver={props.onDragOver}
       onDragLeave={props.onDragLeave}
       onDrop={props.onDrop}
-      aria-label="Cleanup basket drop area"
+      aria-label="Selected items for review"
     >
       <span
-        class="dl-cleanup-dock-icon relative grid size-11 shrink-0 place-items-center rounded-full"
+        class="dl-cleanup-dock-icon relative grid size-10 shrink-0 place-items-center rounded-full"
         aria-hidden="true"
       >
         <Icon name={props.active ? "arrow-down-to-line" : hasItems() ? "checklist" : "trash"} class="size-[18px]" />
@@ -72,12 +86,12 @@ export function CollectionDropTarget(props: {
             size="small"
             variant="ghost"
             onClick={props.onClear}
-            aria-label="Clear cleanup basket"
+            aria-label="Clear review"
           >
-            Clear
+            Clear review
           </Button>
           <Button class="dl-touch-target" size="small" variant="primary" icon="arrow-right" onClick={props.onReview}>
-            Review
+            Review selected
           </Button>
         </span>
       ) : (
@@ -87,7 +101,7 @@ export function CollectionDropTarget(props: {
       )}
 
       <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
-        {props.active ? title() : hasItems() ? `${props.count} items in cleanup basket` : "Cleanup basket empty"}
+        {props.active ? title() : hasItems() ? `${props.count} items selected for review` : "No items selected for review"}
       </span>
     </section>
   )

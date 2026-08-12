@@ -1,9 +1,10 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
-import { Show, onMount } from "solid-js"
+import { For, Show, onCleanup, onMount } from "solid-js"
 import type { DiskFilePreview, DiskScanNode } from "@/context/platform"
 import { formatBytes, formatLastChanged } from "./format"
 import type { SurfacePhase } from "./motion"
+import { StorageAccountingFacts } from "./StorageAccounting"
 
 const focusable =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -11,8 +12,8 @@ const focusable =
 function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported" }>) {
   if (preview.reason === "too-large") {
     return {
-      title: "This image is too large for instant preview",
-      detail: "DiskLizard caps in-app image previews at 5 MB to keep inspection fast and memory use predictable.",
+      title: "This file is too large for instant preview",
+      detail: "DiskLizard bounds embedded previews to keep inspection fast and memory use predictable. Open it in its default app or Quick Look instead.",
     }
   }
   if (preview.reason === "binary") {
@@ -39,11 +40,24 @@ export function PreviewDialog(props: {
   onPrevious?: () => void
   onNext?: () => void
   onReveal: () => void
+  systemPreviewLabel?: string
+  onSystemPreview?: () => void
   onOpen: () => void
 }) {
   let panel!: HTMLDivElement
+  let restoreFocus: HTMLElement | undefined
+  const largestChildren = () =>
+    [...props.node.children]
+      .filter((child) => !child.isOther)
+      .toSorted((a, b) => b.size - a.size)
+      .slice(0, 5)
 
-  onMount(() => queueMicrotask(() => panel.focus({ preventScroll: true })))
+  onMount(() => {
+    const active = document.activeElement
+    restoreFocus = active instanceof HTMLElement ? active : undefined
+    queueMicrotask(() => panel.focus({ preventScroll: true }))
+  })
+  onCleanup(() => restoreFocus?.isConnected && restoreFocus.focus({ preventScroll: true }))
 
   const trapFocus = (event: KeyboardEvent) => {
     if (event.target === panel && event.key === "ArrowLeft" && props.onPrevious) {
@@ -94,14 +108,17 @@ export function PreviewDialog(props: {
       >
         <header class="flex shrink-0 items-start gap-3 border-b border-border-weaker-base px-4 py-3.5 sm:px-5">
           <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.72_0.12_176/0.14)]">
-            <Icon name={props.preview?.kind === "image" ? "photo" : "code-lines"} class="size-4" />
+            <Icon
+              name={props.node.isDir ? "folder" : props.preview?.kind === "image" ? "photo" : "open-file"}
+              class="size-4"
+            />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Private local preview</p>
+            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Quick preview</p>
             <h2 id="preview-title" class="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
               {props.node.name}
             </h2>
-            <p id="preview-description" class="mt-0.5 truncate font-mono text-9-regular text-text-weaker">
+            <p id="preview-description" class="mt-0.5 truncate font-mono text-10-regular text-text-weaker">
               {props.node.path}
             </p>
           </div>
@@ -120,7 +137,7 @@ export function PreviewDialog(props: {
             <div class="grid size-full place-items-center" role="status" aria-live="polite">
               <div class="flex flex-col items-center gap-3 text-text-weak">
                 <span class="dl-spin size-5 rounded-full border border-border-weaker-base border-t-current" />
-                <p class="text-11-regular">Preparing a bounded preview…</p>
+                <p class="text-11-regular">Loading preview…</p>
               </div>
             </div>
           </Show>
@@ -139,7 +156,55 @@ export function PreviewDialog(props: {
             )}
           </Show>
 
-          <Show when={!props.loading && !props.error && props.preview}>
+          <Show when={!props.loading && !props.error && props.node.isDir}>
+            <div class="flex size-full min-h-0 flex-col overflow-auto p-5 sm:p-8">
+              <div class="mx-auto w-full max-w-2xl">
+                <div class="flex items-start gap-4 rounded-2xl bg-surface-raised-base/70 p-5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
+                  <span class="dl-accent-text grid size-11 shrink-0 place-items-center rounded-xl bg-background-base/70">
+                    <Icon name="folder" class="size-5" />
+                  </span>
+                  <div class="min-w-0">
+                    <h3 class="text-14-semibold text-text-strong">Folder summary</h3>
+                    <p class="mt-1 text-11-regular leading-relaxed text-text-weak">
+                      {props.node.children.length.toLocaleString()} immediate {props.node.children.length === 1 ? "item" : "items"}
+                      {" · "}
+                      {formatBytes(props.node.size)} in this scanned folder.
+                    </p>
+                    <p class="mt-2 text-10-regular leading-relaxed text-text-weaker">
+                      This summary uses the current scan only. Open the folder to browse its map, or use Quick Look for the
+                      system view.
+                    </p>
+                  </div>
+                </div>
+
+                <Show when={largestChildren().length}>
+                  <section class="mt-6" aria-labelledby="preview-largest-items">
+                    <div class="flex items-center justify-between gap-4">
+                      <h3 id="preview-largest-items" class="text-10-semibold uppercase tracking-[0.13em] text-text-weaker">
+                        Largest visible items
+                      </h3>
+                      <span class="text-10-regular tabular-nums text-text-weaker">
+                        {formatBytes(props.node.size)} total
+                      </span>
+                    </div>
+                    <ul class="mt-2 divide-y divide-border-weaker-base rounded-xl bg-surface-raised-base/45 px-4 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
+                      <For each={largestChildren()}>
+                        {(child) => (
+                          <li class="flex min-w-0 items-center gap-3 py-3">
+                            <Icon name={child.isDir ? "folder" : "open-file"} class="size-3.5 shrink-0 text-icon-weak" />
+                            <span class="min-w-0 flex-1 truncate text-11-semibold text-text-strong">{child.name}</span>
+                            <span class="shrink-0 text-10-semibold tabular-nums text-text-weak">{formatBytes(child.size)}</span>
+                          </li>
+                        )}
+                      </For>
+                    </ul>
+                  </section>
+                </Show>
+              </div>
+            </div>
+          </Show>
+
+          <Show when={!props.loading && !props.error && !props.node.isDir && props.preview}>
             {(loaded) => {
               const preview = loaded()
               if (preview.kind === "image") {
@@ -176,6 +241,22 @@ export function PreviewDialog(props: {
                   </div>
                 )
               }
+              if (preview.kind === "pdf") {
+                return (
+                  <iframe
+                    class="size-full border-0 bg-surface-raised-strong"
+                    src={preview.dataUrl}
+                    title={`PDF preview of ${props.node.name}`}
+                    tabIndex={-1}
+                    onFocus={() => {
+                      // Embedded PDF viewers own a separate browsing context. Keep their
+                      // pointer preview available, but return keyboard focus to this modal
+                      // so Tab cannot escape the dialog's focus trap.
+                      queueMicrotask(() => panel.isConnected && panel.focus({ preventScroll: true }))
+                    }}
+                  />
+                )
+              }
               const copy = unsupportedCopy(preview)
               return (
                 <div class="grid size-full place-items-center p-8 text-center">
@@ -204,7 +285,9 @@ export function PreviewDialog(props: {
               aria-label="Preview previous file"
             />
             <span class="min-w-12 text-center text-9-regular tabular-nums text-text-weaker">
-              {props.position} of {props.total}
+              <Show when={!props.node.isDir} fallback="Folder">
+                {props.position} of {props.total}
+              </Show>
             </span>
             <Button
               class="dl-touch-target"
@@ -225,6 +308,7 @@ export function PreviewDialog(props: {
                 {(changed) => `${formatLastChanged(changed())} · Nothing uploaded`}
               </Show>
             </p>
+            <StorageAccountingFacts node={props.node} class="mt-1" />
           </div>
           <Button
             class="dl-touch-target"
@@ -235,8 +319,19 @@ export function PreviewDialog(props: {
           >
             Reveal
           </Button>
+          <Show when={props.onSystemPreview && props.systemPreviewLabel}>
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="secondary"
+              icon="eye"
+              onClick={props.onSystemPreview}
+            >
+              {props.systemPreviewLabel}
+            </Button>
+          </Show>
           <Button class="dl-touch-target" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
-            Open file
+            Open in default app
           </Button>
         </footer>
       </div>

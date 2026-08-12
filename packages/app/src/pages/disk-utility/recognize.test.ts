@@ -7,7 +7,13 @@ import {
   computeDormantDeveloperSummary,
   computeReclaim,
   developerArtifactContext,
+  developerArtifactCleanupReadiness,
   fileKind,
+  artifactEcosystemLabel,
+  isDeveloperArtifactOlderThan,
+  isSmartCleanupEligible,
+  matchesArtifactEcosystem,
+  matchesDeveloperArtifact,
 } from "./recognize"
 
 const dir = (name: string, size: number, children: DiskScanNode[] = []): DiskScanNode => ({
@@ -65,6 +71,25 @@ describe("recognize — directory rules", () => {
 })
 
 describe("recognize — developer storage", () => {
+  it("attaches evidence-backed ecosystem, confidence, and safe-bulk posture", () => {
+    expect(recognize(dir("node_modules", 100))).toMatchObject({
+      ecosystem: "node",
+      confidence: "verified",
+      cleanup: "eligible",
+    })
+    expect(recognize(dir("__pycache__", 100))).toMatchObject({
+      ecosystem: "python",
+      confidence: "verified",
+      cleanup: "eligible",
+    })
+    expect(recognize(at(dir("repository", 100), "/Users/dev/.m2/repository"))).toMatchObject({
+      ecosystem: "jvm",
+      confidence: "verified",
+      cleanup: "eligible",
+    })
+    expect(artifactEcosystemLabel("cpp")).toBe("C / C++")
+  })
+
   it("distinguishes build output and toolchain caches", () => {
     expect(recognize(dir("target", 100, [dir("debug", 90)]))).toMatchObject({
       developer: "build-output",
@@ -95,6 +120,21 @@ describe("recognize — developer storage", () => {
     expect(recognize(cmake)).toMatchObject({ safety: "regenerable", tag: "Generated build output" })
     expect(recognize(gradleHome)).toMatchObject({ safety: "system", tag: "Gradle user data" })
     expect(developerArtifactContext(rust).disposition).toBe("Rebuildable")
+
+    expect(recognize(rust)).toMatchObject({ ecosystem: "rust", confidence: "verified", cleanup: "eligible" })
+    expect(recognize(maven)).toMatchObject({ ecosystem: "jvm", confidence: "likely", cleanup: "review" })
+    expect(recognize(gradle)).toMatchObject({ ecosystem: "jvm", confidence: "likely", cleanup: "review" })
+    expect(recognize(cmake)).toMatchObject({ ecosystem: "cpp", confidence: "verified", cleanup: "eligible" })
+  })
+
+  it("keeps generic build-looking names in review rather than smart-bulk cleanup", () => {
+    for (const name of ["target", "build", "dist", "out"] as const) {
+      const node = dir(name, 100)
+      const result = recognize(node)
+      expect(result).toMatchObject({ ecosystem: "generic", confidence: "ambiguous", cleanup: "review" })
+      expect(developerArtifactCleanupReadiness(result)).toBe("review")
+      expect(isSmartCleanupEligible(node, result)).toBe(false)
+    }
   })
 
   it("protects tool roots and generic folder names while allowing precise disposable subtrees", () => {
@@ -107,6 +147,13 @@ describe("recognize — developer storage", () => {
     expect(isReclaimable(recognize(at(dir("cache", 100), "/Users/dev/.bun/install/cache")))).toBe(true)
     expect(isReclaimable(recognize(at(dir("packages", 100), "C:\\Users\\dev\\.nuget\\packages")))).toBe(true)
     expect(isReclaimable(recognize(dir("CoreSimulator", 100)))).toBe(false)
+  })
+
+  it("does not preselect an otherwise eligible artifact that contains shared physical storage", () => {
+    const sharedDependencies = dir("node_modules", 100, [
+      { ...file("shared.js", 100, "js"), hardLink: "primary" as const },
+    ])
+    expect(isSmartCleanupEligible(sharedDependencies)).toBe(false)
   })
 
   it("surfaces coding-agent data without calling it reclaimable", () => {
@@ -183,6 +230,31 @@ describe("recognize — shared and hidden storage", () => {
     const linked = { ...file("archive.bin", 4096, "bin"), hardLink: "primary" as const }
     expect(recognize(linked)).toMatchObject({ safety: "system", tag: "Hard-linked file" })
     expect(isReclaimable(recognize(linked))).toBe(false)
+  })
+
+  it("keeps clone-accounted files and their cache containers out of reclaim promises", () => {
+    const clone = {
+      ...file("cached.bin", 100, "bin"),
+      path: "/Users/dev/.cache/cached.bin",
+      clone: { state: "shares-all-blocks" as const, cloneId: "clone-1", reportedFullCloneCount: 2 },
+      cloneAccounting: "primary" as const,
+    }
+    const cache = at(dir(".cache", 100, [clone]), "/Users/dev/.cache")
+
+    expect(recognize(clone)).toMatchObject({ safety: "unknown", tag: "APFS clone group" })
+    expect(isReclaimable(recognize(clone))).toBe(false)
+    expect(computeReclaim(cache)).toEqual({ totalBytes: 0, totalCount: 0, buckets: [] })
+  })
+
+  it("keeps cache containers with an external hard-link peer out of reclaim promises", () => {
+    const linked = {
+      ...file("cached.bin", 100, "bin"),
+      path: "/Users/dev/.cache/cached.bin",
+      hardLink: "primary" as const,
+    }
+    const cache = at(dir(".cache", 100, [linked]), "/Users/dev/.cache")
+
+    expect(computeReclaim(cache)).toEqual({ totalBytes: 0, totalCount: 0, buckets: [] })
   })
 })
 
@@ -312,6 +384,35 @@ describe("computeDeveloperSummary — scan-wide developer index", () => {
 
     expect(dormant).toMatchObject({ bytes: 40, count: 1 })
     expect(dormant.items.map(({ node }) => node.name)).toEqual(["node_modules"])
+  })
+
+  it("filters the developer inventory by ecosystem, bulk-cleanup posture, and explicit change age", () => {
+    const now = Date.UTC(2026, 7, 9)
+    const oldNodeModules = {
+      ...at(dir("node_modules", 80), "/work/web/node_modules"),
+      modifiedAt: now - 45 * 24 * 60 * 60 * 1_000,
+    }
+    const genericBuild = {
+      ...at(dir("build", 50), "/work/archive/build"),
+      modifiedAt: now - 45 * 24 * 60 * 60 * 1_000,
+    }
+    const currentPython = {
+      ...at(dir(".pytest_cache", 20), "/work/api/.pytest_cache"),
+      modifiedAt: now - 3 * 24 * 60 * 60 * 1_000,
+    }
+    const summary = computeDeveloperSummary(dir("root", 150, [oldNodeModules, genericBuild, currentPython]))
+    const byName = new Map(summary.items.map((item) => [item.node.name, item]))
+    const nodeModules = byName.get("node_modules")!
+    const build = byName.get("build")!
+    const pytest = byName.get(".pytest_cache")!
+
+    expect(matchesDeveloperArtifact(nodeModules, { ecosystem: "node", readiness: "eligible", minAgeDays: 30 }, now)).toBe(true)
+    expect(matchesDeveloperArtifact(build, { readiness: "review", minAgeDays: 30 }, now)).toBe(true)
+    expect(matchesDeveloperArtifact(build, { readiness: "eligible" }, now)).toBe(false)
+    expect(matchesDeveloperArtifact(pytest, { ecosystem: "python", minAgeDays: 30 }, now)).toBe(false)
+    expect(matchesArtifactEcosystem(nodeModules.recognition, "all")).toBe(true)
+    expect(isDeveloperArtifactOlderThan(oldNodeModules, 30, now)).toBe(true)
+    expect(isDeveloperArtifactOlderThan({ ...oldNodeModules, modifiedAt: undefined }, 30, now)).toBe(false)
   })
 })
 

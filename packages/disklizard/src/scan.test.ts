@@ -1,11 +1,16 @@
 import { afterEach, describe, expect, it } from "bun:test"
-import { chmod, link, mkdir, mkdtemp, readdir, rm, stat, symlink, truncate, utimes, writeFile } from "node:fs/promises"
+import { chmod, link, lstat, mkdir, mkdtemp, readdir, rm, stat, symlink, truncate, utimes, writeFile } from "node:fs/promises"
 import { platform, tmpdir } from "node:os"
 import { join } from "node:path"
 import {
   assertSafeDeletionPath,
+  canClaimDeveloperArtifactInventoryDirectory,
+  defaultScanConcurrency,
   mountExclusions,
+  parseApfsSnapshotPlist,
+  parseApfsSnapshotOutput,
   parseDfOutput,
+  parseMacDriveInfoPlist,
   parseWindowsDriveOutput,
   scanPath,
   scanPathSync,
@@ -32,6 +37,13 @@ async function fixture() {
 }
 
 describe("disk scanner", () => {
+  it("uses a conservative portable metadata-I/O default", () => {
+    expect(defaultScanConcurrency(1)).toBe(4)
+    expect(defaultScanConcurrency(4)).toBe(6)
+    expect(defaultScanConcurrency(8)).toBe(10)
+    expect(defaultScanConcurrency(128)).toBe(12)
+  })
+
   it("accounts for large system and trash entries instead of hiding them", async () => {
     const root = await fixture()
     const result = await scanPathSync(root, {
@@ -193,16 +205,76 @@ describe("disk scanner", () => {
     ])
 
     expect(worker.size).toBe(local.size)
+    expect(worker).toEqual(local)
     expect(worker.children.map((child) => child.hardLink).sort((a, b) => String(a).localeCompare(String(b)))).toEqual([
       "primary",
       "secondary",
     ])
     expect(local.size).toBe(expectedPhysical)
+    expect(local.logicalSize).toBe(stats.size * 2)
+    expect(worker.logicalSize).toBe(stats.size * 2)
+    expect(local.sharedStorageEvidence).toBe("partial")
+    expect(worker.sharedStorageEvidence).toBe("partial")
+    expect(local.children.every((child) => child.sharedStorageEvidence === undefined)).toBe(true)
     expect(local.children.map((child) => child.hardLink).sort((a, b) => String(a).localeCompare(String(b)))).toEqual([
       "primary",
       "secondary",
     ])
+    expect(local.children.find((child) => child.name === "parallel.bin")).toMatchObject({
+      hardLink: "primary",
+      size: expectedPhysical,
+    })
+    expect(local.children.find((child) => child.name === "primary.bin")).toMatchObject({
+      hardLink: "secondary",
+      size: 0,
+      logicalSize: stats.size,
+    })
     expect(logical.size).toBe(stats.size * 2)
+  })
+
+  it("does not reassign a hard-link primary when the retained tree is incomplete", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-pruned-hardlinks-"))
+    roots.push(root)
+    const first = join(root, "first.bin")
+    await writeFile(first, new Uint8Array(4096))
+    await Promise.all([link(first, join(root, "second.bin")), link(first, join(root, "third.bin"))])
+    const stats = await stat(first)
+    const expectedPhysical = platform() === "win32" ? stats.size : stats.blocks * 512
+    const options = { sizeMode: "physical" as const, maxChildren: 1, concurrency: 4 }
+
+    const [local, worker] = await Promise.all([
+      scanPathSync(root, options),
+      scanPath(root, { ...options, useWorker: true }),
+    ])
+
+    // Only the charged member survives the cutoff; the filesystem says there
+    // are three pathnames, so a lexical reallocation would be unproven.
+    for (const result of [local, worker]) {
+      expect(result.children).toHaveLength(1)
+      expect(result.children[0]).toMatchObject({ hardLink: "primary", size: expectedPhysical })
+      expect(result.size).toBe(expectedPhysical)
+      expect(result.logicalSize).toBe(stats.size * 3)
+    }
+  })
+
+  it("omits unavailable clone evidence rather than guessing from identical file content", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-clone-evidence-"))
+    roots.push(root)
+    await Promise.all([
+      writeFile(join(root, "copy-a.bin"), new Uint8Array(37).fill(9)),
+      writeFile(join(root, "copy-b.bin"), new Uint8Array(37).fill(9)),
+    ])
+
+    const [local, worker] = await Promise.all([
+      scanPathSync(root, { sizeMode: "logical" }),
+      scanPath(root, { sizeMode: "logical", useWorker: true }),
+    ])
+
+    expect(worker).toEqual(local)
+    expect(local.size).toBe(74)
+    expect(local.cloneMetadata).toEqual({ state: "unavailable", reason: "scanner" })
+    expect(local.children.every((child) => child.clone === undefined)).toBe(true)
+    expect(JSON.stringify(local)).not.toContain('"clone"')
   })
 
   it("does not mistake a sparse file's apparent length for occupied space", async () => {
@@ -258,6 +330,277 @@ describe("disk scanner", () => {
     expect(local.size).toBe(37)
   })
 
+  it("indexes recognized developer artifacts beyond the visual map depth with conservative cleanup evidence", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-inventory-"))
+    roots.push(root)
+    const project = join(root, "one", "two", "three", "project")
+    const modules = join(project, "node_modules", "pkg")
+    const rustTarget = join(project, "target", "debug")
+    const genericBuild = join(project, "build")
+    await Promise.all([
+      mkdir(modules, { recursive: true }),
+      mkdir(rustTarget, { recursive: true }),
+      mkdir(genericBuild, { recursive: true }),
+    ])
+    await Promise.all([
+      writeFile(join(modules, "index.js"), new Uint8Array(13)),
+      writeFile(join(project, "target", ".rustc_info.json"), new Uint8Array(7)),
+      writeFile(join(rustTarget, "app"), new Uint8Array(17)),
+      writeFile(join(genericBuild, "artifact.bin"), new Uint8Array(19)),
+    ])
+
+    const options = {
+      maxDepth: 0,
+      sizeMode: "logical" as const,
+      developerArtifactInventory: { maxItems: 16 },
+    }
+    const [local, publicScan] = await Promise.all([scanPathSync(root, options), scanPath(root, { ...options, useWorker: true })])
+
+    expect(publicScan).toEqual(local)
+    const inventory = local.developerArtifactInventory
+    expect(inventory?.status).toMatchObject({ state: "complete", maxItems: 16, matchedDirectories: 3, truncated: false })
+    expect(inventory?.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: join(project, "node_modules"),
+          size: 13,
+          kind: "dependencies",
+          ecosystem: "node",
+          confidence: "verified",
+          cleanup: "eligible",
+          inventoryOnly: true,
+        }),
+        expect.objectContaining({
+          path: join(project, "target"),
+          size: 24,
+          kind: "build-output",
+          ecosystem: "rust",
+          confidence: "verified",
+          cleanup: "eligible",
+          signatures: [".rustc_info.json", "debug"],
+        }),
+        expect.objectContaining({
+          path: genericBuild,
+          size: 19,
+          kind: "build-output",
+          ecosystem: "generic",
+          confidence: "ambiguous",
+          cleanup: "review",
+        }),
+      ]),
+    )
+    const modulesArtifact = inventory?.items.find((item) => item.path === join(project, "node_modules"))
+    expect(modulesArtifact?.directoryIdentity).toMatchObject({
+      platform: platform() === "win32" ? "windows" : "posix",
+      device: expect.any(String),
+      fileId: expect.any(String),
+      modifiedAt: expect.any(Number),
+    })
+  })
+
+  it("caps a deep developer artifact inventory while reporting omitted and skipped scope", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-cap-"))
+    roots.push(root)
+    const excluded = join(root, "excluded")
+    const real = join(root, "real")
+    await Promise.all([
+      mkdir(join(root, "a", "node_modules"), { recursive: true }),
+      mkdir(join(root, "b", "node_modules"), { recursive: true }),
+      mkdir(join(root, "c", "node_modules"), { recursive: true }),
+      mkdir(join(excluded, "node_modules"), { recursive: true }),
+      mkdir(join(real, "node_modules"), { recursive: true }),
+    ])
+    await Promise.all([
+      writeFile(join(root, "a", "node_modules", "a.js"), new Uint8Array(1)),
+      writeFile(join(root, "b", "node_modules", "b.js"), new Uint8Array(1)),
+      writeFile(join(root, "c", "node_modules", "c.js"), new Uint8Array(1)),
+      writeFile(join(excluded, "node_modules", "excluded.js"), new Uint8Array(1)),
+      writeFile(join(real, "node_modules", "real.js"), new Uint8Array(1)),
+    ])
+    if (platform() !== "win32") await symlink(real, join(root, "real-alias"), "dir")
+
+    const result = await scanPathSync(root, {
+      maxDepth: 0,
+      sizeMode: "logical",
+      excludePaths: [excluded],
+      developerArtifactInventory: { maxItems: 2 },
+    })
+    const status = result.developerArtifactInventory?.status
+
+    // The excluded subtree is intentionally not a match; the remaining four
+    // material directories are observed, while only the bounded first two are retained.
+    expect(status).toMatchObject({
+      state: "partial",
+      maxItems: 2,
+      matchedDirectories: 4,
+      truncated: true,
+      excludedCount: 1,
+    })
+    expect(result.developerArtifactInventory?.items).toHaveLength(2)
+    if (platform() !== "win32") {
+      expect(status?.skippedSymlinkCount).toBe(1)
+      expect(status?.skippedSymlinkSamplePaths).toEqual([join(root, "real-alias")])
+    }
+  })
+
+  it("retains deterministic developer artifact top-K results in UTF-16 path order", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-top-k-"))
+    roots.push(root)
+    // JavaScript sorts U+1F600 by its high surrogate, before U+E000. This
+    // regression prevents locale-sensitive ordering from diverging from the
+    // native scanner under parallel discovery.
+    const emoji = join(root, "😀", "node_modules")
+    const privateUse = join(root, "\u{e000}", "node_modules")
+    for (const directory of [emoji, privateUse]) {
+      await mkdir(directory, { recursive: true })
+      await writeFile(join(directory, "index.js"), new Uint8Array(1))
+    }
+
+    for (let index = 0; index < 6; index++) {
+      const result = await scanPathSync(root, {
+        maxDepth: 0,
+        sizeMode: "logical",
+        developerArtifactInventory: { maxItems: 1 },
+      })
+      expect(result.developerArtifactInventory?.status).toMatchObject({
+        matchedDirectories: 2,
+        truncated: true,
+      })
+      expect(result.developerArtifactInventory?.items.map((item) => item.path)).toEqual([emoji])
+    }
+  })
+
+  it("fails closed when developer inventory directory identity scope is unavailable", () => {
+    const claimed = new Set(["7:1"])
+    // Root identity unavailable or zero: never establish child scope from an
+    // arbitrary descendant device.
+    expect(canClaimDeveloperArtifactInventoryDirectory(false, undefined, claimed, 7n, 2n)).toBe(false)
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 0n, claimed, 7n, 2n)).toBe(false)
+    // A child without dev/inode and a cross-device child are both coverage
+    // boundaries, not finite-depth recursive fallbacks.
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 7n, claimed, 0n, 2n)).toBe(false)
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 7n, claimed, 7n, 0n)).toBe(false)
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 7n, claimed, 8n, 2n)).toBe(false)
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 7n, claimed, 7n, 1n)).toBe(false)
+    expect(canClaimDeveloperArtifactInventoryDirectory(true, 7n, claimed, 7n, 2n)).toBe(true)
+  })
+
+  it("keeps the visual map intact when developer inventory identity scope ends", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-inventory-scope-map-"))
+    roots.push(root)
+    const project = join(root, "project")
+    const modules = join(project, "node_modules")
+    await mkdir(modules, { recursive: true })
+    await Promise.all([
+      writeFile(join(root, "visible.bin"), new Uint8Array(3)),
+      writeFile(join(modules, "index.js"), new Uint8Array(17)),
+    ])
+
+    const mapOptions = { maxDepth: 0, sizeMode: "logical" as const }
+    const baseline = await scanPathSync(root, mapOptions)
+    const mapShape = (node: { size: number; logicalSize?: number; children: readonly unknown[] }) => ({
+      size: node.size,
+      logicalSize: node.logicalSize,
+      children: node.children,
+    })
+    const actualIdentity = async (targetPath: string) => {
+      const info = await lstat(targetPath, { bigint: true })
+      return {
+        isDirectory: () => info.isDirectory(),
+        isSymbolicLink: () => info.isSymbolicLink(),
+        dev: info.dev,
+        ino: info.ino,
+        mtimeMs: info.mtimeMs,
+      }
+    }
+    const inventoryOptions = (identityReader: typeof actualIdentity) =>
+      ({
+        ...mapOptions,
+        developerArtifactInventory: { maxItems: 16 },
+        // Private scanner test seam: production callers always use lstat.
+        inventoryIdentityReader: identityReader,
+      }) as Parameters<typeof scanPathSync>[1]
+
+    const rootIdentityUnavailable = await scanPathSync(
+      root,
+      inventoryOptions(async (targetPath) => {
+        const info = await actualIdentity(targetPath)
+        return targetPath === root ? { ...info, ino: 0n } : info
+      }),
+    )
+    expect(mapShape(rootIdentityUnavailable)).toEqual(mapShape(baseline))
+    expect(rootIdentityUnavailable.developerArtifactInventory).toMatchObject({
+      items: [],
+      status: {
+        state: "partial",
+        skippedDirectoryCount: 1,
+        skippedDirectorySamplePaths: [root],
+      },
+    })
+
+    const childIdentityUnavailable = await scanPathSync(
+      root,
+      inventoryOptions(async (targetPath) => {
+        const info = await actualIdentity(targetPath)
+        return targetPath === project ? { ...info, ino: 0n } : info
+      }),
+    )
+    expect(mapShape(childIdentityUnavailable)).toEqual(mapShape(baseline))
+    expect(childIdentityUnavailable.developerArtifactInventory).toMatchObject({
+      items: [],
+      status: {
+        state: "partial",
+        skippedDirectoryCount: 1,
+        skippedDirectorySamplePaths: [project],
+      },
+    })
+  })
+
+  it("marks a retained deep artifact partial when sealing its direct identity fails", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-inventory-identity-seal-"))
+    roots.push(root)
+    const modules = join(root, "project", "node_modules")
+    await mkdir(modules, { recursive: true })
+    await writeFile(join(modules, "index.js"), new Uint8Array(9))
+
+    const actualIdentity = async (targetPath: string) => {
+      const info = await lstat(targetPath, { bigint: true })
+      return {
+        isDirectory: () => info.isDirectory(),
+        isSymbolicLink: () => info.isSymbolicLink(),
+        dev: info.dev,
+        ino: info.ino,
+        mtimeMs: info.mtimeMs,
+      }
+    }
+    let moduleReads = 0
+    const result = await scanPathSync(
+      root,
+      {
+        maxDepth: 0,
+        sizeMode: "logical",
+        developerArtifactInventory: { maxItems: 16 },
+        // Simulate a directory which was safe to recurse into but changed
+        // before the candidate's direct stale-delete identity was captured.
+        inventoryIdentityReader: async (targetPath: string) => {
+          const info = await actualIdentity(targetPath)
+          if (targetPath === modules && ++moduleReads >= 2) return { ...info, ino: 0n }
+          return info
+        },
+      } as Parameters<typeof scanPathSync>[1],
+    )
+
+    const inventory = result.developerArtifactInventory
+    expect(inventory?.items).toHaveLength(1)
+    expect(inventory?.items[0]).toMatchObject({ path: modules })
+    expect(inventory?.items[0]).not.toHaveProperty("directoryIdentity")
+    expect(inventory?.status).toMatchObject({
+      state: "partial",
+      unavailableDirectoryIdentityCount: 1,
+      unavailableDirectoryIdentitySamplePaths: [modules],
+    })
+  })
+
   it("reports unreadable subtrees instead of silently presenting a complete scan", async () => {
     if (platform() === "win32") return
     const root = await mkdtemp(join(tmpdir(), "disklizard-access-"))
@@ -283,6 +626,12 @@ describe("disk scanner", () => {
       expect(worker).toEqual(local)
       expect(local.size).toBe(23)
       expect(local.scanIssues).toEqual({ unreadableCount: 1, samplePaths: [blocked] })
+      const inventory = await scanPathSync(root, { sizeMode: "logical", developerArtifactInventory: true })
+      expect(inventory.developerArtifactInventory?.status).toMatchObject({
+        state: "partial",
+        unreadableCount: 1,
+        unreadableSamplePaths: [blocked],
+      })
     } finally {
       await chmod(blocked, 0o700)
     }
@@ -396,6 +745,111 @@ describe("disk scanner", () => {
     )
 
     expect(counts).toEqual([24, 24])
+  })
+})
+
+describe("macOS storage facts", () => {
+  it("keeps APFS shared capacity distinct from ordinary available space", () => {
+    expect(
+      parseMacDriveInfoPlist(`
+        <plist><dict>
+          <key>FilesystemType</key><string>apfs</string>
+          <key>APFSContainerFree</key><integer>123456</integer>
+        </dict></plist>
+      `),
+    ).toEqual({ filesystem: "apfs", sharedFree: 123456 })
+  })
+
+  it("explains snapshot pressure without inventing a byte size", () => {
+    const facts = parseApfsSnapshotOutput(`
+Snapshot for disk3s1 (2 found)
+|
++-- one
+    Name:        com.apple.TimeMachine.2026-08-10
+    Purgeable:   Yes
++-- two
+    Name:        com.apple.os.update
+    Purgeable:   No
+`)
+    expect(facts).toEqual({
+      snapshotCount: 2,
+      purgeableSnapshotCount: 1,
+      timeMachineSnapshotCount: 1,
+      apfsSnapshots: [
+        { name: "com.apple.TimeMachine.2026-08-10", purgeable: true, isTimeMachine: true },
+        { name: "com.apple.os.update", purgeable: false },
+      ],
+    })
+  })
+
+  it("keeps bounded, read-only APFS snapshot identities from diskutil plist output", () => {
+    const facts = parseApfsSnapshotPlist(`
+      <plist version="1.0"><dict><key>Snapshots</key><array>
+        <dict>
+          <key>SnapshotName</key><string>com.apple.TimeMachine.2026-08-10 &amp; 11</string>
+          <key>SnapshotUUID</key><string>F8D5D41E-7A4E-4F53-90EC-4E516CA98003</string>
+          <key>SnapshotPurgeable</key><true/>
+        </dict>
+        <dict>
+          <key>Name</key><string>com.apple.os.update</string>
+          <key>UUID</key><string>0847BBE4-0B21-458E-82A5-7AF1C2C4BCB4</string>
+          <key>Purgeable</key><string>No</string>
+        </dict>
+      </array></dict></plist>
+    `)
+    expect(facts).toEqual({
+      snapshotCount: 2,
+      purgeableSnapshotCount: 1,
+      timeMachineSnapshotCount: 1,
+      apfsSnapshots: [
+        {
+          name: "com.apple.TimeMachine.2026-08-10 & 11",
+          uuid: "F8D5D41E-7A4E-4F53-90EC-4E516CA98003",
+          purgeable: true,
+          isTimeMachine: true,
+        },
+        {
+          name: "com.apple.os.update",
+          uuid: "0847BBE4-0B21-458E-82A5-7AF1C2C4BCB4",
+          purgeable: false,
+        },
+      ],
+    })
+  })
+
+  it("reports an empty snapshot list without inventing storage bytes", () => {
+    expect(parseApfsSnapshotOutput("Snapshot for disk3s1 (0 found)\n")).toEqual({
+      snapshotCount: 0,
+      apfsSnapshots: [],
+    })
+  })
+
+  it("leaves an unrecognized human snapshot status unknown", () => {
+    expect(
+      parseApfsSnapshotOutput(`
+Snapshot for disk3s1 (1 found)
+|
++-- one
+    Name:        com.apple.os.update
+    Purgeable:   Unknown
+`),
+    ).toEqual({
+      snapshotCount: 1,
+      apfsSnapshots: [{ name: "com.apple.os.update" }],
+    })
+  })
+
+  it("bounds snapshot identity evidence while retaining the full reported count", () => {
+    const snapshots = Array.from(
+      { length: 50 },
+      (_, index) => `<dict><key>SnapshotName</key><string>snapshot-${index}</string></dict>`,
+    ).join("")
+    const facts = parseApfsSnapshotPlist(`<plist><array>${snapshots}</array></plist>`)
+
+    expect(facts.snapshotCount).toBe(50)
+    expect(facts.apfsSnapshots).toHaveLength(48)
+    expect(facts.apfsSnapshots?.[0]).toEqual({ name: "snapshot-0" })
+    expect(facts.apfsSnapshots?.[47]).toEqual({ name: "snapshot-47" })
   })
 })
 

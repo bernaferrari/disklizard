@@ -1,18 +1,33 @@
 import { createHash, randomUUID } from "node:crypto"
-import { mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises"
+import { lstat, mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { deserialize, serialize } from "node:v8"
 import type ParcelWatcher from "@parcel/watcher"
+import {
+  MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
+  normalizeDeveloperArtifactInventoryOptions,
+} from "../../../disklizard/src/developer-artifacts"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
 
-const SNAPSHOT_SCHEMA = 2
+// Clone-group normalization changes physical accounting. Old persisted trees
+// cannot safely be restored as if they had been produced by this model.
+// v5 added direct artifact-directory identities used to guard deep inventory
+// cleanup; v6 ensures identity-less native Windows inventories are not
+// restored before desktop-side bigint-lstat enrichment can run. v7 makes the
+// metadata point at an immutable tree generation, so a process interruption
+// cannot pair an older checkpoint with a replacement tree.
+const SNAPSHOT_SCHEMA = 7
 const MAX_DELTA_EVENTS = 2_000
 const MAX_DELTA_ROOTS = 32
 const MAX_SNAPSHOTS = 8
+const MAX_CACHED_TREE_NODES = 500_000
+const CHECKPOINT_FILE_NAME = /^events-\d+-[0-9a-f-]+\.snapshot$/
+const TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.bin$/
 
 type Watcher = Pick<typeof ParcelWatcher, "getEventsSince" | "subscribe" | "writeSnapshot">
 type WatchEvent = ParcelWatcher.Event
 type Scan = (targetPath: string, options: ScanOptions) => Promise<DiskNode>
+type ScanOwner = number | string
 
 type SnapshotMetadata = {
   schema: number
@@ -20,10 +35,21 @@ type SnapshotMetadata = {
   optionsHash: string
   savedAt: number
   checkpoint: string
+  tree: string
+}
+
+type CheckpointLease = {
+  path: string
+  release: () => void
+}
+
+type LoadedSnapshot = {
+  root: DiskNode
+  checkpoint: CheckpointLease
 }
 
 type ActiveScan = {
-  owner: number
+  owner: ScanOwner
   rootPath: string
   options: ScanOptions
   root?: DiskNode
@@ -70,7 +96,320 @@ function isAncestor(parent: string, child: string) {
   return parent !== child && isWithin(parent, child)
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false
+  const prototype = Object.getPrototypeOf(value)
+  return prototype === Object.prototype || prototype === null
+}
+
+function isNonNegativeFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+}
+
+function isNonNegativeSafeInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0
+}
+
+function isNonNegativeInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value) && value >= 0
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string")
+}
+
+function comparableAbsolutePath(value: unknown): string | undefined {
+  if (typeof value !== "string" || value.length === 0 || value.includes("\0") || !path.isAbsolute(value)) return undefined
+  try {
+    return comparable(value)
+  } catch {
+    return undefined
+  }
+}
+
+function isScopedPath(value: unknown, rootPath: string) {
+  const candidate = comparableAbsolutePath(value)
+  return candidate !== undefined && isWithin(rootPath, candidate)
+}
+
+function isScopedPathArray(value: unknown, rootPath: string) {
+  return isStringArray(value) && value.every((entry) => isScopedPath(entry, rootPath))
+}
+
+function isDeveloperArtifactDirectoryIdentity(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    (value.platform === "posix" || value.platform === "windows") &&
+    typeof value.device === "string" &&
+    value.device.length > 0 &&
+    value.device !== "0" &&
+    typeof value.fileId === "string" &&
+    value.fileId.length > 0 &&
+    value.fileId !== "0" &&
+    isNonNegativeSafeInteger(value.modifiedAt)
+  )
+}
+
+function isCloneEvidence(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.state !== "string") return false
+  if (value.state === "unavailable") {
+    return value.reason === "platform" || value.reason === "filesystem" || value.reason === "scanner"
+  }
+  if (value.state === "unknown" || value.state === "not-shared") return true
+  if (value.state === "may-share-blocks") return value.cloneId === undefined || typeof value.cloneId === "string"
+  if (value.state === "shares-all-blocks") {
+    return (
+      (value.cloneId === undefined || typeof value.cloneId === "string") &&
+      (value.reportedFullCloneCount === undefined ||
+        (isNonNegativeInteger(value.reportedFullCloneCount) && value.reportedFullCloneCount > 0))
+    )
+  }
+  return false
+}
+
+function isCompleteCloneEvidence(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    value.state === "shares-all-blocks" &&
+    typeof value.cloneId === "string" &&
+    value.cloneId.length > 0 &&
+    isNonNegativeInteger(value.reportedFullCloneCount) &&
+    value.reportedFullCloneCount > 1
+  )
+}
+
+function isCloneMetadataCapability(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.state !== "string") return false
+  if (value.state === "available" || value.state === "unknown") return true
+  return (
+    value.state === "unavailable" &&
+    (value.reason === "platform" || value.reason === "filesystem" || value.reason === "scanner")
+  )
+}
+
+function isDeveloperArtifact(value: unknown, rootPath: string): boolean {
+  if (!isRecord(value)) return false
+  return (
+    typeof value.name === "string" &&
+    isScopedPath(value.path, rootPath) &&
+    isNonNegativeInteger(value.size) &&
+    (value.logicalSize === undefined || isNonNegativeInteger(value.logicalSize)) &&
+    (value.modifiedAt === undefined || isNonNegativeFiniteNumber(value.modifiedAt)) &&
+    (value.directoryIdentity === undefined || isDeveloperArtifactDirectoryIdentity(value.directoryIdentity)) &&
+    value.isDir === true &&
+    (value.signatures === undefined || isStringArray(value.signatures)) &&
+    (value.kind === "dependencies" || value.kind === "build-output" || value.kind === "toolchain-cache") &&
+    (value.ecosystem === "node" ||
+      value.ecosystem === "python" ||
+      value.ecosystem === "rust" ||
+      value.ecosystem === "jvm" ||
+      value.ecosystem === "cpp" ||
+      value.ecosystem === "go" ||
+      value.ecosystem === "dotnet" ||
+      value.ecosystem === "dart" ||
+      value.ecosystem === "apple" ||
+      value.ecosystem === "web" ||
+      value.ecosystem === "containers" ||
+      value.ecosystem === "tooling" ||
+      value.ecosystem === "generic" ||
+      value.ecosystem === "agent" ||
+      value.ecosystem === "git") &&
+    (value.confidence === "verified" || value.confidence === "likely" || value.confidence === "ambiguous") &&
+    (value.cleanup === "eligible" || value.cleanup === "review") &&
+    isStringArray(value.evidence) &&
+    value.inventoryOnly === true
+  )
+}
+
+function isDeveloperArtifactInventory(value: unknown, rootPath: string, expectedMaxItems: number): boolean {
+  if (!isRecord(value) || !Array.isArray(value.items) || !isRecord(value.status)) return false
+  const status = value.status
+  if (
+    !value.items.every((item) => isDeveloperArtifact(item, rootPath)) ||
+    (status.state !== "complete" && status.state !== "partial") ||
+    !isNonNegativeSafeInteger(status.maxItems) ||
+    status.maxItems < 1 ||
+    status.maxItems > MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS ||
+    status.maxItems !== expectedMaxItems ||
+    value.items.length > status.maxItems ||
+    !isNonNegativeInteger(status.scannedDirectories) ||
+    !isNonNegativeInteger(status.matchedDirectories) ||
+    status.scannedDirectories < status.matchedDirectories ||
+    status.matchedDirectories < value.items.length ||
+    (!status.truncated && status.matchedDirectories !== value.items.length) ||
+    (status.truncated && status.matchedDirectories <= value.items.length) ||
+    typeof status.truncated !== "boolean" ||
+    !isNonNegativeInteger(status.unreadableCount) ||
+    !isScopedPathArray(status.unreadableSamplePaths, rootPath) ||
+    !isNonNegativeInteger(status.skippedSymlinkCount) ||
+    !isScopedPathArray(status.skippedSymlinkSamplePaths, rootPath) ||
+    (status.skippedDirectoryCount !== undefined && !isNonNegativeInteger(status.skippedDirectoryCount)) ||
+    (status.skippedDirectorySamplePaths !== undefined &&
+      !isScopedPathArray(status.skippedDirectorySamplePaths, rootPath)) ||
+    (status.unavailableDirectoryIdentityCount !== undefined &&
+      !isNonNegativeInteger(status.unavailableDirectoryIdentityCount)) ||
+    (status.unavailableDirectoryIdentitySamplePaths !== undefined &&
+      !isScopedPathArray(status.unavailableDirectoryIdentitySamplePaths, rootPath)) ||
+    !isNonNegativeInteger(status.excludedCount) ||
+    !isScopedPathArray(status.excludedSamplePaths, rootPath)
+  ) {
+    return false
+  }
+  const mustBePartial =
+    status.truncated ||
+    status.unreadableCount > 0 ||
+    status.skippedSymlinkCount > 0 ||
+    (status.skippedDirectoryCount ?? 0) > 0 ||
+    (status.unavailableDirectoryIdentityCount ?? 0) > 0 ||
+    status.excludedCount > 0
+  return !mustBePartial || status.state === "partial"
+}
+
+function isScanIssueSummary(value: unknown, rootPath: string): boolean {
+  return (
+    isRecord(value) &&
+    isNonNegativeSafeInteger(value.unreadableCount) &&
+    isScopedPathArray(value.samplePaths, rootPath)
+  )
+}
+
+/**
+ * A cache is a persistence boundary, not a trusted scanner response. Keep the
+ * validator iterative so a corrupted V8 payload cannot recurse indefinitely.
+ */
+function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions): value is DiskNode {
+  const normalizedRoot = comparable(rootPath)
+  const expectedInventory = normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory)
+  if (!isRecord(value)) return false
+
+  type PendingNode = { value: unknown; parentPath?: string; isRoot: boolean }
+  const pending: PendingNode[] = [{ value, isRoot: true }]
+  const seenNodes = new WeakSet<object>()
+  const seenPaths = new Set<string>()
+  let visited = 0
+
+  try {
+    while (pending.length > 0) {
+      const current = pending.pop()!
+      if (!isRecord(current.value) || seenNodes.has(current.value)) return false
+      seenNodes.add(current.value)
+      if (++visited > MAX_CACHED_TREE_NODES) return false
+
+      const node = current.value
+      const nodePath = comparableAbsolutePath(node.path)
+      if (!nodePath || !isWithin(normalizedRoot, nodePath) || seenPaths.has(nodePath)) return false
+      if (current.isRoot) {
+        if (nodePath !== normalizedRoot) return false
+      } else if (!current.parentPath || !isAncestor(current.parentPath, nodePath)) {
+        return false
+      }
+      seenPaths.add(nodePath)
+
+      if (
+        typeof node.name !== "string" ||
+        !isNonNegativeInteger(node.size) ||
+        (node.logicalSize !== undefined && !isNonNegativeInteger(node.logicalSize)) ||
+        (node.modifiedAt !== undefined && !isNonNegativeFiniteNumber(node.modifiedAt)) ||
+        (node.hardLink !== undefined && node.hardLink !== "primary" && node.hardLink !== "secondary") ||
+        (node.clone !== undefined && !isCloneEvidence(node.clone)) ||
+        (node.cloneAccounting !== undefined &&
+          ((node.cloneAccounting !== "primary" && node.cloneAccounting !== "secondary") ||
+            !isCompleteCloneEvidence(node.clone))) ||
+        typeof node.isDir !== "boolean" ||
+        !Array.isArray(node.children) ||
+        (!node.isDir && node.children.length > 0) ||
+        typeof node.ext !== "string" ||
+        (node.isOther !== undefined && typeof node.isOther !== "boolean") ||
+        (node.isOther === true && !node.isDir) ||
+        (node.isHidden !== undefined && typeof node.isHidden !== "boolean") ||
+        (node.isCollapsed !== undefined && (typeof node.isCollapsed !== "boolean" || !node.isDir)) ||
+        (node.signatures !== undefined && !isStringArray(node.signatures)) ||
+        (node.scanIssues !== undefined && !isScanIssueSummary(node.scanIssues, normalizedRoot)) ||
+        (node._label !== undefined && typeof node._label !== "string")
+      ) {
+        return false
+      }
+
+      if (current.isRoot) {
+        if (
+          (node.cloneMetadata !== undefined && !isCloneMetadataCapability(node.cloneMetadata)) ||
+          (node.sharedStorageEvidence !== undefined &&
+            node.sharedStorageEvidence !== "complete" &&
+            node.sharedStorageEvidence !== "partial") ||
+          (node.developerArtifactInventory !== undefined &&
+            !isDeveloperArtifactInventory(node.developerArtifactInventory, normalizedRoot, expectedInventory?.maxItems ?? 0)) ||
+          (expectedInventory !== undefined) !== (node.developerArtifactInventory !== undefined)
+        ) {
+          return false
+        }
+      } else if (
+        node.cloneMetadata !== undefined ||
+        node.sharedStorageEvidence !== undefined ||
+        node.developerArtifactInventory !== undefined
+      ) {
+        return false
+      }
+
+      // An aggregate "Other" node has a synthetic path (`__other__`), while
+      // its materialized children remain real descendants of the aggregate's
+      // parent. Preserve that legitimate shape without permitting an arbitrary
+      // in-root path to be smuggled beneath an aggregate.
+      const childParentPath = node.isOther === true ? current.parentPath : nodePath
+      for (const child of node.children) {
+        pending.push({
+          value: child,
+          parentPath: childParentPath,
+          isRoot: false,
+        })
+      }
+      if (pending.length > MAX_CACHED_TREE_NODES) return false
+    }
+  } catch {
+    return false
+  }
+  return true
+}
+
+function cacheFilePath(dir: string, name: string, pattern: RegExp): string | undefined {
+  if (!pattern.test(name) || path.basename(name) !== name) return undefined
+  const resolvedDir = comparable(dir)
+  const candidate = path.resolve(resolvedDir, name)
+  return path.dirname(candidate) === resolvedDir && isWithin(resolvedDir, candidate) ? candidate : undefined
+}
+
+async function isRegularCacheFile(targetPath: string) {
+  try {
+    const info = await lstat(targetPath)
+    return info.isFile() && !info.isSymbolicLink()
+  } catch {
+    return false
+  }
+}
+
+async function isCacheDirectory(targetPath: string) {
+  try {
+    const info = await lstat(targetPath)
+    return info.isDirectory() && !info.isSymbolicLink()
+  } catch {
+    return false
+  }
+}
+
+function isSnapshotMetadata(value: unknown): value is SnapshotMetadata {
+  return (
+    isRecord(value) &&
+    value.schema === SNAPSHOT_SCHEMA &&
+    typeof value.rootPath === "string" &&
+    typeof value.optionsHash === "string" &&
+    /^[0-9a-f]{32}$/.test(value.optionsHash) &&
+    isNonNegativeSafeInteger(value.savedAt) &&
+    typeof value.checkpoint === "string" &&
+    typeof value.tree === "string"
+  )
+}
+
 function stableScanOptions(options: ScanOptions) {
+  const developerArtifactInventory = normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory)
   return {
     maxDepth: options.maxDepth ?? 10,
     concurrency: options.concurrency,
@@ -80,6 +419,10 @@ function stableScanOptions(options: ScanOptions) {
     signatureNames: [...(options.signatureNames ?? [])].sort(),
     sizeMode: options.sizeMode ?? "physical",
     excludePaths: [...(options.excludePaths ?? [])].map(comparable).sort(),
+    // Use the scanner's exact clamp/default behavior. Without this, `true`,
+    // `{}`, and out-of-range values could describe the same scan while
+    // needlessly fragmenting the cache (or, worse, restoring a different cap).
+    developerArtifactInventory: developerArtifactInventory ?? false,
   }
 }
 
@@ -184,10 +527,17 @@ function replaceNode(root: DiskNode, targetPath: string, replacement: DiskNode):
   })
   if (!changed) return root
   children.sort((a, b) => b.size - a.size)
+  const size = children.reduce((total, child) => total + child.size, 0)
+  const logicalSize = children.reduce((total, child) => total + (child.logicalSize ?? child.size), 0)
+  // Do not retain an ancestor's old apparent size after a localized refresh.
+  // It can differ from allocated bytes for sparse files, hard links, and now
+  // complete clone groups.
+  const { logicalSize: _previousLogicalSize, ...unchanged } = root
   return {
-    ...root,
+    ...unchanged,
     children,
-    size: children.reduce((total, child) => total + child.size, 0),
+    size,
+    ...(logicalSize !== size ? { logicalSize } : {}),
     modifiedAt: children.reduce<number | undefined>(
       (latest, child) => Math.max(latest ?? 0, child.modifiedAt ?? 0) || undefined,
       undefined,
@@ -204,11 +554,42 @@ function findNode(root: DiskNode, targetPath: string): DiskNode | undefined {
   }
 }
 
-function containsHardLink(root: DiskNode): boolean {
-  return !!root.hardLink || root.children.some(containsHardLink)
+/**
+ * A local physical refresh cannot safely retain ownership decisions that may
+ * cross the changed subtree. Hard links and APFS clone evidence both have
+ * that property, so ask the root scanner to rebuild their accounting.
+ */
+function containsCrossSubtreePhysicalSharing(root: DiskNode): boolean {
+  return (
+    !!root.hardLink ||
+    !!root.cloneAccounting ||
+    root.clone?.state === "may-share-blocks" ||
+    root.clone?.state === "shares-all-blocks" ||
+    root.children.some(containsCrossSubtreePhysicalSharing)
+  )
+}
+
+function requiresWholeRootPhysicalRefresh(
+  rootPath: string,
+  targetPath: string,
+  replacement: DiskNode,
+  options: ScanOptions,
+) {
+  return (
+    (options.sizeMode ?? "physical") === "physical" &&
+    comparable(targetPath) !== rootPath &&
+    (containsCrossSubtreePhysicalSharing(replacement) || replacement.sharedStorageEvidence !== "complete")
+  )
 }
 
 export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent[], scan: Scan, options: ScanOptions) {
+  // The deep artifact index is root-wide and deliberately independent from
+  // materialized tree nodes. A local splice cannot update it truthfully, so
+  // prefer one full refresh over returning stale cleanup candidates.
+  if (options.developerArtifactInventory) {
+    options.signal?.throwIfAborted()
+    return { root: await scan(comparable(root.path), options), changedPaths: [comparable(root.path)] }
+  }
   const changedPaths = deltaRoots(root, events)
   const rootPath = comparable(root.path)
   let next = root
@@ -219,17 +600,13 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       (options.sizeMode ?? "physical") === "physical" &&
       comparable(changedPath) !== rootPath &&
       previous &&
-      containsHardLink(previous)
+      containsCrossSubtreePhysicalSharing(previous)
     ) {
       return { root: await scan(rootPath, options), changedPaths: [rootPath] }
     }
     try {
       const replacement = await scan(changedPath, options)
-      if (
-        (options.sizeMode ?? "physical") === "physical" &&
-        comparable(changedPath) !== rootPath &&
-        containsHardLink(replacement)
-      ) {
+      if (requiresWholeRootPhysicalRefresh(rootPath, changedPath, replacement, options)) {
         return { root: await scan(rootPath, options), changedPaths: [rootPath] }
       }
       next = replaceNode(next, comparable(changedPath), replacement)
@@ -240,6 +617,9 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       const parent = path.dirname(changedPath)
       if (!isWithin(comparable(root.path), parent)) throw error
       const replacement = await scan(parent, options)
+      if (requiresWholeRootPhysicalRefresh(rootPath, parent, replacement, options)) {
+        return { root: await scan(rootPath, options), changedPaths: [rootPath] }
+      }
       next = replaceNode(next, comparable(parent), replacement)
     }
   }
@@ -253,7 +633,11 @@ export class DiskSnapshotManager {
   private readonly debounceMs: number
   private readonly suppliedWatcher?: Watcher
   private watcherPromise?: Promise<Watcher | undefined>
-  private readonly active = new Map<number, ActiveScan>()
+  private readonly active = new Map<ScanOwner, ActiveScan>()
+  /** Serializes cache reads/writes for one root+options key. */
+  private readonly cacheLocks = new Map<string, Promise<void>>()
+  /** Reference-counted leases for checkpoints that a live scan still needs. */
+  private readonly checkpointReferences = new Map<string, Map<string, number>>()
 
   constructor(options: ManagerOptions) {
     this.cacheDir = options.cacheDir
@@ -270,68 +654,153 @@ export class DiskSnapshotManager {
   }
 
   private paths(rootPath: string, options: ScanOptions) {
-    const dir = path.join(this.cacheDir, diskSnapshotKey(rootPath, options))
+    const key = diskSnapshotKey(rootPath, options)
+    const dir = path.join(this.cacheDir, key)
     return {
+      key,
       dir,
       metadata: path.join(dir, "metadata.json"),
-      tree: path.join(dir, "tree.bin"),
     }
   }
 
-  private async load(rootPath: string, options: ScanOptions) {
-    const paths = this.paths(rootPath, options)
+  private async withCacheKey<T>(key: string, operation: () => Promise<T>): Promise<T> {
+    const previous = this.cacheLocks.get(key) ?? Promise.resolve()
+    let release!: () => void
+    const completion = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    const next = previous.catch(() => undefined).then(() => completion)
+    this.cacheLocks.set(key, next)
+    await previous.catch(() => undefined)
     try {
-      const metadata = JSON.parse(await readFile(paths.metadata, "utf8")) as SnapshotMetadata
-      if (
-        metadata.schema !== SNAPSHOT_SCHEMA ||
-        metadata.rootPath !== comparable(rootPath) ||
-        metadata.optionsHash !== diskSnapshotKey(rootPath, options)
-      ) {
+      return await operation()
+    } finally {
+      release()
+      if (this.cacheLocks.get(key) === next) this.cacheLocks.delete(key)
+    }
+  }
+
+  private retainCheckpoint(key: string, checkpoint: string): CheckpointLease {
+    const name = path.basename(checkpoint)
+    const references = this.checkpointReferences.get(key) ?? new Map<string, number>()
+    this.checkpointReferences.set(key, references)
+    references.set(name, (references.get(name) ?? 0) + 1)
+    let released = false
+    return {
+      path: checkpoint,
+      release: () => {
+        if (released) return
+        released = true
+        const current = this.checkpointReferences.get(key)
+        const count = current?.get(name) ?? 0
+        if (count <= 1) current?.delete(name)
+        else current?.set(name, count - 1)
+        if (current?.size === 0) this.checkpointReferences.delete(key)
+      },
+    }
+  }
+
+  private protectedCheckpoints(key: string) {
+    return new Set(this.checkpointReferences.get(key)?.keys() ?? [])
+  }
+
+  private hasCheckpointReferences(key: string) {
+    return (this.checkpointReferences.get(key)?.size ?? 0) > 0
+  }
+
+  private async load(rootPath: string, options: ScanOptions): Promise<LoadedSnapshot | undefined> {
+    const paths = this.paths(rootPath, options)
+    return this.withCacheKey(paths.key, async () => {
+      try {
+        if (!(await isCacheDirectory(paths.dir)) || !(await isRegularCacheFile(paths.metadata))) return undefined
+        const metadata = JSON.parse(await readFile(paths.metadata, "utf8")) as unknown
+        if (
+          !isSnapshotMetadata(metadata) ||
+          metadata.rootPath !== comparable(rootPath) ||
+          metadata.optionsHash !== paths.key
+        ) {
+          return undefined
+        }
+        const checkpoint = cacheFilePath(paths.dir, metadata.checkpoint, CHECKPOINT_FILE_NAME)
+        const tree = cacheFilePath(paths.dir, metadata.tree, TREE_FILE_NAME)
+        if (!checkpoint || !tree || !(await isRegularCacheFile(checkpoint)) || !(await isRegularCacheFile(tree))) {
+          return undefined
+        }
+        const rootInfo = await stat(rootPath)
+        const root = deserialize(await readFile(tree)) as unknown
+        if (!isCachedDiskTree(root, rootPath, options) || root.isDir !== rootInfo.isDirectory()) return undefined
+        return { root, checkpoint: this.retainCheckpoint(paths.key, checkpoint) }
+      } catch {
         return undefined
       }
-      await stat(rootPath)
-      const root = deserialize(await readFile(paths.tree)) as DiskNode
-      if (!root || comparable(root.path) !== comparable(rootPath)) return undefined
-      return { root, checkpoint: path.join(paths.dir, metadata.checkpoint) }
-    } catch {
-      return undefined
-    }
+    })
   }
 
-  private async checkpoint(rootPath: string, options: ScanOptions, watcher: Watcher) {
+  private async checkpoint(rootPath: string, options: ScanOptions, watcher: Watcher): Promise<CheckpointLease> {
     const paths = this.paths(rootPath, options)
-    await mkdir(paths.dir, { recursive: true })
-    const checkpoint = path.join(paths.dir, `events-${Date.now()}-${randomUUID()}.snapshot`)
-    await watcher.writeSnapshot(rootPath, checkpoint, watcherOptions(options, this.platform))
-    return checkpoint
+    return this.withCacheKey(paths.key, async () => {
+      await mkdir(paths.dir, { recursive: true })
+      if (!(await isCacheDirectory(paths.dir))) throw new Error("Snapshot cache entry is not a directory")
+      const checkpoint = path.join(paths.dir, `events-${Date.now()}-${randomUUID()}.snapshot`)
+      await watcher.writeSnapshot(rootPath, checkpoint, watcherOptions(options, this.platform))
+      if (!(await isRegularCacheFile(checkpoint))) throw new Error("Snapshot checkpoint was not written")
+      return this.retainCheckpoint(paths.key, checkpoint)
+    })
   }
 
   private async persist(rootPath: string, options: ScanOptions, root: DiskNode, checkpoint: string) {
     const paths = this.paths(rootPath, options)
-    await mkdir(paths.dir, { recursive: true })
-    const nonce = randomUUID()
-    const treeTemp = `${paths.tree}.${nonce}.tmp`
-    const metadataTemp = `${paths.metadata}.${nonce}.tmp`
-    const metadata: SnapshotMetadata = {
-      schema: SNAPSHOT_SCHEMA,
-      rootPath: comparable(rootPath),
-      optionsHash: diskSnapshotKey(rootPath, options),
-      savedAt: Date.now(),
-      checkpoint: path.basename(checkpoint),
-    }
-    await writeFile(treeTemp, serialize(root))
-    await writeFile(metadataTemp, JSON.stringify(metadata))
-    await rename(treeTemp, paths.tree)
-    await rename(metadataTemp, paths.metadata)
-    await this.cleanupCheckpoints(paths.dir, metadata.checkpoint)
-    void this.prune()
+    await this.withCacheKey(paths.key, async () => {
+      await mkdir(paths.dir, { recursive: true })
+      if (!(await isCacheDirectory(paths.dir))) throw new Error("Snapshot cache entry is not a directory")
+      const checkpointName = path.basename(checkpoint)
+      const checkpointPath = cacheFilePath(paths.dir, checkpointName, CHECKPOINT_FILE_NAME)
+      if (!checkpointPath || comparable(checkpoint) !== checkpointPath || !(await isRegularCacheFile(checkpointPath))) {
+        throw new Error("Snapshot checkpoint is outside its cache entry")
+      }
+
+      const nonce = randomUUID()
+      const treeName = `tree-${Date.now()}-${nonce}.bin`
+      const tree = cacheFilePath(paths.dir, treeName, TREE_FILE_NAME)!
+      const treeTemp = `${tree}.${randomUUID()}.tmp`
+      const metadataTemp = `${paths.metadata}.${randomUUID()}.tmp`
+      const metadata: SnapshotMetadata = {
+        schema: SNAPSHOT_SCHEMA,
+        rootPath: comparable(rootPath),
+        optionsHash: paths.key,
+        savedAt: Date.now(),
+        checkpoint: checkpointName,
+        tree: treeName,
+      }
+      try {
+        await writeFile(treeTemp, serialize(root))
+        await writeFile(metadataTemp, JSON.stringify(metadata))
+        // Publish the immutable tree before its metadata pointer. Readers hold
+        // the same key lock, so they can only observe one complete generation.
+        await rename(treeTemp, tree)
+        await rename(metadataTemp, paths.metadata)
+        await this.cleanupSnapshotFiles(paths.dir, paths.key, metadata.checkpoint, metadata.tree)
+      } finally {
+        await Promise.all([rm(treeTemp, { force: true }), rm(metadataTemp, { force: true })])
+      }
+    })
+    void this.prune().catch(() => undefined)
   }
 
-  private async cleanupCheckpoints(dir: string, keep: string) {
+  private async cleanupSnapshotFiles(dir: string, key: string, keepCheckpoint: string, keepTree: string) {
+    if (!(await isCacheDirectory(dir))) return
     const entries = await readdir(dir).catch(() => [])
+    const protectedCheckpoints = this.protectedCheckpoints(key)
+    protectedCheckpoints.add(keepCheckpoint)
     await Promise.all(
       entries
-        .filter((entry) => entry.startsWith("events-") && entry.endsWith(".snapshot") && entry !== keep)
+        .filter(
+          (entry) =>
+            (CHECKPOINT_FILE_NAME.test(entry) && !protectedCheckpoints.has(entry)) ||
+            (TREE_FILE_NAME.test(entry) && entry !== keepTree) ||
+            (entry.startsWith("tree-") && entry.endsWith(".tmp")) ||
+            (entry.startsWith("metadata.json.") && entry.endsWith(".tmp")),
+        )
         .map((entry) => rm(path.join(dir, entry), { force: true })),
     )
   }
@@ -343,11 +812,25 @@ export class DiskSnapshotManager {
         .filter((entry) => entry.isDirectory())
         .map(async (entry) => {
           const dir = path.join(this.cacheDir, entry.name)
-          return { dir, modified: (await stat(path.join(dir, "metadata.json")).catch(() => undefined))?.mtimeMs ?? 0 }
+          return {
+            key: entry.name,
+            dir,
+            modified: (await stat(path.join(dir, "metadata.json")).catch(() => undefined))?.mtimeMs ?? 0,
+          }
         }),
     )
     snapshots.sort((a, b) => b.modified - a.modified)
-    await Promise.all(snapshots.slice(MAX_SNAPSHOTS).map(({ dir }) => rm(dir, { recursive: true, force: true })))
+    await Promise.all(
+      snapshots.slice(MAX_SNAPSHOTS).map(({ key, dir }) =>
+        this.withCacheKey(key, async () => {
+          // A candidate checkpoint may belong to another active window using
+          // this exact root/options key. Do not evict its directory until the
+          // owner has finished consuming it.
+          if (this.hasCheckpointReferences(key)) return
+          await rm(dir, { recursive: true, force: true })
+        }),
+      ),
+    )
   }
 
   private queue(active: ActiveScan, error: Error | null, events: WatchEvent[]) {
@@ -369,15 +852,17 @@ export class DiskSnapshotManager {
     active.refreshing = true
     const controller = new AbortController()
     active.refreshAbort = controller
+    let loaded: LoadedSnapshot | undefined
+    let candidate: CheckpointLease | undefined
     try {
       const watcher = await this.watcher()
       if (!watcher) return
-      const loaded = await this.load(active.rootPath, active.options)
-      const candidate = await this.checkpoint(active.rootPath, active.options, watcher)
+      loaded = await this.load(active.rootPath, active.options)
+      candidate = await this.checkpoint(active.rootPath, active.options, watcher)
       const historical = loaded
         ? await watcher.getEventsSince(
             active.rootPath,
-            loaded.checkpoint,
+            loaded.checkpoint.path,
             watcherOptions(active.options, this.platform),
           )
         : []
@@ -391,7 +876,7 @@ export class DiskSnapshotManager {
       })
       if (active.stopped) return
       active.root = delta.root
-      await this.persist(active.rootPath, active.options, active.root, candidate)
+      await this.persist(active.rootPath, active.options, active.root, candidate.path)
       active.refreshFailures = 0
       active.onUpdate({ rootPath: active.rootPath, root: active.root, changedPaths: delta.changedPaths })
     } catch {
@@ -402,6 +887,8 @@ export class DiskSnapshotManager {
         active.pending.set(active.rootPath, { path: active.rootPath, type: "update" })
       }
     } finally {
+      loaded?.checkpoint.release()
+      candidate?.release()
       if (active.refreshAbort === controller) active.refreshAbort = undefined
       active.refreshing = false
       if (active.pending.size && !active.stopped) this.queue(active, null, [])
@@ -409,10 +896,11 @@ export class DiskSnapshotManager {
   }
 
   async scan(
-    owner: number,
+    owner: ScanOwner,
     rootPath: string,
     options: ScanOptions,
     onUpdate: (update: DiskSnapshotUpdate) => void,
+    forceFresh = false,
   ): Promise<DiskSnapshotResult> {
     await this.stop(owner)
     options.signal?.throwIfAborted()
@@ -434,7 +922,7 @@ export class DiskSnapshotManager {
     // backend that cannot watch a particular root still falls through to a
     // normal scan via the guarded setup below.
     const watcher = await this.watcher()
-    let candidate: string | undefined
+    let candidate: CheckpointLease | undefined
     if (watcher) {
       try {
         const subscription = await watcher.subscribe(
@@ -451,28 +939,33 @@ export class DiskSnapshotManager {
         candidate = await this.checkpoint(normalizedRoot, options, watcher)
         options.signal?.throwIfAborted()
       } catch {
-        active.subscription = undefined
+        candidate?.release()
         candidate = undefined
+        await active.subscription?.unsubscribe().catch(() => undefined)
+        active.subscription = undefined
       }
     }
 
-    const cached = candidate ? await this.load(normalizedRoot, options) : undefined
+    let cached: LoadedSnapshot | undefined
     try {
+      // Used after a mutation whose allocated-byte ownership cannot be inferred
+      // from the old tree (for example, a clone-accounted pathname removal).
+      cached = !forceFresh && candidate ? await this.load(normalizedRoot, options) : undefined
       if (cached && watcher && candidate) {
         const events = [
-          ...(await watcher.getEventsSince(normalizedRoot, cached.checkpoint, watcherOptions(options, this.platform))),
+          ...(await watcher.getEventsSince(normalizedRoot, cached.checkpoint.path, watcherOptions(options, this.platform))),
           ...active.pending.values(),
         ]
         active.pending.clear()
         if (!events.length) {
           active.root = cached.root
-          await this.persist(normalizedRoot, options, cached.root, candidate).catch(() => undefined)
+          await this.persist(normalizedRoot, options, cached.root, candidate.path).catch(() => undefined)
           if (active.pending.size) this.queue(active, null, [])
           return { root: cached.root, source: "snapshot", changedPaths: [] }
         }
         const delta = await applyDiskDelta(cached.root, events, this.scanTree, options)
         active.root = delta.root
-        await this.persist(normalizedRoot, options, delta.root, candidate).catch(() => undefined)
+        await this.persist(normalizedRoot, options, delta.root, candidate.path).catch(() => undefined)
         if (active.pending.size) this.queue(active, null, [])
         return { ...delta, source: "delta" }
       }
@@ -481,7 +974,7 @@ export class DiskSnapshotManager {
       let changedPaths: string[] = []
       if (candidate && watcher) {
         const events = [
-          ...(await watcher.getEventsSince(normalizedRoot, candidate, watcherOptions(options, this.platform))),
+          ...(await watcher.getEventsSince(normalizedRoot, candidate.path, watcherOptions(options, this.platform))),
           ...active.pending.values(),
         ]
         active.pending.clear()
@@ -490,25 +983,36 @@ export class DiskSnapshotManager {
           root = delta.root
           changedPaths = delta.changedPaths
         }
-        await this.persist(normalizedRoot, options, root, candidate).catch(() => undefined)
+        await this.persist(normalizedRoot, options, root, candidate.path).catch(() => undefined)
       }
       active.root = root
       if (active.pending.size) this.queue(active, null, [])
       return { root, source: "scan", changedPaths }
     } catch (error) {
-      await this.stop(owner)
+      await this.stopActive(owner, active)
       throw error
+    } finally {
+      cached?.checkpoint.release()
+      candidate?.release()
     }
   }
 
-  async stop(owner: number) {
+  async stop(owner: ScanOwner) {
+    await this.stopActive(owner)
+  }
+
+  private async stopActive(owner: ScanOwner, expected?: ActiveScan) {
     const active = this.active.get(owner)
-    if (!active) return
+    if (!active || (expected && active !== expected)) return
     active.stopped = true
     if (active.timer) clearTimeout(active.timer)
     active.refreshAbort?.abort(new Error("Snapshot watch stopped"))
     this.active.delete(owner)
     await active.subscription?.unsubscribe().catch(() => undefined)
+  }
+
+  activeOwners() {
+    return [...this.active.keys()]
   }
 
   async stopAll() {

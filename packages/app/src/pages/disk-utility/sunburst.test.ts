@@ -2,8 +2,10 @@ import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "@/context/platform"
 import {
   layoutSunburstSegments,
+  MIN_VISIBLE_SEGMENT_ANGLE,
   primaryHueForIndex,
   primarySegmentColor,
+  safeCanvasRadius,
   shouldPulseSunburstEntry,
   sunburstEntryDuration,
   sunburstTransitionDuration,
@@ -14,10 +16,8 @@ function node(name: string, size: number, children: DiskScanNode[] = []): DiskSc
 }
 
 describe("primaryHueForIndex", () => {
-  it("moves through a stable chromatic sweep", () => {
-    for (const i of [0, 1, 2, 3, 7, 13]) {
-      expect(primaryHueForIndex(i)).toBeCloseTo((148 + i * 31) % 360, 5)
-    }
+  it("moves through a stable curated palette", () => {
+    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([252, 318, 32, 205, 15, 252])
   })
   it("keeps consecutive hues distinct", () => {
     expect(primaryHueForIndex(0)).not.toBe(primaryHueForIndex(1))
@@ -33,6 +33,18 @@ describe("primarySegmentColor", () => {
   })
   it("includes alpha when passed", () => {
     expect(primarySegmentColor(0, 0.5)).toContain("/ 0.5")
+  })
+  it("keeps files visually secondary to folder branches", () => {
+    expect(primarySegmentColor(2, 1, false)).toBe("oklch(0.56 0.018 255)")
+  })
+})
+
+describe("safeCanvasRadius", () => {
+  it("prevents transient resize and animation values from crashing canvas arc drawing", () => {
+    expect(safeCanvasRadius(-0.6931)).toBe(0)
+    expect(safeCanvasRadius(Number.NaN)).toBe(0)
+    expect(safeCanvasRadius(Number.POSITIVE_INFINITY)).toBe(0)
+    expect(safeCanvasRadius(42)).toBe(42)
   })
 })
 
@@ -92,7 +104,7 @@ describe("layoutSunburstSegments", () => {
     const large = segments.find((segment) => segment.node.name === "large")!
     const last = segments.find((segment) => segment.node.name === "last")!
 
-    expect(last.start).toBeGreaterThan(large.end)
+    expect(last.start).toBeGreaterThanOrEqual(large.end)
   })
 
   it("aggregates huge primary levels without leaving unpainted storage", () => {
@@ -100,9 +112,38 @@ describe("layoutSunburstSegments", () => {
     const segments = layoutSunburstSegments(node("root", 500_500, children), 3, 720)
     const primary = segments.filter((segment) => segment.depth === 0)
 
-    expect(primary).toHaveLength(240)
-    expect(primary.at(-1)?.node).toMatchObject({ name: "761 smaller items", isOther: true })
+    expect(primary).toHaveLength(120)
+    expect(primary.at(-1)?.node).toMatchObject({ name: "881 smaller items", isOther: true })
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(500_500)
     expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
+  })
+
+  it("rolls sub-pixel tails into a truthful segment instead of silently dropping their storage", () => {
+    const root = node("root", 10_000, [node("large", 9_990), ...Array.from({ length: 10 }, (_, i) => node(`tiny-${i}`, 1))])
+    const segments = layoutSunburstSegments(root, 1, 360)
+    const primary = segments.filter((segment) => segment.depth === 0)
+    const aggregate = primary.find((segment) => segment.node.isOther)
+
+    expect(MIN_VISIBLE_SEGMENT_ANGLE).toBeGreaterThan(0)
+    expect(aggregate).toMatchObject({ node: { name: "10 smaller items", size: 10, isOther: true } })
+    expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(root.size)
+    expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
+  })
+
+  it("keeps a large multi-level scan inside its paint budget while retaining every top-level byte", () => {
+    const children = Array.from({ length: 180 }, (_, outer) =>
+      node(
+        `outer-${outer}`,
+        10_000 + outer,
+        Array.from({ length: 80 }, (_, inner) => node(`outer-${outer}/inner-${inner}`, 1 + inner)),
+      ),
+    )
+    const root = node("root", children.reduce((sum, child) => sum + child.size, 0), children)
+    const segments = layoutSunburstSegments(root, 3, 360)
+    const primary = segments.filter((segment) => segment.depth === 0)
+
+    expect(segments.length).toBeLessThanOrEqual(360)
+    expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(root.size)
+    expect(primary.every((segment) => segment.end > segment.start)).toBe(true)
   })
 })

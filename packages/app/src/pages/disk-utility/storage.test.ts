@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test"
+import type { DeveloperArtifactInventory } from "@opencode-ai/disklizard"
 import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
 import {
   actionableReclaimSummary,
@@ -6,6 +7,8 @@ import {
   canActOnNode,
   driveForPath,
   includeHiddenSpace,
+  hasUnverifiedPhysicalCloneAccounting,
+  isPhysicalByteAccounting,
   isPinnedScanLocation,
   replaceScanSubtree,
   removeScanSubtrees,
@@ -37,6 +40,36 @@ const drive: DiskDriveInfo = {
 }
 
 describe("includeHiddenSpace", () => {
+  it("withholds physical reclaim claims until clone capability and shared-storage visibility are verified", () => {
+    expect(isPhysicalByteAccounting("macos", drive)).toBe(true)
+    expect(isPhysicalByteAccounting("macos")).toBe(true)
+    expect(isPhysicalByteAccounting("linux")).toBe(true)
+    expect(isPhysicalByteAccounting("windows", drive)).toBe(false)
+    expect(isPhysicalByteAccounting("windows")).toBe(false)
+    expect(isPhysicalByteAccounting("macos", { ...drive, type: "network" })).toBe(false)
+    expect(isPhysicalByteAccounting("linux", { ...drive, type: "network" })).toBe(false)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos")).toBe(true)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "linux")).toBe(true)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos", drive)).toBe(true)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root, cloneMetadata: { state: "unknown" } }, "macos", drive)).toBe(true)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root, cloneMetadata: { state: "available" } }, "macos", drive)).toBe(true)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting(
+        { ...root, cloneMetadata: { state: "available" }, sharedStorageEvidence: "partial" },
+        "macos",
+        drive,
+      ),
+    ).toBe(true)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting(
+        { ...root, cloneMetadata: { state: "available" }, sharedStorageEvidence: "complete" },
+        "macos",
+        drive,
+      ),
+    ).toBe(false)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "windows", drive)).toBe(false)
+  })
+
   it("toggles a bounded pinned-scan list with native path equality and no silent eviction", () => {
     const initial = [{ path: "C:\\Code\\App", label: "App" }]
     expect(isPinnedScanLocation(initial, "c:\\code\\app\\", "windows")).toBe(true)
@@ -52,10 +85,24 @@ describe("includeHiddenSpace", () => {
   })
 
   it("wraps a dropped file in a navigable one-item landscape", () => {
-    const file = { ...root, path: "/home/alex/video.mov", name: "video.mov", isDir: false, size: 25 }
+    const file = {
+      ...root,
+      path: "/home/alex/video.mov",
+      name: "video.mov",
+      isDir: false,
+      size: 25,
+      cloneMetadata: { state: "available" as const },
+      sharedStorageEvidence: "complete" as const,
+    }
     const result = asBrowseableRoot(file)
 
-    expect(result).toMatchObject({ name: "Selected file", size: 25, isDir: true })
+    expect(result).toMatchObject({
+      name: "Selected file",
+      size: 25,
+      isDir: true,
+      cloneMetadata: { state: "available" },
+      sharedStorageEvidence: "complete",
+    })
     expect(result.children).toEqual([file])
     expect(asBrowseableRoot(root)).toBe(root)
   })
@@ -112,6 +159,44 @@ describe("includeHiddenSpace", () => {
 
     expect(replaceScanSubtree(project, "c:\\code\\app\\NODE_MODULES", expanded, "windows").children[0]).toBe(expanded)
     expect(replaceScanSubtree(project, "C:\\Code\\Missing", expanded, "windows")).toBe(project)
+  })
+
+  it("keeps a deep inventory root-only when a focused subtree is grafted into the map", () => {
+    const inventory: DeveloperArtifactInventory = {
+      items: [],
+      status: {
+        state: "complete",
+        maxItems: 2_000,
+        scannedDirectories: 1,
+        matchedDirectories: 0,
+        truncated: false,
+        unreadableCount: 0,
+        unreadableSamplePaths: [],
+        skippedSymlinkCount: 0,
+        skippedSymlinkSamplePaths: [],
+        excludedCount: 0,
+        excludedSamplePaths: [],
+      },
+    }
+    const collapsed = { ...root, name: "target", path: "/work/app/target", isCollapsed: true }
+    const project: DiskScanNode = {
+      ...root,
+      name: "app",
+      path: "/work/app",
+      children: [collapsed],
+      developerArtifactInventory: inventory,
+    }
+    const focusedInventory: DeveloperArtifactInventory = { ...inventory, status: { ...inventory.status } }
+    const expanded: DiskScanNode = {
+      ...collapsed,
+      isCollapsed: undefined,
+      developerArtifactInventory: focusedInventory,
+    }
+
+    const result = replaceScanSubtree(project, collapsed.path, expanded, "linux")
+
+    expect(result.developerArtifactInventory).toBe(inventory)
+    expect(result.children[0].developerArtifactInventory).toBeUndefined()
   })
 
   it("removes confirmed subtrees and updates every ancestor without mutating unaffected branches", () => {
@@ -177,6 +262,43 @@ describe("includeHiddenSpace", () => {
       "/home/alex/.cache",
       "/home/alex/Logs",
     ])
+  })
+
+  it("removes clone-shared paths from the actionable reclaim total", () => {
+    const clone = {
+      ...root,
+      name: "cache.bin",
+      path: "/home/alex/.cache/cache.bin",
+      size: 100,
+      isDir: false,
+      clone: { state: "shares-all-blocks" as const, cloneId: "clone-1", reportedFullCloneCount: 2 },
+      cloneAccounting: "primary" as const,
+    }
+    const cache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 100, children: [clone] }
+
+    expect(actionableReclaimSummary(computeReclaim({ ...root, size: 100, children: [cache] }), "linux")).toEqual({
+      totalBytes: 0,
+      totalCount: 0,
+      buckets: [],
+    })
+  })
+
+  it("removes hard-link-shared paths from the actionable reclaim total", () => {
+    const linked = {
+      ...root,
+      name: "cache.bin",
+      path: "/home/alex/.cache/cache.bin",
+      size: 100,
+      isDir: false,
+      hardLink: "primary" as const,
+    }
+    const cache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 100, children: [linked] }
+
+    expect(actionableReclaimSummary(computeReclaim({ ...root, size: 100, children: [cache] }), "linux")).toEqual({
+      totalBytes: 0,
+      totalCount: 0,
+      buckets: [],
+    })
   })
 
   it("collapses nested collection items into one deletion root", () => {

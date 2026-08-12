@@ -2,7 +2,13 @@ import { afterEach, describe, expect, test } from "bun:test"
 import { mkdtemp, mkdir, rm, truncate, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { MAX_IMAGE_PREVIEW_BYTES, MAX_TEXT_PREVIEW_BYTES, readDiskPreview } from "./disk-preview"
+import {
+  MAX_IMAGE_PREVIEW_BYTES,
+  MAX_PDF_PREVIEW_BYTES,
+  MAX_TEXT_PREVIEW_BYTES,
+  quickLookCommand,
+  readDiskPreview,
+} from "./disk-preview"
 
 const directories: string[] = []
 
@@ -17,6 +23,14 @@ afterEach(async () => {
 })
 
 describe("readDiskPreview", () => {
+  test("uses the native Quick Look tool only on macOS", () => {
+    expect(quickLookCommand("/tmp/preview me.png", "darwin")).toEqual({
+      file: "/usr/bin/qlmanage",
+      args: ["-p", "/tmp/preview me.png"],
+    })
+    expect(quickLookCommand("/tmp/preview me.png", "win32")).toBeUndefined()
+  })
+
   test("returns bounded text with an explicit truncation state", async () => {
     const directory = await temporaryDirectory()
     const path = join(directory, "trace.log")
@@ -64,6 +78,18 @@ describe("readDiskPreview", () => {
     })
   })
 
+  test("renders bounded PDFs in the embedded preview surface", async () => {
+    const directory = await temporaryDirectory()
+    const path = join(directory, "report.pdf")
+    await writeFile(path, Uint8Array.from([37, 80, 68, 70]))
+
+    expect(await readDiskPreview(path)).toEqual({
+      kind: "pdf",
+      dataUrl: "data:application/pdf;base64,JVBERg==",
+      bytes: 4,
+    })
+  })
+
   test("refuses oversized images before reading their contents", async () => {
     const directory = await temporaryDirectory()
     const path = join(directory, "huge.jpg")
@@ -73,6 +99,19 @@ describe("readDiskPreview", () => {
     expect(await readDiskPreview(path)).toEqual({
       kind: "unsupported",
       bytes: MAX_IMAGE_PREVIEW_BYTES + 1,
+      reason: "too-large",
+    })
+  })
+
+  test("refuses oversized PDFs before reading their contents", async () => {
+    const directory = await temporaryDirectory()
+    const path = join(directory, "huge.pdf")
+    await writeFile(path, "")
+    await truncate(path, MAX_PDF_PREVIEW_BYTES + 1)
+
+    expect(await readDiskPreview(path)).toEqual({
+      kind: "unsupported",
+      bytes: MAX_PDF_PREVIEW_BYTES + 1,
       reason: "too-large",
     })
   })

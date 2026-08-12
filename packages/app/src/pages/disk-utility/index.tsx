@@ -11,24 +11,20 @@
  */
 
 import { Button } from "@opencode-ai/ui/button"
-import { Icon, type IconProps } from "@opencode-ai/ui/icon"
+import { Icon } from "@opencode-ai/ui/icon"
 import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { showToast } from "@opencode-ai/ui/toast"
-import { createVirtualizer } from "@tanstack/solid-virtual"
-import {
-  batch,
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-  untrack,
-  type JSX,
-} from "solid-js"
+import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
-import { usePlatform, type DiskDriveInfo, type DiskFilePreview, type DiskScanNode } from "@/context/platform"
+import {
+  usePlatform,
+  type DiskDriveInfo,
+  type DiskDriveFactsUpdate,
+  type DiskFilePreview,
+  type DiskScanNode,
+  type DiskStorageDiagnostics,
+  type DiskStorageLocation,
+} from "@/context/platform"
 import { useSettings } from "@/context/settings"
 import { Sunburst, primarySegmentColor, sunburstEntryDuration, type SunburstEntryIntent } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
@@ -36,20 +32,58 @@ import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
 import { PinnedLocationCard } from "./PinnedLocationCard"
 import { PreviewDialog } from "./PreviewDialog"
-import { animateCount, createSurfacePresence, type SurfacePhase } from "./motion"
-import { mergeScanDiscoveries, type ScanDiscovery } from "./scan-progress"
+import { StorageDiagnostics } from "./StorageDiagnostics"
+import { createSurfacePresence } from "./motion"
+import { isScanCancellation } from "./scan-progress"
 import {
-  computeDeveloperSummary,
-  computeDormantDeveloperSummary,
+  clampedListIndex,
+  inclusiveIndexRange,
+  pagedListIndex,
+  selectionAnchorIndex,
+  wrappedListIndex,
+} from "./list-navigation"
+import { recentChangeNodes } from "./recent-changes"
+import {
+  ARTIFACT_ECOSYSTEMS,
+  computeDeveloperSummaryWithInventory,
   computeReclaim,
+  containsSharedPhysicalStorage,
+  developerArtifactCleanupReadiness,
   developerArtifactContext,
+  isSmartCleanupEligible,
+  matchesArtifactEcosystem,
   recognize,
+  type ArtifactEcosystem,
+  type ArtifactEcosystemFilter,
   type DeveloperCategory,
   type DeveloperSummary,
   type ReclaimSummary,
 } from "./recognize"
+import {
+  developerInventoryCollectionNodeForPath,
+  developerInventoryNode,
+  developerInventoryDeletePrecondition,
+  developerInventoryRootsNeedRefresh,
+  isDeveloperInventoryNode,
+} from "./developer-inventory"
 import { formatBytes, formatLastChanged, isDormant, shortBytes, formatPct, formatCount, truncatePath } from "./format"
-import { SAFETY_ACCENT, SIZE_BAR_TONES, usageStroke } from "./ui-tokens"
+import {
+  developerCleanupAgeLabel,
+  filterDeveloperItemsByAge,
+  resolveDeveloperCleanupAge,
+  type DeveloperCleanupAgePreset,
+} from "./developer-cleanup"
+import { SAFETY_ACCENT } from "./ui-tokens"
+import { CenterOverlay, DriveFallback, IndexEmpty, Placeholder } from "./DiskUtilityEmptyStates"
+import { DeveloperCategoryButton, IndexLensButton, SegmentedButton } from "./DiskUtilityControls"
+import { DeveloperCleanupPolicy } from "./DeveloperCleanupPolicy"
+import { DriveRow, ReclaimBanner, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
+import { DetailBar } from "./DiskUtilityDetailBar"
+import { CollectionDialog, DeleteConfirmDialog, ReclaimDrawer, type DeletionProgress } from "./DiskUtilityDialogs"
+import { VirtualIndex } from "./DiskUtilityVirtualList"
+import { clearReviewForRootScan } from "./scan-lifecycle"
+import { refreshScanTabsForWatcherUpdate } from "./scan-tabs"
+import { DISK_UTILITY_STYLES } from "./styles"
 import {
   actionableReclaimSummary,
   asBrowseableRoot,
@@ -57,6 +91,8 @@ import {
   diskPathEquals,
   driveForPath,
   includeHiddenSpace,
+  hasUnverifiedPhysicalCloneAccounting,
+  isPhysicalByteAccounting,
   isPinnedScanLocation,
   replaceScanSubtree,
   removeScanSubtrees,
@@ -76,27 +112,23 @@ import {
 
 type ViewMode = "drives" | "scan"
 type ScanMode = "map" | "list" | "grid"
-type IndexLens = "all" | "developer" | "cleanup"
-type DeveloperCategoryFilter = DeveloperCategory | "all" | "dormant"
+type IndexLens = "all" | "developer" | "recommendations" | "changes"
+type DeveloperCategoryFilter = DeveloperCategory | "all"
 type Entry = { node: DiskScanNode; index: number; displaySize: number }
-type DeletionProgress = { completed: number; total: number }
-type ReclaimReviewRow =
-  | { type: "header"; key: string; bucket: ReclaimSummary["buckets"][number] }
-  | {
-      type: "item"
-      key: string
-      item: ReclaimSummary["buckets"][number]["items"][number]
-      first: boolean
-      last: boolean
-    }
+type CanvasPointerEvent = PointerEvent & { currentTarget: HTMLCanvasElement }
 type ScanTab = {
   id: string
+  sessionID?: string
   label: string
   sourcePath: string
   tree: DiskScanNode
   view: DiskScanNode
   drive?: DiskDriveInfo
 }
+
+const MAX_PARALLEL_VOLUME_SCANS = 3
+const DEFAULT_LIST_PAGE_SIZE = 10
+const EMPTY_RECLAIM: ReclaimSummary = { totalBytes: 0, totalCount: 0, buckets: [] }
 
 const IMPORTANT_PRESERVE_NAMES = [
   "$recycle.bin",
@@ -242,6 +274,7 @@ export default function DiskUtilityPage() {
   const [drives, setDrives] = createSignal<DiskDriveInfo[]>([])
   const [drivesLoading, setDrivesLoading] = createSignal(false)
   const [drivesError, setDrivesError] = createSignal<string>()
+  const [storageDiagnostics, setStorageDiagnostics] = createSignal<DiskStorageDiagnostics>()
   const [scanDrive, setScanDrive] = createSignal<DiskDriveInfo>()
 
   const [treeRoot, setTreeRoot] = createSignal<DiskScanNode | null>(null)
@@ -254,19 +287,29 @@ export default function DiskUtilityPage() {
   const [scanPct, setScanPct] = createSignal(0)
   const [scanBytes, setScanBytes] = createSignal(0)
   const [scanTail, setScanTail] = createSignal("")
-  const [scanDiscoveries, setScanDiscoveries] = createSignal<ScanDiscovery[]>([])
   const [selectedPath, setSelectedPath] = createSignal<string>()
   const [hoveredPath, setHoveredPath] = createSignal<string | null>(null)
   const [visualHoverNode, setVisualHoverNode] = createSignal<DiskScanNode | null>(null)
   const [focusIdx, setFocusIdx] = createSignal(0)
+  const [rangeAnchorIndex, setRangeAnchorIndex] = createSignal<number>()
   const [pendingDelete, setPendingDelete] = createSignal<DiskScanNode | null>(null)
   const [deleting, setDeleting] = createSignal(false)
   const [deletionProgress, setDeletionProgress] = createSignal<DeletionProgress | null>(null)
   const [query, setQuery] = createSignal("")
+  const [announcedSelection, setAnnouncedSelection] = createSignal("")
   const [indexFilter, setIndexFilter] = createStore<{
     lens: IndexLens
     developerCategory: DeveloperCategoryFilter
-  }>({ lens: "all", developerCategory: "all" })
+    developerEcosystem: ArtifactEcosystemFilter
+    developerAge: DeveloperCleanupAgePreset
+    customDeveloperAgeDays: string
+  }>({
+    lens: "all",
+    developerCategory: "all",
+    developerEcosystem: "all",
+    developerAge: "all",
+    customDeveloperAgeDays: "30",
+  })
   const reviewSurface = createSurfacePresence()
   const collectionSurface = createSurfacePresence()
   const deleteSurface = createSurfacePresence()
@@ -276,55 +319,107 @@ export default function DiskUtilityPage() {
   const [previewLoading, setPreviewLoading] = createSignal(false)
   const [previewError, setPreviewError] = createSignal<string>()
   const [tabs, setTabs] = createSignal<ScanTab[]>([])
+  const [volumeScanJobs, setVolumeScanJobs] = createStore<Record<string, VolumeScanJob | undefined>>({})
+  const [scanSession, setScanSession] = createStore<{ activeID?: string; foregroundID?: string }>({})
   const [collection, setCollection] = createSignal<DiskScanNode[]>([])
   const [dropActive, setDropActive] = createSignal(false)
   const [collectionDragNode, setCollectionDragNode] = createSignal<DiskScanNode | null>(null)
   const [collectionDropActive, setCollectionDropActive] = createSignal(false)
   const [focusedScan, setFocusedScan] = createSignal<{ label: string } | null>(null)
+  const [scanTabsElement, setScanTabsElement] = createSignal<HTMLDivElement>()
+  const [scanTabsOverflow, setScanTabsOverflow] = createSignal({ start: false, end: false })
+  const scanTabCount = createMemo(
+    () => tabs().length + Object.keys(volumeScanJobs).length + (view() === "scan" && treeRoot() ? 1 : 0),
+  )
 
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
   let scanUnsub: (() => void) | undefined
+  const volumeScanUnsubs = new Map<string, () => void>()
   let scanUpdateUnsub: (() => void) | undefined
+  let driveFactsUnsub: (() => void) | undefined
+  let receivedDriveFacts: DiskDriveFactsUpdate[] = []
   let scanToken = 0
   let previewToken = 0
   let scanMaxBytes = 0
   let orbitEntryIntent: SunburstEntryIntent = "scan-complete"
   let dragDepth = 0
+  let selectionAnnouncementTimer: ReturnType<typeof setTimeout> | undefined
   let collectionDragPreview!: HTMLDivElement
+  let collectionDropElement: HTMLElement | undefined
+  let mapDrag:
+    | { node: DiskScanNode; pointerId: number; startX: number; startY: number; threshold: number; dragging: boolean }
+    | undefined
   let scrollIndexIntoView: ((index: number) => void) | undefined
+  let listPageSize = () => DEFAULT_LIST_PAGE_SIZE
 
   const crumbs = createMemo(() => buildCrumbs(treeRoot(), viewNode()))
-  const reclaim = createMemo<ReclaimSummary>(() => actionableReclaimSummary(computeReclaim(treeRoot()), platform.os))
-  const developer = createMemo<DeveloperSummary>(() => computeDeveloperSummary(treeRoot()))
-  const dormantDeveloper = createMemo(() => computeDormantDeveloperSummary(developer()))
+  const usesPhysicalByteAccounting = createMemo(() => isPhysicalByteAccounting(platform.os, scanDrive()))
+  /** A fallback or incomplete map must never turn unknown shared storage into a reclaim promise. */
+  const physicalCloneAccountingUncertain = createMemo(
+    () => hasUnverifiedPhysicalCloneAccounting(treeRoot(), platform.os, scanDrive()),
+  )
+  const physicalCloneAccountingWarning = createMemo(() => {
+    const root = treeRoot()
+    const capability = root?.cloneMetadata
+    const sharedStorageEvidence = root?.sharedStorageEvidence
+    if (!physicalCloneAccountingUncertain()) return undefined
+    if (sharedStorageEvidence === "partial") {
+      return "One or more summarized, excluded, or unreadable branches may hide shared storage. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+    }
+    if (sharedStorageEvidence !== "complete") {
+      return "This map cannot verify that all shared-storage relationships are visible. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+    }
+    if (capability?.state === "unavailable" && capability.reason === "scanner") {
+      return "The native metadata scanner was unavailable for this map. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space until clone sharing can be verified."
+    }
+    if (capability?.state === "unknown") {
+      return "The filesystem could not confirm enough clone metadata for this map. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+    }
+    return "This map does not include verified clone metadata. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+  })
+  const reclaim = createMemo<ReclaimSummary>(() =>
+    physicalCloneAccountingUncertain() ? EMPTY_RECLAIM : actionableReclaimSummary(computeReclaim(treeRoot()), platform.os),
+  )
+  const developer = createMemo<DeveloperSummary>(() => computeDeveloperSummaryWithInventory(treeRoot()))
+  const developerAge = createMemo(() => resolveDeveloperCleanupAge(indexFilter.developerAge, indexFilter.customDeveloperAgeDays))
+  const developerItems = createMemo(() => {
+    const category = indexFilter.developerCategory
+    const ecosystem = indexFilter.developerEcosystem
+    const categorized = developer().items.filter(
+      ({ recognition }) =>
+        (category === "all" || recognition.developer === category) && matchesArtifactEcosystem(recognition, ecosystem),
+    )
+    return filterDeveloperItemsByAge(categorized, developerAge())
+  })
+  const developerEcosystems = createMemo<ArtifactEcosystem[]>(() =>
+    ARTIFACT_ECOSYSTEMS.filter((ecosystem) => developer().items.some((item) => item.recognition.ecosystem === ecosystem)),
+  )
   const parentSize = createMemo(() => viewNode()?.size ?? 0)
   const parentCount = createMemo(() => viewNode()?.children?.length ?? 0)
-  const sizeBasisLabel = createMemo(() =>
-    platform.os === "windows" || scanDrive()?.type === "network" ? "apparent size" : "physical size",
-  )
+  const sizeBasisLabel = createMemo(() => {
+    if (!usesPhysicalByteAccounting()) return "file size"
+    return physicalCloneAccountingUncertain() ? "physical allocation · shared blocks unverified" : "disk space used"
+  })
 
   const sortedChildren = createMemo<DiskScanNode[]>(() => {
     const node = viewNode()
     if (!node) return []
     return [...(node.children ?? [])].sort((a, b) => b.size - a.size)
   })
+  const recentChanges = createMemo(() => recentChangeNodes(treeRoot()))
   const entries = createMemo<Entry[]>(() => {
     const q = query().trim().toLowerCase()
     const nodes: { node: DiskScanNode; displaySize: number }[] =
       indexFilter.lens === "developer"
-        ? (indexFilter.developerCategory === "dormant"
-            ? dormantDeveloper().items
-            : developer().items.filter(
-                ({ recognition }) =>
-                  indexFilter.developerCategory === "all" || recognition.developer === indexFilter.developerCategory,
-              )
-          ).map(({ node, bytes }) => ({ node, displaySize: bytes }))
-        : indexFilter.lens === "cleanup"
+        ? developerItems().map(({ node, bytes }) => ({ node, displaySize: bytes }))
+        : indexFilter.lens === "recommendations"
           ? reclaim()
               .buckets.flatMap((bucket) => bucket.items.map(({ node }) => node))
               .sort((a, b) => b.size - a.size)
               .map((node) => ({ node, displaySize: node.size }))
+          : indexFilter.lens === "changes"
+            ? recentChanges().map((node) => ({ node, displaySize: node.size }))
           : sortedChildren().map((node) => ({ node, displaySize: node.size }))
     const filtered = q
       ? nodes.filter(({ node }) => `${node.name}\n${node.path}\n${recognize(node).tag ?? ""}`.toLowerCase().includes(q))
@@ -346,36 +441,57 @@ export default function DiskUtilityPage() {
     if (!target) return -1
     return previewableEntries().findIndex((node) => diskPathEquals(node.path, target.path, platform.os))
   })
-  const developerBucket = createMemo(() =>
-    indexFilter.developerCategory === "all" || indexFilter.developerCategory === "dormant"
-      ? undefined
-      : developer().buckets.find((bucket) => bucket.category === indexFilter.developerCategory),
-  )
   const indexSize = createMemo(() =>
     indexFilter.lens === "developer"
-      ? indexFilter.developerCategory === "dormant"
-        ? dormantDeveloper().bytes
-        : (developerBucket()?.bytes ?? (indexFilter.developerCategory === "all" ? developer().totalBytes : 0))
-      : indexFilter.lens === "cleanup"
+      ? developerItems().reduce((total, item) => total + item.bytes, 0)
+      : indexFilter.lens === "recommendations"
         ? reclaim().totalBytes
+        : indexFilter.lens === "changes"
+          ? recentChanges().reduce((total, node) => total + node.size, 0)
         : parentSize(),
   )
   const indexCount = createMemo(() =>
     indexFilter.lens === "developer"
-      ? indexFilter.developerCategory === "dormant"
-        ? dormantDeveloper().count
-        : (developerBucket()?.count ?? (indexFilter.developerCategory === "all" ? developer().totalCount : 0))
-      : indexFilter.lens === "cleanup"
+      ? developerItems().length
+      : indexFilter.lens === "recommendations"
         ? reclaim().totalCount
+        : indexFilter.lens === "changes"
+          ? recentChanges().length
         : parentCount(),
   )
-  const effectiveCollection = createMemo(() => uniqueDeletionRoots(collection(), platform.os))
+  // A watcher can rebase a selected deep result against a newer inventory.
+  // Never let an identity-less replacement remain actionable while that
+  // reconciliation is in flight (or if an older renderer left one behind).
+  const effectiveCollection = createMemo(() =>
+    uniqueDeletionRoots(collection().filter((node) => !inventoryDeletionNeedsRescan(node)), platform.os),
+  )
+  /**
+   * Bulk selection is narrower than the Developer lens: only known
+   * regenerable/cache artifacts with a verified storage map are eligible.
+   * Everything else remains inspectable and must be reviewed individually.
+   */
+  const smartCleanupEligibleEntries = createMemo(() => {
+    if (indexFilter.lens !== "developer" || physicalCloneAccountingUncertain() || !developerAge().valid) return []
+    return entries()
+      .map(({ node }) => node)
+      .filter((node) => {
+        const recognition = recognize(node)
+        return isSmartCleanupEligible(node, recognition) && canModifyNode(node)
+      })
+  })
+  const smartCleanupCandidates = createMemo(() => uniqueDeletionRoots(smartCleanupEligibleEntries(), platform.os))
+  const smartCleanupCandidateBytes = createMemo(() => smartCleanupCandidates().reduce((total, node) => total + node.size, 0))
+  const smartCleanupReviewCount = createMemo(() =>
+    Math.max(0, (indexFilter.lens === "developer" ? entries().length : 0) - smartCleanupEligibleEntries().length),
+  )
   const pinnedLocations = settings.general.diskPinnedLocations
   const currentScanPinned = createMemo(() => {
     const path = scanSourcePath()
     return !!path && isPinnedScanLocation(pinnedLocations(), path, platform.os)
   })
   const collectionSize = createMemo(() => effectiveCollection().reduce((s, n) => s + n.size, 0))
+  const collectionHasSharedPhysicalStorage = createMemo(() => effectiveCollection().some(containsSharedPhysicalStorage))
+  const collectionNeedsDeepInventoryRefresh = createMemo(() => requiresDeepInventoryRefresh(effectiveCollection()))
   const driveTotals = createMemo(() =>
     drives().reduce(
       (total, drive) => ({
@@ -386,6 +502,10 @@ export default function DiskUtilityPage() {
       { capacity: 0, used: 0, free: 0 },
     ),
   )
+  const volumeJobs = createMemo(() => Object.values(volumeScanJobs).filter((job): job is VolumeScanJob => !!job))
+  const runningVolumeScans = createMemo(() => volumeJobs().filter((job) => job.status === "scanning").length)
+  const volumeJobForDrive = (drive: DiskDriveInfo) =>
+    volumeJobs().find((job) => diskPathEquals(job.sourcePath, drive.path, platform.os))
   /** The node the sunburst center + list header should describe right now. */
   const focusNode = createMemo<DiskScanNode | null>(() => {
     const visual = visualHoverNode()
@@ -410,8 +530,6 @@ export default function DiskUtilityPage() {
             ? "preview"
             : null,
   )
-  const selectionAnnouncement = createMemo(() => describeStorageNode(selectedNode(), parentSize()))
-
   createEffect(() => {
     if (!activeDialog()) return
     const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -423,13 +541,52 @@ export default function DiskUtilityPage() {
   onMount(() => {
     const api = disk()
     if (!api) return
+    driveFactsUnsub = api.onDriveFacts((update) => {
+      receivedDriveFacts = [
+        ...receivedDriveFacts.filter((candidate) => !diskPathEquals(candidate.path, update.path, platform.os)),
+        update,
+      ]
+      setDrives((current) =>
+        current.map((drive) =>
+          diskPathEquals(drive.path, update.path, platform.os) ? { ...drive, ...update.facts } : drive,
+        ),
+      )
+    })
     void loadDrives()
     scanUpdateUnsub = api.onScanUpdate((update) => {
-      if (view() !== "scan" || !diskPathEquals(update.rootPath, scanSourcePath(), platform.os)) return
+      const job = volumeScanJobs[update.scanId]
+      if (job) {
+        const tree = scanUpdateTree(update.root, job.drive, job.label)
+        setVolumeScanJobs(update.scanId, "tree", tree)
+      }
+
+      // Watchers keep running for parked tabs. Give a matching background tab
+      // the fresh root (including its new immutable deep inventory) before it
+      // can be reopened, and rebase only basket entries scoped to that map.
+      const updatedTabs = tabs().filter((tab) => tab.sessionID === update.scanId)
+      if (updatedTabs.length) {
+        setTabs((items) =>
+          refreshScanTabsForWatcherUpdate(
+            items,
+            update.scanId,
+            (tab) => scanUpdateTree(update.root, tab.drive, tab.label),
+            platform.os,
+          ),
+        )
+        for (const tab of updatedTabs) {
+          reconcileCollectionForScanUpdate(scanUpdateTree(update.root, tab.drive, tab.label), update.rootPath)
+        }
+      }
+
+      if (
+        update.scanId !== scanSession.activeID ||
+        view() !== "scan" ||
+        !diskPathEquals(update.rootPath, scanSourcePath(), platform.os)
+      )
+        return
+      const tree = scanUpdateTree(update.root, job?.drive ?? scanDrive(), job?.label ?? (scanLabel() || update.root.name))
       const previousViewPath = viewNode()?.path
       const previousSelection = selectedPath()
-      const tree = includeHiddenSpace(asBrowseableRoot(update.root), scanDrive())
-      tree._label = scanLabel() || tree.name
       const nextView = previousViewPath ? findScanNode(tree, previousViewPath) : undefined
       const nextSelection = previousSelection ? findScanNode(tree, previousSelection) : undefined
       batch(() => {
@@ -438,13 +595,44 @@ export default function DiskUtilityPage() {
         setSelectedPath(nextSelection?.path)
         setHoveredPath(null)
         setVisualHoverNode(null)
-        setCollection((items) =>
-          items.flatMap((item) => {
-            const refreshed = findScanNode(tree, item.path)
-            return refreshed ? [refreshed] : []
-          }),
-        )
+        reconcileCollectionForScanUpdate(tree, update.rootPath)
       })
+    })
+  })
+
+  function updateScanTabsOverflow() {
+    const element = scanTabsElement()
+    if (!element) {
+      setScanTabsOverflow({ start: false, end: false })
+      return
+    }
+    setScanTabsOverflow({
+      start: element.scrollLeft > 1,
+      end: element.scrollLeft + element.clientWidth < element.scrollWidth - 1,
+    })
+  }
+
+  function handleScanTabsKeyDown(event: KeyboardEvent & { currentTarget: HTMLDivElement }) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+    event.preventDefault()
+    event.stopPropagation()
+    event.currentTarget.scrollBy({
+      left: event.key === "ArrowLeft" ? -180 : 180,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    })
+  }
+
+  createEffect(() => {
+    scanTabCount()
+    const element = scanTabsElement()
+    if (!element) return
+    const observer = new ResizeObserver(updateScanTabsOverflow)
+    observer.observe(element)
+    element.addEventListener("scroll", updateScanTabsOverflow, { passive: true })
+    requestAnimationFrame(updateScanTabsOverflow)
+    onCleanup(() => {
+      observer.disconnect()
+      element.removeEventListener("scroll", updateScanTabsOverflow)
     })
   })
 
@@ -456,9 +644,9 @@ export default function DiskUtilityPage() {
       return
     }
     const sb = new Sunburst(el, {
-      rings: 4,
-      maxSegments: 960,
-      padAngle: 0.0028,
+      rings: 3,
+      maxSegments: 360,
+      padAngle: 0.0016,
       ringGap: 0.004,
       enterAnimMs: sunburstEntryDuration(orbitEntryIntent),
       canDrag: canModifyNode,
@@ -472,11 +660,13 @@ export default function DiskUtilityPage() {
           chooseScanMode("list")
           return
         }
-        const wasSelected = untrack(selectedPath) === seg.path
         selectPath(seg.path)
-        if (wasSelected && seg.node.isDir && !seg.node.isOther && (seg.node.isCollapsed || seg.node.children?.length)) {
-          drill(seg.node)
-        }
+      },
+      onMetaClick: (seg) => {
+        if (!seg.node.isOther) void reveal(seg.path)
+      },
+      onDoubleClick: (seg) => {
+        if (seg.node.isDir && !seg.node.isOther) drill(seg.node)
       },
       onCenterClick: () => goUp(),
     })
@@ -499,10 +689,15 @@ export default function DiskUtilityPage() {
 
   onCleanup(() => {
     scanUnsub?.()
+    volumeScanUnsubs.forEach((unsubscribe) => unsubscribe())
+    volumeScanUnsubs.clear()
     scanUpdateUnsub?.()
-    if (scanning()) void disk()?.cancelScan()
-    else void disk()?.stopWatching()
+    driveFactsUnsub?.()
+    scanToken++
+    void disk()?.cancelScan()
+    void disk()?.stopWatching()
     sunburst()?.destroy()
+    if (selectionAnnouncementTimer) clearTimeout(selectionAnnouncementTimer)
   })
 
   function findScanNode(root: DiskScanNode, targetPath: string): DiskScanNode | undefined {
@@ -514,14 +709,63 @@ export default function DiskUtilityPage() {
     return undefined
   }
 
+  function scanUpdateTree(root: DiskScanNode, drive: DiskDriveInfo | undefined, label: string): DiskScanNode {
+    return { ...includeHiddenSpace(asBrowseableRoot(root), drive), _label: label }
+  }
+
+  function pathBelongsToScanRoot(path: string, rootPath: string) {
+    const normalize = (value: string) => {
+      const normalized = value.replaceAll("\\", "/").replace(/\/+$/, "") || "/"
+      return platform.os === "windows" ? normalized.toLowerCase() : normalized
+    }
+    const candidate = normalize(path)
+    const root = normalize(rootPath)
+    return candidate === root || (root === "/" ? candidate.startsWith("/") : candidate.startsWith(`${root}/`))
+  }
+
+  function reconcileCollectionForScanUpdate(tree: DiskScanNode, scanRootPath: string) {
+    setCollection((items) =>
+      items.flatMap((item) => {
+        const refreshed = developerInventoryCollectionNodeForPath(tree, item.path, platform.os)
+        // A refreshed inventory row without its scanner-captured directory
+        // identity cannot be reviewed or deleted. Prune it instead of leaving
+        // a stale basket entry that would later fail closed at delete time.
+        if (refreshed && !inventoryDeletionNeedsRescan(refreshed)) return [refreshed]
+        // Keep selections from other tabs, but drop a stale member of this
+        // scan rather than turning an old deep record into a delete target.
+        return pathBelongsToScanRoot(item.path, scanRootPath) ? [] : [item]
+      }),
+    )
+  }
+
+  function requiresDeepInventoryRefresh(removed: readonly DiskScanNode[]) {
+    return developerInventoryRootsNeedRefresh(
+      [treeRoot(), ...tabs().map((tab) => tab.tree), ...volumeJobs().map((job) => job.tree)],
+      removed,
+      platform.os,
+    )
+  }
+
   async function loadDrives() {
     const api = disk()
     if (!api) return
     setDrivesLoading(true)
     setDrivesError(undefined)
+    setStorageDiagnostics(undefined)
     try {
       const list = await withTimeout(api.getDrives(), 8000, "Listing drives")
-      setDrives(list)
+      setDrives(
+        list.map((drive) => {
+          const facts = receivedDriveFacts.find((candidate) => diskPathEquals(candidate.path, drive.path, platform.os))
+          return facts ? { ...drive, ...facts.facts } : drive
+        }),
+      )
+      // Diagnostics are helpful context, not a dependency for the main drive
+      // chooser. Let it settle independently so a permission probe never
+      // delays the first useful screen.
+      void withTimeout(api.getStorageDiagnostics(), 8000, "Checking connected storage")
+        .then(setStorageDiagnostics)
+        .catch(() => undefined)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       setDrivesError(message)
@@ -539,14 +783,166 @@ export default function DiskUtilityPage() {
     if (path) await startScan(path, path.split(/[/\\]/).pop() || path, driveForPath(path, drives(), platform.os))
   }
 
+  function scanStorageLocation(location: DiskStorageLocation) {
+    void startScan(location.path, location.name, driveForPath(location.path, drives(), platform.os))
+  }
+
+  async function openDiskAccessSettings() {
+    const api = disk()
+    if (!api) return
+    try {
+      const opened = await api.openDiskAccessSettings()
+      if (opened) return
+      showToast({ variant: "default", title: "No privacy settings page is available on this platform" })
+    } catch (error) {
+      showToast({
+        variant: "error",
+        title: "Could not open privacy settings",
+        description: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  function newScanID(kind: "volume" | "folder" | "expand") {
+    return `${kind}-${crypto.randomUUID()}`
+  }
+
+  function startVolumeScan(drive: DiskDriveInfo) {
+    const api = disk()
+    if (!api) return
+    const existing = volumeJobForDrive(drive)
+    if (existing?.status === "scanning") return
+    if (runningVolumeScans() >= MAX_PARALLEL_VOLUME_SCANS) {
+      showToast({
+        variant: "default",
+        title: "Three scans are already running",
+        description: "Let one finish or cancel it before starting another.",
+      })
+      return
+    }
+    if (existing) {
+      volumeScanUnsubs.get(existing.id)?.()
+      volumeScanUnsubs.delete(existing.id)
+      void api.stopWatching(existing.id)
+      setVolumeScanJobs(existing.id, undefined)
+    }
+
+    const id = newScanID("volume")
+    setVolumeScanJobs(id, {
+      id,
+      status: "scanning",
+      label: drive.name,
+      sourcePath: drive.path,
+      drive,
+      files: 0,
+      bytes: 0,
+      pct: 0,
+      currentPath: "",
+      startedAt: Date.now(),
+      source: undefined,
+    })
+    const unsubscribe = api.onScanProgress((progress) => {
+      if (progress.scanId !== id || volumeScanJobs[id]?.status !== "scanning") return
+      const bytes = Math.max(volumeScanJobs[id]?.bytes ?? 0, progress.size)
+      setVolumeScanJobs(id, {
+        files: progress.filesScanned,
+        bytes,
+        pct: drive.used > 0 ? Math.min(99, (bytes / drive.used) * 100) : 0,
+        currentPath: progress.currentPath,
+        ...(progress.source ? { source: progress.source } : {}),
+      })
+    })
+    volumeScanUnsubs.set(id, unsubscribe)
+    void runVolumeScan(id, drive)
+  }
+
+  async function runVolumeScan(id: string, drive: DiskDriveInfo) {
+    const api = disk()
+    if (!api) return
+    try {
+      const scannedTree = await api.scanPath(drive.path, scannerOptions(drive), id)
+      if (!scannedTree || volumeScanJobs[id]?.status !== "scanning") return
+      const tree = includeHiddenSpace(asBrowseableRoot(scannedTree), drive)
+      tree._label = drive.name
+      setVolumeScanJobs(id, {
+        status: "complete",
+        tree,
+        bytes: tree.size,
+        pct: 100,
+        currentPath: "",
+        completedAt: Date.now(),
+      })
+      showToast({
+        variant: "default",
+        title: `${drive.name} is ready`,
+        description: "Open its storage map when you’re ready.",
+      })
+    } catch (error) {
+      if (!volumeScanJobs[id] || isScanCancellation(error)) return
+      setVolumeScanJobs(id, {
+        status: "failed",
+        error: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      volumeScanUnsubs.get(id)?.()
+      volumeScanUnsubs.delete(id)
+    }
+  }
+
+  function cancelVolumeScan(id: string) {
+    const api = disk()
+    volumeScanUnsubs.get(id)?.()
+    volumeScanUnsubs.delete(id)
+    setVolumeScanJobs(id, undefined)
+    void api?.cancelScan(id)
+  }
+
+  function closeVolumeScan(id: string) {
+    if (volumeScanJobs[id]?.status === "scanning") {
+      cancelVolumeScan(id)
+      return
+    }
+    setVolumeScanJobs(id, undefined)
+    void disk()?.stopWatching(id)
+  }
+
+  function openVolumeScan(job: VolumeScanJob) {
+    if (!job.tree) return
+    saveCurrentTab()
+    setScanSession({ activeID: job.id, foregroundID: undefined })
+    orbitEntryIntent = "scan-complete"
+    batch(() => {
+      setView("scan")
+      setScanning(false)
+      setFocusedScan(null)
+      setTreeRoot(job.tree!)
+      setViewNode(job.tree!)
+      setScanSourcePath(job.sourcePath)
+      setScanLabel(job.label)
+      setScanDrive(job.drive)
+      setScanFiles(job.files)
+      setScanBytes(job.bytes)
+      setScanTotal(job.drive.used)
+      setScanPct(100)
+      setSelectedPath(undefined)
+      setHoveredPath(null)
+      setVisualHoverNode(null)
+      setQuery("")
+      setIndexFilter({ lens: "all", developerCategory: "all" })
+      setFocusIdx(0)
+      setRangeAnchorIndex(undefined)
+    })
+  }
+
   /** Snapshot the current completed scan as a background tab before replacing it. */
   function saveCurrentTab() {
     const root = treeRoot()
-    if (!root) return
+    if (!root || (scanSession.activeID && volumeScanJobs[scanSession.activeID])) return
     setTabs((prev) => [
       ...prev,
       {
         id: `tab-${Date.now()}-${prev.length}`,
+        sessionID: scanSession.activeID,
         label: scanLabel() || root.name,
         sourcePath: scanSourcePath() || root.path,
         tree: root,
@@ -568,18 +964,22 @@ export default function DiskUtilityPage() {
     setScanSourcePath(tab.sourcePath)
     setScanLabel(tab.label)
     setScanDrive(tab.drive)
+    setScanSession({ activeID: tab.sessionID, foregroundID: undefined })
     setSelectedPath(undefined)
     setHoveredPath(null)
     setQuery("")
     setIndexFilter({ lens: "all", developerCategory: "all" })
     setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
   }
 
   function closeTab(id: string) {
-    setTabs((prev) => prev.filter((t) => t.id !== id))
+    const tab = tabs().find((item) => item.id === id)
+    setTabs((prev) => prev.filter((item) => item.id !== id))
+    if (tab?.sessionID && !volumeScanJobs[tab.sessionID]) void disk()?.stopWatching(tab.sessionID)
   }
 
-  function scannerOptions(drive?: DiskDriveInfo) {
+  function scannerOptions(drive?: DiskDriveInfo, includeDeveloperInventory = true) {
     return {
       // Materialize the visible map only; deeper branches remain exact-sized
       // aggregate nodes and are expanded on demand.
@@ -588,26 +988,60 @@ export default function DiskUtilityPage() {
       preserveNames: [...IMPORTANT_PRESERVE_NAMES],
       collapseNames: [...DEVELOPER_COLLAPSE_NAMES],
       signatureNames: [...DEVELOPER_SIGNATURE_NAMES],
+      // This is intentionally separate from the visual depth limit so the
+      // Developer lens can expose deep build/dependency artifacts too. Focused
+      // subtree expansions leave it out: the root inventory remains the sole
+      // authoritative bounded traversal for the current map.
+      ...(includeDeveloperInventory ? { developerArtifactInventory: { maxItems: 2_000 } } : {}),
     }
   }
 
-  async function startScan(path: string, label: string, drive?: DiskDriveInfo, preserveCurrent = true) {
+  async function startScan(
+    path: string,
+    label: string,
+    drive?: DiskDriveInfo,
+    preserveCurrent = true,
+    forceFresh = false,
+  ) {
     const api = disk()
     if (!api) return
     scanUnsub?.()
     if (preserveCurrent) saveCurrentTab()
     const token = ++scanToken
+    const sessionID = !preserveCurrent && scanSession.activeID ? scanSession.activeID : newScanID("folder")
+    const startedAt = Date.now()
+    setScanSession({ activeID: sessionID, foregroundID: sessionID })
+    if (volumeScanJobs[sessionID]) {
+      setVolumeScanJobs(sessionID, {
+        status: "scanning",
+        files: 0,
+        bytes: 0,
+        pct: 0,
+        currentPath: "",
+        startedAt,
+        completedAt: undefined,
+        source: undefined,
+      })
+    }
     orbitEntryIntent = "scan-complete"
     setFocusedScan(null)
     setView("scan")
     setScanning(true)
+    // A root scan replaces the authoritative map. The review basket can hold
+    // deep inventory nodes from a prior root (or another tab), so clear it
+    // synchronously before the old map disappears or the first scan await.
+    clearReviewForRootScan({
+      setCollection,
+      setDragNode: setCollectionDragNode,
+      setDropActive: setCollectionDropActive,
+      closeReview: collectionSurface.close,
+    })
     setScanLabel(label)
     setScanFiles(0)
     const isVolumeRoot = !!drive && diskPathEquals(path, drive.path, platform.os)
     setScanTotal(isVolumeRoot ? drive.used : 0)
     setScanPct(0)
     setScanBytes(0)
-    setScanDiscoveries([])
     scanMaxBytes = 0
     setScanTail("")
     setTreeRoot(null)
@@ -617,51 +1051,78 @@ export default function DiskUtilityPage() {
     setQuery("")
     setIndexFilter({ lens: "all", developerCategory: "all" })
     setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
     setScanDrive(drive)
     setScanSourcePath(path)
     scanUnsub = api.onScanProgress((p) => {
-      if (token !== scanToken) return
+      if (token !== scanToken || p.scanId !== sessionID) return
       setScanFiles(p.filesScanned)
       setScanTail(p.currentPath)
-      const discovery = p.discovery
-      if (discovery) setScanDiscoveries((current) => mergeScanDiscoveries(current, discovery))
       if (p.size > scanMaxBytes) {
         scanMaxBytes = p.size
         setScanBytes(scanMaxBytes)
         if (isVolumeRoot && drive.used) setScanPct(Math.min(99, (scanMaxBytes / drive.used) * 100))
       }
+      if (volumeScanJobs[sessionID]) {
+        setVolumeScanJobs(sessionID, {
+          files: p.filesScanned,
+          bytes: scanMaxBytes,
+          pct: isVolumeRoot && drive.used ? Math.min(99, (scanMaxBytes / drive.used) * 100) : 0,
+          currentPath: p.currentPath,
+          ...(p.source ? { source: p.source } : {}),
+        })
+      }
     })
     try {
-      const scannedTree = await api.scanPath(path, scannerOptions(drive))
-      if (token !== scanToken) return // superseded or cancelled
+      const scannedTree = await api.scanPath(
+        path,
+        { ...scannerOptions(drive), ...(forceFresh ? { forceFresh: true } : {}) },
+        sessionID,
+      )
+      if (token !== scanToken || !scannedTree) return // superseded or cancelled
       const tree = includeHiddenSpace(asBrowseableRoot(scannedTree), drive)
       tree._label = label
       setScanPct(100)
       setTreeRoot(tree)
       setViewNode(tree)
+      if (volumeScanJobs[sessionID]) {
+        setVolumeScanJobs(sessionID, {
+          status: "complete",
+          tree,
+          bytes: tree.size,
+          pct: 100,
+          currentPath: "",
+          completedAt: Date.now(),
+        })
+      }
     } catch (err) {
-      if (token !== scanToken) return
+      if (token !== scanToken || isScanCancellation(err)) return
       const message = err instanceof Error ? err.message : String(err)
       showToast({ variant: "error", title: "Scan failed", description: message })
+      if (volumeScanJobs[sessionID]) setVolumeScanJobs(sessionID, { status: "failed", error: message })
       setView("drives")
       setScanSourcePath("")
       setScanLabel("")
       setScanDrive(undefined)
+      setScanSession("activeID", undefined)
     } finally {
       if (token === scanToken) {
         setScanning(false)
         scanUnsub?.()
         scanUnsub = undefined
+        setScanSession("foregroundID", undefined)
       }
     }
   }
 
-  async function expandCollapsedNode(node: DiskScanNode) {
+  async function expandCollapsedNode(node: DiskScanNode, restoreListFocus = false) {
     const api = disk()
     const root = treeRoot()
     if (!api || !root) return
     scanUnsub?.()
     const token = ++scanToken
+    const sessionID = newScanID("expand")
+    setScanSession("foregroundID", sessionID)
     orbitEntryIntent = "scan-complete"
     const drive = driveForPath(node.path, drives(), platform.os) ?? scanDrive()
     setFocusedScan({ label: node.name })
@@ -670,37 +1131,42 @@ export default function DiskUtilityPage() {
     setScanTotal(0)
     setScanPct(0)
     setScanBytes(0)
-    setScanDiscoveries([])
     scanMaxBytes = 0
     setScanTail("")
     scanUnsub = api.onScanProgress((progress) => {
-      if (token !== scanToken) return
+      if (token !== scanToken || progress.scanId !== sessionID) return
       setScanFiles(progress.filesScanned)
       setScanTail(progress.currentPath)
-      if (progress.discovery) setScanDiscoveries((current) => mergeScanDiscoveries(current, progress.discovery!))
       if (progress.size <= scanMaxBytes) return
       scanMaxBytes = progress.size
       setScanBytes(scanMaxBytes)
     })
 
     try {
-      const replacement = asBrowseableRoot(await api.scanPath(node.path, scannerOptions(drive)))
-      if (token !== scanToken) return
+      const scannedTree = await api.scanPath(node.path, scannerOptions(drive, false), sessionID)
+      if (token !== scanToken || !scannedTree) return
+      const replacement = asBrowseableRoot(scannedTree)
       const nextRoot = replaceScanSubtree(root, node.path, replacement, platform.os)
-      if (nextRoot === root) throw new Error("The folder changed while it was being mapped. Try opening it again.")
+      if (nextRoot === root) throw new Error("The folder changed while it was being scanned. Try opening it again.")
       setScanPct(100)
       setTreeRoot(nextRoot)
       setViewNode(replacement)
+      if (scanSession.activeID && volumeScanJobs[scanSession.activeID]) {
+        setVolumeScanJobs(scanSession.activeID, "tree", nextRoot)
+      }
       setCollection((items) =>
         items.map((item) => (diskPathEquals(item.path, node.path, platform.os) ? replacement : item)),
       )
       setIndexFilter({ lens: "all", developerCategory: "all" })
       setSelectedPath(undefined)
       setHoveredPath(null)
+      setVisualHoverNode(null)
       setQuery("")
       setFocusIdx(0)
+      setRangeAnchorIndex(undefined)
+      if (restoreListFocus) focusListEntry(0)
     } catch (error) {
-      if (token !== scanToken) return
+      if (token !== scanToken || isScanCancellation(error)) return
       showToast({
         variant: "error",
         title: `Could not open ${node.name}`,
@@ -712,43 +1178,52 @@ export default function DiskUtilityPage() {
         setScanning(false)
         scanUnsub?.()
         scanUnsub = undefined
+        setScanSession("foregroundID", undefined)
+        void api.stopWatching(sessionID)
       }
     }
   }
 
-  async function rescanCurrent() {
+  async function rescanCurrent(forceFresh = false) {
     const api = disk()
     const root = treeRoot()
     if (!api || !root) return
-    let drive = scanDrive()
+    const path = scanSourcePath() || root.path
+    const label = scanLabel() || root.name
+    const drive = scanDrive()
+    // Start immediately so stale map actions cannot race a slow drive-facts
+    // request. Capacity refresh is helpful context, never a prerequisite for
+    // rebuilding a destructive-action source of truth.
+    const scan = startScan(path, label, drive, false, forceFresh)
     if (drive) {
-      try {
-        const list = await withTimeout(api.getDrives(), 8000, "Refreshing drive totals")
-        setDrives(list)
-        drive = list.find((candidate) => candidate.path === drive?.path) ?? drive
-      } catch {
-        // A scan is still useful when a removable/network drive cannot refresh its capacity metadata.
-      }
+      void withTimeout(api.getDrives(), 8000, "Refreshing drive totals")
+        .then(setDrives)
+        // A scan remains useful when a removable/network drive cannot refresh
+        // its capacity metadata.
+        .catch(() => undefined)
     }
-    await startScan(scanSourcePath() || root.path, scanLabel(), drive, false)
+    await scan
   }
 
   /** Abort a focused expansion in place; primary scans return to the volume list. */
   function cancelScan() {
     const focused = focusedScan()
+    const sessionID = scanSession.foregroundID
     scanToken++
     scanUnsub?.()
     scanUnsub = undefined
-    void disk()?.cancelScan()
+    setScanSession("foregroundID", undefined)
+    if (sessionID) void disk()?.cancelScan(sessionID)
+    if (sessionID && volumeScanJobs[sessionID]) setVolumeScanJobs(sessionID, undefined)
     setFocusedScan(null)
     setScanning(false)
     if (!focused) backToDrives()
   }
 
-  function drill(node: DiskScanNode, instant = false) {
-    if (scanning() || !node.isDir || node.isOther) return
+  function drill(node: DiskScanNode, instant = false, restoreListFocus = false) {
+    if (scanning() || !node.isDir || node.isOther || isDeveloperInventoryNode(node)) return
     if (node.isCollapsed) {
-      void expandCollapsedNode(node)
+      void expandCollapsedNode(node, restoreListFocus)
       return
     }
     sunburst()?.navigateTo(node, instant)
@@ -756,8 +1231,11 @@ export default function DiskUtilityPage() {
     setIndexFilter({ lens: "all", developerCategory: "all" })
     setSelectedPath(undefined)
     setHoveredPath(null)
+    setVisualHoverNode(null)
     setQuery("")
     setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
+    if (restoreListFocus) focusListEntry(0)
   }
 
   function chooseLens(lens: IndexLens) {
@@ -766,7 +1244,7 @@ export default function DiskUtilityPage() {
     setSelectedPath(undefined)
     setHoveredPath(null)
     setFocusIdx(0)
-    if (lens !== "all") setScanMode("list")
+    setRangeAnchorIndex(undefined)
     scrollIndexIntoView?.(0)
   }
 
@@ -775,6 +1253,34 @@ export default function DiskUtilityPage() {
     setSelectedPath(undefined)
     setHoveredPath(null)
     setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
+    scrollIndexIntoView?.(0)
+  }
+
+  function chooseDeveloperEcosystem(ecosystem: ArtifactEcosystemFilter) {
+    setIndexFilter("developerEcosystem", ecosystem)
+    setSelectedPath(undefined)
+    setHoveredPath(null)
+    setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
+    scrollIndexIntoView?.(0)
+  }
+
+  function chooseDeveloperCleanupAge(age: DeveloperCleanupAgePreset) {
+    setIndexFilter("developerAge", age)
+    setSelectedPath(undefined)
+    setHoveredPath(null)
+    setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
+    scrollIndexIntoView?.(0)
+  }
+
+  function setCustomDeveloperCleanupAgeDays(days: string) {
+    setIndexFilter("customDeveloperAgeDays", days)
+    setSelectedPath(undefined)
+    setHoveredPath(null)
+    setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
     scrollIndexIntoView?.(0)
   }
 
@@ -783,7 +1289,39 @@ export default function DiskUtilityPage() {
     setSelectedPath(undefined)
     setHoveredPath(null)
     setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
     scrollIndexIntoView?.(0)
+  }
+
+  /** A keyboard view switch must land on a real control in the newly mounted view. */
+  function restoreKeyboardViewFocus(mode: ScanMode) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (mode === "map") {
+          const canvas = canvasEl()
+          if (canvas) {
+            canvas.focus({ preventScroll: true })
+            return
+          }
+          focusPersistentDiskAction()
+          return
+        }
+        if (mode === "list") {
+          focusListEntry(clampedListIndex(focusIdx(), entries().length))
+          return
+        }
+        const desiredPath = selectedPath() ?? entries()[clampedListIndex(focusIdx(), entries().length)]?.node.path
+        const tile = [...document.querySelectorAll<HTMLElement>("[data-disk-tile-path]")].find(
+          (element) => element.dataset.diskTilePath === desiredPath,
+        )
+        const focusTarget = tile ?? document.querySelector<HTMLElement>("[data-disk-tile-path]")
+        if (focusTarget) {
+          focusTarget.focus({ preventScroll: true })
+          return
+        }
+        focusPersistentDiskAction()
+      })
+    })
   }
 
   function chooseScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer") {
@@ -791,7 +1329,7 @@ export default function DiskUtilityPage() {
     setScanMode(mode)
     setVisualHoverNode(null)
     setHoveredPath(null)
-    if (mode !== "list") setIndexFilter({ lens: "all", developerCategory: "all" })
+    if (intent === "keyboard") restoreKeyboardViewFocus(mode)
   }
 
   function togglePinnedLocation(path: string, label: string) {
@@ -800,24 +1338,25 @@ export default function DiskUtilityPage() {
     if (!wasPinned && !isPinnedScanLocation(next, path, platform.os)) {
       showToast({
         variant: "default",
-        title: "Pinned scans are full",
-        description: "Unpin a location before adding another.",
+        title: "Saved locations are full",
+        description: "Remove a saved location before adding another.",
       })
       return
     }
     settings.general.setDiskPinnedLocations(next)
     showToast({
       variant: "default",
-      title: wasPinned ? "Removed from pinned scans" : "Pinned for next time",
+      title: wasPinned ? "Removed from saved locations" : "Location saved",
       description: label,
     })
   }
 
-  function goUp(instant = false) {
+  function goUp(instant = false, restoreListFocus = false) {
     if (scanning()) {
       cancelScan()
       return
     }
+    const current = viewNode()
     const list = crumbs()
     if (list.length <= 1) {
       backToDrives()
@@ -829,7 +1368,17 @@ export default function DiskUtilityPage() {
       setViewNode(parent.node)
       setSelectedPath(undefined)
       setHoveredPath(null)
+      setVisualHoverNode(null)
       setFocusIdx(0)
+      setRangeAnchorIndex(undefined)
+      if (restoreListFocus && current) {
+        const index = entries().findIndex((entry) => diskPathEquals(entry.node.path, current.path, platform.os))
+        if (index >= 0) {
+          setRangeAnchorIndex(index)
+          selectPath(current.path)
+          focusListEntry(index)
+        }
+      }
     } else {
       backToDrives()
     }
@@ -837,7 +1386,7 @@ export default function DiskUtilityPage() {
 
   function backToDrives(preserveCurrent = true) {
     if (preserveCurrent) saveCurrentTab()
-    void disk()?.stopWatching()
+    setScanSession({ activeID: undefined, foregroundID: undefined })
     setView("drives")
     setTreeRoot(null)
     setViewNode(null)
@@ -846,6 +1395,7 @@ export default function DiskUtilityPage() {
     setScanDrive(undefined)
     setSelectedPath(undefined)
     setHoveredPath(null)
+    setVisualHoverNode(null)
     void loadDrives()
   }
 
@@ -855,8 +1405,32 @@ export default function DiskUtilityPage() {
       setViewNode(crumb.node)
       setSelectedPath(undefined)
       setHoveredPath(null)
+      setVisualHoverNode(null)
       setFocusIdx(0)
+      setRangeAnchorIndex(undefined)
     }
+  }
+
+  /** A virtual row may mount on the next frame after structural keyboard navigation. */
+  function focusListEntry(index: number, attempt = 0) {
+    if (index < 0) return
+    scrollIndexIntoView?.(index)
+    requestAnimationFrame(() => {
+      const target = document.querySelector<HTMLElement>(`[data-disk-index="${index}"]`)
+      if (target) {
+        target.focus({ preventScroll: true })
+        return
+      }
+      if (attempt < 2) {
+        focusListEntry(index, attempt + 1)
+        return
+      }
+      focusPersistentDiskAction()
+    })
+  }
+
+  function focusPersistentDiskAction() {
+    document.querySelector<HTMLElement>("[data-disk-primary-action], [data-disk-navigation-home]")?.focus({ preventScroll: true })
   }
 
   function selectPath(path: string) {
@@ -864,6 +1438,43 @@ export default function DiskUtilityPage() {
     sunburst()?.setSelected(path)
     const idx = entries().findIndex((e) => e.node.path === path)
     if (idx >= 0) setFocusIdx(idx)
+    const root = treeRoot()
+    const node = entries().find((entry) => entry.node.path === path)?.node ?? (root ? findScanNode(root, path) : undefined)
+    if (!node) return
+    if (selectionAnnouncementTimer) clearTimeout(selectionAnnouncementTimer)
+    selectionAnnouncementTimer = setTimeout(
+      () =>
+        setAnnouncedSelection(
+          describeStorageNode(node, indexFilter.lens === "all" ? parentSize() : indexSize(), {
+            canPreview: !!disk(),
+            canReview: canModifyNode(node),
+            requiresRescanBeforeReview: inventoryDeletionNeedsRescan(node),
+          }),
+        ),
+      120,
+    )
+  }
+
+  /** Shift selection is intentionally routed into the review basket: inspection stays singular and destructive work stays reviewable. */
+  function addRangeToReview(anchor: number, target: number) {
+    const list = entries()
+    const nodes = inclusiveIndexRange(anchor, target, list.length)
+      .map((index) => list[index]?.node)
+      .filter((node): node is DiskScanNode => !!node && canModifyNode(node))
+    collectNodes(nodes)
+  }
+
+  function selectEntry(node: DiskScanNode, index: number, extendRange = false, currentIndex = index) {
+    if (extendRange) {
+      const anchor = selectionAnchorIndex(rangeAnchorIndex(), currentIndex, entries().length)
+      if (anchor >= 0) {
+        setRangeAnchorIndex(anchor)
+        addRangeToReview(anchor, index)
+      }
+    } else {
+      setRangeAnchorIndex(index)
+    }
+    selectPath(node.path)
   }
 
   function hoverEntry(path: string | null) {
@@ -872,22 +1483,150 @@ export default function DiskUtilityPage() {
     sunburst()?.setHighlight(path)
   }
 
-  function moveFocus(delta: number) {
+  function focusEntryAt(index: number, extendRange = false, currentIndex = focusIdx()) {
     const list = entries()
-    if (!list.length) return
-    let i = focusIdx() + delta
-    if (i < 0) i = list.length - 1
-    if (i >= list.length) i = 0
-    setFocusIdx(i)
-    selectPath(list[i].node.path)
-    scrollIndexIntoView?.(i)
+    const target = clampedListIndex(index, list.length)
+    if (target < 0) return -1
+    setFocusIdx(target)
+    selectEntry(list[target].node, target, extendRange, currentIndex)
+    scrollIndexIntoView?.(target)
+    return target
+  }
+
+  function moveFocus(delta: number, extendRange = false, startIndex = focusIdx()) {
+    const list = entries()
+    const current = clampedListIndex(startIndex, list.length)
+    if (current < 0) return -1
+    const next = extendRange
+      ? clampedListIndex(current + delta, list.length)
+      : wrappedListIndex(current, delta, list.length)
+    return focusEntryAt(next, extendRange, current)
+  }
+
+  function moveFocusByPage(direction: -1 | 1, pageSize: number, extendRange = false, startIndex = focusIdx()) {
+    const list = entries()
+    const current = clampedListIndex(startIndex, list.length)
+    if (current < 0) return -1
+    return focusEntryAt(pagedListIndex(current, direction, pageSize, list.length), extendRange, current)
+  }
+
+  function moveFocusToBoundary(boundary: "first" | "last", extendRange = false, startIndex = focusIdx()) {
+    const list = entries()
+    const current = clampedListIndex(startIndex, list.length)
+    if (current < 0) return -1
+    return focusEntryAt(boundary === "first" ? 0 : list.length - 1, extendRange, current)
+  }
+
+  function focusedEntryNode() {
+    const list = entries()
+    return selectedNode() ?? list[clampedListIndex(focusIdx(), list.length)]?.node ?? null
   }
 
   function openFocused() {
-    const node = selectedNode()
+    const node = focusedEntryNode()
     if (!node) return
-    if (node.isDir && !node.isOther) drill(node, true)
-    else if (!node.isOther) void openPreview(node)
+    if (node.isDir) {
+      if (!node.isOther && !isDeveloperInventoryNode(node)) drill(node, true)
+      return
+    }
+    if (!node.isOther) void openPreview(node)
+  }
+
+  function handleEntryKeyDown(event: KeyboardEvent, node: DiskScanNode, index: number) {
+    if (event.defaultPrevented) return
+    const supportsRangeNavigation = !event.metaKey && !event.ctrlKey && !event.altKey
+    const isPlainShortcut = supportsRangeNavigation && !event.shiftKey
+    if (
+      supportsRangeNavigation &&
+      (event.key === "ArrowDown" || event.key === "ArrowUp" || (isPlainShortcut && (event.key === "j" || event.key === "k")))
+    ) {
+      event.preventDefault()
+      const next = moveFocus(event.key === "ArrowDown" || event.key === "j" ? 1 : -1, event.shiftKey, index)
+      if (next >= 0) focusListEntry(next)
+      return
+    }
+    if (supportsRangeNavigation && (event.key === "PageDown" || event.key === "PageUp")) {
+      event.preventDefault()
+      const next = moveFocusByPage(event.key === "PageDown" ? 1 : -1, listPageSize(), event.shiftKey, index)
+      if (next >= 0) focusListEntry(next)
+      return
+    }
+    if (supportsRangeNavigation && (event.key === "Home" || event.key === "End")) {
+      event.preventDefault()
+      const next = moveFocusToBoundary(event.key === "Home" ? "first" : "last", event.shiftKey, index)
+      if (next >= 0) focusListEntry(next)
+      return
+    }
+    if (isPlainShortcut && event.key === "ArrowLeft") {
+      event.preventDefault()
+      goUp(true, true)
+      return
+    }
+    if (isPlainShortcut && event.key === "ArrowRight") {
+      if (!node.isDir || node.isOther || isDeveloperInventoryNode(node)) return
+      event.preventDefault()
+      drill(node, true, true)
+      return
+    }
+    if (isPlainShortcut && event.key === "Enter") {
+      event.preventDefault()
+      if (node.isDir) {
+        if (!node.isOther && !isDeveloperInventoryNode(node)) drill(node, true, true)
+        return
+      }
+      if (!node.isOther) void openPreview(node)
+      return
+    }
+    if (isPlainShortcut && event.key === " ") {
+      event.preventDefault()
+      if (node.isOther || node.isHidden) return
+      if (supportsQuickLook()) {
+        void openSystemPreview(node)
+        return
+      }
+      void openPreview(node)
+      return
+    }
+    if (event.key === "Backspace" && (event.metaKey || event.ctrlKey) && !event.altKey) {
+      event.preventDefault()
+      requestDelete(node)
+      return
+    }
+    if (isPlainShortcut && event.key === "Delete") {
+      event.preventDefault()
+      requestDelete(node)
+      return
+    }
+    if (isPlainShortcut && event.key.toLowerCase() === "c") {
+      if (!canModifyNode(node)) return
+      event.preventDefault()
+      toggleCollect(node)
+      return
+    }
+    if (event.key.toLowerCase() === "r" && (event.metaKey || event.ctrlKey) && !event.altKey) {
+      event.preventDefault()
+      void rescanCurrent()
+      return
+    }
+    if (isPlainShortcut && event.key === "1") {
+      event.preventDefault()
+      chooseScanMode("map", "keyboard")
+      return
+    }
+    if (isPlainShortcut && event.key === "2") {
+      event.preventDefault()
+      chooseScanMode("grid", "keyboard")
+      return
+    }
+    if (isPlainShortcut && event.key === "3") {
+      event.preventDefault()
+      chooseScanMode("list", "keyboard")
+      return
+    }
+    if (isPlainShortcut && (event.key === "Escape" || event.key === "Backspace")) {
+      event.preventDefault()
+      goUp(true, true)
+    }
   }
 
   async function reveal(path: string) {
@@ -906,7 +1645,7 @@ export default function DiskUtilityPage() {
 
   async function openPreview(node: DiskScanNode) {
     const api = disk()
-    if (!api || node.isDir || node.isOther || node.isHidden) return
+    if (!api || node.isOther || node.isHidden) return
     const token = ++previewToken
     batch(() => {
       setPreviewTarget(node)
@@ -915,6 +1654,10 @@ export default function DiskUtilityPage() {
       setPreviewLoading(true)
     })
     previewSurface.open()
+    if (node.isDir) {
+      setPreviewLoading(false)
+      return
+    }
     try {
       const preview = await api.previewPath(node.path)
       if (token !== previewToken) return
@@ -958,6 +1701,36 @@ export default function DiskUtilityPage() {
     }
   }
 
+  async function openSystemPreview(node: DiskScanNode) {
+    const api = disk()
+    if (!api) return
+    try {
+      await api.systemPreviewPath(node.path)
+    } catch (error) {
+      showToast({
+        variant: "error",
+        title: "Could not open Quick Look",
+        description: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  const supportsQuickLook = () => platform.os === "macos" && !!disk()?.systemPreviewPath
+
+  async function openTrash() {
+    const api = disk()
+    if (!api) return
+    try {
+      await api.openTrash()
+    } catch (error) {
+      showToast({
+        variant: "error",
+        title: `Could not open ${nativeTrashName(platform.os)}`,
+        description: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
   function viewAfterDeletion(
     previousRoot: DiskScanNode,
     nextRoot: DiskScanNode,
@@ -972,9 +1745,54 @@ export default function DiskUtilityPage() {
     return survivor ? (buildCrumbs(nextRoot, survivor).at(-1)?.node ?? nextRoot) : nextRoot
   }
 
+  function restoreFocusAfterDeletion() {
+    requestAnimationFrame(() => {
+      if (entries().length > 0) {
+        restoreKeyboardViewFocus(scanMode())
+        return
+      }
+      focusPersistentDiskAction()
+    })
+  }
+
   function applyDeletedNodes(removed: readonly DiskScanNode[]) {
     if (!removed.length) return
     setCollection((items) => withoutDeletedNodes(items, removed, platform.os))
+    const deepInventoryNeedsRefresh = requiresDeepInventoryRefresh(removed)
+    // Shared physical ownership is not a per-path reclaim estimate. Do not
+    // subtract any hard-link or clone path optimistically; close affected
+    // background maps and force the active map through a real traversal. Deep
+    // inventory entries likewise are not children of this map, so a local tree
+    // patch would leave their parent aggregates and coverage status stale.
+    if (deepInventoryNeedsRefresh || physicalCloneAccountingUncertain() || removed.some(containsSharedPhysicalStorage)) {
+      // This branch invalidates every retained map. Whether the cause is deep
+      // inventory, clone accounting, or shared storage, basket metadata from
+      // the old maps is no longer a safe delete candidate. Require a fresh
+      // selection after rebuilding instead of carrying it across tabs.
+      setCollection([])
+      setCollectionDragNode(null)
+      setCollectionDropActive(false)
+      // A peer path may live in another root. Without a whole-machine link
+      // graph, every cached background map is potentially stale after shared
+      // storage changes, so require a fresh scan before it can be used again.
+      const invalidatedTabs = tabs()
+      if (invalidatedTabs.length) {
+        setTabs((items) => items.filter((tab) => !invalidatedTabs.some((stale) => stale.id === tab.id)))
+        for (const tab of invalidatedTabs) {
+          if (tab.sessionID && !volumeScanJobs[tab.sessionID]) void disk()?.stopWatching(tab.sessionID)
+        }
+      }
+      // Completed volume cards retain their own scan roots too. Remove those
+      // snapshots rather than exposing a parked deep inventory after a global
+      // accounting invalidation.
+      const invalidatedVolumeJobs = volumeJobs().filter((job) => !!job.tree)
+      for (const job of invalidatedVolumeJobs) {
+        setVolumeScanJobs(job.id, undefined)
+        void disk()?.stopWatching(job.id)
+      }
+      void rescanCurrent(true).then(restoreFocusAfterDeletion)
+      return
+    }
     setTabs((items) =>
       items.flatMap((tab) => {
         const tree = removeScanSubtrees(tab.tree, removed, platform.os)
@@ -990,6 +1808,7 @@ export default function DiskUtilityPage() {
     const tree = removeScanSubtrees(root, removed, platform.os)
     if (!tree) {
       backToDrives(false)
+      restoreFocusAfterDeletion()
       return
     }
     if (tree === root) return
@@ -1001,21 +1820,47 @@ export default function DiskUtilityPage() {
       setVisualHoverNode(null)
       setFocusIdx(0)
     })
+    restoreFocusAfterDeletion()
   }
 
   async function trashNode(node: DiskScanNode) {
     const api = disk()
-    if (!api || !canModifyNode(node)) return
+    if (!api) return
+    if (inventoryDeletionNeedsRescan(node)) {
+      showDeveloperArtifactRescanGuidance(node)
+      return
+    }
+    if (!canModifyNode(node)) return
+    const deepDeletePrecondition = developerInventoryDeletePrecondition(node)
+    if (isDeveloperInventoryNode(node) && !deepDeletePrecondition) {
+      showDeveloperArtifactRescanGuidance(node)
+      return
+    }
     setDeleting(true)
     try {
-      await api.deletePath(node.path)
+      await api.deletePath(node.path, deepDeletePrecondition ? { precondition: deepDeletePrecondition } : undefined)
+      const deepInventoryNeedsRefresh = requiresDeepInventoryRefresh([node])
+      const sharedStorageNeedsRefresh = containsSharedPhysicalStorage(node)
+      const physicalAccountingNeedsRefresh = deepInventoryNeedsRefresh || sharedStorageNeedsRefresh || physicalCloneAccountingUncertain()
       applyDeletedNodes([node])
       showToast({
         variant: "success",
         title: `Moved to ${nativeTrashName(platform.os)}`,
-        description: node.name,
+        description: deepInventoryNeedsRefresh
+          ? `${node.name} moved. Rebuilding the full map before reporting disk space.`
+          : physicalAccountingNeedsRefresh
+          ? `${node.name} moved. Recomputing storage allocation before reporting free space.`
+          : node.name,
+        actions: [
+          { label: `Show in ${nativeTrashName(platform.os)}`, onClick: () => void openTrash() },
+          { label: "Rescan", onClick: () => void rescanCurrent() },
+        ],
       })
     } catch (err) {
+      if (isDeveloperInventoryNode(node) && isDeveloperArtifactPreconditionRejection(err)) {
+        showDeveloperArtifactRescanGuidance(node, "changed")
+        return
+      }
       showToast({
         variant: "error",
         title: "Delete failed",
@@ -1034,6 +1879,10 @@ export default function DiskUtilityPage() {
   }
 
   function requestDelete(node: DiskScanNode) {
+    if (inventoryDeletionNeedsRescan(node)) {
+      showDeveloperArtifactRescanGuidance(node)
+      return
+    }
     if (!canModifyNode(node)) {
       showToast({
         variant: "default",
@@ -1048,6 +1897,10 @@ export default function DiskUtilityPage() {
   }
 
   function toggleCollect(node: DiskScanNode) {
+    if (inventoryDeletionNeedsRescan(node)) {
+      showDeveloperArtifactRescanGuidance(node)
+      return
+    }
     if (!canModifyNode(node)) return
     setCollection((prev) => {
       const exists = prev.some((item) => diskPathEquals(item.path, node.path, platform.os))
@@ -1061,6 +1914,13 @@ export default function DiskUtilityPage() {
     setCollection((prev) => uniqueDeletionRoots([...prev, ...actionable], platform.os))
   }
 
+  function selectEligibleDeveloperResults() {
+    const candidates = smartCleanupCandidates()
+    if (!candidates.length || physicalCloneAccountingUncertain()) return
+    collectNodes(candidates)
+    collectionSurface.open()
+  }
+
   function removeCollected(node: DiskScanNode) {
     const next = collection().filter((item) => !diskPathEquals(item.path, node.path, platform.os))
     setCollection(next)
@@ -1069,12 +1929,38 @@ export default function DiskUtilityPage() {
 
   function canModifyNode(node: DiskScanNode) {
     if (!canActOnNode(node, platform.os)) return false
+    if (inventoryDeletionNeedsRescan(node)) return false
     const recognition = recognize(node)
+    // Ambiguous build/target/dist records may be individually moved through
+    // the confirmation + Trash flow, but are never Smart Cleanup defaults.
+    if (recognition.developer && developerArtifactCleanupReadiness(recognition) === "review") return true
     return recognition.safety !== "system" && recognition.safety !== "version-control"
+  }
+
+  function inventoryDeletionNeedsRescan(node: DiskScanNode) {
+    return isDeveloperInventoryNode(node) && !developerInventoryDeletePrecondition(node)
+  }
+
+  function isDeveloperArtifactPreconditionRejection(error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return message.includes("Artifact changed since scan — rescan before moving it to Trash.")
+  }
+
+  function showDeveloperArtifactRescanGuidance(node: DiskScanNode, reason: "missing-identity" | "changed" = "missing-identity") {
+    showToast({
+      variant: "default",
+      title: reason === "changed" ? "Artifact changed — rescan required" : "Rescan required before removal",
+      description:
+        reason === "changed"
+          ? `${node.name} no longer matches the deep artifact result that was reviewed. Rebuild the full map, then review it again before moving it to ${nativeTrashName(platform.os)}.`
+          : `${node.name} does not have a current deep-scan directory identity. Rebuild the full map, then review it again before moving it to ${nativeTrashName(platform.os)}.`,
+      actions: [{ label: "Rescan", onClick: () => void rescanCurrent(true) }],
+    })
   }
   const isCollected = (path: string) => collection().some((node) => diskPathEquals(node.path, path, platform.os))
   function clearCollection() {
     setCollection([])
+    setRangeAnchorIndex(undefined)
   }
 
   function beginCollectionDrag(event: DragEvent, node: DiskScanNode | null) {
@@ -1094,6 +1980,67 @@ export default function DiskUtilityPage() {
   function endCollectionDrag() {
     setCollectionDragNode(null)
     setCollectionDropActive(false)
+  }
+
+  function beginMapDrag(event: CanvasPointerEvent) {
+    if (event.button !== 0) return
+    const node = sunburst()?.nodeAtPoint(event.clientX, event.clientY)
+    if (!node || !canModifyNode(node)) {
+      mapDrag = undefined
+      return
+    }
+    mapDrag = {
+      node,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      threshold: event.pointerType === "touch" ? 18 : 7,
+      dragging: false,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  function moveMapDrag(event: CanvasPointerEvent) {
+    const drag = mapDrag
+    if (!drag || drag.pointerId !== event.pointerId) return
+    if (!drag.dragging && Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < drag.threshold) return
+    if (!drag.dragging) {
+      drag.dragging = true
+      sunburst()?.suppressNextClick()
+      event.currentTarget.style.cursor = "grabbing"
+      setCollectionDragNode(drag.node)
+      collectionDragPreview.textContent = `${drag.node.name} · ${shortBytes(drag.node.size)}`
+      collectionDragPreview.style.left = "0"
+      collectionDragPreview.style.top = "0"
+    }
+    collectionDragPreview.style.transform = `translate3d(${event.clientX + 16}px, ${event.clientY + 16}px, 0)`
+    const rect = collectionDropElement?.getBoundingClientRect()
+    setCollectionDropActive(
+      !!rect &&
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom,
+    )
+    event.preventDefault()
+  }
+
+  function finishMapDrag(event: CanvasPointerEvent, cancelled = false) {
+    const drag = mapDrag
+    if (!drag || drag.pointerId !== event.pointerId) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    if (drag.dragging) {
+      if (!cancelled && collectionDropActive()) collectNodes([drag.node])
+      event.currentTarget.style.cursor = ""
+      collectionDragPreview.style.left = "-9999px"
+      collectionDragPreview.style.top = "-9999px"
+      collectionDragPreview.style.transform = "none"
+      endCollectionDrag()
+      event.preventDefault()
+    }
+    mapDrag = undefined
   }
 
   function collectionDragEnter(event: DragEvent) {
@@ -1138,7 +2085,11 @@ export default function DiskUtilityPage() {
         items,
         async (node) => {
           try {
-            return await api.deletePath(node.path)
+            const deepDeletePrecondition = developerInventoryDeletePrecondition(node)
+            if (isDeveloperInventoryNode(node) && !deepDeletePrecondition) {
+              throw new Error("Deep inventory result requires a fresh directory identity before removal.")
+            }
+            return await api.deletePath(node.path, deepDeletePrecondition ? { precondition: deepDeletePrecondition } : undefined)
           } finally {
             completed++
             setDeletionProgress({ completed, total: items.length })
@@ -1146,22 +2097,58 @@ export default function DiskUtilityPage() {
         },
         platform.os,
       )
+      const deepInventoryNeedsRefresh = removed.length > 0 && requiresDeepInventoryRefresh(removed)
+      const knownSharedStorage = removed.some(containsSharedPhysicalStorage)
+      const invalidatesAllMaps =
+        deepInventoryNeedsRefresh || knownSharedStorage || (removed.length > 0 && physicalCloneAccountingUncertain())
       if (removed.length) {
+        const physicalAccountingNeedsRefresh = invalidatesAllMaps
         applyDeletedNodes(removed)
         showToast({
           variant: "success",
-          title: `Cleared ${formatBytes(removed.reduce((sum, node) => sum + node.size, 0))}`,
-          description: `${removed.length} ${removed.length === 1 ? "item" : "items"} moved to ${nativeTrashName(platform.os)}`,
+          title: physicalAccountingNeedsRefresh
+            ? `Moved ${removed.length} ${removed.length === 1 ? "item" : "items"} to ${nativeTrashName(platform.os)}`
+            : `Moved ${formatBytes(removed.reduce((sum, node) => sum + node.size, 0))} to ${nativeTrashName(platform.os)}`,
+          description: physicalAccountingNeedsRefresh
+            ? deepInventoryNeedsRefresh
+              ? "A selected path changed the deep artifact inventory. DiskLizard is rebuilding the full map before reporting disk space."
+              : knownSharedStorage
+              ? "Some paths share file allocation. DiskLizard is recomputing the map before reporting allocation."
+              : "This scan could not verify shared file allocation. DiskLizard is recomputing the map before reporting allocation."
+            : `${removed.length} ${removed.length === 1 ? "item" : "items"} moved to ${nativeTrashName(platform.os)}`,
+          actions: [
+            { label: `Show in ${nativeTrashName(platform.os)}`, onClick: () => void openTrash() },
+            { label: "Rescan", onClick: () => void rescanCurrent() },
+          ],
         })
       }
-      setCollection(failed.map(({ node }) => node))
-      if (failed.length) collectionSurface.open()
+      const staleDeepFailures = failed.filter(
+        ({ node, error }) =>
+          isDeveloperInventoryNode(node) &&
+          (inventoryDeletionNeedsRescan(node) || isDeveloperArtifactPreconditionRejection(error)),
+      )
+      const retryableFailures = failed.filter(({ node, error }) =>
+        !isDeveloperInventoryNode(node) ||
+        (!inventoryDeletionNeedsRescan(node) && !isDeveloperArtifactPreconditionRejection(error)),
+      )
+      // A global map rebuild invalidates every retained tree. Do not put failed
+      // rows from that old map back into the basket; the rebuilt map is the
+      // next safe source of truth.
+      setCollection(invalidatesAllMaps ? [] : retryableFailures.map(({ node }) => node))
+      if (retryableFailures.length && !invalidatesAllMaps) collectionSurface.open()
       else collectionSurface.close()
-      if (failed.length) {
-        const first = failed[0].error
+      if (staleDeepFailures.length) {
+        const stale = staleDeepFailures[0]
+        showDeveloperArtifactRescanGuidance(
+          stale.node,
+          inventoryDeletionNeedsRescan(stale.node) ? "missing-identity" : "changed",
+        )
+      }
+      if (retryableFailures.length) {
+        const first = retryableFailures[0].error
         showToast({
           variant: "error",
-          title: `${failed.length} ${failed.length === 1 ? "item" : "items"} could not be removed`,
+          title: `${retryableFailures.length} ${retryableFailures.length === 1 ? "item" : "items"} could not be removed`,
           description: first instanceof Error ? first.message : String(first),
         })
       }
@@ -1202,7 +2189,7 @@ export default function DiskUtilityPage() {
       return
     }
     if ((event.dataTransfer?.files.length ?? 0) > 1) {
-      showToast({ variant: "default", title: "Mapping the first dropped item", description: file.name })
+      showToast({ variant: "default", title: "Scanning the first dropped item", description: file.name })
     }
     await startScan(path, file.name || path.split(/[/\\]/).pop() || path, driveForPath(path, drives(), platform.os))
   }
@@ -1211,64 +2198,115 @@ export default function DiskUtilityPage() {
   onMount(() => {
     const onKey = (e: KeyboardEvent) => {
       if (activeDialog()) {
-        if (e.key === "Escape") {
-          e.preventDefault()
-          if (deleting()) return
-          if (deleteSurface.mounted()) deleteSurface.closeThen(() => setPendingDelete(null))
-          else if (collectionSurface.mounted()) collectionSurface.close()
-          else if (reviewSurface.mounted()) reviewSurface.close()
-          else closePreview()
-        }
+        if (e.defaultPrevented || e.key !== "Escape") return
+        e.preventDefault()
+        if (deleting()) return
+        if (deleteSurface.mounted()) deleteSurface.closeThen(() => setPendingDelete(null))
+        else if (collectionSurface.mounted()) collectionSurface.close()
+        else if (reviewSurface.mounted()) reviewSurface.close()
+        else closePreview()
         return
       }
       if (!shouldHandleDiskShortcut(e.target, e.defaultPrevented)) return
       if (view() !== "scan") return
+      const supportsRangeNavigation = !e.metaKey && !e.ctrlKey && !e.altKey
+      const isPlainShortcut = supportsRangeNavigation && !e.shiftKey
       if (scanning()) {
-        if (e.key === "Escape" || e.key === "Backspace") {
+        if (isPlainShortcut && (e.key === "Escape" || e.key === "Backspace")) {
           e.preventDefault()
           cancelScan()
         }
         return
       }
-      if (e.key === "ArrowDown" || e.key === "j") {
+      if (
+        supportsRangeNavigation &&
+        (e.key === "ArrowDown" || e.key === "ArrowUp" || (isPlainShortcut && (e.key === "j" || e.key === "k")))
+      ) {
         e.preventDefault()
-        moveFocus(1)
-      } else if (e.key === "ArrowUp" || e.key === "k") {
+        moveFocus(e.key === "ArrowDown" || e.key === "j" ? 1 : -1, e.shiftKey)
+        return
+      }
+      if (supportsRangeNavigation && (e.key === "PageDown" || e.key === "PageUp")) {
         e.preventDefault()
-        moveFocus(-1)
-      } else if (e.key === "Enter") {
+        moveFocusByPage(e.key === "PageDown" ? 1 : -1, listPageSize(), e.shiftKey)
+        return
+      }
+      if (supportsRangeNavigation && (e.key === "Home" || e.key === "End")) {
+        e.preventDefault()
+        moveFocusToBoundary(e.key === "Home" ? "first" : "last", e.shiftKey)
+        return
+      }
+      if (isPlainShortcut && e.key === "ArrowLeft") {
+        e.preventDefault()
+        goUp(true)
+        return
+      }
+      if (isPlainShortcut && e.key === "ArrowRight") {
+        const node = focusedEntryNode()
+        if (!node?.isDir || node.isOther || isDeveloperInventoryNode(node)) return
+        e.preventDefault()
+        drill(node, true)
+        return
+      }
+      if (isPlainShortcut && e.key === "Enter") {
         e.preventDefault()
         openFocused()
-      } else if (e.key === " ") {
-        const node = selectedNode()
-        if (!node || node.isDir || node.isOther || node.isHidden) return
+        return
+      }
+      if (isPlainShortcut && e.key === " ") {
+        const node = focusedEntryNode()
+        if (!node || node.isOther || node.isHidden) return
         e.preventDefault()
+        if (supportsQuickLook()) {
+          void openSystemPreview(node)
+          return
+        }
         void openPreview(node)
-      } else if (e.key === "Backspace" && (e.metaKey || e.ctrlKey)) {
-        const node = selectedNode()
+        return
+      }
+      if (e.key === "Backspace" && (e.metaKey || e.ctrlKey) && !e.altKey) {
+        const node = focusedEntryNode()
         if (!node) return
         e.preventDefault()
         requestDelete(node)
-      } else if (e.key === "Escape" || e.key === "Backspace") {
+        return
+      }
+      if (isPlainShortcut && (e.key === "Escape" || e.key === "Backspace")) {
         e.preventDefault()
         goUp(true)
-      } else if (e.key === "Delete") {
+        return
+      }
+      if (isPlainShortcut && e.key === "Delete") {
+        const node = focusedEntryNode()
+        if (!node) return
         e.preventDefault()
-        const node = selectedNode()
-        if (node) requestDelete(node)
-      } else if (e.key.toLowerCase() === "c" && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        const node = selectedNode()
+        requestDelete(node)
+        return
+      }
+      if (isPlainShortcut && e.key.toLowerCase() === "c") {
+        const node = focusedEntryNode()
         if (!node || !canModifyNode(node)) return
         e.preventDefault()
         toggleCollect(node)
-      } else if (e.key === "r" && (e.metaKey || e.ctrlKey)) {
+        return
+      }
+      if (e.key.toLowerCase() === "r" && (e.metaKey || e.ctrlKey) && !e.altKey) {
         e.preventDefault()
         void rescanCurrent()
-      } else if (e.key === "1") {
+        return
+      }
+      if (isPlainShortcut && e.key === "1") {
+        e.preventDefault()
         chooseScanMode("map", "keyboard")
-      } else if (e.key === "2") {
+        return
+      }
+      if (isPlainShortcut && e.key === "2") {
+        e.preventDefault()
         chooseScanMode("grid", "keyboard")
-      } else if (e.key === "3") {
+        return
+      }
+      if (isPlainShortcut && e.key === "3") {
+        e.preventDefault()
         chooseScanMode("list", "keyboard")
       }
     }
@@ -1284,7 +2322,7 @@ export default function DiskUtilityPage() {
       onDragLeave={onDragLeave}
       onDrop={(event) => void onDrop(event)}
     >
-      <style>{KEYFRAMES}</style>
+      <style>{DISK_UTILITY_STYLES}</style>
       <div ref={collectionDragPreview} class="dl-drag-preview" aria-hidden="true" />
 
       <Show when={dropActive()}>
@@ -1297,8 +2335,8 @@ export default function DiskUtilityPage() {
             <span class="dl-pulse dl-accent-text mx-auto grid size-16 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
               <Icon name="folder-add-left" class="size-6" />
             </span>
-            <p class="mt-5 text-20-medium tracking-[-0.03em] text-text-strong">Drop it into the landscape</p>
-            <p class="mt-2 text-11-regular text-text-weak">Folders, volumes, and individual files are welcome.</p>
+            <p class="mt-5 text-20-medium tracking-[-0.03em] text-text-strong">Drop to scan</p>
+            <p class="mt-2 text-11-regular text-text-weak">Folders, volumes, and individual files are supported.</p>
           </div>
         </div>
       </Show>
@@ -1306,6 +2344,7 @@ export default function DiskUtilityPage() {
       <header class="dl-topbar relative z-20 flex h-14 shrink-0 items-center gap-4 px-5 backdrop-blur-xl">
         <button
           type="button"
+          data-disk-navigation-home
           class="dl-touch-target group flex min-h-10 shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
           onClick={() => backToDrives()}
         >
@@ -1317,7 +2356,7 @@ export default function DiskUtilityPage() {
 
         <Show when={view() === "scan" && crumbs().length > 0}>
           <span class="h-4 w-px bg-border-weaker-base" aria-hidden />
-          <Button variant="ghost" size="small" icon="chevron-left" onClick={() => goUp()}>
+          <Button class="dl-touch-target" variant="ghost" size="small" icon="chevron-left" onClick={() => goUp()}>
             {crumbs().length <= 1 ? "Volumes" : "Back"}
           </Button>
           <nav
@@ -1332,7 +2371,7 @@ export default function DiskUtilityPage() {
                   </Show>
                   <button
                     type="button"
-                    class="dl-touch-target min-h-10 max-w-[190px] shrink-0 truncate rounded-md px-2 text-11-regular text-text-weak outline-none transition-[color,background-color] duration-150 hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
+                    class="dl-hover-button dl-touch-target min-h-10 max-w-[190px] shrink-0 truncate rounded-md px-2 text-11-regular text-text-weak outline-none transition-[color,background-color] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak"
                     classList={{ "text-text-strong": i() === crumbs().length - 1 }}
                     onClick={() => goToCrumb(crumb)}
                   >
@@ -1347,21 +2386,22 @@ export default function DiskUtilityPage() {
         <div class="ml-auto flex shrink-0 items-center gap-1.5">
           <Show when={view() === "scan" && !scanning()}>
             <Button
-              class="dl-pin-scan"
+              class="dl-touch-target dl-pin-scan"
               variant="ghost"
               size="small"
               icon={currentScanPinned() ? "circle-check" : "plus-small"}
-              aria-label={currentScanPinned() ? "Unpin this scan location" : "Pin this scan location"}
+              aria-label={currentScanPinned() ? "Remove this saved location" : "Save this scan location"}
               onClick={() => togglePinnedLocation(scanSourcePath(), scanLabel())}
             >
-              {currentScanPinned() ? "Unpin" : "Pin scan"}
+              {currentScanPinned() ? "Saved" : "Save location"}
             </Button>
-            <Button class="dl-rescan" variant="ghost" size="small" icon="reset" onClick={() => void rescanCurrent()}>
+            <Button class="dl-touch-target dl-rescan" variant="ghost" size="small" icon="reset" onClick={() => void rescanCurrent()}>
               Rescan
             </Button>
           </Show>
           <Show when={view() === "drives" && disk()}>
             <Button
+              class="dl-touch-target"
               variant="ghost"
               size="small"
               icon="reset"
@@ -1370,16 +2410,24 @@ export default function DiskUtilityPage() {
             >
               Refresh
             </Button>
-            <Button variant="secondary" size="small" icon="folder-add-left" onClick={() => void chooseAndScan()}>
+            <Button class="dl-touch-target" variant="secondary" size="small" icon="folder-add-left" onClick={() => void chooseAndScan()}>
               Scan a folder
             </Button>
           </Show>
         </div>
       </header>
 
-      <Show when={tabs().length > 0}>
-        <div class="dl-scan-tabs flex h-11 shrink-0 items-center gap-1 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <span class="mr-1 text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Scans</span>
+      <Show when={tabs().length > 0 || volumeJobs().length > 0}>
+        <div class="relative shrink-0">
+          <div
+            ref={setScanTabsElement}
+            class="dl-scan-tabs flex h-11 items-center gap-1 overflow-x-auto px-4 [scrollbar-width:none] [&>*]:snap-start [&::-webkit-scrollbar]:hidden"
+            role="region"
+            tabIndex={0}
+            aria-label={`${scanTabCount()} open scan${scanTabCount() === 1 ? "" : "s"}. Use Left and Right Arrow to scroll.`}
+            onKeyDown={handleScanTabsKeyDown}
+          >
+            <span class="mr-1 text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Scans</span>
           <Show when={view() === "scan" && treeRoot()}>
             <span class="shrink-0 rounded-full bg-text-strong px-3 py-1 text-10-semibold text-background-base shadow-sm">
               {scanLabel() || "Current"}
@@ -1387,7 +2435,7 @@ export default function DiskUtilityPage() {
           </Show>
           <For each={tabs()}>
             {(tab) => (
-              <div class="group flex shrink-0 items-center rounded-full text-text-weak transition-[color,background-color] duration-150 hover:bg-surface-raised-base hover:text-text-strong">
+              <div class="dl-hover-tab group flex shrink-0 items-center rounded-full text-text-weak transition-[color,background-color] duration-150">
                 <button
                   type="button"
                   class="dl-touch-target min-h-10 max-w-[132px] truncate rounded-full pl-3 text-10-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
@@ -1400,7 +2448,7 @@ export default function DiskUtilityPage() {
                 </button>
                 <button
                   type="button"
-                  class="dl-touch-target grid size-10 place-items-center rounded-full opacity-50 outline-none transition-opacity duration-150 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak"
+                  class="dl-hover-reveal dl-touch-target grid size-10 place-items-center rounded-full opacity-50 outline-none transition-opacity duration-150 focus-visible:ring-2 focus-visible:ring-text-weak"
                   onClick={() => closeTab(tab.id)}
                   aria-label={`Close ${tab.label} scan`}
                 >
@@ -1409,6 +2457,58 @@ export default function DiskUtilityPage() {
               </div>
             )}
           </For>
+            <For each={volumeJobs().filter((job) => job.id !== scanSession.activeID)}>
+            {(job) => (
+              <div class="dl-hover-tab group flex shrink-0 items-center rounded-full text-text-weak transition-[color,background-color] duration-150">
+                <button
+                  type="button"
+                  class="dl-touch-target flex min-h-10 max-w-[168px] items-center gap-2 truncate rounded-full pl-3 text-10-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+                  onClick={() => {
+                    if (job.status === "complete") {
+                      openVolumeScan(job)
+                      return
+                    }
+                    if (view() === "scan") backToDrives()
+                    requestAnimationFrame(() =>
+                      document.getElementById(`disklizard-volume-${job.id}`)?.scrollIntoView({ block: "center" }),
+                    )
+                  }}
+                >
+                  <span
+                    class="size-1.5 shrink-0 rounded-full"
+                    classList={{
+                      "dl-scan-beacon bg-[oklch(0.74_0.13_176)]": job.status === "scanning",
+                      "bg-[oklch(0.72_0.15_148)]": job.status === "complete",
+                      "bg-[oklch(0.68_0.17_28)]": job.status === "failed",
+                    }}
+                  />
+                  <span class="truncate">{job.label}</span>
+                  <Show when={job.status === "scanning" && job.drive.used > 0}>
+                    <span class="min-w-[3ch] text-right tabular-nums text-text-weaker">{Math.round(job.pct)}%</span>
+                  </Show>
+                </button>
+                <button
+                  type="button"
+                  class="dl-hover-reveal dl-touch-target grid size-10 place-items-center rounded-full opacity-50 outline-none transition-opacity duration-150 focus-visible:ring-2 focus-visible:ring-text-weak"
+                  onClick={() => closeVolumeScan(job.id)}
+                  aria-label={job.status === "scanning" ? `Cancel ${job.label} scan` : `Close ${job.label} scan`}
+                >
+                  <Icon name="close-small" class="size-2.5" />
+                </button>
+              </div>
+            )}
+            </For>
+          </div>
+          <Show when={scanTabsOverflow().start}>
+            <span class="dl-scan-tabs-cue dl-scan-tabs-cue-left" aria-hidden="true">
+              <Icon name="chevron-left" class="size-3" />
+            </span>
+          </Show>
+          <Show when={scanTabsOverflow().end}>
+            <span class="dl-scan-tabs-cue dl-scan-tabs-cue-right" aria-hidden="true">
+              <Icon name="chevron-right" class="size-3" />
+            </span>
+          </Show>
         </div>
       </Show>
 
@@ -1435,7 +2535,7 @@ export default function DiskUtilityPage() {
           >
             <Show when={view() === "drives"}>
               <ScrollView class="h-full">
-                <div class="mx-auto flex min-h-full w-full max-w-6xl flex-col px-5 py-8 sm:px-7 sm:py-10 lg:px-10 lg:py-14">
+                <div class="mx-auto flex min-h-full w-full max-w-7xl flex-col px-5 py-8 sm:px-7 sm:py-10 lg:px-10 lg:py-14">
                   <Show
                     when={!drivesLoading() && drives().length > 0}
                     fallback={
@@ -1449,25 +2549,32 @@ export default function DiskUtilityPage() {
                     <section class="pb-8">
                       <div class="flex flex-wrap items-end justify-between gap-6">
                         <div>
-                          <p class="text-9-semibold uppercase tracking-[0.16em] text-text-weaker">Storage map</p>
-                          <h2 class="mt-2 text-[clamp(34px,4vw,52px)] font-medium leading-none tracking-[-0.05em] text-text-strong">
-                            Start with a volume.
+                          <p class="text-10-semibold uppercase tracking-[0.16em] text-text-weaker">Storage</p>
+                          <h2 class="mt-2 text-[clamp(30px,3.2vw,44px)] font-medium leading-none tracking-[-0.05em] text-text-strong [text-wrap:balance]">
+                            Find space you can act on.
                           </h2>
-                          <p class="mt-3 max-w-[52ch] text-11-regular leading-relaxed text-text-weak">
-                            Read-only on the first pass. After that, the map stays current from filesystem changes.
+                          <p class="mt-3 max-w-[52ch] text-12-regular leading-relaxed text-text-weak">
+                            Scan a volume to see what is largest, understand what it is, and decide what to review.
                           </p>
+                          <Show when={runningVolumeScans() > 0}>
+                            <span class="mt-5 inline-flex items-center gap-2 text-10-semibold text-text-weak">
+                              <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_176)]" />
+                              {runningVolumeScans()} {runningVolumeScans() === 1 ? "scan" : "scans"} running
+                            </span>
+                          </Show>
                         </div>
                         <div class="flex items-center gap-5">
                           <p class="text-right">
                             <span class="block text-18-medium tabular-nums tracking-[-0.025em] text-text-strong">
                               {formatBytes(driveTotals().free)}
                             </span>
-                            <span class="mt-1 block text-8-semibold uppercase tracking-[0.13em] text-text-weaker">
+                            <span class="mt-1 block text-9-semibold uppercase tracking-[0.13em] text-text-weaker">
                               available
                             </span>
                           </p>
                           <Button
-                            variant="primary"
+                            class="dl-touch-target"
+                            variant="secondary"
                             size="large"
                             icon="folder-add-left"
                             onClick={() => void chooseAndScan()}
@@ -1478,61 +2585,34 @@ export default function DiskUtilityPage() {
                       </div>
                     </section>
 
-                    <section class="overflow-hidden rounded-[22px] border border-border-weaker-base bg-background-base">
+                    <section class="overflow-hidden rounded-[22px] border border-border-weaker-base bg-background-base shadow-[0_1px_2px_rgb(0_0_0/0.04),0_14px_34px_-30px_rgb(0_0_0/0.28)]">
                       <For each={drives()}>
                         {(drive) => (
-                          <DriveRow drive={drive} onScan={() => void startScan(drive.path, drive.name, drive)} />
+                          <DriveRow
+                            drive={drive}
+                            job={volumeJobForDrive(drive)}
+                            canStart={runningVolumeScans() < MAX_PARALLEL_VOLUME_SCANS}
+                            onScan={() => startVolumeScan(drive)}
+                            onCancel={cancelVolumeScan}
+                            onOpen={openVolumeScan}
+                          />
                         )}
                       </For>
                     </section>
 
-                    <section class="mt-5 grid gap-5 lg:grid-cols-[minmax(280px,0.42fr)_minmax(0,1fr)]">
-                      <button
-                        type="button"
-                        onClick={() => void chooseAndScan()}
-                        class="group flex min-h-32 items-center gap-4 rounded-[18px] border border-border-weaker-base px-5 text-left outline-none transition-[border-color,background-color] duration-150 hover:border-text-weaker hover:bg-surface-raised-strong/35 focus-visible:ring-2 focus-visible:ring-text-weak"
-                      >
-                        <span class="grid size-10 shrink-0 place-items-center rounded-full border border-border-weaker-base bg-background-base text-text-weak group-hover:text-text-strong">
-                          <Icon name="folder-add-left" class="size-4" />
-                        </span>
-                        <span class="min-w-0">
-                          <span class="block text-12-semibold text-text-strong">Map one project</span>
-                          <span class="mt-1 block text-10-regular text-text-weak">
-                            Choose a folder, or drop it anywhere here.
-                          </span>
-                        </span>
-                      </button>
-                      <div class="min-h-32 rounded-[18px] border border-border-weaker-base px-5 py-4">
-                        <div class="flex items-center justify-between gap-4">
-                          <div>
-                            <p class="text-8-semibold uppercase tracking-[0.13em] text-text-weaker">Developer radar</p>
-                            <p class="mt-1.5 text-11-semibold text-text-strong">Generated weight, called by name</p>
-                          </div>
-                          <Icon name="code-lines" class="size-4 shrink-0 text-text-weaker" />
-                        </div>
-                        <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2" aria-label="Recognized developer artifacts">
-                          <For each={["target", "node_modules", ".gradle", ".codex", ".claude", "worktrees"]}>
-                            {(artifact, index) => (
-                              <span class="flex items-center gap-2 font-mono text-9-regular text-text-weak">
-                                <span
-                                  class="size-1.5 rounded-full"
-                                  style={{ background: SIZE_BAR_TONES[index() % SIZE_BAR_TONES.length] }}
-                                />
-                                {artifact}
-                              </span>
-                            )}
-                          </For>
-                        </div>
-                      </div>
-                    </section>
+                    <StorageDiagnostics
+                      diagnostics={storageDiagnostics()}
+                      onScan={scanStorageLocation}
+                      onOpenAccessSettings={() => void openDiskAccessSettings()}
+                    />
 
                     <Show when={pinnedLocations().length > 0}>
                       <section class="py-7">
                         <div class="mb-4 flex items-end justify-between gap-4">
                           <div>
-                            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Pinned scans</p>
+                            <p class="text-10-semibold uppercase tracking-[0.14em] text-text-weaker">Saved locations</p>
                             <h3 class="mt-1 text-18-medium tracking-[-0.02em] text-text-strong">
-                              Return to your projects.
+                              Scan them again in one click.
                             </h3>
                           </div>
                           <span class="text-10-regular text-text-weaker">Saved only on this device</span>
@@ -1565,14 +2645,13 @@ export default function DiskUtilityPage() {
               <Show
                 when={!scanning()}
                 fallback={
-                  <div class="relative flex h-full items-start justify-center overflow-auto px-5 pb-8 pt-10 sm:px-8 sm:pt-14">
+                  <div class="relative flex h-full items-center justify-center overflow-auto px-5 py-8 sm:px-8 sm:py-10">
                     <ScanFormation
                       label={focusedScan()?.label ?? scanLabel()}
                       files={scanFiles()}
                       bytes={scanBytes()}
                       currentPath={scanTail()}
                       pct={scanTotal() > 0 ? scanPct() : null}
-                      discoveries={scanDiscoveries()}
                       onCancel={cancelScan}
                     />
                   </div>
@@ -1580,56 +2659,50 @@ export default function DiskUtilityPage() {
               >
                 <div class="flex h-full min-h-0 flex-col">
                   <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
-                    {selectionAnnouncement()}
+                    {announcedSelection()}
                   </span>
                   <div class="dl-workspace-frame mx-4 mb-3 mt-2 flex min-h-0 flex-1 overflow-hidden rounded-[22px]">
                     <Show when={scanMode() !== "list"}>
                       <section class="dl-landscape relative grid min-w-0 flex-1 place-items-center overflow-hidden">
-                        <Show when={reclaim().totalBytes > 0}>
-                          <ReclaimBanner
-                            bytes={reclaim().totalBytes}
-                            count={reclaim().totalCount}
-                            onReview={() => reviewSurface.open()}
-                          />
-                        </Show>
                         <Show when={scanMode() === "map"}>
                           <div class="relative aspect-square h-[min(94%,900px)] max-h-[900px] max-w-[94%]">
                             <canvas
                               ref={(el: HTMLCanvasElement) => setCanvasEl(el)}
-                              class="absolute inset-0 size-full rounded-full outline-none [touch-action:manipulation] focus-visible:ring-2 focus-visible:ring-text-weak"
+                              class="absolute inset-0 size-full rounded-full outline-none [touch-action:none] focus-visible:ring-2 focus-visible:ring-text-weak"
                               tabIndex={0}
-                              role="application"
+                              role="region"
                               aria-roledescription="interactive storage map"
                               aria-describedby="disklizard-orbit-help"
-                              aria-label={`Interactive storage map for ${scanLabel()}. Use arrow keys to select an item and Enter to explore it.`}
-                              draggable="true"
-                              onDragStart={(event) =>
-                                beginCollectionDrag(
-                                  event,
-                                  sunburst()?.nodeAtPoint(event.clientX, event.clientY) ?? null,
-                                )
-                              }
-                              onDragEnd={endCollectionDrag}
+                              aria-controls="disklizard-storage-list"
+                              aria-label={`Storage map for ${scanLabel()}. Select an item to inspect it; use the results list to browse every item.`}
+                              aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home End PageUp PageDown Enter Space C Escape"
+                              onPointerDown={beginMapDrag}
+                              onPointerMove={moveMapDrag}
+                              onPointerUp={(event) => finishMapDrag(event)}
+                              onPointerCancel={(event) => finishMapDrag(event, true)}
                             />
                             <span id="disklizard-orbit-help" class="sr-only">
-                              Use the Up and Down arrow keys to select an item, Enter to explore a folder, C to add it
-                              to cleanup, and Escape to move up one level.
+                              Click once to select an item and double-click a folder to open it. Drag a folder to the
+                              review area to select it. Use the Up and Down arrow keys to select an item, Home, End,
+                              or Page Up and Page Down to move through the list, Enter or Right Arrow to open a
+                              folder, Space to preview it, C to add it to review, and Escape or Left Arrow to move up
+                              one level. The results list contains an accessible entry for every item in this map.
                             </span>
                             <CenterOverlay
                               node={focusNode()}
                               parentSize={parentSize()}
-                              selected={selectedNode()?.path === focusNode()?.path}
+                              draggable={!!focusNode() && canModifyNode(focusNode()!)}
+                              canOpen={!!focusNode() && focusNode()!.isDir && !focusNode()!.isOther && !isDeveloperInventoryNode(focusNode()!)}
+                              inventoryOnly={!!focusNode() && isDeveloperInventoryNode(focusNode()!)}
+                              onOpen={() => {
+                                const node = focusNode()
+                                if (node?.isDir && !node.isOther && !isDeveloperInventoryNode(node)) drill(node, true, true)
+                              }}
                             />
                           </div>
                         </Show>
                         <Show when={scanMode() === "grid"}>
-                          <div
-                            class="relative size-full px-5 pb-5 lg:px-8 lg:pb-8"
-                            classList={{
-                              "pt-20": reclaim().totalBytes > 0,
-                              "pt-5 lg:pt-8": reclaim().totalBytes === 0,
-                            }}
-                          >
+                          <div class="relative size-full px-5 pb-5 pt-5 lg:px-8 lg:pb-8 lg:pt-8">
                             <Treemap
                               children={sortedChildren()}
                               hoveredPath={hoveredPath()}
@@ -1639,8 +2712,15 @@ export default function DiskUtilityPage() {
                                 if (isVisualAggregate(node)) setVisualHoverNode(node)
                               }}
                               onSelect={selectPath}
-                              onDrill={drill}
-                              onShowAll={() => chooseScanMode("list")}
+                              onReveal={(node) => void reveal(node.path)}
+                              onPreview={(node) => {
+                                if (supportsQuickLook()) void openSystemPreview(node)
+                                else void openPreview(node)
+                              }}
+                              onDrill={(node, restoreListFocus) => drill(node, false, restoreListFocus)}
+                              onShowAll={(restoreListFocus) =>
+                                chooseScanMode("list", restoreListFocus ? "keyboard" : "pointer")
+                              }
                               canCollect={canModifyNode}
                               onCollectDragStart={beginCollectionDrag}
                               onCollectDragEnd={endCollectionDrag}
@@ -1652,23 +2732,43 @@ export default function DiskUtilityPage() {
                             active={scanMode() === "map"}
                             onClick={() => chooseScanMode("map")}
                             icon="dot-grid"
-                            label="Orbit"
+                            label="Map"
                             shortcut="1"
                           />
                           <SegmentedButton
                             active={scanMode() === "grid"}
                             onClick={() => chooseScanMode("grid")}
                             icon="file-tree"
-                            label="Mosaic"
+                            label="Tiles"
                             shortcut="2"
                           />
                           <SegmentedButton
                             active={scanMode() === "list"}
                             onClick={() => chooseScanMode("list")}
                             icon="bullet-list"
-                            label="Index"
+                            label="List"
                             shortcut="3"
                           />
+                          <details class="relative">
+                            <summary
+                              class="dl-touch-target grid size-11 cursor-pointer list-none place-items-center rounded-full text-10-semibold text-text-weak outline-none transition-colors focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
+                              aria-label="Show keyboard shortcuts"
+                            >
+                              ?
+                            </summary>
+                            <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-9-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
+                              <p class="text-10-semibold text-text-strong">Keyboard shortcuts</p>
+                              <p class="mt-2">
+                                ↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump
+                              </p>
+                              <p class="mt-1">
+                                ← / Escape goes up · → / Enter opens · Space previews{platform.os === "macos" ? " with Quick Look" : ""} · C selects for review
+                              </p>
+                              <p class="mt-1">
+                                1 Map · 2 Tiles · 3 List · {platform.os === "macos" ? "⌘" : "Ctrl"}-click reveals
+                              </p>
+                            </div>
+                          </details>
                         </div>
                       </section>
                     </Show>
@@ -1676,24 +2776,24 @@ export default function DiskUtilityPage() {
                     <aside
                       class="dl-inspector flex min-h-0 flex-col overflow-hidden bg-background-base"
                       classList={{
-                        "w-[clamp(390px,32vw,470px)] shrink-0 border-l border-border-weaker-base":
+                        "w-[clamp(360px,27vw,420px)] shrink-0 border-l border-border-weaker-base":
                           scanMode() !== "list",
                         "flex-1": scanMode() === "list",
                       }}
                     >
                       <div class="shrink-0 border-b border-border-weaker-base px-5 pb-4 pt-5">
                         <div class="flex items-start justify-between gap-4">
-                          <div>
+                          <div class="min-w-0 flex-1">
                             <p class="text-9-semibold uppercase tracking-[0.16em] text-text-weaker">
                               {indexFilter.lens === "developer"
                                 ? indexFilter.developerCategory === "all"
-                                  ? "Developer footprint"
-                                  : indexFilter.developerCategory === "dormant"
-                                    ? "Dormant artifacts"
-                                    : DEVELOPER_CATEGORY_LABEL[indexFilter.developerCategory]
-                                : indexFilter.lens === "cleanup"
-                                  ? "Cleanup candidates"
-                                  : "Space index"}
+                                  ? "Developer files"
+                                  : DEVELOPER_CATEGORY_LABEL[indexFilter.developerCategory]
+                                : indexFilter.lens === "recommendations"
+                                  ? "Recommendations across this scan"
+                                  : indexFilter.lens === "changes"
+                                    ? "Largest recently changed items"
+                                  : "Folder contents"}
                             </p>
                             <div class="mt-2 flex min-w-0 items-baseline justify-between gap-4">
                               <h2 class="min-w-0 truncate text-18-medium tracking-[-0.035em] text-text-strong">
@@ -1713,73 +2813,133 @@ export default function DiskUtilityPage() {
                                 active={scanMode() === "map"}
                                 onClick={() => chooseScanMode("map")}
                                 icon="dot-grid"
-                                label="Orbit"
+                                label="Map"
                               />
                               <SegmentedButton
                                 active={scanMode() === "grid"}
                                 onClick={() => chooseScanMode("grid")}
                                 icon="file-tree"
-                                label="Mosaic"
+                                label="Tiles"
                               />
-                              <SegmentedButton active icon="bullet-list" label="Index" />
+                              <SegmentedButton active icon="bullet-list" label="List" />
                             </div>
                           </Show>
                         </div>
-                        <div
-                          role="group"
-                          aria-label="Space index lens"
-                          class="mt-4 grid grid-cols-3 gap-1 border-b border-border-weaker-base pb-3"
-                        >
-                          <IndexLensButton
-                            active={indexFilter.lens === "all"}
-                            icon="bullet-list"
-                            label="All"
-                            onClick={() => chooseLens("all")}
-                          />
-                          <IndexLensButton
-                            active={indexFilter.lens === "developer"}
-                            icon="code-lines"
-                            label="Developer"
-                            onClick={() => chooseLens("developer")}
-                          />
-                          <IndexLensButton
-                            active={indexFilter.lens === "cleanup"}
-                            icon="shield"
-                            label="Cleanup"
-                            onClick={() => chooseLens("cleanup")}
-                          />
-                        </div>
-                        <Show when={indexFilter.lens === "developer" && developer().buckets.length > 0}>
-                          <div
-                            class="mt-2 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
-                            aria-label="Developer categories"
-                          >
-                            <DeveloperCategoryButton
-                              active={indexFilter.developerCategory === "all"}
-                              label="Everything"
-                              bytes={developer().totalBytes}
-                              onClick={() => chooseDeveloperCategory("all")}
+                        <details class="group mt-4" open={indexFilter.lens !== "all"}>
+                          <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 border-b border-border-weaker-base px-1 text-10-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+                            <Icon name="sliders" class="size-3.5" />
+                            <span class="flex-1">Explore this scan</span>
+                            <span class="text-9-regular text-text-weaker">
+                              {indexFilter.lens === "all"
+                                ? "Folder contents"
+                                : indexFilter.lens === "developer"
+                                  ? "Developer files"
+                                  : indexFilter.lens === "changes"
+                                    ? "Changed this week"
+                                    : "Recommendations"}
+                            </span>
+                            <Icon name="chevron-down" class="size-3 transition-transform duration-150 group-open:rotate-180" />
+                          </summary>
+                          <div role="group" aria-label="Choose what to show" class="mt-2 grid grid-cols-2 sm:grid-cols-4">
+                            <IndexLensButton
+                              active={indexFilter.lens === "all"}
+                              icon="bullet-list"
+                              label="All"
+                              onClick={() => chooseLens("all")}
                             />
-                            <Show when={dormantDeveloper().count > 0}>
-                              <DeveloperCategoryButton
-                                active={indexFilter.developerCategory === "dormant"}
-                                label="Dormant 90d+"
-                                bytes={dormantDeveloper().bytes}
-                                description="No descendant changed in at least 90 days"
-                                onClick={() => chooseDeveloperCategory("dormant")}
-                              />
-                            </Show>
-                            <For each={developer().buckets}>
-                              {(bucket) => (
-                                <DeveloperCategoryButton
-                                  active={indexFilter.developerCategory === bucket.category}
-                                  label={DEVELOPER_CATEGORY_LABEL[bucket.category]}
-                                  bytes={bucket.bytes}
-                                  onClick={() => chooseDeveloperCategory(bucket.category)}
-                                />
-                              )}
-                            </For>
+                            <IndexLensButton
+                              active={indexFilter.lens === "developer"}
+                              icon="code-lines"
+                              label="Developer"
+                              onClick={() => chooseLens("developer")}
+                            />
+                            <IndexLensButton
+                              active={indexFilter.lens === "recommendations"}
+                              icon="shield"
+                              label="Recommendations"
+                              disabled={physicalCloneAccountingUncertain()}
+                              title={
+                                physicalCloneAccountingUncertain()
+                                  ? "Reclaim estimates wait for verified clone metadata."
+                                  : undefined
+                              }
+                              onClick={() => chooseLens("recommendations")}
+                            />
+                            <IndexLensButton
+                              active={indexFilter.lens === "changes"}
+                              icon="arrow-undo-down"
+                              label="Recent"
+                              onClick={() => chooseLens("changes")}
+                            />
                           </div>
+                        </details>
+                        <Show when={reclaim().totalBytes > 0 && indexFilter.lens !== "recommendations"}>
+                          <ReclaimBanner
+                            bytes={reclaim().totalBytes}
+                            count={reclaim().totalCount}
+                            onReview={() => reviewSurface.open()}
+                          />
+                        </Show>
+                        <Show
+                          when={
+                            indexFilter.lens === "developer" &&
+                            (developer().buckets.length > 0 || !!treeRoot()?.developerArtifactInventory)
+                          }
+                        >
+                          <Show when={developer().buckets.length > 0}>
+                            <div
+                              class="mt-2 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
+                              aria-label="Developer categories"
+                            >
+                              <DeveloperCategoryButton
+                                active={indexFilter.developerCategory === "all"}
+                                label="All developer files"
+                                bytes={developer().totalBytes}
+                                onClick={() => chooseDeveloperCategory("all")}
+                              />
+                              <For each={developer().buckets}>
+                                {(bucket) => (
+                                  <DeveloperCategoryButton
+                                    active={indexFilter.developerCategory === bucket.category}
+                                    label={DEVELOPER_CATEGORY_LABEL[bucket.category]}
+                                    bytes={bucket.bytes}
+                                    onClick={() => chooseDeveloperCategory(bucket.category)}
+                                  />
+                                )}
+                              </For>
+                            </div>
+                          </Show>
+                          <DeveloperCleanupPolicy
+                            preset={indexFilter.developerAge}
+                            customDays={indexFilter.customDeveloperAgeDays}
+                            age={developerAge()}
+                            eligibleCount={smartCleanupCandidates().length}
+                            eligibleBytes={smartCleanupCandidateBytes()}
+                            excludedCount={smartCleanupReviewCount()}
+                            ecosystems={developerEcosystems()}
+                            ecosystem={indexFilter.developerEcosystem}
+                            inventory={treeRoot()?.developerArtifactInventory}
+                            unavailable={physicalCloneAccountingUncertain()}
+                            onPresetChange={chooseDeveloperCleanupAge}
+                            onCustomDaysChange={setCustomDeveloperCleanupAgeDays}
+                            onEcosystemChange={chooseDeveloperEcosystem}
+                            onSelectEligible={selectEligibleDeveloperResults}
+                          />
+                        </Show>
+                        <Show when={physicalCloneAccountingWarning()}>
+                          {(warning) => (
+                            <div
+                              class="mt-3 flex gap-2 rounded-xl border border-border-warning-base/55 bg-surface-warning-weak/45 px-3 py-2.5"
+                              role="note"
+                              aria-label="Physical storage accounting is unverified"
+                            >
+                              <Icon name="shield" class="mt-0.5 size-3.5 shrink-0 text-icon-warning-base" />
+                              <div>
+                                <p class="text-10-semibold text-text-strong">Physical reclaim estimate paused</p>
+                                <p class="mt-1 text-9-regular leading-relaxed text-text-weak">{warning()}</p>
+                              </div>
+                            </div>
+                          )}
                         </Show>
                         <Show when={treeRoot()?.scanIssues}>
                           {(issues) => (
@@ -1800,10 +2960,21 @@ export default function DiskUtilityPage() {
                                 <p class="text-10-regular leading-relaxed text-text-weak">
                                   {scanAccessGuidance(platform.os)} Use Rescan in the top bar after changing access.
                                 </p>
+                                <Show when={storageDiagnostics()?.access.status === "limited"}>
+                                  <Button
+                                    class="dl-touch-target mt-2"
+                                    size="small"
+                                    variant="secondary"
+                                    icon="square-arrow-top-right"
+                                    onClick={() => void openDiskAccessSettings()}
+                                  >
+                                    Open privacy settings
+                                  </Button>
+                                </Show>
                                 <ul class="mt-2 space-y-1" aria-label="Unreadable locations sampled during this scan">
                                   <For each={issues().samplePaths.slice(0, 5)}>
                                     {(path) => (
-                                      <li class="truncate font-mono text-9-regular text-text-weaker" title={path}>
+                                      <li class="truncate font-mono text-10-regular text-text-weaker" title={path}>
                                         {path}
                                       </li>
                                     )}
@@ -1818,7 +2989,7 @@ export default function DiskUtilityPage() {
                             </details>
                           )}
                         </Show>
-                        <label class="dl-touch-target mt-3 flex h-10 items-center gap-2 rounded-[10px] bg-surface-raised-base/55 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] transition-shadow duration-150 focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
+                        <label class="dl-touch-target mt-3 flex h-11 items-center gap-2 rounded-[10px] bg-surface-raised-base/55 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] transition-shadow duration-150 focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
                           <Icon name="magnifying-glass" class="size-3.5 shrink-0 text-icon-weak" />
                           <span class="sr-only">
                             {indexFilter.lens === "all" ? "Filter this folder" : "Search this scan"}
@@ -1833,7 +3004,7 @@ export default function DiskUtilityPage() {
                           <Show when={query()}>
                             <button
                               type="button"
-                              class="dl-touch-target grid size-10 place-items-center rounded-full text-text-weak outline-none hover:bg-surface-raised-base focus-visible:ring-2 focus-visible:ring-text-weak"
+                              class="dl-hover-button dl-touch-target grid size-10 place-items-center rounded-full text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
                               onClick={() => updateQuery("")}
                               aria-label="Clear filter"
                             >
@@ -1860,7 +3031,10 @@ export default function DiskUtilityPage() {
                         <VirtualIndex
                           entries={entries()}
                           bindScrollToIndex={(fn) => (scrollIndexIntoView = fn)}
+                          bindPageSize={(fn) => (listPageSize = fn ?? (() => DEFAULT_LIST_PAGE_SIZE))}
                           onMoveFocus={moveFocus}
+                          onPageFocus={moveFocusByPage}
+                          onMoveFocusToBoundary={moveFocusToBoundary}
                           render={(entry, i) => {
                             const rec = () => recognize(entry.node)
                             const developerContext = () => developerArtifactContext(entry.node, rec())
@@ -1869,37 +3043,47 @@ export default function DiskUtilityPage() {
                               selectedPath() === entry.node.path || (focusIdx() === i() && !selectedPath())
                             return (
                               <div
-                                class="group relative flex h-full items-center border-b border-border-weaker-base/70 transition-colors duration-150 hover:bg-surface-raised-base/45"
+                                class="dl-hover-row dl-index-row group relative flex h-full items-center border-b border-border-weaker-base/70 transition-colors duration-150"
                                 classList={{
-                                  "bg-surface-raised-base/70": isActive(),
+                                  "bg-surface-raised-base/70 shadow-[inset_2px_0_0_var(--dl-accent)]": isActive(),
                                 }}
                                 onMouseEnter={() => hoverEntry(entry.node.path)}
                                 onMouseLeave={() => hoverEntry(selectedPath() ?? null)}
                               >
                                 <button
                                   type="button"
+                                  data-disk-index={i()}
                                   aria-current={isActive() ? "true" : undefined}
                                   draggable={canModifyNode(entry.node)}
-                                  class="flex min-w-0 flex-1 items-center gap-2.5 py-2 pl-4 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
-                                  onClick={() => selectPath(entry.node.path)}
-                                  onDblClick={() =>
-                                    entry.node.isDir ? drill(entry.node) : void openPreview(entry.node)
-                                  }
+                                  class="flex min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+                                  onClick={(event) => {
+                                    if (event.metaKey || event.ctrlKey) {
+                                      void reveal(entry.node.path)
+                                      return
+                                    }
+                                    selectEntry(entry.node, i(), event.shiftKey)
+                                  }}
+                                  onDblClick={() => {
+                                    if (entry.node.isDir && !entry.node.isOther) drill(entry.node)
+                                    else if (!entry.node.isOther) void openPreview(entry.node)
+                                  }}
+                                  onFocus={() => {
+                                    setFocusIdx(i())
+                                    selectPath(entry.node.path)
+                                  }}
+                                  onKeyDown={(event) => handleEntryKeyDown(event, entry.node, i())}
                                   onDragStart={(event) => beginCollectionDrag(event, entry.node)}
                                   onDragEnd={endCollectionDrag}
                                 >
                                   <span
-                                    class="size-2.5 shrink-0 rounded-full shadow-[0_0_0_1px_rgb(255_255_255/0.16)]"
-                                    style={{ background: primarySegmentColor(entry.index) }}
+                                    class="size-2 shrink-0 rounded-full shadow-[0_0_0_1px_rgb(255_255_255/0.14)]"
+                                    style={{ background: primarySegmentColor(entry.index, 1, entry.node.isDir) }}
                                     aria-hidden="true"
                                   />
-                                  <span class="grid size-6 shrink-0 place-items-center text-text-weaker transition-colors duration-150 group-hover:text-text-strong">
-                                    <Icon name={entry.node.isDir ? "folder" : "code-lines"} class="size-3.5" />
-                                  </span>
                                   <span class="min-w-0 flex-1">
                                     <span class="flex min-w-0 items-center gap-1.5">
                                       <span class="truncate text-12-semibold text-text-strong">{entry.node.name}</span>
-                                      <Show when={rec().tag && scanMode() === "list"}>
+                                      <Show when={indexFilter.lens !== "all" && rec().tag}>
                                         <span
                                           class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-9-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
                                         >
@@ -1910,27 +3094,14 @@ export default function DiskUtilityPage() {
                                     <Show
                                       when={indexFilter.lens !== "all"}
                                       fallback={
-                                        <span class="mt-1 flex items-center gap-2">
-                                          <Show when={rec().tag && scanMode() !== "list"}>
-                                            <span
-                                              class={`max-w-[145px] shrink-0 truncate rounded-full px-1.5 py-0.5 text-9-semibold uppercase tracking-[0.08em] ring-1 ring-inset ${SAFETY_ACCENT[rec().safety].pill}`}
-                                              title={rec().tag}
-                                            >
-                                              {rec().tag}
-                                            </span>
-                                          </Show>
-                                          <span class="h-0.5 min-w-0 flex-1 overflow-hidden rounded-full bg-surface-raised-base">
-                                            <span
-                                              class="block h-full rounded-full"
-                                              style={{
-                                                width: `${Math.max(2, Math.min(100, pct()))}%`,
-                                                background: primarySegmentColor(entry.index),
-                                              }}
-                                            />
-                                          </span>
-                                          <span class="w-10 text-right text-10-regular tabular-nums text-text-weak">
-                                            {formatPct(entry.displaySize, indexSize())}
-                                          </span>
+                                        <span class="mt-1.5 block h-px min-w-0 overflow-hidden bg-surface-raised-base">
+                                          <span
+                                            class="block h-full"
+                                            style={{
+                                              width: `${Math.max(1, Math.min(100, pct()))}%`,
+                                              background: primarySegmentColor(entry.index, 1, entry.node.isDir),
+                                            }}
+                                          />
                                         </span>
                                       }
                                     >
@@ -1939,7 +3110,7 @@ export default function DiskUtilityPage() {
                                           class="flex min-w-0 flex-1 items-center gap-1.5 text-10-regular text-text-weak"
                                           title={
                                             indexFilter.lens === "developer"
-                                              ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? "Inspect this artifact before changing it"}\n${entry.node.path}`
+                                              ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? "Inspect this folder before changing it"}\n${entry.node.path}`
                                               : entry.node.path
                                           }
                                         >
@@ -1959,12 +3130,16 @@ export default function DiskUtilityPage() {
                                           </span>
                                         </span>
                                         <Show
-                                          when={indexFilter.lens === "developer" ? entry.node.modifiedAt : undefined}
+                                          when={
+                                            indexFilter.lens === "developer" || indexFilter.lens === "changes"
+                                              ? entry.node.modifiedAt
+                                              : undefined
+                                          }
                                         >
                                           {(changedAt) => (
                                             <span
                                               class="shrink-0 text-10-regular tabular-nums text-text-weak"
-                                              classList={{ "dl-accent-text": isDormant(changedAt()) }}
+                                              classList={{ "dl-accent-text": indexFilter.lens === "developer" && isDormant(changedAt()) }}
                                               title={`Last changed ${new Date(changedAt()).toLocaleString()}`}
                                             >
                                               {formatLastChanged(changedAt())}
@@ -1981,7 +3156,7 @@ export default function DiskUtilityPage() {
                                 <Show when={canModifyNode(entry.node)}>
                                   <button
                                     type="button"
-                                    class="dl-row-action grid size-10 shrink-0 place-items-center rounded-lg text-text-weak opacity-65 outline-none transition-[color,opacity,background-color,transform] duration-150 hover:bg-surface-raised-base hover:text-text-strong hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+                                    class="dl-hover-action dl-row-action grid size-10 shrink-0 place-items-center rounded-lg text-text-weak opacity-65 outline-none transition-[color,opacity,background-color,transform] duration-150 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
                                     classList={{
                                       "dl-accent-text opacity-100": isCollected(entry.node.path),
                                     }}
@@ -1989,24 +3164,14 @@ export default function DiskUtilityPage() {
                                     aria-pressed={isCollected(entry.node.path)}
                                     aria-label={
                                       isCollected(entry.node.path)
-                                        ? `Remove ${entry.node.name} from cleanup basket`
-                                        : `Add ${entry.node.name} to cleanup basket`
+                                        ? `Remove ${entry.node.name} from review`
+                                        : `Select ${entry.node.name} for review`
                                     }
                                   >
                                     <Icon
                                       name={isCollected(entry.node.path) ? "circle-check" : "plus-small"}
                                       class="size-3.5"
                                     />
-                                  </button>
-                                </Show>
-                                <Show when={entry.node.isDir && !entry.node.isOther}>
-                                  <button
-                                    type="button"
-                                    class="grid size-10 shrink-0 place-items-center rounded-lg text-text-weaker outline-none transition-colors duration-150 hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
-                                    onClick={() => drill(entry.node)}
-                                    aria-label={`Open ${entry.node.name}`}
-                                  >
-                                    <Icon name="chevron-right" class="size-3.5" />
                                   </button>
                                 </Show>
                               </div>
@@ -2017,22 +3182,20 @@ export default function DiskUtilityPage() {
                     </aside>
                   </div>
 
-                  <div class="dl-command-dock shrink-0 border-t border-border-weaker-base bg-background-base/92 px-4 py-2.5 backdrop-blur-xl">
+                  <div class="dl-command-dock shrink-0 border-t border-border-weaker-base bg-background-base px-4 py-2">
                     <div class="dl-command-dock-inner mx-auto flex max-w-[1480px] items-center gap-3">
                       <div class="min-w-0 flex-1">
                         <Show
                           when={selectedNode()}
                           fallback={
-                            <div class="flex min-h-[72px] items-center gap-3 px-2">
-                              <span class="grid size-10 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
+                            <div class="flex min-h-16 items-center gap-3 px-2">
+                              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
                                 <Icon name="window-cursor" class="size-4" />
                               </span>
                               <div class="min-w-0">
-                                <p class="text-12-semibold text-text-strong">Select anything to inspect it</p>
+                                <p class="text-12-semibold text-text-strong">Select an item to inspect it</p>
                                 <p class="mt-0.5 truncate text-10-regular text-text-weak">
-                                  Enter opens · Space previews · C adds to cleanup ·{" "}
-                                  {platform.os === "macos" ? "⌘⌫" : "Ctrl+Backspace"} moves to{" "}
-                                  {nativeTrashName(platform.os)}
+                                  Select an item, then press C or drag it here to review it
                                 </p>
                               </div>
                             </div>
@@ -2046,24 +3209,43 @@ export default function DiskUtilityPage() {
                               collected={isCollected(node().path)}
                               trashName={nativeTrashName(platform.os)}
                               onPreview={
-                                node().isDir || node().isOther || node().isHidden
-                                  ? undefined
-                                  : () => void openPreview(node())
+                                node().isOther || node().isHidden ? undefined : () => void openPreview(node())
+                              }
+                              onQuickLook={
+                                supportsQuickLook() && !node().isOther && !node().isHidden
+                                  ? () => void openSystemPreview(node())
+                                  : undefined
                               }
                               onReveal={() => void reveal(node().path)}
-                              onOpen={() => drill(node())}
+                              onOpen={isDeveloperInventoryNode(node()) ? undefined : () => drill(node())}
                               onCollect={() => toggleCollect(node())}
                               onTrash={() => requestDelete(node())}
                             />
                           )}
                         </Show>
                       </div>
-                      <div class="dl-cleanup-slot w-[min(470px,38vw)] shrink-0">
+                      <div
+                        class="dl-cleanup-slot shrink-0"
+                        classList={{
+                          "w-[min(360px,30vw)]": effectiveCollection().length > 0 || !!collectionDragNode(),
+                          "w-[220px]": effectiveCollection().length === 0 && !collectionDragNode(),
+                        }}
+                      >
                         <CollectionDropTarget
+                          setElement={(element) => (collectionDropElement = element)}
                           node={collectionDragNode()}
                           active={collectionDropActive()}
                           count={effectiveCollection().length}
                           bytes={collectionSize()}
+                          hasSharedPhysicalStorage={
+                            collectionHasSharedPhysicalStorage() ||
+                            (collectionDragNode() ? containsSharedPhysicalStorage(collectionDragNode()!) : false)
+                          }
+                          hasUnverifiedPhysicalStorage={physicalCloneAccountingUncertain()}
+                          requiresDeepInventoryRefresh={
+                            collectionNeedsDeepInventoryRefresh() ||
+                            (collectionDragNode() ? requiresDeepInventoryRefresh([collectionDragNode()!]) : false)
+                          }
                           trashName={nativeTrashName(platform.os)}
                           onReview={() => collectionSurface.open()}
                           onClear={clearCollection}
@@ -2096,6 +3278,8 @@ export default function DiskUtilityPage() {
             onPrevious={previewPosition() > 0 ? () => previewAdjacent(-1) : undefined}
             onNext={previewPosition() + 1 < previewableEntries().length ? () => previewAdjacent(1) : undefined}
             onReveal={() => void reveal(node().path)}
+            systemPreviewLabel={platform.os === "macos" ? "Quick Look" : undefined}
+            onSystemPreview={platform.os === "macos" ? () => void openSystemPreview(node()) : undefined}
             onOpen={() => void openInDefaultApp(node())}
           />
         )}
@@ -2109,11 +3293,10 @@ export default function DiskUtilityPage() {
           onClose={() => reviewSurface.close()}
           onCollectAll={() => {
             collectNodes(reclaim().buckets.flatMap((bucket) => bucket.items.map(({ node }) => node)))
-            reviewSurface.close()
+            reviewSurface.closeThen(() => collectionSurface.open())
           }}
-          onTrash={(node) => {
-            reviewSurface.closeThen(() => requestDelete(node))
-          }}
+          onToggle={toggleCollect}
+          isSelected={(node) => isCollected(node.path)}
           deleting={deleting()}
         />
       </Show>
@@ -2123,11 +3306,15 @@ export default function DiskUtilityPage() {
           phase={collectionSurface.phase()}
           items={effectiveCollection()}
           bytes={collectionSize()}
+          hasSharedPhysicalStorage={collectionHasSharedPhysicalStorage()}
+          hasUnverifiedPhysicalStorage={physicalCloneAccountingUncertain()}
+          requiresDeepInventoryRefresh={collectionNeedsDeepInventoryRefresh()}
           deleting={deleting()}
           progress={deletionProgress()}
           trashName={nativeTrashName(platform.os)}
           onClose={() => !deleting() && collectionSurface.close()}
           onRemove={removeCollected}
+          onQuickLook={supportsQuickLook() ? (node) => void openSystemPreview(node) : undefined}
           onConfirm={() => void deleteCollected()}
         />
       </Show>
@@ -2135,973 +3322,19 @@ export default function DiskUtilityPage() {
       {/* ── Delete confirm ── */}
       <Show when={deleteSurface.mounted() && pendingDelete()}>
         {(node) => (
-          <div
-            class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/62 p-4 backdrop-blur-sm"
-            data-state={deleteSurface.phase()}
-            onClick={() => !deleting() && deleteSurface.closeThen(() => setPendingDelete(null))}
-            role="presentation"
-          >
-            <div
-              class="dl-dialog-panel w-full max-w-md rounded-2xl bg-surface-raised-strong p-5 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
-              ref={focusDialog}
-              tabIndex={-1}
-              onClick={(e) => e.stopPropagation()}
-              onKeyDown={trapDialogFocus}
-              role="alertdialog"
-              aria-modal="true"
-              aria-labelledby="delete-title"
-              aria-describedby="delete-description"
-            >
-              <div class="flex items-start gap-3">
-                <div class="dl-critical-text grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.12)]">
-                  <Icon name="trash" class="size-4" />
-                </div>
-                <div class="min-w-0 flex-1">
-                  <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Confirm removal</p>
-                  <h3 id="delete-title" class="mt-1 text-18-medium tracking-[-0.025em] text-text-strong">
-                    Move this item to {nativeTrashName(platform.os)}?
-                  </h3>
-                  <div
-                    id="delete-description"
-                    class="mt-4 rounded-xl bg-background-base/65 p-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]"
-                  >
-                    <p class="truncate text-12-semibold text-text-strong">{node().name}</p>
-                    <p class="mt-0.5 truncate font-mono text-9-regular text-text-weaker">{node().path}</p>
-                    <p class="mt-2 text-11-semibold tabular-nums text-text-strong">{formatBytes(node().size)}</p>
-                  </div>
-                  <p class="mt-3 flex items-center gap-1.5 text-10-regular text-text-weak">
-                    <Icon name="shield" class="size-3.5" />
-                    You can restore it from {nativeTrashName(platform.os)}.
-                  </p>
-                </div>
-              </div>
-              <div class="mt-5 flex justify-end gap-2">
-                <Button
-                  data-autofocus
-                  size="small"
-                  variant="ghost"
-                  disabled={deleting()}
-                  onClick={() => deleteSurface.closeThen(() => setPendingDelete(null))}
-                >
-                  Keep it
-                </Button>
-                <Button
-                  size="small"
-                  variant="primary"
-                  disabled={deleting()}
-                  icon="trash"
-                  onClick={() => void confirmDelete()}
-                >
-                  {deleting() ? "Moving…" : `Move to ${nativeTrashName(platform.os)}`}
-                </Button>
-              </div>
-            </div>
-          </div>
+          <DeleteConfirmDialog
+            phase={deleteSurface.phase()}
+            node={node()}
+            hasSharedPhysicalStorage={containsSharedPhysicalStorage(node())}
+            hasUnverifiedPhysicalStorage={physicalCloneAccountingUncertain()}
+            requiresDeepInventoryRefresh={requiresDeepInventoryRefresh([node()])}
+            deleting={deleting()}
+            trashName={nativeTrashName(platform.os)}
+            onClose={() => !deleting() && deleteSurface.closeThen(() => setPendingDelete(null))}
+            onConfirm={() => void confirmDelete()}
+          />
         )}
       </Show>
     </div>
   )
 }
-
-// ── Sub-components ───────────────────────────────────────────────────────────
-
-function focusDialog(element: HTMLElement) {
-  queueMicrotask(() => {
-    const target = element.querySelector<HTMLElement>("[data-autofocus]") ?? element
-    target.focus({ preventScroll: true })
-  })
-}
-
-function trapDialogFocus(event: KeyboardEvent) {
-  if (event.key !== "Tab") return
-  const dialog = event.currentTarget
-  if (!(dialog instanceof HTMLElement)) return
-  const focusable = [
-    ...dialog.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-    ),
-  ].filter((element) => element.getClientRects().length > 0)
-  if (!focusable.length) {
-    event.preventDefault()
-    return
-  }
-  const first = focusable[0]
-  const last = focusable[focusable.length - 1]
-  if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) {
-    event.preventDefault()
-    last.focus()
-    return
-  }
-  if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault()
-    first.focus()
-  }
-}
-
-function SegmentedButton(props: {
-  active: boolean
-  onClick?: () => void
-  icon: IconProps["name"]
-  label: string
-  shortcut?: string
-}) {
-  return (
-    <button
-      type="button"
-      class="dl-segmented dl-touch-target flex min-h-10 items-center gap-1.5 rounded-full px-3 text-10-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-      classList={{
-        "bg-surface-raised-base text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_2px_7px_rgb(0_0_0/0.12)]":
-          props.active,
-        "text-text-weak hover:text-text-strong": !props.active,
-      }}
-      onClick={props.onClick}
-      aria-pressed={props.active}
-    >
-      <Icon name={props.icon} class="size-3" />
-      {props.label}
-      <Show when={props.shortcut}>
-        <kbd class="ml-0.5 text-8-regular opacity-45">{props.shortcut}</kbd>
-      </Show>
-    </button>
-  )
-}
-
-function IndexLensButton(props: { active: boolean; onClick: () => void; icon: IconProps["name"]; label: string }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={props.active}
-      class="dl-touch-target flex min-h-10 items-center justify-center gap-1.5 rounded-lg px-2 text-10-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-      classList={{
-        "bg-[oklch(0.76_0.155_148/0.12)] text-text-strong shadow-[inset_0_-2px_0_oklch(0.76_0.155_148/0.62)]":
-          props.active,
-        "text-text-weak hover:text-text-strong": !props.active,
-      }}
-      onClick={props.onClick}
-    >
-      <Icon name={props.icon} class="size-3.5" />
-      {props.label}
-    </button>
-  )
-}
-
-function DeveloperCategoryButton(props: {
-  active: boolean
-  label: string
-  bytes: number
-  description?: string
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={props.active}
-      aria-label={props.description ? `${props.label}. ${props.description}. ${formatBytes(props.bytes)}` : undefined}
-      title={props.description}
-      class="dl-touch-target flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-3 text-9-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-      classList={{
-        "bg-[oklch(0.76_0.155_148/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.76_0.155_148/0.28)]":
-          props.active,
-        "bg-background-base/45 text-text-weak hover:text-text-strong": !props.active,
-      }}
-      onClick={props.onClick}
-    >
-      <span>{props.label}</span>
-      <span class="tabular-nums text-text-weaker">{shortBytes(props.bytes)}</span>
-    </button>
-  )
-}
-
-function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {
-  return (
-    <div class="flex min-h-[520px] flex-1 flex-col items-center justify-center text-center">
-      <Show
-        when={!props.loading}
-        fallback={
-          <>
-            <span class="dl-spin size-8 rounded-full border-2 border-border-weaker-base border-t-[oklch(0.67_0.13_176)]" />
-            <p class="mt-5 text-13-medium text-text-strong">Finding your volumes</p>
-            <p class="mt-1 text-11-regular text-text-weak">This should only take a moment.</p>
-          </>
-        }
-      >
-        <span class="dl-mark dl-accent-text grid size-12 place-items-center rounded-full">
-          <span class="size-3 rounded-full bg-current" />
-        </span>
-        <h2 class="mt-5 text-20-medium tracking-[-0.025em] text-text-strong">
-          {props.error ? "Volumes could not be read" : "Choose where to begin"}
-        </h2>
-        <p class="mt-2 max-w-sm text-12-regular leading-relaxed text-text-weak">
-          {props.error ?? "Pick any folder and DiskLizard will map it without changing a thing."}
-        </p>
-        <Button class="mt-5" variant="primary" size="small" icon="folder-add-left" onClick={props.onChoose}>
-          Scan a folder
-        </Button>
-      </Show>
-    </div>
-  )
-}
-
-function IndexEmpty(props: { filtered: boolean; onReset: () => void }) {
-  return (
-    <div class="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
-      <span class="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-        <Icon name={props.filtered ? "magnifying-glass" : "folder"} class="size-4" />
-      </span>
-      <h3 class="mt-4 text-13-semibold text-text-strong">
-        {props.filtered ? "Nothing matches this lens" : "This folder is empty"}
-      </h3>
-      <p class="mt-1 max-w-[30ch] text-11-regular leading-relaxed text-text-weak">
-        {props.filtered
-          ? "Clear the filter to return to the complete space index."
-          : "There is no storage to explore here."}
-      </p>
-      <Show when={props.filtered}>
-        <Button class="mt-4" size="small" variant="secondary" onClick={props.onReset}>
-          Show everything
-        </Button>
-      </Show>
-    </div>
-  )
-}
-
-function VirtualIndex(props: {
-  entries: Entry[]
-  bindScrollToIndex: (fn: ((index: number) => void) | undefined) => void
-  onMoveFocus: (delta: number) => void
-  render: (entry: Entry, index: () => number) => JSX.Element
-}) {
-  const [viewport, setViewport] = createSignal<HTMLDivElement>()
-  const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
-    get count() {
-      return props.entries.length
-    },
-    getScrollElement: () => viewport() ?? null,
-    estimateSize: () => 58,
-    overscan: 10,
-    getItemKey: (index) => props.entries[index]?.node.path ?? index,
-  })
-  const scrollToIndex = (index: number) => virtualizer.scrollToIndex(index, { align: "auto" })
-  props.bindScrollToIndex(scrollToIndex)
-  onCleanup(() => props.bindScrollToIndex(undefined))
-
-  return (
-    <ScrollView
-      class="min-h-0 flex-1"
-      viewportRef={setViewport}
-      onKeyDown={(event) => {
-        if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "j" && event.key !== "k") return
-        event.preventDefault()
-        event.stopPropagation()
-        props.onMoveFocus(event.key === "ArrowDown" || event.key === "j" ? 1 : -1)
-      }}
-    >
-      <ul class="relative mx-2 my-2" style={{ height: `${virtualizer.getTotalSize()}px` }} aria-label="Storage entries">
-        <For each={virtualizer.getVirtualItems()}>
-          {(item) => {
-            const entry = () => props.entries[item.index]
-            return (
-              <Show when={entry()}>
-                {(value) => (
-                  <li
-                    class="absolute left-0 top-0 w-full"
-                    style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
-                  >
-                    {props.render(value(), () => item.index)}
-                  </li>
-                )}
-              </Show>
-            )
-          }}
-        </For>
-      </ul>
-    </ScrollView>
-  )
-}
-
-function VirtualRows<T>(props: {
-  items: T[]
-  ariaLabel: string
-  estimateSize: (item: T) => number
-  itemKey: (item: T, index: number) => string | number
-  render: (item: T, index: () => number) => JSX.Element
-}) {
-  const [viewport, setViewport] = createSignal<HTMLDivElement>()
-  const padding = 8
-  const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
-    get count() {
-      return props.items.length
-    },
-    getScrollElement: () => viewport() ?? null,
-    estimateSize: (index) => props.estimateSize(props.items[index]),
-    overscan: 8,
-    getItemKey: (index) => props.itemKey(props.items[index], index),
-  })
-
-  return (
-    <ScrollView class="min-h-0 flex-1" viewportRef={setViewport}>
-      <ul
-        class="relative"
-        style={{ height: `${virtualizer.getTotalSize() + padding * 2}px` }}
-        aria-label={props.ariaLabel}
-      >
-        <For each={virtualizer.getVirtualItems()}>
-          {(row) => {
-            const item = () => props.items[row.index]
-            return (
-              <Show when={item()}>
-                {(value) => (
-                  <li
-                    class="absolute left-0 top-0 w-full"
-                    style={{ height: `${row.size}px`, transform: `translateY(${row.start + padding}px)` }}
-                  >
-                    {props.render(value(), () => row.index)}
-                  </li>
-                )}
-              </Show>
-            )
-          }}
-        </For>
-      </ul>
-    </ScrollView>
-  )
-}
-
-function Placeholder(props: { icon: IconProps["name"]; title: string; body: string }) {
-  return (
-    <div class="flex h-full items-center justify-center px-6">
-      <div class="max-w-md text-center">
-        <div class="mx-auto mb-5 grid size-12 place-items-center rounded-full bg-surface-raised-base shadow-[0_0_0_1px_rgb(127_127_127/0.1),0_8px_24px_rgb(0_0_0/0.06)]">
-          <Icon name={props.icon} class="size-5 text-text-weak" />
-        </div>
-        <h2 class="text-20-medium tracking-[-0.025em] text-text-strong">{props.title}</h2>
-        <p class="mt-2 text-12-regular leading-relaxed text-text-weak">{props.body}</p>
-      </div>
-    </div>
-  )
-}
-
-/** Center overlay for the sunburst — shows the focused node's identity + size. */
-function CenterOverlay(props: { node: DiskScanNode | null; parentSize: number; selected: boolean }) {
-  const rec = () => (props.node ? recognize(props.node) : null)
-  return (
-    <div class="pointer-events-none absolute inset-0 grid place-items-center">
-      <div class="max-w-[70%] text-center">
-        <Show when={props.node}>
-          <p class="truncate text-10-semibold tracking-[-0.01em] text-text-weak">{props.node!.name}</p>
-          <p
-            class="mt-1.5 text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong"
-            style={{ "text-wrap": "balance" }}
-          >
-            {formatBytes(props.node!.size)}
-          </p>
-          <Show when={props.parentSize && props.node!.path}>
-            <p class="mt-2 text-10-regular tabular-nums text-text-weaker">
-              {formatPct(props.node!.size, props.parentSize)} of this level
-            </p>
-          </Show>
-          <Show when={rec()?.tag}>
-            <span
-              class={`mt-2 inline-block rounded-full px-2 py-0.5 text-8-semibold uppercase tracking-[0.1em] ring-1 ring-inset ${SAFETY_ACCENT[rec()!.safety].pill}`}
-            >
-              {rec()!.tag}
-            </span>
-          </Show>
-          <Show when={props.selected && props.node!.isDir && !props.node!.isOther}>
-            <p class="mt-2 text-9-regular text-text-weaker">Select again to explore</p>
-          </Show>
-        </Show>
-      </div>
-    </div>
-  )
-}
-
-/** Compact volume row: identity, capacity, and the single next action. */
-function DriveRow(props: { drive: DiskDriveInfo; onScan: () => void }) {
-  const hasTotal = () => props.drive.total > 0
-  const usedPct = () => (hasTotal() ? (props.drive.used / props.drive.total) * 100 : 0)
-  const barColor = () => (hasTotal() ? usageStroke(props.drive.used, props.drive.total) : "oklch(0.65 0.13 270)")
-  return (
-    <button
-      type="button"
-      onClick={props.onScan}
-      class="group grid min-h-40 w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-6 border-b border-border-weaker-base px-5 py-6 text-left outline-none transition-colors duration-150 last:border-b-0 hover:bg-surface-raised-strong/28 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak sm:grid-cols-[minmax(220px,0.82fr)_minmax(280px,1fr)_132px] sm:px-7"
-    >
-      <span class="flex min-w-0 items-center gap-3.5">
-        <span class="grid size-11 shrink-0 place-items-center rounded-full border border-border-weaker-base bg-surface-raised-strong/45 text-text-weak transition-colors duration-150 group-hover:text-text-strong">
-          <Icon name="server" class="size-4" />
-        </span>
-        <span class="min-w-0">
-          <span class="block truncate text-15-semibold tracking-[-0.025em] text-text-strong">{props.drive.name}</span>
-          <span class="mt-1.5 block truncate font-mono text-9-regular text-text-weaker">{props.drive.path}</span>
-          <span class="mt-3 inline-flex items-center gap-1.5 text-9-semibold text-text-strong">
-            Scan volume
-            <Icon
-              name="arrow-right"
-              class="size-3 text-text-weaker transition-transform duration-150 group-hover:translate-x-0.5"
-            />
-          </span>
-        </span>
-      </span>
-
-      <Show
-        when={hasTotal()}
-        fallback={<span class="hidden text-10-regular text-text-weak sm:block">Ready to map</span>}
-      >
-        <span class="hidden min-w-0 sm:block">
-          <span class="flex items-end justify-between gap-4 tabular-nums">
-            <span>
-              <span class="block text-8-semibold uppercase tracking-[0.13em] text-text-weaker">occupied</span>
-              <span class="mt-1 block text-14-medium tracking-[-0.02em] text-text-strong">
-                {formatBytes(props.drive.used)}
-              </span>
-            </span>
-            <span class="pb-0.5 text-9-regular text-text-weak">{formatBytes(props.drive.free)} free</span>
-          </span>
-          <span class="mt-3 block h-1 overflow-hidden rounded-full bg-surface-raised-strong">
-            <span class="block h-full rounded-full" style={{ width: `${usedPct()}%`, background: barColor() }} />
-          </span>
-        </span>
-      </Show>
-
-      <span class="relative grid size-24 place-items-center justify-self-end">
-        <svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 96 96" aria-hidden="true">
-          <circle cx="48" cy="48" r="40" fill="none" stroke="var(--surface-raised-strong)" stroke-width="7" />
-          <Show when={hasTotal()}>
-            <circle
-              cx="48"
-              cy="48"
-              r="40"
-              fill="none"
-              stroke={barColor()}
-              stroke-width="7"
-              pathLength="100"
-              stroke-dasharray={`${usedPct()} ${100 - usedPct()}`}
-            />
-          </Show>
-        </svg>
-        <span class="relative text-center">
-          <span class="block text-13-medium tabular-nums text-text-strong">{Math.round(usedPct())}%</span>
-          <span class="mt-0.5 block text-8-semibold uppercase tracking-[0.12em] text-text-weaker">used</span>
-        </span>
-      </span>
-    </button>
-  )
-}
-
-/** The reclaimable-space banner — the wow feature. */
-function ReclaimBanner(props: { bytes: number; count: number; onReview: () => void }) {
-  let valueElement!: HTMLSpanElement
-  let displayed = 0
-
-  createEffect(() => {
-    const total = props.bytes
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      displayed = total
-      valueElement.textContent = formatBytes(total)
-      return
-    }
-    const cancel = animateCount(displayed, total, 240, (value) => {
-      displayed = value
-      valueElement.textContent = formatBytes(value)
-    })
-    onCleanup(cancel)
-  })
-
-  return (
-    <div class="absolute left-4 top-4 z-10 flex w-[min(360px,calc(100%-32px))] items-center gap-2 rounded-full bg-background-base/86 p-1.5 pl-2 shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_10px_32px_rgb(0_0_0/0.1)] backdrop-blur-xl">
-      <div class="dl-accent-text grid size-8 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
-        <Icon name="models" class="size-3.5" />
-      </div>
-      <p class="min-w-0 flex-1 truncate text-11-semibold tracking-[-0.015em] text-text-strong">
-        <span ref={valueElement} class="tabular-nums">
-          {formatBytes(0)}
-        </span>{" "}
-        reclaimable
-        <span class="ml-2 text-9-regular text-text-weaker">
-          {props.count === 1 ? "1 item" : `${formatCount(props.count)} items`}
-        </span>
-      </p>
-      <Button class="shrink-0" size="small" variant="primary" icon="arrow-right" onClick={props.onReview}>
-        Review
-      </Button>
-    </div>
-  )
-}
-
-/** Detail / action bar pinned under the scan results. */
-function DetailBar(props: {
-  node: DiskScanNode
-  parentSize: number
-  deletable: boolean
-  collected: boolean
-  trashName: string
-  onPreview?: () => void
-  onReveal: () => void
-  onOpen: () => void
-  onCollect: () => void
-  onTrash: () => void
-}) {
-  const rec = () => recognize(props.node)
-  const developerContext = () => (rec().developer ? developerArtifactContext(props.node, rec()) : undefined)
-  return (
-    <div class="flex min-h-[72px] min-w-0 flex-wrap items-center justify-between gap-3 px-2">
-      <div class="flex min-w-0 items-center gap-3">
-        <span class="grid size-10 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-          <Icon name={props.node.isHidden ? "shield" : props.node.isDir ? "folder" : "code-lines"} class="size-4" />
-        </span>
-        <div class="min-w-0">
-          <div class="flex min-w-0 items-baseline gap-2">
-            <span class="truncate text-13-semibold tracking-[-0.015em] text-text-strong">{props.node.name}</span>
-            <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</span>
-            <span class="shrink-0 text-10-regular tabular-nums text-text-weak">
-              {formatPct(props.node.size, props.parentSize)}
-            </span>
-            <Show when={rec().tag}>
-              <span
-                class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-9-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
-              >
-                {rec().tag}
-              </span>
-            </Show>
-          </div>
-          <p class="mt-1 max-w-[70ch] truncate font-mono text-10-regular text-text-weak" title={props.node.path}>
-            {props.node.path}
-          </p>
-          <Show when={developerContext()}>
-            {(context) => (
-              <p
-                class="mt-0.5 max-w-[70ch] truncate text-10-regular text-text-weak"
-                title={`${context().scope} · ${context().disposition}${rec().hint ? ` · ${rec().hint}` : ""}`}
-              >
-                {context().scope} · <span class="text-10-semibold text-text-strong">{context().disposition}</span>
-                <Show when={rec().hint}> · {rec().hint}</Show>
-              </p>
-            )}
-          </Show>
-        </div>
-      </div>
-      <div class="flex shrink-0 items-center gap-1.5">
-        <Show when={!props.node.isOther}>
-          <Show when={props.onPreview}>
-            <Button class="dl-touch-target" size="small" variant="ghost" icon="eye" onClick={props.onPreview}>
-              Preview
-            </Button>
-          </Show>
-          <Show when={props.node.isDir}>
-            <Button class="dl-touch-target" size="small" variant="ghost" icon="enter" onClick={props.onOpen}>
-              Open
-            </Button>
-          </Show>
-          <Button
-            class="dl-touch-target"
-            size="small"
-            variant="ghost"
-            icon="square-arrow-top-right"
-            onClick={props.onReveal}
-          >
-            Reveal
-          </Button>
-        </Show>
-        <Show when={props.deletable}>
-          <Button class="dl-touch-target" size="small" variant="ghost" icon="trash" onClick={props.onTrash}>
-            {props.trashName}
-          </Button>
-          <Button
-            class="dl-touch-target"
-            size="small"
-            variant={props.collected ? "secondary" : "primary"}
-            icon={props.collected ? "circle-check" : "plus-small"}
-            aria-pressed={props.collected}
-            onClick={props.onCollect}
-          >
-            {props.collected ? "In cleanup" : "Add to cleanup"}
-          </Button>
-        </Show>
-      </div>
-    </div>
-  )
-}
-
-function CollectionDialog(props: {
-  phase: SurfacePhase
-  items: DiskScanNode[]
-  bytes: number
-  deleting: boolean
-  progress: DeletionProgress | null
-  trashName: string
-  onClose: () => void
-  onRemove: (node: DiskScanNode) => void
-  onConfirm: () => void
-}) {
-  return (
-    <div
-      class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/62 p-4 backdrop-blur-sm"
-      data-state={props.phase}
-      onClick={props.onClose}
-      role="presentation"
-    >
-      <div
-        class="dl-dialog-panel flex max-h-[min(680px,calc(100dvh-32px))] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
-        ref={focusDialog}
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={trapDialogFocus}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="collection-title"
-      >
-        <div class="flex items-start gap-3 border-b border-border-weaker-base p-5">
-          <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
-            <Icon name="checklist" class="size-4" />
-          </span>
-          <div class="min-w-0 flex-1">
-            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Cleanup review</p>
-            <h2 id="collection-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
-              {formatBytes(props.bytes)} across {props.items.length} {props.items.length === 1 ? "item" : "items"}
-            </h2>
-            <p class="mt-2 text-11-regular leading-relaxed text-text-weak">
-              Check every item before anything leaves its original location.
-            </p>
-          </div>
-          <Button
-            size="small"
-            variant="ghost"
-            icon="close"
-            disabled={props.deleting}
-            onClick={props.onClose}
-            aria-label="Close cleanup review"
-          />
-        </div>
-        <VirtualRows
-          items={props.items}
-          ariaLabel="Items in the cleanup basket"
-          estimateSize={() => 64}
-          itemKey={(item) => item.path}
-          render={(item) => (
-            <div class="mx-3 flex h-full items-center gap-3 border-b border-border-weaker-base px-2 py-2 last:border-b-0">
-              <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak">
-                <Icon name={item.isDir ? "folder" : "code-lines"} class="size-3.5" />
-              </span>
-              <span class="min-w-0 flex-1">
-                <span class="block truncate text-12-semibold text-text-strong">{item.name}</span>
-                <span class="mt-0.5 block truncate font-mono text-9-regular text-text-weaker" title={item.path}>
-                  {item.path}
-                </span>
-              </span>
-              <span class="shrink-0 text-11-semibold tabular-nums text-text-strong">{shortBytes(item.size)}</span>
-              <Button
-                class="dl-touch-target"
-                size="small"
-                variant="ghost"
-                icon="close-small"
-                disabled={props.deleting}
-                aria-label={`Remove ${item.name} from cleanup basket`}
-                onClick={() => props.onRemove(item)}
-              />
-            </div>
-          )}
-        />
-        <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
-          <Show
-            when={props.progress}
-            fallback={
-              <p class="flex items-center gap-1.5 text-10-regular text-text-weak">
-                <Icon name="shield" class="size-3.5" />
-                Items can be restored from {props.trashName}
-              </p>
-            }
-          >
-            {(progress) => (
-              <p
-                class="flex items-center gap-1.5 text-10-regular tabular-nums text-text-weak"
-                role="status"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                <span class="dl-spin size-3.5 rounded-full border border-border-weaker-base border-t-current" />
-                Moving {progress().completed} of {progress().total}…
-              </p>
-            )}
-          </Show>
-          <div class="ml-auto flex shrink-0 items-center gap-2">
-            <Button size="small" variant="ghost" disabled={props.deleting} onClick={props.onClose}>
-              Back
-            </Button>
-            <Button size="small" variant="primary" icon="trash" disabled={props.deleting} onClick={props.onConfirm}>
-              {props.progress
-                ? `Moving ${props.progress.completed}/${props.progress.total}…`
-                : `Move to ${props.trashName}`}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/** Slide-over drawer reviewing reclaimable items by category. */
-function ReclaimDrawer(props: {
-  phase: SurfacePhase
-  reclaim: ReclaimSummary
-  onClose: () => void
-  onCollectAll: () => void
-  onTrash: (node: DiskScanNode) => void
-  deleting: boolean
-}) {
-  const rows = createMemo<ReclaimReviewRow[]>(() =>
-    props.reclaim.buckets.flatMap((bucket) => [
-      { type: "header" as const, key: `header:${bucket.safety}`, bucket },
-      ...bucket.items.map((item, index) => ({
-        type: "item" as const,
-        key: `item:${item.node.path}`,
-        item,
-        first: index === 0,
-        last: index === bucket.items.length - 1,
-      })),
-    ]),
-  )
-
-  return (
-    <div
-      class="dl-drawer-surface fixed inset-0 z-40 flex justify-end"
-      data-state={props.phase}
-      onClick={props.onClose}
-      role="presentation"
-    >
-      <div class="dl-drawer-backdrop absolute inset-0 bg-background-base/58 backdrop-blur-sm" />
-      <div
-        class="dl-drawer-panel relative m-2 flex h-[calc(100%-16px)] w-[calc(100%-16px)] max-w-md flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
-        ref={focusDialog}
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={trapDialogFocus}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="reclaim-title"
-      >
-        <div class="shrink-0 border-b border-border-weaker-base px-5 pb-5 pt-5">
-          <div class="flex items-start gap-3">
-            <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
-              <Icon name="shield" class="size-4.5" />
-            </span>
-            <div class="min-w-0 flex-1">
-              <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Recognized cleanup</p>
-              <h2 id="reclaim-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
-                Review {formatBytes(props.reclaim.totalBytes)}
-              </h2>
-              <p class="mt-2 max-w-[38ch] text-11-regular leading-relaxed text-text-weak">
-                Every item below is explainable and actionable. Stage everything for one final review, or inspect one
-                item at a time.
-              </p>
-            </div>
-            <Button size="small" variant="ghost" icon="close" onClick={props.onClose} aria-label="Close review" />
-          </div>
-        </div>
-        <VirtualRows
-          items={rows()}
-          ariaLabel="Recognized cleanup opportunities"
-          estimateSize={(row) => (row.type === "header" ? 46 : 64)}
-          itemKey={(row) => row.key}
-          render={(row) => {
-            if (row.type === "header") {
-              return (
-                <div class="flex h-full items-end gap-2 px-5 pb-2">
-                  <span class={`mb-0.5 size-2 rounded-full ${SAFETY_ACCENT[row.bucket.safety].dot}`} />
-                  <h3 class="text-9-semibold uppercase tracking-[0.14em] text-text-weak">
-                    {row.bucket.safety.replace("-", " ")}
-                  </h3>
-                  <span class="ml-auto text-10-semibold tabular-nums text-text-strong">
-                    {formatBytes(row.bucket.bytes)}
-                  </span>
-                </div>
-              )
-            }
-            return (
-              <div
-                class="mx-4 flex h-full items-center gap-3 border-b border-border-weaker-base bg-background-base px-3 py-2"
-                classList={{
-                  "rounded-t-xl": row.first,
-                  "rounded-b-xl border-b-0 shadow-[0_4px_16px_rgb(0_0_0/0.04)]": row.last,
-                }}
-              >
-                <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak">
-                  <Icon name={row.item.node.isDir ? "folder" : "code-lines"} class="size-3.5" />
-                </span>
-                <div class="min-w-0 flex-1">
-                  <p class="truncate text-12-semibold text-text-strong">{row.item.node.name}</p>
-                  <p
-                    class="mt-0.5 truncate font-mono text-9-regular text-text-weaker"
-                    title={row.item.recognition.hint ?? row.item.node.path}
-                  >
-                    {row.item.recognition.hint ?? truncatePath(row.item.node.path, 44)}
-                  </p>
-                </div>
-                <span class="shrink-0 text-11-semibold tabular-nums text-text-strong">
-                  {shortBytes(row.item.node.size)}
-                </span>
-                <Button
-                  class="dl-touch-target"
-                  size="small"
-                  variant="ghost"
-                  icon="trash"
-                  aria-label={`Review ${row.item.node.name} for removal`}
-                  disabled={props.deleting}
-                  onClick={() => props.onTrash(row.item.node)}
-                />
-              </div>
-            )
-          }}
-        />
-        <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
-          <div class="min-w-0">
-            <p class="text-11-semibold text-text-strong">
-              Collect {formatCount(props.reclaim.totalCount)}{" "}
-              {props.reclaim.totalCount === 1 ? "candidate" : "candidates"}
-            </p>
-            <p class="mt-0.5 truncate text-9-regular text-text-weak">
-              {formatBytes(props.reclaim.totalBytes)} · Nothing is removed until final review
-            </p>
-          </div>
-          <Button
-            class="ml-auto shrink-0"
-            size="small"
-            variant="primary"
-            icon="checklist"
-            disabled={props.deleting || props.reclaim.totalCount === 0}
-            onClick={props.onCollectAll}
-          >
-            Collect all
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const KEYFRAMES = `
-.dl-shell {
-  --dl-accent: oklch(0.76 0.155 148);
-  --dl-accent-strong: oklch(0.7 0.17 148);
-  --dl-hairline: 1px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-synthesis: none;
-  font-variant-numeric: tabular-nums;
-  background: var(--background-base);
-}
-.dl-workspace-frame {
-  background: var(--background-base);
-  box-shadow:
-    0 0 0 var(--dl-hairline) color-mix(in oklch, var(--border-weaker-base) 72%, transparent),
-    0 18px 52px -42px rgb(0 0 0 / 0.48);
-}
-.dl-landscape { background: color-mix(in oklch, var(--surface-raised-strong) 30%, var(--background-base)); }
-.dl-inspector { box-shadow: -12px 0 36px -36px rgb(0 0 0 / 0.42); }
-.dl-topbar {
-  background: color-mix(in oklch, var(--background-base) 82%, transparent);
-  box-shadow: 0 1px 0 rgb(127 127 127 / 0.1);
-}
-.dl-scan-tabs {
-  background: color-mix(in oklch, var(--surface-raised-strong) 64%, transparent);
-  box-shadow: 0 1px 0 rgb(127 127 127 / 0.08);
-}
-.dl-shell button, .dl-shell a, .dl-shell input { touch-action: manipulation; }
-.dl-touch-target { min-width: 40px; min-height: 40px; }
-.dl-shell ::selection { background: oklch(0.76 0.155 148 / 0.22); }
-.dl-accent-text { color: color-mix(in oklch, var(--dl-accent-strong) 54%, var(--text-strong)); }
-.dl-critical-text { color: color-mix(in oklch, oklch(0.62 0.2 25) 50%, var(--text-strong)); }
-.dl-mark { box-shadow: inset 0 0 0 1px oklch(0.76 0.155 148 / 0.32); }
-.dl-mark::before,.dl-mark::after { content: ""; position: absolute; border-radius: 999px; border: 1px solid currentColor; opacity: .45; }
-.dl-mark::before { inset: 5px; border-left-color: transparent; transform: rotate(28deg); }
-.dl-mark::after { inset: 9px; border-right-color: transparent; transform: rotate(-22deg); }
-.dl-pop { animation: dl-pop 0.24s cubic-bezier(0.32,0.72,0,1) both; }
-.dl-command-dock { box-shadow: 0 -1px 0 rgb(127 127 127 / 0.06); }
-.dl-cleanup-dock {
-  color: var(--text-weak);
-  background: color-mix(in oklch, var(--surface-raised-strong) 76%, var(--background-base));
-  box-shadow: inset 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--border-weaker-base) 76%, transparent);
-  transition: transform 150ms cubic-bezier(0.32,0.72,0,1), background-color 150ms ease-out, box-shadow 150ms ease-out;
-}
-.dl-cleanup-dock-icon {
-  color: color-mix(in oklch, var(--dl-accent-strong) 48%, var(--text-strong));
-  background: color-mix(in oklch, var(--dl-accent) 13%, var(--background-base));
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--dl-accent) 28%, transparent);
-  transition: transform 150ms cubic-bezier(0.32,0.72,0,1);
-}
-.dl-cleanup-dock-filled {
-  box-shadow: inset 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--dl-accent) 34%, var(--border-weaker-base));
-}
-.dl-cleanup-dock-active {
-  background: color-mix(in oklch, var(--dl-accent) 16%, var(--background-base));
-  box-shadow: inset 0 0 0 2px color-mix(in oklch, var(--dl-accent) 68%, var(--text-strong));
-  transform: translateY(-2px);
-}
-.dl-cleanup-dock-active .dl-cleanup-dock-icon { transform: scale(1.08); }
-.dl-shortcut-key {
-  display: grid; min-width: 28px; height: 28px; place-items: center; border-radius: 7px;
-  color: var(--text-weak); background: var(--background-base);
-  box-shadow: inset 0 -1px 0 rgb(127 127 127 / 0.16), inset 0 0 0 1px rgb(127 127 127 / 0.12);
-  font: 600 11px/1 var(--font-family-mono); font-variant-numeric: tabular-nums;
-}
-.dl-dialog-surface { opacity: 0; backdrop-filter: blur(12px); transition: opacity 220ms cubic-bezier(0.32,0.72,0,1); }
-.dl-dialog-panel { transform: scale(0.96) translateY(4px); transition: transform 220ms cubic-bezier(0.32,0.72,0,1); }
-.dl-drawer-backdrop { opacity: 0; transition: opacity 260ms cubic-bezier(0.32,0.72,0,1); }
-.dl-drawer-panel { transform: translateX(100%); transition: transform 260ms cubic-bezier(0.32,0.72,0,1); }
-.dl-dialog-surface[data-state="open"], .dl-drawer-surface[data-state="open"] .dl-drawer-backdrop { opacity: 1; }
-.dl-dialog-surface[data-state="open"] .dl-dialog-panel, .dl-drawer-surface[data-state="open"] .dl-drawer-panel { transform: none; }
-.dl-dialog-surface[data-state="closing"], .dl-drawer-surface[data-state="closing"] { pointer-events: none; }
-.dl-dialog-surface[data-state="closing"], .dl-dialog-surface[data-state="closing"] .dl-dialog-panel,
-.dl-drawer-surface[data-state="closing"] .dl-drawer-backdrop, .dl-drawer-surface[data-state="closing"] .dl-drawer-panel {
-  transition-duration: 160ms;
-  transition-timing-function: cubic-bezier(0.4,0,1,1);
-}
-.dl-spin { animation: dl-spin 0.8s linear infinite; }
-.dl-pulse { animation: dl-pulse 1.4s ease-in-out infinite; }
-.dl-preview-image-stage {
-  background: var(--surface-raised-strong);
-}
-.dl-preview-image-stage img { animation: dl-preview-arrive 180ms cubic-bezier(0.32,0.72,0,1) both; }
-.dl-scan-branch { animation: dl-branch-arrive 180ms cubic-bezier(0.32,0.72,0,1) both; }
-.dl-scan-orbit-segment { animation: dl-orbit-arrive 260ms cubic-bezier(0.32,0.72,0,1) both; }
-.dl-scan-orbit-ticks { opacity: .34; }
-.dl-drag-preview {
-  position: fixed; left: -9999px; top: -9999px; z-index: 80; pointer-events: none;
-  max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  border-radius: 12px; padding: 9px 12px; color: var(--text-strong); background: var(--background-base);
-  box-shadow: 0 0 0 1px rgb(127 127 127 / 0.16), 0 12px 30px rgb(0 0 0 / 0.2);
-  font: 600 12px/1.2 var(--font-family-text); font-variant-numeric: tabular-nums;
-}
-.dl-scan-beacon { animation: dl-scan-beacon 1.1s ease-in-out infinite; }
-.dl-scan-indeterminate { width: 20%; animation: dl-scan-travel 1.2s cubic-bezier(0.32,0.72,0,1) infinite alternate; }
-@keyframes dl-branch-arrive { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-@keyframes dl-orbit-arrive { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dl-preview-arrive { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
-@keyframes dl-pop { from { opacity: 0; transform: scale(0.96) translateY(4px); } to { opacity: 1; transform: none; } }
-@keyframes dl-spin { to { transform: rotate(360deg); } }
-@keyframes dl-pulse { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.12); opacity: 1; } }
-@keyframes dl-scan-beacon { 0%,100% { opacity: .42; } 50% { opacity: 1; } }
-@keyframes dl-scan-travel { from { transform: translateX(-100%); } to { transform: translateX(500%); } }
-@media (pointer: coarse) {
-  .dl-touch-target { min-width: 44px !important; min-height: 44px !important; }
-  .dl-search-input { font-size: 16px !important; }
-  .dl-row-action { width: 44px !important; height: 44px !important; opacity: 1 !important; }
-  .dl-segmented { min-height: 44px; }
-}
-@media only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
-  .dl-shell { --dl-hairline: 0.5px; }
-}
-@media (max-width: 760px) {
-  .dl-brand-name { display: none; }
-  .dl-pin-scan, .dl-rescan { max-width: 40px; overflow: hidden; }
-  .dl-workspace-frame { flex-direction: column; }
-  .dl-landscape { min-height: 52%; }
-  .dl-inspector { width: 100% !important; min-height: 42%; border-left: 0 !important; border-top: 1px solid var(--border-weaker-base); }
-  .dl-view-switch { top: 10px; right: 10px; }
-  .dl-command-dock-inner { align-items: stretch; flex-direction: column; }
-  .dl-cleanup-slot { width: 100% !important; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dl-shell * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-}
-`

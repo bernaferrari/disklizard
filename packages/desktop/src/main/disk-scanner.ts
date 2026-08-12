@@ -9,9 +9,17 @@ import { scanPath as scanPathTypeScript } from "../../../disklizard/src/scan"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
 import { scanPathNative } from "./disk-scanner-native"
 
+export type DiskScanBackend = "native" | "typescript-fallback"
+
+export type DiskScanResult = {
+  root: DiskNode
+  backend: DiskScanBackend
+}
+
 export {
   scanPathSync,
   getDrives,
+  getDriveFacts,
   mountExclusions,
   assertSafeDeletionPath,
   deleteDiskPath,
@@ -20,12 +28,18 @@ export {
   type ScanProgress,
   type ScanOptions,
 } from "../../../disklizard/src/scan"
+export type { DriveFacts } from "../../../disklizard/src/types"
 
-/** Prefer the measured native scanner; retain the worker scanner for unsupported or broken installations. */
-export async function scanPath(targetPath: string, options: ScanOptions = {}): Promise<DiskNode> {
+/**
+ * Prefer the native scanner, retaining the worker scanner for unsupported or broken installations.
+ *
+ * Keeping the backend alongside the result lets opt-in diagnostics report what actually ran
+ * without changing the renderer-facing scan contract.
+ */
+export async function scanPathWithBackend(targetPath: string, options: ScanOptions = {}): Promise<DiskScanResult> {
   if (process.env.DISKLIZARD_NATIVE_SCANNER !== "0") {
     try {
-      return await scanPathNative(targetPath, options)
+      return { root: await scanPathNative(targetPath, options), backend: "native" }
     } catch (error) {
       options.signal?.throwIfAborted()
       if (process.env.DISKLIZARD_SCAN_DEBUG) {
@@ -33,5 +47,10 @@ export async function scanPath(targetPath: string, options: ScanOptions = {}): P
       }
     }
   }
-  return scanPathTypeScript(targetPath, options)
+  return { root: await scanPathTypeScript(targetPath, options), backend: "typescript-fallback" }
+}
+
+/** Renderer-facing scan contract. Use scanPathWithBackend only for explicit diagnostics. */
+export async function scanPath(targetPath: string, options: ScanOptions = {}): Promise<DiskNode> {
+  return (await scanPathWithBackend(targetPath, options)).root
 }
