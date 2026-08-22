@@ -11,6 +11,7 @@
     "disklizard": "bun packages/disklizard/bin/disklizard.ts",
     "lint": "oxlint",
     "typecheck": "bun run --cwd packages/disklizard typecheck && bun run --cwd packages/desktop typecheck && bun run --cwd packages/app typecheck",
+    "test:disklizard": "bun ./scripts/test-disklizard.ts",
     "test": "echo 'do not run tests from root' && exit 1"
   },
   "workspaces": {

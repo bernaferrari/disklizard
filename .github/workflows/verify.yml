@@ -34,22 +34,13 @@ jobs:
         run: bun run --cwd packages/disklizard typecheck
       - name: Type-check desktop boundaries
         run: bun run --cwd packages/desktop typecheck
-      - name: Test the TypeScript scanner and terminal interface
-        working-directory: packages/disklizard
-        run: bun test src
       - name: Test the native scanner
         run: cargo test --manifest-path packages/disklizard/native-scanner/Cargo.toml
       - name: Lint the native scanner
         run: cargo clippy --manifest-path packages/disklizard/native-scanner/Cargo.toml -- -D warnings
       - name: Build the native sidecar used by desktop protocol tests
         run: bun run --cwd packages/disklizard native:build
-      - name: Test native protocol, snapshots, benchmark, and delete guards
-        working-directory: packages/desktop
-        run: >-
-          bun test --isolate src/main/disk-scanner-native.test.ts src/main/disk-snapshot.test.ts
-          src/main/disk-scan-benchmark.test.ts src/main/disk-delete-precondition.test.ts
+      - name: Run every DiskLizard-specific test
+        run: bun run test:disklizard
       - name: Type-check the storage interface
         run: bun run --cwd packages/app typecheck
-      - name: Test the storage interface
-        working-directory: packages/app
-        run: bun test --conditions=solid --preload ./happydom.ts ./src/pages/disk-utility
