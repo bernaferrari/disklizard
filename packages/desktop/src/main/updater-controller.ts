@@ -1,6 +1,12 @@
-import type { UpdaterState } from "@opencode-ai/app/updater"
-
-export type { UpdaterState } from "@opencode-ai/app/updater"
+export type UpdaterState =
+  | { status: "disabled" }
+  | { status: "idle" }
+  | { status: "checking" }
+  | { status: "downloading"; version: string; percent?: number }
+  | { status: "ready"; version: string }
+  | { status: "up-to-date" }
+  | { status: "installing"; version: string }
+  | { status: "error"; message: string }
 
 export type UpdaterReadyRecord = { version: string }
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url"
 import { promisify } from "node:util"
 
 import type { Configuration } from "electron-builder"
+import { updaterPublishConfig, type DesktopChannel } from "./src/main/product-identity"
 
 const execFileAsync = promisify(execFile)
 const packageDir = path.dirname(fileURLToPath(import.meta.url))
@@ -30,7 +31,7 @@ async function signWindows(configuration: { path: string }) {
   )
 }
 
-const channel = (() => {
+const channel = ((): DesktopChannel => {
   // OPENCODE_CHANNEL is kept only so existing local packaging commands continue
   // to select their channel while the desktop runtime migrates to DISKLIZARD_CHANNEL.
   const raw = process.env.DISKLIZARD_CHANNEL ?? process.env.OPENCODE_CHANNEL
@@ -95,7 +96,7 @@ const getBase = (appId: string): Configuration => ({
       sign: signWindows,
     },
     target: ["nsis"],
-    verifyUpdateCodeSignature: false,
+    verifyUpdateCodeSignature: true,
   },
   nsis: {
     oneClick: true,
@@ -139,7 +140,7 @@ function getConfig() {
         appId,
         productName: `${PRODUCT.name} Beta`,
         protocols: { name: `${PRODUCT.name} Beta`, schemes: ["disklizard"] },
-        publish: { provider: "github", ...PRODUCT.repository, channel: "beta" },
+        publish: updaterPublishConfig("beta"),
         deb: { fpm: [metainfoFpm(appId)] },
         rpm: { packageName: "disklizard-beta", fpm: [metainfoFpm(appId)] },
       }
@@ -150,7 +151,7 @@ function getConfig() {
         appId,
         productName: PRODUCT.name,
         protocols: { name: PRODUCT.name, schemes: ["disklizard"] },
-        publish: { provider: "github", ...PRODUCT.repository, channel: "latest" },
+        publish: updaterPublishConfig("prod"),
         deb: { fpm: [metainfoFpm(appId)] },
         rpm: { packageName: "disklizard", fpm: [metainfoFpm(appId)] },
       }

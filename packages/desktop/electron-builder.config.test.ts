@@ -44,8 +44,21 @@ test("publishes beta and production builds to DiskLizard's release repository", 
   if (previous === undefined) delete process.env.DISKLIZARD_CHANNEL
   else process.env.DISKLIZARD_CHANNEL = previous
 
-  expect(beta.publish).toEqual({ provider: "github", owner: "bernaferrari", repo: "disklizard", channel: "beta" })
-  expect(prod.publish).toEqual({ provider: "github", owner: "bernaferrari", repo: "disklizard", channel: "latest" })
+  expect(beta.publish).toEqual({
+    provider: "github",
+    owner: "bernaferrari",
+    repo: "disklizard",
+    channel: "beta",
+    private: false,
+  })
+  expect(prod.publish).toEqual({
+    provider: "github",
+    owner: "bernaferrari",
+    repo: "disklizard",
+    channel: "latest",
+    private: false,
+  })
+  expect(prod.win?.verifyUpdateCodeSignature).toBe(true)
   expect(prod.rpm?.packageName).toBe("disklizard")
 })
 

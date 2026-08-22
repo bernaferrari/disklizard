@@ -38,3 +38,21 @@ export function appIdentity(channel: DesktopChannel, packaged: boolean) {
 export function updaterFeedChannel(channel: DesktopChannel): "beta" | "latest" {
   return channel === "beta" ? "beta" : "latest"
 }
+
+/** GitHub repository consumed by packaged updates. Must be publicly readable. */
+export const PUBLIC_RELEASE_REPOSITORY = {
+  owner: "bernaferrari",
+  repo: process.env.DISKLIZARD_RELEASE_REPO || "disklizard",
+  private: false,
+} as const
+
+export function updaterPublishConfig(channel: DesktopChannel) {
+  if (channel === "dev") return undefined
+  return {
+    provider: "github" as const,
+    owner: PUBLIC_RELEASE_REPOSITORY.owner,
+    repo: PUBLIC_RELEASE_REPOSITORY.repo,
+    channel: updaterFeedChannel(channel),
+    private: false,
+  }
+}

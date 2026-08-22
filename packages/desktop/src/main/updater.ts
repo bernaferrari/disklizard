@@ -6,22 +6,30 @@ import { getLogger } from "./logging"
 import { getStore } from "./store"
 import { setAppQuitting } from "./windows"
 import { nativeT } from "./native-translations"
+import { productionUpdaterDowngradeAllowed, productionVerifyUpdateCodeSignature } from "./updater-policy"
 
 const { autoUpdater } = pkg
 const key = "ready"
 
-export function setupAutoUpdater(stop: () => Promise<void>) {
+export { productionUpdaterDowngradeAllowed, productionVerifyUpdateCodeSignature }
+
+export function setupAutoUpdater() {
   const logger = getLogger()
   autoUpdater.logger = logger
   autoUpdater.channel = updaterFeedChannel(CHANNEL)
   autoUpdater.allowPrerelease = false
-  autoUpdater.allowDowngrade = true
+  autoUpdater.allowDowngrade = productionUpdaterDowngradeAllowed(CHANNEL)
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = false
+  const windowsUpdater = autoUpdater as typeof autoUpdater & { verifyUpdateCodeSignature?: boolean }
+  if (process.platform === "win32") {
+    windowsUpdater.verifyUpdateCodeSignature = productionVerifyUpdateCodeSignature()
+  }
   logger.log("auto updater configured", {
     channel: autoUpdater.channel,
     allowPrerelease: autoUpdater.allowPrerelease,
     allowDowngrade: autoUpdater.allowDowngrade,
+    verifyUpdateCodeSignature: process.platform === "win32" ? windowsUpdater.verifyUpdateCodeSignature : undefined,
     currentVersion: app.getVersion(),
   })
 
@@ -55,7 +63,7 @@ export function setupAutoUpdater(stop: () => Promise<void>) {
       set: (value) => store.set(key, value),
       clear: () => store.delete(key),
     },
-    stop,
+    stop: async () => undefined,
     log: (message, data) => logger.log(message, data),
   })
 }

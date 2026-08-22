@@ -40,4 +40,17 @@ describe("desktop product identity", () => {
     expect(updaterFeedChannel("dev")).toBe("latest")
     expect(PRODUCT_NAME).toBe("DiskLizard")
   })
+
+  test("publishes updates from a publicly consumable GitHub repository", async () => {
+    const { PUBLIC_RELEASE_REPOSITORY, updaterPublishConfig } = await import("./product-identity")
+    expect(PUBLIC_RELEASE_REPOSITORY.private).toBe(false)
+    expect(updaterPublishConfig("prod")).toMatchObject({
+      provider: "github",
+      owner: "bernaferrari",
+      repo: "disklizard",
+      channel: "latest",
+      private: false,
+    })
+    expect(updaterPublishConfig("dev")).toBeUndefined()
+  })
 })
