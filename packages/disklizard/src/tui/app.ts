@@ -1,13 +1,13 @@
 /**
  * DiskLizard TUI — interactive terminal space map.
- * Shares scan/tree/format with Desktop via @opencode-ai/disklizard.
+ * Shares scan/tree/format with Desktop via @disklizard/core.
  *
  * Engineer-grade UX: predictable keys, dense columns, no splash screens.
  */
 
 import { homedir } from "node:os"
 import { basename } from "node:path"
-import { scanPath, getDrives, deleteDiskPath } from "../scan"
+import { scanPath, getDrives } from "../scan"
 import type { DiskNode } from "../types"
 import { canDrill, findParent } from "../tree"
 import { formatBytes } from "../format"
@@ -25,9 +25,10 @@ export type TuiOptions = {
   /** Initial path to scan; default first drive or $HOME */
   path?: string
   maxDepth?: number
+  sizeMode?: "physical" | "logical"
 }
 
-type Mode = "browse" | "help" | "confirm-delete"
+type Mode = "browse" | "help"
 
 export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
   let target = opts.path
@@ -46,7 +47,6 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
   let scanRate = 0
   let helpOpen = false
   let statusLine = ""
-  let pendingDelete: DiskNode | null = null
   let running = true
 
   const stdin = process.stdin
@@ -73,6 +73,7 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
     try {
       const tree = await scanPath(path, {
         maxDepth,
+        sizeMode: opts.sizeMode ?? "physical",
         useWorker: false, // TUI: in-process is fine; avoids eval worker issues in some shells
         progressIntervalMs: 150,
         onProgress: (p) => {
@@ -125,12 +126,6 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
 
     if (helpOpen || mode === "help") {
       lines.push(...renderTuiHelp(c))
-    } else if (mode === "confirm-delete" && pendingDelete) {
-      lines.push(`${Ansi.RED}${Ansi.BOLD}DELETE${Ansi.RESET} ${pendingDelete.name}`)
-      lines.push(`${Ansi.DIM}${pendingDelete.path}${Ansi.RESET}`)
-      lines.push(
-        `${formatBytes(pendingDelete.size)}  — permanent. Confirm? ${Ansi.YELLOW}y${Ansi.RESET}/${Ansi.DIM}N${Ansi.RESET}`,
-      )
     } else if (view) {
       const { lines: barLines } = renderTuiBars(view, { selected, cols: c, maxRows })
       lines.push(...barLines)
@@ -140,11 +135,9 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
 
     lines.push("")
     const hint =
-      mode === "confirm-delete"
-        ? "y confirm · any other key cancel"
-        : helpOpen
-          ? "? close help · q quit"
-          : "↑↓ move · enter open · esc up · r rescan · d delete · ? help · q quit"
+      helpOpen
+        ? "? close help · q quit"
+        : "↑↓ move · enter open · esc up · r rescan · o path · ? help · q quit"
     lines.push(renderTuiFooter({ hint: statusLine ? `${statusLine}  ·  ${hint}` : hint, cols: c }))
 
     clearScreen()
@@ -184,30 +177,6 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
 
   async function onKey(key: string, ctrl: boolean) {
     if (!running) return
-
-    if (mode === "confirm-delete") {
-      if (key === "y" || key === "Y") {
-        const targetDel = pendingDelete
-        mode = "browse"
-        pendingDelete = null
-        if (targetDel) {
-          try {
-            await deleteDiskPath(targetDel.path)
-            statusLine = `deleted ${targetDel.name}`
-            if (root) await doScan(root.path, root._label)
-          } catch (err) {
-            statusLine = `delete failed: ${err instanceof Error ? err.message : String(err)}`
-            draw()
-          }
-        }
-      } else {
-        mode = "browse"
-        pendingDelete = null
-        statusLine = "cancelled"
-        draw()
-      }
-      return
-    }
 
     if (key === "q" || (ctrl && key === "c")) {
       running = false
@@ -269,13 +238,8 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
         break
       }
       case "d": {
-        const items = currentItems()
-        const node = items[selected]
-        if (node) {
-          pendingDelete = node
-          mode = "confirm-delete"
-          draw()
-        }
+        statusLine = "The terminal browser is read-only. Review and move items to Trash in the desktop app."
+        draw()
         break
       }
     }

@@ -2,6 +2,11 @@ import { DESKTOP_NATIVE_ENGLISH } from "./desktop-native"
 
 export const dict = {
   ...DESKTOP_NATIVE_ENGLISH,
+  "disk.accessGuidance.macos": "Grant Full Disk Access to DiskLizard in System Settings, then scan again.",
+  "disk.accessGuidance.windows": "Use an account with access to this drive, or scan a folder your account can read.",
+  "disk.accessGuidance.linux": "Review folder and mount permissions, then scan again.",
+  "disk.accessGuidance.default": "Review access to these folders, then scan again.",
+  "disk.accessGuidance.rescan": "Use Rescan in the top bar after changing access.",
   "command.category.suggested": "Suggested",
   "command.category.view": "View",
   "command.category.project": "Project",

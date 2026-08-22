@@ -1,4 +1,5 @@
 import { $ } from "bun"
+import { existsSync } from "node:fs"
 import { chmod, copyFile, mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -8,7 +9,7 @@ const CLI_VERSION = "0.0.0-next-16350"
 export type Channel = "dev" | "beta" | "prod"
 
 export function resolveChannel(): Channel {
-  const raw = Bun.env.OPENCODE_CHANNEL
+  const raw = Bun.env.DISKLIZARD_CHANNEL ?? Bun.env.OPENCODE_CHANNEL
   if (raw === "dev" || raw === "beta" || raw === "prod") return raw
   return "dev"
 }
@@ -53,6 +54,23 @@ export const CLI_BINARIES: Array<{ rustTarget: string; package: string; os: stri
 ]
 
 export const RUST_TARGET = Bun.env.RUST_TARGET
+
+/**
+ * Full OpenCode checkouts build the embedded server from source. DiskLizard's
+ * focused checkout intentionally retains only the checked-in runtime bundle.
+ */
+export async function prepareServerBundle() {
+  const source = "../opencode/script/build-node.ts"
+  const bundle = "../opencode/dist/node/node.js"
+  if (existsSync(source)) {
+    await $`bun ${source}`
+    return
+  }
+  if (!existsSync(bundle)) {
+    throw new Error(`Desktop server bundle is missing: ${bundle}`)
+  }
+  console.log(`Using checked-in desktop server bundle: ${bundle}`)
+}
 
 function nativeTarget() {
   const { platform, arch } = process

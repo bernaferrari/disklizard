@@ -1,5 +1,7 @@
 interface ImportMetaEnv {
-  readonly OPENCODE_CHANNEL: string
+  readonly DISKLIZARD_CHANNEL?: string
+  /** Compatibility for desktop bundles built before DISKLIZARD_CHANNEL. */
+  readonly OPENCODE_CHANNEL?: string
 }
 
 interface ImportMeta {

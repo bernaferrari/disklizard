@@ -13,7 +13,7 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
           <>
             <span class="dl-spin size-8 rounded-full border-2 border-border-weaker-base border-t-[oklch(0.67_0.13_176)]" />
             <p class="mt-5 text-13-medium text-text-strong">Finding your volumes</p>
-            <p class="mt-1 text-11-regular text-text-weak">This should only take a moment.</p>
+            <p class="mt-1 text-13-regular text-text-weak">This should only take a moment.</p>
           </>
         }
       >
@@ -43,7 +43,7 @@ export function IndexEmpty(props: { filtered: boolean; onReset: () => void }) {
       <h3 class="mt-4 text-13-semibold text-text-strong">
         {props.filtered ? "Nothing matches these filters" : "This folder is empty"}
       </h3>
-      <p class="mt-1 max-w-[30ch] text-11-regular leading-relaxed text-text-weak">
+      <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
         {props.filtered
           ? "Clear the filters to show every item in this folder."
           : "There are no files or folders here."}
@@ -101,7 +101,6 @@ export function centerOverlayBehavior(
 export function CenterOverlay(props: {
   node: DiskScanNode | null
   parentSize: number
-  draggable: boolean
   canOpen: boolean
   inventoryOnly: boolean
   onOpen: () => void
@@ -111,7 +110,7 @@ export function CenterOverlay(props: {
     <div class="pointer-events-none absolute inset-0 grid place-items-center">
       <div class="max-w-[70%] text-center">
         <Show when={props.node}>
-          <p class="truncate text-10-semibold tracking-[-0.01em] text-text-weak">{props.node!.name}</p>
+          <p class="truncate text-13-semibold tracking-[-0.01em] text-text-strong">{props.node!.name}</p>
           <p
             class="mt-1.5 text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong"
             style={{ "text-wrap": "balance" }}
@@ -119,26 +118,21 @@ export function CenterOverlay(props: {
             {formatBytes(props.node!.size)}
           </p>
           <Show when={props.parentSize && props.node!.path}>
-            <p class="mt-2 text-10-regular tabular-nums text-text-weaker">
+            <p class="mt-2 text-13-regular tabular-nums text-text-weaker">
               {formatPct(props.node!.size, props.parentSize)} of this level
             </p>
           </Show>
           <Show when={behavior().canOpen}>
             <button
               type="button"
-              class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-background-base/88 px-3 text-10-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+              class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
               onClick={props.onOpen}
             >
               Open folder <Icon name="arrow-right" class="size-3" />
             </button>
-            <p class="mt-2 text-9-regular text-text-weaker">
-              <Show when={props.draggable} fallback="Enter also opens">
-                Drag to review · Enter opens
-              </Show>
-            </p>
           </Show>
           <Show when={behavior().inventoryOnly}>
-            <p class="mx-auto mt-3 max-w-[28ch] text-9-regular leading-relaxed text-text-weaker">
+            <p class="mx-auto mt-3 max-w-[28ch] text-13-regular leading-relaxed text-text-weaker">
               {behavior().reviewOnlyCopy}
             </p>
           </Show>

@@ -14,11 +14,11 @@ export function PinnedLocationCard(props: { location: DiskPinnedLocation; onScan
         </span>
         <span class="min-w-0 flex-1">
           <span class="block truncate text-12-semibold text-text-strong">{props.location.label}</span>
-          <span class="mt-0.5 block truncate font-mono text-10-regular text-text-weaker" title={props.location.path}>
+          <span class="mt-0.5 block truncate text-13-mono text-text-weaker" title={props.location.path}>
             {props.location.path}
           </span>
         </span>
-        <span class="dl-hover-card-label flex shrink-0 items-center gap-1 text-9-semibold text-text-weak transition-colors duration-150">
+        <span class="dl-hover-card-label flex shrink-0 items-center gap-1 text-13-semibold text-text-weak transition-colors duration-150">
           Scan <Icon name="arrow-right" class="size-3" />
         </span>
       </button>

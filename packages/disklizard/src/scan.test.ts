@@ -1,20 +1,26 @@
 import { afterEach, describe, expect, it } from "bun:test"
 import { chmod, link, lstat, mkdir, mkdtemp, readdir, rm, stat, symlink, truncate, utimes, writeFile } from "node:fs/promises"
-import { platform, tmpdir } from "node:os"
-import { join } from "node:path"
+import { homedir, platform, tmpdir } from "node:os"
+import { join, parse } from "node:path"
 import {
   assertSafeDeletionPath,
   canClaimDeveloperArtifactInventoryDirectory,
   defaultScanConcurrency,
+  normalizeScanConcurrency,
+  normalizeScanOptions,
   mountExclusions,
   parseApfsSnapshotPlist,
   parseApfsSnapshotOutput,
+  parseDfMountDiscovery,
   parseDfOutput,
+  parseLinuxMountInfo,
   parseMacDriveInfoPlist,
+  parseWindowsDriveDiscoveryOutput,
   parseWindowsDriveOutput,
   scanPath,
   scanPathSync,
 } from "./scan"
+import type { DriveDiscovery } from "./scan"
 import type { ScanDiscovery } from "./types"
 
 const roots: string[] = []
@@ -42,6 +48,48 @@ describe("disk scanner", () => {
     expect(defaultScanConcurrency(4)).toBe(6)
     expect(defaultScanConcurrency(8)).toBe(10)
     expect(defaultScanConcurrency(128)).toBe(12)
+  })
+
+  it("normalizes invalid scanner concurrency before either fallback execution path can deadlock", async () => {
+    expect(normalizeScanConcurrency(undefined, 8)).toBe(10)
+    expect(normalizeScanConcurrency(0, 8)).toBe(10)
+    expect(normalizeScanConcurrency(-1, 8)).toBe(10)
+    expect(normalizeScanConcurrency(Number.NaN, 8)).toBe(10)
+    expect(normalizeScanConcurrency(Number.POSITIVE_INFINITY, 8)).toBe(10)
+    expect(normalizeScanConcurrency(1.9, 8)).toBe(1)
+    expect(normalizeScanConcurrency(1_000, 8)).toBe(64)
+
+    const root = await fixture()
+    for (const concurrency of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const options = { concurrency, maxChildren: 100, maxDepth: 4, sizeMode: "logical" as const }
+      const [local, worker] = await Promise.all([scanPathSync(root, options), scanPath(root, { ...options, useWorker: true })])
+
+      expect(worker).toEqual(local)
+      expect(local.size).toBe(60)
+    }
+  })
+
+  it("uses one bounded options contract for worker and in-process fallback scans", async () => {
+    expect(
+      normalizeScanOptions({
+        maxDepth: -1,
+        maxChildren: 0,
+        progressIntervalMs: 0,
+        concurrency: Number.POSITIVE_INFINITY,
+      }),
+    ).toMatchObject({ maxDepth: 0, maxChildren: 1, progressIntervalMs: 16 })
+    expect(normalizeScanOptions({ maxDepth: 100, maxChildren: 100_001 })).toMatchObject({
+      maxDepth: 64,
+      maxChildren: 10_000,
+    })
+
+    const root = await fixture()
+    const options = { maxDepth: -1, maxChildren: 0, progressIntervalMs: 0, sizeMode: "logical" as const }
+    const [local, worker] = await Promise.all([scanPathSync(root, options), scanPath(root, { ...options, useWorker: true })])
+
+    expect(worker).toEqual(local)
+    expect(local.children).toHaveLength(2)
+    expect(local.children.at(-1)).toMatchObject({ name: "Other (3 items)", size: 41 })
   })
 
   it("accounts for large system and trash entries instead of hiding them", async () => {
@@ -92,6 +140,52 @@ describe("disk scanner", () => {
     expect(local.children.map((child) => child.name)).toContain(".git")
     expect(local.children.find((child) => child.isOther)).toMatchObject({ name: "Other (1 items)", size: 30 })
     expect(local.size).toBe(121)
+  })
+
+  it("retains equal-size siblings in deterministic lexical order across fallback execution paths", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-equal-siblings-"))
+    roots.push(root)
+    const files = Array.from({ length: 60 }, (_, index) => join(root, `file-${String(index).padStart(2, "0")}.bin`))
+    const directories = Array.from({ length: 8 }, (_, index) => join(root, `dir-${String(index).padStart(2, "0")}`))
+    await Promise.all([
+      ...files.map((target) => writeFile(target, new Uint8Array(1))),
+      ...directories.map(async (directory) => {
+        await mkdir(directory)
+        await writeFile(join(directory, "leaf.bin"), new Uint8Array(1))
+      }),
+    ])
+
+    const options = {
+      maxChildren: 2,
+      preserveNames: ["dir-07"],
+      sizeMode: "logical" as const,
+    }
+    const [local, worker] = await Promise.all([
+      scanPathSync(root, options),
+      scanPath(root, { ...options, useWorker: true }),
+    ])
+
+    expect(worker).toEqual(local)
+    expect(local.children.map((child) => child.name)).toEqual([
+      "dir-00",
+      "dir-01",
+      "dir-07",
+      "Other (65 items)",
+    ])
+    expect(local.children.at(-1)?.children.map((child) => child.name)).toEqual([
+      "dir-02",
+      "dir-03",
+      "dir-04",
+      "dir-05",
+      "dir-06",
+      "file-00.bin",
+      "file-01.bin",
+      "file-02.bin",
+      "file-03.bin",
+      "file-04.bin",
+      "file-05.bin",
+      "file-06.bin",
+    ])
   })
 
   it("retains the ancestry of developer artifacts hidden below a parent cutoff", async () => {
@@ -681,6 +775,63 @@ describe("disk scanner", () => {
     expect(error).toHaveProperty("message", expect.stringContaining("protected"))
   })
 
+  it("fails closed when mount discovery is incomplete", async () => {
+    const base = platform() === "darwin" ? homedir() : tmpdir()
+    const root = await mkdtemp(join(base, ".disklizard-delete-safety-"))
+    roots.push(root)
+    const target = join(root, "candidate")
+    await mkdir(target)
+    const discovery: DriveDiscovery = { drives: [], mountRoots: [parse(target).root], complete: false }
+
+    const error = await assertSafeDeletionPath(target, discovery).then(
+      () => null,
+      (reason: unknown) => reason,
+    )
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error).toHaveProperty("message", expect.stringContaining("could not be verified"))
+    expect((await lstat(target)).isDirectory()).toBe(true)
+  })
+
+  it("blocks every discovered mount root, including roots hidden from the drive picker", async () => {
+    const base = platform() === "darwin" ? homedir() : tmpdir()
+    const root = await mkdtemp(join(base, ".disklizard-mount-safety-"))
+    roots.push(root)
+    const discovery: DriveDiscovery = {
+      drives: [],
+      mountRoots: [parse(root).root, root],
+      complete: true,
+    }
+
+    const error = await assertSafeDeletionPath(root, discovery).then(
+      () => null,
+      (reason: unknown) => reason,
+    )
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error).toHaveProperty("message", expect.stringContaining("mounted volume"))
+    expect((await lstat(root)).isDirectory()).toBe(true)
+  })
+
+  it("tolerates ENOENT but propagates other filesystem validation errors", async () => {
+    if (platform() === "win32") return
+    const base = platform() === "darwin" ? homedir() : tmpdir()
+    const root = await mkdtemp(join(base, ".disklizard-validation-errors-"))
+    roots.push(root)
+    const discovery: DriveDiscovery = { drives: [], mountRoots: [parse(root).root], complete: true }
+
+    await expect(assertSafeDeletionPath(join(root, "already-gone"), discovery)).resolves.toBeUndefined()
+
+    const loop = join(root, "loop")
+    await symlink(loop, loop, "dir")
+    const error = await assertSafeDeletionPath(join(loop, "child"), discovery).then(
+      () => null,
+      (reason: unknown) => reason,
+    )
+    expect(error).toBeInstanceOf(Error)
+    expect(error).toHaveProperty("code", "ELOOP")
+  })
+
   it("emits a final progress snapshot", async () => {
     const root = await fixture()
     const progress: Array<{ filesScanned: number; size: number; done?: boolean }> = []
@@ -923,6 +1074,21 @@ describe("drive discovery", () => {
     ])
   })
 
+  it("keeps Windows directory mount points separate from visible drives", () => {
+    const discovery = parseWindowsDriveDiscoveryOutput(
+      JSON.stringify({
+        Drives: [{ DeviceID: "c:", VolumeName: "Workstation", Size: 1000, FreeSpace: 400, DriveType: 3 }],
+        MountRoots: ["C:\\", "C:\\Volumes\\Archive\\", "\\\\?\\Volume{hidden}\\"],
+        Complete: true,
+      }),
+    )
+
+    expect(discovery.complete).toBe(true)
+    expect(discovery.drives.map((drive) => drive.path)).toEqual(["C:\\"])
+    expect(discovery.mountRoots).toEqual(["C:\\", "C:\\Volumes\\Archive\\"])
+    expect(parseWindowsDriveDiscoveryOutput('{"Drives":[],"Complete":false}').complete).toBe(false)
+  })
+
   it("collapses APFS support volumes while keeping external disks", () => {
     const output = `Filesystem 1024-blocks Used Available Capacity Mounted on
 /dev/disk3s1s1 1000000000 100 200000000 80% /
@@ -965,5 +1131,31 @@ overlay 900000000 500000000 400000000 56% /var/lib/docker/overlay2/demo`
       ["Archive SSD", "removable"],
       ["team", "network"],
     ])
+  })
+
+  it("retains filtered and tiny df mounts for deletion safety and exposes parse completeness", () => {
+    const output = `Filesystem 1024-blocks Used Available Capacity Mounted on
+/dev/nvme0n1p2 900000000 500000000 400000000 56% /
+tmpfs 1024 1 1023 1% /run/credentials
+/dev/sdb1 200000000 1000000 199000000 1% /media/alex/Archive\\040SSD`
+
+    expect(parseDfOutput(output, "linux").map((drive) => drive.path)).toEqual(["/", "/media/alex/Archive SSD"])
+    expect(parseDfMountDiscovery(output)).toEqual({
+      mountRoots: ["/", "/run/credentials", "/media/alex/Archive SSD"],
+      complete: true,
+    })
+    expect(parseDfMountDiscovery(`${output}\nmalformed row`).complete).toBe(false)
+  })
+
+  it("uses Linux mountinfo to retain bind, file, and escaped mount roots", () => {
+    const output = `24 1 8:1 / / rw,relatime - ext4 /dev/root rw
+25 24 8:1 /projects /home/alex/Projects rw,relatime - ext4 /dev/root rw
+26 24 0:42 /hosts /home/alex/Archive\\040Drive/hosts rw - tmpfs tmpfs rw`
+
+    expect(parseLinuxMountInfo(output)).toEqual({
+      mountRoots: ["/", "/home/alex/Projects", "/home/alex/Archive Drive/hosts"],
+      complete: true,
+    })
+    expect(parseLinuxMountInfo(`${output}\nmalformed row`).complete).toBe(false)
   })
 })

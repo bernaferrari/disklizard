@@ -6,9 +6,9 @@ import * as fs from "node:fs/promises"
 const OPENCODE_SERVER_DIST = "../opencode/dist/node"
 
 const channel = (() => {
-  const raw = process.env.OPENCODE_CHANNEL
+  const raw = process.env.DISKLIZARD_CHANNEL ?? process.env.OPENCODE_CHANNEL
   if (raw === "dev" || raw === "beta" || raw === "prod") return raw
-  if (process.env.OPENCODE_CHANNEL === "latest") return "prod"
+  if (raw === "latest") return "prod"
   return "dev"
 })()
 
@@ -34,6 +34,7 @@ const sentry =
 export default defineConfig({
   main: {
     define: {
+      "import.meta.env.DISKLIZARD_CHANNEL": JSON.stringify(channel),
       "import.meta.env.OPENCODE_CHANNEL": JSON.stringify(channel),
     },
     build: {
@@ -51,7 +52,10 @@ const require = __cjs_mod__.createRequire(import.meta.url);
 `,
         },
       },
-      externalizeDeps: { include: [nodePtyPkg] },
+      // The shared scanner ships TypeScript source so it can be reused by Bun
+      // and the renderer. Bundle it into Electron's main process instead of
+      // asking Node to execute the workspace package directly.
+      externalizeDeps: { include: [nodePtyPkg], exclude: ["@disklizard/core"] },
     },
     plugins: [
       {

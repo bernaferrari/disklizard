@@ -109,5 +109,5 @@ export function usageStroke(used: number, total: number): string {
 }
 
 export function idTone(): string {
-  return "rounded bg-surface-raised-base px-1.5 py-0.5 font-mono text-10-semibold text-text-weak ring-1 ring-inset ring-border-weaker-base"
+  return "rounded bg-surface-raised-base px-1.5 py-0.5 font-mono text-13-semibold text-text-weak ring-1 ring-inset ring-border-weaker-base"
 }

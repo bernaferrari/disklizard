@@ -6,16 +6,19 @@ import {
   MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
   normalizeDeveloperArtifactInventoryOptions,
 } from "../../../disklizard/src/developer-artifacts"
+import { normalizeScanOptions } from "../../../disklizard/src/scan"
 import type { DeveloperArtifactInventory, DiskNode, ScanOptions, ScanProgress } from "../../../disklizard/src/types"
+import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 
 const ARTIFACT_IDENTITY_HYDRATION_CONCURRENCY = 12
 const MAX_ARTIFACT_IDENTITY_STATUS_SAMPLES = 12
 const MAX_NATIVE_INVENTORY_SAMPLE_PATHS = 12
 // These are protocol safety bounds, not scan limits. Native requests still
 // decide visual depth/child retention, while malformed sidecar output cannot
-// consume unbounded parser stack or work in the desktop process.
+// consume unbounded parser stack or work in the desktop process. The node
+// budget is shared with snapshots: a cacheable tree must also be acceptable
+// from the native sidecar, otherwise the desktop silently rescans it.
 const MAX_NATIVE_COMPACT_TREE_DEPTH = 512
-const MAX_NATIVE_COMPACT_TREE_NODES = 100_000
 const MAX_NATIVE_PROTOCOL_LINE_BYTES = 64 * 1024 * 1024
 
 type ArtifactDirectoryStat = {
@@ -145,7 +148,7 @@ function isDiskNode(value: unknown): value is DiskNode {
   while (pending.length > 0) {
     const current = pending.pop()
     if (!current || !isRecord(current.node) || seen.has(current.node)) return false
-    if (++nodes > MAX_NATIVE_COMPACT_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
+    if (++nodes > MAX_MATERIALIZED_DISK_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
     seen.add(current.node)
     const node = current.node
     if (
@@ -168,7 +171,7 @@ function isDiskNode(value: unknown): value is DiskNode {
     ) {
       return false
     }
-    if (node.children.length > MAX_NATIVE_COMPACT_TREE_NODES - nodes) return false
+    if (node.children.length > MAX_MATERIALIZED_DISK_TREE_NODES - nodes) return false
     for (const child of node.children) pending.push({ node: child, isRoot: false, depth: current.depth + 1 })
   }
   return true
@@ -598,11 +601,11 @@ function isCompactNode(value: unknown): value is CompactNode {
   while (pending.length > 0) {
     const current = pending.pop()
     if (!current || !isRecord(current.node) || seen.has(current.node)) return false
-    if (++nodes > MAX_NATIVE_COMPACT_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
+    if (++nodes > MAX_MATERIALIZED_DISK_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
     seen.add(current.node)
     if (!isCompactNodeShape(current.node, current.isRoot)) return false
     const children = current.node.c ?? []
-    if (children.length > MAX_NATIVE_COMPACT_TREE_NODES - nodes) return false
+    if (children.length > MAX_MATERIALIZED_DISK_TREE_NODES - nodes) return false
     for (const child of children) {
       pending.push({ node: child, isRoot: false, depth: current.depth + 1 })
     }
@@ -652,7 +655,7 @@ function hasScopedCompactTreePaths(scope: NativePathScope, compact: CompactNode)
   while (pending.length > 0) {
     const current = pending.pop()
     if (!current || !isRecord(current.node) || seen.has(current.node)) return false
-    if (++nodes > MAX_NATIVE_COMPACT_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
+    if (++nodes > MAX_MATERIALIZED_DISK_TREE_NODES || current.depth > MAX_NATIVE_COMPACT_TREE_DEPTH) return false
     seen.add(current.node)
     if (!isCompactNodeShape(current.node, current.isRoot)) return false
     if (
@@ -663,7 +666,7 @@ function hasScopedCompactTreePaths(scope: NativePathScope, compact: CompactNode)
     }
     const siblingPaths = new Set<string>()
     const children = current.node.c ?? []
-    if (children.length > MAX_NATIVE_COMPACT_TREE_NODES - nodes) return false
+    if (children.length > MAX_MATERIALIZED_DISK_TREE_NODES - nodes) return false
     for (const child of children) {
       const segment = compactPathSegment(child, scope)
       if (segment === undefined) return false
@@ -715,7 +718,7 @@ function hydrateScopedCompactTree(scope: NativePathScope, compact: CompactNode):
     if (!current) throw invalidNativeCompactTreeError()
     const children: DiskNode[] = []
     const compactChildren = current.compact.c ?? []
-    if (compactChildren.length > MAX_NATIVE_COMPACT_TREE_NODES) throw invalidNativeCompactTreeError()
+    if (compactChildren.length > MAX_MATERIALIZED_DISK_TREE_NODES) throw invalidNativeCompactTreeError()
     for (const child of compactChildren) {
       const segment = compactPathSegment(child, scope)
       const childPath =
@@ -915,24 +918,25 @@ export function nativeScannerPath() {
 }
 
 export async function scanPathNative(targetPath: string, options: ScanOptions = {}): Promise<DiskNode> {
-  options.signal?.throwIfAborted()
+  const normalizedOptions = normalizeScanOptions(options)
+  normalizedOptions.signal?.throwIfAborted()
   // Send a canonical lexical root and require the sidecar to echo it. This is
   // intentionally not realpath: the scanner should preserve a user-selected
   // symlink spelling, but may never switch to another lexical target.
   const requestedRoot = nativePathScope(targetPath, true)
   if (!requestedRoot) throw new Error("Invalid native scan target path")
-  const expectedInventory = normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory)
+  const expectedInventory = normalizeDeveloperArtifactInventoryOptions(normalizedOptions.developerArtifactInventory)
   const request: NativeRequest = {
     targetPath: requestedRoot.root,
-    maxDepth: options.maxDepth ?? 10,
-    concurrency: options.concurrency,
-    maxChildren: options.maxChildren ?? 48,
-    preserveNames: options.preserveNames ?? [],
-    collapseNames: options.collapseNames ?? [],
-    signatureNames: options.signatureNames ?? [],
-    progressIntervalMs: options.progressIntervalMs ?? 100,
-    sizeMode: options.sizeMode ?? "physical",
-    excludePaths: options.excludePaths ?? [],
+    maxDepth: normalizedOptions.maxDepth ?? 10,
+    concurrency: normalizedOptions.concurrency,
+    maxChildren: normalizedOptions.maxChildren ?? 48,
+    preserveNames: normalizedOptions.preserveNames ?? [],
+    collapseNames: normalizedOptions.collapseNames ?? [],
+    signatureNames: normalizedOptions.signatureNames ?? [],
+    progressIntervalMs: normalizedOptions.progressIntervalMs ?? 100,
+    sizeMode: normalizedOptions.sizeMode ?? "physical",
+    excludePaths: normalizedOptions.excludePaths ?? [],
     ...(expectedInventory === undefined
       ? {}
       : { developerArtifactInventory: { maxItems: expectedInventory.maxItems } }),
@@ -955,7 +959,7 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
     let onStdoutError: () => void = () => {}
 
     const cleanup = () => {
-      options.signal?.removeEventListener("abort", onAbort)
+      normalizedOptions.signal?.removeEventListener("abort", onAbort)
       child.stdout.removeListener("data", onStdoutData)
       child.stdout.removeListener("end", onStdoutEnd)
       child.stdout.removeListener("error", onStdoutError)
@@ -971,11 +975,11 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
     }
     const onAbort = () => {
       child.kill()
-      finish({ error: options.signal?.reason ?? new Error("Scan cancelled") })
+      finish({ error: normalizedOptions.signal?.reason ?? new Error("Scan cancelled") })
     }
 
-    options.signal?.addEventListener("abort", onAbort, { once: true })
-    if (options.signal?.aborted) {
+    normalizedOptions.signal?.addEventListener("abort", onAbort, { once: true })
+    if (normalizedOptions.signal?.aborted) {
       onAbort()
       return
     }
@@ -1011,7 +1015,7 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
         return false
       }
       if (message.type === "progress") {
-        options.onProgress?.(message.progress)
+        normalizedOptions.onProgress?.(message.progress)
         return !settled
       }
       if (message.type === "done") {
@@ -1028,7 +1032,7 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
           expectedInventory?.maxItems,
         )
           .then((root) => {
-            options.signal?.throwIfAborted()
+            normalizedOptions.signal?.throwIfAborted()
             finish({ root })
           })
           .catch((error) => finish({ error }))

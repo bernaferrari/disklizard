@@ -1,6 +1,6 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
-import type { DeveloperArtifactInventory } from "@opencode-ai/disklizard"
+import type { DeveloperArtifactInventory } from "@disklizard/core"
 import { For, Show } from "solid-js"
 import { formatBytes } from "./format"
 import {
@@ -116,10 +116,10 @@ export function DeveloperCleanupPolicy(props: {
           <Icon name="shield" class="size-3.5" />
         </span>
         <div class="min-w-0 flex-1">
-          <p id="developer-cleanup-policy-title" class="text-10-semibold text-text-strong">
+          <p id="developer-cleanup-policy-title" class="text-13-semibold text-text-strong">
             Smart cleanup policy
           </p>
-          <p class="mt-0.5 max-w-[58ch] text-9-regular leading-relaxed text-text-weak">
+          <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
             Find rebuildable or redownloadable developer storage by modification date. This is not evidence that a folder
             was last used then.
           </p>
@@ -133,7 +133,7 @@ export function DeveloperCleanupPolicy(props: {
             {(preset) => (
               <button
                 type="button"
-                class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-9-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+                class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
                 classList={{
                   "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
                     props.preset === preset,
@@ -151,11 +151,11 @@ export function DeveloperCleanupPolicy(props: {
 
       <Show when={props.ecosystems.length > 0}>
         <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
-          <legend class="text-9-semibold text-text-weak">Language &amp; toolchain</legend>
+          <legend class="text-13-semibold text-text-weak">Language &amp; toolchain</legend>
           <div class="mt-1.5 flex max-w-full gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label="Language and toolchain">
             <button
               type="button"
-              class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-9-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+              class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
               classList={{
                 "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
                   props.ecosystem === "all",
@@ -170,7 +170,7 @@ export function DeveloperCleanupPolicy(props: {
               {(ecosystem) => (
                 <button
                   type="button"
-                  class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-9-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+                  class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
                   classList={{
                     "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
                       props.ecosystem === ecosystem,
@@ -189,7 +189,7 @@ export function DeveloperCleanupPolicy(props: {
 
       <Show when={props.preset === "custom"}>
         <label class="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] bg-background-base/65 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
-          <span class="shrink-0 text-10-semibold text-text-weak">Unchanged for at least</span>
+          <span class="shrink-0 text-13-semibold text-text-weak">Unchanged for at least</span>
           <input
             class="dl-smart-age-input min-w-0 flex-1 bg-transparent text-right text-12-regular tabular-nums text-text-strong outline-none"
             type="number"
@@ -202,7 +202,7 @@ export function DeveloperCleanupPolicy(props: {
             aria-label="Custom unchanged time in days"
             onInput={(event) => props.onCustomDaysChange(event.currentTarget.value)}
           />
-          <span class="shrink-0 text-10-regular text-text-weak">days</span>
+          <span class="shrink-0 text-13-regular text-text-weak">days</span>
         </label>
       </Show>
 
@@ -221,21 +221,21 @@ export function DeveloperCleanupPolicy(props: {
                 aria-hidden="true"
               />
               <div class="min-w-0 flex-1">
-                <p class="text-10-semibold text-text-strong">
+                <p class="text-13-semibold text-text-strong">
                   Deep artifact inventory · {inventory().status.state === "complete" ? "Complete" : "Partial"}
                 </p>
-                <p class="mt-0.5 text-9-regular leading-relaxed text-text-weak">{inventoryCoverage()}</p>
+                <p class="mt-0.5 text-13-regular leading-relaxed text-text-weak">{inventoryCoverage()}</p>
               </div>
             </div>
             <Show when={inventory().status.state === "partial"}>
               <details class="group mt-2">
-                <summary class="dl-touch-target flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-9-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+                <summary class="dl-touch-target flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
                   <span class="flex-1">Coverage details</span>
                   <Icon name="chevron-down" class="size-3 transition-transform duration-150 group-open:rotate-180" />
                 </summary>
                 <div class="border-t border-border-weaker-base/60 pb-1 pt-2">
                   <Show when={inventory().status.truncated}>
-                    <p class="text-9-regular leading-relaxed text-text-weak">
+                    <p class="text-13-regular leading-relaxed text-text-weak">
                       Results are capped at {inventory().status.maxItems.toLocaleString()} retained items. Matching continues for
                       coverage accounting, but paths beyond the cap are not listed.
                     </p>
@@ -243,14 +243,14 @@ export function DeveloperCleanupPolicy(props: {
                   <For each={inventoryIssueRows()}>
                     {(issue) => (
                       <div class="mt-2">
-                        <p class="text-9-semibold text-text-weak">
+                        <p class="text-13-semibold text-text-weak">
                           {issue.label} · {issue.count.toLocaleString()}
                         </p>
                         <Show when={issue.paths.length > 0}>
                           <ul class="mt-1 space-y-0.5" aria-label={`${issue.label} sampled paths`}>
                             <For each={issue.paths.slice(0, 3)}>
                               {(path) => (
-                                <li class="truncate font-mono text-9-regular text-text-weaker" title={path}>
+                                <li class="truncate text-13-mono text-text-weaker" title={path}>
                                   {path}
                                 </li>
                               )}
@@ -268,7 +268,7 @@ export function DeveloperCleanupPolicy(props: {
       </Show>
 
       <div class="mt-3 flex flex-wrap items-center gap-2">
-        <p id="developer-cleanup-policy-status" class="min-w-0 flex-1 text-9-regular leading-relaxed text-text-weak" aria-live="polite">
+        <p id="developer-cleanup-policy-status" class="min-w-0 flex-1 text-13-regular leading-relaxed text-text-weak" aria-live="polite">
           {status()}
         </p>
         <Button

@@ -9,7 +9,7 @@ import { For, createMemo, createSignal, onCleanup, onMount, Show } from "solid-j
 import type { DiskScanNode } from "@/context/platform"
 import { formatBytes } from "./format"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
-import { primarySegmentColor } from "./sunburst"
+import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
 
 export function Treemap(props: {
   children: DiskScanNode[]
@@ -54,18 +54,19 @@ export function Treemap(props: {
             width: `calc(${r.w * 100}% - 8px)`,
             height: `calc(${r.h * 100}% - 8px)`,
             background: primarySegmentColor(r.index, 1, r.node.isDir),
-            opacity: props.hoveredPath && props.hoveredPath !== r.node.path ? "0.55" : "1",
+            color: primarySegmentForeground(r.node.isDir),
+            "box-shadow": props.hoveredPath === r.node.path ? "inset 0 0 0 2px currentColor" : undefined,
           })
           const content = () => (
             <Show when={r.w > 0.08 && r.h > 0.06}>
-              <span class="flex h-full flex-col justify-between p-3 text-[rgb(10_12_13/0.88)]">
-                <span class="block max-w-full truncate text-11-semibold tracking-[-0.01em]">{r.node.name}</span>
+              <span class="flex h-full flex-col justify-between p-3">
+                <span class="block max-w-full truncate text-13-semibold tracking-[-0.01em]">{r.node.name}</span>
                 <Show when={r.w > 0.14 && r.h > 0.1}>
-                  <span class="inline-flex max-w-full self-start truncate text-9-regular tabular-nums opacity-70">
+                  <span class="inline-flex max-w-full self-start truncate text-13-regular tabular-nums">
                     {r.node.path.startsWith("disklizard:mosaic-more:") ? (
                       "Open full list"
                     ) : (
-                      <span class="font-semibold">{formatBytes(r.node.size)}</span>
+                      <span class="text-13-semibold">{formatBytes(r.node.size)}</span>
                     )}
                   </span>
                 </Show>
@@ -78,7 +79,7 @@ export function Treemap(props: {
               fallback={
                 <div
                   aria-hidden="true"
-                  class="pointer-events-none absolute overflow-hidden rounded-[3px] transition-opacity duration-150"
+                  class="pointer-events-none absolute overflow-hidden rounded-[3px] transition-[box-shadow] duration-150"
                   style={style()}
                 >
                   {content()}
@@ -99,7 +100,7 @@ export function Treemap(props: {
                       }`
                 }
                 data-disk-tile-path={r.node.path}
-                class="dl-hover-brighten absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[opacity,filter] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white"
+                class="absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white"
                 style={style()}
                 onPointerEnter={() => props.onHover(r.node)}
                 onPointerLeave={() => props.onHover(null)}
@@ -143,7 +144,7 @@ export function Treemap(props: {
         }}
       </For>
       <Show when={props.hoveredPath}>
-        <div class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-background-base/84 px-3 py-1.5 text-10-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_8px_24px_rgb(0_0_0/0.1)] backdrop-blur-xl">
+        <div class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-background-base/84 px-3 py-1.5 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_8px_24px_rgb(0_0_0/0.1)] backdrop-blur-xl">
           {(() => {
             const node = rects().find((r) => r.node.path === props.hoveredPath)?.node
             return node ? `${node.name} · ${formatBytes(node.size)}` : ""

@@ -3,8 +3,10 @@ export const DISK_UTILITY_STYLES = `
   --dl-accent: oklch(0.74 0.13 252);
   --dl-accent-strong: oklch(0.66 0.15 252);
   --dl-hairline: 1px;
-  --text-weak: color-mix(in oklch, var(--text-strong) 68%, var(--background-base));
-  --text-weaker: color-mix(in oklch, var(--text-strong) 48%, var(--background-base));
+  --text-weak: color-mix(in oklch, var(--text-strong) 72%, var(--background-base));
+  --text-weaker: color-mix(in oklch, var(--text-strong) 58%, var(--background-base));
+  --color-text-weak: var(--text-weak);
+  --color-text-weaker: var(--text-weaker);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-synthesis: none;
@@ -162,7 +164,8 @@ export const DISK_UTILITY_STYLES = `
 }
 @media (max-width: 760px) {
   .dl-brand-name { display: none; }
-  .dl-pin-scan, .dl-rescan { max-width: 40px; overflow: hidden; }
+  .dl-breadcrumbs, .dl-responsive-label { display: none; }
+  .dl-pin-scan, .dl-rescan { width: 44px; overflow: hidden; padding-inline: 0; }
   .dl-command-dock-inner { align-items: stretch; flex-direction: column; }
   .dl-cleanup-slot { width: 100% !important; }
 }

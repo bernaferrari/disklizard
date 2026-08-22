@@ -202,11 +202,17 @@ export function detectDesktopNativeLocale(languages: readonly string[]): Desktop
     if (["no", "nb", "nn"].includes(source.language)) return "no"
     const match = DESKTOP_NATIVE_LOCALES.find((candidate) => {
       const target = locale(DESKTOP_NATIVE_LOCALE_TAGS[candidate])
-      return target?.language === source.language && target.script === source.script
+      return target?.language === source.language && compatibleScript(target.script, source.script)
     })
     if (match) return match
   }
   return "en"
+}
+
+/** CLDR may maximize Pakistani Punjabi to Nastaliq (`Aran`), a child of Arabic script. */
+function compatibleScript(target?: string, source?: string) {
+  if (target === source) return true
+  return target === "Arab" && source === "Aran"
 }
 
 export function desktopNativePluralCategories(locale: DesktopNativeLocale) {

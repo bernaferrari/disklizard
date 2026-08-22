@@ -7,7 +7,7 @@ import type { SurfacePhase } from "./motion"
 import { StorageAccountingFacts } from "./StorageAccounting"
 
 const focusable =
-  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), iframe:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
 
 function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported" }>) {
   if (preview.reason === "too-large") {
@@ -114,11 +114,11 @@ export function PreviewDialog(props: {
             />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Quick preview</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Quick preview</p>
             <h2 id="preview-title" class="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
               {props.node.name}
             </h2>
-            <p id="preview-description" class="mt-0.5 truncate font-mono text-10-regular text-text-weaker">
+            <p id="preview-description" class="mt-0.5 truncate text-13-mono text-text-weaker">
               {props.node.path}
             </p>
           </div>
@@ -137,7 +137,7 @@ export function PreviewDialog(props: {
             <div class="grid size-full place-items-center" role="status" aria-live="polite">
               <div class="flex flex-col items-center gap-3 text-text-weak">
                 <span class="dl-spin size-5 rounded-full border border-border-weaker-base border-t-current" />
-                <p class="text-11-regular">Loading preview…</p>
+                <p class="text-13-regular">Loading preview…</p>
               </div>
             </div>
           </Show>
@@ -150,7 +150,7 @@ export function PreviewDialog(props: {
                     <Icon name="warning" class="size-4.5" />
                   </span>
                   <h3 class="mt-4 text-14-semibold text-text-strong">DiskLizard could not read this file</h3>
-                  <p class="mt-2 text-11-regular leading-relaxed text-text-weak">{message()}</p>
+                  <p class="mt-2 text-13-regular leading-relaxed text-text-weak">{message()}</p>
                 </div>
               </div>
             )}
@@ -165,12 +165,12 @@ export function PreviewDialog(props: {
                   </span>
                   <div class="min-w-0">
                     <h3 class="text-14-semibold text-text-strong">Folder summary</h3>
-                    <p class="mt-1 text-11-regular leading-relaxed text-text-weak">
+                    <p class="mt-1 text-13-regular leading-relaxed text-text-weak">
                       {props.node.children.length.toLocaleString()} immediate {props.node.children.length === 1 ? "item" : "items"}
                       {" · "}
                       {formatBytes(props.node.size)} in this scanned folder.
                     </p>
-                    <p class="mt-2 text-10-regular leading-relaxed text-text-weaker">
+                    <p class="mt-2 text-13-regular leading-relaxed text-text-weaker">
                       This summary uses the current scan only. Open the folder to browse its map, or use Quick Look for the
                       system view.
                     </p>
@@ -180,10 +180,10 @@ export function PreviewDialog(props: {
                 <Show when={largestChildren().length}>
                   <section class="mt-6" aria-labelledby="preview-largest-items">
                     <div class="flex items-center justify-between gap-4">
-                      <h3 id="preview-largest-items" class="text-10-semibold uppercase tracking-[0.13em] text-text-weaker">
+                      <h3 id="preview-largest-items" class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker">
                         Largest visible items
                       </h3>
-                      <span class="text-10-regular tabular-nums text-text-weaker">
+                      <span class="text-13-regular tabular-nums text-text-weaker">
                         {formatBytes(props.node.size)} total
                       </span>
                     </div>
@@ -192,8 +192,8 @@ export function PreviewDialog(props: {
                         {(child) => (
                           <li class="flex min-w-0 items-center gap-3 py-3">
                             <Icon name={child.isDir ? "folder" : "open-file"} class="size-3.5 shrink-0 text-icon-weak" />
-                            <span class="min-w-0 flex-1 truncate text-11-semibold text-text-strong">{child.name}</span>
-                            <span class="shrink-0 text-10-semibold tabular-nums text-text-weak">{formatBytes(child.size)}</span>
+                            <span class="min-w-0 flex-1 truncate text-13-semibold text-text-strong">{child.name}</span>
+                            <span class="shrink-0 text-13-semibold tabular-nums text-text-weak">{formatBytes(child.size)}</span>
                           </li>
                         )}
                       </For>
@@ -223,10 +223,10 @@ export function PreviewDialog(props: {
               if (preview.kind === "text") {
                 return (
                   <div class="flex size-full min-h-0 flex-col">
-                    <div class="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-9-regular text-text-weaker">
+                    <div class="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-13-regular text-text-weaker">
                       <span>{preview.text.split("\n").length.toLocaleString()} lines shown</span>
                       <Show when={preview.truncated}>
-                        <span class="rounded-full bg-surface-raised-base px-2 py-1 text-9-semibold text-text-weak">
+                        <span class="rounded-full bg-surface-raised-base px-2 py-1 text-13-semibold text-text-weak">
                           Preview truncated
                         </span>
                       </Show>
@@ -244,16 +244,10 @@ export function PreviewDialog(props: {
               if (preview.kind === "pdf") {
                 return (
                   <iframe
-                    class="size-full border-0 bg-surface-raised-strong"
+                    class="size-full border-0 bg-surface-raised-strong outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
                     src={preview.dataUrl}
                     title={`PDF preview of ${props.node.name}`}
-                    tabIndex={-1}
-                    onFocus={() => {
-                      // Embedded PDF viewers own a separate browsing context. Keep their
-                      // pointer preview available, but return keyboard focus to this modal
-                      // so Tab cannot escape the dialog's focus trap.
-                      queueMicrotask(() => panel.isConnected && panel.focus({ preventScroll: true }))
-                    }}
+                    tabIndex={0}
                   />
                 )
               }
@@ -265,7 +259,7 @@ export function PreviewDialog(props: {
                       <Icon name="open-file" class="size-4.5" />
                     </span>
                     <h3 class="mt-4 text-14-semibold text-text-strong">{copy.title}</h3>
-                    <p class="mt-2 text-11-regular leading-relaxed text-text-weak">{copy.detail}</p>
+                    <p class="mt-2 text-13-regular leading-relaxed text-text-weak">{copy.detail}</p>
                   </div>
                 </div>
               )
@@ -284,7 +278,7 @@ export function PreviewDialog(props: {
               onClick={props.onPrevious}
               aria-label="Preview previous file"
             />
-            <span class="min-w-12 text-center text-9-regular tabular-nums text-text-weaker">
+            <span class="min-w-12 text-center text-13-regular tabular-nums text-text-weaker">
               <Show when={!props.node.isDir} fallback="Folder">
                 {props.position} of {props.total}
               </Show>
@@ -300,10 +294,10 @@ export function PreviewDialog(props: {
             />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-10-semibold tabular-nums text-text-strong">
+            <p class="text-13-semibold tabular-nums text-text-strong">
               {formatBytes(props.preview?.bytes ?? props.node.size)}
             </p>
-            <p class="mt-0.5 text-9-regular text-text-weaker">
+            <p class="mt-0.5 text-13-regular text-text-weaker">
               <Show when={props.node.modifiedAt} fallback="Read locally · Nothing uploaded">
                 {(changed) => `${formatLastChanged(changed())} · Nothing uploaded`}
               </Show>

@@ -1,7 +1,7 @@
 import { lstat, readdir } from "node:fs/promises"
 import type { Dirent } from "node:fs"
 import { basename, dirname } from "node:path"
-import { DEVELOPER_ARTIFACT_EVIDENCE_NAMES, classifyDeveloperArtifact } from "@opencode-ai/disklizard"
+import { DEVELOPER_ARTIFACT_EVIDENCE_NAMES, classifyDeveloperArtifact } from "@disklizard/core"
 import type {
   DeveloperArtifact,
   DeveloperArtifactDirectoryIdentity,

@@ -1,7 +1,8 @@
 import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { createVirtualizer } from "@tanstack/solid-virtual"
-import { createSignal, For, onCleanup, Show, type JSX } from "solid-js"
+import { createEffect, createSignal, For, onCleanup, Show, type JSX } from "solid-js"
 import type { DiskScanNode } from "@/context/platform"
+import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
 
 const INDEX_ROW_ESTIMATE = 58
 const DEFAULT_LIST_PAGE_SIZE = 10
@@ -102,9 +103,12 @@ export function VirtualRows<T>(props: {
   ariaLabel: string
   estimateSize: (item: T) => number
   itemKey: (item: T, index: number) => string | number
+  isFocusable?: (item: T, index: number) => boolean
   render: (item: T, index: () => number) => JSX.Element
 }) {
   const [viewport, setViewport] = createSignal<HTMLDivElement>()
+  const [activeIndex, setActiveIndex] = createSignal(-1)
+  let list: HTMLUListElement | undefined
   const padding = 8
   const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
     get count() {
@@ -116,9 +120,77 @@ export function VirtualRows<T>(props: {
     getItemKey: (index) => props.itemKey(props.items[index], index),
   })
 
+  const isFocusable = (index: number) => {
+    const item = props.items[index]
+    return item !== undefined && (props.isFocusable?.(item, index) ?? true)
+  }
+  const firstFocusable = () =>
+    reviewNavigationTarget({
+      currentIndex: -1,
+      key: "ArrowDown",
+      length: props.items.length,
+      pageSize: 1,
+      isFocusable,
+    })
+  const pageSize = () => {
+    const item = props.items[activeIndex()] ?? props.items[firstFocusable()]
+    const estimate = item ? props.estimateSize(item) : INDEX_ROW_ESTIMATE
+    return Math.max(1, Math.floor((viewport()?.clientHeight ?? estimate * DEFAULT_LIST_PAGE_SIZE) / estimate))
+  }
+  const focusRow = (index: number, attempt = 0) => {
+    setActiveIndex(index)
+    virtualizer.scrollToIndex(index, { align: "auto" })
+    requestAnimationFrame(() => {
+      const row = list?.querySelector<HTMLElement>(`[data-disk-review-index="${index}"]`)
+      if (row) {
+        row.focus({ preventScroll: true })
+        return
+      }
+      if (attempt < 2) focusRow(index, attempt + 1)
+    })
+  }
+  const onReviewNavigation = (event: KeyboardEvent) => {
+    if (
+      event.defaultPrevented ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.altKey ||
+      !isReviewNavigationKey(event.key)
+    ) {
+      return
+    }
+    const target = reviewNavigationTarget({
+      currentIndex: activeIndex(),
+      key: event.key,
+      length: props.items.length,
+      pageSize: pageSize(),
+      isFocusable,
+    })
+    if (target < 0) return
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    focusRow(target)
+  }
+  let removeViewportKeydown: (() => void) | undefined
+  const bindViewport = (element: HTMLDivElement) => {
+    removeViewportKeydown?.()
+    setViewport(element)
+    element.addEventListener("keydown", onReviewNavigation, true)
+    removeViewportKeydown = () => element.removeEventListener("keydown", onReviewNavigation, true)
+  }
+  onCleanup(() => removeViewportKeydown?.())
+
+  createEffect(() => {
+    const current = activeIndex()
+    if (current < 0 || !isFocusable(current)) setActiveIndex(firstFocusable())
+  })
+
   return (
-    <ScrollView class="min-h-0 flex-1" viewportRef={setViewport}>
+    <ScrollView class="min-h-0 flex-1" viewportRef={bindViewport}>
       <ul
+        ref={(element) => {
+          list = element
+        }}
         class="relative"
         style={{ height: `${virtualizer.getTotalSize() + padding * 2}px` }}
         aria-label={props.ariaLabel}
@@ -130,8 +202,15 @@ export function VirtualRows<T>(props: {
               <Show when={item()}>
                 {(value) => (
                   <li
-                    class="absolute left-0 top-0 w-full"
+                    class="absolute left-0 top-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
                     style={{ height: `${row.size}px`, transform: `translateY(${row.start + padding}px)` }}
+                    data-disk-review-index={row.index}
+                    tabIndex={isFocusable(row.index) ? (row.index === activeIndex() ? 0 : -1) : undefined}
+                    aria-posinset={row.index + 1}
+                    aria-setsize={props.items.length}
+                    onFocusIn={() => {
+                      if (isFocusable(row.index)) setActiveIndex(row.index)
+                    }}
                   >
                     {props.render(value(), () => row.index)}
                   </li>

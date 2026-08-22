@@ -9,6 +9,9 @@
 
 import type { DiskScanNode } from "@/context/platform"
 
+/** Keep the complete center summary inside the quiet disc at every desktop size. */
+const INNER_HOLE_RATIO = 0.3
+
 /** Node shape the engine consumes — identical to DiskScanNode, aliased for seamless interop. */
 export type SunNode = DiskScanNode
 
@@ -252,6 +255,11 @@ export function primarySegmentColor(i: number, alpha = 1, isDir = true): string 
   return alpha >= 1 ? `oklch(0.7 0.115 ${hue.toFixed(1)})` : `oklch(0.7 0.115 ${hue.toFixed(1)} / ${alpha})`
 }
 
+/** Text paired with the segment fills; both branches meet normal-text AA contrast. */
+export function primarySegmentForeground(isDir = true): string {
+  return isDir ? "oklch(0.18 0.015 255)" : "oklch(1 0 0)"
+}
+
 // ── The engine ───────────────────────────────────────────────────────────────
 
 export class Sunburst {
@@ -347,7 +355,7 @@ export class Sunburst {
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
     this.maxR = (this.canvas.width / 2) * 0.93
-    this.innerHole = this.maxR * 0.255
+    this.innerHole = this.maxR * INNER_HOLE_RATIO
     this._applyRadiiToTargets()
   }
 

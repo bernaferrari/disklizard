@@ -10,7 +10,7 @@ import type {
   DeveloperArtifactInventoryOptions,
   DriveFacts,
   SharedStorageEvidence,
-} from "@opencode-ai/disklizard"
+} from "@disklizard/core"
 import type { WslServersPlatform } from "@opencode-ai/app/wsl/types"
 import type { UpdaterState } from "@opencode-ai/app/updater"
 import type { DesktopNativeBundle } from "@opencode-ai/app/i18n/desktop-native"

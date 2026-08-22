@@ -105,22 +105,22 @@ export function CollectionDialog(props: {
             <Icon name="checklist" class="size-4" />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Review selected items</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Review selected items</p>
             <h2 id="collection-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
               {requiresFullMapRebuild() ? "Selected file sizes: " : ""}
               {formatBytes(props.bytes)} across {props.items.length} {props.items.length === 1 ? "item" : "items"}
             </h2>
-            <p class="mt-2 text-11-regular leading-relaxed text-text-weak">
+            <p class="mt-2 text-13-regular leading-relaxed text-text-weak">
               Check every item before anything leaves its original location.
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 A selected path changes data represented by the deep artifact inventory. It can move to {props.trashName},
                 but its displayed size is not a reclaim estimate. DiskLizard will rebuild the full map afterward.
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 Some selected paths share physical storage through APFS clones or hard links. They can move to
                 {` ${props.trashName}`}, but their displayed allocation is not a promise of freed disk space.
                 DiskLizard will recompute the map afterward.
@@ -131,7 +131,7 @@ export function CollectionDialog(props: {
                 !props.requiresDeepInventoryRefresh && !props.hasSharedPhysicalStorage && props.hasUnverifiedPhysicalStorage
               }
             >
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 This scan could not verify filesystem clone metadata. The paths can move to {props.trashName}, but their
                 displayed allocation is not a promise of freed disk space. DiskLizard will refresh the map afterward.
               </p>
@@ -159,11 +159,11 @@ export function CollectionDialog(props: {
               </span>
               <span class="min-w-0 flex-1">
                 <span class="block truncate text-12-semibold text-text-strong">{item.name}</span>
-                <span class="mt-0.5 block truncate font-mono text-10-regular text-text-weaker" title={item.path}>
+                <span class="mt-0.5 block truncate text-13-mono text-text-weaker" title={item.path}>
                   {item.path}
                 </span>
               </span>
-              <span class="shrink-0 text-11-semibold tabular-nums text-text-strong">{shortBytes(item.size)}</span>
+              <span class="shrink-0 text-13-semibold tabular-nums text-text-strong">{shortBytes(item.size)}</span>
               <Show when={props.onQuickLook && !item.isOther && !item.isHidden}>
                 <Button
                   class="dl-touch-target"
@@ -191,7 +191,7 @@ export function CollectionDialog(props: {
           <Show
             when={props.progress}
             fallback={
-              <p class="flex items-center gap-1.5 text-10-regular text-text-weak">
+              <p class="flex items-center gap-1.5 text-13-regular text-text-weak">
                 <Icon name="shield" class="size-3.5" />
                 {props.requiresDeepInventoryRefresh
                   ? `Items can be restored from ${props.trashName}. DiskLizard will rebuild the full map after the move.`
@@ -203,7 +203,7 @@ export function CollectionDialog(props: {
           >
             {(progress) => (
               <p
-                class="flex items-center gap-1.5 text-10-regular tabular-nums text-text-weak"
+                class="flex items-center gap-1.5 text-13-regular tabular-nums text-text-weak"
                 role="status"
                 aria-live="polite"
                 aria-atomic="true"
@@ -277,11 +277,11 @@ export function ReclaimDrawer(props: {
               <Icon name="shield" class="size-4.5" />
             </span>
             <div class="min-w-0 flex-1">
-              <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Recommendations</p>
+              <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Recommendations</p>
               <h2 id="reclaim-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
                 {formatBytes(props.reclaim.totalBytes)} worth reviewing
               </h2>
-              <p class="mt-2 max-w-[38ch] text-11-regular leading-relaxed text-text-weak">
+              <p class="mt-2 max-w-[38ch] text-13-regular leading-relaxed text-text-weak">
                 DiskLizard thinks these can usually be recreated or downloaded again. They are recommendations, not
                 permission—select only the items you want to review.
               </p>
@@ -294,15 +294,16 @@ export function ReclaimDrawer(props: {
           ariaLabel="Recommended items"
           estimateSize={(row) => (row.type === "header" ? 46 : 64)}
           itemKey={(row) => row.key}
+          isFocusable={(row) => row.type === "item"}
           render={(row) => {
             if (row.type === "header") {
               return (
                 <div class="flex h-full items-end gap-2 px-5 pb-2">
                   <span class={`mb-0.5 size-2 rounded-full ${SAFETY_ACCENT[row.bucket.safety].dot}`} />
-                  <h3 class="text-9-semibold uppercase tracking-[0.14em] text-text-weak">
+                  <h3 class="text-13-semibold uppercase tracking-[0.14em] text-text-weak">
                     {row.bucket.safety.replace("-", " ")}
                   </h3>
-                  <span class="ml-auto text-10-semibold tabular-nums text-text-strong">
+                  <span class="ml-auto text-13-semibold tabular-nums text-text-strong">
                     {formatBytes(row.bucket.bytes)}
                   </span>
                 </div>
@@ -322,13 +323,13 @@ export function ReclaimDrawer(props: {
                 <div class="min-w-0 flex-1">
                   <p class="truncate text-12-semibold text-text-strong">{row.item.node.name}</p>
                   <p
-                    class="mt-0.5 truncate font-mono text-10-regular text-text-weaker"
+                    class="mt-0.5 truncate text-13-mono text-text-weaker"
                     title={row.item.recognition.hint ?? row.item.node.path}
                   >
                     {row.item.recognition.hint ?? truncatePath(row.item.node.path, 44)}
                   </p>
                 </div>
-                <span class="shrink-0 text-11-semibold tabular-nums text-text-strong">
+                <span class="shrink-0 text-13-semibold tabular-nums text-text-strong">
                   {shortBytes(row.item.node.size)}
                 </span>
                 <Button
@@ -351,11 +352,11 @@ export function ReclaimDrawer(props: {
         />
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
           <div class="min-w-0">
-            <p class="text-11-semibold text-text-strong">
+            <p class="text-13-semibold text-text-strong">
               {formatCount(props.reclaim.totalCount)}{" "}
               {props.reclaim.totalCount === 1 ? "recommendation" : "recommendations"}
             </p>
-            <p class="mt-0.5 truncate text-9-regular text-text-weak">
+            <p class="mt-0.5 truncate text-13-regular text-text-weak">
               {formatBytes(props.reclaim.totalBytes)} · Nothing moves until you review the selected items
             </p>
           </div>
@@ -413,7 +414,7 @@ export function DeleteConfirmDialog(props: {
             <Icon name="trash" class="size-4" />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Confirm removal</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Confirm removal</p>
             <h3 id="delete-title" class="mt-1 text-18-medium tracking-[-0.025em] text-text-strong">
               Move this item to {props.trashName}?
             </h3>
@@ -422,13 +423,13 @@ export function DeleteConfirmDialog(props: {
               class="mt-4 rounded-xl bg-background-base/65 p-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]"
             >
               <p class="truncate text-12-semibold text-text-strong">{props.node.name}</p>
-              <p class="mt-0.5 truncate font-mono text-10-regular text-text-weaker">{props.node.path}</p>
-              <p class="mt-2 text-11-semibold tabular-nums text-text-strong">
+              <p class="mt-0.5 truncate text-13-mono text-text-weaker">{props.node.path}</p>
+              <p class="mt-2 text-13-semibold tabular-nums text-text-strong">
                 {requiresFullMapRebuild() ? "Selected file size: " : ""}
                 {formatBytes(props.node.size)}
               </p>
             </div>
-            <p class="mt-3 flex items-center gap-1.5 text-10-regular text-text-weak">
+            <p class="mt-3 flex items-center gap-1.5 text-13-regular text-text-weak">
               <Icon name="shield" class="size-3.5" />
               {props.requiresDeepInventoryRefresh
                 ? `You can restore it from ${props.trashName}. DiskLizard will rebuild the full map after the move.`
@@ -437,13 +438,13 @@ export function DeleteConfirmDialog(props: {
                 : `You can restore it from ${props.trashName}. Space is freed after you empty it.`}
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 This path changes data represented by the deep artifact inventory. Moving it does not make its displayed
                 size a reclaim promise; DiskLizard will rebuild the full map afterward.
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 This path shares physical storage through an APFS clone or hard link. Moving it does not guarantee
                 that its displayed bytes become free; DiskLizard will recompute shared storage afterward.
               </p>
@@ -453,7 +454,7 @@ export function DeleteConfirmDialog(props: {
                 !props.requiresDeepInventoryRefresh && !props.hasSharedPhysicalStorage && props.hasUnverifiedPhysicalStorage
               }
             >
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-10-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
                 This scan could not verify filesystem clone metadata. Moving the path does not guarantee that its displayed
                 bytes become free; DiskLizard will refresh the map afterward.
               </p>

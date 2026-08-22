@@ -1,4 +1,4 @@
-import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@opencode-ai/disklizard"
+import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@disklizard/core"
 import type { DiskScanNode } from "@/context/platform"
 
 /**

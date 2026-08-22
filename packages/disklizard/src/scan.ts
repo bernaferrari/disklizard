@@ -3,7 +3,7 @@
  * High-concurrency traversal; worker offload optional.
  */
 
-import { readdir, stat, rm, access, lstat, realpath } from "node:fs/promises"
+import { readdir, stat, rm, access, lstat, realpath, readFile } from "node:fs/promises"
 import { basename, dirname, sep } from "node:path"
 import { execFile } from "node:child_process"
 import { promisify } from "node:util"
@@ -34,6 +34,13 @@ const execFileAsync = promisify(execFile)
 const OS = platform()
 const IS_WIN = OS === "win32"
 const CPU_COUNT = Math.max(1, cpus()?.length ?? 1)
+const MAX_SCAN_CONCURRENCY = 64
+const DEFAULT_MAX_DEPTH = 10
+const MAX_SCAN_DEPTH = 64
+const DEFAULT_MAX_CHILDREN = 48
+const MAX_SCAN_CHILDREN = 10_000
+const DEFAULT_PROGRESS_INTERVAL_MS = 100
+const MIN_PROGRESS_INTERVAL_MS = 16
 
 /**
  * The portable walker performs metadata I/O, not CPU work. Keep its default
@@ -47,6 +54,38 @@ export function defaultScanConcurrency(cpuCount: number): number {
 }
 
 const DEFAULT_CONCURRENCY = defaultScanConcurrency(CPU_COUNT)
+
+/**
+ * Keep every host-facing scanner path within the same bounded concurrency
+ * contract. The portable pool cannot make progress with a zero/negative limit,
+ * while JSON cannot represent non-finite values for the native sidecar.
+ */
+export function normalizeScanConcurrency(value: number | undefined, cpuCount = CPU_COUNT): number {
+  if (value === undefined || !Number.isFinite(value)) return defaultScanConcurrency(cpuCount)
+  const normalized = Math.floor(value)
+  if (normalized < 1) return defaultScanConcurrency(cpuCount)
+  return Math.min(MAX_SCAN_CONCURRENCY, normalized)
+}
+
+function normalizedInteger(value: number | undefined, fallback: number, minimum: number, maximum?: number): number {
+  if (value === undefined || !Number.isFinite(value)) return fallback
+  const normalized = Math.floor(value)
+  return Math.min(maximum ?? Number.MAX_SAFE_INTEGER, Math.max(minimum, normalized))
+}
+
+/**
+ * Apply one conservative options contract before the desktop native sidecar,
+ * in-process fallback, worker fallback, and snapshot cache see a scan request.
+ */
+export function normalizeScanOptions(options: ScanOptions): ScanOptions {
+  return {
+    ...options,
+    maxDepth: normalizedInteger(options.maxDepth, DEFAULT_MAX_DEPTH, 0, MAX_SCAN_DEPTH),
+    concurrency: normalizeScanConcurrency(options.concurrency),
+    maxChildren: normalizedInteger(options.maxChildren, DEFAULT_MAX_CHILDREN, 1, MAX_SCAN_CHILDREN),
+    progressIntervalMs: normalizedInteger(options.progressIntervalMs, DEFAULT_PROGRESS_INTERVAL_MS, MIN_PROGRESS_INTERVAL_MS),
+  }
+}
 
 const EMPTY_CHILDREN: DiskNode[] = []
 Object.freeze(EMPTY_CHILDREN)
@@ -108,7 +147,10 @@ class Pool {
 }
 
 function sortBySizeDesc(a: DiskNode, b: DiskNode) {
-  return b.size - a.size
+  if (a.size !== b.size) return b.size - a.size
+  // JavaScript's string order is UTF-16 code-unit order. Keeping it explicit
+  // makes top-K retention and Other samples stable across traversal timing.
+  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
 }
 
 function apparentBytes(node: Pick<DiskNode, "size" | "logicalSize">) {
@@ -1161,26 +1203,27 @@ async function walkDir(
 }
 
 export async function scanPathSync(targetPath: string, options: ScanOptions = {}): Promise<DiskNode> {
-  const internalOptions = options as InternalScanOptions
+  const normalizedOptions = normalizeScanOptions(options)
+  const internalOptions = normalizedOptions as InternalScanOptions
   const {
     onProgress,
-    maxDepth = 10,
+    maxDepth = DEFAULT_MAX_DEPTH,
     concurrency = DEFAULT_CONCURRENCY,
-    maxChildren = 48,
+    maxChildren = DEFAULT_MAX_CHILDREN,
     preserveNames = [],
     collapseNames = [],
     signatureNames = [],
-    progressIntervalMs = 100,
+    progressIntervalMs = DEFAULT_PROGRESS_INTERVAL_MS,
     signal,
     sizeMode = "physical",
     excludePaths = [],
     developerArtifactInventory,
-  } = options
+  } = normalizedOptions
 
   const name = basename(targetPath) || targetPath
   const artifactInventoryOptions = normalizeDeveloperArtifactInventoryOptions(developerArtifactInventory)
   const st: WalkState = {
-    pool: new Pool(concurrency),
+    pool: new Pool(normalizeScanConcurrency(concurrency)),
     maxDepth,
     maxChildren,
     preserveNames: new Set(preserveNames.map((name) => name.toLowerCase())),
@@ -1328,7 +1371,10 @@ class Pool {
     }
   }
 }
-function sortBySizeDesc(a,b){ return b.size - a.size; }
+function sortBySizeDesc(a,b){
+  if (a.size !== b.size) return b.size - a.size;
+  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+}
 function apparentBytes(node) { return node.logicalSize ?? node.size; }
 function measureFile(st, stats, nodePath) {
   const logicalSize = stats.size;
@@ -1624,22 +1670,23 @@ async function walkDir(dirPath, name, st, depth) {
 `
 
 function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNode> {
+  const normalizedOptions = normalizeScanOptions(options)
   const {
     onProgress,
-    maxDepth = 10,
+    maxDepth = DEFAULT_MAX_DEPTH,
     concurrency = DEFAULT_CONCURRENCY,
-    maxChildren = 48,
+    maxChildren = DEFAULT_MAX_CHILDREN,
     preserveNames = [],
     collapseNames = [],
     signatureNames = [],
-    progressIntervalMs = 100,
+    progressIntervalMs = DEFAULT_PROGRESS_INTERVAL_MS,
     sizeMode = "physical",
     excludePaths = [],
-  } = options
+  } = normalizedOptions
 
   return new Promise((resolve, reject) => {
-    if (options.signal?.aborted) {
-      reject(options.signal.reason)
+    if (normalizedOptions.signal?.aborted) {
+      reject(normalizedOptions.signal.reason)
       return
     }
 
@@ -1649,7 +1696,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
       workerData: {
         targetPath,
         maxDepth,
-        concurrency,
+        concurrency: normalizeScanConcurrency(concurrency),
         maxChildren,
         preserveNames,
         collapseNames,
@@ -1661,7 +1708,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
     })
     let settled = false
 
-    const cleanup = () => options.signal?.removeEventListener("abort", onAbort)
+    const cleanup = () => normalizedOptions.signal?.removeEventListener("abort", onAbort)
     const finish = (result: { root: DiskNode } | { error: unknown }) => {
       if (settled) return
       settled = true
@@ -1670,10 +1717,10 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
       if ("root" in result) resolve(result.root)
       else reject(result.error)
     }
-    const onAbort = () => finish({ error: options.signal?.reason ?? new Error("Scan cancelled") })
+    const onAbort = () => finish({ error: normalizedOptions.signal?.reason ?? new Error("Scan cancelled") })
 
-    options.signal?.addEventListener("abort", onAbort, { once: true })
-    if (options.signal?.aborted) {
+    normalizedOptions.signal?.addEventListener("abort", onAbort, { once: true })
+    if (normalizedOptions.signal?.aborted) {
       onAbort()
       return
     }
@@ -1726,28 +1773,42 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
 
 /** Public entry — worker offload by default for responsiveness + same fast algorithm */
 export async function scanPath(targetPath: string, options: ScanOptions = {}): Promise<DiskNode> {
-  options.signal?.throwIfAborted()
+  const normalizedOptions = normalizeScanOptions(options)
+  normalizedOptions.signal?.throwIfAborted()
   // The inline worker intentionally remains a lightweight map-only fallback.
   // An opt-in inventory needs root-only status and records, so keep this path
   // in process rather than silently returning a tree without the requested
   // inventory. Native desktop scans retain their parallel inventory support.
-  if (options.developerArtifactInventory) return scanPathSync(targetPath, { ...options, useWorker: false })
-  const useWorker = options.useWorker !== false && typeof Worker !== "undefined"
+  if (normalizedOptions.developerArtifactInventory)
+    return scanPathSync(targetPath, { ...normalizedOptions, useWorker: false })
+  const useWorker = normalizedOptions.useWorker !== false && typeof Worker !== "undefined"
 
   if (useWorker) {
     try {
-      return await scanInWorker(targetPath, options)
+      return await scanInWorker(targetPath, normalizedOptions)
     } catch (err) {
-      options.signal?.throwIfAborted()
+      normalizedOptions.signal?.throwIfAborted()
       // Fallback to in-process if worker fails (packaging / policy)
       if (process.env.DISKLIZARD_SCAN_DEBUG) console.warn("[disklizard] worker failed, in-process fallback", err)
     }
   }
 
-  return scanPathSync(targetPath, options)
+  return scanPathSync(targetPath, normalizedOptions)
 }
 
 // ── Drives (fast Windows path: WMIC is slower; prefer PowerShell once) ────
+
+/**
+ * Drive-picker entries and the stricter mount evidence required by permanent
+ * deletion. `drives` may intentionally omit support/system mounts; `mountRoots`
+ * must not. `complete` is false whenever the platform enumeration fell back or
+ * any discovery row could not be understood.
+ */
+export type DriveDiscovery = {
+  drives: DriveInfo[]
+  mountRoots: string[]
+  complete: boolean
+}
 
 export function mountExclusions(targetPath: string, drives: readonly DriveInfo[], os: NodeJS.Platform = OS): string[] {
   const normalize = (value: string) => {
@@ -1984,7 +2045,19 @@ function enrichMacDrivesWithinBudget(drives: DriveInfo[]): Promise<DriveInfo[]> 
   })
 }
 
-export async function getDrives(): Promise<DriveInfo[]> {
+const WINDOWS_DRIVE_DISCOVERY_SCRIPT = [
+  "$drives = @(Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,VolumeName,Size,FreeSpace,DriveType)",
+  "$complete = $true",
+  "$mountRoots = @()",
+  "try { $mountRoots = @(Get-Partition -ErrorAction Stop | ForEach-Object { $_.AccessPaths }) } catch { $complete = $false }",
+  "[pscustomobject]@{ Drives = $drives; MountRoots = @($mountRoots | Where-Object { $_ } | Sort-Object -Unique); Complete = $complete } | ConvertTo-Json -Compress -Depth 4",
+].join("; ")
+
+function fallbackSystemDrive(): DriveInfo {
+  return { path: "/", name: "System", label: "System (/)", total: 0, free: 0, used: 0, type: "local" }
+}
+
+export async function getDriveDiscovery(): Promise<DriveDiscovery> {
   if (IS_WIN) {
     try {
       const { stdout } = await execFileAsync(
@@ -1993,12 +2066,12 @@ export async function getDrives(): Promise<DriveInfo[]> {
           "-NoProfile",
           "-NonInteractive",
           "-Command",
-          "[Console]::OutputEncoding=[Text.UTF8Encoding]::UTF8; Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,VolumeName,Size,FreeSpace,DriveType | ConvertTo-Json -Compress",
+          `[Console]::OutputEncoding=[Text.UTF8Encoding]::UTF8; ${WINDOWS_DRIVE_DISCOVERY_SCRIPT}`,
         ],
         { windowsHide: true, maxBuffer: 2 * 1024 * 1024 },
       )
-      const drives = parseWindowsDriveOutput(stdout)
-      if (drives.length) return drives
+      const discovery = parseWindowsDriveDiscoveryOutput(stdout)
+      if (discovery.drives.length) return discovery
     } catch {
       /* letter probe */
     }
@@ -2023,30 +2096,64 @@ export async function getDrives(): Promise<DriveInfo[]> {
       }
     })
     for (const d of await Promise.all(probes)) if (d) drives.push(d)
-    return drives
+    return { drives, mountRoots: drives.map((drive) => drive.path), complete: false }
   }
 
-  // macOS / Linux — `df -P` is portable and does not touch mount contents.
+  // `df -P` provides display capacity. Linux deletion safety uses mountinfo
+  // separately because `df` may suppress bind and zero-sized mounts.
+  let dfOutput: string | undefined
+  let drives: DriveInfo[] = []
   try {
     const { stdout } = await execFileAsync("df", ["-kP"], { maxBuffer: 1024 * 1024 })
-    const drives = parseDfOutput(stdout, OS)
-    if (drives.length) return OS === "darwin" ? enrichMacDrivesWithinBudget(drives) : drives
+    dfOutput = stdout
+    drives = parseDfOutput(stdout, OS)
   } catch {
-    /* fall through */
+    /* keep the picker fallback separate from mount-safety evidence */
   }
 
-  return [{ path: "/", name: "System", label: "System (/)", total: 0, free: 0, used: 0, type: "local" }]
+  let mountDiscovery: Pick<DriveDiscovery, "mountRoots" | "complete">
+  if (OS === "linux") {
+    try {
+      mountDiscovery = parseLinuxMountInfo(await readFile("/proc/self/mountinfo", "utf8"))
+    } catch {
+      mountDiscovery = { mountRoots: [], complete: false }
+    }
+  } else {
+    mountDiscovery = dfOutput ? parseDfMountDiscovery(dfOutput) : { mountRoots: [], complete: false }
+  }
+
+  if (drives.length || mountDiscovery.mountRoots.length) {
+    return {
+      drives: drives.length
+        ? OS === "darwin"
+          ? await enrichMacDrivesWithinBudget(drives)
+          : drives
+        : [fallbackSystemDrive()],
+      ...mountDiscovery,
+    }
+  }
+
+  return { drives: [fallbackSystemDrive()], mountRoots: ["/"], complete: false }
 }
 
-export function parseWindowsDriveOutput(stdout: string): DriveInfo[] {
+/** Drive-picker compatibility wrapper. Safety-sensitive code uses getDriveDiscovery(). */
+export async function getDrives(): Promise<DriveInfo[]> {
+  return (await getDriveDiscovery()).drives
+}
+
+function parseJson(stdout: string): unknown {
   let parsed: unknown
   try {
     parsed = JSON.parse(stdout.trim() || "[]")
   } catch {
-    return []
+    return undefined
   }
+  return parsed
+}
 
-  const items = Array.isArray(parsed) ? parsed : [parsed]
+function parseWindowsDrives(parsed: unknown): DriveInfo[] {
+  const value = isRecord(parsed) && Reflect.has(parsed, "Drives") ? parsed.Drives : parsed
+  const items = Array.isArray(value) ? value : [value]
   return items.flatMap((item) => {
     if (!isRecord(item)) return []
     const drive = item
@@ -2071,17 +2178,116 @@ export function parseWindowsDriveOutput(stdout: string): DriveInfo[] {
   })
 }
 
+export function parseWindowsDriveOutput(stdout: string): DriveInfo[] {
+  return parseWindowsDrives(parseJson(stdout))
+}
+
+function normalizeWindowsMountRoot(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined
+  const path = value.trim().replace(/\//g, "\\")
+  if (/^[a-z]:\\/i.test(path)) return path
+  if (/^\\\\(?![?.]\\)[^\\]+\\[^\\]+/i.test(path)) return path
+  return undefined
+}
+
+export function parseWindowsDriveDiscoveryOutput(stdout: string): DriveDiscovery {
+  const parsed = parseJson(stdout)
+  const drives = parseWindowsDrives(parsed)
+  const reportedRoots = isRecord(parsed)
+    ? Array.isArray(parsed.MountRoots)
+      ? parsed.MountRoots
+      : [parsed.MountRoots]
+    : []
+  const mountRoots: string[] = []
+  const seen = new Set<string>()
+  for (const candidate of [...drives.map((drive) => drive.path), ...reportedRoots]) {
+    const root = normalizeWindowsMountRoot(candidate)
+    if (!root) continue
+    const key = root.toLowerCase().replace(/[\\]+$/, "")
+    if (seen.has(key)) continue
+    seen.add(key)
+    mountRoots.push(root)
+  }
+
+  return {
+    drives,
+    mountRoots,
+    complete: isRecord(parsed) && parsed.Complete === true && drives.length > 0 && mountRoots.length > 0,
+  }
+}
+
+type DfRow = {
+  source: string
+  totalK: number
+  freeK: number
+  mount: string
+}
+
+function decodeDfMount(value: string): string {
+  return value.replace(/\\040/g, " ").replace(/\\011/g, "\t").replace(/\\134/g, "\\")
+}
+
+function parseDfRows(stdout: string): { rows: DfRow[]; complete: boolean } {
+  const lines = stdout.trim().split("\n")
+  const dataLines = lines.slice(1).filter((line) => line.trim())
+  const rows: DfRow[] = []
+  let complete = lines.length > 1 && dataLines.length > 0
+  for (const line of dataLines) {
+    const match = line.match(/^(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+\d+%\s+(.+)$/)
+    if (!match) {
+      complete = false
+      continue
+    }
+    const mount = decodeDfMount(match[5])
+    if (!mount.startsWith("/")) {
+      complete = false
+      continue
+    }
+    rows.push({ source: match[1], totalK: Number(match[2]) || 0, freeK: Number(match[4]) || 0, mount })
+  }
+  if (!rows.some((row) => row.mount === "/")) complete = false
+  return { rows, complete }
+}
+
+export function parseDfMountDiscovery(stdout: string): Pick<DriveDiscovery, "mountRoots" | "complete"> {
+  const parsed = parseDfRows(stdout)
+  return { mountRoots: [...new Set(parsed.rows.map((row) => row.mount))], complete: parsed.complete }
+}
+
+function decodeLinuxMountInfoPath(value: string): string {
+  const escaped: Record<string, string> = { "040": " ", "011": "\t", "012": "\n", "134": "\\" }
+  return value.replace(/\\(040|011|012|134)/g, (_match, code: string) => escaped[code])
+}
+
+/** Parse the kernel's complete, per-process Linux mount table. */
+export function parseLinuxMountInfo(stdout: string): Pick<DriveDiscovery, "mountRoots" | "complete"> {
+  const lines = stdout.split("\n").filter((line) => line.trim())
+  const roots: string[] = []
+  let complete = lines.length > 0
+  for (const line of lines) {
+    const separator = line.indexOf(" - ")
+    const fields = (separator === -1 ? line : line.slice(0, separator)).split(" ")
+    if (separator === -1 || fields.length < 6) {
+      complete = false
+      continue
+    }
+    const mount = decodeLinuxMountInfoPath(fields[4])
+    if (!mount.startsWith("/")) {
+      complete = false
+      continue
+    }
+    roots.push(mount)
+  }
+  const mountRoots = [...new Set(roots)]
+  if (!mountRoots.includes("/")) complete = false
+  return { mountRoots, complete }
+}
+
 export function parseDfOutput(stdout: string, os: NodeJS.Platform): DriveInfo[] {
   const seen = new Set<string>()
   const drives: DriveInfo[] = []
-  for (const line of stdout.trim().split("\n").slice(1)) {
-    const match = line.match(/^(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+\d+%\s+(.+)$/)
-    if (!match) continue
-    const source = match[1]
-    const totalK = Number(match[2]) || 0
-    const freeK = Number(match[4]) || 0
-    const mount = match[5].replace(/\\040/g, " ").replace(/\\011/g, "\t").replace(/\\134/g, "\\")
-    if (!mount.startsWith("/") || seen.has(mount) || totalK < 1024 * 100) continue
+  for (const { source, totalK, freeK, mount } of parseDfRows(stdout).rows) {
+    if (seen.has(mount) || totalK < 1024 * 100) continue
 
     const baseName = mount.split("/").filter(Boolean).pop() || ""
     if (os === "darwin") {
@@ -2122,23 +2328,62 @@ export function parseDfOutput(stdout: string, os: NodeJS.Platform): DriveInfo[] 
   return drives.sort((a, b) => (a.path === "/" ? -1 : b.path === "/" ? 1 : a.name.localeCompare(b.name)))
 }
 
-export async function assertSafeDeletionPath(targetPath: string) {
+function isMissingPathError(error: unknown): boolean {
+  return isRecord(error) && error.code === "ENOENT"
+}
+
+/**
+ * Prove a permanent-deletion target is neither protected nor a mount root.
+ * A supplied discovery lets callers reuse a fresh result and keeps the safety
+ * policy deterministic in tests; incomplete discovery is always rejected.
+ */
+export async function assertSafeDeletionPath(targetPath: string, knownDiscovery?: DriveDiscovery) {
   const diskPlatform: DiskPlatform = OS === "darwin" || OS === "win32" ? OS : "linux"
-  const drives = await getDrives()
-  const options = { homePath: homedir(), mountRoots: drives.map((drive) => drive.path) }
-  const blocked = deletionBlockReason(targetPath, diskPlatform, options)
+  const blocked = deletionBlockReason(targetPath, diskPlatform, { homePath: homedir() })
   if (blocked) throw new Error(blocked)
 
+  let info: Stats
   try {
-    const info = await lstat(targetPath)
-    if (!info.isSymbolicLink()) {
-      const resolved = await realpath(targetPath)
-      const resolvedBlock = deletionBlockReason(resolved, diskPlatform, options)
-      if (resolvedBlock) throw new Error(resolvedBlock)
-    }
+    info = await lstat(targetPath)
   } catch (error) {
-    if (error instanceof Error && !Reflect.has(error, "code")) throw error
+    if (isMissingPathError(error)) return
+    throw error
   }
+
+  const discovery = knownDiscovery ?? (await getDriveDiscovery())
+  if (!discovery.complete || discovery.mountRoots.length === 0) {
+    throw new Error("Permanent deletion is unavailable because mounted volumes could not be verified.")
+  }
+
+  const options = { homePath: homedir(), mountRoots: discovery.mountRoots }
+  const mountBlock = deletionBlockReason(targetPath, diskPlatform, options)
+  if (mountBlock) throw new Error(mountBlock)
+  // Removing a symlink removes the link itself, not the directory it names.
+  if (info.isSymbolicLink()) return
+
+  let resolved: string
+  try {
+    resolved = await realpath(targetPath)
+  } catch (error) {
+    if (isMissingPathError(error)) return
+    throw error
+  }
+  const resolvedBlock = deletionBlockReason(resolved, diskPlatform, options)
+  if (resolvedBlock) throw new Error(resolvedBlock)
+
+  let resolvedInfo: Stats
+  let parentInfo: Stats
+  try {
+    resolvedInfo = await lstat(resolved)
+    parentInfo = await lstat(dirname(resolved))
+  } catch (error) {
+    if (isMissingPathError(error)) return
+    throw error
+  }
+  if (info.dev !== resolvedInfo.dev || info.ino !== resolvedInfo.ino) {
+    throw new Error("The deletion target changed while it was being validated.")
+  }
+  if (resolvedInfo.dev !== parentInfo.dev) throw new Error("A mounted volume cannot be removed.")
 }
 
 export async function deleteDiskPath(targetPath: string) {

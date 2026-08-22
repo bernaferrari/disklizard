@@ -58,7 +58,7 @@ export function ScanFormation(props: ScanFormationProps) {
     <section class="w-full max-w-7xl" aria-label={`Scanning ${props.label}`}>
       <header class="flex min-h-[94px] flex-wrap items-end justify-between gap-5 border-b border-border-weaker-base pb-5">
         <div class="min-w-0">
-          <div class="mb-2 flex items-center gap-2 text-9-semibold uppercase tracking-[0.16em] text-text-weak">
+          <div class="mb-2 flex items-center gap-2 text-13-semibold uppercase tracking-[0.16em] text-text-weak">
             <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_176)]" />
             Scanning
           </div>
@@ -67,7 +67,7 @@ export function ScanFormation(props: ScanFormationProps) {
           </h2>
         </div>
         <div class="flex items-center gap-5">
-          <p class="hidden text-right text-9-regular leading-relaxed text-text-weaker sm:block">
+          <p class="hidden text-right text-13-regular leading-relaxed text-text-weaker sm:block">
             Read-only
             <br />
             No files are changed
@@ -90,12 +90,12 @@ export function ScanFormation(props: ScanFormationProps) {
           </div>
 
           <div class="border-b border-border-weaker-base py-6">
-            <div class="flex items-center gap-2 text-10-semibold uppercase tracking-[0.14em] text-text-weaker">
+            <div class="flex items-center gap-2 text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
               <Icon name="folder" class="size-3" />
               Scanning now
             </div>
             <p
-              class="mt-2 line-clamp-2 min-h-10 break-words font-mono text-10-regular leading-relaxed text-text-weak"
+              class="mt-2 line-clamp-2 min-h-10 break-words text-13-mono leading-relaxed text-text-weak"
               title={props.currentPath}
             >
               {props.currentPath ? truncatePath(props.currentPath, 112) : "Starting scan…"}
@@ -105,7 +105,7 @@ export function ScanFormation(props: ScanFormationProps) {
           <div class="flex min-h-[190px] flex-1 items-center py-6">
             <div class="border-l border-[oklch(0.74_0.13_176)] py-1 pl-5">
               <h3 class="text-12-semibold text-text-strong">Building your storage map</h3>
-              <p class="mt-2 max-w-[44ch] text-9-regular leading-relaxed text-text-weak">
+              <p class="mt-2 max-w-[44ch] text-13-regular leading-relaxed text-text-weak">
                 DiskLizard is measuring every readable file and folder. The map opens when the scan finishes.
               </p>
             </div>
@@ -166,8 +166,8 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
         <span class="text-[clamp(26px,3.2vw,38px)] font-medium tracking-[-0.045em] tabular-nums text-text-strong">
           {props.bytes > 0 ? shortBytes(props.bytes) : "—"}
         </span>
-        <span class="mt-1 text-9-semibold uppercase tracking-[0.16em] text-text-weaker">scanned</span>
-        <span class="mt-3 text-9-regular tabular-nums text-text-weak">{formatCount(props.files)} files</span>
+        <span class="mt-1 text-13-semibold uppercase tracking-[0.16em] text-text-weaker">scanned</span>
+        <span class="mt-3 text-13-regular tabular-nums text-text-weak">{formatCount(props.files)} files</span>
       </div>
     </div>
   )
@@ -176,7 +176,7 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
 function ScanMetric(props: { label: string; value: string }) {
   return (
     <div class="min-w-0">
-      <p class="text-9-semibold uppercase tracking-[0.13em] text-text-weaker">{props.label}</p>
+      <p class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker">{props.label}</p>
       <p class="mt-1.5 truncate text-13-medium tabular-nums text-text-strong">{props.value}</p>
     </div>
   )

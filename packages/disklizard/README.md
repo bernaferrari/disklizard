@@ -1,4 +1,4 @@
-# `@opencode-ai/disklizard`
+# `@disklizard/core`
 
 Shared scanning, tree, safety, formatting, and terminal primitives for DiskLizard.
 
@@ -28,14 +28,14 @@ bun packages/disklizard/bin/disklizard.ts /path/to/inspect
 | `Escape`, `H`, or `Backspace` | Move to the parent; exit from the root           |
 | `R`                           | Rescan                                           |
 | `O`                           | Print the selected path to stderr                |
-| `D`, then `Y`                 | Confirm deletion through the shared safety layer |
+| `D`                           | Show safe cleanup guidance (the TUI is read-only) |
 | `?`                           | Show help                                        |
 | `Q`                           | Quit                                             |
 
 ## API
 
 ```ts
-import { buildCrumbs, formatBytes, getDrives, scanPath } from "@opencode-ai/disklizard"
+import { buildCrumbs, formatBytes, getDrives, scanPath } from "@disklizard/core"
 
 const controller = new AbortController()
 
@@ -108,7 +108,7 @@ packages/disklizard/
   native-scanner/         Rust scanner and tests
   scripts/build-native.ts Release build and desktop copy step
   src/
-    scan.ts               TypeScript traversal, drives, deletion adapter
+    scan.ts               TypeScript traversal and drive discovery
     safety.ts             Cross-platform protected-path policy
     tree.ts               Navigation and tree helpers
     format.ts             Byte and percentage formatting

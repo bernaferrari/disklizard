@@ -66,7 +66,7 @@ export function CollectionDropTarget(props: {
       >
         <Icon name={props.active ? "arrow-down-to-line" : hasItems() ? "checklist" : "trash"} class="size-[18px]" />
         {hasItems() && !props.node ? (
-          <span class="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-text-strong px-1 text-[10px] font-semibold tabular-nums text-background-base">
+          <span class="absolute -right-1 -top-1 grid min-h-6 min-w-6 place-items-center rounded-full bg-text-strong px-1 text-13-semibold tabular-nums text-background-base">
             {props.count > 99 ? "99+" : props.count}
           </span>
         ) : null}
@@ -74,7 +74,7 @@ export function CollectionDropTarget(props: {
 
       <span class="min-w-0 flex-1">
         <span class="block truncate text-12-semibold tracking-[-0.01em] text-text-strong">{title()}</span>
-        <span class="mt-0.5 block truncate text-10-regular tabular-nums text-text-weak" title={detail()}>
+        <span class="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak" title={detail()}>
           {detail()}
         </span>
       </span>

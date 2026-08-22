@@ -1,7 +1,7 @@
 /**
- * @opencode-ai/disklizard — shared core for Desktop (Electron) + TUI
+ * @disklizard/core — shared core for Desktop (Electron) + TUI
  *
- *   import { scanPath, formatBytes, buildCrumbs } from "@opencode-ai/disklizard"
+ *   import { scanPath, formatBytes, buildCrumbs } from "@disklizard/core"
  *   bun packages/disklizard/bin/disklizard.ts   # terminal UI
  */
 
@@ -38,5 +38,18 @@ export {
   normalizeDeveloperArtifactInventoryOptions,
   type DeveloperArtifactClassification,
 } from "./developer-artifacts"
-export { scanPath, scanPathSync, getDrives, getDriveFacts, mountExclusions, assertSafeDeletionPath, deleteDiskPath } from "./scan"
+export {
+  scanPath,
+  scanPathSync,
+  normalizeScanConcurrency,
+  normalizeScanOptions,
+  getDrives,
+  getDriveDiscovery,
+  getDriveFacts,
+  mountExclusions,
+  assertSafeDeletionPath,
+  deleteDiskPath,
+  type DriveDiscovery,
+} from "./scan"
 export { renderTuiBars, renderTuiHeader, renderTuiHelp } from "./tui/render"
+export { diskLizardCliHelp, formatDiskLizardSummary, parseDiskLizardCliArgs, runDiskLizardCli } from "./cli"

@@ -57,7 +57,7 @@ export function DriveRow(props: {
         </span>
         <span class="min-w-0">
           <span class="block truncate text-14-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</span>
-          <span class="mt-1 block truncate font-mono text-10-regular text-text-weaker">{props.drive.path}</span>
+          <span class="mt-1 block truncate text-13-mono text-text-weaker">{props.drive.path}</span>
           <DriveStorageTruth drive={props.drive} />
           <span class="mt-2 flex min-h-9 items-center gap-2">
             <Show
@@ -90,15 +90,15 @@ export function DriveRow(props: {
         <Show
           when={props.job}
           fallback={
-            <Show when={hasTotal()} fallback={<span class="text-10-regular text-text-weak">Ready to scan</span>}>
+            <Show when={hasTotal()} fallback={<span class="text-13-regular text-text-weak">Ready to scan</span>}>
               <span class="flex items-end justify-between gap-4 tabular-nums">
                 <span>
-                  <span class="block text-9-semibold uppercase tracking-[0.13em] text-text-weaker">available</span>
+                  <span class="block text-13-semibold uppercase tracking-[0.13em] text-text-weaker">available</span>
                   <span class="mt-1 block text-14-medium tracking-[-0.02em] text-text-strong">
                     {formatBytes(props.drive.free)}
                   </span>
                 </span>
-                <span class="pb-0.5 text-10-regular text-text-weak">
+                <span class="pb-0.5 text-13-regular text-text-weak">
                   {formatBytes(props.drive.used)} used of {formatBytes(props.drive.total)}
                 </span>
               </span>
@@ -109,7 +109,7 @@ export function DriveRow(props: {
             <span>
               <span class="flex items-end justify-between gap-4 tabular-nums">
                 <span>
-                  <span class="block text-9-semibold uppercase tracking-[0.13em] text-text-weaker">
+                  <span class="block text-13-semibold uppercase tracking-[0.13em] text-text-weaker">
                     {job().status === "complete"
                       ? job().source === "snapshot"
                         ? "cached map"
@@ -125,7 +125,7 @@ export function DriveRow(props: {
                   </span>
                 </span>
                 <span
-                  class="max-w-[180px] truncate pb-0.5 text-10-regular text-text-weak"
+                  class="max-w-[180px] truncate pb-0.5 text-13-regular text-text-weak"
                   title={
                     job().status === "complete" && completedPerformance()
                       ? `Completed in ${formatScanDuration(completedPerformance()!.elapsedMs)} at ${formatScanRate(
@@ -187,7 +187,7 @@ export function DriveRow(props: {
                     : "Live"
               : shortBytes(props.drive.free)}
           </span>
-          <span class="mt-0.5 block text-9-semibold uppercase tracking-[0.12em] text-text-weaker">
+          <span class="mt-0.5 block text-13-semibold uppercase tracking-[0.12em] text-text-weaker">
             {props.job ? (complete() ? "map" : failed() ? "retry" : "scanned") : "free"}
           </span>
         </span>
@@ -212,45 +212,32 @@ export function DriveStorageTruth(props: { drive: DiskDriveInfo }) {
   const snapshots = () => props.drive.snapshotCount ?? 0
   if (!isApfs()) return null
   return (
-    <>
-      <details class="group mt-2 max-w-[32rem]">
-        <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-1.5 text-9-regular text-text-weaker marker:content-none outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-          <Icon name="help" class="size-3 shrink-0" />
-          <span class="truncate">
-            APFS shared capacity
-            <Show when={props.drive.sharedFree !== undefined}>
-              {` · ${formatBytes(props.drive.sharedFree ?? 0)} currently free in the container`}
-            </Show>
-          </span>
-          <Icon name="chevron-down" class="size-3 shrink-0 transition-transform duration-150 group-open:rotate-180" />
-        </summary>
-        <div class="border-l border-border-weaker-base py-1 pl-3 text-9-regular leading-relaxed text-text-weaker">
-          <p>
-            macOS shares this capacity between APFS volumes. Purgeable space is managed by macOS, so DiskLizard does not
-            count it as cleanup-ready space.
-          </p>
-          <Show when={snapshots() > 0}>
-            <p class="mt-1">
-              {snapshots()} {snapshots() === 1 ? "snapshot is" : "snapshots are"} present
-              <Show when={props.drive.purgeableSnapshotCount}>
-                {(count) => ` · ${count()} marked purgeable`}
-              </Show>
-              <Show when={props.drive.timeMachineSnapshotCount}>
-                {(count) => ` · ${count()} Time Machine`}
-              </Show>
-              . Snapshot byte sizes are not reported reliably by macOS and are excluded from this map.
-            </p>
-          </Show>
-          <Show when={snapshots() === 0}>
-            <p class="mt-1">
-              Time Machine local snapshots can share this pool when present. They are system-managed and never treated as
-              cleanup candidates.
-            </p>
-          </Show>
-        </div>
-      </details>
-      <ApfsSnapshotEvidenceList snapshotCount={snapshots()} snapshots={props.drive.apfsSnapshots} class="max-w-[32rem]" />
-    </>
+    <details class="group mt-2 max-w-[32rem]">
+      <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-1.5 text-13-regular text-text-weaker marker:content-none outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+        <Icon name="help" class="size-3 shrink-0" />
+        <span class="truncate">
+          APFS storage details
+          <Show when={props.drive.sharedFree !== undefined}>{` · ${formatBytes(props.drive.sharedFree ?? 0)} free`}</Show>
+          <Show when={snapshots() > 0}>{` · ${snapshots()} ${snapshots() === 1 ? "snapshot" : "snapshots"}`}</Show>
+        </span>
+        <Icon name="chevron-down" class="size-3 shrink-0 transition-transform duration-150 group-open:rotate-180" />
+      </summary>
+      <div class="border-l border-border-weaker-base py-1 pl-3 text-13-regular leading-relaxed text-text-weaker">
+        <p>
+          macOS shares capacity between APFS volumes. Purgeable space is system-managed, so DiskLizard never presents it
+          as cleanup-ready space.
+        </p>
+        <Show when={snapshots() === 0}>
+          <p class="mt-2">Local snapshots are system-managed and never treated as cleanup candidates.</p>
+        </Show>
+        <ApfsSnapshotEvidenceList
+          embedded
+          snapshotCount={snapshots()}
+          snapshots={props.drive.apfsSnapshots}
+          class="mt-3 max-w-[32rem]"
+        />
+      </div>
+    </details>
   )
 }
 
@@ -284,13 +271,13 @@ export function ReclaimBanner(props: { bytes: number; count: number; onReview: (
         <Icon name="models" class="size-3.5" />
       </span>
       <span class="min-w-0 flex-1">
-        <span class="block text-10-semibold text-text-strong">Recommendations</span>
-        <span class="mt-0.5 block truncate text-9-regular tabular-nums text-text-weak">
+        <span class="block text-13-semibold text-text-strong">Recommendations</span>
+        <span class="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak">
           <span ref={valueElement}>{formatBytes(0)}</span>
           {` · ${props.count === 1 ? "1 item" : `${formatCount(props.count)} items`}`}
         </span>{" "}
       </span>
-      <span class="flex shrink-0 items-center gap-1.5 text-9-semibold text-text-strong">
+      <span class="flex shrink-0 items-center gap-1.5 text-13-semibold text-text-strong">
         Review <Icon name="chevron-right" class="size-3" />
       </span>
     </button>

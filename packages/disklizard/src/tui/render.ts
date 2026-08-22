@@ -66,7 +66,7 @@ export function renderTuiHeader(opts: {
   rate?: number
 }): string {
   const { title, path, size, cols, scanning, files, rate } = opts
-  const line1 = `${BOLD}${CYAN}DISKLIZARD${RESET} ${DIM}· space map · opencode${RESET}`
+  const line1 = `${BOLD}${CYAN}DISKLIZARD${RESET} ${DIM}· developer storage explorer${RESET}`
   const status = scanning
     ? `${YELLOW}SCAN${RESET} ${(files ?? 0).toLocaleString()} files${rate ? ` ${DIM}${rate}/s${RESET}` : ""}`
     : `${GREEN}READY${RESET}`
@@ -82,7 +82,9 @@ export function renderTuiBars(
 ): { lines: string[]; items: DiskNode[] } {
   const items = sortedChildren(node)
   const maxRows = opts.maxRows ?? 24
-  const shown = items.slice(0, maxRows)
+  const selected = Math.min(Math.max(0, opts.selected), Math.max(0, items.length - 1))
+  const start = Math.min(Math.max(0, selected - maxRows + 1), Math.max(0, items.length - maxRows))
+  const shown = items.slice(start, start + maxRows)
   const total = node.size || 1
   const nameW = Math.max(16, Math.min(40, opts.cols - 36))
   const barW = Math.max(8, Math.min(28, opts.cols - nameW - 22))
@@ -92,27 +94,32 @@ export function renderTuiBars(
   ]
 
   shown.forEach((child, i) => {
-    const sel = i === opts.selected
+    const itemIndex = start + i
+    const sel = itemIndex === selected
     const marker = sel ? `${GREEN}❯${RESET}` : " "
     const icon = child.isDir ? (child.isOther ? "⋯" : "▸") : "·"
     const name = truncate(`${icon} ${child.name}`, nameW - 2)
     const size = pad(formatBytes(child.size), 9, "right")
     const pct = pad(formatPct(child.size, total), 6, "right")
     const frac = child.size / total
-    const col = colorFor(i)
+    const col = colorFor(itemIndex)
     const b = `${col}${bar(frac, barW)}${RESET}`
     const body = `${marker} ${pad(name, nameW - 2)} ${DIM}${size}${RESET} ${pct}  ${b}`
     clean.push(sel ? `${BOLD}${body}${RESET}` : body)
   })
 
-  if (items.length > maxRows) {
-    clean.push(`${DIM}  … +${items.length - maxRows} more (drill into parent groups)${RESET}`)
+  if (start > 0) {
+    clean.splice(1, 0, `${DIM}  ↑ ${start} more above${RESET}`)
+  }
+  const below = items.length - (start + shown.length)
+  if (below > 0) {
+    clean.push(`${DIM}  ↓ ${below} more below${RESET}`)
   }
   if (!items.length) {
     clean.push(`${DIM}  (empty)${RESET}`)
   }
 
-  return { lines: clean, items: shown }
+  return { lines: clean, items }
 }
 
 export function renderTuiHelp(cols: number): string[] {
@@ -125,11 +132,11 @@ export function renderTuiHelp(cols: number): string[] {
     `  ${CYAN}backspace / h / esc${RESET}  parent (root → quit)`,
     `  ${CYAN}r${RESET}          rescan current path`,
     `  ${CYAN}o${RESET}          print full path (stdout)`,
-    `  ${CYAN}d${RESET}          delete selected (confirm y/N)`,
+    `  ${CYAN}d${RESET}          show safe cleanup guidance`,
     `  ${CYAN}?${RESET}          toggle help`,
     `  ${CYAN}q${RESET}          quit`,
     "",
-    `${DIM}Same scanner + tree model as Desktop. Code: packages/disklizard${RESET}`,
+    `${DIM}Read-only by design. Review and move items to Trash in the desktop app.${RESET}`,
   ]
 }
 

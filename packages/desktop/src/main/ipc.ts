@@ -2,7 +2,7 @@ import { execFile, spawn } from "node:child_process"
 import { rm, stat } from "node:fs/promises"
 import { basename, join } from "node:path"
 import { app, BrowserWindow, Notification, clipboard, dialog, ipcMain, shell } from "electron"
-import type { IpcMainEvent, IpcMainInvokeEvent } from "electron"
+import type { IpcMainEvent, IpcMainInvokeEvent, WebContents } from "electron"
 import type { DesktopMenuAction } from "@opencode-ai/app/desktop-menu"
 import { parseDesktopNativeBundle, type DesktopNativeBundle } from "@opencode-ai/app/i18n/desktop-native"
 
@@ -70,8 +70,78 @@ export function registerIpcHandlers(deps: Deps) {
     cacheDir: diskSnapshotCache,
     scan: scanPath,
   })
+  type DiskSnapshotSender = {
+    sender: WebContents
+    owners: Set<string>
+    onDestroyed: () => void
+  }
+  // Completed scans keep their filesystem watcher alive. Share one renderer
+  // lifetime listener across all of its scan owners instead of appending a new
+  // once-listener after every rescan.
+  const diskSnapshotSenders = new Map<number, DiskSnapshotSender>()
+  const diskSnapshotOwnerSenders = new Map<string, number>()
+
+  const detachDiskSnapshotOwner = (owner: string) => {
+    const senderID = diskSnapshotOwnerSenders.get(owner)
+    if (senderID === undefined) return
+    diskSnapshotOwnerSenders.delete(owner)
+    const tracked = diskSnapshotSenders.get(senderID)
+    if (!tracked) return
+    tracked.owners.delete(owner)
+    if (tracked.owners.size > 0) return
+    diskSnapshotSenders.delete(senderID)
+    if (!tracked.sender.isDestroyed()) tracked.sender.removeListener("destroyed", tracked.onDestroyed)
+  }
+
+  const stopDiskSnapshotOwner = (owner: string) => {
+    detachDiskSnapshotOwner(owner)
+    return diskSnapshots.stop(owner)
+  }
+
+  const trackDiskSnapshotOwner = (sender: WebContents, owner: string) => {
+    detachDiskSnapshotOwner(owner)
+    if (sender.isDestroyed()) {
+      void diskSnapshots.stop(owner)
+      return
+    }
+    let tracked = diskSnapshotSenders.get(sender.id)
+    if (!tracked || tracked.sender !== sender) {
+      if (tracked) {
+        if (!tracked.sender.isDestroyed()) tracked.sender.removeListener("destroyed", tracked.onDestroyed)
+        for (const staleOwner of tracked.owners) {
+          diskSnapshotOwnerSenders.delete(staleOwner)
+          void diskSnapshots.stop(staleOwner)
+        }
+      }
+      const owners = new Set<string>()
+      const onDestroyed = () => {
+        const current = diskSnapshotSenders.get(sender.id)
+        if (!current || current.onDestroyed !== onDestroyed) return
+        diskSnapshotSenders.delete(sender.id)
+        for (const currentOwner of current.owners) {
+          diskSnapshotOwnerSenders.delete(currentOwner)
+          diskScans.get(currentOwner)?.abort(new Error("Scan window closed"))
+          void diskSnapshots.stop(currentOwner)
+        }
+      }
+      tracked = { sender, owners, onDestroyed }
+      diskSnapshotSenders.set(sender.id, tracked)
+      sender.once("destroyed", onDestroyed)
+    }
+    tracked.owners.add(owner)
+    diskSnapshotOwnerSenders.set(owner, sender.id)
+  }
+
+  const clearDiskSnapshotOwners = () => {
+    for (const tracked of diskSnapshotSenders.values()) {
+      if (!tracked.sender.isDestroyed()) tracked.sender.removeListener("destroyed", tracked.onDestroyed)
+    }
+    diskSnapshotSenders.clear()
+    diskSnapshotOwnerSenders.clear()
+  }
   app.once("will-quit", () => {
     updaterSubscriptions.clear()
+    clearDiskSnapshotOwners()
     void diskSnapshots.stopAll()
   })
   app.on("before-quit", () => drafts.flush())
@@ -123,12 +193,12 @@ export function registerIpcHandlers(deps: Deps) {
       const senderID = event.sender.id
       const scanID = requestedScanID || "primary"
       const owner = `${senderID}:${scanID}`
+      detachDiskSnapshotOwner(owner)
       diskScans.get(owner)?.abort(new Error("Superseded by a new scan"))
       const controller = new AbortController()
       let latestProgress: ScanProgress | undefined
-      const onDestroyed = () => controller.abort(new Error("Scan window closed"))
       diskScans.set(owner, controller)
-      event.sender.once("destroyed", onDestroyed)
+      trackDiskSnapshotOwner(event.sender, owner)
       try {
         const excludePaths = [
           diskSnapshotCache,
@@ -162,7 +232,7 @@ export function registerIpcHandlers(deps: Deps) {
             scanOptions,
             (update) => {
               if (event.sender.isDestroyed()) {
-                void diskSnapshots.stop(owner)
+                void stopDiskSnapshotOwner(owner)
                 return
               }
               event.sender.send("disklizard:scan-update", { ...update, scanId: scanID })
@@ -183,15 +253,17 @@ export function registerIpcHandlers(deps: Deps) {
               source: result.source,
             })
           }
-          event.sender.once("destroyed", () => void diskSnapshots.stop(owner))
           return result.root
         } catch (error) {
-          if (controller.signal.aborted) return null
+          if (controller.signal.aborted) {
+            await stopDiskSnapshotOwner(owner)
+            return null
+          }
+          await stopDiskSnapshotOwner(owner)
           throw error
         }
       } finally {
         if (diskScans.get(owner) === controller) diskScans.delete(owner)
-        if (!event.sender.isDestroyed()) event.sender.removeListener("destroyed", onDestroyed)
       }
     },
   )
@@ -209,15 +281,15 @@ export function registerIpcHandlers(deps: Deps) {
           ]),
         ]
     owners.forEach((owner) => diskScans.get(owner)?.abort(new Error("Scan cancelled")))
-    void Promise.all(owners.map((owner) => diskSnapshots.stop(owner)))
+    void Promise.all(owners.map(stopDiskSnapshotOwner))
   })
   ipcMain.handle("disklizard:stop-watching", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
     const prefix = `${event.sender.id}:`
-    if (requestedScanID) return diskSnapshots.stop(`${prefix}${requestedScanID}`)
+    if (requestedScanID) return stopDiskSnapshotOwner(`${prefix}${requestedScanID}`)
     return Promise.all(
       [...diskSnapshots.activeOwners()]
         .filter((owner) => String(owner).startsWith(prefix))
-        .map((owner) => diskSnapshots.stop(owner)),
+        .map((owner) => stopDiskSnapshotOwner(String(owner))),
     )
   })
   ipcMain.handle(
@@ -448,9 +520,22 @@ export function registerIpcHandlers(deps: Deps) {
 
   ipcMain.handle("get-window-count", () => BrowserWindow.getAllWindows().length)
 
+  ipcMain.handle("get-window-id", (event: IpcMainInvokeEvent) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) throw new Error("Window not found")
+    const id = getWindowID(win)
+    if (!id) throw new Error("Window ID not found")
+    return id
+  })
+
   ipcMain.handle("get-window-focused", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     return win?.isFocused() ?? false
+  })
+
+  ipcMain.handle("get-window-fullscreen", (event: IpcMainInvokeEvent) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    return win?.isFullScreen() ?? false
   })
 
   ipcMain.handle("set-window-focus", (event: IpcMainInvokeEvent) => {

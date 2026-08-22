@@ -25,14 +25,13 @@ import {
   type DiskStorageDiagnostics,
   type DiskStorageLocation,
 } from "@/context/platform"
+import { useLanguage } from "@/context/language"
 import { useSettings } from "@/context/settings"
 import { Sunburst, primarySegmentColor, sunburstEntryDuration, type SunburstEntryIntent } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
-import { PinnedLocationCard } from "./PinnedLocationCard"
 import { PreviewDialog } from "./PreviewDialog"
-import { StorageDiagnostics } from "./StorageDiagnostics"
 import { createSurfacePresence } from "./motion"
 import { isScanCancellation } from "./scan-progress"
 import {
@@ -74,15 +73,16 @@ import {
   type DeveloperCleanupAgePreset,
 } from "./developer-cleanup"
 import { SAFETY_ACCENT } from "./ui-tokens"
-import { CenterOverlay, DriveFallback, IndexEmpty, Placeholder } from "./DiskUtilityEmptyStates"
+import { CenterOverlay, IndexEmpty, Placeholder } from "./DiskUtilityEmptyStates"
 import { DeveloperCategoryButton, IndexLensButton, SegmentedButton } from "./DiskUtilityControls"
 import { DeveloperCleanupPolicy } from "./DeveloperCleanupPolicy"
-import { DriveRow, ReclaimBanner, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
+import { ReclaimBanner, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
+import { DriveOverview } from "./DiskUtilityDriveOverview"
 import { DetailBar } from "./DiskUtilityDetailBar"
 import { CollectionDialog, DeleteConfirmDialog, ReclaimDrawer, type DeletionProgress } from "./DiskUtilityDialogs"
 import { VirtualIndex } from "./DiskUtilityVirtualList"
 import { clearReviewForRootScan } from "./scan-lifecycle"
-import { refreshScanTabsForWatcherUpdate } from "./scan-tabs"
+import { refreshScanTabsForWatcherUpdate, visibleScanTabCount } from "./scan-tabs"
 import { DISK_UTILITY_STYLES } from "./styles"
 import {
   actionableReclaimSummary,
@@ -265,6 +265,7 @@ function isVisualAggregate(node: DiskScanNode | null | undefined) {
 
 export default function DiskUtilityPage() {
   const platform = usePlatform()
+  const language = useLanguage()
   const settings = useSettings()
   const isDesktop = () => platform.platform === "desktop"
   const disk = () => (platform.platform === "desktop" ? platform.diskUtility : undefined)
@@ -328,8 +329,15 @@ export default function DiskUtilityPage() {
   const [focusedScan, setFocusedScan] = createSignal<{ label: string } | null>(null)
   const [scanTabsElement, setScanTabsElement] = createSignal<HTMLDivElement>()
   const [scanTabsOverflow, setScanTabsOverflow] = createSignal({ start: false, end: false })
+  const volumeJobs = createMemo(() => Object.values(volumeScanJobs).filter((job): job is VolumeScanJob => !!job))
   const scanTabCount = createMemo(
-    () => tabs().length + Object.keys(volumeScanJobs).length + (view() === "scan" && treeRoot() ? 1 : 0),
+    () =>
+      visibleScanTabCount({
+        retainedCount: tabs().length,
+        volumeJobIDs: volumeJobs().map((job) => job.id),
+        activeID: scanSession.activeID,
+        hasCurrentScan: view() === "scan" && !!treeRoot(),
+      }),
   )
 
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
@@ -502,7 +510,6 @@ export default function DiskUtilityPage() {
       { capacity: 0, used: 0, free: 0 },
     ),
   )
-  const volumeJobs = createMemo(() => Object.values(volumeScanJobs).filter((job): job is VolumeScanJob => !!job))
   const runningVolumeScans = createMemo(() => volumeJobs().filter((job) => job.status === "scanning").length)
   const volumeJobForDrive = (drive: DiskDriveInfo) =>
     volumeJobs().find((job) => diskPathEquals(job.sourcePath, drive.path, platform.os))
@@ -2336,22 +2343,27 @@ export default function DiskUtilityPage() {
               <Icon name="folder-add-left" class="size-6" />
             </span>
             <p class="mt-5 text-20-medium tracking-[-0.03em] text-text-strong">Drop to scan</p>
-            <p class="mt-2 text-11-regular text-text-weak">Folders, volumes, and individual files are supported.</p>
+            <p class="mt-2 text-12-regular text-text-weak">Folders, volumes, and individual files are supported.</p>
           </div>
         </div>
       </Show>
 
-      <header class="dl-topbar relative z-20 flex h-14 shrink-0 items-center gap-4 px-5 backdrop-blur-xl">
+      <header
+        class="dl-topbar relative z-20 flex h-14 shrink-0 items-center gap-4 px-5 backdrop-blur-xl"
+        inert={activeDialog() ? true : undefined}
+        aria-hidden={activeDialog() ? "true" : undefined}
+      >
         <button
           type="button"
           data-disk-navigation-home
           class="dl-touch-target group flex min-h-10 shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+          aria-label="Back to volumes"
           onClick={() => backToDrives()}
         >
-          <span class="dl-mark dl-accent-text relative grid size-7 place-items-center rounded-full">
+          <span class="dl-mark dl-accent-text relative grid size-7 place-items-center rounded-full" aria-hidden="true">
             <span class="size-2 rounded-full bg-current" />
           </span>
-          <span class="dl-brand-name text-13-semibold tracking-[-0.02em] text-text-strong">DiskLizard</span>
+          <span class="dl-brand-name text-14-semibold tracking-[-0.02em] text-text-strong">DiskLizard</span>
         </button>
 
         <Show when={view() === "scan" && crumbs().length > 0}>
@@ -2360,7 +2372,7 @@ export default function DiskUtilityPage() {
             {crumbs().length <= 1 ? "Volumes" : "Back"}
           </Button>
           <nav
-            class="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            class="dl-breadcrumbs flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Current location"
           >
             <For each={crumbs()}>
@@ -2371,8 +2383,9 @@ export default function DiskUtilityPage() {
                   </Show>
                   <button
                     type="button"
-                    class="dl-hover-button dl-touch-target min-h-10 max-w-[190px] shrink-0 truncate rounded-md px-2 text-11-regular text-text-weak outline-none transition-[color,background-color] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak"
+                    class="dl-hover-button dl-touch-target min-h-10 max-w-[190px] shrink-0 truncate rounded-md px-2 text-12-regular text-text-weak outline-none transition-[color,background-color] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak"
                     classList={{ "text-text-strong": i() === crumbs().length - 1 }}
+                    aria-current={i() === crumbs().length - 1 ? "page" : undefined}
                     onClick={() => goToCrumb(crumb)}
                   >
                     {crumb.name}
@@ -2393,10 +2406,17 @@ export default function DiskUtilityPage() {
               aria-label={currentScanPinned() ? "Remove this saved location" : "Save this scan location"}
               onClick={() => togglePinnedLocation(scanSourcePath(), scanLabel())}
             >
-              {currentScanPinned() ? "Saved" : "Save location"}
+              <span class="dl-responsive-label">{currentScanPinned() ? "Saved" : "Save location"}</span>
             </Button>
-            <Button class="dl-touch-target dl-rescan" variant="ghost" size="small" icon="reset" onClick={() => void rescanCurrent()}>
-              Rescan
+            <Button
+              class="dl-touch-target dl-rescan"
+              variant="ghost"
+              size="small"
+              icon="reset"
+              aria-label="Rescan this location"
+              onClick={() => void rescanCurrent()}
+            >
+              <span class="dl-responsive-label">Rescan</span>
             </Button>
           </Show>
           <Show when={view() === "drives" && disk()}>
@@ -2410,15 +2430,16 @@ export default function DiskUtilityPage() {
             >
               Refresh
             </Button>
-            <Button class="dl-touch-target" variant="secondary" size="small" icon="folder-add-left" onClick={() => void chooseAndScan()}>
-              Scan a folder
-            </Button>
           </Show>
         </div>
       </header>
 
       <Show when={tabs().length > 0 || volumeJobs().length > 0}>
-        <div class="relative shrink-0">
+        <div
+          class="relative shrink-0"
+          inert={activeDialog() ? true : undefined}
+          aria-hidden={activeDialog() ? "true" : undefined}
+        >
           <div
             ref={setScanTabsElement}
             class="dl-scan-tabs flex h-11 items-center gap-1 overflow-x-auto px-4 [scrollbar-width:none] [&>*]:snap-start [&::-webkit-scrollbar]:hidden"
@@ -2427,9 +2448,9 @@ export default function DiskUtilityPage() {
             aria-label={`${scanTabCount()} open scan${scanTabCount() === 1 ? "" : "s"}. Use Left and Right Arrow to scroll.`}
             onKeyDown={handleScanTabsKeyDown}
           >
-            <span class="mr-1 text-9-semibold uppercase tracking-[0.14em] text-text-weaker">Scans</span>
+            <span class="mr-1 text-12-semibold uppercase tracking-[0.14em] text-text-weaker">Scans</span>
           <Show when={view() === "scan" && treeRoot()}>
-            <span class="shrink-0 rounded-full bg-text-strong px-3 py-1 text-10-semibold text-background-base shadow-sm">
+            <span class="shrink-0 rounded-full bg-text-strong px-3 py-1 text-12-semibold text-background-base shadow-sm">
               {scanLabel() || "Current"}
             </span>
           </Show>
@@ -2438,7 +2459,7 @@ export default function DiskUtilityPage() {
               <div class="dl-hover-tab group flex shrink-0 items-center rounded-full text-text-weak transition-[color,background-color] duration-150">
                 <button
                   type="button"
-                  class="dl-touch-target min-h-10 max-w-[132px] truncate rounded-full pl-3 text-10-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+                  class="dl-touch-target min-h-10 max-w-[132px] truncate rounded-full pl-3 text-12-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
                   onClick={() => {
                     switchToTab(tab.id)
                     setView("scan")
@@ -2462,7 +2483,7 @@ export default function DiskUtilityPage() {
               <div class="dl-hover-tab group flex shrink-0 items-center rounded-full text-text-weak transition-[color,background-color] duration-150">
                 <button
                   type="button"
-                  class="dl-touch-target flex min-h-10 max-w-[168px] items-center gap-2 truncate rounded-full pl-3 text-10-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+                  class="dl-touch-target flex min-h-10 max-w-[168px] items-center gap-2 truncate rounded-full pl-3 text-12-regular outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
                   onClick={() => {
                     if (job.status === "complete") {
                       openVolumeScan(job)
@@ -2512,7 +2533,11 @@ export default function DiskUtilityPage() {
         </div>
       </Show>
 
-      <main class="relative min-h-0 flex-1 overflow-hidden">
+      <main
+        class="relative min-h-0 flex-1 overflow-hidden"
+        inert={activeDialog() ? true : undefined}
+        aria-hidden={activeDialog() ? "true" : undefined}
+      >
         <Show
           when={isDesktop()}
           fallback={
@@ -2534,111 +2559,31 @@ export default function DiskUtilityPage() {
             }
           >
             <Show when={view() === "drives"}>
-              <ScrollView class="h-full">
-                <div class="mx-auto flex min-h-full w-full max-w-7xl flex-col px-5 py-8 sm:px-7 sm:py-10 lg:px-10 lg:py-14">
-                  <Show
-                    when={!drivesLoading() && drives().length > 0}
-                    fallback={
-                      <DriveFallback
-                        loading={drivesLoading()}
-                        error={drivesError()}
-                        onChoose={() => void chooseAndScan()}
-                      />
-                    }
-                  >
-                    <section class="pb-8">
-                      <div class="flex flex-wrap items-end justify-between gap-6">
-                        <div>
-                          <p class="text-10-semibold uppercase tracking-[0.16em] text-text-weaker">Storage</p>
-                          <h2 class="mt-2 text-[clamp(30px,3.2vw,44px)] font-medium leading-none tracking-[-0.05em] text-text-strong [text-wrap:balance]">
-                            Find space you can act on.
-                          </h2>
-                          <p class="mt-3 max-w-[52ch] text-12-regular leading-relaxed text-text-weak">
-                            Scan a volume to see what is largest, understand what it is, and decide what to review.
-                          </p>
-                          <Show when={runningVolumeScans() > 0}>
-                            <span class="mt-5 inline-flex items-center gap-2 text-10-semibold text-text-weak">
-                              <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_176)]" />
-                              {runningVolumeScans()} {runningVolumeScans() === 1 ? "scan" : "scans"} running
-                            </span>
-                          </Show>
-                        </div>
-                        <div class="flex items-center gap-5">
-                          <p class="text-right">
-                            <span class="block text-18-medium tabular-nums tracking-[-0.025em] text-text-strong">
-                              {formatBytes(driveTotals().free)}
-                            </span>
-                            <span class="mt-1 block text-9-semibold uppercase tracking-[0.13em] text-text-weaker">
-                              available
-                            </span>
-                          </p>
-                          <Button
-                            class="dl-touch-target"
-                            variant="secondary"
-                            size="large"
-                            icon="folder-add-left"
-                            onClick={() => void chooseAndScan()}
-                          >
-                            Scan a folder
-                          </Button>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section class="overflow-hidden rounded-[22px] border border-border-weaker-base bg-background-base shadow-[0_1px_2px_rgb(0_0_0/0.04),0_14px_34px_-30px_rgb(0_0_0/0.28)]">
-                      <For each={drives()}>
-                        {(drive) => (
-                          <DriveRow
-                            drive={drive}
-                            job={volumeJobForDrive(drive)}
-                            canStart={runningVolumeScans() < MAX_PARALLEL_VOLUME_SCANS}
-                            onScan={() => startVolumeScan(drive)}
-                            onCancel={cancelVolumeScan}
-                            onOpen={openVolumeScan}
-                          />
-                        )}
-                      </For>
-                    </section>
-
-                    <StorageDiagnostics
-                      diagnostics={storageDiagnostics()}
-                      onScan={scanStorageLocation}
-                      onOpenAccessSettings={() => void openDiskAccessSettings()}
-                    />
-
-                    <Show when={pinnedLocations().length > 0}>
-                      <section class="py-7">
-                        <div class="mb-4 flex items-end justify-between gap-4">
-                          <div>
-                            <p class="text-10-semibold uppercase tracking-[0.14em] text-text-weaker">Saved locations</p>
-                            <h3 class="mt-1 text-18-medium tracking-[-0.02em] text-text-strong">
-                              Scan them again in one click.
-                            </h3>
-                          </div>
-                          <span class="text-10-regular text-text-weaker">Saved only on this device</span>
-                        </div>
-                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-                          <For each={pinnedLocations()}>
-                            {(location) => (
-                              <PinnedLocationCard
-                                location={location}
-                                onScan={() =>
-                                  void startScan(
-                                    location.path,
-                                    location.label,
-                                    driveForPath(location.path, drives(), platform.os),
-                                  )
-                                }
-                                onRemove={() => togglePinnedLocation(location.path, location.label)}
-                              />
-                            )}
-                          </For>
-                        </div>
-                      </section>
-                    </Show>
-                  </Show>
-                </div>
-              </ScrollView>
+              <DriveOverview
+                drives={drives()}
+                loading={drivesLoading()}
+                error={drivesError()}
+                freeBytes={driveTotals().free}
+                runningScans={runningVolumeScans()}
+                maxParallelScans={MAX_PARALLEL_VOLUME_SCANS}
+                diagnostics={storageDiagnostics()}
+                pinnedLocations={pinnedLocations()}
+                jobForDrive={volumeJobForDrive}
+                onChooseFolder={() => void chooseAndScan()}
+                onScanDrive={startVolumeScan}
+                onCancelDrive={cancelVolumeScan}
+                onOpenDrive={openVolumeScan}
+                onScanStorageLocation={scanStorageLocation}
+                onOpenAccessSettings={() => void openDiskAccessSettings()}
+                onScanPinnedLocation={(location) =>
+                  void startScan(
+                    location.path,
+                    location.label,
+                    driveForPath(location.path, drives(), platform.os),
+                  )
+                }
+                onRemovePinnedLocation={(location) => togglePinnedLocation(location.path, location.label)}
+              />
             </Show>
 
             <Show when={view() === "scan"}>
@@ -2691,7 +2636,6 @@ export default function DiskUtilityPage() {
                             <CenterOverlay
                               node={focusNode()}
                               parentSize={parentSize()}
-                              draggable={!!focusNode() && canModifyNode(focusNode()!)}
                               canOpen={!!focusNode() && focusNode()!.isDir && !focusNode()!.isOther && !isDeveloperInventoryNode(focusNode()!)}
                               inventoryOnly={!!focusNode() && isDeveloperInventoryNode(focusNode()!)}
                               onOpen={() => {
@@ -2751,13 +2695,13 @@ export default function DiskUtilityPage() {
                           />
                           <details class="relative">
                             <summary
-                              class="dl-touch-target grid size-11 cursor-pointer list-none place-items-center rounded-full text-10-semibold text-text-weak outline-none transition-colors focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
+                              class="dl-touch-target grid size-11 cursor-pointer list-none place-items-center rounded-full text-12-semibold text-text-weak outline-none transition-colors focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
                               aria-label="Show keyboard shortcuts"
                             >
                               ?
                             </summary>
-                            <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-9-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
-                              <p class="text-10-semibold text-text-strong">Keyboard shortcuts</p>
+                            <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-12-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
+                              <p class="text-12-semibold text-text-strong">Keyboard shortcuts</p>
                               <p class="mt-2">
                                 ↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump
                               </p>
@@ -2784,7 +2728,7 @@ export default function DiskUtilityPage() {
                       <div class="shrink-0 border-b border-border-weaker-base px-5 pb-4 pt-5">
                         <div class="flex items-start justify-between gap-4">
                           <div class="min-w-0 flex-1">
-                            <p class="text-9-semibold uppercase tracking-[0.16em] text-text-weaker">
+                            <p class="text-12-semibold uppercase tracking-[0.16em] text-text-weaker">
                               {indexFilter.lens === "developer"
                                 ? indexFilter.developerCategory === "all"
                                   ? "Developer files"
@@ -2803,7 +2747,7 @@ export default function DiskUtilityPage() {
                                 {formatBytes(indexSize())}
                               </span>
                             </div>
-                            <p class="mt-1.5 text-10-regular tabular-nums text-text-weak">
+                            <p class="mt-1.5 text-12-regular tabular-nums text-text-weak">
                               {formatCount(indexCount())} items · {sizeBasisLabel()}
                             </p>
                           </div>
@@ -2826,10 +2770,10 @@ export default function DiskUtilityPage() {
                           </Show>
                         </div>
                         <details class="group mt-4" open={indexFilter.lens !== "all"}>
-                          <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 border-b border-border-weaker-base px-1 text-10-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+                          <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 border-b border-border-weaker-base px-1 text-12-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
                             <Icon name="sliders" class="size-3.5" />
                             <span class="flex-1">Explore this scan</span>
-                            <span class="text-9-regular text-text-weaker">
+                            <span class="text-12-regular text-text-weaker">
                               {indexFilter.lens === "all"
                                 ? "Folder contents"
                                 : indexFilter.lens === "developer"
@@ -2935,8 +2879,8 @@ export default function DiskUtilityPage() {
                             >
                               <Icon name="shield" class="mt-0.5 size-3.5 shrink-0 text-icon-warning-base" />
                               <div>
-                                <p class="text-10-semibold text-text-strong">Physical reclaim estimate paused</p>
-                                <p class="mt-1 text-9-regular leading-relaxed text-text-weak">{warning()}</p>
+                                <p class="text-12-semibold text-text-strong">Physical reclaim estimate paused</p>
+                                <p class="mt-1 text-12-regular leading-relaxed text-text-weak">{warning()}</p>
                               </div>
                             </div>
                           )}
@@ -2946,19 +2890,19 @@ export default function DiskUtilityPage() {
                             <details class="group mt-3 rounded-xl border border-border-warning-base/55 bg-surface-warning-weak/45">
                               <summary class="dl-touch-target flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-xl px-3 py-2 outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
                                 <Icon name="warning" class="size-3.5 shrink-0 text-icon-warning-base" />
-                                <span class="min-w-0 flex-1 text-10-semibold text-text-strong">
+                                <span class="min-w-0 flex-1 text-12-semibold text-text-strong">
                                   {formatCount(issues().unreadableCount)} unreadable
                                   {issues().unreadableCount === 1 ? " location" : " locations"}
                                 </span>
-                                <span class="text-9-regular text-text-weak">Totals may be low</span>
+                                <span class="text-12-regular text-text-weak">Totals may be low</span>
                                 <Icon
                                   name="chevron-down"
                                   class="size-3 shrink-0 text-icon-weak transition-transform duration-150 group-open:rotate-180"
                                 />
                               </summary>
                               <div class="border-t border-border-warning-base/40 px-3 pb-3 pt-2.5">
-                                <p class="text-10-regular leading-relaxed text-text-weak">
-                                  {scanAccessGuidance(platform.os)} Use Rescan in the top bar after changing access.
+                                <p class="text-12-regular leading-relaxed text-text-weak">
+                                  {language.t(scanAccessGuidance(platform.os))} {language.t("disk.accessGuidance.rescan")}
                                 </p>
                                 <Show when={storageDiagnostics()?.access.status === "limited"}>
                                   <Button
@@ -2974,14 +2918,14 @@ export default function DiskUtilityPage() {
                                 <ul class="mt-2 space-y-1" aria-label="Unreadable locations sampled during this scan">
                                   <For each={issues().samplePaths.slice(0, 5)}>
                                     {(path) => (
-                                      <li class="truncate font-mono text-10-regular text-text-weaker" title={path}>
+                                      <li class="truncate font-mono text-12-regular text-text-weaker" title={path}>
                                         {path}
                                       </li>
                                     )}
                                   </For>
                                 </ul>
                                 <Show when={issues().samplePaths.length > 5 || issues().unreadableCount > 5}>
-                                  <p class="mt-1.5 text-9-regular text-text-weaker">
+                                  <p class="mt-1.5 text-12-regular text-text-weaker">
                                     Showing 5 of {formatCount(issues().unreadableCount)} locations
                                   </p>
                                 </Show>
@@ -2989,13 +2933,16 @@ export default function DiskUtilityPage() {
                             </details>
                           )}
                         </Show>
-                        <label class="dl-touch-target mt-3 flex h-11 items-center gap-2 rounded-[10px] bg-surface-raised-base/55 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] transition-shadow duration-150 focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
+                        <div class="dl-touch-target mt-3 flex h-11 items-center gap-2 rounded-[10px] bg-surface-raised-base/55 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] transition-shadow duration-150 focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
                           <Icon name="magnifying-glass" class="size-3.5 shrink-0 text-icon-weak" />
-                          <span class="sr-only">
+                          <label class="sr-only" for="disklizard-scan-search">
                             {indexFilter.lens === "all" ? "Filter this folder" : "Search this scan"}
-                          </span>
+                          </label>
                           <input
+                            id="disklizard-scan-search"
                             type="search"
+                            autocomplete="off"
+                            spellcheck={false}
                             placeholder={indexFilter.lens === "all" ? "Filter this folder" : "Search names and paths"}
                             value={query()}
                             onInput={(e) => updateQuery(e.currentTarget.value)}
@@ -3011,7 +2958,7 @@ export default function DiskUtilityPage() {
                               <Icon name="close-small" class="size-3" />
                             </button>
                           </Show>
-                        </label>
+                        </div>
                       </div>
 
                       <Show
@@ -3055,7 +3002,7 @@ export default function DiskUtilityPage() {
                                   data-disk-index={i()}
                                   aria-current={isActive() ? "true" : undefined}
                                   draggable={canModifyNode(entry.node)}
-                                  class="flex min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+                                  class="flex h-full min-h-11 min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
                                   onClick={(event) => {
                                     if (event.metaKey || event.ctrlKey) {
                                       void reveal(entry.node.path)
@@ -3085,7 +3032,7 @@ export default function DiskUtilityPage() {
                                       <span class="truncate text-12-semibold text-text-strong">{entry.node.name}</span>
                                       <Show when={indexFilter.lens !== "all" && rec().tag}>
                                         <span
-                                          class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-9-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
+                                          class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-12-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
                                         >
                                           {rec().tag}
                                         </span>
@@ -3107,7 +3054,7 @@ export default function DiskUtilityPage() {
                                     >
                                       <span class="mt-1 flex min-w-0 items-center gap-2">
                                         <span
-                                          class="flex min-w-0 flex-1 items-center gap-1.5 text-10-regular text-text-weak"
+                                          class="flex min-w-0 flex-1 items-center gap-1.5 text-12-regular text-text-weak"
                                           title={
                                             indexFilter.lens === "developer"
                                               ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? "Inspect this folder before changing it"}\n${entry.node.path}`
@@ -3117,7 +3064,7 @@ export default function DiskUtilityPage() {
                                           <Show when={indexFilter.lens === "developer"}>
                                             <span class="shrink-0 text-text-weak">{developerContext().scope}</span>
                                             <span aria-hidden="true">·</span>
-                                            <span class="shrink-0 text-10-semibold text-text-strong">
+                                            <span class="shrink-0 text-12-semibold text-text-strong">
                                               {developerContext().disposition}
                                             </span>
                                             <span aria-hidden="true">·</span>
@@ -3138,7 +3085,7 @@ export default function DiskUtilityPage() {
                                         >
                                           {(changedAt) => (
                                             <span
-                                              class="shrink-0 text-10-regular tabular-nums text-text-weak"
+                                              class="shrink-0 text-12-regular tabular-nums text-text-weak"
                                               classList={{ "dl-accent-text": indexFilter.lens === "developer" && isDormant(changedAt()) }}
                                               title={`Last changed ${new Date(changedAt()).toLocaleString()}`}
                                             >
@@ -3149,7 +3096,7 @@ export default function DiskUtilityPage() {
                                       </span>
                                     </Show>
                                   </span>
-                                  <span class="shrink-0 text-11-semibold tabular-nums text-text-strong">
+                                  <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">
                                     {shortBytes(entry.displaySize)}
                                   </span>
                                 </button>
@@ -3194,7 +3141,7 @@ export default function DiskUtilityPage() {
                               </span>
                               <div class="min-w-0">
                                 <p class="text-12-semibold text-text-strong">Select an item to inspect it</p>
-                                <p class="mt-0.5 truncate text-10-regular text-text-weak">
+                                <p class="mt-0.5 truncate text-12-regular text-text-weak">
                                   Select an item, then press C or drag it here to review it
                                 </p>
                               </div>

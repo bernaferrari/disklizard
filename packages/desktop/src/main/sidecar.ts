@@ -1,5 +1,6 @@
 import * as http from "node:http"
 import * as tls from "node:tls"
+import { APP_PROTOCOL } from "./product-identity"
 
 type NodeHttpWithEnvProxy = typeof http & {
   setGlobalProxyFromEnv: () => void
@@ -61,7 +62,7 @@ async function start(command: StartCommand) {
       hostname: command.hostname,
       username: "opencode",
       password: command.password,
-      cors: ["oc://renderer"],
+      cors: [`${APP_PROTOCOL}://renderer`],
     })
     parentPort.postMessage({ type: "ready" })
   } catch (error) {

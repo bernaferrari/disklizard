@@ -7,7 +7,9 @@ import {
   MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
   normalizeDeveloperArtifactInventoryOptions,
 } from "../../../disklizard/src/developer-artifacts"
+import { normalizeScanOptions } from "../../../disklizard/src/scan"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
+import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 
 // Clone-group normalization changes physical accounting. Old persisted trees
 // cannot safely be restored as if they had been produced by this model.
@@ -20,7 +22,6 @@ const SNAPSHOT_SCHEMA = 7
 const MAX_DELTA_EVENTS = 2_000
 const MAX_DELTA_ROOTS = 32
 const MAX_SNAPSHOTS = 8
-const MAX_CACHED_TREE_NODES = 500_000
 const CHECKPOINT_FILE_NAME = /^events-\d+-[0-9a-f-]+\.snapshot$/
 const TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.bin$/
 
@@ -293,7 +294,7 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
       const current = pending.pop()!
       if (!isRecord(current.value) || seenNodes.has(current.value)) return false
       seenNodes.add(current.value)
-      if (++visited > MAX_CACHED_TREE_NODES) return false
+      if (++visited > MAX_MATERIALIZED_DISK_TREE_NODES) return false
 
       const node = current.value
       const nodePath = comparableAbsolutePath(node.path)
@@ -362,7 +363,7 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
           isRoot: false,
         })
       }
-      if (pending.length > MAX_CACHED_TREE_NODES) return false
+      if (pending.length > MAX_MATERIALIZED_DISK_TREE_NODES) return false
     }
   } catch {
     return false
@@ -409,16 +410,18 @@ function isSnapshotMetadata(value: unknown): value is SnapshotMetadata {
 }
 
 function stableScanOptions(options: ScanOptions) {
-  const developerArtifactInventory = normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory)
+  const normalizedOptions = normalizeScanOptions(options)
+  const developerArtifactInventory = normalizeDeveloperArtifactInventoryOptions(normalizedOptions.developerArtifactInventory)
   return {
-    maxDepth: options.maxDepth ?? 10,
-    concurrency: options.concurrency,
-    maxChildren: options.maxChildren ?? 48,
-    preserveNames: [...(options.preserveNames ?? [])].sort(),
-    collapseNames: [...(options.collapseNames ?? [])].sort(),
-    signatureNames: [...(options.signatureNames ?? [])].sort(),
-    sizeMode: options.sizeMode ?? "physical",
-    excludePaths: [...(options.excludePaths ?? [])].map(comparable).sort(),
+    maxDepth: normalizedOptions.maxDepth,
+    concurrency: normalizedOptions.concurrency,
+    maxChildren: normalizedOptions.maxChildren,
+    progressIntervalMs: normalizedOptions.progressIntervalMs,
+    preserveNames: [...(normalizedOptions.preserveNames ?? [])].sort(),
+    collapseNames: [...(normalizedOptions.collapseNames ?? [])].sort(),
+    signatureNames: [...(normalizedOptions.signatureNames ?? [])].sort(),
+    sizeMode: normalizedOptions.sizeMode ?? "physical",
+    excludePaths: [...(normalizedOptions.excludePaths ?? [])].map(comparable).sort(),
     // Use the scanner's exact clamp/default behavior. Without this, `true`,
     // `{}`, and out-of-range values could describe the same scan while
     // needlessly fragmenting the cache (or, worse, restoring a different cap).
@@ -583,15 +586,22 @@ function requiresWholeRootPhysicalRefresh(
 }
 
 export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent[], scan: Scan, options: ScanOptions) {
-  // The deep artifact index is root-wide and deliberately independent from
-  // materialized tree nodes. A local splice cannot update it truthfully, so
-  // prefer one full refresh over returning stale cleanup candidates.
-  if (options.developerArtifactInventory) {
-    options.signal?.throwIfAborted()
-    return { root: await scan(comparable(root.path), options), changedPaths: [comparable(root.path)] }
-  }
   const changedPaths = deltaRoots(root, events)
   const rootPath = comparable(root.path)
+  // The deep artifact index is root-wide and deliberately independent from
+  // materialized tree nodes. Local watcher refreshes must not rebuild that
+  // inventory on every filesystem event, but they also must never retain its
+  // stale cleanup candidates. Omitting it makes the renderer drop those
+  // candidates, and the cache validator will require a fresh root scan before
+  // an inventory-enabled snapshot can be restored again.
+  const { developerArtifactInventory: _developerArtifactInventory, ...localOptions } = options
+  const scanDeltaTarget = (targetPath: string) =>
+    scan(targetPath, comparable(targetPath) === rootPath ? options : localOptions)
+  const invalidateDeveloperArtifactInventory = (node: DiskNode) => {
+    if (!node.developerArtifactInventory) return node
+    const { developerArtifactInventory: _inventory, ...next } = node
+    return next
+  }
   let next = root
   for (const changedPath of changedPaths) {
     options.signal?.throwIfAborted()
@@ -602,25 +612,37 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       previous &&
       containsCrossSubtreePhysicalSharing(previous)
     ) {
-      return { root: await scan(rootPath, options), changedPaths: [rootPath] }
+      return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
     }
     try {
-      const replacement = await scan(changedPath, options)
+      const replacement = await scanDeltaTarget(changedPath)
       if (requiresWholeRootPhysicalRefresh(rootPath, changedPath, replacement, options)) {
-        return { root: await scan(rootPath, options), changedPaths: [rootPath] }
+        return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
       }
-      next = replaceNode(next, comparable(changedPath), replacement)
+      const localized = comparable(changedPath) !== rootPath
+      if (localized) next = invalidateDeveloperArtifactInventory(next)
+      next = replaceNode(
+        next,
+        comparable(changedPath),
+        localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+      )
     } catch (error) {
       options.signal?.throwIfAborted()
       // A target can disappear between an FSEvent and the rescan. Refresh its
       // surviving parent so the deleted child is removed from the snapshot.
       const parent = path.dirname(changedPath)
       if (!isWithin(comparable(root.path), parent)) throw error
-      const replacement = await scan(parent, options)
+      const replacement = await scanDeltaTarget(parent)
       if (requiresWholeRootPhysicalRefresh(rootPath, parent, replacement, options)) {
-        return { root: await scan(rootPath, options), changedPaths: [rootPath] }
+        return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
       }
-      next = replaceNode(next, comparable(parent), replacement)
+      const localized = comparable(parent) !== rootPath
+      if (localized) next = invalidateDeveloperArtifactInventory(next)
+      next = replaceNode(
+        next,
+        comparable(parent),
+        localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+      )
     }
   }
   return { root: next, changedPaths }
@@ -876,7 +898,17 @@ export class DiskSnapshotManager {
       })
       if (active.stopped) return
       active.root = delta.root
-      await this.persist(active.rootPath, active.options, active.root, candidate.path)
+      // A localized refresh deliberately invalidates root-wide developer
+      // inventory. Do not publish that incomplete tree under an
+      // inventory-enabled cache key: the next manual/open scan must rebuild it.
+      const cacheable =
+        !normalizeDeveloperArtifactInventoryOptions(active.options.developerArtifactInventory) ||
+        !!active.root.developerArtifactInventory
+      if (cacheable) await this.persist(active.rootPath, active.options, active.root, candidate.path)
+      else {
+        const paths = this.paths(active.rootPath, active.options)
+        await this.withCacheKey(paths.key, () => rm(paths.metadata, { force: true }))
+      }
       active.refreshFailures = 0
       active.onUpdate({ rootPath: active.rootPath, root: active.root, changedPaths: delta.changedPaths })
     } catch {

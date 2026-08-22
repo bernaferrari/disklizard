@@ -1,7 +1,7 @@
-# DiskLizard Desktop (OpenCode shell)
+# DiskLizard Desktop
 
-DaisyDisk-style disk visualizer built on the OpenCode Electron desktop shell,
-reusing `@opencode-ai/ui` themes (OC-2), window chrome, IPC, and preload.
+The Electron desktop host for DiskLizard's storage map, developer-artifact
+inventory, and review-first cleanup flow.
 
 ## Development
 

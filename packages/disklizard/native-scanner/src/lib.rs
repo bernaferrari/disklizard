@@ -1,5 +1,5 @@
 use rayon::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::collections::{HashMap, HashSet};
 use std::ffi::{OsStr, OsString};
 use std::fs;
@@ -7,99 +7,35 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::{Instant, UNIX_EPOCH};
+use std::time::Instant;
+
+mod classification;
+mod clone_metadata;
+mod config;
+mod filesystem;
+use classification::{
+    classify as classify_developer_artifact,
+    is_evidence_name as is_developer_artifact_evidence_name,
+};
+use clone_metadata::{
+    compare_path_segments as compare_lexical_path_segments, compare_utf16 as compare_utf16_strings,
+    emitted_evidence as emitted_clone_evidence,
+    evidence_from_attributes as clone_evidence_from_attributes,
+};
+#[cfg(any(target_os = "macos", test))]
+use clone_metadata::{ATTR_CMNEXT_CLONE_ID, ATTR_CMNEXT_CLONE_REFCNT, ATTR_CMNEXT_EXT_FLAGS};
+#[cfg(test)]
+use clone_metadata::{EF_MAY_SHARE_BLOCKS, EF_SHARES_ALL_BLOCKS};
+#[cfg(target_os = "windows")]
+use filesystem::metadata_kind;
+use filesystem::read_entries_portable;
 
 const MAX_DISCOVERIES: usize = 96;
 const MAX_FILE_DISCOVERIES: usize = 24;
 const MAX_ISSUE_SAMPLES: usize = 12;
-const MAX_ARTIFACT_INVENTORY_ITEMS: usize = 20_000;
-const DEFAULT_ARTIFACT_INVENTORY_ITEMS: usize = 2_000;
-
-#[derive(Clone, Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Request {
-    pub target_path: PathBuf,
-    #[serde(default = "default_max_depth")]
-    pub max_depth: usize,
-    #[serde(default = "default_concurrency")]
-    pub concurrency: usize,
-    #[serde(default = "default_max_children")]
-    pub max_children: usize,
-    #[serde(default)]
-    pub preserve_names: Vec<String>,
-    #[serde(default)]
-    pub collapse_names: Vec<String>,
-    #[serde(default)]
-    pub signature_names: Vec<String>,
-    #[serde(default = "default_progress_interval")]
-    pub progress_interval_ms: u64,
-    #[serde(default)]
-    pub size_mode: SizeMode,
-    #[serde(default)]
-    pub exclude_paths: Vec<PathBuf>,
-    /// Opt-in bounded index of recognized developer artifact directories.
-    /// This is independent from the visual tree depth / child cap.
-    #[serde(default)]
-    pub developer_artifact_inventory: Option<DeveloperArtifactInventoryRequest>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-#[serde(untagged)]
-pub enum DeveloperArtifactInventoryRequest {
-    Enabled(bool),
-    Options(DeveloperArtifactInventoryOptions),
-}
-
-impl DeveloperArtifactInventoryRequest {
-    fn max_items(&self) -> Option<usize> {
-        match self {
-            Self::Enabled(false) => None,
-            Self::Enabled(true) => Some(DEFAULT_ARTIFACT_INVENTORY_ITEMS),
-            Self::Options(options) => Some(
-                options
-                    .max_items
-                    .unwrap_or(DEFAULT_ARTIFACT_INVENTORY_ITEMS)
-                    .clamp(1, MAX_ARTIFACT_INVENTORY_ITEMS),
-            ),
-        }
-    }
-}
-
-#[derive(Clone, Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct DeveloperArtifactInventoryOptions {
-    pub max_items: Option<usize>,
-}
-
-fn default_max_depth() -> usize {
-    10
-}
-
-fn default_concurrency() -> usize {
-    std::thread::available_parallelism()
-        // APFS metadata traversal benefits from overlap, but excessive workers
-        // contend on the same volume and become slower. Keep a little I/O
-        // headroom without doubling every logical core.
-        .map(|threads| threads.get().saturating_add(2))
-        .unwrap_or(8)
-        .clamp(4, 12)
-}
-
-fn default_max_children() -> usize {
-    48
-}
-
-fn default_progress_interval() -> u64 {
-    100
-}
-
-#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum SizeMode {
-    #[default]
-    Physical,
-    Logical,
-}
+pub use config::{
+    DeveloperArtifactInventoryOptions, DeveloperArtifactInventoryRequest, Request, SizeMode,
+};
 
 #[derive(Clone, Copy, Debug, Serialize)]
 #[serde(rename_all = "kebab-case")]
@@ -231,7 +167,7 @@ struct DeveloperArtifactInventoryStateData {
 }
 
 #[derive(Clone, Debug)]
-struct DeveloperArtifactClassification {
+pub(crate) struct DeveloperArtifactClassification {
     kind: DeveloperArtifactKind,
     ecosystem: DeveloperArtifactEcosystem,
     confidence: DeveloperArtifactConfidence,
@@ -417,7 +353,7 @@ pub enum ServerMessage {
         protocol: u8,
         #[serde(rename = "rootPath")]
         root_path: String,
-        root: CompactNode,
+        root: Box<CompactNode>,
     },
     Error {
         message: String,
@@ -473,16 +409,16 @@ struct Issues {
 }
 
 #[derive(Clone, Debug)]
-struct Entry {
-    name: OsString,
-    kind: EntryKind,
-    logical_size: u64,
-    allocated_size: u64,
-    modified_at: Option<u64>,
-    device: u64,
-    file_id: u64,
-    link_count: u64,
-    clone_evidence: CloneEvidence,
+pub(crate) struct Entry {
+    pub(crate) name: OsString,
+    pub(crate) kind: EntryKind,
+    pub(crate) logical_size: u64,
+    pub(crate) allocated_size: u64,
+    pub(crate) modified_at: Option<u64>,
+    pub(crate) device: u64,
+    pub(crate) file_id: u64,
+    pub(crate) link_count: u64,
+    pub(crate) clone_evidence: CloneEvidence,
 }
 
 #[cfg(not(target_os = "windows"))]
@@ -531,6 +467,16 @@ fn compare_developer_artifact_retention(
 
 fn is_worse_developer_artifact(left: &DeveloperArtifact, right: &DeveloperArtifact) -> bool {
     compare_developer_artifact_retention(left, right) == std::cmp::Ordering::Greater
+}
+
+/// Visual tree ties need the same deterministic ordering as the TypeScript
+/// fallback. Without it, native selection depended on directory enumeration
+/// and `select_nth_unstable` scheduling, producing different visible maps.
+fn compare_compact_node_retention(left: &CompactNode, right: &CompactNode) -> std::cmp::Ordering {
+    right
+        .size
+        .cmp(&left.size)
+        .then_with(|| compare_utf16_strings(&left.name, &right.name))
 }
 
 /// A record is not safely deletable merely because it was classified. Its
@@ -600,7 +546,7 @@ fn retain_developer_artifact(
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-enum EntryKind {
+pub(crate) enum EntryKind {
     File,
     Directory,
     Symlink,
@@ -667,7 +613,8 @@ fn clone_metadata_capability(status: u8) -> CloneMetadataCapability {
         CLONE_METADATA_UNAVAILABLE_SCANNER => CloneMetadataCapability::Unavailable {
             reason: CloneUnavailableReason::Scanner,
         },
-        CLONE_METADATA_UNOBSERVED | CLONE_METADATA_UNKNOWN | _ => CloneMetadataCapability::Unknown,
+        CLONE_METADATA_UNOBSERVED | CLONE_METADATA_UNKNOWN => CloneMetadataCapability::Unknown,
+        _ => CloneMetadataCapability::Unknown,
     }
 }
 
@@ -678,6 +625,22 @@ struct CloneCandidate {
     reported_full_clone_count: u32,
     size: u64,
     logical_size: u64,
+}
+
+struct DeveloperArtifactObservation<'a> {
+    path: &'a Path,
+    name: &'a str,
+    size: u64,
+    logical_size: u64,
+    modified_at: Option<u64>,
+    signatures: &'a [String],
+    directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
+}
+
+struct DirectoryWalk {
+    directory: Directory,
+    directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
+    inventory_scope_allowed: bool,
 }
 
 #[derive(Default)]
@@ -904,9 +867,11 @@ impl Scanner {
                     name,
                     0,
                     false,
-                    directory,
-                    root_identity,
-                    inventory_scope_allowed,
+                    DirectoryWalk {
+                        directory,
+                        directory_identity: root_identity,
+                        inventory_scope_allowed,
+                    },
                 );
             }
             Err(io::Error::new(
@@ -1050,40 +1015,36 @@ impl State {
         signatures
     }
 
-    fn record_developer_artifact(
-        &self,
-        path: &Path,
-        name: &str,
-        size: u64,
-        logical_size: u64,
-        modified_at: Option<u64>,
-        signatures: &[String],
-        directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
-    ) {
+    fn record_developer_artifact(&self, observation: DeveloperArtifactObservation<'_>) {
         let Some(inventory) = &self.developer_artifact_inventory else {
             return;
         };
-        let parent_name = path
+        let parent_name = observation
+            .path
             .parent()
             .and_then(Path::file_name)
             .map(|value| value.to_string_lossy().to_lowercase());
-        let Some(classification) =
-            classify_developer_artifact(name, parent_name.as_deref(), signatures)
-        else {
+        let Some(classification) = classify_developer_artifact(
+            observation.name,
+            parent_name.as_deref(),
+            observation.signatures,
+        ) else {
             return;
         };
 
         let mut inventory = inventory.lock().expect("artifact inventory lock poisoned");
         inventory.matched_directories += 1;
         let artifact = DeveloperArtifact {
-            name: name.to_owned(),
-            path: path.to_string_lossy().into_owned(),
-            size,
-            logical_size: (logical_size != size).then_some(logical_size),
-            modified_at,
-            directory_identity,
+            name: observation.name.to_owned(),
+            path: observation.path.to_string_lossy().into_owned(),
+            size: observation.size,
+            logical_size: (observation.logical_size != observation.size)
+                .then_some(observation.logical_size),
+            modified_at: observation.modified_at,
+            directory_identity: observation.directory_identity,
             is_dir: true,
-            signatures: (!signatures.is_empty()).then(|| signatures.to_vec()),
+            signatures: (!observation.signatures.is_empty())
+                .then(|| observation.signatures.to_vec()),
             kind: classification.kind,
             ecosystem: classification.ecosystem,
             confidence: classification.confidence,
@@ -1158,10 +1119,13 @@ impl State {
         name: String,
         depth: usize,
         collapsed: bool,
-        directory: Directory,
-        directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
-        inventory_scope_allowed: bool,
+        input: DirectoryWalk,
     ) -> io::Result<CompactNode> {
+        let DirectoryWalk {
+            directory,
+            directory_identity,
+            inventory_scope_allowed,
+        } = input;
         if collapsed {
             let measured = self.size_only(
                 path,
@@ -1269,9 +1233,11 @@ impl State {
                                 entry_name,
                                 depth + 1,
                                 collapsed,
-                                child,
-                                child_identity,
-                                child_inventory_scope_allowed,
+                                DirectoryWalk {
+                                    directory: child,
+                                    directory_identity: child_identity,
+                                    inventory_scope_allowed: child_inventory_scope_allowed,
+                                },
                             )
                         }) {
                         Ok(node) => {
@@ -1327,15 +1293,15 @@ impl State {
         );
         node.has_shared_storage_risk = has_shared_storage_risk;
         if inventory_scope_allowed {
-            self.record_developer_artifact(
+            self.record_developer_artifact(DeveloperArtifactObservation {
                 path,
-                &node.name,
-                node.size,
-                node.logical_size.unwrap_or(node.size),
-                node.modified_at,
-                &artifact_signatures,
+                name: &node.name,
+                size: node.size,
+                logical_size: node.logical_size.unwrap_or(node.size),
+                modified_at: node.modified_at,
+                signatures: &artifact_signatures,
                 directory_identity,
-            );
+            });
         }
         Ok(node)
     }
@@ -1447,18 +1413,19 @@ impl State {
             ..measured
         };
         if inventory_scope_allowed {
-            self.record_developer_artifact(
+            let name = path
+                .file_name()
+                .map(|value| value.to_string_lossy().into_owned())
+                .unwrap_or_else(|| path.to_string_lossy().into_owned());
+            self.record_developer_artifact(DeveloperArtifactObservation {
                 path,
-                &path
-                    .file_name()
-                    .map(|value| value.to_string_lossy().into_owned())
-                    .unwrap_or_else(|| path.to_string_lossy().into_owned()),
-                result.size,
-                result.logical_size,
-                result.modified_at,
-                &artifact_signatures,
+                name: &name,
+                size: result.size,
+                logical_size: result.logical_size,
+                modified_at: result.modified_at,
+                signatures: &artifact_signatures,
                 directory_identity,
-            );
+            });
         }
         result
     }
@@ -1623,14 +1590,12 @@ impl State {
 
     fn limit_children(&self, mut children: Vec<CompactNode>) -> Vec<CompactNode> {
         if children.len() <= self.request.max_children {
-            children.sort_unstable_by_key(|node| std::cmp::Reverse(node.size));
+            children.sort_unstable_by(compare_compact_node_retention);
             return children;
         }
-        children.select_nth_unstable_by(self.request.max_children, |left, right| {
-            right.size.cmp(&left.size)
-        });
+        children.select_nth_unstable_by(self.request.max_children, compare_compact_node_retention);
         let rest = children.split_off(self.request.max_children);
-        children.sort_unstable_by_key(|node| std::cmp::Reverse(node.size));
+        children.sort_unstable_by(compare_compact_node_retention);
         let mut hidden = Vec::new();
         for child in rest {
             if contains_preserved(&child, &self.preserve_names) {
@@ -1639,7 +1604,7 @@ impl State {
                 hidden.push(child);
             }
         }
-        children.sort_unstable_by_key(|node| std::cmp::Reverse(node.size));
+        children.sort_unstable_by(compare_compact_node_retention);
         let size = hidden.iter().map(|child| child.size).sum();
         let logical_size = hidden
             .iter()
@@ -1658,7 +1623,7 @@ impl State {
             .fold(None, |value, child| latest(value, child.modified_at));
         let hidden_count = hidden.len();
         if hidden.len() > 12 {
-            hidden.select_nth_unstable_by(12, |left, right| right.size.cmp(&left.size));
+            hidden.select_nth_unstable_by(12, compare_compact_node_retention);
             if hidden[12..]
                 .iter()
                 .any(|child| child.has_shared_storage_risk)
@@ -1667,7 +1632,7 @@ impl State {
             }
             hidden.truncate(12);
         }
-        hidden.sort_unstable_by_key(|node| std::cmp::Reverse(node.size));
+        hidden.sort_unstable_by(compare_compact_node_retention);
         children.push(CompactNode {
             name: format!("Other ({hidden_count} items)"),
             size,
@@ -1798,260 +1763,7 @@ impl CompactNode {
     }
 }
 
-fn is_developer_artifact_evidence_name(name: &str) -> bool {
-    matches!(
-        name,
-        ".rustc_info.json"
-            | "debug"
-            | "release"
-            | "classes"
-            | "test-classes"
-            | "generated-sources"
-            | "surefire-reports"
-            | "cmakecache.txt"
-            | "cmakefiles"
-            | "intermediates"
-            | "outputs"
-            | "libs"
-            | "bin"
-            | "obj"
-    )
-}
-
-fn artifact_evidence(name: &str, signatures: &[String]) -> Vec<String> {
-    let mut evidence = Vec::with_capacity(signatures.len() + 1);
-    evidence.push(format!("name:{name}"));
-    evidence.extend(
-        signatures
-            .iter()
-            .map(|signature| format!("contains:{signature}")),
-    );
-    evidence
-}
-
-fn verified_artifact(
-    kind: DeveloperArtifactKind,
-    ecosystem: DeveloperArtifactEcosystem,
-    name: &str,
-    signatures: &[String],
-) -> DeveloperArtifactClassification {
-    DeveloperArtifactClassification {
-        kind,
-        ecosystem,
-        confidence: DeveloperArtifactConfidence::Verified,
-        cleanup: DeveloperArtifactCleanupReadiness::Eligible,
-        evidence: artifact_evidence(name, signatures),
-    }
-}
-
-fn likely_artifact(
-    kind: DeveloperArtifactKind,
-    ecosystem: DeveloperArtifactEcosystem,
-    name: &str,
-    signatures: &[String],
-) -> DeveloperArtifactClassification {
-    DeveloperArtifactClassification {
-        kind,
-        ecosystem,
-        confidence: DeveloperArtifactConfidence::Likely,
-        // Likely recognition is useful context but not sufficient evidence
-        // for Smart Cleanup to preselect a destructive action.
-        cleanup: DeveloperArtifactCleanupReadiness::Review,
-        evidence: artifact_evidence(name, signatures),
-    }
-}
-
-fn review_artifact(kind: DeveloperArtifactKind, name: &str) -> DeveloperArtifactClassification {
-    DeveloperArtifactClassification {
-        kind,
-        ecosystem: DeveloperArtifactEcosystem::Generic,
-        confidence: DeveloperArtifactConfidence::Ambiguous,
-        cleanup: DeveloperArtifactCleanupReadiness::Review,
-        evidence: artifact_evidence(name, &[]),
-    }
-}
-
-fn matching_signatures(signatures: &[String], accepted: &[&str]) -> Vec<String> {
-    signatures
-        .iter()
-        .filter(|signature| accepted.contains(&signature.as_str()))
-        .cloned()
-        .collect()
-}
-
-/// Match the TypeScript fallback's intentionally conservative inventory rules.
-/// A familiar generic basename remains review-only until direct entries prove
-/// a conventional toolchain layout.
-fn classify_developer_artifact(
-    raw_name: &str,
-    raw_parent_name: Option<&str>,
-    signatures: &[String],
-) -> Option<DeveloperArtifactClassification> {
-    let name = raw_name.to_lowercase();
-    let parent_name = raw_parent_name.map(str::to_lowercase);
-    match name.as_str() {
-        "node_modules" => Some(verified_artifact(
-            DeveloperArtifactKind::Dependencies,
-            DeveloperArtifactEcosystem::Node,
-            &name,
-            &[],
-        )),
-        "bower_components" | "jspm_packages" => Some(likely_artifact(
-            DeveloperArtifactKind::Dependencies,
-            DeveloperArtifactEcosystem::Web,
-            &name,
-            &[],
-        )),
-        ".pnpm-store" | ".npm" | ".turbo" | ".parcel-cache" | ".rollup.cache" => {
-            Some(verified_artifact(
-                DeveloperArtifactKind::ToolchainCache,
-                DeveloperArtifactEcosystem::Node,
-                &name,
-                &[],
-            ))
-        }
-        "__pycache__" | ".mypy_cache" | ".pytest_cache" | ".ruff_cache" | ".tox" => {
-            Some(verified_artifact(
-                DeveloperArtifactKind::ToolchainCache,
-                DeveloperArtifactEcosystem::Python,
-                &name,
-                &[],
-            ))
-        }
-        ".venv" | "venv" => Some(likely_artifact(
-            DeveloperArtifactKind::Dependencies,
-            DeveloperArtifactEcosystem::Python,
-            &name,
-            &[],
-        )),
-        ".next" | ".nuxt" | ".output" | ".svelte-kit" | ".astro" => Some(verified_artifact(
-            DeveloperArtifactKind::BuildOutput,
-            DeveloperArtifactEcosystem::Node,
-            &name,
-            &[],
-        )),
-        "deriveddata" => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Apple,
-            &name,
-            &[],
-        )),
-        ".dart_tool" | ".pub-cache" => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Dart,
-            &name,
-            &[],
-        )),
-        "gocache" => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Go,
-            &name,
-            &[],
-        )),
-        "target" => {
-            let rust = matching_signatures(signatures, &[".rustc_info.json", "debug", "release"]);
-            if rust.iter().any(|signature| signature == ".rustc_info.json") {
-                return Some(verified_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Rust,
-                    &name,
-                    &rust,
-                ));
-            }
-            if !rust.is_empty() {
-                return Some(likely_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Rust,
-                    &name,
-                    &rust,
-                ));
-            }
-            let jvm = matching_signatures(
-                signatures,
-                &[
-                    "classes",
-                    "test-classes",
-                    "generated-sources",
-                    "surefire-reports",
-                ],
-            );
-            if !jvm.is_empty() {
-                return Some(likely_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Jvm,
-                    &name,
-                    &jvm,
-                ));
-            }
-            Some(review_artifact(DeveloperArtifactKind::BuildOutput, &name))
-        }
-        "build" => {
-            let cmake = matching_signatures(signatures, &["cmakecache.txt", "cmakefiles"]);
-            if !cmake.is_empty() {
-                return Some(verified_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Cpp,
-                    &name,
-                    &cmake,
-                ));
-            }
-            let jvm =
-                matching_signatures(signatures, &["classes", "intermediates", "outputs", "libs"]);
-            if !jvm.is_empty() {
-                return Some(likely_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Jvm,
-                    &name,
-                    &jvm,
-                ));
-            }
-            let dotnet = matching_signatures(signatures, &["bin", "obj"]);
-            if !dotnet.is_empty() {
-                return Some(likely_artifact(
-                    DeveloperArtifactKind::BuildOutput,
-                    DeveloperArtifactEcosystem::Dotnet,
-                    &name,
-                    &dotnet,
-                ));
-            }
-            Some(review_artifact(DeveloperArtifactKind::BuildOutput, &name))
-        }
-        "dist" | "out" => Some(review_artifact(DeveloperArtifactKind::BuildOutput, &name)),
-        "caches" if parent_name.as_deref() == Some(".gradle") => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Jvm,
-            &name,
-            &[],
-        )),
-        "repository" if parent_name.as_deref() == Some(".m2") => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Jvm,
-            &name,
-            &[],
-        )),
-        "registry" | "git" if parent_name.as_deref() == Some(".cargo") => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Rust,
-            &name,
-            &[],
-        )),
-        "packages" if parent_name.as_deref() == Some(".nuget") => Some(verified_artifact(
-            DeveloperArtifactKind::ToolchainCache,
-            DeveloperArtifactEcosystem::Dotnet,
-            &name,
-            &[],
-        )),
-        "mod" if parent_name.as_deref() == Some("pkg") => Some(likely_artifact(
-            DeveloperArtifactKind::Dependencies,
-            DeveloperArtifactEcosystem::Go,
-            &name,
-            &[],
-        )),
-        _ => None,
-    }
-}
-
-fn metadata_clone_evidence() -> CloneEvidence {
+pub(crate) fn metadata_clone_evidence() -> CloneEvidence {
     #[cfg(target_os = "macos")]
     {
         // MetadataExt cannot expose APFS clone flags. Directory bulk entries
@@ -2067,88 +1779,6 @@ fn metadata_clone_evidence() -> CloneEvidence {
             reason: CloneUnavailableReason::Platform,
         }
     }
-}
-
-/// Omit inert per-file clone states from the compact protocol. A large volume
-/// overwhelmingly consists of ordinary files, and `not-shared`/unavailable
-/// adds no action or accounting information while materially growing IPC and
-/// heap use. Omission is deliberately documented as "no clone assertion",
-/// never as proof that a file does not share blocks.
-fn emitted_clone_evidence(evidence: &CloneEvidence) -> Option<CloneEvidence> {
-    match evidence {
-        CloneEvidence::Unavailable { .. } | CloneEvidence::NotShared => None,
-        CloneEvidence::Unknown
-        | CloneEvidence::MayShareBlocks { .. }
-        | CloneEvidence::SharesAllBlocks { .. } => Some(evidence.clone()),
-    }
-}
-
-/// JavaScript's `<` comparison orders strings by UTF-16 code unit. Match it
-/// here so native and TypeScript fallback scanners choose the same lexical
-/// primary for valid filenames containing non-BMP Unicode.
-fn compare_utf16_strings(left: &str, right: &str) -> std::cmp::Ordering {
-    let mut left_units = left.encode_utf16();
-    let mut right_units = right.encode_utf16();
-    loop {
-        match (left_units.next(), right_units.next()) {
-            (Some(left), Some(right)) => {
-                let ordering = left.cmp(&right);
-                if ordering != std::cmp::Ordering::Equal {
-                    return ordering;
-                }
-            }
-            (None, Some(_)) => return std::cmp::Ordering::Less,
-            (Some(_), None) => return std::cmp::Ordering::Greater,
-            (None, None) => return std::cmp::Ordering::Equal,
-        }
-    }
-}
-
-fn compare_lexical_path_segments(left: &[String], right: &[String]) -> std::cmp::Ordering {
-    for (left, right) in left.iter().zip(right) {
-        let ordering = compare_utf16_strings(left, right);
-        if ordering != std::cmp::Ordering::Equal {
-            return ordering;
-        }
-    }
-    left.len().cmp(&right.len())
-}
-
-const ATTR_CMNEXT_CLONE_ID: u32 = 0x0000_0100;
-const ATTR_CMNEXT_EXT_FLAGS: u32 = 0x0000_0200;
-const ATTR_CMNEXT_CLONE_REFCNT: u32 = 0x0000_1000;
-const EF_MAY_SHARE_BLOCKS: u64 = 0x0000_0001;
-const EF_SHARES_ALL_BLOCKS: u64 = 0x0000_0040;
-
-fn clone_evidence_from_attributes(
-    returned_attributes: u32,
-    clone_id: u64,
-    extended_flags: u64,
-    full_clone_count: u32,
-) -> CloneEvidence {
-    if returned_attributes & ATTR_CMNEXT_EXT_FLAGS == 0 {
-        if returned_attributes & (ATTR_CMNEXT_CLONE_ID | ATTR_CMNEXT_CLONE_REFCNT) != 0 {
-            return CloneEvidence::Unknown;
-        }
-        return CloneEvidence::Unavailable {
-            reason: CloneUnavailableReason::Filesystem,
-        };
-    }
-
-    let clone_id = (returned_attributes & ATTR_CMNEXT_CLONE_ID != 0 && clone_id > 0)
-        .then(|| clone_id.to_string());
-    if extended_flags & EF_SHARES_ALL_BLOCKS != 0 {
-        return CloneEvidence::SharesAllBlocks {
-            clone_id,
-            reported_full_clone_count: (returned_attributes & ATTR_CMNEXT_CLONE_REFCNT != 0
-                && full_clone_count > 0)
-                .then_some(full_clone_count),
-        };
-    }
-    if extended_flags & EF_MAY_SHARE_BLOCKS != 0 {
-        return CloneEvidence::MayShareBlocks { clone_id };
-    }
-    CloneEvidence::NotShared
 }
 
 /// Hard-link discovery happens during parallel traversal, so the first
@@ -2498,13 +2128,11 @@ fn collect_clone_candidates(
             })
             | Some(CloneEvidence::MayShareBlocks {
                 clone_id: Some(clone_id),
-            }) => {
-                if !clone_id.is_empty() {
-                    groups
-                        .entry(clone_id.clone())
-                        .or_default()
-                        .has_non_candidate_member = true;
-                }
+            }) if !clone_id.is_empty() => {
+                groups
+                    .entry(clone_id.clone())
+                    .or_default()
+                    .has_non_candidate_member = true;
             }
             _ => {}
         }
@@ -2569,78 +2197,6 @@ impl Entry {
         self.kind == EntryKind::File
             && (self.link_count > 1 || !matches!(self.clone_evidence, CloneEvidence::NotShared))
     }
-
-    fn from_metadata(name: OsString, metadata: &fs::Metadata) -> Self {
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::MetadataExt;
-            Self {
-                name,
-                kind: metadata_kind(metadata),
-                logical_size: metadata.len(),
-                allocated_size: metadata.blocks().saturating_mul(512),
-                modified_at: metadata_millis(metadata),
-                device: metadata.dev(),
-                file_id: metadata.ino(),
-                link_count: metadata.nlink(),
-                clone_evidence: metadata_clone_evidence(),
-            }
-        }
-        #[cfg(not(unix))]
-        {
-            Self {
-                name,
-                kind: metadata_kind(metadata),
-                logical_size: metadata.len(),
-                allocated_size: metadata.len(),
-                modified_at: metadata_millis(metadata),
-                device: 0,
-                file_id: 0,
-                link_count: 1,
-                clone_evidence: metadata_clone_evidence(),
-            }
-        }
-    }
-}
-
-fn read_entries_portable(path: &Path) -> io::Result<Vec<Entry>> {
-    fs::read_dir(path)?
-        .map(|result| match result {
-            Ok(entry) => match fs::symlink_metadata(entry.path()) {
-                #[cfg(target_os = "windows")]
-                Ok(metadata) => {
-                    windows::entry_from_path(&entry.path(), entry.file_name(), &metadata)
-                }
-                #[cfg(not(target_os = "windows"))]
-                Ok(metadata) => Ok(Entry::from_metadata(entry.file_name(), &metadata)),
-                Err(error) => Err(error),
-            },
-            Err(error) => Err(error),
-        })
-        .collect()
-}
-
-fn metadata_kind(metadata: &fs::Metadata) -> EntryKind {
-    let file_type = metadata.file_type();
-    if file_type.is_symlink() {
-        return EntryKind::Symlink;
-    }
-    if file_type.is_dir() {
-        return EntryKind::Directory;
-    }
-    if file_type.is_file() {
-        return EntryKind::File;
-    }
-    EntryKind::Other
-}
-
-fn metadata_millis(metadata: &fs::Metadata) -> Option<u64> {
-    metadata
-        .modified()
-        .ok()?
-        .duration_since(UNIX_EPOCH)
-        .ok()
-        .and_then(|duration| u64::try_from(duration.as_millis()).ok())
 }
 
 fn normalized_names(names: &[String]) -> HashSet<String> {
@@ -3419,13 +2975,13 @@ mod macos {
             // Extended common attrs are requested through `forkattr` when
             // FSOPT_ATTR_CMN_EXTENDED is set. They are the supported APFS
             // clone evidence API; file lengths alone cannot identify clones.
-            forkattr: include_clone_attributes
-                .then_some(
-                    super::ATTR_CMNEXT_CLONE_ID
-                        | super::ATTR_CMNEXT_EXT_FLAGS
-                        | super::ATTR_CMNEXT_CLONE_REFCNT,
-                )
-                .unwrap_or(0),
+            forkattr: if include_clone_attributes {
+                super::ATTR_CMNEXT_CLONE_ID
+                    | super::ATTR_CMNEXT_EXT_FLAGS
+                    | super::ATTR_CMNEXT_CLONE_REFCNT
+            } else {
+                0
+            },
         }
     }
 
@@ -4530,15 +4086,17 @@ mod tests {
         let scanner = Scanner::new(options, |_| Ok(())).unwrap();
         let candidate = root.path().join("node_modules");
 
-        scanner.state.record_developer_artifact(
-            &candidate,
-            "node_modules",
-            17,
-            17,
-            None,
-            &[],
-            None,
-        );
+        scanner
+            .state
+            .record_developer_artifact(DeveloperArtifactObservation {
+                path: &candidate,
+                name: "node_modules",
+                size: 17,
+                logical_size: 17,
+                modified_at: None,
+                signatures: &[],
+                directory_identity: None,
+            });
 
         let inventory = scanner
             .state

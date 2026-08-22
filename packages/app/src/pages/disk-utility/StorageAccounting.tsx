@@ -64,7 +64,7 @@ export function StorageAccountingFacts(props: { node: DiskScanNode; class?: stri
         <For each={facts()}>
           {(fact) => (
             <details class="max-w-full">
-              <summary class="dl-touch-target flex min-h-11 max-w-full cursor-pointer list-none items-center rounded-full bg-surface-raised-base px-2 py-0.5 text-9-semibold text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+              <summary class="dl-touch-target flex min-h-11 max-w-full cursor-pointer list-none items-center rounded-full bg-surface-raised-base px-2 py-0.5 text-13-semibold text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
                 <span class="truncate">{fact.label}</span>
                 <span class="ml-1 shrink-0 text-text-weaker" aria-hidden="true">
                   ?
@@ -72,7 +72,7 @@ export function StorageAccountingFacts(props: { node: DiskScanNode; class?: stri
               </summary>
               <div
                 role="note"
-                class="mt-1 w-[min(20rem,calc(100vw-3rem))] max-w-full rounded-xl bg-background-base px-3 py-2 text-9-regular leading-relaxed text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
+                class="mt-1 w-[min(20rem,calc(100vw-3rem))] max-w-full rounded-xl bg-background-base px-3 py-2 text-13-regular leading-relaxed text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
               >
                 {fact.detail}
               </div>

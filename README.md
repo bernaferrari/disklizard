@@ -111,6 +111,18 @@ bun disklizard
 bun disklizard ~/Library
 ```
 
+For agents, shell scripts, and automation, use read-only output instead of the interactive browser:
+
+```bash
+# concise human-readable report
+bun disklizard ~/Projects --summary
+
+# structured tree for an agent or jq
+bun disklizard ~/Projects --json --max-depth 6 > disk-map.json
+```
+
+Every CLI mode is read-only. The interactive terminal UI is available with `bun disklizard [path]`; review and move items to Trash or Recycle Bin in the desktop app, where supported developer artifacts are revalidated before the move.
+
 On Windows, quote paths containing spaces:
 
 ```powershell

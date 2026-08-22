@@ -11,6 +11,12 @@ export type StorageNodeCapabilities = {
 
 type DesktopOS = "macos" | "windows" | "linux"
 
+export type ScanAccessGuidanceKey =
+  | "disk.accessGuidance.macos"
+  | "disk.accessGuidance.windows"
+  | "disk.accessGuidance.linux"
+  | "disk.accessGuidance.default"
+
 const INTERACTIVE_SELECTOR = [
   "button",
   "a[href]",
@@ -41,11 +47,11 @@ export function shouldHandleDiskShortcut(target: EventTarget | null, defaultPrev
 }
 
 /** A short recovery instruction for scans that hit OS access boundaries. */
-export function scanAccessGuidance(os?: DesktopOS): string {
-  if (os === "macos") return "Grant Full Disk Access to OpenCode in System Settings, then scan again."
-  if (os === "windows") return "Use an account with access to this drive, or scan a folder your account can read."
-  if (os === "linux") return "Review folder and mount permissions, then scan again."
-  return "Review access to these folders, then scan again."
+export function scanAccessGuidance(os?: DesktopOS): ScanAccessGuidanceKey {
+  if (os === "macos") return "disk.accessGuidance.macos"
+  if (os === "windows") return "disk.accessGuidance.windows"
+  if (os === "linux") return "disk.accessGuidance.linux"
+  return "disk.accessGuidance.default"
 }
 
 /** Use the operating system's own name for its recoverable deletion destination. */

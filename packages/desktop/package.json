@@ -1,14 +1,17 @@
 {
-  "name": "@opencode-ai/desktop",
+  "name": "disklizard-desktop",
   "private": true,
-  "version": "1.18.21",
+  "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://opencode.ai",
-  "author": {
-    "name": "OpenCode",
-    "email": "hello@opencode.ai"
+  "description": "Developer-aware disk space explorer and safe cleanup utility",
+  "homepage": "https://github.com/bernaferrari/disklizard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bernaferrari/disklizard.git"
   },
+  "bugs": "https://github.com/bernaferrari/disklizard/issues",
+  "author": "DiskLizard contributors",
   "scripts": {
     "typecheck": "tsgo -b",
     "predev": "bun ./scripts/predev.ts",
@@ -25,7 +28,7 @@
   },
   "main": "./out/main/index.js",
   "dependencies": {
-    "@opencode-ai/disklizard": "workspace:*",
+    "@disklizard/core": "workspace:*",
     "@parcel/watcher": "2.5.1",
     "@zip.js/zip.js": "2.7.62",
     "effect": "catalog:",

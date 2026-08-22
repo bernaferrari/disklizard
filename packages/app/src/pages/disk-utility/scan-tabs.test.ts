@@ -1,12 +1,23 @@
 import { describe, expect, it } from "bun:test"
 import type { DiskScanNode } from "@/context/platform"
-import { refreshScanTabsForWatcherUpdate, type RetainedScanTab } from "./scan-tabs"
+import { refreshScanTabsForWatcherUpdate, visibleScanTabCount, type RetainedScanTab } from "./scan-tabs"
 
 function dir(name: string, path: string, children: DiskScanNode[] = []): DiskScanNode {
   return { name, path, size: children.reduce((sum, child) => sum + child.size, 0), isDir: true, children, ext: "" }
 }
 
 describe("retained scan tabs", () => {
+  it("counts the active volume scan once when its current-scan pill is visible", () => {
+    expect(
+      visibleScanTabCount({
+        retainedCount: 2,
+        volumeJobIDs: ["active", "background"],
+        activeID: "active",
+        hasCurrentScan: true,
+      }),
+    ).toBe(4)
+  })
+
   it("rebases only the watcher-matched background tab and restores its nearest valid view", () => {
     const oldPackage = dir("package", "/repo/node_modules/package")
     const oldTree = dir("repo", "/repo", [dir("node_modules", "/repo/node_modules", [oldPackage])])

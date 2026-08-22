@@ -53,7 +53,7 @@ fn main() {
             if send(&ServerMessage::Done {
                 protocol: 2,
                 root_path,
-                root,
+                root: Box::new(root),
             })
             .is_err()
             {

@@ -6,6 +6,7 @@ import { scanPathSync } from "../../../disklizard/src/scan"
 import type { DeveloperArtifactInventory, DiskNode } from "../../../disklizard/src/types"
 import { scanPathWithBackend } from "./disk-scanner"
 import { hydrateDeveloperArtifactDirectoryIdentities, parseNativeMessage, scanPathNative } from "./disk-scanner-native"
+import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 
 const roots: string[] = []
 
@@ -103,6 +104,68 @@ describe("native disk scanner", () => {
     expect(native.children.map((child) => child.name)).toEqual(typescript.children.map((child) => child.name))
   })
 
+  test("keeps equal-size top-K children and Other samples in fallback-compatible lexical order", async () => {
+    const root = await mkdtemp(path.join(tmpdir(), "disklizard-native-equal-siblings-"))
+    roots.push(root)
+    const files = Array.from({ length: 60 }, (_, index) => path.join(root, `file-${String(index).padStart(2, "0")}.bin`))
+    const directories = Array.from({ length: 8 }, (_, index) => path.join(root, `dir-${String(index).padStart(2, "0")}`))
+    await Promise.all([
+      ...files.map((target) => writeFile(target, new Uint8Array(1))),
+      ...directories.map(async (directory) => {
+        await mkdir(directory)
+        await writeFile(path.join(directory, "leaf.bin"), new Uint8Array(1))
+      }),
+    ])
+
+    const options = { maxChildren: 2, preserveNames: ["dir-07"], sizeMode: "logical" as const }
+    const [native, fallback] = await Promise.all([scanPathNative(root, options), scanPathSync(root, options)])
+
+    const expectedTopLevelNames = ["dir-00", "dir-01", "dir-07", "Other (65 items)"]
+    const expectedOtherSampleNames = [
+      "dir-02",
+      "dir-03",
+      "dir-04",
+      "dir-05",
+      "dir-06",
+      "file-00.bin",
+      "file-01.bin",
+      "file-02.bin",
+      "file-03.bin",
+      "file-04.bin",
+      "file-05.bin",
+      "file-06.bin",
+    ]
+
+    // Sidecar protocol hydration deliberately differs in mtime precision and
+    // synthetic Other paths. The visible retention decision must not differ.
+    expect(native.children.map((child) => child.name)).toEqual(expectedTopLevelNames)
+    expect(fallback.children.map((child) => child.name)).toEqual(expectedTopLevelNames)
+    expect(native.children.at(-1)?.children.map((child) => child.name)).toEqual(expectedOtherSampleNames)
+    expect(fallback.children.at(-1)?.children.map((child) => child.name)).toEqual(expectedOtherSampleNames)
+  })
+
+  test("normalizes invalid options before serializing a native request", async () => {
+    const root = await fixture()
+    for (const concurrency of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const options = {
+        concurrency,
+        maxDepth: -1,
+        maxChildren: 0,
+        progressIntervalMs: 0,
+        sizeMode: "logical" as const,
+      }
+      const [native, typescript] = await Promise.all([
+        scanPathNative(root, options),
+        scanPathSync(root, options),
+      ])
+
+      expect(native.size).toBe(typescript.size)
+      expect(native.children.map((child) => child.name)).toEqual(typescript.children.map((child) => child.name))
+      expect(native.children).toHaveLength(2)
+      expect(native.children.at(-1)).toMatchObject({ name: "Other (1 items)", size: 7 })
+    }
+  })
+
   test("returns the same deep opt-in artifact inventory as the TypeScript fallback", async () => {
     const root = await mkdtemp(path.join(tmpdir(), "disklizard-native-artifacts-"))
     roots.push(root)
@@ -192,6 +255,28 @@ describe("native disk scanner", () => {
   test("rejects malformed protocol messages", () => {
     expect(parseNativeMessage("not-json")).toBeUndefined()
     expect(parseNativeMessage('{"type":"progress","progress":{}}')).toBeUndefined()
+  })
+
+  test("accepts a cacheable compact tree beyond the legacy native 100k node cap", () => {
+    // The snapshot and native-protocol boundary intentionally use the same
+    // materialization budget. A native result that the snapshot can retain
+    // must not trigger a second full TypeScript scan merely because it has
+    // more than the old 100k protocol-only limit.
+    const childCount = 100_001
+    expect(childCount).toBeLessThanOrEqual(MAX_MATERIALIZED_DISK_TREE_NODES - 1)
+    const message = parseNativeMessage(
+      JSON.stringify(
+        compactDonePayload(
+          "/workspace",
+          undefined,
+          Array.from({ length: childCount }, (_, index) => ({ n: `child-${index}`, s: 0 })),
+        ),
+      ),
+    )
+
+    expect(message?.type).toBe("done")
+    if (!message || message.type !== "done") throw new Error("Expected a native done message")
+    expect(message.root.children).toHaveLength(childCount)
   })
 
   test("rejects compact child names that could escape the declared root", () => {

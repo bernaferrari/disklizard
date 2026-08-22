@@ -18,6 +18,10 @@ const html = async (name: string) => Bun.file(join(dir, name)).text()
 describe("electron renderer html", () => {
   for (const name of ["index.html"]) {
     describe(name, () => {
+      test("uses the DiskLizard window title", async () => {
+        expect(await html(name)).toContain("<title>DiskLizard</title>")
+      })
+
       test("script src attributes use relative paths", async () => {
         const content = await html(name)
         const srcs = [...content.matchAll(/\bsrc=["']([^"']+)["']/g)].map((m) => m[1])

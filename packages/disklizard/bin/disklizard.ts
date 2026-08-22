@@ -7,7 +7,11 @@
  *   bun packages/disklizard/bin/disklizard.ts C:\
  */
 
-import { runDiskLizardTui } from "../src/tui/app"
+import { runDiskLizardCli } from "../src/cli"
 
-const arg = process.argv[2]
-await runDiskLizardTui({ path: arg })
+try {
+  await runDiskLizardCli(process.argv.slice(2))
+} catch (error) {
+  console.error(`disklizard: ${error instanceof Error ? error.message : String(error)}`)
+  process.exitCode = 1
+}

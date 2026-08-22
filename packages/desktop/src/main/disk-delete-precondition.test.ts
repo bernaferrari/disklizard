@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test"
 import { lstat, mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises"
 import { platform, tmpdir } from "node:os"
 import { join } from "node:path"
-import type { DeveloperArtifactDirectoryIdentity } from "@opencode-ai/disklizard"
+import type { DeveloperArtifactDirectoryIdentity } from "@disklizard/core"
 import {
   assertDeveloperArtifactDeletePrecondition,
   runGuardedDiskDelete,

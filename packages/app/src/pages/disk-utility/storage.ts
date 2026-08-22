@@ -1,6 +1,6 @@
 import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
 import type { DiskPinnedLocation } from "@/context/settings"
-import { canDeletePath } from "@opencode-ai/disklizard/safety"
+import { canDeletePath } from "@disklizard/core/safety"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 
 function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
@@ -112,6 +112,40 @@ export function asBrowseableRoot(node: DiskScanNode): DiskScanNode {
   }
 }
 
+function apparentBytes(node: Pick<DiskScanNode, "size" | "logicalSize">) {
+  return node.logicalSize ?? node.size
+}
+
+/** Metadata that describes the accounting boundary is valid only on the authoritative scan root. */
+function withoutRootOnlyScanMetadata(node: DiskScanNode): DiskScanNode {
+  if (!node.developerArtifactInventory && !node.cloneMetadata && !node.sharedStorageEvidence) return node
+  const {
+    developerArtifactInventory: _inventory,
+    cloneMetadata: _cloneMetadata,
+    sharedStorageEvidence: _sharedStorageEvidence,
+    ...subtree
+  } = node
+  return subtree
+}
+
+function withReconciledChildren(node: DiskScanNode, children: DiskScanNode[]): DiskScanNode {
+  const previousSize = node.children.reduce((sum, child) => sum + child.size, 0)
+  const nextSize = children.reduce((sum, child) => sum + child.size, 0)
+  const previousLogicalSize = node.children.reduce((sum, child) => sum + apparentBytes(child), 0)
+  const nextLogicalSize = children.reduce((sum, child) => sum + apparentBytes(child), 0)
+  const size = Math.max(0, node.size + nextSize - previousSize)
+  const logicalSize = Math.max(0, apparentBytes(node) + nextLogicalSize - previousLogicalSize)
+  const modifiedAt = children.reduce((latest, child) => Math.max(latest, child.modifiedAt ?? 0), 0)
+  const { logicalSize: _previousLogicalSize, ...unchanged } = node
+  return {
+    ...unchanged,
+    size,
+    ...(logicalSize === size ? {} : { logicalSize }),
+    modifiedAt: modifiedAt || undefined,
+    children: children.toSorted((a, b) => b.size - a.size),
+  }
+}
+
 /** Replace a focused subtree without losing its retained ancestors or scan-root identity. */
 export function replaceScanSubtree(
   root: DiskScanNode,
@@ -119,31 +153,18 @@ export function replaceScanSubtree(
   replacement: DiskScanNode,
   os?: "macos" | "windows" | "linux",
 ): DiskScanNode {
-  function withoutRootOnlyInventory(node: DiskScanNode): DiskScanNode {
-    if (!node.developerArtifactInventory) return node
-    const { developerArtifactInventory: _inventory, ...subtree } = node
-    return subtree
-  }
-
   function visit(current: DiskScanNode, isScanRoot: boolean): DiskScanNode {
     if (diskPathEquals(current.path, targetPath, os)) {
-      // A focused expansion must never attach its own root-only inventory to
-      // the materialized child. The existing scan root remains authoritative.
-      return isScanRoot ? replacement : withoutRootOnlyInventory(replacement)
+      // A focused expansion must never attach boundary-wide accounting or
+      // inventory evidence to a materialized child. The existing scan root
+      // remains the sole authority for those claims.
+      return isScanRoot ? replacement : withoutRootOnlyScanMetadata(replacement)
     }
 
     const children = current.children.map((child) => visit(child, false))
     if (children.every((child, index) => child === current.children[index])) return current
 
-    const previousSize = current.children.reduce((sum, child) => sum + child.size, 0)
-    const nextSize = children.reduce((sum, child) => sum + child.size, 0)
-    const modifiedAt = children.reduce((latest, child) => Math.max(latest, child.modifiedAt ?? 0), 0)
-    return {
-      ...current,
-      size: Math.max(0, current.size + nextSize - previousSize),
-      modifiedAt: modifiedAt || undefined,
-      children: children.toSorted((a, b) => b.size - a.size),
-    }
+    return withReconciledChildren(current, children)
   }
 
   return visit(root, true)
@@ -163,15 +184,7 @@ export function removeScanSubtrees(
     if (children.length === node.children.length && children.every((child, index) => child === node.children[index]))
       return node
 
-    const previousSize = node.children.reduce((sum, child) => sum + child.size, 0)
-    const nextSize = children.reduce((sum, child) => sum + child.size, 0)
-    const modifiedAt = children.reduce((latest, child) => Math.max(latest, child.modifiedAt ?? 0), 0)
-    return {
-      ...node,
-      size: Math.max(0, node.size + nextSize - previousSize),
-      modifiedAt: modifiedAt || undefined,
-      children: children.toSorted((a, b) => b.size - a.size),
-    }
+    return withReconciledChildren(node, children)
   }
 
   return visit(root)

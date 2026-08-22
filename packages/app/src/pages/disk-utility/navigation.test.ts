@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import type { DiskScanNode } from "@/context/platform"
+import { dict } from "@/i18n/en"
 import {
   buildCrumbs,
   describeStorageNode,
@@ -64,9 +65,9 @@ describe("shouldHandleDiskShortcut", () => {
 
 describe("scanAccessGuidance", () => {
   it("gives an actionable instruction for every supported desktop OS", () => {
-    expect(scanAccessGuidance("macos")).toContain("Full Disk Access")
-    expect(scanAccessGuidance("windows")).toContain("account with access")
-    expect(scanAccessGuidance("linux")).toContain("mount permissions")
+    expect(dict[scanAccessGuidance("macos")]).toContain("Full Disk Access to DiskLizard")
+    expect(dict[scanAccessGuidance("windows")]).toContain("account with access")
+    expect(dict[scanAccessGuidance("linux")]).toContain("mount permissions")
   })
 })
 

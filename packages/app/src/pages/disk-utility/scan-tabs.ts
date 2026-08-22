@@ -8,6 +8,20 @@ export type RetainedScanTab = {
   view: DiskScanNode
 }
 
+/** Match the tabs that are actually rendered: the active volume job is represented by the current-scan pill. */
+export function visibleScanTabCount(input: {
+  retainedCount: number
+  volumeJobIDs: readonly string[]
+  activeID?: string
+  hasCurrentScan: boolean
+}) {
+  return (
+    input.retainedCount +
+    input.volumeJobIDs.filter((id) => id !== input.activeID).length +
+    (input.hasCurrentScan ? 1 : 0)
+  )
+}
+
 function findNodeInTree(
   root: DiskScanNode,
   targetPath: string,

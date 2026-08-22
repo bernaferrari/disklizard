@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 import { serialize } from "node:v8"
 import type ParcelWatcher from "@parcel/watcher"
-import type { DiskNode } from "../../../disklizard/src/types"
+import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
 import { applyDiskDelta, DiskSnapshotManager, deltaRoots, diskSnapshotKey } from "./disk-snapshot"
 
 const temporary: string[] = []
@@ -17,6 +17,14 @@ async function temp() {
   const root = await mkdtemp(path.join(tmpdir(), "disklizard-snapshot-"))
   temporary.push(root)
   return realpath(root)
+}
+
+async function eventually(predicate: () => boolean, timeoutMs = 500) {
+  const deadline = Date.now() + timeoutMs
+  while (!predicate()) {
+    if (Date.now() >= deadline) throw new Error("Timed out waiting for the disk snapshot update")
+    await Bun.sleep(5)
+  }
 }
 
 async function scanFixture(targetPath: string, scanRoot = true): Promise<DiskNode> {
@@ -85,6 +93,25 @@ describe("disk scan snapshots", () => {
     expect(first).toBe(second)
   })
 
+  test("canonicalizes invalid concurrency to the scanner's execution contract", () => {
+    const root = "/tmp/project"
+    const defaultConcurrency = diskSnapshotKey(root, {})
+    expect(diskSnapshotKey(root, { concurrency: 0 })).toBe(defaultConcurrency)
+    expect(diskSnapshotKey(root, { concurrency: -1 })).toBe(defaultConcurrency)
+    expect(diskSnapshotKey(root, { concurrency: Number.NaN })).toBe(defaultConcurrency)
+    expect(diskSnapshotKey(root, { concurrency: Number.POSITIVE_INFINITY })).toBe(defaultConcurrency)
+    expect(diskSnapshotKey(root, { concurrency: 100 })).toBe(diskSnapshotKey(root, { concurrency: 64 }))
+  })
+
+  test("canonicalizes the remaining bounded scanner options before deriving a snapshot key", () => {
+    const root = "/tmp/project"
+    const normalized = diskSnapshotKey(root, { maxDepth: 0, maxChildren: 1, progressIntervalMs: 16 })
+    expect(diskSnapshotKey(root, { maxDepth: -1, maxChildren: 0, progressIntervalMs: 0 })).toBe(normalized)
+    expect(diskSnapshotKey(root, { maxDepth: 100, maxChildren: 100_001 })).toBe(
+      diskSnapshotKey(root, { maxDepth: 64, maxChildren: 10_000 }),
+    )
+  })
+
   test("keeps an opt-in developer artifact inventory separate from map-only snapshots", () => {
     const mapOnly = diskSnapshotKey("/tmp/project", { preserveNames: ["node_modules"] })
     const inventory = diskSnapshotKey("/tmp/project", {
@@ -131,6 +158,44 @@ describe("disk scan snapshots", () => {
     const restored = await second.scan(2, root, {}, () => {})
     expect(restored.source).toBe("snapshot")
     expect(restored.root.size).toBe(12)
+    expect(scans).toBe(1)
+    await second.stopAll()
+  })
+
+  test("restores a materialized tree above the legacy native 100k protocol cap", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const watcher = fakeWatcher()
+    const children = Array.from({ length: 100_001 }, (_, index): DiskNode => ({
+      name: `child-${index}`,
+      path: path.join(root, `child-${index}`),
+      size: 0,
+      isDir: false,
+      children: [],
+      ext: "",
+    }))
+    const largeRoot: DiskNode = {
+      name: path.basename(root),
+      path: root,
+      size: 0,
+      isDir: true,
+      children,
+      ext: "",
+    }
+    let scans = 0
+    const scan = async () => {
+      scans++
+      return largeRoot
+    }
+
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await first.scan(1, root, {}, () => {})).source).toBe("scan")
+    await first.stopAll()
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    const restored = await second.scan(2, root, {}, () => {})
+    expect(restored.source).toBe("snapshot")
+    expect(restored.root.children).toHaveLength(children.length)
     expect(scans).toBe(1)
     await second.stopAll()
   })
@@ -329,26 +394,64 @@ describe("disk scan snapshots", () => {
     await second.stopAll()
   })
 
-  test("refreshes the whole root when a deep developer inventory is enabled", async () => {
+  test("keeps repeated watcher deltas local and invalidates a stale deep developer inventory", async () => {
     const root = await temp()
     const file = path.join(root, "project", "node_modules", "index.js")
     await mkdir(path.dirname(file), { recursive: true })
     await writeFile(file, new Uint8Array(12))
-    const original = await scanFixture(root)
-    const scanned: string[] = []
-
-    const updated = await applyDiskDelta(
-      original,
-      [{ path: file, type: "update" }],
-      async (target) => {
-        scanned.push(target)
-        return scanFixture(target)
+    const original: DiskNode = {
+      ...(await scanFixture(root)),
+      developerArtifactInventory: {
+        items: [
+          {
+            name: "node_modules",
+            path: path.dirname(file),
+            size: 12,
+            isDir: true,
+            kind: "dependencies",
+            ecosystem: "node",
+            confidence: "verified",
+            cleanup: "eligible",
+            evidence: ["name:node_modules"],
+            inventoryOnly: true,
+          },
+        ],
+        status: {
+          state: "complete",
+          maxItems: 200,
+          scannedDirectories: 3,
+          matchedDirectories: 1,
+          truncated: false,
+          unreadableCount: 0,
+          unreadableSamplePaths: [],
+          skippedSymlinkCount: 0,
+          skippedSymlinkSamplePaths: [],
+          excludedCount: 0,
+          excludedSamplePaths: [],
+        },
       },
-      { developerArtifactInventory: { maxItems: 200 } },
-    )
+    }
+    const scanned: string[] = []
+    const inventoryOptions: ScanOptions["developerArtifactInventory"][] = []
+    const scan = async (target: string, options: ScanOptions) => {
+      scanned.push(target)
+      inventoryOptions.push(options.developerArtifactInventory)
+      return scanFixture(target)
+    }
 
-    expect(scanned).toEqual([root])
-    expect(updated.changedPaths).toEqual([root])
+    const first = await applyDiskDelta(original, [{ path: file, type: "update" }], scan, {
+      developerArtifactInventory: { maxItems: 200 },
+    })
+    const second = await applyDiskDelta(first.root, [{ path: file, type: "update" }], scan, {
+      developerArtifactInventory: { maxItems: 200 },
+    })
+
+    expect(scanned).toEqual([file, file])
+    expect(inventoryOptions).toEqual([undefined, undefined])
+    expect(first.changedPaths).toEqual([file])
+    expect(second.changedPaths).toEqual([file])
+    expect(first.root.developerArtifactInventory).toBeUndefined()
+    expect(second.root.developerArtifactInventory).toBeUndefined()
   })
 
   test("pushes live changes into the open tree", async () => {
@@ -368,9 +471,65 @@ describe("disk scan snapshots", () => {
     await manager.scan(1, root, {}, (update) => updates.push(update.root))
     await writeFile(file, new Uint8Array(18))
     watcher.emit([{ path: file, type: "update" }])
-    await Bun.sleep(40)
+    await eventually(() => updates.at(-1)?.size === 18)
     expect(updates.at(-1)?.size).toBe(18)
     await manager.stopAll()
+  })
+
+  test("does not persist an inventory-invalidated live delta under an inventory cache key", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "project", "node_modules", "file.bin")
+    await mkdir(path.dirname(file), { recursive: true })
+    await writeFile(file, new Uint8Array(4))
+    const watcher = fakeWatcher()
+    const scan = async (target: string, options: ScanOptions) => {
+      const tree = await scanFixture(target)
+      if (path.resolve(target) !== path.resolve(root) || !options.developerArtifactInventory) return tree
+      tree.developerArtifactInventory = {
+        items: [],
+        status: {
+          state: "complete",
+          maxItems: 200,
+          scannedDirectories: 3,
+          matchedDirectories: 0,
+          truncated: false,
+          unreadableCount: 0,
+          unreadableSamplePaths: [],
+          skippedSymlinkCount: 0,
+          skippedSymlinkSamplePaths: [],
+          excludedCount: 0,
+          excludedSamplePaths: [],
+        },
+      }
+      return tree
+    }
+    const options = { developerArtifactInventory: { maxItems: 200 } }
+    const manager = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin", debounceMs: 1 })
+    const updates: DiskNode[] = []
+    await manager.scan("first", root, options, (update) => updates.push(update.root))
+    await writeFile(file, new Uint8Array(18))
+    watcher.emit([{ path: file, type: "update" }])
+    await eventually(() => updates.length > 0 && updates.at(-1)?.developerArtifactInventory === undefined)
+    expect(updates.at(-1)?.developerArtifactInventory).toBeUndefined()
+    await manager.stop("first")
+
+    let rootScans = 0
+    const second = new DiskSnapshotManager({
+      cacheDir,
+      scan: async (target, scanOptions) => {
+        if (path.resolve(target) === path.resolve(root)) rootScans++
+        return scan(target, scanOptions)
+      },
+      watcher: watcher.api,
+      platform: "darwin",
+      debounceMs: 1,
+    })
+    const reopened = await second.scan("second", root, options, () => {})
+    expect(reopened.source).toBe("scan")
+    expect(rootScans).toBe(1)
+    expect(reopened.root.developerArtifactInventory).toBeDefined()
+    await second.stopAll()
   })
 
   test("keeps snapshot lifecycles isolated for simultaneous scan sessions", async () => {

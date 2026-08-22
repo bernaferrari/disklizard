@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import type { DeveloperArtifactInventory } from "@opencode-ai/disklizard"
+import type { DeveloperArtifactInventory } from "@disklizard/core"
 import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
 import {
   actionableReclaimSummary,
@@ -161,7 +161,7 @@ describe("includeHiddenSpace", () => {
     expect(replaceScanSubtree(project, "C:\\Code\\Missing", expanded, "windows")).toBe(project)
   })
 
-  it("keeps a deep inventory root-only when a focused subtree is grafted into the map", () => {
+  it("keeps scan-boundary metadata root-only when a focused subtree is grafted into the map", () => {
     const inventory: DeveloperArtifactInventory = {
       items: [],
       status: {
@@ -191,12 +191,36 @@ describe("includeHiddenSpace", () => {
       ...collapsed,
       isCollapsed: undefined,
       developerArtifactInventory: focusedInventory,
+      cloneMetadata: { state: "available" },
+      sharedStorageEvidence: "complete",
     }
 
     const result = replaceScanSubtree(project, collapsed.path, expanded, "linux")
 
     expect(result.developerArtifactInventory).toBe(inventory)
     expect(result.children[0].developerArtifactInventory).toBeUndefined()
+    expect(result.children[0].cloneMetadata).toBeUndefined()
+    expect(result.children[0].sharedStorageEvidence).toBeUndefined()
+  })
+
+  it("reconciles apparent bytes when focused subtrees change or are removed", () => {
+    const sparse = {
+      ...root,
+      name: "sparse.img",
+      path: "/work/sparse.img",
+      size: 10,
+      logicalSize: 100,
+      isDir: false,
+    }
+    const sibling = { ...root, name: "docs", path: "/work/docs", size: 30, logicalSize: 40 }
+    const project = { ...root, name: "work", path: "/work", size: 40, logicalSize: 140, children: [sparse, sibling] }
+    const expanded = { ...sparse, size: 20, logicalSize: 160 }
+
+    const replaced = replaceScanSubtree(project, sparse.path, expanded, "linux")
+    expect(replaced).toMatchObject({ size: 50, logicalSize: 200 })
+
+    const removed = removeScanSubtrees(project, [sparse], "linux")!
+    expect(removed).toMatchObject({ size: 30, logicalSize: 40, children: [sibling] })
   })
 
   it("removes confirmed subtrees and updates every ancestor without mutating unaffected branches", () => {

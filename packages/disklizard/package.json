@@ -1,6 +1,6 @@
 {
-  "name": "@opencode-ai/disklizard",
-  "version": "1.17.10",
+  "name": "@disklizard/core",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -11,7 +11,8 @@
     "./format": "./src/format.ts",
     "./safety": "./src/safety.ts",
     "./tree": "./src/tree.ts",
-    "./tui": "./src/tui/app.ts"
+    "./tui": "./src/tui/app.ts",
+    "./cli": "./src/cli.ts"
   },
   "bin": {
     "disklizard": "./bin/disklizard.ts"

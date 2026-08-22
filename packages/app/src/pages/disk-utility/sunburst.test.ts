@@ -5,11 +5,40 @@ import {
   MIN_VISIBLE_SEGMENT_ANGLE,
   primaryHueForIndex,
   primarySegmentColor,
+  primarySegmentForeground,
   safeCanvasRadius,
   shouldPulseSunburstEntry,
   sunburstEntryDuration,
   sunburstTransitionDuration,
 } from "./sunburst"
+
+function oklchToLinearSrgb(css: string): [number, number, number] {
+  const channels = css.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)/)
+  if (!channels) throw new Error(`Expected an opaque OKLCH color, received ${css}`)
+  const lightness = Number(channels[1])
+  const chroma = Number(channels[2])
+  const hue = (Number(channels[3]) * Math.PI) / 180
+  const a = chroma * Math.cos(hue)
+  const b = chroma * Math.sin(hue)
+  const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+  const m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+  const s = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3
+  const clamp = (channel: number) => Math.max(0, Math.min(1, channel))
+  return [
+    clamp(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    clamp(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    clamp(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+  ]
+}
+
+function contrastRatio(foreground: string, background: string): number {
+  const luminance = (color: string) => {
+    const [red, green, blue] = oklchToLinearSrgb(color)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+  }
+  const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a)
+  return (values[0] + 0.05) / (values[1] + 0.05)
+}
 
 function node(name: string, size: number, children: DiskScanNode[] = []): DiskScanNode {
   return { name, path: `/${name}`, size, isDir: true, children, ext: "" }
@@ -36,6 +65,12 @@ describe("primarySegmentColor", () => {
   })
   it("keeps files visually secondary to folder branches", () => {
     expect(primarySegmentColor(2, 1, false)).toBe("oklch(0.56 0.018 255)")
+  })
+  it("keeps every tile label above normal-text AA contrast", () => {
+    for (let index = 0; index < 10; index++) {
+      expect(contrastRatio(primarySegmentForeground(true), primarySegmentColor(index))).toBeGreaterThanOrEqual(4.5)
+    }
+    expect(contrastRatio(primarySegmentForeground(false), primarySegmentColor(0, 1, false))).toBeGreaterThanOrEqual(4.5)
   })
 })
 

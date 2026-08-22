@@ -29,12 +29,12 @@ export function StorageDiagnostics(props: {
     <section class="pt-7" aria-labelledby="disklizard-connected-storage">
       <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p class="text-10-semibold uppercase tracking-[0.14em] text-text-weaker">Connected storage</p>
+          <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Connected storage</p>
           <h3 id="disklizard-connected-storage" class="mt-1 text-18-medium tracking-[-0.02em] text-text-strong">
             Scan storage that is already mounted.
           </h3>
         </div>
-        <span class="text-9-regular text-text-weaker">Nothing is signed in or uploaded</span>
+        <span class="text-13-regular text-text-weaker">Nothing is signed in or uploaded</span>
       </div>
 
       <Show when={accessLimited()}>
@@ -43,8 +43,8 @@ export function StorageDiagnostics(props: {
             <Icon name="shield" class="size-4" />
           </span>
           <div class="min-w-[min(100%,24rem)] flex-1">
-            <p class="text-10-semibold text-text-strong">Some protected folders could not be read</p>
-            <p class="mt-0.5 max-w-[58ch] text-9-regular leading-relaxed text-text-weak">
+            <p class="text-13-semibold text-text-strong">Some protected folders could not be read</p>
+            <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
               DiskLizard observed an OS permission denial. Open privacy settings to review access, then rescan—access is
               never assumed.
             </p>
@@ -72,16 +72,16 @@ export function StorageDiagnostics(props: {
                 </span>
                 <span class="min-w-0 flex-1">
                   <span class="flex min-w-0 items-center gap-2">
-                    <span class="dl-hover-card-label truncate text-11-semibold text-text-strong">{location.name}</span>
-                    <span class="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-9-semibold text-text-weaker">
+                    <span class="dl-hover-card-label truncate text-13-semibold text-text-strong">{location.name}</span>
+                    <span class="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-13-semibold text-text-weaker">
                       {storageProviderLabel(location.provider)}
                     </span>
                   </span>
-                  <span class="mt-1 block truncate font-mono text-9-regular text-text-weaker" title={location.path}>
+                  <span class="mt-1 block truncate text-13-mono text-text-weaker" title={location.path}>
                     {location.path}
                   </span>
                 </span>
-                <span class="shrink-0 text-10-semibold text-text-weak">Scan</span>
+                <span class="shrink-0 text-13-semibold text-text-weak">Scan</span>
               </button>
             )}
           </For>
