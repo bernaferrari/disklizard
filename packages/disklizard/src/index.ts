@@ -52,4 +52,8 @@ export {
   type DriveDiscovery,
 } from "./scan"
 export { renderTuiBars, renderTuiHeader, renderTuiHelp } from "./tui/render"
-export { diskLizardCliHelp, formatDiskLizardSummary, parseDiskLizardCliArgs, runDiskLizardCli } from "./cli"
+export { diskLizardCliHelp, formatDiskLizardJson, formatDiskLizardSummary, parseDiskLizardCliArgs, runDiskLizardCli } from "./cli"
+export { scanPathWithBackend, describeScanResult, type ScanBackend, type ScanBackendResult } from "./backend"
+export { generateGoldenCorpus, accountingFromTree, formatBenchmarkReport } from "./fixtures"
+export { nativeScannerAvailable, nativeScannerPath, scanPathNative } from "./native"
+export { scanWorkerHref } from "./scan"

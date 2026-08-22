@@ -1,6 +1,7 @@
 import { homedir } from "node:os"
+import { scanPathWithBackend, type ScanBackendResult } from "./backend"
 import { formatBytes } from "./format"
-import { getDrives, scanPath } from "./scan"
+import { getDrives } from "./scan"
 import { runDiskLizardTui } from "./tui/app"
 import type { DiskNode } from "./types"
 
@@ -73,16 +74,32 @@ export async function runDiskLizardCli(args: string[], write = console.log): Pro
 
   const drives = options.path ? undefined : await getDrives()
   const target = options.path ?? drives?.[0]?.path ?? homedir()
-  const root = await scanPath(target, { maxDepth: options.maxDepth, sizeMode: options.sizeMode, useWorker: false })
+  const result = await scanPathWithBackend(target, {
+    maxDepth: options.maxDepth,
+    sizeMode: options.sizeMode,
+    useWorker: false,
+  })
 
-  if (options.format === "json") return write(JSON.stringify(root, null, 2))
-  write(formatDiskLizardSummary(root, options.sizeMode))
+  if (options.format === "json") return write(JSON.stringify(formatDiskLizardJson(result), null, 2))
+  write(formatDiskLizardSummary(result.root, options.sizeMode, result))
 }
 
-export function formatDiskLizardSummary(root: DiskNode, sizeMode: "physical" | "logical") {
+export function formatDiskLizardJson(result: ScanBackendResult) {
+  return {
+    backend: result.backend,
+    accounting: result.accounting,
+    evidence: result.evidence,
+    root: result.root,
+  }
+}
+
+export function formatDiskLizardSummary(root: DiskNode, sizeMode: "physical" | "logical", result?: Pick<ScanBackendResult, "backend" | "evidence">) {
   const size = sizeMode === "logical" ? (root.logicalSize ?? root.size) : root.size
   const lines = [`${root.path}`, `${formatBytes(size)} ${sizeMode === "logical" ? "apparent" : "allocated"} storage`]
+  if (result) lines.push(`backend ${result.backend} · evidence ${result.evidence}`)
   lines.push(...root.children.slice(0, 12).map((node) => `  ${formatBytes(sizeMode === "logical" ? (node.logicalSize ?? node.size) : node.size)}  ${node.name}`))
   if (root.scanIssues?.unreadableCount) lines.push(`  ${root.scanIssues.unreadableCount} unreadable locations (scan is partial)`)
   return lines.join("\n")
 }
+
+

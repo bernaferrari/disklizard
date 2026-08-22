@@ -12,7 +12,9 @@
     "./safety": "./src/safety.ts",
     "./tree": "./src/tree.ts",
     "./tui": "./src/tui/app.ts",
-    "./cli": "./src/cli.ts"
+    "./cli": "./src/cli.ts",
+    "./backend": "./src/backend.ts",
+    "./native": "./src/native.ts"
   },
   "bin": {
     "disklizard": "./bin/disklizard.ts"

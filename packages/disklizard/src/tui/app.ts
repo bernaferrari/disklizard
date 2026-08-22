@@ -7,7 +7,8 @@
 
 import { homedir } from "node:os"
 import { basename } from "node:path"
-import { scanPath, getDrives } from "../scan"
+import { scanPathWithBackend } from "../backend"
+import { getDrives } from "../scan"
 import type { DiskNode } from "../types"
 import { canDrill, findParent } from "../tree"
 import { formatBytes } from "../format"
@@ -71,10 +72,10 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
     let lastT = performance.now()
 
     try {
-      const tree = await scanPath(path, {
+      const scanned = await scanPathWithBackend(path, {
         maxDepth,
         sizeMode: opts.sizeMode ?? "physical",
-        useWorker: false, // TUI: in-process is fine; avoids eval worker issues in some shells
+        useWorker: false,
         progressIntervalMs: 150,
         onProgress: (p) => {
           scanFiles = p.filesScanned
@@ -87,11 +88,12 @@ export async function runDiskLizardTui(opts: TuiOptions = {}): Promise<void> {
           }
         },
       })
+      const tree = scanned.root
       tree._label = label || basename(path) || path
       root = tree
       view = tree
       selected = 0
-      statusLine = `mapped ${formatBytes(tree.size)}`
+      statusLine = `mapped ${formatBytes(tree.size)} (${scanned.backend})`
     } catch (err) {
       statusLine = `scan failed: ${err instanceof Error ? err.message : String(err)}`
     } finally {

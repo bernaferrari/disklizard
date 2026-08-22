@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { diskLizardCliHelp, formatDiskLizardSummary, parseDiskLizardCliArgs } from "./cli"
+import { diskLizardCliHelp, formatDiskLizardJson, formatDiskLizardSummary, parseDiskLizardCliArgs } from "./cli"
 
 describe("DiskLizard CLI", () => {
   test("parses agent-friendly read-only output options", () => {
@@ -35,5 +35,25 @@ describe("DiskLizard CLI", () => {
   test("describes every CLI mode as read-only", () => {
     expect(diskLizardCliHelp()).toContain("read-only in every mode")
     expect(diskLizardCliHelp()).not.toContain("permanent deletion")
+  })
+
+  test("JSON output reports backend, accounting, and evidence from the real scan result", () => {
+    const payload = formatDiskLizardJson({
+      backend: "native",
+      accounting: "physical",
+      evidence: "complete",
+      root: {
+        name: "work",
+        path: "/work",
+        size: 2048,
+        isDir: true,
+        ext: "",
+        children: [],
+        sharedStorageEvidence: "complete",
+      },
+    })
+    expect(payload).toMatchObject({ backend: "native", accounting: "physical", evidence: "complete" })
+    expect(payload.root.path).toBe("/work")
+    expect(payload.root.size).toBe(2048)
   })
 })
