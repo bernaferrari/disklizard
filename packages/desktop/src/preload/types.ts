@@ -1,4 +1,4 @@
-import type { DesktopMenuAction } from "@opencode-ai/app/desktop-menu"
+import type { DesktopMenuAction } from "../main/desktop-menu"
 import type {
   ApfsSnapshotEvidence,
   CloneAccounting,
@@ -11,31 +11,9 @@ import type {
   DriveFacts,
   SharedStorageEvidence,
 } from "@disklizard/core"
-import type { WslServersPlatform } from "@opencode-ai/app/wsl/types"
-import type { UpdaterState } from "@opencode-ai/app/updater"
-import type { DesktopNativeBundle } from "@opencode-ai/app/i18n/desktop-native"
+import type { UpdaterState } from "../main/updater-controller"
+import type { DesktopNativeBundle } from "../../../app/src/i18n/desktop-native"
 import type { DiskStorageDiagnostics } from "../main/disk-platform"
-export type {
-  WslDistroProbe,
-  WslInstalledDistro,
-  WslJob,
-  WslOnlineDistro,
-  WslOpencodeCheck,
-  WslRuntimeCheck,
-  WslServerConfig,
-  WslServerItem,
-  WslServerRuntime,
-  WslServersEvent,
-  WslServersState,
-} from "@opencode-ai/app/wsl/types"
-
-export type ServerReadyData = {
-  url: string
-  username: string | null
-  password: string | null
-}
-
-export type WslServersAPI = WslServersPlatform
 export type UpdaterAPI = {
   subscribe: (cb: (state: UpdaterState) => void) => Promise<() => void>
   check: () => Promise<UpdaterState>
@@ -176,32 +154,14 @@ export type FatalRendererError = {
 
 export type ElectronAPI = {
   disklizard: DiskLizardAPI
-  killSidecar: () => Promise<void>
-  installCli: () => Promise<string>
-  awaitInitialization: () => Promise<ServerReadyData>
-  wslServers: WslServersAPI
   updater: UpdaterAPI
   consumeInitialDeepLinks: () => Promise<string[]>
-  getDefaultServerUrl: () => Promise<string | null>
-  setDefaultServerUrl: (url: string | null) => Promise<void>
-  isFirstLaunchOnboardingPending: () => Promise<boolean>
-  finishFirstLaunchOnboarding: (createDefaultProject: boolean) => Promise<string | null>
-  isOldLayoutEligible: () => Promise<boolean>
-  getDisplayBackend: () => Promise<LinuxDisplayBackend | null>
-  setDisplayBackend: (backend: LinuxDisplayBackend | null) => Promise<void>
-  checkAppExists: (appName: string) => Promise<boolean>
-  resolveAppPath: (appName: string) => Promise<string | null>
   storeGet: (name: string, key: string) => Promise<string | null>
   storeSet: (name: string, key: string, value: string) => Promise<void>
   storeDelete: (name: string, key: string) => Promise<void>
   storeClear: (name: string) => Promise<void>
   storeKeys: (name: string) => Promise<string[]>
   storeLength: (name: string) => Promise<number>
-  draftGet: (key: string) => Promise<string | null>
-  draftSet: (key: string, value: string) => Promise<void>
-  draftDelete: (key: string) => Promise<void>
-  draftBlobPut: (data: ArrayBuffer) => Promise<string>
-  draftBlobGet: (id: string) => Promise<ArrayBuffer | null>
   getWindowID: () => Promise<string>
 
   getWindowCount?: () => Promise<number>

@@ -1,37 +1,15 @@
 import { describe, expect, test } from "bun:test"
-import { Cause, Deferred, Effect, Exit, Fiber } from "effect"
-import { forwardInitializationFailure } from "./initialization"
+import { readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
+
+const main = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "index.ts"), "utf8")
 
 describe("desktop initialization", () => {
-  const failure = new Error("sidecar startup failed")
-  const expectFailure = (exit: Exit.Exit<unknown, unknown>) => {
-    expect(Exit.isFailure(exit)).toBe(true)
-    if (Exit.isSuccess(exit)) return
-    expect(Cause.squash(exit.cause)).toBe(failure)
-  }
-
-  test("forwards loading task failures before renderer initialization", () => {
-    const exit = Effect.runSync(
-      Effect.gen(function* () {
-        const initialization = yield* Deferred.make<never, unknown>()
-        yield* forwardInitializationFailure(initialization)(Effect.die(failure)).pipe(Effect.exit)
-        return yield* Deferred.await(initialization).pipe(Effect.exit)
-      }),
-    )
-
-    expectFailure(exit)
-  })
-
-  test("forwards loading task failures while renderer initialization waits", () => {
-    const exit = Effect.runSync(
-      Effect.gen(function* () {
-        const initialization = yield* Deferred.make<never, unknown>()
-        const waiting = yield* Deferred.await(initialization).pipe(Effect.exit, Effect.forkChild)
-        yield* forwardInitializationFailure(initialization)(Effect.die(failure)).pipe(Effect.exit)
-        return yield* Fiber.join(waiting)
-      }),
-    )
-
-    expectFailure(exit)
+  test("starts the window without waiting on an OpenCode sidecar", () => {
+    expect(main).toContain("restoreMainWindows")
+    expect(main).not.toContain("Deferred.await(serverReady)")
+    expect(main).not.toContain("spawnLocalServer")
+    expect(main).not.toContain("startBackgroundCli")
   })
 })

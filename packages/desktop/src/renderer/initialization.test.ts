@@ -1,73 +1,58 @@
 import { describe, expect, test } from "bun:test"
-import { initializationData, initializationReady } from "./initialization"
+import { readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
+import { createDiskLizardPlatform, desktopOS } from "./platform"
+
+const renderer = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "index.tsx"), "utf8")
 
 describe("desktop renderer initialization", () => {
-  test("throws the original initialization error before rendering server providers", () => {
-    const error = new Error("sidecar startup failed")
+  test("opens directly into the DiskLizard storage interface", () => {
+    expect(renderer).toContain("<DiskUtilityPage")
+    expect(renderer).toContain("DiskLizardRuntime")
+    expect(renderer).not.toContain("LoadingSplash")
+    expect(renderer).not.toContain("awaitInitialization")
+  })
 
-    try {
-      initializationData(Object.assign(() => undefined, { error }))
-      throw new Error("expected initialization to fail")
-    } catch (failure) {
-      expect(failure).toBe(error)
-      expect((failure as Error & { localServerStartup?: boolean }).localServerStartup).toBe(true)
+  test("builds a desktop-only platform without OpenCode servers or drafts", () => {
+    const api = {
+      disklizard: {
+        getDrives: async () => [],
+        onDriveFacts: () => () => undefined,
+        getStorageDiagnostics: async () => ({ access: { status: "not-applicable", probes: [] }, locations: [] }),
+        openDiskAccessSettings: async () => false,
+        scanPath: async () => null,
+        cancelScan: async () => undefined,
+        stopWatching: async () => undefined,
+        deletePath: async () => ({ ok: true as const }),
+        previewPath: async () => ({ kind: "unsupported" as const, bytes: 0, reason: "format" as const }),
+        systemPreviewPath: async () => undefined,
+        openTrash: async () => undefined,
+        revealPath: async () => undefined,
+        chooseFolder: async () => null,
+        onScanProgress: () => () => undefined,
+        onScanUpdate: () => () => undefined,
+      },
+      storeGet: async () => null,
+      storeSet: async () => undefined,
+      storeDelete: async () => undefined,
+      storeClear: async () => undefined,
+      storeKeys: async () => [],
+      storeLength: async () => 0,
+      updater: { check: async () => ({ status: "disabled" as const }), install: async () => undefined },
+      openPath: async () => undefined,
+      getPathForFile: () => "",
+      openExternal: () => undefined,
+      revealPath: async () => false,
+      relaunch: () => undefined,
     }
-  })
-
-  test("removes Electron's remote invocation wrapper from startup errors", () => {
-    const error = new Error(
-      "Error invoking remote method 'await-initialization': Error: Cannot migrate session_message projections",
-    )
-
-    try {
-      initializationData(Object.assign(() => undefined, { error }))
-      throw new Error("expected initialization to fail")
-    } catch (failure) {
-      expect(failure).toBe(error)
-      expect((failure as Error).message).toBe("Cannot migrate session_message projections")
-    }
-  })
-
-  test("returns initialized sidecar data", () => {
-    const sidecar = { url: "http://127.0.0.1:1234", username: "opencode", password: "secret" }
-
-    expect(initializationData(Object.assign(() => sidecar, { error: undefined }))).toBe(sidecar)
-  })
-
-  test("does not discard falsy initialization errors", () => {
-    let caught: unknown
-    try {
-      initializationData(Object.assign(() => undefined, { error: "" }))
-    } catch (error) {
-      caught = error
-    }
-
-    expect(caught).toBeInstanceOf(Error)
-    if (!(caught instanceof Error)) return
-    expect(caught.message).toBe("")
-    expect((caught as Error & { localServerStartup?: boolean }).localServerStartup).toBe(true)
-  })
-
-  test("checks initialization errors before rendering server providers", () => {
-    const error = new Error("sidecar startup failed")
-
-    expect(() => initializationReady(Object.assign(() => undefined, { error, loading: false }))).toThrow(error)
-  })
-
-  test("waits for pending initialization without reading it", () => {
-    let reads = 0
-
-    expect(
-      initializationReady(
-        Object.assign(
-          () => {
-            reads++
-            return undefined
-          },
-          { error: undefined, loading: true },
-        ),
-      ),
-    ).toBe(false)
-    expect(reads).toBe(0)
+    ;(globalThis as { window?: { api: typeof api } }).window = { api }
+    const platform = createDiskLizardPlatform(() => ({ status: "disabled" }))
+    expect(platform.platform).toBe("desktop")
+    expect(platform.diskUtility).toBeDefined()
+    expect(platform).not.toHaveProperty("wslServers")
+    expect(platform).not.toHaveProperty("draftStore")
+    expect(platform).not.toHaveProperty("getDefaultServer")
+    expect(["macos", "windows", "linux", undefined]).toContain(desktopOS())
   })
 })

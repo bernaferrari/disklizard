@@ -1,9 +1,9 @@
 import { sentryVitePlugin } from "@sentry/vite-plugin"
 import { defineConfig } from "electron-vite"
-import appPlugin from "@opencode-ai/app/vite"
-import * as fs from "node:fs/promises"
-
-const OPENCODE_SERVER_DIST = "../opencode/dist/node"
+import tailwindcss from "@tailwindcss/vite"
+import solidPlugin from "vite-plugin-solid"
+import { readFileSync } from "node:fs"
+import { fileURLToPath } from "node:url"
 
 const channel = (() => {
   const raw = process.env.DISKLIZARD_CHANNEL ?? process.env.OPENCODE_CHANNEL
@@ -12,7 +12,7 @@ const channel = (() => {
   return "dev"
 })()
 
-const nodePtyPkg = `@lydell/node-pty-${process.platform}-${process.arch}`
+const theme = fileURLToPath(new URL("../app/public/oc-theme-preload.js", import.meta.url))
 
 const sentry =
   process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
@@ -39,9 +39,7 @@ export default defineConfig({
     },
     build: {
       rollupOptions: {
-        input: { index: "src/main/index.ts", sidecar: "src/main/sidecar.ts" },
-        // Keep this identical to electron-vite's Node 20.11+ shim. Its regex insertion can
-        // corrupt bundled TypeScript, while a Rollup banner places the shim safely.
+        input: { index: "src/main/index.ts" },
         output: {
           banner: `
 // -- CommonJS Shims --
@@ -52,36 +50,8 @@ const require = __cjs_mod__.createRequire(import.meta.url);
 `,
         },
       },
-      // The shared scanner ships TypeScript source so it can be reused by Bun
-      // and the renderer. Bundle it into Electron's main process instead of
-      // asking Node to execute the workspace package directly.
-      externalizeDeps: { include: [nodePtyPkg], exclude: ["@disklizard/core"] },
+      externalizeDeps: { exclude: ["@disklizard/core"] },
     },
-    plugins: [
-      {
-        name: "opencode:node-pty-narrower",
-        enforce: "pre",
-        resolveId(s) {
-          if (s === "@lydell/node-pty") return nodePtyPkg
-        },
-      },
-      {
-        name: "opencode:virtual-server-module",
-        enforce: "pre",
-        resolveId(id) {
-          if (id === "virtual:opencode-server") return this.resolve(`${OPENCODE_SERVER_DIST}/node.js`)
-        },
-      },
-      {
-        name: "opencode:copy-server-assets",
-        async writeBundle() {
-          for (const l of await fs.readdir(OPENCODE_SERVER_DIST)) {
-            if (!l.endsWith(".wasm")) continue
-            await fs.writeFile(`./out/main/chunks/${l}`, await fs.readFile(`${OPENCODE_SERVER_DIST}/${l}`))
-          }
-        },
-      },
-    ],
   },
   preload: {
     build: {
@@ -95,7 +65,20 @@ const require = __cjs_mod__.createRequire(import.meta.url);
     },
   },
   renderer: {
-    plugins: [appPlugin, sentry],
+    plugins: [
+      {
+        name: "disklizard:theme-preload",
+        transformIndexHtml(html: string) {
+          return html.replace(
+            '<script id="oc-theme-preload-script" src="./oc-theme-preload.js"></script>',
+            `<script id="oc-theme-preload-script">${readFileSync(theme, "utf8")}</script>`,
+          )
+        },
+      },
+      tailwindcss(),
+      solidPlugin(),
+      sentry,
+    ],
     publicDir: "../../../app/public",
     root: "src/renderer",
     build: {

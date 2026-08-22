@@ -27,7 +27,7 @@ mock.module("electron", () => ({
   shell: {},
 }))
 
-mock.module("@opencode-ai/app/i18n/desktop-native", () => ({
+mock.module("../../../app/src/i18n/desktop-native", () => ({
   parseDesktopNativeBundle: () => undefined,
 }))
 mock.module("./attachment-picker", () => ({
@@ -52,12 +52,6 @@ mock.module("./disk-scanner", () => ({
   getDrives: async () => [],
   mountExclusions: () => [],
   scanPath: () => undefined,
-}))
-mock.module("./draft-store", () => ({
-  createDesktopDraftStore: () => ({
-    close: () => undefined,
-    flush: () => undefined,
-  }),
 }))
 mock.module("./native-translations", () => ({ nativeT: (key: string) => key }))
 mock.module("./store", () => ({
@@ -124,19 +118,8 @@ mock.module("./disk-snapshot", () => ({
 const { registerIpcHandlers } = await import("./ipc")
 
 registerIpcHandlers({
-  killSidecar: () => undefined,
   relaunch: () => undefined,
-  awaitInitialization: async () => ({}) as never,
   consumeInitialDeepLinks: () => [],
-  getDefaultServerUrl: () => null,
-  setDefaultServerUrl: () => undefined,
-  isFirstLaunchOnboardingPending: () => false,
-  finishFirstLaunchOnboarding: () => null,
-  isOldLayoutEligible: () => false,
-  getDisplayBackend: async () => null,
-  setDisplayBackend: () => undefined,
-  checkAppExists: () => false,
-  resolveAppPath: async () => null,
   updater: {
     subscribe: () => () => undefined,
     check: async () => undefined,

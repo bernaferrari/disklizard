@@ -45,16 +45,18 @@ const applyZoom = (next: number) => {
     })
 }
 
-window.api.onZoomFactorChanged((factor) => {
+const desktopApi = typeof window === "undefined" ? undefined : window.api
+
+desktopApi?.onZoomFactorChanged((factor) => {
   requestedZoom = clamp(factor)
   setWebviewZoom(requestedZoom)
 })
 
-void window.api.getPinchZoomEnabled().then((enabled) => {
+void desktopApi?.getPinchZoomEnabled().then((enabled) => {
   pinchZoomEnabled = enabled
 })
 
-window.api.onPinchZoomEnabledChanged((enabled) => {
+desktopApi?.onPinchZoomEnabledChanged((enabled) => {
   pinchZoomEnabled = enabled
   resetWheelPinch()
 })
