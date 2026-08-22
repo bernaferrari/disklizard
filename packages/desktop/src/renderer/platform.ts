@@ -1,4 +1,8 @@
-import type { DiskLizardPlatform, DiskLizardUpdaterState } from "../../../app/src/pages/disk-utility/runtime"
+import {
+  createDiskLizardMenu,
+  type DiskLizardPlatform,
+  type DiskLizardUpdaterState,
+} from "../../../app/src/pages/disk-utility/runtime"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { createSignal } from "solid-js"
 import pkg from "../../package.json"
@@ -44,6 +48,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
     platform: "desktop",
     os,
     version: pkg.version,
+    menu: createDiskLizardMenu(),
     diskUtility: {
       getDrives: () => window.api.disklizard.getDrives(),
       onDriveFacts: (cb) => window.api.disklizard.onDriveFacts(cb),

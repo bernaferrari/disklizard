@@ -26,6 +26,8 @@ describe("DiskLizard standalone desktop runtime", () => {
     const platform = readFileSync(join(dir, "../renderer/platform.ts"), "utf8")
     expect(renderer).toContain("DiskUtilityPage")
     expect(renderer).toContain("DiskLizardRuntime")
+    expect(renderer).toContain("handleRendererMenuCommand")
+    expect(renderer).toContain("rendererMenuHandlers")
     expect(renderer).not.toMatch(/AppInterface|ServerConnection|useWslServers|createDraftStore|DesktopFirstLaunchOnboarding/)
     expect(platform).not.toMatch(/ServerConnection|wslServers|draftStore|getDefaultServer|killSidecar/)
   })

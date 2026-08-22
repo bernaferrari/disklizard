@@ -7,6 +7,7 @@ import { createEffect, createSignal, onCleanup } from "solid-js"
 import { render } from "solid-js/web"
 import DiskUtilityPage from "../../../app/src/pages/disk-utility"
 import { DiskLizardRuntime, type DiskLizardUpdaterState } from "../../../app/src/pages/disk-utility/runtime"
+import { handleRendererMenuCommand, rendererMenuHandlers } from "./menu-commands"
 import { createDiskLizardPlatform, runRendererMenuAction } from "./platform"
 import { resetZoom, zoomIn, zoomOut } from "./webview-zoom"
 import "./styles.css"
@@ -46,14 +47,17 @@ function DiskLizardApp() {
   const platform = createDiskLizardPlatform(updaterState)
 
   const onMenu = window.api.onMenuCommand((id) => {
-    if (id === "view.resetZoom") return resetZoom()
-    if (id === "view.zoomIn") return zoomIn()
-    if (id === "view.zoomOut") return zoomOut()
-    if (id === "logs.export") {
-      void window.api.exportDebugLogs()
-      return
-    }
-    return runRendererMenuAction(id)
+    void handleRendererMenuCommand(
+      id,
+      rendererMenuHandlers({
+        resetZoom,
+        zoomIn,
+        zoomOut,
+        exportLogs: () => window.api.exportDebugLogs(),
+        menu: platform.menu,
+        runDesktopMenuAction: (action) => runRendererMenuAction(action),
+      }),
+    )
   })
   onCleanup(onMenu)
 

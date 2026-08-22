@@ -20,11 +20,32 @@ export type DiskLizardUpdaterState =
   | { status: "installing"; version: string }
   | { status: "error"; message: string }
 
+export type DiskLizardMenu = {
+  register(id: string, handler: () => unknown): () => void
+  run(id: string): unknown
+}
+
+export function createDiskLizardMenu(): DiskLizardMenu {
+  const handlers = new Map<string, () => unknown>()
+  return {
+    register(id, handler) {
+      handlers.set(id, handler)
+      return () => {
+        if (handlers.get(id) === handler) handlers.delete(id)
+      }
+    },
+    run(id) {
+      return handlers.get(id)?.()
+    },
+  }
+}
+
 export type DiskLizardPlatform = {
   platform: "desktop"
   os?: DiskLizardOS
   version?: string
   diskUtility: DiskUtilityAPI
+  menu?: DiskLizardMenu
   openPath?: (path: string, app?: string) => Promise<void>
   getPathForFile?: (file: File) => string
   storage?: (name?: string) => SyncStorage | AsyncStorage

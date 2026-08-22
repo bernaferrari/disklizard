@@ -82,6 +82,7 @@ import { VirtualIndex } from "./DiskUtilityVirtualList"
 import { clearReviewForRootScan } from "./scan-lifecycle"
 import { refreshScanTabsForWatcherUpdate, visibleScanTabCount } from "./scan-tabs"
 import { DISK_UTILITY_STYLES } from "./styles"
+import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "./choose-folder"
 import {
   actionableReclaimSummary,
   asBrowseableRoot,
@@ -544,6 +545,8 @@ export default function DiskUtilityPage() {
   })
 
   onMount(() => {
+    const unbindMenu = platform.menu?.register(DISK_CHOOSE_FOLDER_COMMAND, () => chooseAndScan())
+    onCleanup(() => unbindMenu?.())
     const api = disk()
     if (!api) return
     driveFactsUnsub = api.onDriveFacts((update) => {
@@ -784,8 +787,12 @@ export default function DiskUtilityPage() {
   async function chooseAndScan() {
     const api = disk()
     if (!api) return
-    const path = await api.chooseFolder()
-    if (path) await startScan(path, path.split(/[/\\]/).pop() || path, driveForPath(path, drives(), platform.os))
+    await chooseFolderAndScan({
+      chooseFolder: () => api.chooseFolder(),
+      startScan,
+      drives: drives(),
+      os: platform.os,
+    })
   }
 
   function scanStorageLocation(location: DiskStorageLocation) {

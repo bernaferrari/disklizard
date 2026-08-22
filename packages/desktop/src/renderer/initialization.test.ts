@@ -50,6 +50,7 @@ describe("desktop renderer initialization", () => {
     const platform = createDiskLizardPlatform(() => ({ status: "disabled" }))
     expect(platform.platform).toBe("desktop")
     expect(platform.diskUtility).toBeDefined()
+    expect(platform.menu).toBeDefined()
     expect(platform).not.toHaveProperty("wslServers")
     expect(platform).not.toHaveProperty("draftStore")
     expect(platform).not.toHaveProperty("getDefaultServer")
