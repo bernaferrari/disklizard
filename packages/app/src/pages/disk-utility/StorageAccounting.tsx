@@ -1,5 +1,5 @@
 import { For, Show } from "solid-js"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 
 export type StorageAccountingFact = {

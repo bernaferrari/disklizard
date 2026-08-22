@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { centerOverlayBehavior } from "./DiskUtilityEmptyStates"
 
 function directory(name: string): DiskScanNode {

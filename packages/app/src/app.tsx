@@ -70,7 +70,7 @@ import { NewHome } from "@/pages/home"
 import { LegacyHome } from "@/pages/home/legacy-home"
 
 const NewSession = lazy(() => import("@/pages/new-session"))
-const DiskUtilityRoute = lazy(() => import("@/pages/disk-utility"))
+const DiskUtilityRoute = lazy(() => import("@/pages/disk-utility/web-route"))
 
 const SessionRoute = () => {
   const settings = useSettings()

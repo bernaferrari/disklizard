@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { recentChangeNodes } from "./recent-changes"
 
 const now = Date.UTC(2026, 7, 11, 12)

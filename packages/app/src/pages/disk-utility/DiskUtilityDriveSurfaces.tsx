@@ -1,7 +1,7 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { createEffect, onCleanup, Show } from "solid-js"
-import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
+import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { formatBytes, formatCount, shortBytes } from "./format"
 import { animateCount } from "./motion"
 import { formatScanDuration, formatScanRate, scanPerformance, type ScanPerformance } from "./scan-metrics"

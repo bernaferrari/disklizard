@@ -5,8 +5,8 @@ import type {
   DiskDriveInfo,
   DiskStorageDiagnostics as StorageDiagnosticsValue,
   DiskStorageLocation,
-} from "@/context/platform"
-import type { DiskPinnedLocation } from "@/context/settings"
+} from "./types"
+import type { DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
 import { DriveRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"

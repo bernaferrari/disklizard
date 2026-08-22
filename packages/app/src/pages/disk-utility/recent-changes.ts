@@ -1,4 +1,4 @@
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 
 export const RECENT_CHANGE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000
 

@@ -1,5 +1,5 @@
-import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
-import type { DiskPinnedLocation } from "@/context/settings"
+import type { DiskDriveInfo, DiskScanNode } from "./types"
+import type { DiskPinnedLocation } from "./types"
 import { canDeletePath } from "@disklizard/core/safety"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 

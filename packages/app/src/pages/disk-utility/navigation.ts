@@ -1,4 +1,4 @@
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { formatBytes, formatPct } from "./format"
 
 export type Crumb = { name: string; path: string; node: DiskScanNode }

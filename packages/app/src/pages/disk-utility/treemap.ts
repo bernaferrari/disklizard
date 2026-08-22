@@ -7,7 +7,7 @@
  * aspect ratios (Bruls/Huiying/van Wijk "squarify").
  */
 
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 
 export type TreemapRect = {
   node: DiskScanNode

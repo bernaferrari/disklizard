@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import {
   recognize,
   isReclaimable,

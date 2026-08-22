@@ -1,5 +1,5 @@
 import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@disklizard/core"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 
 /**
  * A deep-inventory record is deliberately rendered as a node-shaped value so

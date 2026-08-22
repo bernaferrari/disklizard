@@ -1,7 +1,7 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon, type IconProps } from "@opencode-ai/ui/icon"
 import { Show } from "solid-js"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { formatBytes, formatPct } from "./format"
 
 export function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {

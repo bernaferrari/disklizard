@@ -1,10 +1,10 @@
 /**
- * DiskLizard — the disk utility built into OpenCode.
+ * DiskLizard — standalone storage explorer.
  *
- * A DaisyDisk-inspired sunburst map (rendered in OKLCH) paired with a ranked list,
- * all in OpenCode's theme. The signature trick: a "Reclaim" engine that recognizes
- * well-known space hogs (node_modules, caches, build output, Trash…) and surfaces a
- * live, non-double-counted total of space you can get back — with one-tap review.
+ * A DaisyDisk-inspired sunburst map (rendered in OKLCH) paired with a ranked list.
+ * The signature trick: a "Reclaim" engine that recognizes well-known space hogs
+ * (node_modules, caches, build output, Trash…) and surfaces a live,
+ * non-double-counted total of space you can get back — with one-tap review.
  *
  * Motion stays out of the reactive render path; the canvas and small numeric
  * transitions run directly on requestAnimationFrame.
@@ -16,17 +16,15 @@ import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { showToast } from "@opencode-ai/ui/toast"
 import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
-import {
-  usePlatform,
-  type DiskDriveInfo,
-  type DiskDriveFactsUpdate,
-  type DiskFilePreview,
-  type DiskScanNode,
-  type DiskStorageDiagnostics,
-  type DiskStorageLocation,
-} from "@/context/platform"
-import { useLanguage } from "@/context/language"
-import { useSettings } from "@/context/settings"
+import { useLanguage, usePlatform, useSettings } from "./runtime"
+import type {
+  DiskDriveInfo,
+  DiskDriveFactsUpdate,
+  DiskFilePreview,
+  DiskScanNode,
+  DiskStorageDiagnostics,
+  DiskStorageLocation,
+} from "./types"
 import { Sunburst, primarySegmentColor, sunburstEntryDuration, type SunburstEntryIntent } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
 import { ScanFormation } from "./ScanFormation"

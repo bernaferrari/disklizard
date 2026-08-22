@@ -3,6 +3,10 @@ import { batch, createEffect, createMemo, createSignal, onCleanup } from "solid-
 import { createSimpleContext } from "@opencode-ai/ui/context"
 import { persisted } from "@/utils/persist"
 import { usePlatform } from "@/context/platform"
+import { diskPinnedLocationsDefault, type DiskPinnedLocation } from "../pages/disk-utility/types"
+
+export type { DiskPinnedLocation }
+export { diskPinnedLocationsDefault }
 
 export interface NotificationSettings {
   agent: boolean
@@ -57,15 +61,9 @@ export interface Settings {
   sounds: SoundSettings
 }
 
-export type DiskPinnedLocation = {
-  path: string
-  label: string
-}
-
 export const monoDefault = "System Mono"
 export const sansDefault = "System Sans"
 export const terminalDefault = "JetBrainsMono Nerd Font Mono"
-export const diskPinnedLocationsDefault: DiskPinnedLocation[] = []
 const legacyNewLayoutDesignsDefault = import.meta.env.VITE_OPENCODE_CHANNEL !== "prod"
 export const newLayoutDesignsDefault = true
 // Existing users can switch layouts until local midnight on this date. Set new Date(YYYY, M-1, D) to show.

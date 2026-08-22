@@ -1,7 +1,7 @@
 import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { createVirtualizer } from "@tanstack/solid-virtual"
 import { createEffect, createSignal, For, onCleanup, Show, type JSX } from "solid-js"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
 
 const INDEX_ROW_ESTIMATE = 58

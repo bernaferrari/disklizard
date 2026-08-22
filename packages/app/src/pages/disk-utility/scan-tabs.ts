@@ -1,4 +1,4 @@
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { diskPathEquals } from "./storage"
 
 export type RetainedScanTab = {

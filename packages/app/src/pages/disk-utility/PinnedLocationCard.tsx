@@ -1,5 +1,5 @@
 import { Icon } from "@opencode-ai/ui/icon"
-import type { DiskPinnedLocation } from "@/context/settings"
+import type { DiskPinnedLocation } from "./types"
 
 export function PinnedLocationCard(props: { location: DiskPinnedLocation; onScan: () => void; onRemove: () => void }) {
   return (

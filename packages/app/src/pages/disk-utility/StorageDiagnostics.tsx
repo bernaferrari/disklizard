@@ -1,7 +1,7 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { For, Show } from "solid-js"
-import type { DiskStorageDiagnostics, DiskStorageLocation } from "@/context/platform"
+import type { DiskStorageDiagnostics, DiskStorageLocation } from "./types"
 
 export function storageProviderLabel(provider: DiskStorageLocation["provider"]): string {
   if (provider === "google-drive") return "Google Drive"

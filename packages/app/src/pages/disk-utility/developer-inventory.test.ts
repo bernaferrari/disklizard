@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import type { DeveloperArtifact, DeveloperArtifactInventory } from "@disklizard/core"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import {
   developerArtifactFromInventoryNode,
   developerInventoryCollectionNodeForPath,

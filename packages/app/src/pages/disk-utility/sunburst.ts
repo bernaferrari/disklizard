@@ -7,7 +7,7 @@
  * inside flex panels; a single rAF loop drives the hover springs + animations.
  */
 
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 
 /** Keep the complete center summary inside the quiet disc at every desktop size. */
 const INNER_HOLE_RATIO = 0.3

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { refreshScanTabsForWatcherUpdate, visibleScanTabCount, type RetainedScanTab } from "./scan-tabs"
 
 function dir(name: string, path: string, children: DiskScanNode[] = []): DiskScanNode {

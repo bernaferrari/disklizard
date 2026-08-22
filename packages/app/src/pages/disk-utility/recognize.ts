@@ -9,7 +9,7 @@
  * Safety verdicts map to a single OKLCH accent so the whole UI stays coherent.
  */
 
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { developerArtifactFromInventoryNode, developerInventoryNode } from "./developer-inventory"
 import { daysSinceChanged, isDormant } from "./format"
 

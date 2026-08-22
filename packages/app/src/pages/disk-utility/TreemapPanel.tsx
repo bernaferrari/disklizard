@@ -6,7 +6,7 @@
  */
 
 import { For, createMemo, createSignal, onCleanup, onMount, Show } from "solid-js"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"

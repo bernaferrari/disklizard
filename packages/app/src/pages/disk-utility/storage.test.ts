@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import type { DeveloperArtifactInventory } from "@disklizard/core"
-import type { DiskDriveInfo, DiskScanNode } from "@/context/platform"
+import type { DiskDriveInfo, DiskScanNode } from "./types"
 import {
   actionableReclaimSummary,
   asBrowseableRoot,

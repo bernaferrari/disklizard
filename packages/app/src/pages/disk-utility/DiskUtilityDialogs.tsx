@@ -1,7 +1,7 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { createMemo, onCleanup, onMount, Show } from "solid-js"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 import { formatBytes, formatCount, shortBytes, truncatePath } from "./format"
 import type { SurfacePhase } from "./motion"
 import type { ReclaimSummary } from "./recognize"

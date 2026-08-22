@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
-import type { DiskScanNode } from "@/context/platform"
+import type { DiskScanNode } from "./types"
 
 const mk = (name: string, size: number): DiskScanNode => ({
   name,
