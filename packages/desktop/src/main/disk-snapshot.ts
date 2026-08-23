@@ -1,7 +1,8 @@
 import { createHash, randomUUID } from "node:crypto"
-import { lstat, mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises"
+import { createReadStream } from "node:fs"
+import { lstat, mkdir, open, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
-import { deserialize, serialize } from "node:v8"
+import { StringDecoder } from "node:string_decoder"
 import type ParcelWatcher from "@parcel/watcher"
 import {
   MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
@@ -17,13 +18,20 @@ import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 // cleanup; v6 ensures identity-less native Windows inventories are not
 // restored before desktop-side bigint-lstat enrichment can run. v7 makes the
 // metadata point at an immutable tree generation, so a process interruption
-// cannot pair an older checkpoint with a replacement tree.
-const SNAPSHOT_SCHEMA = 7
+// cannot pair an older checkpoint with a replacement tree. v8 replaces the
+// monolithic V8 blob with bounded records so persistence, parsing, and
+// validation can yield to Electron's main event loop.
+const SNAPSHOT_SCHEMA = 8
 const MAX_DELTA_EVENTS = 2_000
 const MAX_DELTA_ROOTS = 32
 const MAX_SNAPSHOTS = 8
 const CHECKPOINT_FILE_NAME = /^events-\d+-[0-9a-f-]+\.snapshot$/
-const TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.bin$/
+const TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.ndjson$/
+const LEGACY_TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.bin$/
+const SNAPSHOT_FORMAT = 1
+const SNAPSHOT_WRITE_BATCH_BYTES = 256 * 1024
+const MAX_SNAPSHOT_RECORD_BYTES = 256 * 1024
+const SNAPSHOT_YIELD_INTERVAL = 256
 
 type Watcher = Pick<typeof ParcelWatcher, "getEventsSince" | "subscribe" | "writeSnapshot">
 type WatchEvent = ParcelWatcher.Event
@@ -68,6 +76,7 @@ export type DiskSnapshotUpdate = {
   rootPath: string
   root: DiskNode
   changedPaths: string[]
+  watchError?: string
 }
 
 export type DiskSnapshotResult = {
@@ -222,11 +231,14 @@ function isDeveloperArtifact(value: unknown, rootPath: string): boolean {
   )
 }
 
-function isDeveloperArtifactInventory(value: unknown, rootPath: string, expectedMaxItems: number): boolean {
+function yieldToMainEventLoop() {
+  return new Promise<void>((resolve) => setImmediate(resolve))
+}
+
+async function isDeveloperArtifactInventory(value: unknown, rootPath: string, expectedMaxItems: number) {
   if (!isRecord(value) || !Array.isArray(value.items) || !isRecord(value.status)) return false
   const status = value.status
   if (
-    !value.items.every((item) => isDeveloperArtifact(item, rootPath)) ||
     (status.state !== "complete" && status.state !== "partial") ||
     !isNonNegativeSafeInteger(status.maxItems) ||
     status.maxItems < 1 ||
@@ -256,6 +268,10 @@ function isDeveloperArtifactInventory(value: unknown, rootPath: string, expected
   ) {
     return false
   }
+  for (let index = 0; index < value.items.length; index++) {
+    if (!isDeveloperArtifact(value.items[index], rootPath)) return false
+    if ((index + 1) % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+  }
   const mustBePartial =
     status.truncated ||
     status.unreadableCount > 0 ||
@@ -276,9 +292,10 @@ function isScanIssueSummary(value: unknown, rootPath: string): boolean {
 
 /**
  * A cache is a persistence boundary, not a trusted scanner response. Keep the
- * validator iterative so a corrupted V8 payload cannot recurse indefinitely.
+ * validator iterative and cooperative so a large or corrupted payload cannot
+ * recurse indefinitely or monopolize Electron's main event loop.
  */
-function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions): value is DiskNode {
+async function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions) {
   const normalizedRoot = comparable(rootPath)
   const expectedInventory = normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory)
   if (!isRecord(value)) return false
@@ -295,6 +312,7 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
       if (!isRecord(current.value) || seenNodes.has(current.value)) return false
       seenNodes.add(current.value)
       if (++visited > MAX_MATERIALIZED_DISK_TREE_NODES) return false
+      if (visited % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
 
       const node = current.value
       const nodePath = comparableAbsolutePath(node.path)
@@ -338,7 +356,11 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
             node.sharedStorageEvidence !== "complete" &&
             node.sharedStorageEvidence !== "partial") ||
           (node.developerArtifactInventory !== undefined &&
-            !isDeveloperArtifactInventory(node.developerArtifactInventory, normalizedRoot, expectedInventory?.maxItems ?? 0)) ||
+            !(await isDeveloperArtifactInventory(
+              node.developerArtifactInventory,
+              normalizedRoot,
+              expectedInventory?.maxItems ?? 0,
+            ))) ||
           (expectedInventory !== undefined) !== (node.developerArtifactInventory !== undefined)
         ) {
           return false
@@ -356,12 +378,14 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
       // parent. Preserve that legitimate shape without permitting an arbitrary
       // in-root path to be smuggled beneath an aggregate.
       const childParentPath = node.isOther === true ? current.parentPath : nodePath
-      for (const child of node.children) {
+      for (let index = 0; index < node.children.length; index++) {
+        const child = node.children[index]!
         pending.push({
           value: child,
           parentPath: childParentPath,
           isRoot: false,
         })
+        if ((index + 1) % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
       }
       if (pending.length > MAX_MATERIALIZED_DISK_TREE_NODES) return false
     }
@@ -369,6 +393,175 @@ function isCachedDiskTree(value: unknown, rootPath: string, options: ScanOptions
     return false
   }
   return true
+}
+
+async function writeDiskTreeSnapshot(targetPath: string, root: DiskNode) {
+  const file = await open(targetPath, "wx")
+  let batch: string[] = []
+  let batchBytes = 0
+  const flush = async () => {
+    if (!batch.length) return
+    const bytes = Buffer.from(batch.join(""))
+    let offset = 0
+    while (offset < bytes.length) {
+      const written = await file.write(bytes, offset, bytes.length - offset)
+      if (written.bytesWritten === 0) throw new Error("Snapshot cache write made no progress")
+      offset += written.bytesWritten
+    }
+    batch = []
+    batchBytes = 0
+  }
+  const append = async (record: Record<string, unknown>) => {
+    const line = `${JSON.stringify(record)}\n`
+    const bytes = Buffer.byteLength(line)
+    if (bytes > MAX_SNAPSHOT_RECORD_BYTES) throw new Error("Snapshot record exceeds the cache format limit")
+    if (batchBytes + bytes > SNAPSHOT_WRITE_BATCH_BYTES) await flush()
+    batch.push(line)
+    batchBytes += bytes
+  }
+
+  try {
+    await append({ type: "disklizard-tree", format: SNAPSHOT_FORMAT })
+    const pending: Array<{ node: DiskNode; parent: number | null }> = [{ node: root, parent: null }]
+    const seen = new WeakSet<object>()
+    let nodeCount = 0
+    while (pending.length > 0) {
+      const { node, parent } = pending.pop()!
+      if (seen.has(node)) throw new Error("Snapshot tree contains a cycle or shared node")
+      seen.add(node)
+      if (++nodeCount > MAX_MATERIALIZED_DISK_TREE_NODES) throw new Error("Snapshot tree exceeds the node limit")
+      const { children, developerArtifactInventory, ...data } = node
+      if (node !== root && developerArtifactInventory !== undefined) {
+        throw new Error("Snapshot inventory is only valid on the root node")
+      }
+      await append({ type: "node", parent, node: data })
+      for (let index = children.length - 1; index >= 0; index--) {
+        pending.push({ node: children[index]!, parent: nodeCount - 1 })
+        if ((children.length - index) % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+      }
+      if (nodeCount % SNAPSHOT_YIELD_INTERVAL === 0) {
+        await flush()
+        await yieldToMainEventLoop()
+      }
+    }
+
+    const inventory = root.developerArtifactInventory
+    if (inventory) {
+      await append({ type: "inventory", status: inventory.status })
+      for (let index = 0; index < inventory.items.length; index++) {
+        await append({ type: "inventory-item", item: inventory.items[index] })
+        if ((index + 1) % SNAPSHOT_YIELD_INTERVAL === 0) {
+          await flush()
+          await yieldToMainEventLoop()
+        }
+      }
+    }
+    await append({
+      type: "end",
+      nodes: nodeCount,
+      inventoryItems: inventory?.items.length ?? 0,
+    })
+    await flush()
+  } finally {
+    await file.close()
+  }
+}
+
+async function readDiskTreeSnapshot(targetPath: string): Promise<DiskNode> {
+  const decoder = new StringDecoder("utf8")
+  const nodes: DiskNode[] = []
+  const inventoryItems: unknown[] = []
+  let inventoryStatus: unknown
+  let pending = ""
+  let records = 0
+  let sawHeader = false
+  let sawEnd = false
+  let nodeSectionEnded = false
+
+  const consume = async (line: string) => {
+    if (Buffer.byteLength(line) > MAX_SNAPSHOT_RECORD_BYTES) {
+      throw new Error("Snapshot record exceeds the cache format limit")
+    }
+    const record = JSON.parse(line) as unknown
+    if (!isRecord(record) || typeof record.type !== "string" || sawEnd) throw new Error("Invalid snapshot record")
+    if (!sawHeader) {
+      if (record.type !== "disklizard-tree" || record.format !== SNAPSHOT_FORMAT) {
+        throw new Error("Unsupported snapshot format")
+      }
+      sawHeader = true
+      return
+    }
+
+    if (record.type === "node") {
+      if (nodeSectionEnded || !isRecord(record.node) || "children" in record.node || "developerArtifactInventory" in record.node) {
+        throw new Error("Invalid snapshot node record")
+      }
+      const parent = record.parent
+      if (
+        (nodes.length === 0 && parent !== null) ||
+        (nodes.length > 0 && (!isNonNegativeSafeInteger(parent) || parent >= nodes.length)) ||
+        nodes.length >= MAX_MATERIALIZED_DISK_TREE_NODES
+      ) {
+        throw new Error("Invalid snapshot parent index")
+      }
+      const node = { ...record.node, children: [] } as unknown as DiskNode
+      if (nodes.length > 0) nodes[parent as number]!.children.push(node)
+      nodes.push(node)
+    } else if (record.type === "inventory") {
+      if (nodes.length === 0 || inventoryStatus !== undefined || !isRecord(record.status)) {
+        throw new Error("Invalid snapshot inventory record")
+      }
+      nodeSectionEnded = true
+      inventoryStatus = record.status
+    } else if (record.type === "inventory-item") {
+      if (inventoryStatus === undefined || inventoryItems.length >= MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS) {
+        throw new Error("Invalid snapshot inventory item")
+      }
+      inventoryItems.push(record.item)
+    } else if (record.type === "end") {
+      if (
+        nodes.length === 0 ||
+        !isNonNegativeSafeInteger(record.nodes) ||
+        record.nodes !== nodes.length ||
+        !isNonNegativeSafeInteger(record.inventoryItems) ||
+        record.inventoryItems !== inventoryItems.length
+      ) {
+        throw new Error("Invalid snapshot footer")
+      }
+      sawEnd = true
+    } else {
+      throw new Error("Unknown snapshot record")
+    }
+
+    if (++records % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+  }
+
+  for await (const chunk of createReadStream(targetPath, { highWaterMark: 64 * 1024 })) {
+    pending += decoder.write(chunk as Buffer)
+    let newline = pending.indexOf("\n")
+    while (newline !== -1) {
+      const line = pending.slice(0, newline)
+      pending = pending.slice(newline + 1)
+      if (!line) throw new Error("Empty snapshot record")
+      await consume(line)
+      newline = pending.indexOf("\n")
+    }
+    if (Buffer.byteLength(pending) > MAX_SNAPSHOT_RECORD_BYTES) {
+      throw new Error("Snapshot record exceeds the cache format limit")
+    }
+  }
+  pending += decoder.end()
+  if (pending) await consume(pending)
+  if (!sawHeader || !sawEnd || nodes.length === 0) throw new Error("Incomplete snapshot")
+
+  const root = nodes[0]!
+  if (inventoryStatus !== undefined) {
+    root.developerArtifactInventory = {
+      status: inventoryStatus,
+      items: inventoryItems,
+    } as DiskNode["developerArtifactInventory"]
+  }
+  return root
 }
 
 function cacheFilePath(dir: string, name: string, pattern: RegExp): string | undefined {
@@ -749,8 +942,8 @@ export class DiskSnapshotManager {
           return undefined
         }
         const rootInfo = await stat(rootPath)
-        const root = deserialize(await readFile(tree)) as unknown
-        if (!isCachedDiskTree(root, rootPath, options) || root.isDir !== rootInfo.isDirectory()) return undefined
+        const root = await readDiskTreeSnapshot(tree)
+        if (!(await isCachedDiskTree(root, rootPath, options)) || root.isDir !== rootInfo.isDirectory()) return undefined
         return { root, checkpoint: this.retainCheckpoint(paths.key, checkpoint) }
       } catch {
         return undefined
@@ -782,7 +975,7 @@ export class DiskSnapshotManager {
       }
 
       const nonce = randomUUID()
-      const treeName = `tree-${Date.now()}-${nonce}.bin`
+      const treeName = `tree-${Date.now()}-${nonce}.ndjson`
       const tree = cacheFilePath(paths.dir, treeName, TREE_FILE_NAME)!
       const treeTemp = `${tree}.${randomUUID()}.tmp`
       const metadataTemp = `${paths.metadata}.${randomUUID()}.tmp`
@@ -795,7 +988,7 @@ export class DiskSnapshotManager {
         tree: treeName,
       }
       try {
-        await writeFile(treeTemp, serialize(root))
+        await writeDiskTreeSnapshot(treeTemp, root)
         await writeFile(metadataTemp, JSON.stringify(metadata))
         // Publish the immutable tree before its metadata pointer. Readers hold
         // the same key lock, so they can only observe one complete generation.
@@ -820,6 +1013,7 @@ export class DiskSnapshotManager {
           (entry) =>
             (CHECKPOINT_FILE_NAME.test(entry) && !protectedCheckpoints.has(entry)) ||
             (TREE_FILE_NAME.test(entry) && entry !== keepTree) ||
+            LEGACY_TREE_FILE_NAME.test(entry) ||
             (entry.startsWith("tree-") && entry.endsWith(".tmp")) ||
             (entry.startsWith("metadata.json.") && entry.endsWith(".tmp")),
         )
@@ -862,11 +1056,16 @@ export class DiskSnapshotManager {
     } else {
       for (const event of events) active.pending.set(event.path, event)
     }
-    if (!active.root || active.timer) return
+    if (!active.root) return
+    this.scheduleRefresh(active, this.debounceMs)
+  }
+
+  private scheduleRefresh(active: ActiveScan, delay: number) {
+    if (active.stopped || active.timer) return
     active.timer = setTimeout(() => {
       active.timer = undefined
       void this.refresh(active)
-    }, this.debounceMs)
+    }, delay)
   }
 
   private async refresh(active: ActiveScan) {
@@ -876,9 +1075,10 @@ export class DiskSnapshotManager {
     active.refreshAbort = controller
     let loaded: LoadedSnapshot | undefined
     let candidate: CheckpointLease | undefined
+    let capturedPending: Array<[string, WatchEvent]> = []
     try {
       const watcher = await this.watcher()
-      if (!watcher) return
+      if (!watcher) throw new Error("Filesystem watcher is unavailable")
       loaded = await this.load(active.rootPath, active.options)
       candidate = await this.checkpoint(active.rootPath, active.options, watcher)
       const historical = loaded
@@ -888,8 +1088,8 @@ export class DiskSnapshotManager {
             watcherOptions(active.options, this.platform),
           )
         : []
-      const events = [...historical, ...active.pending.values()]
-      active.pending.clear()
+      capturedPending = [...active.pending.entries()]
+      const events = [...historical, ...capturedPending.map(([, event]) => event)]
       if (!events.length) return
       const delta = await applyDiskDelta(active.root, events, this.scanTree, {
         ...active.options,
@@ -911,19 +1111,45 @@ export class DiskSnapshotManager {
       }
       active.refreshFailures = 0
       active.onUpdate({ rootPath: active.rootPath, root: active.root, changedPaths: delta.changedPaths })
-    } catch {
-      // Live refresh is best effort. The older checkpoint remains authoritative,
-      // so the next manual/open scan will catch up or perform a full scan.
+      for (const [eventPath, event] of capturedPending) {
+        if (active.pending.get(eventPath) === event) active.pending.delete(eventPath)
+      }
+    } catch (error) {
       active.refreshFailures++
       if (!active.stopped && active.refreshFailures <= 2) {
-        active.pending.set(active.rootPath, { path: active.rootPath, type: "update" })
+        this.scheduleRefresh(active, Math.min(5_000, this.debounceMs * 2 ** active.refreshFailures))
+      } else if (!active.stopped) {
+        try {
+          const root = await this.scanTree(active.rootPath, {
+            ...active.options,
+            onProgress: undefined,
+            signal: controller.signal,
+          })
+          if (active.stopped) return
+          active.root = root
+          if (candidate) await this.persist(active.rootPath, active.options, root, candidate.path)
+          for (const [eventPath, event] of capturedPending) {
+            if (active.pending.get(eventPath) === event) active.pending.delete(eventPath)
+          }
+          active.refreshFailures = 0
+          active.onUpdate({ rootPath: active.rootPath, root, changedPaths: [active.rootPath] })
+        } catch (recoveryError) {
+          const message = recoveryError instanceof Error ? recoveryError.message : String(recoveryError ?? error)
+          active.onUpdate({
+            rootPath: active.rootPath,
+            root: active.root,
+            changedPaths: [],
+            watchError: message,
+          })
+          this.scheduleRefresh(active, Math.max(5_000, this.debounceMs * 8))
+        }
       }
     } finally {
       loaded?.checkpoint.release()
       candidate?.release()
       if (active.refreshAbort === controller) active.refreshAbort = undefined
       active.refreshing = false
-      if (active.pending.size && !active.stopped) this.queue(active, null, [])
+      if (active.pending.size && !active.stopped) this.scheduleRefresh(active, this.debounceMs)
     }
   }
 

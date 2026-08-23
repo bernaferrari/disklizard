@@ -23,15 +23,15 @@ export type DeveloperArtifactDeletePrecondition = {
 }
 
 export type DiskDeleteOptions = {
-  permanent?: boolean
+  authorization: string
   precondition?: DeveloperArtifactDeletePrecondition
 }
 
 /**
  * Runs the two path-level checks in the only useful order for a destructive
  * inventory action: safety first, then the fresh identity/classifier check,
- * immediately followed by the caller's move-to-Trash (or permanent-delete)
- * operation.  A handle-bound Trash API would be needed to remove the final
+ * immediately followed by the caller's move-to-Trash operation. A handle-bound
+ * Trash API would be needed to remove the final
  * filesystem race entirely, but this keeps the bounded inventory proof as
  * close as possible to use of the path.
  */

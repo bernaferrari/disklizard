@@ -1,3 +1,5 @@
+import { MAC_TRAFFIC_LIGHT_INSET } from "./titlebar"
+
 export const DISK_UTILITY_STYLES = `
 .dl-shell {
   --dl-accent: oklch(0.74 0.13 252);
@@ -24,19 +26,19 @@ export const DISK_UTILITY_STYLES = `
 .dl-topbar {
   background: color-mix(in oklch, var(--background-base) 82%, transparent);
   box-shadow: 0 1px 0 rgb(127 127 127 / 0.1);
+  -webkit-app-region: drag;
+  app-region: drag;
 }
-.dl-scan-tabs {
-  background: color-mix(in oklch, var(--surface-raised-strong) 64%, transparent);
-  box-shadow: 0 1px 0 rgb(127 127 127 / 0.08);
-  scroll-padding-inline: 1rem;
-  scroll-snap-type: x proximity;
+.dl-topbar button,
+.dl-topbar a,
+.dl-topbar input,
+.dl-topbar [role="button"] {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
-.dl-scan-tabs-cue {
-  position: absolute; inset-block: 0; z-index: 2; display: grid; width: 36px; place-items: center;
-  color: var(--text-weak); pointer-events: none;
+.dl-shell[data-os="macos"]:not([data-fullscreen="true"]) .dl-topbar {
+  padding-left: ${MAC_TRAFFIC_LIGHT_INSET}px;
 }
-.dl-scan-tabs-cue-left { left: 0; background: linear-gradient(to right, var(--surface-raised-strong), transparent); }
-.dl-scan-tabs-cue-right { right: 0; background: linear-gradient(to left, var(--surface-raised-strong), transparent); }
 .dl-shell button, .dl-shell a, .dl-shell input, .dl-shell summary { touch-action: manipulation; }
 .dl-touch-target { min-width: 44px; min-height: 44px; }
 .dl-row-action { width: 44px; height: 44px; }
@@ -117,6 +119,42 @@ export const DISK_UTILITY_STYLES = `
   font: 600 12px/1.2 var(--font-family-text); font-variant-numeric: tabular-nums;
 }
 .dl-scan-beacon { animation: dl-scan-beacon 1.1s ease-in-out infinite; }
+.dl-volume-row {
+  min-height: 72px;
+  box-shadow: 0 1px 0 rgb(127 127 127 / 0.1);
+}
+.dl-volume-glyph {
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--surface-raised-strong) 70%, var(--background-base));
+  box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--text-strong) 10%, transparent);
+}
+.dl-volume-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--text-strong) 10%, transparent);
+}
+.dl-volume-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--dl-volume-ink);
+  transition: width 220ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease;
+}
+.dl-volume-free { color: var(--dl-volume-ink); }
+.dl-volume-view {
+  position: relative; min-width: 64px; height: 28px; padding: 0 10px; border-radius: 6px;
+  color: var(--text-strong);
+  background: color-mix(in oklch, var(--surface-raised-strong) 82%, var(--background-base));
+  box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--text-strong) 14%, transparent);
+  font: 600 12px/1 var(--font-family-text);
+  transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+.dl-volume-view::before { content: ""; position: absolute; inset: -8px; }
+.dl-volume-view:active:not(:disabled) { transform: scale(0.96); }
+.dl-volume-view:disabled { opacity: 0.4; }
+.dl-volume-footer {
+  background: color-mix(in oklch, var(--surface-raised-strong) 42%, var(--background-base));
+  box-shadow: 0 -1px 0 rgb(127 127 127 / 0.1);
+}
 .dl-scan-progress {
   transition: transform 220ms cubic-bezier(0.32,0.72,0,1);
 }
@@ -139,6 +177,10 @@ export const DISK_UTILITY_STYLES = `
   .dl-hover-card:hover { background: color-mix(in oklch, var(--surface-raised-base) 35%, transparent); }
   .dl-hover-card:hover .dl-hover-card-label, .dl-hover-button:hover, .dl-hover-text:hover, .dl-hover-tab:hover,
   .dl-hover-drive:hover .dl-hover-drive-icon { color: var(--text-strong); }
+  .dl-volume-view:hover:not(:disabled) {
+    background: color-mix(in oklch, var(--surface-raised-base) 70%, var(--background-base));
+    box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--text-strong) 20%, transparent);
+  }
   .dl-hover-quiet-button:hover { background: color-mix(in oklch, var(--background-base) 70%, transparent); color: var(--text-strong); opacity: 1; }
   .dl-hover-brighten:hover { filter: brightness(1.05); }
   .dl-hover-tab:hover, .dl-hover-button:hover, .dl-hover-action:hover { background: var(--surface-raised-base); }
@@ -149,7 +191,7 @@ export const DISK_UTILITY_STYLES = `
 }
 @media (pointer: coarse) {
   .dl-touch-target { min-width: 44px !important; min-height: 44px !important; }
-  .dl-search-input, .dl-smart-age-input { font-size: 16px !important; }
+  .dl-search-input, .dl-smart-age-input, .dl-sort-select { font-size: 16px !important; }
   .dl-row-action { width: 44px !important; height: 44px !important; opacity: 1 !important; }
   .dl-segmented { min-height: 44px; }
 }

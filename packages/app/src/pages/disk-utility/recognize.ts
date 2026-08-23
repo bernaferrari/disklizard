@@ -1067,6 +1067,7 @@ type DeveloperSummaryCandidate = {
   item: DeveloperItem
   source: "visual" | "inventory"
   path: string
+  segments: string[]
   /** A candidate that is not safe for Smart Cleanup can be split around a more precise descendant. */
   canSplitAroundDescendants: boolean
 }
@@ -1075,12 +1076,77 @@ function normalizedDeveloperPath(path: string) {
   return path.replaceAll("\\", "/").replace(/\/+$/, "") || "/"
 }
 
-function developerPathContains(parent: string, child: string) {
-  return parent !== child && (parent === "/" ? child.startsWith("/") : child.startsWith(`${parent}/`))
+function developerPathSegments(path: string) {
+  return path === "/" ? [] : path.split("/").filter(Boolean)
 }
 
-function candidateDepth(candidate: DeveloperSummaryCandidate) {
-  return candidate.path === "/" ? 0 : candidate.path.split("/").filter(Boolean).length
+type DeveloperPathTrie = {
+  children: Map<string, DeveloperPathTrie>
+  terminals: number
+  terminal: boolean
+  eligible: boolean
+  acceptedIndex?: number
+}
+
+function developerPathTrie(): DeveloperPathTrie {
+  return { children: new Map(), terminals: 0, terminal: false, eligible: false }
+}
+
+function insertDeveloperPath(root: DeveloperPathTrie, segments: readonly string[]) {
+  let node = root
+  node.terminals++
+  for (const segment of segments) {
+    let child = node.children.get(segment)
+    if (!child) {
+      child = developerPathTrie()
+      node.children.set(segment, child)
+    }
+    child.terminals++
+    node = child
+  }
+  node.terminal = true
+  return node
+}
+
+function developerPathNode(root: DeveloperPathTrie, segments: readonly string[]) {
+  let node: DeveloperPathTrie | undefined = root
+  for (const segment of segments) {
+    node = node.children.get(segment)
+    if (!node) return
+  }
+  return node
+}
+
+function hasStrictDeveloperDescendant(root: DeveloperPathTrie, segments: readonly string[]) {
+  const node = developerPathNode(root, segments)
+  return !!node && node.terminals > (node.terminal ? 1 : 0)
+}
+
+function hasEligibleDeveloperAncestor(root: DeveloperPathTrie, segments: readonly string[]) {
+  let node: DeveloperPathTrie | undefined = root
+  if (segments.length > 0 && node.eligible) return true
+  for (let index = 0; index < segments.length; index++) {
+    node = node.children.get(segments[index])
+    if (!node) return false
+    if (index < segments.length - 1 && node.eligible) return true
+  }
+  return false
+}
+
+function insertAcceptedDeveloperPath(root: DeveloperPathTrie, segments: readonly string[], acceptedIndex: number) {
+  let node = root
+  let parentIndex = node.acceptedIndex
+  for (const segment of segments) {
+    let child = node.children.get(segment)
+    if (!child) {
+      child = developerPathTrie()
+      node.children.set(segment, child)
+    }
+    node = child
+    if (node.acceptedIndex !== undefined) parentIndex = node.acceptedIndex
+  }
+  node.acceptedIndex = acceptedIndex
+  return parentIndex
 }
 
 /**
@@ -1098,18 +1164,23 @@ export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null):
     item,
     source: "visual",
     path: normalizedDeveloperPath(item.node.path),
+    segments: developerPathSegments(normalizedDeveloperPath(item.node.path)),
     canSplitAroundDescendants: developerArtifactCleanupReadiness(item.recognition) !== "eligible",
   }))
   const visualPaths = new Set(visualCandidates.map((candidate) => candidate.path))
+  const visualPathTrie = developerPathTrie()
+  for (const candidate of visualCandidates) insertDeveloperPath(visualPathTrie, candidate.segments)
   const inventoryCandidates: DeveloperSummaryCandidate[] = inventory.items
     .filter((artifact) => artifact.size > 0 && artifact.path.trim().length > 0)
     .map((artifact) => {
       const node = developerInventoryNode(artifact)
       const recognition = recognize(node)
+      const path = normalizedDeveloperPath(node.path)
       return {
         item: { node, recognition, bytes: node.size },
         source: "inventory" as const,
-        path: normalizedDeveloperPath(node.path),
+        path,
+        segments: developerPathSegments(path),
         canSplitAroundDescendants: developerArtifactCleanupReadiness(recognition) !== "eligible",
       }
     })
@@ -1118,7 +1189,7 @@ export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null):
     .filter(
       (candidate) =>
         !visualPaths.has(candidate.path) &&
-        !visualCandidates.some((visual) => developerPathContains(candidate.path, visual.path)),
+        !hasStrictDeveloperDescendant(visualPathTrie, candidate.segments),
     )
 
   const candidatesByPath = new Map<string, DeveloperSummaryCandidate>()
@@ -1131,41 +1202,40 @@ export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null):
 
   const candidates = [...candidatesByPath.values()].sort(
     (a, b) =>
-      candidateDepth(a) - candidateDepth(b) ||
+      a.segments.length - b.segments.length ||
       (a.source === b.source ? 0 : a.source === "visual" ? -1 : 1) ||
       b.item.bytes - a.item.bytes,
   )
   const accepted: DeveloperSummaryCandidate[] = []
+  const eligiblePaths = developerPathTrie()
   for (const candidate of candidates) {
-    const coveredByEligibleAncestor = accepted.some(
-      (ancestor) => developerPathContains(ancestor.path, candidate.path) && !ancestor.canSplitAroundDescendants,
-    )
-    if (!coveredByEligibleAncestor) accepted.push(candidate)
+    if (hasEligibleDeveloperAncestor(eligiblePaths, candidate.segments)) continue
+    accepted.push(candidate)
+    if (!candidate.canSplitAroundDescendants) {
+      insertDeveloperPath(eligiblePaths, candidate.segments).eligible = true
+    }
+  }
+
+  const acceptedPaths = developerPathTrie()
+  const acceptedParents = accepted.map((candidate, index) =>
+    insertAcceptedDeveloperPath(acceptedPaths, candidate.segments, index),
+  )
+  const nestedInventoryBytes = new Array<number>(accepted.length).fill(0)
+  for (let index = 0; index < accepted.length; index++) {
+    const candidate = accepted[index]
+    const parentIndex = acceptedParents[index]
+    if (candidate.source !== "inventory" || parentIndex === undefined) continue
+    if (!accepted[parentIndex].canSplitAroundDescendants) continue
+    nestedInventoryBytes[parentIndex] += candidate.item.node.size
   }
 
   const merged = accepted
-    .map((candidate) => {
+    .map((candidate, index) => {
       if (!candidate.canSplitAroundDescendants) return candidate.item
-      const directNested = accepted.filter(
-        (child) =>
-          // `computeDeveloperSummary` already charges a visual child against
-          // its review/protected ancestor. Only a newly added deep record is
-          // extra coverage that needs subtracting from this visible remainder.
-          child.source === "inventory" &&
-          developerPathContains(candidate.path, child.path) &&
-          !accepted.some(
-            (between) =>
-              between !== candidate &&
-              between !== child &&
-              developerPathContains(candidate.path, between.path) &&
-              developerPathContains(between.path, child.path),
-          ),
-      )
       // `node.size` is the true aggregate of the nested pathname. The visual
       // summary may already be a remainder, so never let a subtraction go
       // below zero.
-      const nestedBytes = directNested.reduce((sum, child) => sum + child.item.node.size, 0)
-      return { ...candidate.item, bytes: Math.max(0, candidate.item.bytes - nestedBytes) }
+      return { ...candidate.item, bytes: Math.max(0, candidate.item.bytes - nestedInventoryBytes[index]) }
     })
     .filter((item) => item.bytes > 0)
 

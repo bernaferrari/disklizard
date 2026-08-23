@@ -98,7 +98,12 @@ On macOS, the native scanner reads APFS clone flags and emits per-file `clone` e
 bun run --cwd packages/disklizard native:build
 bun run --cwd packages/disklizard native:test
 bun run --cwd packages/disklizard typecheck
+bun run --cwd packages/disklizard benchmark:scanner --entries 25000
 ```
+
+The scanner benchmark creates a deterministic flat-file corpus and reports fresh-process elapsed time, cancellation
+latency, and host-process peak RSS for native, worker, and in-process backends. Native sidecar RSS is outside the host
+figure. This is a comparison artifact, not a hardware-specific pass/fail test.
 
 ## Layout
 

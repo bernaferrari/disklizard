@@ -39,7 +39,11 @@ describe("disk platform diagnostics", () => {
       readDirectory: async (path) => (path.endsWith("CloudStorage") ? ["Dropbox", "GoogleDrive-Work"] : []),
       checkAccess: async (path) => {
         checked.push(path)
+      },
+      readProtectedDirectory: async (path) => {
+        checked.push(path)
         if (path.endsWith("Library/Mail")) throw Object.assign(new Error("denied"), { code: "EACCES" })
+        return []
       },
     })
 
@@ -66,9 +70,108 @@ describe("disk platform diagnostics", () => {
       homePath: "/Users/ada",
       readDirectory: async () => [],
       checkAccess: async () => undefined,
+      readProtectedDirectory: async () => [],
     })
 
     expect(diagnostics.access).toMatchObject({ status: "inconclusive" })
+    expect(diagnostics.access.wholeVolume).toMatchObject({
+      capability: "macos-full-disk-access",
+      status: "inconclusive",
+      mapCoverage: "unknown",
+    })
+  })
+
+  test("uses protected-directory enumeration rather than metadata access for macOS denial evidence", async () => {
+    let metadataChecks = 0
+    const diagnostics = await getDiskStorageDiagnostics({
+      platform: "darwin",
+      homePath: "/Users/ada",
+      readDirectory: async () => [],
+      checkAccess: async () => {
+        metadataChecks++
+      },
+      readProtectedDirectory: async (path) => {
+        if (path.endsWith("Library/Safari")) throw Object.assign(new Error("denied"), { code: "EPERM" })
+        return []
+      },
+    })
+
+    expect(metadataChecks).toBeGreaterThan(0)
+    expect(diagnostics.access.wholeVolume).toMatchObject({
+      status: "limited",
+      mapCoverage: "may-be-incomplete",
+      evidence: { source: "protected-directory-probes" },
+    })
+  })
+
+  test("reports a high-integrity Windows administrator token as granted capability evidence", async () => {
+    const calls: Array<{ file: string; args: readonly string[] }> = []
+    const diagnostics = await getDiskStorageDiagnostics({
+      platform: "win32",
+      homePath: "C:\\Users\\Ada",
+      readDirectory: async () => [],
+      checkAccess: async () => undefined,
+      runCommand: async (file, args) => {
+        calls.push({ file, args })
+        return '"Administrateurs","S-1-5-32-544"\n"Niveau obligatoire élevé","S-1-16-12288"'
+      },
+    })
+
+    expect(calls).toEqual([{ file: "whoami.exe", args: ["/groups", "/fo", "csv", "/nh"] }])
+    expect(diagnostics.access.wholeVolume).toEqual({
+      capability: "windows-elevated-token",
+      status: "granted",
+      mapCoverage: "not-known-to-be-permission-limited",
+      evidence: {
+        source: "windows-token-groups",
+        integrityLevel: "high",
+        administratorsGroup: "present",
+      },
+    })
+  })
+
+  test("reports a filtered or standard Windows token as limited even when the account is an administrator", async () => {
+    const diagnostics = await getDiskStorageDiagnostics({
+      platform: "win32",
+      homePath: "C:\\Users\\Ada",
+      readDirectory: async () => [],
+      checkAccess: async () => undefined,
+      runCommand: async () => '"Administrators","S-1-5-32-544"\n"Medium","S-1-16-8192"',
+    })
+
+    expect(diagnostics.access.wholeVolume).toMatchObject({
+      status: "limited",
+      mapCoverage: "may-be-incomplete",
+      evidence: {
+        integrityLevel: "medium",
+        administratorsGroup: "present",
+      },
+    })
+  })
+
+  test("keeps Windows capability inconclusive when token evidence is unavailable or contradictory", async () => {
+    const unavailable = await getDiskStorageDiagnostics({
+      platform: "win32",
+      homePath: "C:\\Users\\Ada",
+      readDirectory: async () => [],
+      checkAccess: async () => undefined,
+      runCommand: async () => {
+        throw new Error("unavailable")
+      },
+    })
+    const highWithoutAdmin = await getDiskStorageDiagnostics({
+      platform: "win32",
+      homePath: "C:\\Users\\Ada",
+      readDirectory: async () => [],
+      checkAccess: async () => undefined,
+      runCommand: async () => '"High","S-1-16-12288"',
+    })
+
+    expect(unavailable.access.wholeVolume).toMatchObject({ status: "inconclusive", mapCoverage: "unknown" })
+    expect(highWithoutAdmin.access.wholeVolume).toMatchObject({
+      status: "inconclusive",
+      mapCoverage: "unknown",
+    })
   })
 
   test("exposes native privacy settings only where the OS has a relevant destination", () => {

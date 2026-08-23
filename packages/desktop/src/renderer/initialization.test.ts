@@ -15,6 +15,8 @@ describe("desktop renderer initialization", () => {
   })
 
   test("builds a desktop-only platform without OpenCode servers or drafts", () => {
+    let fullscreenListener: ((fullscreen: boolean) => void) | undefined
+    let fullscreenUnsubscribed = false
     const api = {
       disklizard: {
         getDrives: async () => [],
@@ -24,6 +26,8 @@ describe("desktop renderer initialization", () => {
         scanPath: async () => null,
         cancelScan: async () => undefined,
         stopWatching: async () => undefined,
+        authorizeDeletePaths: async (paths: readonly string[]) =>
+          paths.map((path) => ({ path, authorization: `authorization:${path}` })),
         deletePath: async () => ({ ok: true as const }),
         previewPath: async () => ({ kind: "unsupported" as const, bytes: 0, reason: "format" as const }),
         systemPreviewPath: async () => undefined,
@@ -44,6 +48,13 @@ describe("desktop renderer initialization", () => {
       getPathForFile: () => "",
       openExternal: () => undefined,
       revealPath: async () => false,
+      getWindowFullscreen: async () => true,
+      onWindowFullscreenChanged: (cb: (fullscreen: boolean) => void) => {
+        fullscreenListener = cb
+        return () => {
+          fullscreenUnsubscribed = true
+        }
+      },
       relaunch: () => undefined,
     }
     ;(globalThis as { window?: { api: typeof api } }).window = { api }
@@ -55,5 +66,9 @@ describe("desktop renderer initialization", () => {
     expect(platform).not.toHaveProperty("draftStore")
     expect(platform).not.toHaveProperty("getDefaultServer")
     expect(["macos", "windows", "linux", undefined]).toContain(desktopOS())
+    fullscreenListener?.(true)
+    expect(platform.windowFullscreen?.()).toBe(true)
+    platform.dispose?.()
+    expect(fullscreenUnsubscribed).toBe(true)
   })
 })

@@ -1,3 +1,4 @@
+import { execFile } from "node:child_process"
 import { constants } from "node:fs"
 import { access, readdir } from "node:fs/promises"
 import { homedir } from "node:os"
@@ -18,6 +19,24 @@ export type DiskAccessProbe = {
   status: "denied" | "missing" | "readable" | "unavailable"
 }
 
+export type WholeVolumeAccessDiagnostic = {
+  capability: "macos-full-disk-access" | "windows-elevated-token" | "not-applicable"
+  status: "granted" | "limited" | "inconclusive" | "not-applicable"
+  /** Permission-specific coverage only; scanners can still be incomplete for other reasons. */
+  mapCoverage: "not-known-to-be-permission-limited" | "may-be-incomplete" | "unknown" | "not-applicable"
+  evidence:
+    | {
+        source: "protected-directory-probes"
+        probes: DiskAccessProbe[]
+      }
+    | {
+        source: "windows-token-groups"
+        integrityLevel: "low" | "medium" | "high" | "system" | "protected" | "unknown"
+        administratorsGroup: "present" | "absent" | "unknown"
+      }
+    | { source: "none" }
+}
+
 /**
  * This is intentionally evidence rather than a claim about TCC. macOS does
  * not offer a supported API that can prove Full Disk Access is granted.
@@ -25,6 +44,7 @@ export type DiskAccessProbe = {
 export type DiskAccessDiagnostic = {
   status: "inconclusive" | "limited" | "not-applicable" | "unavailable"
   probes: DiskAccessProbe[]
+  wholeVolume: WholeVolumeAccessDiagnostic
 }
 
 export type DiskStorageDiagnostics = {
@@ -101,6 +121,7 @@ function uniqueStorageLocations(locations: DiskStorageLocation[], platform: Node
 
 type ReadDirectory = (path: string) => Promise<string[]>
 type CheckAccess = (path: string) => Promise<void>
+type RunCommand = (file: string, args: readonly string[]) => Promise<string>
 
 async function existingCloudLocations(
   homePath: string,
@@ -143,7 +164,26 @@ function accessProbeStatus(error: unknown): DiskAccessProbe["status"] {
   return "unavailable"
 }
 
-async function macAccessDiagnostic(homePath: string, checkAccess: CheckAccess): Promise<DiskAccessDiagnostic> {
+function protectedDirectoryCapability(probes: DiskAccessProbe[]): WholeVolumeAccessDiagnostic {
+  if (probes.some((probe) => probe.status === "denied")) {
+    return {
+      capability: "macos-full-disk-access",
+      status: "limited",
+      mapCoverage: "may-be-incomplete",
+      evidence: { source: "protected-directory-probes", probes },
+    }
+  }
+  // Apple exposes no supported Full Disk Access status API. Successful probes
+  // demonstrate only that those paths were readable, never a global grant.
+  return {
+    capability: "macos-full-disk-access",
+    status: "inconclusive",
+    mapCoverage: "unknown",
+    evidence: { source: "protected-directory-probes", probes },
+  }
+}
+
+async function macAccessDiagnostic(homePath: string, readProtectedDirectory: ReadDirectory): Promise<DiskAccessDiagnostic> {
   const path = pathForPlatform("darwin")
   const probes = await Promise.all(
     [
@@ -152,16 +192,97 @@ async function macAccessDiagnostic(homePath: string, checkAccess: CheckAccess): 
       { name: "Contacts" as const, path: path.join(homePath, "Library", "Application Support", "AddressBook") },
     ].map(async (probe) => {
       try {
-        await checkAccess(probe.path)
+        await readProtectedDirectory(probe.path)
         return { name: probe.name, status: "readable" as const }
       } catch (error) {
         return { name: probe.name, status: accessProbeStatus(error) }
       }
     }),
   )
-  if (probes.some((probe) => probe.status === "denied")) return { status: "limited", probes }
-  if (probes.some((probe) => probe.status === "readable")) return { status: "inconclusive", probes }
-  return { status: "unavailable", probes }
+  const wholeVolume = protectedDirectoryCapability(probes)
+  if (wholeVolume.status === "limited") return { status: "limited", probes, wholeVolume }
+  if (probes.some((probe) => probe.status === "readable")) return { status: "inconclusive", probes, wholeVolume }
+  return { status: "unavailable", probes, wholeVolume }
+}
+
+function windowsIntegrityLevel(rid: number): Extract<WholeVolumeAccessDiagnostic["evidence"], { source: "windows-token-groups" }>["integrityLevel"] {
+  if (rid >= 28_672) return "protected"
+  if (rid >= 16_384) return "system"
+  if (rid >= 12_288) return "high"
+  if (rid >= 8_192) return "medium"
+  return "low"
+}
+
+function windowsAccessDiagnostic(output: string): DiskAccessDiagnostic["wholeVolume"] {
+  const integrityRids = [...output.matchAll(/\bS-1-16-(\d+)\b/gi)]
+    .map((match) => Number(match[1]))
+    .filter((rid) => Number.isSafeInteger(rid) && rid >= 0)
+  const integrityRid = integrityRids.length ? Math.max(...integrityRids) : undefined
+  const administratorsGroup = /\bS-1-5-32-544\b/i.test(output) ? ("present" as const) : ("absent" as const)
+  const integrityLevel = integrityRid === undefined ? "unknown" : windowsIntegrityLevel(integrityRid)
+  const evidence = {
+    source: "windows-token-groups" as const,
+    integrityLevel,
+    administratorsGroup,
+  }
+  if (integrityRid === undefined) {
+    return {
+      capability: "windows-elevated-token",
+      status: "inconclusive",
+      mapCoverage: "unknown",
+      evidence,
+    }
+  }
+  if (integrityRid < 12_288) {
+    return {
+      capability: "windows-elevated-token",
+      status: "limited",
+      mapCoverage: "may-be-incomplete",
+      evidence,
+    }
+  }
+  if (administratorsGroup === "present") {
+    return {
+      capability: "windows-elevated-token",
+      status: "granted",
+      mapCoverage: "not-known-to-be-permission-limited",
+      evidence,
+    }
+  }
+  return {
+    capability: "windows-elevated-token",
+    status: "inconclusive",
+    mapCoverage: "unknown",
+    evidence,
+  }
+}
+
+function runCommand(file: string, args: readonly string[]) {
+  return new Promise<string>((resolve, reject) => {
+    execFile(
+      file,
+      [...args],
+      { encoding: "utf8", windowsHide: true, timeout: 2_000, maxBuffer: 1024 * 1024 },
+      (error, stdout) => (error ? reject(error) : resolve(stdout)),
+    )
+  })
+}
+
+async function windowsWholeVolumeDiagnostic(run: RunCommand): Promise<WholeVolumeAccessDiagnostic> {
+  try {
+    return windowsAccessDiagnostic(await run("whoami.exe", ["/groups", "/fo", "csv", "/nh"]))
+  } catch {
+    return {
+      capability: "windows-elevated-token",
+      status: "inconclusive",
+      mapCoverage: "unknown",
+      evidence: {
+        source: "windows-token-groups",
+        integrityLevel: "unknown",
+        administratorsGroup: "unknown",
+      },
+    }
+  }
 }
 
 export async function getDiskStorageDiagnostics(options?: {
@@ -170,7 +291,9 @@ export async function getDiskStorageDiagnostics(options?: {
   environment?: NodeJS.ProcessEnv
   drives?: readonly Pick<DriveInfo, "label" | "name" | "path" | "type">[]
   readDirectory?: ReadDirectory
+  readProtectedDirectory?: ReadDirectory
   checkAccess?: CheckAccess
+  runCommand?: RunCommand
 }): Promise<DiskStorageDiagnostics> {
   const platform = options?.platform ?? process.platform
   const homePath = options?.homePath ?? homedir()
@@ -190,10 +313,30 @@ export async function getDiskStorageDiagnostics(options?: {
       kind: "network" as const,
       provider: "network" as const,
     }))
-  const accessDiagnostic =
-    platform === "darwin"
-      ? await macAccessDiagnostic(homePath, checkAccess)
-      : { status: "not-applicable" as const, probes: [] }
+  let accessDiagnostic: DiskAccessDiagnostic
+  if (platform === "darwin") {
+    accessDiagnostic = await macAccessDiagnostic(
+      homePath,
+      options?.readProtectedDirectory ?? ((targetPath) => readdir(targetPath)),
+    )
+  } else if (platform === "win32") {
+    accessDiagnostic = {
+      status: "not-applicable",
+      probes: [],
+      wholeVolume: await windowsWholeVolumeDiagnostic(options?.runCommand ?? runCommand),
+    }
+  } else {
+    accessDiagnostic = {
+      status: "not-applicable",
+      probes: [],
+      wholeVolume: {
+        capability: "not-applicable",
+        status: "not-applicable",
+        mapCoverage: "not-applicable",
+        evidence: { source: "none" },
+      },
+    }
+  }
   return { access: accessDiagnostic, locations: uniqueStorageLocations([...cloud, ...network], platform) }
 }
 

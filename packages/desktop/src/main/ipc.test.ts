@@ -12,7 +12,10 @@ const appEvents = Object.assign(new EventEmitter(), { getPath: () => "/tmp/diskl
 mock.module("electron", () => ({
   app: appEvents,
   BrowserWindow: {
-    fromWebContents: () => undefined,
+    fromWebContents: (sender: FakeSender) => ({
+      isDestroyed: () => false,
+      webContents: sender,
+    }),
     getAllWindows: () => [],
   },
   Notification: class {
@@ -134,6 +137,7 @@ registerIpcHandlers({
 
 class FakeSender extends EventEmitter {
   destroyed = false
+  readonly mainFrame = {}
 
   constructor(readonly id: number) {
     super()
@@ -153,7 +157,7 @@ class FakeSender extends EventEmitter {
 }
 
 function event(sender: FakeSender) {
-  return { sender } as unknown as IpcMainInvokeEvent
+  return { sender, senderFrame: sender.mainFrame } as unknown as IpcMainInvokeEvent
 }
 
 const scanPath = handlers.get("disklizard:scan-path") as (
@@ -170,6 +174,18 @@ const stopWatching = handlers.get("disklizard:stop-watching") as (
 afterAll(() => mock.restore())
 
 describe("disk snapshot IPC lifecycle", () => {
+  test("rejects privileged IPC from a subframe", () => {
+    const sender = new FakeSender(40)
+    const getDrives = handlers.get("disklizard:get-drives")!
+    expect(() => getDrives({ sender, senderFrame: {} })).toThrow("Invalid IPC sender")
+  })
+
+  test("rejects renderer-selected store paths", () => {
+    const sender = new FakeSender(43)
+    const setStore = handlers.get("store-set")!
+    expect(() => setStore(event(sender), "/tmp/escaped.json", "key", "value")).toThrow("Invalid renderer store")
+  })
+
   test("keeps one renderer destruction listener across repeated and parallel scans", async () => {
     const sender = new FakeSender(41)
 

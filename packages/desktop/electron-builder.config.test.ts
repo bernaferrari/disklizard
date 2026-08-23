@@ -59,6 +59,8 @@ test("publishes beta and production builds to DiskLizard's release repository", 
     private: false,
   })
   expect(prod.win?.verifyUpdateCodeSignature).toBe(true)
+  expect(prod.win?.sign).toBeUndefined()
+  expect(prod.win?.signtoolOptions?.sign).toBeUndefined()
   expect(prod.rpm?.packageName).toBe("disklizard")
 })
 

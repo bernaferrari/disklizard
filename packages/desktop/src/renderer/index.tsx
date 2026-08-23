@@ -45,6 +45,7 @@ function DiskLizardApp() {
   const [updaterState, setUpdaterState] = createSignal<DiskLizardUpdaterState>({ status: "disabled" })
   void window.api.updater.subscribe(setUpdaterState)
   const platform = createDiskLizardPlatform(updaterState)
+  onCleanup(() => platform.dispose?.())
 
   const onMenu = window.api.onMenuCommand((id) => {
     void handleRendererMenuCommand(

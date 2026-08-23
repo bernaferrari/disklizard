@@ -2,6 +2,7 @@ import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
+import { useLanguage } from "./runtime"
 
 /**
  * A persistent cleanup destination. It stays visible before drag begins so the
@@ -24,25 +25,26 @@ export function CollectionDropTarget(props: {
   onDragLeave: (event: DragEvent) => void
   onDrop: (event: DragEvent) => void
 }) {
+  const language = useLanguage()
   const hasItems = () => props.count > 0
   const allocationMayRemain = () =>
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
   const title = () => {
-    if (props.active && props.node) return `Release to select ${props.node.name} for review`
-    if (props.node) return `Drag ${props.node.name} here to select it`
-    if (hasItems()) return `${props.count} ${props.count === 1 ? "item" : "items"} selected for review`
-    return "Select items to review"
+    if (props.active && props.node) return language.t("disk.collection.release", { name: props.node.name })
+    if (props.node) return language.t("disk.collection.drag", { name: props.node.name })
+    if (hasItems()) return language.plural("disk.count.itemSelected", props.count)
+    return language.t("disk.collection.none")
   }
   const detail = () => {
     if (props.node)
       return allocationMayRemain()
-        ? `${formatBytes(props.node.size)} selected size · Full map rebuild after move`
-        : `${formatBytes(props.node.size)} · Nothing moves until you approve it`
+        ? language.t("disk.collection.selectedRebuild", { size: formatBytes(props.node.size) })
+        : language.t("disk.collection.selectedApprove", { size: formatBytes(props.node.size) })
     if (hasItems())
       return allocationMayRemain()
-        ? `${formatBytes(props.bytes)} selected size · Full map rebuild after move`
-        : `${formatBytes(props.bytes)} · Review before moving anything to ${props.trashName}`
-    return "Press C, Shift+Arrow, or drag · Nothing moves until you approve it"
+        ? language.t("disk.collection.selectedRebuild", { size: formatBytes(props.bytes) })
+        : language.t("disk.collection.reviewTrash", { size: formatBytes(props.bytes), trash: props.trashName })
+    return language.t("disk.collection.instructions")
   }
 
   return (
@@ -58,7 +60,7 @@ export function CollectionDropTarget(props: {
       onDragOver={props.onDragOver}
       onDragLeave={props.onDragLeave}
       onDrop={props.onDrop}
-      aria-label="Selected items for review"
+      aria-label={language.t("disk.collection.label")}
     >
       <span
         class="dl-cleanup-dock-icon relative grid size-10 shrink-0 place-items-center rounded-full"
@@ -86,22 +88,26 @@ export function CollectionDropTarget(props: {
             size="small"
             variant="ghost"
             onClick={props.onClear}
-            aria-label="Clear review"
+            aria-label={language.t("disk.collection.clear")}
           >
-            Clear review
+            {language.t("disk.collection.clear")}
           </Button>
           <Button class="dl-touch-target" size="small" variant="primary" icon="arrow-right" onClick={props.onReview}>
-            Review selected
+            {language.t("disk.collection.reviewSelected")}
           </Button>
         </span>
       ) : (
-        <kbd class="dl-shortcut-key shrink-0" aria-label="Keyboard shortcut C">
+        <kbd class="dl-shortcut-key shrink-0" aria-label={language.t("disk.collection.shortcutC")}>
           C
         </kbd>
       )}
 
       <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
-        {props.active ? title() : hasItems() ? `${props.count} items selected for review` : "No items selected for review"}
+        {props.active
+          ? title()
+          : hasItems()
+            ? language.plural("disk.count.itemSelected", props.count)
+            : language.t("disk.collection.noneStatus")}
       </span>
     </section>
   )

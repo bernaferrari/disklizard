@@ -20,6 +20,8 @@ export type UpdaterAPI = {
   install: () => Promise<void>
 }
 
+export type RendererStoreID = "disklizard" | "global"
+
 export type LinuxDisplayBackend = "wayland" | "auto"
 export type TitlebarTheme = {
   mode: "light" | "dark"
@@ -78,7 +80,7 @@ export type DiskLizardDeveloperArtifactDeletePrecondition = {
 }
 
 export type DiskLizardDeleteOptions = {
-  permanent?: boolean
+  authorization: string
   precondition?: DiskLizardDeveloperArtifactDeletePrecondition
 }
 
@@ -99,6 +101,7 @@ export type DiskLizardScanUpdate = {
   rootPath: string
   root: DiskLizardNode
   changedPaths: string[]
+  watchError?: string
 }
 
 /** Optional local filesystem facts delivered after a fast drive-list first paint. */
@@ -134,7 +137,8 @@ export type DiskLizardAPI = {
   ) => Promise<DiskLizardNode | null>
   cancelScan: (scanId?: string) => Promise<void>
   stopWatching: (scanId?: string) => Promise<void>
-  deletePath: (path: string, options?: DiskLizardDeleteOptions) => Promise<{ ok: true }>
+  authorizeDeletePaths: (paths: readonly string[]) => Promise<Array<{ path: string; authorization: string }>>
+  deletePath: (path: string, options: DiskLizardDeleteOptions) => Promise<{ ok: true }>
   previewPath: (path: string) => Promise<DiskLizardFilePreview>
   systemPreviewPath: (path: string) => Promise<void>
   openTrash: () => Promise<void>
@@ -156,12 +160,12 @@ export type ElectronAPI = {
   disklizard: DiskLizardAPI
   updater: UpdaterAPI
   consumeInitialDeepLinks: () => Promise<string[]>
-  storeGet: (name: string, key: string) => Promise<string | null>
-  storeSet: (name: string, key: string, value: string) => Promise<void>
-  storeDelete: (name: string, key: string) => Promise<void>
-  storeClear: (name: string) => Promise<void>
-  storeKeys: (name: string) => Promise<string[]>
-  storeLength: (name: string) => Promise<number>
+  storeGet: (id: RendererStoreID, key: string) => Promise<string | null>
+  storeSet: (id: RendererStoreID, key: string, value: string) => Promise<void>
+  storeDelete: (id: RendererStoreID, key: string) => Promise<void>
+  storeClear: (id: RendererStoreID) => Promise<void>
+  storeKeys: (id: RendererStoreID) => Promise<string[]>
+  storeLength: (id: RendererStoreID) => Promise<number>
   getWindowID: () => Promise<string>
 
   getWindowCount?: () => Promise<number>
@@ -185,7 +189,7 @@ export type ElectronAPI = {
   saveFilePicker: (opts?: { title?: string; defaultPath?: string }) => Promise<string | null>
   openExternal: (url: string) => void
   openLocalFile: (url: string) => void
-  openPath: (path: string, app?: string) => Promise<void>
+  openPath: (path: string) => Promise<void>
   revealPath: (path: string) => Promise<boolean>
   readClipboardImage: () => Promise<{ buffer: ArrayBuffer; width: number; height: number } | null>
   showNotification?: (title: string, body?: string) => void

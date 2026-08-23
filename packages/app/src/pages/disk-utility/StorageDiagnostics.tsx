@@ -26,15 +26,12 @@ export function StorageDiagnostics(props: {
   if (!shouldShowStorageDiagnostics(props.diagnostics)) return null
 
   return (
-    <section class="pt-7" aria-labelledby="disklizard-connected-storage">
-      <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Connected storage</p>
-          <h3 id="disklizard-connected-storage" class="mt-1 text-18-medium tracking-[-0.02em] text-text-strong">
-            Scan storage that is already mounted.
-          </h3>
-        </div>
-        <span class="text-13-regular text-text-weaker">Nothing is signed in or uploaded</span>
+    <section class="border-t border-border-weaker-base py-6" aria-labelledby="disklizard-connected-storage">
+      <div class="mb-3 flex flex-wrap items-baseline justify-between gap-3">
+        <h3 id="disklizard-connected-storage" class="text-13-semibold text-text-strong">
+          Connected storage
+        </h3>
+        <span class="text-13-regular text-text-weaker">Already mounted on this Mac</span>
       </div>
 
       <Show when={accessLimited()}>

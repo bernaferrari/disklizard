@@ -18,15 +18,29 @@ export function scanEvidence(root: DiskNode): ScanEvidence {
   return "unavailable"
 }
 
-export function scanAccounting(options: ScanOptions | undefined): ScanAccounting {
-  return options?.sizeMode === "logical" ? "logical" : "physical"
+export function scanAccounting(
+  options: ScanOptions | undefined,
+  backend: ScanBackend,
+  platform: NodeJS.Platform = process.platform,
+): ScanAccounting {
+  if (options?.sizeMode === "logical") return "logical"
+  // Node's portable Windows Stats do not expose allocated blocks. The
+  // fallback deliberately measures apparent length, so its public contract
+  // must not relabel those bytes as physical allocation.
+  if (platform === "win32" && backend !== "native") return "logical"
+  return "physical"
 }
 
-export function describeScanResult(root: DiskNode, backend: ScanBackend, options?: ScanOptions): ScanBackendResult {
+export function describeScanResult(
+  root: DiskNode,
+  backend: ScanBackend,
+  options?: ScanOptions,
+  platform: NodeJS.Platform = process.platform,
+): ScanBackendResult {
   return {
     root,
     backend,
-    accounting: scanAccounting(options),
+    accounting: scanAccounting(options, backend, platform),
     evidence: scanEvidence(root),
   }
 }

@@ -21,10 +21,8 @@
   "include": ["src", "package.json"],
   "exclude": [
     "src/**/*.test.ts",
-    "src/main/wsl",
     "src/renderer/onboarding.tsx",
     "src/renderer/cli.ts",
-    "src/renderer/wsl",
     "src/renderer/initialization.ts"
   ]
 }

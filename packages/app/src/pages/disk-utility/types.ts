@@ -41,7 +41,7 @@ export type DiskDeveloperArtifactDeletePrecondition = {
 }
 
 export type DiskDeleteOptions = {
-  permanent?: boolean
+  authorization: string
   precondition?: DiskDeveloperArtifactDeletePrecondition
 }
 
@@ -112,6 +112,7 @@ export type DiskScanUpdate = {
   rootPath: string
   root: DiskScanNode
   changedPaths: string[]
+  watchError?: string
 }
 
 /** Optional local filesystem facts that arrive after the first drive list. */
@@ -148,7 +149,8 @@ export type DiskUtilityAPI = {
   ): Promise<DiskScanNode | null>
   cancelScan(scanId?: string): Promise<void>
   stopWatching(scanId?: string): Promise<void>
-  deletePath(path: string, options?: DiskDeleteOptions): Promise<{ ok: true }>
+  authorizeDeletePaths(paths: readonly string[]): Promise<Array<{ path: string; authorization: string }>>
+  deletePath(path: string, options: DiskDeleteOptions): Promise<{ ok: true }>
   previewPath(path: string): Promise<DiskFilePreview>
   systemPreviewPath(path: string): Promise<void>
   openTrash(): Promise<void>

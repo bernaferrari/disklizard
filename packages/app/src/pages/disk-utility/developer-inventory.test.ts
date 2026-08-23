@@ -253,6 +253,38 @@ describe("deep developer artifact inventory", () => {
     expect(matchesDeveloperArtifact(item, { ecosystem: "python" }, now)).toBe(false)
   })
 
+  it("reconciles a deeply nested review inventory without pairwise ancestry scans", () => {
+    const count = 400
+    const items: DeveloperArtifact[] = []
+    let nestedPath = "/repo"
+    for (let index = 0; index < count; index++) {
+      nestedPath += `/level-${index}/build`
+      items.push(
+        artifact({
+          name: "build",
+          path: nestedPath,
+          size: count - index,
+          kind: "build-output",
+          ecosystem: "generic",
+          confidence: "ambiguous",
+          cleanup: "review",
+        }),
+      )
+    }
+    const root: DiskScanNode = {
+      ...dir("repo", "/repo", count),
+      developerArtifactInventory: inventory(items),
+    }
+
+    const startedAt = performance.now()
+    const summary = computeDeveloperSummaryWithInventory(root)
+    const elapsedMs = performance.now() - startedAt
+
+    expect(summary.totalCount).toBe(count)
+    expect(summary.totalBytes).toBe(count)
+    expect(elapsedMs).toBeLessThan(1_000)
+  })
+
   it("keeps a root with zero deep matches as a valid coverage carrier", () => {
     const root: DiskScanNode = {
       ...dir("repo", "/repo", 0),

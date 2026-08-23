@@ -562,6 +562,140 @@ struct Measurement {
     signatures: Option<Vec<String>>,
 }
 
+struct ChildRetention {
+    max_children: usize,
+    top: Vec<CompactNode>,
+    preserved: Vec<CompactNode>,
+    hidden_sample: Vec<CompactNode>,
+    hidden_count: usize,
+    hidden_size: u64,
+    hidden_logical_size: u64,
+    hidden_modified_at: Option<u64>,
+    hidden_has_shared_storage_risk: bool,
+    omitted_has_shared_storage_risk: bool,
+    total: u64,
+    logical_size: u64,
+    modified_at: Option<u64>,
+    has_shared_storage_risk: bool,
+}
+
+impl ChildRetention {
+    fn new(max_children: usize) -> Self {
+        Self {
+            max_children,
+            top: Vec::with_capacity(max_children.saturating_add(1)),
+            preserved: Vec::new(),
+            hidden_sample: Vec::with_capacity(13),
+            hidden_count: 0,
+            hidden_size: 0,
+            hidden_logical_size: 0,
+            hidden_modified_at: None,
+            hidden_has_shared_storage_risk: false,
+            omitted_has_shared_storage_risk: false,
+            total: 0,
+            logical_size: 0,
+            modified_at: None,
+            has_shared_storage_risk: false,
+        }
+    }
+
+    fn insert_sorted(
+        nodes: &mut Vec<CompactNode>,
+        node: CompactNode,
+        limit: usize,
+    ) -> Option<CompactNode> {
+        let mut low = 0;
+        let mut high = nodes.len();
+        while low < high {
+            let middle = (low + high) / 2;
+            if compare_compact_node_retention(&node, &nodes[middle]).is_lt() {
+                high = middle;
+            } else {
+                low = middle + 1;
+            }
+        }
+        nodes.insert(low, node);
+        (nodes.len() > limit).then(|| nodes.pop().expect("bounded child retention overflow"))
+    }
+
+    fn push_hidden(&mut self, node: CompactNode) {
+        self.hidden_count += 1;
+        self.hidden_size = self.hidden_size.saturating_add(node.size);
+        self.hidden_logical_size = self
+            .hidden_logical_size
+            .saturating_add(node.logical_size.unwrap_or(node.size));
+        self.hidden_modified_at = latest(self.hidden_modified_at, node.modified_at);
+        self.hidden_has_shared_storage_risk |= node.has_shared_storage_risk;
+        if let Some(omitted) = Self::insert_sorted(&mut self.hidden_sample, node, 12) {
+            self.omitted_has_shared_storage_risk |= omitted.has_shared_storage_risk;
+        }
+    }
+
+    fn push(&mut self, node: CompactNode, preserve_names: &HashSet<String>) {
+        if node.size == 0
+            && node.children.is_empty()
+            && node.hard_link.is_none()
+            && !node.has_shared_storage_risk
+        {
+            return;
+        }
+        self.total = self.total.saturating_add(node.size);
+        self.logical_size = self
+            .logical_size
+            .saturating_add(node.logical_size.unwrap_or(node.size));
+        self.modified_at = latest(self.modified_at, node.modified_at);
+        self.has_shared_storage_risk |= node.has_shared_storage_risk;
+
+        let Some(overflow) = Self::insert_sorted(&mut self.top, node, self.max_children) else {
+            return;
+        };
+        if contains_preserved(&overflow, preserve_names) {
+            self.preserved.push(overflow);
+        } else {
+            self.push_hidden(overflow);
+        }
+    }
+
+    fn finish(mut self, state: &State) -> Vec<CompactNode> {
+        self.preserved
+            .sort_unstable_by(compare_compact_node_retention);
+        self.top.extend(self.preserved);
+        if self.hidden_size == 0 {
+            if self.hidden_has_shared_storage_risk {
+                state.mark_shared_storage_evidence_partial();
+            }
+            return self.top;
+        }
+        if self.omitted_has_shared_storage_risk {
+            state.mark_shared_storage_evidence_partial();
+        }
+        self.top.push(CompactNode {
+            name: format!("Other ({} items)", self.hidden_count),
+            size: self.hidden_size,
+            logical_size: (self.hidden_logical_size != self.hidden_size)
+                .then_some(self.hidden_logical_size),
+            modified_at: self.hidden_modified_at,
+            hard_link: None,
+            clone_evidence: None,
+            clone_accounting: None,
+            clone_metadata: None,
+            shared_storage_evidence: None,
+            developer_artifact_inventory: None,
+            hard_link_identity: None,
+            reported_hard_link_count: None,
+            hard_link_physical_size: None,
+            has_shared_storage_risk: self.hidden_has_shared_storage_risk,
+            is_dir: true,
+            children: self.hidden_sample,
+            is_other: true,
+            is_collapsed: false,
+            signatures: None,
+            scan_issues: None,
+        });
+        self.top
+    }
+}
+
 // Ordered by how conservatively a whole scan must be presented. One
 // unobservable subtree means the root can no longer promise clone awareness,
 // even when another directory returned APFS metadata successfully.
@@ -898,6 +1032,11 @@ impl Scanner {
 
         root.developer_artifact_inventory = self.state.developer_artifact_inventory();
 
+        // Parallel discovery charges bytes before complete hard-link and APFS
+        // clone groups are normalized. The final progress event is a completed
+        // accounting snapshot, so publish the returned root's post-normalized
+        // size instead of the traversal accumulator.
+        self.state.bytes.store(root.size, Ordering::Relaxed);
         self.state.emit_progress(&target, None, true, true);
         Ok(root)
     }
@@ -1189,7 +1328,8 @@ impl State {
 
         let excluded_names = self.excluded_children.get(path);
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
-        let children: Vec<CompactNode> = entries
+        let retention = Mutex::new(ChildRetention::new(self.request.max_children));
+        entries
             .into_par_iter()
             .filter_map(|entry| {
                 let child_path = path.join(&entry.name);
@@ -1259,28 +1399,21 @@ impl State {
                     Some(node)
                 }
             })
-            .collect();
+            .for_each(|node| {
+                retention
+                    .lock()
+                    .expect("child retention lock poisoned")
+                    .push(node, &self.preserve_names);
+            });
 
-        let mut visible = Vec::with_capacity(children.len());
-        let mut total = 0_u64;
-        let mut logical_size = 0_u64;
-        let mut modified_at = None;
-        for child in children {
-            if child.size == 0
-                && child.children.is_empty()
-                && child.hard_link.is_none()
-                && !child.has_shared_storage_risk
-            {
-                continue;
-            }
-            total = total.saturating_add(child.size);
-            logical_size = logical_size.saturating_add(child.logical_size.unwrap_or(child.size));
-            modified_at = latest(modified_at, child.modified_at);
-            visible.push(child);
-        }
-
-        let has_shared_storage_risk = visible.iter().any(|child| child.has_shared_storage_risk);
-        let children = self.limit_children(visible);
+        let retention = retention
+            .into_inner()
+            .expect("child retention lock poisoned");
+        let total = retention.total;
+        let logical_size = retention.logical_size;
+        let modified_at = retention.modified_at;
+        let has_shared_storage_risk = retention.has_shared_storage_risk;
+        let children = retention.finish(self);
         self.emit_progress(path, None, false, false);
         let mut node = CompactNode::directory(
             name,
@@ -1474,9 +1607,14 @@ impl State {
         };
         let mut size = original_size;
         let mut hard_link = None;
-        if self.request.size_mode == SizeMode::Physical
-            && entry.file_id > 0
-            && entry.link_count != 1
+        if self.request.size_mode == SizeMode::Physical && entry.link_count == 0 {
+            // Windows bulk directory records do not include the hard-link
+            // count. Treat that evidence as partial instead of retaining every
+            // file identity for the entire scan or silently claiming complete
+            // physical ownership.
+            self.mark_shared_storage_evidence_partial();
+        }
+        if self.request.size_mode == SizeMode::Physical && entry.file_id > 0 && entry.link_count > 1
         {
             let identity = (entry.device, entry.file_id);
             let shard = ((entry.device ^ entry.file_id) as usize) & (self.hard_links.len() - 1);
@@ -1586,76 +1724,6 @@ impl State {
             self.record_skipped_directory(path);
         }
         claimed
-    }
-
-    fn limit_children(&self, mut children: Vec<CompactNode>) -> Vec<CompactNode> {
-        if children.len() <= self.request.max_children {
-            children.sort_unstable_by(compare_compact_node_retention);
-            return children;
-        }
-        children.select_nth_unstable_by(self.request.max_children, compare_compact_node_retention);
-        let rest = children.split_off(self.request.max_children);
-        children.sort_unstable_by(compare_compact_node_retention);
-        let mut hidden = Vec::new();
-        for child in rest {
-            if contains_preserved(&child, &self.preserve_names) {
-                children.push(child);
-            } else {
-                hidden.push(child);
-            }
-        }
-        children.sort_unstable_by(compare_compact_node_retention);
-        let size = hidden.iter().map(|child| child.size).sum();
-        let logical_size = hidden
-            .iter()
-            .map(|child| child.logical_size.unwrap_or(child.size))
-            .sum();
-        let hidden_has_shared_storage_risk =
-            hidden.iter().any(|child| child.has_shared_storage_risk);
-        if size == 0 {
-            if hidden_has_shared_storage_risk {
-                self.mark_shared_storage_evidence_partial();
-            }
-            return children;
-        }
-        let modified_at = hidden
-            .iter()
-            .fold(None, |value, child| latest(value, child.modified_at));
-        let hidden_count = hidden.len();
-        if hidden.len() > 12 {
-            hidden.select_nth_unstable_by(12, compare_compact_node_retention);
-            if hidden[12..]
-                .iter()
-                .any(|child| child.has_shared_storage_risk)
-            {
-                self.mark_shared_storage_evidence_partial();
-            }
-            hidden.truncate(12);
-        }
-        hidden.sort_unstable_by(compare_compact_node_retention);
-        children.push(CompactNode {
-            name: format!("Other ({hidden_count} items)"),
-            size,
-            logical_size: (logical_size != size).then_some(logical_size),
-            modified_at,
-            hard_link: None,
-            clone_evidence: None,
-            clone_accounting: None,
-            clone_metadata: None,
-            shared_storage_evidence: None,
-            developer_artifact_inventory: None,
-            hard_link_identity: None,
-            reported_hard_link_count: None,
-            hard_link_physical_size: None,
-            has_shared_storage_risk: hidden_has_shared_storage_risk,
-            is_dir: true,
-            children: hidden,
-            is_other: true,
-            is_collapsed: false,
-            signatures: None,
-            scan_issues: None,
-        });
-        children
     }
 
     fn record_unreadable(&self, path: &Path) {
@@ -3192,6 +3260,61 @@ mod tests {
 
     fn scan(request: Request) -> CompactNode {
         Scanner::new(request, |_| Ok(())).unwrap().scan().unwrap()
+    }
+
+    #[test]
+    fn does_not_retain_every_unknown_windows_file_identity() {
+        let root = tempfile::tempdir().unwrap();
+        let scanner = Scanner::new(request(root.path(), SizeMode::Physical), |_| Ok(())).unwrap();
+        let entry = Entry {
+            name: OsString::from("unknown-link-count.bin"),
+            kind: EntryKind::File,
+            logical_size: 32,
+            allocated_size: 32,
+            modified_at: None,
+            device: 7,
+            file_id: 99,
+            link_count: 0,
+            clone_evidence: CloneEvidence::Unavailable {
+                reason: CloneUnavailableReason::Platform,
+            },
+        };
+
+        assert_eq!(scanner.state.measure_file(&entry).0, 32);
+        assert_eq!(scanner.state.measure_file(&entry).0, 32);
+        assert!(scanner
+            .state
+            .hard_links
+            .iter()
+            .all(|shard| shard.lock().unwrap().is_empty()));
+        assert!(matches!(
+            scanner.state.shared_storage_evidence(),
+            SharedStorageEvidence::Partial
+        ));
+    }
+
+    #[test]
+    fn final_progress_uses_the_returned_root_accounting() {
+        let root = tempfile::tempdir().unwrap();
+        File::create(root.path().join("file.bin"))
+            .unwrap()
+            .write_all(&[7_u8; 32])
+            .unwrap();
+        let progress = Arc::new(Mutex::new(Vec::new()));
+        let observed = progress.clone();
+        let result = Scanner::new(request(root.path(), SizeMode::Physical), move |message| {
+            if let ServerMessage::Progress { progress } = message {
+                if progress.done {
+                    observed.lock().unwrap().push(progress.size);
+                }
+            }
+            Ok(())
+        })
+        .unwrap()
+        .scan()
+        .unwrap();
+
+        assert_eq!(progress.lock().unwrap().as_slice(), &[result.size]);
     }
 
     fn full_clone_file(name: &str, size: u64, clone_id: &str, count: u32) -> CompactNode {

@@ -1,5 +1,5 @@
-import { execFile, spawn } from "node:child_process"
-import { rm, stat } from "node:fs/promises"
+import { spawn } from "node:child_process"
+import { stat } from "node:fs/promises"
 import { basename, join } from "node:path"
 import { app, BrowserWindow, Notification, clipboard, dialog, ipcMain, shell } from "electron"
 import type { IpcMainEvent, IpcMainInvokeEvent, WebContents } from "electron"
@@ -11,6 +11,7 @@ import { runDesktopMenuAction } from "./desktop-menu-actions"
 import { setForceFocus } from "./debug"
 import { assertAttachmentBudget, createPickedFileAuthorizations } from "./attachment-picker"
 import { diskAccessSettingsUrl, getDiskStorageDiagnostics } from "./disk-platform"
+import { DiskDeleteAuthorizationManager } from "./disk-delete-authorization"
 import { runGuardedDiskDelete, type DiskDeleteOptions } from "./disk-delete-precondition"
 import { quickLookCommand, readDiskPreview } from "./disk-preview"
 import { publishDriveFacts } from "./disk-drive-facts"
@@ -18,6 +19,7 @@ import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scan
 import type { ScanOptions, ScanProgress } from "./disk-scanner"
 import { DiskSnapshotManager } from "./disk-snapshot"
 import { getStore, removeStoreFileIfEmpty } from "./store"
+import { resolveRendererStoreName } from "./renderer-store"
 import {
   getPinchZoomEnabled,
   getWindowID,
@@ -49,7 +51,30 @@ type Deps = {
   setNativeTranslations: (bundle: DesktopNativeBundle) => void
 }
 
+export function assertTrustedRenderer(event: Pick<IpcMainInvokeEvent, "sender" | "senderFrame">) {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  if (
+    !win ||
+    win.isDestroyed() ||
+    win.webContents !== event.sender ||
+    event.senderFrame !== event.sender.mainFrame
+  ) {
+    throw new Error("Invalid IPC sender")
+  }
+  return win
+}
+
 export function registerIpcHandlers(deps: Deps) {
+  const handle = (channel: string, listener: Parameters<typeof ipcMain.handle>[1]) =>
+    ipcMain.handle(channel, (event, ...args) => {
+      assertTrustedRenderer(event)
+      return listener(event, ...args)
+    })
+  const on = (channel: string, listener: Parameters<typeof ipcMain.on>[1]) =>
+    ipcMain.on(channel, (event, ...args) => {
+      assertTrustedRenderer(event)
+      return listener(event, ...args)
+    })
   const updaterSubscriptions = createUpdaterSubscriptions()
   const diskScans = new Map<string, AbortController>()
   const diskSnapshotCache = join(app.getPath("userData"), "disklizard", "snapshots")
@@ -57,6 +82,7 @@ export function registerIpcHandlers(deps: Deps) {
     cacheDir: diskSnapshotCache,
     scan: scanPath,
   })
+  const diskDeleteAuthorizations = new DiskDeleteAuthorizationManager()
   type DiskSnapshotSender = {
     sender: WebContents
     owners: Set<string>
@@ -82,6 +108,7 @@ export function registerIpcHandlers(deps: Deps) {
 
   const stopDiskSnapshotOwner = (owner: string) => {
     detachDiskSnapshotOwner(owner)
+    diskDeleteAuthorizations.removeOwner(owner)
     return diskSnapshots.stop(owner)
   }
 
@@ -108,6 +135,7 @@ export function registerIpcHandlers(deps: Deps) {
         for (const currentOwner of current.owners) {
           diskSnapshotOwnerSenders.delete(currentOwner)
           diskScans.get(currentOwner)?.abort(new Error("Scan window closed"))
+          diskDeleteAuthorizations.removeOwner(currentOwner)
           void diskSnapshots.stop(currentOwner)
         }
       }
@@ -125,6 +153,7 @@ export function registerIpcHandlers(deps: Deps) {
     }
     diskSnapshotSenders.clear()
     diskSnapshotOwnerSenders.clear()
+    diskDeleteAuthorizations.clear()
   }
   app.once("will-quit", () => {
     updaterSubscriptions.clear()
@@ -132,7 +161,7 @@ export function registerIpcHandlers(deps: Deps) {
     void diskSnapshots.stopAll()
   })
 
-  ipcMain.handle("disklizard:get-drives", async (event: IpcMainInvokeEvent) => {
+  handle("disklizard:get-drives", async (event: IpcMainInvokeEvent) => {
     const drives = await getDrives()
     // `getDrives` has a short first-paint budget on macOS. Publish optional
     // APFS facts when their already-started local probes finish, without ever
@@ -147,16 +176,16 @@ export function registerIpcHandlers(deps: Deps) {
     }
     return drives
   })
-  ipcMain.handle("disklizard:get-storage-diagnostics", async () =>
+  handle("disklizard:get-storage-diagnostics", async () =>
     getDiskStorageDiagnostics({ drives: await getDrives() }),
   )
-  ipcMain.handle("disklizard:open-disk-access-settings", async () => {
+  handle("disklizard:open-disk-access-settings", async () => {
     const url = diskAccessSettingsUrl()
     if (!url) return false
     await shell.openExternal(url)
     return true
   })
-  ipcMain.handle(
+  handle(
     "disklizard:scan-path",
     async (
       event: IpcMainInvokeEvent,
@@ -178,6 +207,7 @@ export function registerIpcHandlers(deps: Deps) {
       const scanID = requestedScanID || "primary"
       const owner = `${senderID}:${scanID}`
       detachDiskSnapshotOwner(owner)
+      diskDeleteAuthorizations.removeOwner(owner)
       diskScans.get(owner)?.abort(new Error("Superseded by a new scan"))
       const controller = new AbortController()
       let latestProgress: ScanProgress | undefined
@@ -219,10 +249,12 @@ export function registerIpcHandlers(deps: Deps) {
                 void stopDiskSnapshotOwner(owner)
                 return
               }
+              diskDeleteAuthorizations.updateRoot(owner, senderID, update.root)
               event.sender.send("disklizard:scan-update", { ...update, scanId: scanID })
             },
             options?.forceFresh === true,
           )
+          diskDeleteAuthorizations.updateRoot(owner, senderID, result.root)
           // Snapshot restores deliberately skip traversal. Tell the renderer
           // the completion source so it never turns cache latency into a
           // fictional throughput claim.
@@ -251,7 +283,7 @@ export function registerIpcHandlers(deps: Deps) {
       }
     },
   )
-  ipcMain.handle("disklizard:cancel-scan", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
+  handle("disklizard:cancel-scan", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
     const prefix = `${event.sender.id}:`
     const owners = requestedScanID
       ? [`${prefix}${requestedScanID}`]
@@ -267,7 +299,7 @@ export function registerIpcHandlers(deps: Deps) {
     owners.forEach((owner) => diskScans.get(owner)?.abort(new Error("Scan cancelled")))
     void Promise.all(owners.map(stopDiskSnapshotOwner))
   })
-  ipcMain.handle("disklizard:stop-watching", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
+  handle("disklizard:stop-watching", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
     const prefix = `${event.sender.id}:`
     if (requestedScanID) return stopDiskSnapshotOwner(`${prefix}${requestedScanID}`)
     return Promise.all(
@@ -276,24 +308,28 @@ export function registerIpcHandlers(deps: Deps) {
         .map((owner) => stopDiskSnapshotOwner(String(owner))),
     )
   })
-  ipcMain.handle(
+  handle(
+    "disklizard:authorize-delete-paths",
+    (event: IpcMainInvokeEvent, paths: readonly string[]) =>
+      diskDeleteAuthorizations.authorize(event.sender.id, paths, assertSafeDeletionPath),
+  )
+  handle(
     "disklizard:delete-path",
-    async (_event: IpcMainInvokeEvent, targetPath: string, options?: DiskDeleteOptions) => {
+    async (event: IpcMainInvokeEvent, targetPath: string, options: DiskDeleteOptions) => {
+      await diskDeleteAuthorizations.consume(event.sender.id, targetPath, options?.authorization)
       await runGuardedDiskDelete(
         targetPath,
         options?.precondition,
         assertSafeDeletionPath,
-        options?.permanent
-          ? async (path) => rm(path, { recursive: true, force: true })
-          : async (path) => shell.trashItem(path),
+        async (path) => shell.trashItem(path),
       )
       return { ok: true }
     },
   )
-  ipcMain.handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) =>
+  handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) =>
     readDiskPreview(targetPath),
   )
-  ipcMain.handle("disklizard:system-preview-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+  handle("disklizard:system-preview-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
     const metadata = await stat(targetPath)
     if (!metadata.isFile() && !metadata.isDirectory()) throw new Error("Only files and folders can be previewed")
     const command = quickLookCommand(targetPath)
@@ -306,7 +342,7 @@ export function registerIpcHandlers(deps: Deps) {
     const error = await shell.openPath(targetPath)
     if (error) throw new Error(error)
   })
-  ipcMain.handle("disklizard:open-trash", async () => {
+  handle("disklizard:open-trash", async () => {
     if (process.platform === "win32") {
       const trash = spawn("explorer.exe", ["shell:RecycleBinFolder"], { detached: true, stdio: "ignore" })
       trash.once("error", () => undefined)
@@ -320,11 +356,11 @@ export function registerIpcHandlers(deps: Deps) {
     const error = await shell.openPath(path)
     if (error) throw new Error(error)
   })
-  ipcMain.handle("disklizard:reveal-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+  handle("disklizard:reveal-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
     await stat(targetPath)
     shell.showItemInFolder(targetPath)
   })
-  ipcMain.handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
+  handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     const result = await dialog.showOpenDialog(win ?? undefined!, {
       properties: ["openDirectory"],
@@ -334,8 +370,8 @@ export function registerIpcHandlers(deps: Deps) {
     return result.filePaths[0]
   })
 
-  ipcMain.handle("consume-initial-deep-links", () => deps.consumeInitialDeepLinks())
-  ipcMain.handle("updater-subscribe", (event) => {
+  handle("consume-initial-deep-links", () => deps.consumeInitialDeepLinks())
+  handle("updater-subscribe", (event) => {
     const id = event.sender.id
     updaterSubscriptions.set(
       id,
@@ -346,27 +382,23 @@ export function registerIpcHandlers(deps: Deps) {
     )
     event.sender.once("destroyed", () => updaterSubscriptions.delete(id))
   })
-  ipcMain.handle("updater-unsubscribe", (event) => updaterSubscriptions.delete(event.sender.id))
-  ipcMain.handle("updater-check", () => deps.updater.check())
-  ipcMain.handle("updater-install", () => deps.updater.install())
-  ipcMain.handle("set-background-color", (_event: IpcMainInvokeEvent, color: string) => deps.setBackgroundColor(color))
-  ipcMain.handle("export-debug-logs", () => deps.exportDebugLogs())
-  ipcMain.handle("set-force-focus", (event: IpcMainInvokeEvent, enabled: boolean) => setForceFocus(event.sender, enabled))
-  ipcMain.handle("record-fatal-renderer-error", (_event: IpcMainInvokeEvent, error: FatalRendererError) =>
+  handle("updater-unsubscribe", (event) => updaterSubscriptions.delete(event.sender.id))
+  handle("updater-check", () => deps.updater.check())
+  handle("updater-install", () => deps.updater.install())
+  handle("set-background-color", (_event: IpcMainInvokeEvent, color: string) => deps.setBackgroundColor(color))
+  handle("export-debug-logs", () => deps.exportDebugLogs())
+  handle("set-force-focus", (event: IpcMainInvokeEvent, enabled: boolean) => setForceFocus(event.sender, enabled))
+  handle("record-fatal-renderer-error", (_event: IpcMainInvokeEvent, error: FatalRendererError) =>
     deps.recordFatalRendererError(error),
   )
-  ipcMain.handle("set-native-translations", (event: IpcMainInvokeEvent, value: unknown) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win || win.isDestroyed() || win.webContents !== event.sender || event.senderFrame !== event.sender.mainFrame) {
-      throw new Error("Invalid native translation sender")
-    }
+  handle("set-native-translations", (_event: IpcMainInvokeEvent, value: unknown) => {
     const bundle = parseDesktopNativeBundle(value)
     if (!bundle) throw new Error("Invalid native translation bundle")
     deps.setNativeTranslations(bundle)
   })
-  ipcMain.handle("store-get", (_event: IpcMainInvokeEvent, name: string, key: string) => {
+  handle("store-get", (_event: IpcMainInvokeEvent, id: unknown, key: string) => {
     try {
-      const store = getStore(name)
+      const store = getStore(resolveRendererStoreName(id))
       const value = store.get(key)
       if (value === undefined || value === null) return null
       return typeof value === "string" ? value : JSON.stringify(value)
@@ -374,27 +406,29 @@ export function registerIpcHandlers(deps: Deps) {
       return null
     }
   })
-  ipcMain.handle("store-set", (_event: IpcMainInvokeEvent, name: string, key: string, value: string) => {
-    getStore(name).set(key, value)
+  handle("store-set", (_event: IpcMainInvokeEvent, id: unknown, key: string, value: string) => {
+    getStore(resolveRendererStoreName(id)).set(key, value)
   })
-  ipcMain.handle("store-delete", (_event: IpcMainInvokeEvent, name: string, key: string) => {
+  handle("store-delete", (_event: IpcMainInvokeEvent, id: unknown, key: string) => {
+    const name = resolveRendererStoreName(id)
     getStore(name).delete(key)
     void removeStoreFileIfEmpty(name)
   })
-  ipcMain.handle("store-clear", (_event: IpcMainInvokeEvent, name: string) => {
+  handle("store-clear", (_event: IpcMainInvokeEvent, id: unknown) => {
+    const name = resolveRendererStoreName(id)
     getStore(name).clear()
     void removeStoreFileIfEmpty(name)
   })
-  ipcMain.handle("store-keys", (_event: IpcMainInvokeEvent, name: string) => {
-    const store = getStore(name)
+  handle("store-keys", (_event: IpcMainInvokeEvent, id: unknown) => {
+    const store = getStore(resolveRendererStoreName(id))
     return Object.keys(store.store)
   })
-  ipcMain.handle("store-length", (_event: IpcMainInvokeEvent, name: string) => {
-    const store = getStore(name)
+  handle("store-length", (_event: IpcMainInvokeEvent, id: unknown) => {
+    const store = getStore(resolveRendererStoreName(id))
     return Object.keys(store.store).length
   })
 
-  ipcMain.handle(
+  handle(
     "open-directory-picker",
     async (_event: IpcMainInvokeEvent, opts?: { multiple?: boolean; title?: string; defaultPath?: string }) => {
       const result = await dialog.showOpenDialog({
@@ -407,7 +441,7 @@ export function registerIpcHandlers(deps: Deps) {
     },
   )
 
-  ipcMain.handle(
+  handle(
     "open-file-picker",
     async (
       event: IpcMainInvokeEvent,
@@ -433,15 +467,15 @@ export function registerIpcHandlers(deps: Deps) {
     },
   )
 
-  ipcMain.handle("read-picked-file", async (event: IpcMainInvokeEvent, token: string, filePath: string) => {
+  handle("read-picked-file", async (event: IpcMainInvokeEvent, token: string, filePath: string) => {
     return pickedFiles.read(event.sender.id, token, filePath)
   })
 
-  ipcMain.handle("release-picked-files", (event: IpcMainInvokeEvent, token: string) => {
+  handle("release-picked-files", (event: IpcMainInvokeEvent, token: string) => {
     pickedFiles.release(event.sender.id, token)
   })
 
-  ipcMain.handle(
+  handle(
     "save-file-picker",
     async (_event: IpcMainInvokeEvent, opts?: { title?: string; defaultPath?: string }) => {
       const result = await dialog.showSaveDialog({
@@ -453,19 +487,12 @@ export function registerIpcHandlers(deps: Deps) {
     },
   )
 
-  ipcMain.on("open-external", (_event: IpcMainEvent, url: string) => openExternalURL(url))
-  ipcMain.on("open-local-file", (_event: IpcMainEvent, url: string) => openLocalFileURL(url))
+  on("open-external", (_event: IpcMainEvent, url: string) => openExternalURL(url))
+  on("open-local-file", (_event: IpcMainEvent, url: string) => openLocalFileURL(url))
 
-  ipcMain.handle("open-path", async (_event: IpcMainInvokeEvent, path: string, app?: string) => {
-    if (!app) return shell.openPath(path)
-    return new Promise<void>((resolve, reject) => {
-      const [cmd, args] =
-        process.platform === "darwin" ? (["open", ["-a", app, path]] as const) : ([app, [path]] as const)
-      execFile(cmd, args, (err) => (err ? reject(err) : resolve()))
-    })
-  })
+  handle("open-path", (_event: IpcMainInvokeEvent, path: string) => shell.openPath(path))
 
-  ipcMain.handle("read-clipboard-image", () => {
+  handle("read-clipboard-image", () => {
     const image = clipboard.readImage()
     if (image.isEmpty()) return null
     const buffer = image.toPNG().buffer
@@ -473,13 +500,13 @@ export function registerIpcHandlers(deps: Deps) {
     return { buffer, width: size.width, height: size.height }
   })
 
-  ipcMain.on("show-notification", (_event: IpcMainEvent, title: string, body?: string) => {
+  on("show-notification", (_event: IpcMainEvent, title: string, body?: string) => {
     new Notification({ title, body }).show()
   })
 
-  ipcMain.handle("get-window-count", () => BrowserWindow.getAllWindows().length)
+  handle("get-window-count", () => BrowserWindow.getAllWindows().length)
 
-  ipcMain.handle("get-window-id", (event: IpcMainInvokeEvent) => {
+  handle("get-window-id", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) throw new Error("Window not found")
     const id = getWindowID(win)
@@ -487,47 +514,47 @@ export function registerIpcHandlers(deps: Deps) {
     return id
   })
 
-  ipcMain.handle("get-window-focused", (event: IpcMainInvokeEvent) => {
+  handle("get-window-focused", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     return win?.isFocused() ?? false
   })
 
-  ipcMain.handle("get-window-fullscreen", (event: IpcMainInvokeEvent) => {
+  handle("get-window-fullscreen", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     return win?.isFullScreen() ?? false
   })
 
-  ipcMain.handle("set-window-focus", (event: IpcMainInvokeEvent) => {
+  handle("set-window-focus", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     win?.focus()
   })
 
-  ipcMain.handle("show-window", (event: IpcMainInvokeEvent) => {
+  handle("show-window", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     win?.show()
   })
 
-  ipcMain.on("relaunch", () => {
+  on("relaunch", () => {
     deps.relaunch()
   })
 
-  ipcMain.handle("get-zoom-factor", (event: IpcMainInvokeEvent) => event.sender.getZoomFactor())
-  ipcMain.handle("set-zoom-factor", (event: IpcMainInvokeEvent, factor: number) => {
+  handle("get-zoom-factor", (event: IpcMainInvokeEvent) => event.sender.getZoomFactor())
+  handle("set-zoom-factor", (event: IpcMainInvokeEvent, factor: number) => {
     event.sender.setZoomFactor(factor)
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) return
     updateTitlebar(win)
   })
-  ipcMain.handle("get-pinch-zoom-enabled", () => getPinchZoomEnabled())
-  ipcMain.handle("set-pinch-zoom-enabled", (_event: IpcMainInvokeEvent, enabled: boolean) => {
+  handle("get-pinch-zoom-enabled", () => getPinchZoomEnabled())
+  handle("set-pinch-zoom-enabled", (_event: IpcMainInvokeEvent, enabled: boolean) => {
     setPinchZoomEnabled(enabled)
   })
-  ipcMain.handle("set-titlebar", (event: IpcMainInvokeEvent, theme: TitlebarTheme) => {
+  handle("set-titlebar", (event: IpcMainInvokeEvent, theme: TitlebarTheme) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) return
     setTitlebar(win, theme)
   })
-  ipcMain.handle("run-desktop-menu-action", (event: IpcMainInvokeEvent, action: DesktopMenuAction) => {
+  handle("run-desktop-menu-action", (event: IpcMainInvokeEvent, action: DesktopMenuAction) => {
     runDesktopMenuAction(BrowserWindow.fromWebContents(event.sender), action, {
       checkForUpdates: () => void deps.showUpdater(),
       relaunch: deps.relaunch,

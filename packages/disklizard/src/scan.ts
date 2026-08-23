@@ -113,24 +113,53 @@ function joinPath(parent: string, name: string): string {
 
 class Pool {
   active = 0
-  queue: Array<() => void> = []
+  queue: Array<{ start: () => boolean; abort: () => void }> = []
   queueHead = 0
   limit: number
+  signal?: AbortSignal
 
-  constructor(limit: number) {
+  constructor(limit: number, signal?: AbortSignal) {
     this.limit = limit
+    this.signal = signal
+    signal?.addEventListener(
+      "abort",
+      () => {
+        for (let index = this.queueHead; index < this.queue.length; index++) this.queue[index].abort()
+        this.queue = []
+        this.queueHead = 0
+      },
+      { once: true },
+    )
   }
 
   async run<T>(fn: () => Promise<T>): Promise<T> {
+    this.signal?.throwIfAborted()
     if (this.active >= this.limit) {
-      await new Promise<void>((resolve) => this.queue.push(resolve))
+      await new Promise<void>((resolve, reject) => {
+        let waiting = true
+        this.queue.push({
+          start: () => {
+            if (!waiting) return false
+            waiting = false
+            resolve()
+            return true
+          },
+          abort: () => {
+            if (!waiting) return
+            waiting = false
+            reject(this.signal?.reason ?? new Error("Scan cancelled"))
+          },
+        })
+      })
     }
+    this.signal?.throwIfAborted()
     this.active++
     try {
       return await fn()
     } finally {
       this.active--
-      const next = this.queueHead < this.queue.length ? this.queue[this.queueHead++] : undefined
+      let started = false
+      while (!started && this.queueHead < this.queue.length) started = this.queue[this.queueHead++].start()
       // Array.shift() moves every queued syscall on every completion. On a
       // volume scan that turned the scheduler itself into an O(n²) hot path.
       // Compact occasionally while keeping dequeue O(1) in the common case.
@@ -141,9 +170,30 @@ class Pool {
         this.queue = this.queue.slice(this.queueHead)
         this.queueHead = 0
       }
-      if (next) next()
     }
   }
+}
+
+async function forEachBounded<T>(items: readonly T[], limit: number, fn: (item: T) => Promise<void>) {
+  const width = Math.max(1, limit)
+  for (let offset = 0; offset < items.length; offset += width) {
+    const end = Math.min(items.length, offset + width)
+    const batch: Promise<void>[] = []
+    for (let index = offset; index < end; index++) batch.push(fn(items[index]))
+    await Promise.all(batch)
+  }
+}
+
+function insertBoundedNode(nodes: DiskNode[], node: DiskNode, limit: number) {
+  let low = 0
+  let high = nodes.length
+  while (low < high) {
+    const middle = (low + high) >>> 1
+    if (sortBySizeDesc(node, nodes[middle]) < 0) high = middle
+    else low = middle + 1
+  }
+  nodes.splice(low, 0, node)
+  return nodes.length > limit ? nodes.pop() : undefined
 }
 
 function sortBySizeDesc(a: DiskNode, b: DiskNode) {
@@ -855,6 +905,7 @@ async function sizeOnly(
   try {
     entries = await st.pool.run(() => readdir(dirPath, { withFileTypes: true }))
   } catch {
+    checkAborted(st)
     recordUnreadable(st, dirPath)
     return { size: 0 }
   }
@@ -865,11 +916,9 @@ async function sizeOnly(
   let modifiedAt = 0
   const signatures: string[] = []
   const artifactSignatures: string[] = []
-  const tasks: Promise<void>[] = []
 
-  for (let i = 0; i < entries.length; i++) {
+  await forEachBounded(entries, st.pool.limit, async (ent) => {
     checkAborted(st)
-    const ent = entries[i]
     const name = ent.name
     const normalizedName = name.toLowerCase()
 
@@ -878,11 +927,11 @@ async function sizeOnly(
     // not followed; inventory status makes that omitted scope explicit.
     if (ent.isSymbolicLink()) {
       recordSkippedSymlink(st, childPath)
-      continue
+      return
     }
     if (isExcluded(st, childPath)) {
       recordExcludedPath(st, childPath)
-      continue
+      return
     }
     if (captureSignatures && st.signatureNames.has(normalizedName)) signatures.push(normalizedName)
     if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
@@ -890,62 +939,50 @@ async function sizeOnly(
     }
 
     if (ent.isDirectory()) {
-      tasks.push(
-        (async () => {
+      const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
+      const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed)
+      total += measured.size
+      totalLogicalSize += apparentBytes(measured)
+      modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
+    } else if (ent.isFile()) {
+      try {
+        const s = await st.pool.run(() => stat(childPath))
+        const measured = measureFile(st, s)
+        total += measured.size
+        totalLogicalSize += apparentBytes(measured)
+        modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
+        st.filesScanned++
+        st.scannedBytes += measured.size
+      } catch {
+        checkAborted(st)
+        recordUnreadable(st, childPath)
+      }
+    } else if (ent.isFIFO?.() || ent.isSocket?.() || ent.isCharacterDevice?.() || ent.isBlockDevice?.()) {
+      // skip specials
+    } else {
+      // Unknown type (some FS): one stat to classify
+      try {
+        const s = await st.pool.run(() => stat(childPath))
+        if (s.isDirectory()) {
           const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
           const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed)
           total += measured.size
           totalLogicalSize += apparentBytes(measured)
           modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-        })(),
-      )
-    } else if (ent.isFile()) {
-      tasks.push(
-        st.pool
-          .run(() => stat(childPath))
-          .then(
-            (s) => {
-              const measured = measureFile(st, s)
-              total += measured.size
-              totalLogicalSize += apparentBytes(measured)
-              modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-              st.filesScanned++
-              st.scannedBytes += measured.size
-            },
-            () => recordUnreadable(st, childPath),
-          ),
-      )
-    } else if (ent.isFIFO?.() || ent.isSocket?.() || ent.isCharacterDevice?.() || ent.isBlockDevice?.()) {
-      // skip specials
-    } else {
-      // Unknown type (some FS): one stat to classify
-      tasks.push(
-        st.pool
-          .run(() => stat(childPath))
-          .then(
-            async (s) => {
-              if (s.isDirectory()) {
-                const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-                const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed)
-                total += measured.size
-                totalLogicalSize += apparentBytes(measured)
-                modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-              } else if (s.isFile()) {
-                const measured = measureFile(st, s)
-                total += measured.size
-                totalLogicalSize += apparentBytes(measured)
-                modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-                st.filesScanned++
-                st.scannedBytes += measured.size
-              }
-            },
-            () => recordUnreadable(st, childPath),
-          ),
-      )
+        } else if (s.isFile()) {
+          const measured = measureFile(st, s)
+          total += measured.size
+          totalLogicalSize += apparentBytes(measured)
+          modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
+          st.filesScanned++
+          st.scannedBytes += measured.size
+        }
+      } catch {
+        checkAborted(st)
+        recordUnreadable(st, childPath)
+      }
     }
-  }
-
-  if (tasks.length) await Promise.all(tasks)
+  })
   checkAborted(st)
   emitProgress(st, dirPath)
   const result = {
@@ -1010,6 +1047,7 @@ async function walkDir(
   try {
     entries = await st.pool.run(() => readdir(dirPath, { withFileTypes: true }))
   } catch {
+    checkAborted(st)
     recordUnreadable(st, dirPath)
     return node
   }
@@ -1017,22 +1055,46 @@ async function walkDir(
   st.dirsScanned++
   emitProgress(st, dirPath)
 
-  const fileTasks: Promise<DiskNode | null>[] = []
-  const dirTasks: Promise<DiskNode | null>[] = []
   const artifactSignatures: string[] = []
+  const top: DiskNode[] = []
+  const preservedOverflow: DiskNode[] = []
+  const restSample: DiskNode[] = []
+  let restCount = 0
+  let restSize = 0
+  let restLogicalSize = 0
+  let restModifiedAt = 0
+  let totalSize = 0
+  let totalLogicalSize = 0
+  let modifiedAt = 0
+  const retain = (child: DiskNode | null) => {
+    if (!child || (child.size <= 0 && child.children.length === 0 && !child.hardLink)) return
+    totalSize += child.size
+    totalLogicalSize += apparentBytes(child)
+    modifiedAt = Math.max(modifiedAt, child.modifiedAt ?? 0)
+    const overflow = insertBoundedNode(top, child, st.maxChildren)
+    if (!overflow) return
+    if (containsPreservedNode(overflow, st.preserveNames)) {
+      preservedOverflow.push(overflow)
+      return
+    }
+    restCount++
+    restSize += overflow.size
+    restLogicalSize += apparentBytes(overflow)
+    restModifiedAt = Math.max(restModifiedAt, overflow.modifiedAt ?? 0)
+    insertBoundedNode(restSample, overflow, 12)
+  }
 
-  for (let i = 0; i < entries.length; i++) {
+  await forEachBounded(entries, st.pool.limit, async (ent) => {
     checkAborted(st)
-    const ent = entries[i]
     const entName = ent.name
     const childPath = joinPath(dirPath, entName)
     if (ent.isSymbolicLink()) {
       recordSkippedSymlink(st, childPath)
-      continue
+      return
     }
     if (isExcluded(st, childPath)) {
       recordExcludedPath(st, childPath)
-      continue
+      return
     }
     const normalizedName = entName.toLowerCase()
     if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
@@ -1040,8 +1102,8 @@ async function walkDir(
     }
 
     if (ent.isDirectory()) {
-      dirTasks.push(
-        trackRootDiscovery(
+      retain(
+        await trackRootDiscovery(
           st,
           depth,
           (async () => {
@@ -1054,8 +1116,8 @@ async function walkDir(
       )
     } else if (ent.isFile()) {
       // Fast ext extract without path.extname alloc when possible
-      fileTasks.push(
-        trackRootDiscovery(
+      retain(
+        await trackRootDiscovery(
           st,
           depth,
           st.pool
@@ -1086,8 +1148,8 @@ async function walkDir(
       )
     } else {
       // Rare: need stat to classify
-      fileTasks.push(
-        trackRootDiscovery(
+      retain(
+        await trackRootDiscovery(
           st,
           depth,
           st.pool
@@ -1124,72 +1186,23 @@ async function walkDir(
         ),
       )
     }
-  }
-
-  // Dirs + files fully parallel; pool already caps syscall concurrency
-  const [dirNodes, fileNodes] = await Promise.all([
-    dirTasks.length ? Promise.all(dirTasks) : Promise.resolve([] as DiskNode[]),
-    fileTasks.length ? Promise.all(fileTasks) : Promise.resolve([] as (DiskNode | null)[]),
-  ])
+  })
   checkAborted(st)
 
-  const all: DiskNode[] = []
-  let totalSize = 0
-  let totalLogicalSize = 0
-  let modifiedAt = 0
-  for (const d of dirNodes) {
-    if (!d) continue
-    if (d.size > 0 || d.children.length > 0) {
-      all.push(d)
-      totalSize += d.size
-      totalLogicalSize += apparentBytes(d)
-      modifiedAt = Math.max(modifiedAt, d.modifiedAt ?? 0)
-    }
-  }
-  for (const f of fileNodes) {
-    if (f && (f.size > 0 || f.hardLink)) {
-      all.push(f)
-      totalSize += f.size
-      totalLogicalSize += apparentBytes(f)
-      modifiedAt = Math.max(modifiedAt, f.modifiedAt ?? 0)
-    }
-  }
-
-  const k = st.maxChildren
-  if (all.length <= k) {
-    all.sort(sortBySizeDesc)
-    node.children = all
-  } else {
-    all.sort(sortBySizeDesc)
-    const top = all.slice(0, k)
-    const rest: DiskNode[] = []
-    let restSize = 0
-    let restLogicalSize = 0
-    let restModifiedAt = 0
-    for (let i = k; i < all.length; i++) {
-      const child = all[i]
-      if (containsPreservedNode(child, st.preserveNames)) top.push(child)
-      else {
-        rest.push(child)
-        restSize += child.size
-        restLogicalSize += apparentBytes(child)
-        restModifiedAt = Math.max(restModifiedAt, child.modifiedAt ?? 0)
-      }
-    }
-    if (restSize > 0) {
-      top.push({
-        name: `Other (${rest.length} items)`,
-        path: joinPath(dirPath, "__other__"),
-        size: restSize,
-        ...(restLogicalSize === restSize ? {} : { logicalSize: restLogicalSize }),
-        modifiedAt: restModifiedAt || undefined,
-        isDir: true,
-        children: rest.slice(0, 12),
-        ext: "",
-        isOther: true,
-      })
-    }
-    node.children = top
+  preservedOverflow.sort(sortBySizeDesc)
+  node.children = preservedOverflow.length ? [...top, ...preservedOverflow] : top
+  if (restSize > 0) {
+    node.children.push({
+      name: `Other (${restCount} items)`,
+      path: joinPath(dirPath, "__other__"),
+      size: restSize,
+      ...(restLogicalSize === restSize ? {} : { logicalSize: restLogicalSize }),
+      modifiedAt: restModifiedAt || undefined,
+      isDir: true,
+      children: restSample,
+      ext: "",
+      isOther: true,
+    })
   }
 
   node.size = totalSize
@@ -1223,7 +1236,7 @@ export async function scanPathSync(targetPath: string, options: ScanOptions = {}
   const name = basename(targetPath) || targetPath
   const artifactInventoryOptions = normalizeDeveloperArtifactInventoryOptions(developerArtifactInventory)
   const st: WalkState = {
-    pool: new Pool(normalizeScanConcurrency(concurrency)),
+    pool: new Pool(normalizeScanConcurrency(concurrency), signal),
     maxDepth,
     maxChildren,
     preserveNames: new Set(preserveNames.map((name) => name.toLowerCase())),

@@ -6,6 +6,7 @@ import {
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { createSignal } from "solid-js"
 import pkg from "../../package.json"
+import { createWindowFullscreen } from "./window-fullscreen"
 
 export function desktopOS(): DiskLizardPlatform["os"] {
   const ua = navigator.userAgent
@@ -16,34 +17,23 @@ export function desktopOS(): DiskLizardPlatform["os"] {
 }
 
 export function createDesktopStorage() {
-  const cache = new Map<string, AsyncStorage>()
-
-  const createStorage = (name: string) => {
-    const api: AsyncStorage = {
-      getItem: (key: string) => window.api.storeGet(name, key),
-      setItem: (key: string, value: string) => window.api.storeSet(name, key, value),
-      removeItem: (key: string) => window.api.storeDelete(name, key),
-      clear: () => window.api.storeClear(name),
-      key: async (index: number) => (await window.api.storeKeys(name))[index],
-      getLength: () => window.api.storeLength(name),
-      get length() {
-        return api.getLength()
-      },
-    }
-    return api
+  const api: AsyncStorage = {
+    getItem: (key: string) => window.api.storeGet("disklizard", key),
+    setItem: (key: string, value: string) => window.api.storeSet("disklizard", key, value),
+    removeItem: (key: string) => window.api.storeDelete("disklizard", key),
+    clear: () => window.api.storeClear("disklizard"),
+    key: async (index: number) => (await window.api.storeKeys("disklizard"))[index],
+    getLength: () => window.api.storeLength("disklizard"),
+    get length() {
+      return api.getLength()
+    },
   }
-
-  return (name = "disklizard.dat") => {
-    const cached = cache.get(name)
-    if (cached) return cached
-    const api = createStorage(name)
-    cache.set(name, api)
-    return api
-  }
+  return () => api
 }
 
 export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterState): DiskLizardPlatform {
   const os = desktopOS()
+  const fullscreen = createWindowFullscreen(window.api)
   return {
     platform: "desktop",
     os,
@@ -57,6 +47,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
       scanPath: (path, options, scanId) => window.api.disklizard.scanPath(path, options, scanId),
       cancelScan: (scanId) => window.api.disklizard.cancelScan(scanId),
       stopWatching: (scanId) => window.api.disklizard.stopWatching(scanId),
+      authorizeDeletePaths: (paths) => window.api.disklizard.authorizeDeletePaths(paths),
       deletePath: (path, options) => window.api.disklizard.deletePath(path, options),
       previewPath: (path) => window.api.disklizard.previewPath(path),
       systemPreviewPath: (path) => window.api.disklizard.systemPreviewPath(path),
@@ -66,7 +57,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
       onScanProgress: (cb) => window.api.disklizard.onScanProgress(cb),
       onScanUpdate: (cb) => window.api.disklizard.onScanUpdate(cb),
     },
-    openPath: (path, app) => window.api.openPath(path, app),
+    openPath: (path) => window.api.openPath(path),
     getPathForFile: (file) => window.api.getPathForFile(file),
     storage: createDesktopStorage(),
     updater: {
@@ -79,6 +70,8 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
     },
     openExternal: (url) => window.api.openExternal(url),
     revealPath: (path) => window.api.revealPath(path),
+    windowFullscreen: fullscreen.value,
+    dispose: fullscreen.dispose,
   }
 }
 

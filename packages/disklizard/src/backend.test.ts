@@ -3,7 +3,8 @@ import { chmod, mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { nativeScannerAvailable } from "./native"
-import { scanPathWithBackend } from "./backend"
+import { describeScanResult, scanPathWithBackend } from "./backend"
+import type { DiskNode } from "./types"
 import { generateGoldenCorpus } from "./fixtures"
 import { runDiskLizardCli } from "./cli"
 
@@ -19,6 +20,16 @@ afterAll(async () => {
 })
 
 describe("preferred scan backend", () => {
+  test("reports the effective accounting when Windows falls back to Node stats", () => {
+    const root: DiskNode = { name: "root", path: "C:\\", size: 10, isDir: true, children: [], ext: "" }
+    expect(describeScanResult(root, "typescript", { sizeMode: "physical" }, "win32").accounting).toBe("logical")
+    expect(describeScanResult(root, "typescript-worker", { sizeMode: "physical" }, "win32").accounting).toBe(
+      "logical",
+    )
+    expect(describeScanResult(root, "native", { sizeMode: "physical" }, "win32").accounting).toBe("physical")
+    expect(describeScanResult(root, "typescript", { sizeMode: "physical" }, "linux").accounting).toBe("physical")
+  })
+
   test("uses the native sidecar when it is present and reports accounting evidence", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-backend-"))
     roots.push(root)

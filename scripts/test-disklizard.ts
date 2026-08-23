@@ -25,7 +25,7 @@ function testFiles(dir: string, skip: (relativePath: string) => boolean) {
 }
 
 const desktopTests = testFiles(resolve(root, "packages/desktop"), (rel) => {
-  return rel.split("/").includes("wsl") || rel.includes("draft-store") || rel.includes("onboarding")
+  return rel.includes("onboarding")
 })
 
 const steps = [

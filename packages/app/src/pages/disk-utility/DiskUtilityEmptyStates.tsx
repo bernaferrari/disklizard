@@ -6,28 +6,34 @@ import { formatBytes, formatPct } from "./format"
 
 export function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {
   return (
-    <div class="flex min-h-[520px] flex-1 flex-col items-center justify-center text-center">
+    <div class="px-5 py-6">
       <Show
         when={!props.loading}
         fallback={
-          <>
-            <span class="dl-spin size-8 rounded-full border-2 border-border-weaker-base border-t-[oklch(0.67_0.13_176)]" />
-            <p class="mt-5 text-13-medium text-text-strong">Finding your volumes</p>
-            <p class="mt-1 text-13-regular text-text-weak">This should only take a moment.</p>
-          </>
+          <div class="dl-volume-row flex items-center gap-4">
+            <span class="dl-volume-glyph size-9 animate-pulse" />
+            <span class="min-w-0 flex-1">
+              <span class="block h-3.5 w-36 rounded-sm bg-surface-raised-base" />
+              <span class="mt-2 block h-3 w-52 rounded-sm bg-surface-raised-base/70" />
+            </span>
+            <span class="hidden h-1.5 w-[148px] rounded-full bg-surface-raised-base sm:block" />
+            <span class="text-13-regular text-text-weaker">Reading volumes</span>
+          </div>
         }
       >
-        <span class="dl-mark dl-accent-text grid size-12 place-items-center rounded-full">
-          <span class="size-3 rounded-full bg-current" />
-        </span>
-        <h2 class="mt-5 text-20-medium tracking-[-0.025em] text-text-strong">
-          {props.error ? "Volumes could not be read" : "Choose where to begin"}
-        </h2>
-        <p class="mt-2 max-w-sm text-12-regular leading-relaxed text-text-weak">
-          {props.error ?? "Pick any folder and DiskLizard will map it without changing a thing."}
+        <h2 class="text-14-medium text-text-strong">{props.error ? "Volumes could not be read" : "No volumes yet"}</h2>
+        <p class="mt-1 max-w-[48ch] text-13-regular leading-relaxed text-text-weak">
+          {props.error ?? "Pick a folder and DiskLizard will map it without changing a thing."}
         </p>
-        <Button data-disk-primary-action class="dl-touch-target mt-5" variant="primary" size="small" icon="folder-add-left" onClick={props.onChoose}>
-          Scan a folder
+        <Button
+          data-disk-primary-action
+          class="dl-touch-target mt-4"
+          variant="secondary"
+          size="small"
+          icon="folder-add-left"
+          onClick={props.onChoose}
+        >
+          Scan Folder…
         </Button>
       </Show>
     </div>

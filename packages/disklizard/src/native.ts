@@ -850,14 +850,53 @@ export async function hydrateDeveloperArtifactDirectoryIdentities(
   return reconcileDeveloperArtifactIdentityStatus(root)
 }
 
-function isScanProgress(value: unknown): value is ScanProgress {
-  return (
-    isRecord(value) &&
-    typeof value.filesScanned === "number" &&
-    typeof value.dirsScanned === "number" &&
-    typeof value.currentPath === "string" &&
-    typeof value.size === "number"
-  )
+function normalizeNativeScanProgress(value: unknown, expectedRootPath?: string): ScanProgress | undefined {
+  if (
+    !isRecord(value) ||
+    !isNonNegativeSafeInteger(value.filesScanned) ||
+    !isNonNegativeSafeInteger(value.dirsScanned) ||
+    typeof value.currentPath !== "string" ||
+    !isNonNegativeNumber(value.size) ||
+    (value.done !== undefined && typeof value.done !== "boolean")
+  ) {
+    return undefined
+  }
+
+  const scope = expectedRootPath === undefined ? undefined : nativePathScope(expectedRootPath)
+  const currentPath = scope ? normalizeScopedNativePath(value.currentPath, scope) : value.currentPath
+  if (currentPath === undefined) return undefined
+
+  let discovery: ScanProgress["discovery"]
+  if (value.discovery !== undefined) {
+    if (
+      !isRecord(value.discovery) ||
+      !isSafeCompactDisplayName(value.discovery.name) ||
+      typeof value.discovery.path !== "string" ||
+      !isNonNegativeNumber(value.discovery.size) ||
+      (value.discovery.modifiedAt !== undefined && !isNonNegativeNumber(value.discovery.modifiedAt)) ||
+      typeof value.discovery.isDir !== "boolean"
+    ) {
+      return undefined
+    }
+    const discoveryPath = scope ? normalizeScopedNativePath(value.discovery.path, scope) : value.discovery.path
+    if (discoveryPath === undefined) return undefined
+    discovery = {
+      name: value.discovery.name,
+      path: discoveryPath,
+      size: value.discovery.size,
+      ...(value.discovery.modifiedAt === undefined ? {} : { modifiedAt: value.discovery.modifiedAt }),
+      isDir: value.discovery.isDir,
+    }
+  }
+
+  return {
+    filesScanned: value.filesScanned,
+    dirsScanned: value.dirsScanned,
+    currentPath,
+    size: value.size,
+    ...(discovery === undefined ? {} : { discovery }),
+    ...(value.done === undefined ? {} : { done: value.done }),
+  }
 }
 
 function matchesExpectedNativeRoot(scope: NativePathScope, expectedRootPath: string | undefined): boolean {
@@ -904,8 +943,9 @@ export function parseNativeMessage(line: string, validation: NativeDoneValidatio
       return undefined
     }
   }
-  if (value.type === "progress" && isScanProgress(value.progress)) {
-    return { type: "progress", progress: value.progress }
+  if (value.type === "progress") {
+    const progress = normalizeNativeScanProgress(value.progress, validation.expectedRootPath)
+    if (progress) return { type: "progress", progress }
   }
   return undefined
 }

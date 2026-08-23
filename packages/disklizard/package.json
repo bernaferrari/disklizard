@@ -22,6 +22,7 @@
   "scripts": {
     "start": "bun ./bin/disklizard.ts",
     "tui": "bun ./bin/disklizard.ts",
+    "benchmark:scanner": "bun ./scripts/benchmark-scanner.ts",
     "native:build": "bun ./scripts/build-native.ts",
     "native:test": "cargo test --manifest-path ./native-scanner/Cargo.toml",
     "typecheck": "tsgo --noEmit"

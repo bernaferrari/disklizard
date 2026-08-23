@@ -17,6 +17,7 @@ import { createWindowRegistry } from "./window-registry"
 import { safeWindowURL } from "./window-state"
 import { resolveExternalURL, resolveLocalFilePath } from "./external-url"
 import { APP_PROTOCOL } from "./product-identity"
+import { RENDERER_CONTENT_SECURITY_POLICY } from "./renderer-security-policy"
 
 const root = dirname(fileURLToPath(import.meta.url))
 const rendererRoot = join(root, "../renderer")
@@ -31,6 +32,7 @@ const oc2Background = {
   dark: resolveThemeVariant(oc2Theme.dark, true)["background-base"],
 }
 const documentPolicyHeader = "Document-Policy"
+const contentSecurityPolicyHeader = "Content-Security-Policy"
 const jsCallStacksDocumentPolicy = "include-js-call-stacks-in-crash-reports"
 
 protocol.registerSchemesAsPrivileged([
@@ -187,7 +189,7 @@ export function createMainWindow(id: string = randomUUID()) {
     ...(process.platform === "darwin"
       ? {
           titleBarStyle: "hidden" as const,
-          trafficLightPosition: { x: 14, y: 14 },
+          trafficLightPosition: { x: 16, y: 22 },
         }
       : {}),
     ...(process.platform === "win32"
@@ -208,12 +210,6 @@ export function createMainWindow(id: string = randomUUID()) {
   allowRendererPermissions(win)
   wireWindowRecovery(win, id)
   wireNavigationPolicy(win)
-
-  win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-    const { requestHeaders } = details
-    upsertKeyValue(requestHeaders, "Access-Control-Allow-Origin", ["*"])
-    callback({ requestHeaders })
-  })
 
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     const { responseHeaders = {} } = details
@@ -476,6 +472,7 @@ function addDocumentPolicy(response: Response, file: string) {
   if (!file.toLowerCase().endsWith(".html")) return response
   const headers = new Headers(response.headers)
   headers.set(documentPolicyHeader, jsCallStacksDocumentPolicy)
+  headers.set(contentSecurityPolicyHeader, RENDERER_CONTENT_SECURITY_POLICY)
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
 }
 
@@ -501,9 +498,9 @@ function isTrustedRendererUrl(value?: string) {
 }
 
 function addRendererHeaders(value: string, headers: Record<string, any>) {
-  upsertKeyValue(headers, "Access-Control-Allow-Origin", ["*"])
-  upsertKeyValue(headers, "Access-Control-Allow-Headers", ["*"])
-  if (isRendererUrl(value, true)) upsertKeyValue(headers, documentPolicyHeader, [jsCallStacksDocumentPolicy])
+  if (!isRendererUrl(value, true)) return
+  upsertKeyValue(headers, documentPolicyHeader, [jsCallStacksDocumentPolicy])
+  upsertKeyValue(headers, contentSecurityPolicyHeader, [RENDERER_CONTENT_SECURITY_POLICY])
 }
 
 function isRendererUrl(value?: string, html = false) {

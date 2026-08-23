@@ -81,7 +81,7 @@ export async function runDiskLizardCli(args: string[], write = console.log): Pro
   })
 
   if (options.format === "json") return write(JSON.stringify(formatDiskLizardJson(result), null, 2))
-  write(formatDiskLizardSummary(result.root, options.sizeMode, result))
+  write(formatDiskLizardSummary(result.root, result.accounting, result))
 }
 
 export function formatDiskLizardJson(result: ScanBackendResult) {
@@ -101,5 +101,4 @@ export function formatDiskLizardSummary(root: DiskNode, sizeMode: "physical" | "
   if (root.scanIssues?.unreadableCount) lines.push(`  ${root.scanIssues.unreadableCount} unreadable locations (scan is partial)`)
   return lines.join("\n")
 }
-
 

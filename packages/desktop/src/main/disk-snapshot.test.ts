@@ -2,10 +2,15 @@ import { afterEach, describe, expect, test } from "bun:test"
 import { mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, utimes, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
-import { serialize } from "node:v8"
 import type ParcelWatcher from "@parcel/watcher"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
-import { applyDiskDelta, DiskSnapshotManager, deltaRoots, diskSnapshotKey } from "./disk-snapshot"
+import {
+  applyDiskDelta,
+  DiskSnapshotManager,
+  deltaRoots,
+  diskSnapshotKey,
+  type DiskSnapshotUpdate,
+} from "./disk-snapshot"
 
 const temporary: string[] = []
 
@@ -24,6 +29,16 @@ async function eventually(predicate: () => boolean, timeoutMs = 500) {
   while (!predicate()) {
     if (Date.now() >= deadline) throw new Error("Timed out waiting for the disk snapshot update")
     await Bun.sleep(5)
+  }
+}
+
+async function eventLoopTicksDuring<T>(operation: () => Promise<T>) {
+  let ticks = 0
+  const timer = setInterval(() => ticks++, 0)
+  try {
+    return { result: await operation(), ticks }
+  } finally {
+    clearInterval(timer)
   }
 }
 
@@ -162,7 +177,7 @@ describe("disk scan snapshots", () => {
     await second.stopAll()
   })
 
-  test("restores a materialized tree above the legacy native 100k protocol cap", async () => {
+  test("keeps the event loop responsive while persisting and restoring a tree above 100k nodes", async () => {
     const root = await temp()
     const cacheDir = await temp()
     const watcher = fakeWatcher()
@@ -189,13 +204,16 @@ describe("disk scan snapshots", () => {
     }
 
     const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
-    expect((await first.scan(1, root, {}, () => {})).source).toBe("scan")
+    const persisted = await eventLoopTicksDuring(() => first.scan(1, root, {}, () => {}))
+    expect(persisted.result.source).toBe("scan")
+    expect(persisted.ticks).toBeGreaterThan(5)
     await first.stopAll()
 
     const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
-    const restored = await second.scan(2, root, {}, () => {})
-    expect(restored.source).toBe("snapshot")
-    expect(restored.root.children).toHaveLength(children.length)
+    const restored = await eventLoopTicksDuring(() => second.scan(2, root, {}, () => {}))
+    expect(restored.result.source).toBe("snapshot")
+    expect(restored.result.root.children).toHaveLength(children.length)
+    expect(restored.ticks).toBeGreaterThan(5)
     expect(scans).toBe(1)
     await second.stopAll()
   })
@@ -225,6 +243,40 @@ describe("disk scan snapshots", () => {
     await second.stopAll()
   })
 
+  test("migrates a legacy v7 blob as a safe cache miss and cleans it after replacement", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    await writeFile(path.join(root, "file.bin"), new Uint8Array(12))
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (target: string) => {
+      scans++
+      return scanFixture(target)
+    }
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+
+    const snapshotDir = path.join(cacheDir, diskSnapshotKey(root, {}))
+    const metadataPath = path.join(snapshotDir, "metadata.json")
+    const metadata = JSON.parse(await readFile(metadataPath, "utf8")) as Record<string, unknown>
+    const legacyTree = path.join(snapshotDir, `tree-${Date.now()}-00000000-0000-4000-8000-000000000000.bin`)
+    await writeFile(legacyTree, new Uint8Array([0xff]))
+    await writeFile(
+      metadataPath,
+      JSON.stringify({ ...metadata, schema: 7, tree: path.basename(legacyTree) }),
+    )
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await second.scan(2, root, {}, () => {})).source).toBe("scan")
+    expect(scans).toBe(2)
+    await expect(stat(legacyTree)).rejects.toThrow()
+    const replacement = JSON.parse(await readFile(metadataPath, "utf8")) as { schema: number; tree: string }
+    expect(replacement.schema).toBe(8)
+    expect(replacement.tree.endsWith(".ndjson")).toBe(true)
+    await second.stopAll()
+  })
+
   test("treats an out-of-scope or root-only persisted child field as a cache miss", async () => {
     const root = await temp()
     const outside = await temp()
@@ -242,15 +294,23 @@ describe("disk scan snapshots", () => {
 
     const snapshotDir = path.join(cacheDir, diskSnapshotKey(root, {}))
     const metadata = JSON.parse(await readFile(path.join(snapshotDir, "metadata.json"), "utf8")) as { tree: string }
-    const poisoned = await scanFixture(root)
-    const child = poisoned.children[0]!
-    await writeFile(
-      path.join(snapshotDir, metadata.tree),
-      serialize({
-        ...poisoned,
-        children: [{ ...child, path: path.join(outside, "file.bin"), sharedStorageEvidence: "complete" }],
-      }),
+    const treePath = path.join(snapshotDir, metadata.tree)
+    const records = (await readFile(treePath, "utf8"))
+      .trimEnd()
+      .split("\n")
+      .map((line) => JSON.parse(line) as Record<string, unknown>)
+    const childRecord = records.find(
+      (record) =>
+        record.type === "node" &&
+        typeof record.node === "object" &&
+        record.node !== null &&
+        (record.node as Record<string, unknown>).path === path.join(root, "file.bin"),
     )
+    expect(childRecord).toBeDefined()
+    const child = childRecord!.node as Record<string, unknown>
+    child.path = path.join(outside, "file.bin")
+    child.sharedStorageEvidence = "complete"
+    await writeFile(treePath, `${records.map((record) => JSON.stringify(record)).join("\n")}\n`)
 
     const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
     expect((await second.scan(2, root, {}, () => {})).source).toBe("scan")
@@ -473,6 +533,49 @@ describe("disk scan snapshots", () => {
     watcher.emit([{ path: file, type: "update" }])
     await eventually(() => updates.at(-1)?.size === 18)
     expect(updates.at(-1)?.size).toBe(18)
+    await manager.stopAll()
+  })
+
+  test("retains failed watcher events and recovers with a full root scan", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "file.bin")
+    await writeFile(file, new Uint8Array(4))
+    const watcher = fakeWatcher()
+    let initialScanComplete = false
+    let failedRefreshScans = 0
+    let recoveryRootScans = 0
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      scan: async (target) => {
+        if (!initialScanComplete) {
+          const tree = await scanFixture(target)
+          initialScanComplete = true
+          return tree
+        }
+        // applyDiskDelta escalates one failed local scan to its own root scan.
+        // Fail both calls across three refresh attempts so the manager-level
+        // recovery path must retain the event and perform a fresh root scan.
+        if (failedRefreshScans < 6) {
+          failedRefreshScans++
+          throw new Error("transient refresh failure")
+        }
+        if (target === root) recoveryRootScans++
+        return scanFixture(target)
+      },
+      watcher: watcher.api,
+      platform: "darwin",
+      debounceMs: 1,
+    })
+    const updates: DiskSnapshotUpdate[] = []
+    await manager.scan("recovery", root, {}, (update) => updates.push(update))
+    await writeFile(file, new Uint8Array(18))
+    watcher.emit([{ path: file, type: "update" }])
+    await eventually(() => updates.at(-1)?.root.size === 18)
+    expect(failedRefreshScans).toBe(6)
+    expect(recoveryRootScans).toBe(1)
+    expect(updates.at(-1)?.changedPaths).toEqual([root])
+    expect(updates.at(-1)?.watchError).toBeUndefined()
     await manager.stopAll()
   })
 

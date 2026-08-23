@@ -7,7 +7,7 @@ import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigati
 const INDEX_ROW_ESTIMATE = 58
 const DEFAULT_LIST_PAGE_SIZE = 10
 
-type IndexEntry = { node: DiskScanNode; index: number; displaySize: number }
+type IndexEntry = { node: DiskScanNode; colorIndex: number; displaySize: number }
 
 export function VirtualIndex(props: {
   entries: IndexEntry[]
@@ -30,7 +30,10 @@ export function VirtualIndex(props: {
   })
   const scrollToIndex = (index: number) => virtualizer.scrollToIndex(index, { align: "auto" })
   const pageSize = () =>
-    Math.max(1, Math.floor((viewport()?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / INDEX_ROW_ESTIMATE))
+    Math.max(
+      1,
+      Math.floor((viewport()?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / INDEX_ROW_ESTIMATE),
+    )
   props.bindScrollToIndex(scrollToIndex)
   props.bindPageSize(pageSize)
   onCleanup(() => {
@@ -150,13 +153,7 @@ export function VirtualRows<T>(props: {
     })
   }
   const onReviewNavigation = (event: KeyboardEvent) => {
-    if (
-      event.defaultPrevented ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.altKey ||
-      !isReviewNavigationKey(event.key)
-    ) {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || !isReviewNavigationKey(event.key)) {
       return
     }
     const target = reviewNavigationTarget({
