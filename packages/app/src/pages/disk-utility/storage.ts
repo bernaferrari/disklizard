@@ -1,6 +1,6 @@
-import type { DiskDriveInfo, DiskScanNode } from "./types"
-import type { DiskPinnedLocation } from "./types"
+import type { DiskCleanupLock, DiskDriveInfo, DiskPinnedLocation, DiskScanNode } from "./types"
 import { canDeletePath } from "@disklizard/core/safety"
+import { isPathCleanupLocked } from "./cleanup-lock"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 
 function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
@@ -190,16 +190,24 @@ export function removeScanSubtrees(
   return visit(root)
 }
 
-export function canActOnNode(node: DiskScanNode, os?: "macos" | "windows" | "linux") {
+export function canActOnNode(
+  node: DiskScanNode,
+  os?: "macos" | "windows" | "linux",
+  locks: readonly DiskCleanupLock[] = [],
+) {
   const platform = os === "macos" ? "darwin" : os === "windows" ? "win32" : "linux"
-  return !node.isOther && !node.isHidden && canDeletePath(node.path, platform)
+  return !node.isOther && !node.isHidden && !isPathCleanupLocked(node.path, locks, os) && canDeletePath(node.path, platform)
 }
 
 /** Keep the cleanup promise aligned with the path policy enforced by Electron. */
-export function actionableReclaimSummary(summary: ReclaimSummary, os?: "macos" | "windows" | "linux"): ReclaimSummary {
+export function actionableReclaimSummary(
+  summary: ReclaimSummary,
+  os?: "macos" | "windows" | "linux",
+  locks: readonly DiskCleanupLock[] = [],
+): ReclaimSummary {
   const buckets = summary.buckets
     .flatMap((bucket) => {
-      const items = bucket.items.filter(({ node }) => canActOnNode(node, os) && !containsSharedPhysicalStorage(node))
+      const items = bucket.items.filter(({ node }) => canActOnNode(node, os, locks) && !containsSharedPhysicalStorage(node))
       if (!items.length) return []
       return [{ ...bucket, items, count: items.length, bytes: items.reduce((sum, item) => sum + item.node.size, 0) }]
     })
@@ -267,11 +275,12 @@ export async function runDeletionBatch(
   nodes: readonly DiskScanNode[],
   remove: (node: DiskScanNode) => Promise<unknown>,
   os?: "macos" | "windows" | "linux",
+  locks: readonly DiskCleanupLock[] = [],
 ) {
   const removed: DiskScanNode[] = []
   const failed: Array<{ node: DiskScanNode; error: unknown }> = []
   for (const node of uniqueDeletionRoots(nodes, os)) {
-    if (!canActOnNode(node, os)) continue
+    if (!canActOnNode(node, os, locks)) continue
     try {
       await remove(node)
       removed.push(node)

@@ -81,7 +81,7 @@ The first pass is read-only with respect to the scanned volume. Cleanup is alway
 3. Confirm the operation.
 4. DiskLizard asks the operating system to move the item to Trash or Recycle Bin.
 
-DiskLizard blocks direct removal of filesystem roots, mounted-volume roots, whole home/profile directories, operating-system locations, Trash internals, version-control metadata, worktrees, and coding-agent state. Symlink targets are resolved and checked again before an operation is allowed.
+DiskLizard blocks direct removal of filesystem roots, mounted-volume roots, whole home/profile directories, operating-system locations, Trash internals, version-control metadata, worktrees, and coding-agent state. You can also protect any project tree yourself: it stays on the map, but it cannot enter review or Trash. Symlink targets are resolved and checked again before an operation is allowed.
 
 Smart cleanup follows that same review-to-Trash or Recycle Bin path; it never automatically removes a directory merely because its name resembles a cache or build folder. A listed size is a scan measurement, not a guarantee of storage reclaimed after removal, especially where the filesystem shares storage between paths.
 

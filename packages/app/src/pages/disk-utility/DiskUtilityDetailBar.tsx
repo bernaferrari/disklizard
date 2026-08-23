@@ -14,6 +14,8 @@ export function DetailBar(props: {
   parentSize: number
   deletable: boolean
   collected: boolean
+  locked?: boolean
+  lockLabel?: string
   trashName: string
   onPreview?: () => void
   onQuickLook?: () => void
@@ -21,6 +23,7 @@ export function DetailBar(props: {
   onOpen?: () => void
   onCollect: () => void
   onTrash: () => void
+  onToggleLock?: () => void
 }) {
   const rec = () => recognize(props.node)
   const developerContext = () => (rec().developer ? developerArtifactContext(props.node, rec()) : undefined)
@@ -86,6 +89,23 @@ export function DetailBar(props: {
             Reveal
           </Button>
         </Show>
+        <Show when={props.onToggleLock}>
+          <Button
+            class="dl-touch-target"
+            size="small"
+            variant={props.locked ? "secondary" : "ghost"}
+            icon="shield"
+            aria-pressed={props.locked}
+            onClick={props.onToggleLock}
+          >
+            {props.locked ? "Protected" : "Protect"}
+          </Button>
+        </Show>
+        <Show when={props.locked && props.lockLabel}>
+          <span class="hidden max-w-[28ch] truncate text-12-regular text-text-weak lg:inline">
+            Under {props.lockLabel}
+          </span>
+        </Show>
         <Show when={props.deletable}>
           <Button class="dl-touch-target" size="small" variant="ghost" icon="trash" onClick={props.onTrash}>
             {props.trashName}
@@ -146,6 +166,12 @@ export function DetailBar(props: {
                 </Show>
                 <DropdownMenu.Item onSelect={props.onReveal}>
                   <DropdownMenu.ItemLabel>Reveal in file manager</DropdownMenu.ItemLabel>
+                </DropdownMenu.Item>
+              </Show>
+              <Show when={props.onToggleLock}>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item onSelect={props.onToggleLock}>
+                  <DropdownMenu.ItemLabel>{props.locked ? "Allow cleanup" : "Protect from cleanup"}</DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
               <Show when={props.deletable}>

@@ -2,8 +2,10 @@ import { createSimpleContext } from "@opencode-ai/ui/context"
 import type { AsyncStorage, SyncStorage } from "@solid-primitives/storage"
 import { createEffect, createMemo, createSignal, type Accessor, type ParentProps } from "solid-js"
 import {
+  diskCleanupLocksDefault,
   diskPinnedLocationsDefault,
   type DiskAccessGuidanceKey,
+  type DiskCleanupLock,
   type DiskPinnedLocation,
   type DiskUtilityAPI,
 } from "./types"
@@ -73,14 +75,17 @@ export function diskLanguageText(key: string) {
 
 const PINNED_STORAGE_NAME = "disklizard.dat"
 const PINNED_STORAGE_KEY = "pinned-locations"
+const CLEANUP_LOCK_STORAGE_KEY = "cleanup-locks"
 
-function parsePinnedLocations(raw: string | null | undefined): DiskPinnedLocation[] | undefined {
+function parsePathList<T extends { path: string; label: string }>(
+  raw: string | null | undefined,
+): T[] | undefined {
   if (!raw) return
   try {
     const value = JSON.parse(raw) as unknown
     if (!Array.isArray(value)) return
     const locations = value.filter(
-      (item): item is DiskPinnedLocation =>
+      (item): item is T =>
         !!item && typeof item === "object" && typeof item.path === "string" && typeof item.label === "string",
     )
     return locations
@@ -103,25 +108,36 @@ export function useLanguage() {
 export function useSettings() {
   const platform = usePlatform()
   const [locations, setLocations] = createSignal<DiskPinnedLocation[]>(diskPinnedLocationsDefault)
+  const [locks, setLocks] = createSignal<DiskCleanupLock[]>(diskCleanupLocksDefault)
   const storage = platform.storage?.(PINNED_STORAGE_NAME)
 
   createEffect(() => {
     if (!storage) return
     void Promise.resolve(storage.getItem(PINNED_STORAGE_KEY)).then((raw) => {
-      const parsed = parsePinnedLocations(raw)
+      const parsed = parsePathList<DiskPinnedLocation>(raw)
       if (parsed) setLocations(parsed)
+    })
+    void Promise.resolve(storage.getItem(CLEANUP_LOCK_STORAGE_KEY)).then((raw) => {
+      const parsed = parsePathList<DiskCleanupLock>(raw)
+      if (parsed) setLocks(parsed)
     })
   })
 
-  const persist = (next: DiskPinnedLocation[]) => {
+  const persistPins = (next: DiskPinnedLocation[]) => {
     setLocations(next)
     void storage?.setItem(PINNED_STORAGE_KEY, JSON.stringify(next))
+  }
+  const persistLocks = (next: DiskCleanupLock[]) => {
+    setLocks(next)
+    void storage?.setItem(CLEANUP_LOCK_STORAGE_KEY, JSON.stringify(next))
   }
 
   return {
     general: {
       diskPinnedLocations: createMemo(() => locations()),
-      setDiskPinnedLocations: persist,
+      setDiskPinnedLocations: persistPins,
+      diskCleanupLocks: createMemo(() => locks()),
+      setDiskCleanupLocks: persistLocks,
     },
   }
 }

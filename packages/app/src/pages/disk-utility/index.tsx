@@ -84,6 +84,14 @@ import { refreshScanTabsForWatcherUpdate, visibleScanTabCount } from "./scan-tab
 import { DISK_UTILITY_STYLES } from "./styles"
 import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "./choose-folder"
 import {
+  cleanupLockForPath,
+  cleanupLockMessage,
+  isCleanupLock,
+  isPathCleanupLocked,
+  toggleCleanupLock,
+  withoutCleanupLockedNodes,
+} from "./cleanup-lock"
+import {
   actionableReclaimSummary,
   asBrowseableRoot,
   canActOnNode,
@@ -386,7 +394,9 @@ export default function DiskUtilityPage() {
     return "This map does not include verified clone metadata. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
   })
   const reclaim = createMemo<ReclaimSummary>(() =>
-    physicalCloneAccountingUncertain() ? EMPTY_RECLAIM : actionableReclaimSummary(computeReclaim(treeRoot()), platform.os),
+    physicalCloneAccountingUncertain()
+      ? EMPTY_RECLAIM
+      : actionableReclaimSummary(computeReclaim(treeRoot()), platform.os, cleanupLocks()),
   )
   const developer = createMemo<DeveloperSummary>(() => computeDeveloperSummaryWithInventory(treeRoot()))
   const developerAge = createMemo(() => resolveDeveloperCleanupAge(indexFilter.developerAge, indexFilter.customDeveloperAgeDays))
@@ -492,9 +502,14 @@ export default function DiskUtilityPage() {
     Math.max(0, (indexFilter.lens === "developer" ? entries().length : 0) - smartCleanupEligibleEntries().length),
   )
   const pinnedLocations = settings.general.diskPinnedLocations
+  const cleanupLocks = settings.general.diskCleanupLocks
   const currentScanPinned = createMemo(() => {
     const path = scanSourcePath()
     return !!path && isPinnedScanLocation(pinnedLocations(), path, platform.os)
+  })
+  const currentScanLocked = createMemo(() => {
+    const path = scanSourcePath()
+    return !!path && isCleanupLock(path, cleanupLocks(), platform.os)
   })
   const collectionSize = createMemo(() => effectiveCollection().reduce((s, n) => s + n.size, 0))
   const collectionHasSharedPhysicalStorage = createMemo(() => effectiveCollection().some(containsSharedPhysicalStorage))
@@ -1363,6 +1378,28 @@ export default function DiskUtilityPage() {
     })
   }
 
+  function toggleProtectedTree(path: string, label: string) {
+    const wasLocked = isCleanupLock(path, cleanupLocks(), platform.os)
+    const next = toggleCleanupLock(cleanupLocks(), { path, label }, platform.os)
+    if (!wasLocked && !isCleanupLock(path, next, platform.os)) {
+      showToast({
+        variant: "default",
+        title: "Protected trees are full",
+        description: "Unlock a tree before protecting another.",
+      })
+      return
+    }
+    settings.general.setDiskCleanupLocks(next)
+    setCollection((items) => withoutCleanupLockedNodes(items, next, platform.os))
+    showToast({
+      variant: "default",
+      title: wasLocked ? "Cleanup unlocked" : "Protected from cleanup",
+      description: wasLocked
+        ? `${label} can be reviewed again.`
+        : `${label} stays on the map, but it will not go to review or Trash.`,
+    })
+  }
+
   function goUp(instant = false, restoreListFocus = false) {
     if (scanning()) {
       cancelScan()
@@ -1613,6 +1650,12 @@ export default function DiskUtilityPage() {
       if (!canModifyNode(node)) return
       event.preventDefault()
       toggleCollect(node)
+      return
+    }
+    if (isPlainShortcut && event.key.toLowerCase() === "l") {
+      if (node.isOther || node.isHidden) return
+      event.preventDefault()
+      toggleProtectedTree(node.path, node.name)
       return
     }
     if (event.key.toLowerCase() === "r" && (event.metaKey || event.ctrlKey) && !event.altKey) {
@@ -1896,11 +1939,13 @@ export default function DiskUtilityPage() {
       return
     }
     if (!canModifyNode(node)) {
+      const lock = cleanupLockForPath(node.path, cleanupLocks(), platform.os)
       showToast({
         variant: "default",
-        title: "Protected item",
-        description:
-          "DiskLizard protects system paths, configuration-bearing developer data, worktrees, and version history from direct removal.",
+        title: lock ? "Protected from cleanup" : "Protected item",
+        description: lock
+          ? cleanupLockMessage(lock)
+          : "DiskLizard protects system paths, configuration-bearing developer data, worktrees, and version history from direct removal.",
       })
       return
     }
@@ -1940,7 +1985,7 @@ export default function DiskUtilityPage() {
   }
 
   function canModifyNode(node: DiskScanNode) {
-    if (!canActOnNode(node, platform.os)) return false
+    if (!canActOnNode(node, platform.os, cleanupLocks())) return false
     if (inventoryDeletionNeedsRescan(node)) return false
     const recognition = recognize(node)
     // Ambiguous build/target/dist records may be individually moved through
@@ -2108,6 +2153,7 @@ export default function DiskUtilityPage() {
           }
         },
         platform.os,
+        cleanupLocks(),
       )
       const deepInventoryNeedsRefresh = removed.length > 0 && requiresDeepInventoryRefresh(removed)
       const knownSharedStorage = removed.some(containsSharedPhysicalStorage)
@@ -2414,6 +2460,17 @@ export default function DiskUtilityPage() {
               <span class="dl-responsive-label">{currentScanPinned() ? "Saved" : "Save location"}</span>
             </Button>
             <Button
+              class="dl-touch-target"
+              variant={currentScanLocked() ? "secondary" : "ghost"}
+              size="small"
+              icon="shield"
+              aria-pressed={currentScanLocked()}
+              aria-label={currentScanLocked() ? "Allow cleanup in this tree" : "Protect this tree from cleanup"}
+              onClick={() => toggleProtectedTree(scanSourcePath(), scanLabel())}
+            >
+              <span class="dl-responsive-label">{currentScanLocked() ? "Protected" : "Protect"}</span>
+            </Button>
+            <Button
               class="dl-touch-target dl-rescan"
               variant="ghost"
               size="small"
@@ -2588,6 +2645,8 @@ export default function DiskUtilityPage() {
                   )
                 }
                 onRemovePinnedLocation={(location) => togglePinnedLocation(location.path, location.label)}
+                cleanupLocks={cleanupLocks()}
+                onUnlockCleanupLock={(location) => toggleProtectedTree(location.path, location.label)}
               />
             </Show>
 
@@ -2711,7 +2770,7 @@ export default function DiskUtilityPage() {
                                 ↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump
                               </p>
                               <p class="mt-1">
-                                ← / Escape goes up · → / Enter opens · Space previews{platform.os === "macos" ? " with Quick Look" : ""} · C selects for review
+                                ← / Escape goes up · → / Enter opens · Space previews{platform.os === "macos" ? " with Quick Look" : ""} · C selects for review · L protects from cleanup
                               </p>
                               <p class="mt-1">
                                 1 Map · 2 Tiles · 3 List · {platform.os === "macos" ? "⌘" : "Ctrl"}-click reveals
@@ -3159,6 +3218,8 @@ export default function DiskUtilityPage() {
                               parentSize={indexSize()}
                               deletable={canModifyNode(node())}
                               collected={isCollected(node().path)}
+                              locked={isPathCleanupLocked(node().path, cleanupLocks(), platform.os)}
+                              lockLabel={cleanupLockForPath(node().path, cleanupLocks(), platform.os)?.label}
                               trashName={nativeTrashName(platform.os)}
                               onPreview={
                                 node().isOther || node().isHidden ? undefined : () => void openPreview(node())
@@ -3172,6 +3233,11 @@ export default function DiskUtilityPage() {
                               onOpen={isDeveloperInventoryNode(node()) ? undefined : () => drill(node())}
                               onCollect={() => toggleCollect(node())}
                               onTrash={() => requestDelete(node())}
+                              onToggleLock={
+                                node().isOther || node().isHidden
+                                  ? undefined
+                                  : () => toggleProtectedTree(node().path, node().name)
+                              }
                             />
                           )}
                         </Show>

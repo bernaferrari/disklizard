@@ -6,7 +6,7 @@ import type {
   DiskStorageDiagnostics as StorageDiagnosticsValue,
   DiskStorageLocation,
 } from "./types"
-import type { DiskPinnedLocation } from "./types"
+import type { DiskCleanupLock, DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
 import { DriveRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"
@@ -32,6 +32,8 @@ export function DriveOverview(props: {
   onOpenAccessSettings: () => void
   onScanPinnedLocation: (location: DiskPinnedLocation) => void
   onRemovePinnedLocation: (location: DiskPinnedLocation) => void
+  cleanupLocks?: readonly DiskCleanupLock[]
+  onUnlockCleanupLock?: (location: DiskCleanupLock) => void
 }) {
   return (
     <ScrollView class="h-full">
@@ -97,6 +99,32 @@ export function DriveOverview(props: {
             onScan={props.onScanStorageLocation}
             onOpenAccessSettings={props.onOpenAccessSettings}
           />
+
+          <Show when={(props.cleanupLocks ?? []).length > 0}>
+            <section class="py-7">
+              <div class="mb-4 flex items-end justify-between gap-4">
+                <div>
+                  <p class="text-12-semibold uppercase tracking-[0.14em] text-text-weaker">Protected from cleanup</p>
+                  <h3 class="mt-1 text-18-medium tracking-[-0.02em] text-text-strong">
+                    These trees stay on the map. They never go to Trash.
+                  </h3>
+                </div>
+                <span class="text-12-regular text-text-weaker">L locks the selected item</span>
+              </div>
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <For each={props.cleanupLocks}>
+                  {(location) => (
+                    <PinnedLocationCard
+                      location={location}
+                      onScan={() => props.onScanPinnedLocation(location)}
+                      onRemove={() => props.onUnlockCleanupLock?.(location)}
+                      removeLabel={`Allow cleanup in ${location.label}`}
+                    />
+                  )}
+                </For>
+              </div>
+            </section>
+          </Show>
 
           <Show when={props.pinnedLocations.length > 0}>
             <section class="py-7">

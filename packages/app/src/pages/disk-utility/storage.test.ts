@@ -269,6 +269,12 @@ describe("includeHiddenSpace", () => {
     expect(canActOnNode({ ...root, path: "/home/alex" }, "linux")).toBe(false)
     expect(canActOnNode({ ...root, path: "C:\\Users\\Alex" }, "windows")).toBe(false)
     expect(canActOnNode({ ...root, path: "/home/alex/Downloads" }, "linux")).toBe(true)
+    expect(
+      canActOnNode({ ...root, path: "/home/alex/xai/node_modules" }, "linux", [{ path: "/home/alex/xai", label: "xai" }]),
+    ).toBe(false)
+    expect(canActOnNode({ ...root, path: "/home/alex/scratch/cache" }, "linux", [{ path: "/home/alex/xai", label: "xai" }])).toBe(
+      true,
+    )
   })
 
   it("does not advertise recognized cleanup inside protected operating-system paths", () => {
@@ -379,5 +385,23 @@ describe("includeHiddenSpace", () => {
     expect(calls).toEqual([first.path, second.path])
     expect(result.removed).toEqual([second])
     expect(result.failed).toEqual([{ node: first, error: new Error("busy") }])
+  })
+
+  it("skips user-locked trees in a deletion batch", async () => {
+    const locked = { ...root, path: "/home/alex/xai/node_modules", size: 40 }
+    const open = { ...root, path: "/home/alex/scratch/cache", size: 12 }
+    const calls: string[] = []
+    const result = await runDeletionBatch(
+      [locked, open],
+      async (node) => {
+        calls.push(node.path)
+      },
+      "linux",
+      [{ path: "/home/alex/xai", label: "xai" }],
+    )
+
+    expect(calls).toEqual([open.path])
+    expect(result.removed).toEqual([open])
+    expect(result.failed).toEqual([])
   })
 })

@@ -165,6 +165,14 @@ export type DiskPinnedLocation = {
 
 export const diskPinnedLocationsDefault: DiskPinnedLocation[] = []
 
+/** User lock: the tree stays visible on the map but cannot enter review or Trash. */
+export type DiskCleanupLock = {
+  path: string
+  label: string
+}
+
+export const diskCleanupLocksDefault: DiskCleanupLock[] = []
+
 export type DiskAccessGuidanceKey =
   | "disk.accessGuidance.macos"
   | "disk.accessGuidance.windows"
