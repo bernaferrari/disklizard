@@ -52,10 +52,13 @@ describe("volume presentation", () => {
       used: 913 * 1024 ** 3,
       type: "local",
       filesystem: "apfs",
+      sharedFree: 20 * 1024 ** 3,
       snapshotCount: 1,
     }
-    expect(volumeSubtitle(drive)).toBe("926 GB startup disk")
-    expect(volumeSubtitle({ ...drive, path: "/Volumes/Backup", type: "removable" })).toBe("926 GB removable disk")
+    expect(volumeSubtitle(drive)).toBe("926 GB startup disk 20.0 GB shared container free")
+    expect(volumeSubtitle({ ...drive, path: "/Volumes/Backup", type: "removable" })).toBe(
+      "926 GB removable disk 20.0 GB shared container free",
+    )
   })
 })
 

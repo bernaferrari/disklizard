@@ -86,7 +86,8 @@ async function writeProtocolStream(session: CDPSession, handle: string, file: st
   try {
     while (true) {
       const chunk = await session.send("IO.read", { handle })
-      await output.write(chunk.base64Encoded ? Buffer.from(chunk.data, "base64") : chunk.data)
+      if (chunk.base64Encoded) await output.write(Buffer.from(chunk.data, "base64"))
+      else await output.write(chunk.data)
       if (chunk.eof) break
     }
   } finally {

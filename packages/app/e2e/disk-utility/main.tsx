@@ -17,7 +17,7 @@ import "../../src/index.css"
 
 const MIB = 1024 * 1024
 
-const scanTree: DiskScanNode = {
+const journeyScanTree: DiskScanNode = {
   name: "Test volume",
   path: "/Users/alex",
   size: 640 * MIB,
@@ -63,11 +63,69 @@ const scanTree: DiskScanNode = {
   ],
 }
 
+function benchmarkScanTree(width: number): DiskScanNode {
+  const modifiedAt = Date.UTC(2026, 7, 23)
+  const directory = (level: number, indexes: readonly number[], parentPath: string): DiskScanNode => {
+    const name = level === 1 ? `Workspace ${String(indexes.at(-1)).padStart(2, "0")}` : `Group ${indexes.join("-")}`
+    const path = `${parentPath}/${name}`
+    const children = Array.from({ length: width }, (_, index) => {
+      const nextIndexes = [...indexes, index]
+      if (level < 2) return directory(level + 1, nextIndexes, path)
+      const size = (1 + (nextIndexes.reduce((sum, value) => sum * 31 + value, 0) % 16)) * MIB
+      return {
+        name: `artifact-${nextIndexes.join("-")}.bin`,
+        path: `${path}/artifact-${nextIndexes.join("-")}.bin`,
+        size,
+        logicalSize: size,
+        modifiedAt,
+        isDir: false,
+        ext: ".bin",
+        children: [],
+      } satisfies DiskScanNode
+    })
+    const size = children.reduce((total, child) => total + child.size, 0)
+    return { name, path, size, logicalSize: size, modifiedAt, isDir: true, ext: "", children }
+  }
+  const children = Array.from({ length: width }, (_, index) => directory(1, [index], "/Users/alex"))
+  const size = children.reduce((total, child) => total + child.size, 0)
+  return {
+    name: "Test volume",
+    path: "/Users/alex",
+    size,
+    logicalSize: size,
+    modifiedAt,
+    cloneMetadata: { state: "available" },
+    sharedStorageEvidence: "complete",
+    isDir: true,
+    ext: "",
+    children,
+  }
+}
+
+function countNodes(root: DiskScanNode) {
+  let count = 0
+  const pending = [root]
+  while (pending.length > 0) {
+    const node = pending.pop()!
+    count += 1
+    for (const child of node.children) pending.push(child)
+  }
+  return count
+}
+
+const fixtureParameters = new URLSearchParams(location.search)
+const requestedWidth = Number(fixtureParameters.get("width") ?? 24)
+const benchmarkWidth = Number.isInteger(requestedWidth) ? Math.min(32, Math.max(4, requestedWidth)) : 24
+const scanTree = fixtureParameters.get("benchmark") === "1" ? benchmarkScanTree(benchmarkWidth) : journeyScanTree
+const scanTreePayloadBytes = new TextEncoder().encode(JSON.stringify(scanTree)).byteLength
+
 type DeletedItem = { path: string; options: DiskDeleteOptions }
 type FixtureState = {
   scans: string[]
   authorizationRequests: string[][]
   deleted: DeletedItem[]
+  treeNodes: number
+  payloadBytes: number
   emitUpdate(update: DiskScanUpdate): void
   emitBuildCacheGrowth(): void
 }
@@ -87,6 +145,8 @@ const fixture: FixtureState = {
   scans: [],
   authorizationRequests: [],
   deleted: [],
+  treeNodes: countNodes(scanTree),
+  payloadBytes: scanTreePayloadBytes,
   emitUpdate(update) {
     updateListeners.forEach((listener) => listener(structuredClone(update)))
   },
@@ -112,14 +172,15 @@ window.diskLizardFixture = fixture
 
 const diskUtility: DiskUtilityAPI = {
   async getDrives() {
+    const total = Math.max(1024 * MIB, Math.ceil(scanTree.size * 1.25))
     return [
       {
         path: "/Users/alex",
         name: "Test volume",
         label: "Test volume",
-        total: 1024 * MIB,
+        total,
         used: scanTree.size,
-        free: 384 * MIB,
+        free: total - scanTree.size,
         type: "local",
         filesystem: "apfs",
       },
@@ -129,7 +190,19 @@ const diskUtility: DiskUtilityAPI = {
     return () => undefined
   },
   async getStorageDiagnostics() {
-    return { access: { status: "not-applicable", probes: [] }, locations: [] }
+    return {
+      access: {
+        status: "not-applicable",
+        probes: [],
+        wholeVolume: {
+          capability: "not-applicable",
+          status: "not-applicable",
+          mapCoverage: "not-applicable",
+          evidence: { source: "none" },
+        },
+      },
+      locations: [],
+    }
   },
   async openDiskAccessSettings() {
     return false
@@ -217,7 +290,7 @@ render(
               setItem: (key, value) => storage.set(key, value),
               removeItem: (key) => storage.delete(key),
               clear: () => storage.clear(),
-              key: (index) => [...storage.keys()][index] ?? null,
+              key: (index: number) => [...storage.keys()][index] ?? null,
               get length() {
                 return storage.size
               },

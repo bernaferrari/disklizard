@@ -205,7 +205,9 @@ async function macAccessDiagnostic(homePath: string, readProtectedDirectory: Rea
   return { status: "unavailable", probes, wholeVolume }
 }
 
-function windowsIntegrityLevel(rid: number): Extract<WholeVolumeAccessDiagnostic["evidence"], { source: "windows-token-groups" }>["integrityLevel"] {
+function windowsIntegrityLevel(
+  rid: number,
+): Extract<WholeVolumeAccessDiagnostic["evidence"], { source: "windows-token-groups" }>["integrityLevel"] {
   if (rid >= 28_672) return "protected"
   if (rid >= 16_384) return "system"
   if (rid >= 12_288) return "high"
@@ -214,10 +216,14 @@ function windowsIntegrityLevel(rid: number): Extract<WholeVolumeAccessDiagnostic
 }
 
 function windowsAccessDiagnostic(output: string): DiskAccessDiagnostic["wholeVolume"] {
-  const integrityRids = [...output.matchAll(/\bS-1-16-(\d+)\b/gi)]
-    .map((match) => Number(match[1]))
-    .filter((rid) => Number.isSafeInteger(rid) && rid >= 0)
-  const integrityRid = integrityRids.length ? Math.max(...integrityRids) : undefined
+  const integrityRids = new Set(
+    [...output.matchAll(/\bS-1-16-(\d+)\b/gi)]
+      .map((match) => Number(match[1]))
+      .filter((rid) => Number.isSafeInteger(rid) && rid >= 0),
+  )
+  // A real token has one mandatory integrity label. Multiple or missing labels
+  // are contradictory evidence, so do not choose the most favorable value.
+  const integrityRid = integrityRids.size === 1 ? integrityRids.values().next().value : undefined
   const administratorsGroup = /\bS-1-5-32-544\b/i.test(output) ? ("present" as const) : ("absent" as const)
   const integrityLevel = integrityRid === undefined ? "unknown" : windowsIntegrityLevel(integrityRid)
   const evidence = {

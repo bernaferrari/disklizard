@@ -3,6 +3,7 @@ import { createVirtualizer } from "@tanstack/solid-virtual"
 import { createEffect, createSignal, For, onCleanup, Show, type JSX } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
+import { useLanguage } from "./runtime"
 
 const INDEX_ROW_ESTIMATE = 58
 const DEFAULT_LIST_PAGE_SIZE = 10
@@ -18,6 +19,7 @@ export function VirtualIndex(props: {
   onMoveFocusToBoundary: (boundary: "first" | "last", extendRange?: boolean) => number
   render: (entry: IndexEntry, index: () => number) => JSX.Element
 }) {
+  const language = useLanguage()
   const [viewport, setViewport] = createSignal<HTMLDivElement>()
   const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
     get count() {
@@ -77,7 +79,7 @@ export function VirtualIndex(props: {
         id="disklizard-storage-list"
         class="relative mx-2 my-2"
         style={{ height: `${virtualizer.getTotalSize()}px` }}
-        aria-label="Storage entries"
+        aria-label={language.t("disk.virtual.entries")}
       >
         <For each={virtualizer.getVirtualItems()}>
           {(item) => {

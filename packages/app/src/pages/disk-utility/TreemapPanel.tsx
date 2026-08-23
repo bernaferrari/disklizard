@@ -10,6 +10,7 @@ import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
+import { useLanguage } from "./runtime"
 
 export function Treemap(props: {
   children: DiskScanNode[]
@@ -25,6 +26,7 @@ export function Treemap(props: {
   onCollectDragStart: (event: DragEvent, node: DiskScanNode) => void
   onCollectDragEnd: () => void
 }) {
+  const language = useLanguage()
   const rects = createMemo(() => layoutTreemap(collapseTreemapChildren(props.children), undefined, true))
   const [bounds, setBounds] = createSignal({ width: 0, height: 0 })
   let root!: HTMLDivElement
@@ -43,7 +45,7 @@ export function Treemap(props: {
       ref={root}
       class="relative size-full overflow-hidden rounded-2xl bg-background-base p-0.5 shadow-[0_0_0_1px_rgb(127_127_127/0.1)]"
       role="group"
-      aria-label="Tile view of this folder. Small items remain available in the list."
+      aria-label={language.t("disk.treemap.label")}
     >
       <For each={rects()}>
         {(r) => {
@@ -64,7 +66,7 @@ export function Treemap(props: {
                 <Show when={r.w > 0.14 && r.h > 0.1}>
                   <span class="inline-flex max-w-full self-start truncate text-13-regular tabular-nums">
                     {r.node.path.startsWith("disklizard:mosaic-more:") ? (
-                      "Open full list"
+                      language.t("disk.treemap.openList")
                     ) : (
                       <span class="text-13-semibold">{formatBytes(r.node.size)}</span>
                     )}
@@ -92,12 +94,11 @@ export function Treemap(props: {
                 aria-pressed={props.selectedPath === r.node.path}
                 aria-label={
                   r.node.path.startsWith("disklizard:mosaic-more:")
-                    ? `${r.node.name}, open the full list`
-                    : `${r.node.name}${
-                        r.node.isDir && !r.node.isOther
-                          ? ", select for details. Press Enter to open the folder."
-                          : ", select for details. Press Space to preview."
-                      }`
+                    ? language.t("disk.treemap.moreLabel", { name: r.node.name })
+                    : language.t(
+                        r.node.isDir && !r.node.isOther ? "disk.treemap.folderLabel" : "disk.treemap.fileLabel",
+                        { name: r.node.name },
+                      )
                 }
                 data-disk-tile-path={r.node.path}
                 class="absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white"

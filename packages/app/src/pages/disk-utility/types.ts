@@ -60,6 +60,25 @@ export type DiskAccessDiagnostic = {
     name: "Contacts" | "Mail" | "Safari"
     status: "denied" | "missing" | "readable" | "unavailable"
   }>
+  wholeVolume: {
+    capability: "macos-full-disk-access" | "windows-elevated-token" | "not-applicable"
+    status: "granted" | "limited" | "inconclusive" | "not-applicable"
+    mapCoverage: "not-known-to-be-permission-limited" | "may-be-incomplete" | "unknown" | "not-applicable"
+    evidence:
+      | {
+          source: "protected-directory-probes"
+          probes: Array<{
+            name: "Contacts" | "Mail" | "Safari"
+            status: "denied" | "missing" | "readable" | "unavailable"
+          }>
+        }
+      | {
+          source: "windows-token-groups"
+          integrityLevel: "low" | "medium" | "high" | "system" | "protected" | "unknown"
+          administratorsGroup: "present" | "absent" | "unknown"
+        }
+      | { source: "none" }
+  }
 }
 
 export type DiskStorageDiagnostics = {

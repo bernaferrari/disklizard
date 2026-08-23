@@ -7,6 +7,7 @@ import { StorageAccountingFacts } from "./StorageAccounting"
 import { formatBytes, formatPct } from "./format"
 import { developerArtifactContext, recognize } from "./recognize"
 import { SAFETY_ACCENT } from "./ui-tokens"
+import { useLanguage } from "./runtime"
 
 /** Detail / action bar pinned under the scan results. */
 export function DetailBar(props: {
@@ -25,6 +26,7 @@ export function DetailBar(props: {
   onTrash: () => void
   onToggleLock?: () => void
 }) {
+  const language = useLanguage()
   const rec = () => recognize(props.node)
   const developerContext = () => (rec().developer ? developerArtifactContext(props.node, rec()) : undefined)
   return (
@@ -66,17 +68,17 @@ export function DetailBar(props: {
         <Show when={!props.node.isOther}>
           <Show when={props.onQuickLook}>
             <Button class="dl-touch-target" size="small" variant="ghost" icon="eye" onClick={props.onQuickLook}>
-              Quick Look
+              {language.t("disk.common.quickLook")}
             </Button>
           </Show>
           <Show when={props.onPreview}>
             <Button class="dl-touch-target" size="small" variant="ghost" icon="eye" onClick={props.onPreview}>
-              Preview
+              {language.t("disk.common.preview")}
             </Button>
           </Show>
           <Show when={props.node.isDir && props.onOpen}>
             <Button class="dl-touch-target" size="small" variant="ghost" icon="enter" onClick={props.onOpen}>
-              Open
+              {language.t("disk.common.open")}
             </Button>
           </Show>
           <Button
@@ -86,7 +88,7 @@ export function DetailBar(props: {
             icon="square-arrow-top-right"
             onClick={props.onReveal}
           >
-            Reveal
+            {language.t("disk.common.reveal")}
           </Button>
         </Show>
         <Show when={props.onToggleLock}>
@@ -98,12 +100,12 @@ export function DetailBar(props: {
             aria-pressed={props.locked}
             onClick={props.onToggleLock}
           >
-            {props.locked ? "Protected" : "Protect"}
+            {props.locked ? language.t("disk.detail.protected") : language.t("disk.detail.protect")}
           </Button>
         </Show>
         <Show when={props.locked && props.lockLabel}>
           <span class="hidden max-w-[28ch] truncate text-12-regular text-text-weak lg:inline">
-            Under {props.lockLabel}
+            {language.t("disk.detail.under", { name: props.lockLabel! })}
           </span>
         </Show>
         <Show when={props.deletable}>
@@ -118,7 +120,7 @@ export function DetailBar(props: {
             aria-pressed={props.collected}
             onClick={props.onCollect}
           >
-            {props.collected ? "Selected for review" : "Select for review"}
+            {props.collected ? language.t("disk.detail.selectedReview") : language.t("disk.detail.selectReview")}
           </Button>
         </Show>
       </div>
@@ -132,7 +134,7 @@ export function DetailBar(props: {
             aria-pressed={props.collected}
             onClick={props.onCollect}
           >
-            {props.collected ? "Selected" : "Review"}
+            {props.collected ? language.t("disk.detail.selected") : language.t("disk.common.review")}
           </Button>
         </Show>
         <DropdownMenu placement="top-end" gutter={6}>
@@ -142,42 +144,44 @@ export function DetailBar(props: {
             size="small"
             variant="secondary"
             icon="dot-grid"
-            aria-label={`More actions for ${props.node.name}`}
+            aria-label={language.t("disk.detail.moreFor", { name: props.node.name })}
           >
-            More
+            {language.t("disk.detail.more")}
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content>
               <Show when={!props.node.isOther}>
                 <Show when={props.onQuickLook}>
                   <DropdownMenu.Item onSelect={props.onQuickLook}>
-                    <DropdownMenu.ItemLabel>Quick Look</DropdownMenu.ItemLabel>
+                    <DropdownMenu.ItemLabel>{language.t("disk.common.quickLook")}</DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
                 <Show when={!props.onQuickLook && props.onPreview}>
                   <DropdownMenu.Item onSelect={props.onPreview}>
-                    <DropdownMenu.ItemLabel>Preview</DropdownMenu.ItemLabel>
+                    <DropdownMenu.ItemLabel>{language.t("disk.common.preview")}</DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
                 <Show when={props.node.isDir && props.onOpen}>
                   <DropdownMenu.Item onSelect={props.onOpen}>
-                    <DropdownMenu.ItemLabel>Open folder</DropdownMenu.ItemLabel>
+                    <DropdownMenu.ItemLabel>{language.t("disk.common.openFolder")}</DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
                 <DropdownMenu.Item onSelect={props.onReveal}>
-                  <DropdownMenu.ItemLabel>Reveal in file manager</DropdownMenu.ItemLabel>
+                  <DropdownMenu.ItemLabel>{language.t("disk.detail.revealManager")}</DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
               <Show when={props.onToggleLock}>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onSelect={props.onToggleLock}>
-                  <DropdownMenu.ItemLabel>{props.locked ? "Allow cleanup" : "Protect from cleanup"}</DropdownMenu.ItemLabel>
+                  <DropdownMenu.ItemLabel>
+                    {props.locked ? language.t("disk.detail.allowCleanup") : language.t("disk.detail.protectCleanup")}
+                  </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
               <Show when={props.deletable}>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onSelect={props.onTrash}>
-                  <DropdownMenu.ItemLabel>Move to {props.trashName}</DropdownMenu.ItemLabel>
+                  <DropdownMenu.ItemLabel>{language.t("disk.detail.moveTo", { trash: props.trashName })}</DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
             </DropdownMenu.Content>

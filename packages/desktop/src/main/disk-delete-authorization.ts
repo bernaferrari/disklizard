@@ -4,6 +4,7 @@ import type { DiskNode } from "./disk-scanner"
 
 const MAX_DELETE_AUTHORIZATIONS = 256
 const DELETE_AUTHORIZATION_TTL_MS = 5 * 60_000
+const DELETE_AUTHORIZATION_STAT_CONCURRENCY = 16
 
 export const INVALID_DELETE_AUTHORIZATION_ERROR =
   "Delete authorization expired or the item changed — review it again before moving it to Trash."
@@ -57,17 +58,54 @@ function sameIdentity(left: FileIdentity, right: FileIdentity) {
   )
 }
 
-function findOwner(roots: ReadonlyMap<string, ScanRoot>, senderID: number, targetPath: string) {
+type ResolvedOwner = {
+  owner: string
+  scan: ScanRoot
+}
+
+function resolveOwners(
+  roots: ReadonlyMap<string, ScanRoot>,
+  senderID: number,
+  targetPaths: ReadonlySet<string>,
+) {
+  const unresolved = new Set(targetPaths)
+  const resolved = new Map<string, ResolvedOwner>()
   for (const [owner, scan] of roots) {
     if (scan.senderID !== senderID) continue
     const stack = [scan.root]
-    while (stack.length) {
+    while (stack.length > 0 && unresolved.size > 0) {
       const node = stack.pop()!
-      if (!node.isOther && node.path === targetPath) return owner
-      stack.push(...node.children)
+      if (!node.isOther && unresolved.delete(node.path)) resolved.set(node.path, { owner, scan })
+      // Avoid a spread call here: a single very wide directory can contain
+      // more children than the JavaScript argument limit.
+      for (let index = 0; index < node.children.length; index += 1) {
+        stack.push(node.children[index]!)
+      }
     }
-    if (scan.root.developerArtifactInventory?.items.some((item) => item.path === targetPath)) return owner
+    for (const item of scan.root.developerArtifactInventory?.items ?? []) {
+      if (unresolved.delete(item.path)) resolved.set(item.path, { owner, scan })
+    }
+    if (unresolved.size === 0) break
   }
+  return resolved
+}
+
+async function mapWithConcurrency<Input, Output>(
+  inputs: readonly Input[],
+  concurrency: number,
+  operation: (input: Input) => Promise<Output>,
+) {
+  const results = new Array<Output>(inputs.length)
+  let cursor = 0
+  const workers = Array.from({ length: Math.min(concurrency, inputs.length) }, async () => {
+    while (cursor < inputs.length) {
+      const index = cursor
+      cursor += 1
+      results[index] = await operation(inputs[index]!)
+    }
+  })
+  await Promise.all(workers)
+  return results
 }
 
 export class DiskDeleteAuthorizationManager {
@@ -100,29 +138,55 @@ export class DiskDeleteAuthorizationManager {
     paths: readonly string[],
     assertSafe: (targetPath: string) => Promise<void>,
   ) {
+    if (!Array.isArray(paths)) throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
     const unique = [...new Set(paths)]
     if (unique.length === 0 || unique.length > MAX_DELETE_AUTHORIZATIONS) {
       throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
     }
-
-    const prepared: Array<{ path: string; authorization: string }> = []
     for (const path of unique) {
       if (typeof path !== "string" || path.length === 0) throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
-      const owner = findOwner(this.roots, senderID, path)
-      if (!owner) throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
-      await assertSafe(path)
-      const identity = await readIdentity(path)
+    }
+
+    const targets = new Set(unique)
+    const owners = resolveOwners(this.roots, senderID, targets)
+    if (owners.size !== unique.length) throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
+
+    // Validate the entire batch before publishing any capability. Bounded
+    // concurrency keeps a 256-item review responsive without creating an
+    // equally large burst of filesystem work.
+    const identities = await mapWithConcurrency(
+      unique,
+      DELETE_AUTHORIZATION_STAT_CONCURRENCY,
+      async (path) => {
+        await assertSafe(path)
+        return readIdentity(path)
+      },
+    )
+
+    // A watcher can replace a scan root while the filesystem checks yield.
+    // Bind the capabilities to the exact root object that was reviewed.
+    for (const [path, resolved] of owners) {
+      if (this.roots.get(resolved.owner) !== resolved.scan) {
+        throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
+      }
+      if (resolved.scan.senderID !== senderID || !targets.has(path)) {
+        throw new Error(UNSCANNED_DELETE_TARGET_ERROR)
+      }
+    }
+
+    const expiresAt = Date.now() + DELETE_AUTHORIZATION_TTL_MS
+    return unique.map((path, index) => {
+      const resolved = owners.get(path)!
       const authorization = randomUUID()
       this.authorizations.set(authorization, {
-        ...identity,
+        ...identities[index]!,
         senderID,
-        owner,
+        owner: resolved.owner,
         path,
-        expiresAt: Date.now() + DELETE_AUTHORIZATION_TTL_MS,
+        expiresAt,
       })
-      prepared.push({ path, authorization })
-    }
-    return prepared
+      return { path, authorization }
+    })
   }
 
   async consume(senderID: number, path: string, token: unknown) {

@@ -27,6 +27,8 @@ import {
   classifyDeveloperArtifact,
   normalizeDeveloperArtifactInventoryOptions,
 } from "./developer-artifacts"
+import { ChildRetention, apparentBytes, compareNodesBySize } from "./scan-retention"
+import { ScanScheduler } from "./scan-scheduler"
 
 export type { DiskNode, DriveInfo, ScanDiscovery, ScanOptions, ScanProgress }
 
@@ -109,104 +111,6 @@ function joinPath(parent: string, name: string): string {
   return parent + sep + name
 }
 
-// ── Concurrency pool ──────────────────────────────────────────────────────
-
-class Pool {
-  active = 0
-  queue: Array<{ start: () => boolean; abort: () => void }> = []
-  queueHead = 0
-  limit: number
-  signal?: AbortSignal
-
-  constructor(limit: number, signal?: AbortSignal) {
-    this.limit = limit
-    this.signal = signal
-    signal?.addEventListener(
-      "abort",
-      () => {
-        for (let index = this.queueHead; index < this.queue.length; index++) this.queue[index].abort()
-        this.queue = []
-        this.queueHead = 0
-      },
-      { once: true },
-    )
-  }
-
-  async run<T>(fn: () => Promise<T>): Promise<T> {
-    this.signal?.throwIfAborted()
-    if (this.active >= this.limit) {
-      await new Promise<void>((resolve, reject) => {
-        let waiting = true
-        this.queue.push({
-          start: () => {
-            if (!waiting) return false
-            waiting = false
-            resolve()
-            return true
-          },
-          abort: () => {
-            if (!waiting) return
-            waiting = false
-            reject(this.signal?.reason ?? new Error("Scan cancelled"))
-          },
-        })
-      })
-    }
-    this.signal?.throwIfAborted()
-    this.active++
-    try {
-      return await fn()
-    } finally {
-      this.active--
-      let started = false
-      while (!started && this.queueHead < this.queue.length) started = this.queue[this.queueHead++].start()
-      // Array.shift() moves every queued syscall on every completion. On a
-      // volume scan that turned the scheduler itself into an O(n²) hot path.
-      // Compact occasionally while keeping dequeue O(1) in the common case.
-      if (this.queueHead === this.queue.length) {
-        this.queue = []
-        this.queueHead = 0
-      } else if (this.queueHead > 4096 && this.queueHead * 2 > this.queue.length) {
-        this.queue = this.queue.slice(this.queueHead)
-        this.queueHead = 0
-      }
-    }
-  }
-}
-
-async function forEachBounded<T>(items: readonly T[], limit: number, fn: (item: T) => Promise<void>) {
-  const width = Math.max(1, limit)
-  for (let offset = 0; offset < items.length; offset += width) {
-    const end = Math.min(items.length, offset + width)
-    const batch: Promise<void>[] = []
-    for (let index = offset; index < end; index++) batch.push(fn(items[index]))
-    await Promise.all(batch)
-  }
-}
-
-function insertBoundedNode(nodes: DiskNode[], node: DiskNode, limit: number) {
-  let low = 0
-  let high = nodes.length
-  while (low < high) {
-    const middle = (low + high) >>> 1
-    if (sortBySizeDesc(node, nodes[middle]) < 0) high = middle
-    else low = middle + 1
-  }
-  nodes.splice(low, 0, node)
-  return nodes.length > limit ? nodes.pop() : undefined
-}
-
-function sortBySizeDesc(a: DiskNode, b: DiskNode) {
-  if (a.size !== b.size) return b.size - a.size
-  // JavaScript's string order is UTF-16 code-unit order. Keeping it explicit
-  // makes top-K retention and Other samples stable across traversal timing.
-  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-}
-
-function apparentBytes(node: Pick<DiskNode, "size" | "logicalSize">) {
-  return node.logicalSize ?? node.size
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
 }
@@ -214,7 +118,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 // ── Core fast scanner ─────────────────────────────────────────────────────
 
 type WalkState = {
-  pool: Pool
+  pool: ScanScheduler
   maxDepth: number
   maxChildren: number
   preserveNames: Set<string>
@@ -600,13 +504,6 @@ function attachDeveloperArtifactInventory(root: DiskNode, st: WalkState) {
   }
 }
 
-/** Keep the ancestry of named artifacts so a small project is not lost inside `Other`. */
-function containsPreservedNode(node: DiskNode, preserveNames: ReadonlySet<string>): boolean {
-  if (preserveNames.has(node.name.toLowerCase())) return true
-  for (const child of node.children) if (containsPreservedNode(child, preserveNames)) return true
-  return false
-}
-
 function emitProgress(st: WalkState, currentPath: string, force = false) {
   if (!st.onProgress) return
   const now = performance.now()
@@ -832,7 +729,7 @@ function normalizeCompleteHardLinkGroups(root: DiskNode, metadata: ReadonlyMap<s
 
   const sortAffectedDirectories = (node: DiskNode) => {
     for (const child of node.children) sortAffectedDirectories(child)
-    if (affectedDirectories.has(node)) node.children.sort(sortBySizeDesc)
+    if (affectedDirectories.has(node)) node.children.sort(compareNodesBySize)
   }
 
   collect(root)
@@ -917,7 +814,7 @@ async function sizeOnly(
   const signatures: string[] = []
   const artifactSignatures: string[] = []
 
-  await forEachBounded(entries, st.pool.limit, async (ent) => {
+  await st.pool.forEach(entries, async (ent) => {
     checkAborted(st)
     const name = ent.name
     const normalizedName = name.toLowerCase()
@@ -1056,35 +953,9 @@ async function walkDir(
   emitProgress(st, dirPath)
 
   const artifactSignatures: string[] = []
-  const top: DiskNode[] = []
-  const preservedOverflow: DiskNode[] = []
-  const restSample: DiskNode[] = []
-  let restCount = 0
-  let restSize = 0
-  let restLogicalSize = 0
-  let restModifiedAt = 0
-  let totalSize = 0
-  let totalLogicalSize = 0
-  let modifiedAt = 0
-  const retain = (child: DiskNode | null) => {
-    if (!child || (child.size <= 0 && child.children.length === 0 && !child.hardLink)) return
-    totalSize += child.size
-    totalLogicalSize += apparentBytes(child)
-    modifiedAt = Math.max(modifiedAt, child.modifiedAt ?? 0)
-    const overflow = insertBoundedNode(top, child, st.maxChildren)
-    if (!overflow) return
-    if (containsPreservedNode(overflow, st.preserveNames)) {
-      preservedOverflow.push(overflow)
-      return
-    }
-    restCount++
-    restSize += overflow.size
-    restLogicalSize += apparentBytes(overflow)
-    restModifiedAt = Math.max(restModifiedAt, overflow.modifiedAt ?? 0)
-    insertBoundedNode(restSample, overflow, 12)
-  }
+  const retainedChildren = new ChildRetention(dirPath, st.maxChildren, st.preserveNames)
 
-  await forEachBounded(entries, st.pool.limit, async (ent) => {
+  await st.pool.forEach(entries, async (ent) => {
     checkAborted(st)
     const entName = ent.name
     const childPath = joinPath(dirPath, entName)
@@ -1102,7 +973,7 @@ async function walkDir(
     }
 
     if (ent.isDirectory()) {
-      retain(
+      retainedChildren.add(
         await trackRootDiscovery(
           st,
           depth,
@@ -1116,7 +987,7 @@ async function walkDir(
       )
     } else if (ent.isFile()) {
       // Fast ext extract without path.extname alloc when possible
-      retain(
+      retainedChildren.add(
         await trackRootDiscovery(
           st,
           depth,
@@ -1148,7 +1019,7 @@ async function walkDir(
       )
     } else {
       // Rare: need stat to classify
-      retain(
+      retainedChildren.add(
         await trackRootDiscovery(
           st,
           depth,
@@ -1189,25 +1060,7 @@ async function walkDir(
   })
   checkAborted(st)
 
-  preservedOverflow.sort(sortBySizeDesc)
-  node.children = preservedOverflow.length ? [...top, ...preservedOverflow] : top
-  if (restSize > 0) {
-    node.children.push({
-      name: `Other (${restCount} items)`,
-      path: joinPath(dirPath, "__other__"),
-      size: restSize,
-      ...(restLogicalSize === restSize ? {} : { logicalSize: restLogicalSize }),
-      modifiedAt: restModifiedAt || undefined,
-      isDir: true,
-      children: restSample,
-      ext: "",
-      isOther: true,
-    })
-  }
-
-  node.size = totalSize
-  node.logicalSize = totalLogicalSize === totalSize ? undefined : totalLogicalSize
-  node.modifiedAt = modifiedAt || undefined
+  Object.assign(node, retainedChildren.finish())
   if (inventoryScopeAllowed) {
     await recordDeveloperArtifact(st, dirPath, name, node, [...new Set(artifactSignatures)].sort())
   }
@@ -1236,7 +1089,7 @@ export async function scanPathSync(targetPath: string, options: ScanOptions = {}
   const name = basename(targetPath) || targetPath
   const artifactInventoryOptions = normalizeDeveloperArtifactInventoryOptions(developerArtifactInventory)
   const st: WalkState = {
-    pool: new Pool(normalizeScanConcurrency(concurrency), signal),
+    pool: new ScanScheduler(normalizeScanConcurrency(concurrency), signal),
     maxDepth,
     maxChildren,
     preserveNames: new Set(preserveNames.map((name) => name.toLowerCase())),

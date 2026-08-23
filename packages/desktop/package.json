@@ -25,6 +25,7 @@
     "package:linux": "electron-builder --linux --config electron-builder.config.ts",
     "native:build": "bun ../disklizard/scripts/build-native.ts",
     "benchmark:disk": "bun ./scripts/benchmark-disk-scan.ts",
+    "benchmark:snapshots": "bun ./scripts/benchmark-disk-snapshots.ts",
     "test:disklizard": "bun ../../scripts/test-disklizard.ts"
   },
   "main": "./out/main/index.js",

@@ -645,16 +645,23 @@ async function loadNativeWatcher(): Promise<Watcher | undefined> {
   }
 }
 
-function indexTree(root: DiskNode) {
+async function indexTree(root: DiskNode, signal?: AbortSignal) {
   const nodes = new Map<string, DiskNode>()
   const parents = new Map<string, string>()
-  const visit = (node: DiskNode, parent?: DiskNode) => {
+  const pending: Array<{ node: DiskNode; parentPath?: string }> = [{ node: root }]
+  let work = 0
+  while (pending.length > 0) {
+    signal?.throwIfAborted()
+    const { node, parentPath } = pending.pop()!
     const nodePath = comparable(node.path)
     if (!node.isOther) nodes.set(nodePath, node)
-    if (parent) parents.set(nodePath, comparable(parent.path))
-    for (const child of node.children) visit(child, node)
+    if (parentPath) parents.set(nodePath, parentPath)
+    for (let index = node.children.length - 1; index >= 0; index--) {
+      pending.push({ node: node.children[index]!, parentPath: nodePath })
+      if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+    }
+    if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
   }
-  visit(root)
   return { nodes, parents }
 }
 
@@ -662,25 +669,44 @@ function indexTree(root: DiskNode) {
  * Turn file-level events into the smallest set of materialized subtrees that can
  * be rescanned and safely spliced into the lossy, max-children scan tree.
  */
-export function deltaRoots(root: DiskNode, events: readonly WatchEvent[]) {
+export async function deltaRoots(root: DiskNode, events: readonly WatchEvent[], signal?: AbortSignal) {
   if (events.length > MAX_DELTA_EVENTS) return [comparable(root.path)]
   const rootPath = comparable(root.path)
-  const { nodes, parents } = indexTree(root)
+  const { nodes, parents } = await indexTree(root, signal)
   const candidates: string[] = []
-  const normalizedEvents = events
-    .map((event) => ({ ...event, path: comparable(event.path) }))
-    .filter((event) => isWithin(rootPath, event.path))
+  const normalizedEvents: WatchEvent[] = []
+  let work = 0
+  for (const event of events) {
+    const normalized = { ...event, path: comparable(event.path) }
+    if (isWithin(rootPath, normalized.path)) normalizedEvents.push(normalized)
+    if (++work % SNAPSHOT_YIELD_INTERVAL === 0) {
+      signal?.throwIfAborted()
+      await yieldToMainEventLoop()
+    }
+  }
 
-  for (const event of normalizedEvents) {
+  for (let eventIndex = 0; eventIndex < normalizedEvents.length; eventIndex++) {
+    signal?.throwIfAborted()
+    const event = normalizedEvents[eventIndex]!
     const eventPath = event.path
     // FSEvents commonly emits both a changed file and "update" for each of its
     // ancestor directories. The specific event is sufficient and prevents a
     // single file save from degenerating into a whole-volume rescan.
-    if (
-      event.type === "update" &&
-      nodes.get(eventPath)?.isDir &&
-      normalizedEvents.some((other) => other !== event && isAncestor(eventPath, other.path))
-    ) {
+    let hasSpecificDescendant = false
+    if (event.type === "update" && nodes.get(eventPath)?.isDir) {
+      for (let otherIndex = 0; otherIndex < normalizedEvents.length; otherIndex++) {
+        const other = normalizedEvents[otherIndex]!
+        if (otherIndex !== eventIndex && isAncestor(eventPath, other.path)) {
+          hasSpecificDescendant = true
+          break
+        }
+        if (++work % SNAPSHOT_YIELD_INTERVAL === 0) {
+          signal?.throwIfAborted()
+          await yieldToMainEventLoop()
+        }
+      }
+    }
+    if (hasSpecificDescendant) {
       continue
     }
     let candidate = event.type === "update" && nodes.has(eventPath) ? eventPath : path.dirname(eventPath)
@@ -706,25 +732,89 @@ export function deltaRoots(root: DiskNode, events: readonly WatchEvent[]) {
   }
 
   const roots = [...new Set(candidates)].sort((a, b) => a.length - b.length)
-  const coalesced = roots.filter(
-    (candidate, index) => !roots.slice(0, index).some((parent) => isAncestor(parent, candidate)),
-  )
+  const coalesced: string[] = []
+  for (const candidate of roots) {
+    let nested = false
+    for (const parent of coalesced) {
+      if (isAncestor(parent, candidate)) {
+        nested = true
+        break
+      }
+      if (++work % SNAPSHOT_YIELD_INTERVAL === 0) {
+        signal?.throwIfAborted()
+        await yieldToMainEventLoop()
+      }
+    }
+    if (!nested) coalesced.push(candidate)
+  }
   return coalesced.length > MAX_DELTA_ROOTS ? [rootPath] : coalesced
 }
 
-function replaceNode(root: DiskNode, targetPath: string, replacement: DiskNode): DiskNode {
+async function sortDiskNodesBySize(children: DiskNode[], signal?: AbortSignal) {
+  if (children.length < 2) return children
+  let source = children
+  let target = new Array<DiskNode>(children.length)
+  let work = 0
+  for (let width = 1; width < children.length; width *= 2) {
+    for (let start = 0; start < children.length; start += width * 2) {
+      const middle = Math.min(start + width, children.length)
+      const end = Math.min(start + width * 2, children.length)
+      let left = start
+      let right = middle
+      let output = start
+      while (left < middle || right < end) {
+        if (right >= end || (left < middle && source[left]!.size >= source[right]!.size)) {
+          target[output++] = source[left++]!
+        } else {
+          target[output++] = source[right++]!
+        }
+        if (++work % SNAPSHOT_YIELD_INTERVAL === 0) {
+          signal?.throwIfAborted()
+          await yieldToMainEventLoop()
+        }
+      }
+    }
+    const previousSource = source
+    source = target
+    target = previousSource
+  }
+  return source
+}
+
+async function replaceNode(
+  root: DiskNode,
+  targetPath: string,
+  replacement: DiskNode,
+  signal?: AbortSignal,
+): Promise<DiskNode> {
   if (comparable(root.path) === targetPath) return replacement
   let changed = false
-  const children = root.children.map((child) => {
-    if (!isWithin(comparable(child.path), targetPath)) return child
-    const next = replaceNode(child, targetPath, replacement)
+  const nextChildren: DiskNode[] = []
+  for (let index = 0; index < root.children.length; index++) {
+    signal?.throwIfAborted()
+    const child = root.children[index]!
+    const next = isWithin(comparable(child.path), targetPath)
+      ? await replaceNode(child, targetPath, replacement, signal)
+      : child
     changed ||= next !== child
-    return next
-  })
+    nextChildren.push(next)
+    if ((index + 1) % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+  }
   if (!changed) return root
-  children.sort((a, b) => b.size - a.size)
-  const size = children.reduce((total, child) => total + child.size, 0)
-  const logicalSize = children.reduce((total, child) => total + (child.logicalSize ?? child.size), 0)
+  const children = await sortDiskNodesBySize(nextChildren, signal)
+  let size = 0
+  let logicalSize = 0
+  let modifiedAt: number | undefined
+  for (let index = 0; index < children.length; index++) {
+    const child = children[index]!
+    size += child.size
+    logicalSize += child.logicalSize ?? child.size
+    modifiedAt = Math.max(modifiedAt ?? 0, child.modifiedAt ?? 0) || undefined
+    if ((index + 1) % SNAPSHOT_YIELD_INTERVAL === 0) {
+      signal?.throwIfAborted()
+      await yieldToMainEventLoop()
+    }
+  }
   // Do not retain an ancestor's old apparent size after a localized refresh.
   // It can differ from allocated bytes for sparse files, hard links, and now
   // complete clone groups.
@@ -734,19 +824,22 @@ function replaceNode(root: DiskNode, targetPath: string, replacement: DiskNode):
     children,
     size,
     ...(logicalSize !== size ? { logicalSize } : {}),
-    modifiedAt: children.reduce<number | undefined>(
-      (latest, child) => Math.max(latest ?? 0, child.modifiedAt ?? 0) || undefined,
-      undefined,
-    ),
+    modifiedAt,
   }
 }
 
-function findNode(root: DiskNode, targetPath: string): DiskNode | undefined {
-  if (comparable(root.path) === targetPath) return root
-  for (const child of root.children) {
-    if (!isWithin(comparable(child.path), targetPath)) continue
-    const match = findNode(child, targetPath)
-    if (match) return match
+async function findNode(root: DiskNode, targetPath: string, signal?: AbortSignal): Promise<DiskNode | undefined> {
+  const pending = [root]
+  let work = 0
+  while (pending.length > 0) {
+    signal?.throwIfAborted()
+    const node = pending.pop()!
+    if (comparable(node.path) === targetPath) return node
+    for (let index = node.children.length - 1; index >= 0; index--) {
+      const child = node.children[index]!
+      if (isWithin(comparable(child.path), targetPath)) pending.push(child)
+      if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+    }
   }
 }
 
@@ -755,17 +848,30 @@ function findNode(root: DiskNode, targetPath: string): DiskNode | undefined {
  * cross the changed subtree. Hard links and APFS clone evidence both have
  * that property, so ask the root scanner to rebuild their accounting.
  */
-function containsCrossSubtreePhysicalSharing(root: DiskNode): boolean {
-  return (
-    !!root.hardLink ||
-    !!root.cloneAccounting ||
-    root.clone?.state === "may-share-blocks" ||
-    root.clone?.state === "shares-all-blocks" ||
-    root.children.some(containsCrossSubtreePhysicalSharing)
-  )
+async function containsCrossSubtreePhysicalSharing(root: DiskNode, signal?: AbortSignal) {
+  const pending = [root]
+  let work = 0
+  while (pending.length > 0) {
+    signal?.throwIfAborted()
+    const node = pending.pop()!
+    if (
+      node.hardLink ||
+      node.cloneAccounting ||
+      node.clone?.state === "may-share-blocks" ||
+      node.clone?.state === "shares-all-blocks"
+    ) {
+      return true
+    }
+    for (const child of node.children) {
+      pending.push(child)
+      if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+    }
+    if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
+  }
+  return false
 }
 
-function requiresWholeRootPhysicalRefresh(
+async function requiresWholeRootPhysicalRefresh(
   rootPath: string,
   targetPath: string,
   replacement: DiskNode,
@@ -774,12 +880,13 @@ function requiresWholeRootPhysicalRefresh(
   return (
     (options.sizeMode ?? "physical") === "physical" &&
     comparable(targetPath) !== rootPath &&
-    (containsCrossSubtreePhysicalSharing(replacement) || replacement.sharedStorageEvidence !== "complete")
+    ((await containsCrossSubtreePhysicalSharing(replacement, options.signal)) ||
+      replacement.sharedStorageEvidence !== "complete")
   )
 }
 
 export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent[], scan: Scan, options: ScanOptions) {
-  const changedPaths = deltaRoots(root, events)
+  const changedPaths = await deltaRoots(root, events, options.signal)
   const rootPath = comparable(root.path)
   // The deep artifact index is root-wide and deliberately independent from
   // materialized tree nodes. Local watcher refreshes must not rebuild that
@@ -798,26 +905,27 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
   let next = root
   for (const changedPath of changedPaths) {
     options.signal?.throwIfAborted()
-    const previous = findNode(next, comparable(changedPath))
+    const previous = await findNode(next, comparable(changedPath), options.signal)
     if (
       (options.sizeMode ?? "physical") === "physical" &&
       comparable(changedPath) !== rootPath &&
       previous &&
-      containsCrossSubtreePhysicalSharing(previous)
+      (await containsCrossSubtreePhysicalSharing(previous, options.signal))
     ) {
       return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
     }
     try {
       const replacement = await scanDeltaTarget(changedPath)
-      if (requiresWholeRootPhysicalRefresh(rootPath, changedPath, replacement, options)) {
+      if (await requiresWholeRootPhysicalRefresh(rootPath, changedPath, replacement, options)) {
         return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
       }
       const localized = comparable(changedPath) !== rootPath
       if (localized) next = invalidateDeveloperArtifactInventory(next)
-      next = replaceNode(
+      next = await replaceNode(
         next,
         comparable(changedPath),
         localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+        options.signal,
       )
     } catch (error) {
       options.signal?.throwIfAborted()
@@ -826,15 +934,16 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       const parent = path.dirname(changedPath)
       if (!isWithin(comparable(root.path), parent)) throw error
       const replacement = await scanDeltaTarget(parent)
-      if (requiresWholeRootPhysicalRefresh(rootPath, parent, replacement, options)) {
+      if (await requiresWholeRootPhysicalRefresh(rootPath, parent, replacement, options)) {
         return { root: await scanDeltaTarget(rootPath), changedPaths: [rootPath] }
       }
       const localized = comparable(parent) !== rootPath
       if (localized) next = invalidateDeveloperArtifactInventory(next)
-      next = replaceNode(
+      next = await replaceNode(
         next,
         comparable(parent),
         localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+        options.signal,
       )
     }
   }

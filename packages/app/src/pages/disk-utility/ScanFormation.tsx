@@ -2,6 +2,7 @@ import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { Show, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 import { formatCount, shortBytes, truncatePath } from "./format"
+import { useLanguage } from "./runtime"
 
 type ScanFormationProps = {
   label: string
@@ -13,6 +14,7 @@ type ScanFormationProps = {
 }
 
 export function ScanFormation(props: ScanFormationProps) {
+  const language = useLanguage()
   const [elapsedMs, setElapsedMs] = createSignal(0)
   let startedAt = 0
   let pausedAt = 0
@@ -52,15 +54,17 @@ export function ScanFormation(props: ScanFormationProps) {
 
   const elapsed = createMemo(() => {
     const seconds = Math.max(0, Math.floor(elapsedMs() / 1000))
-    return seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m ${seconds % 60}s`
+    return seconds < 60
+      ? language.t("disk.scan.elapsedSeconds", { seconds })
+      : language.t("disk.scan.elapsedMinutes", { minutes: Math.floor(seconds / 60), seconds: seconds % 60 })
   })
   return (
-    <section class="w-full max-w-7xl" aria-label={`Scanning ${props.label}`}>
+    <section class="w-full max-w-7xl" aria-label={language.t("disk.scan.label", { label: props.label })}>
       <header class="flex min-h-[94px] flex-wrap items-end justify-between gap-5 border-b border-border-weaker-base pb-5">
         <div class="min-w-0">
           <div class="mb-2 flex items-center gap-2 text-13-semibold uppercase tracking-[0.16em] text-text-weak">
             <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_176)]" />
-            Scanning
+            {language.t("disk.scan.scanning")}
           </div>
           <h2 class="truncate text-[clamp(32px,4vw,52px)] font-medium leading-none tracking-[-0.05em] text-text-strong">
             {props.label}
@@ -68,12 +72,12 @@ export function ScanFormation(props: ScanFormationProps) {
         </div>
         <div class="flex items-center gap-5">
           <p class="hidden text-right text-13-regular leading-relaxed text-text-weaker sm:block">
-            Read-only
+            {language.t("disk.scan.readOnly")}
             <br />
-            No files are changed
+            {language.t("disk.scan.noChanges")}
           </p>
           <Button class="dl-touch-target" variant="secondary" size="large" icon="close" onClick={props.onCancel}>
-            Cancel scan
+            {language.t("disk.common.cancelScan")}
           </Button>
         </div>
       </header>
@@ -85,28 +89,28 @@ export function ScanFormation(props: ScanFormationProps) {
 
         <div class="flex min-w-0 flex-col px-5 py-7 sm:px-8">
           <div class="grid grid-cols-2 gap-x-8 border-b border-border-weaker-base pb-6">
-            <ScanMetric label="Files scanned" value={formatCount(props.files)} />
-            <ScanMetric label="Elapsed" value={elapsed()} />
+            <ScanMetric label={language.t("disk.scan.filesScanned")} value={formatCount(props.files)} />
+            <ScanMetric label={language.t("disk.scan.elapsed")} value={elapsed()} />
           </div>
 
           <div class="border-b border-border-weaker-base py-6">
             <div class="flex items-center gap-2 text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
               <Icon name="folder" class="size-3" />
-              Scanning now
+              {language.t("disk.scan.scanningNow")}
             </div>
             <p
               class="mt-2 line-clamp-2 min-h-10 break-words text-13-mono leading-relaxed text-text-weak"
               title={props.currentPath}
             >
-              {props.currentPath ? truncatePath(props.currentPath, 112) : "Starting scan…"}
+              {props.currentPath ? truncatePath(props.currentPath, 112) : language.t("disk.scan.starting")}
             </p>
           </div>
 
           <div class="flex min-h-[190px] flex-1 items-center py-6">
             <div class="border-l border-[oklch(0.74_0.13_176)] py-1 pl-5">
-              <h3 class="text-12-semibold text-text-strong">Building your storage map</h3>
+              <h3 class="text-12-semibold text-text-strong">{language.t("disk.scan.building")}</h3>
               <p class="mt-2 max-w-[44ch] text-13-regular leading-relaxed text-text-weak">
-                DiskLizard is measuring every readable file and folder. The map opens when the scan finishes.
+                {language.t("disk.scan.buildingBody")}
               </p>
             </div>
           </div>
@@ -114,13 +118,14 @@ export function ScanFormation(props: ScanFormationProps) {
       </div>
 
       <span class="sr-only" role="status">
-        Scanning {props.label}. {formatCount(props.files)} files scanned. Use Cancel scan to stop.
+        {language.t("disk.scan.status", { label: props.label, files: formatCount(props.files) })}
       </span>
     </section>
   )
 }
 
 function ScanAperture(props: { bytes: number; files: number; pct: number | null }) {
+  const language = useLanguage()
   const progress = () => Math.max(0.6, Math.min(100, props.pct ?? 8))
   return (
     <div class="relative size-[clamp(260px,76vw,390px)]" aria-hidden="true">
@@ -166,8 +171,12 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
         <span class="text-[clamp(26px,3.2vw,38px)] font-medium tracking-[-0.045em] tabular-nums text-text-strong">
           {props.bytes > 0 ? shortBytes(props.bytes) : "—"}
         </span>
-        <span class="mt-1 text-13-semibold uppercase tracking-[0.16em] text-text-weaker">scanned</span>
-        <span class="mt-3 text-13-regular tabular-nums text-text-weak">{formatCount(props.files)} files</span>
+        <span class="mt-1 text-13-semibold uppercase tracking-[0.16em] text-text-weaker">
+          {language.t("disk.scan.scanned")}
+        </span>
+        <span class="mt-3 text-13-regular tabular-nums text-text-weak">
+          {language.t("disk.scan.fileCount", { count: formatCount(props.files) })}
+        </span>
       </div>
     </div>
   )

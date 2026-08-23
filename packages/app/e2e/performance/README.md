@@ -23,6 +23,14 @@ The suite contains:
 - cached session repaint and mutation tracing
 - streaming timeline throughput, RAF-gap, long-task, geometry, and remount diagnostics
 
+DiskLizard has a separate production renderer scenario because it uses its own deterministic desktop API fixture:
+
+```sh
+bun run benchmark:disk-ui
+```
+
+It reports scan-result and first-usable-map timing for a retained tree with more than 10,000 nodes, scan-wide search and selection next-paint latency, RAF gaps, long tasks, serialized payload size, DOM size, and Chromium renderer heap. These are observational metrics with correctness-only assertions.
+
 All benchmarks import the shared `benchmark` fixture. Pages created through Playwright's `page` fixture automatically capture main-frame navigation history and emit a Chrome trace when `OPENCODE_PERFORMANCE_TRACE_DIR` is set. Benchmarks that need isolated browser contexts use `withBenchmarkPage`, which owns the context and the same diagnostics lifecycle.
 
 New benchmarks should look like normal Playwright tests:

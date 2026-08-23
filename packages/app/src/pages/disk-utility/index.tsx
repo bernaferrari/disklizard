@@ -16,7 +16,13 @@ import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { showToast } from "@opencode-ai/ui/toast"
 import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
-import { useLanguage, usePlatform, useSettings } from "./runtime"
+import {
+  createPersistenceErrorDeduper,
+  useLanguage,
+  usePlatform,
+  useSettings,
+  type DiskLanguageKey,
+} from "./runtime"
 import type {
   DiskDriveInfo,
   DiskDriveFactsUpdate,
@@ -252,14 +258,14 @@ const DEVELOPER_SIGNATURE_NAMES = [
   "daemon",
 ] as const
 
-const DEVELOPER_CATEGORY_LABEL: Record<DeveloperCategory, string> = {
-  dependencies: "Dependencies",
-  "build-output": "Build output",
-  "toolchain-cache": "Toolchains & caches",
-  "agent-data": "Coding agents",
-  worktree: "Worktrees",
-  "version-control": "Version history",
-}
+const DEVELOPER_CATEGORY_LABEL = {
+  dependencies: "disk.developer.category.dependencies",
+  "build-output": "disk.developer.category.buildOutput",
+  "toolchain-cache": "disk.developer.category.toolchainCache",
+  "agent-data": "disk.developer.category.agentData",
+  worktree: "disk.developer.category.worktree",
+  "version-control": "disk.developer.category.versionControl",
+} as const satisfies Record<DeveloperCategory, DiskLanguageKey>
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   const { promise: timed, resolve, reject } = Promise.withResolvers<T>()
@@ -374,9 +380,16 @@ export default function DiskUtilityPage() {
     | undefined
   let scrollIndexIntoView: ((index: number) => void) | undefined
   let listPageSize = () => DEFAULT_LIST_PAGE_SIZE
+  const nextPersistenceError = createPersistenceErrorDeduper()
 
   const pinnedLocations = settings.general.diskPinnedLocations
   const cleanupLocks = settings.general.diskCleanupLocks
+
+  createEffect(() => {
+    const error = nextPersistenceError(settings.general.persistenceError())
+    if (!error) return
+    showToast({ variant: "error", title: language.t("disk.toast.persistenceFailed"), description: error })
+  })
 
   const crumbs = createMemo(() => buildCrumbs(treeRoot(), viewNode()))
   const usesPhysicalByteAccounting = createMemo(() => isPhysicalByteAccounting(platform.os, scanDrive()))
@@ -390,18 +403,18 @@ export default function DiskUtilityPage() {
     const sharedStorageEvidence = root?.sharedStorageEvidence
     if (!physicalCloneAccountingUncertain()) return undefined
     if (sharedStorageEvidence === "partial") {
-      return "One or more summarized, excluded, or unreadable branches may hide shared storage. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+      return language.t("disk.explore.unverifiedExcluded")
     }
     if (sharedStorageEvidence !== "complete") {
-      return "This map cannot verify that all shared-storage relationships are visible. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+      return language.t("disk.explore.unverifiedRelationships")
     }
     if (capability?.state === "unavailable" && capability.reason === "scanner") {
-      return "The native metadata scanner was unavailable for this map. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space until clone sharing can be verified."
+      return language.t("disk.explore.unverifiedScanner")
     }
     if (capability?.state === "unknown") {
-      return "The filesystem could not confirm enough clone metadata for this map. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+      return language.t("disk.explore.unverifiedMetadata")
     }
-    return "This map does not include verified clone metadata. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space."
+    return language.t("disk.explore.unverifiedDefault")
   })
   const reclaim = createMemo<ReclaimSummary>(() =>
     physicalCloneAccountingUncertain()
@@ -429,8 +442,10 @@ export default function DiskUtilityPage() {
   const parentSize = createMemo(() => viewNode()?.size ?? 0)
   const parentCount = createMemo(() => viewNode()?.children?.length ?? 0)
   const sizeBasisLabel = createMemo(() => {
-    if (!usesPhysicalByteAccounting()) return "file size"
-    return physicalCloneAccountingUncertain() ? "physical allocation · shared blocks unverified" : "disk space used"
+    if (!usesPhysicalByteAccounting()) return language.t("disk.explore.fileSize")
+    return physicalCloneAccountingUncertain()
+      ? language.t("disk.explore.physicalUnverified")
+      : language.t("disk.explore.diskSpaceUsed")
   })
 
   const sortedChildren = createMemo<DiskScanNode[]>(() => {
@@ -633,9 +648,9 @@ export default function DiskUtilityPage() {
         lastWatchError = update.watchError
         showToast({
           variant: "error",
-          title: "Live updates paused",
-          description: `${update.watchError} Use Rescan to refresh this map now.`,
-          actions: [{ label: "Rescan", onClick: () => void rescanCurrent(true) }],
+          title: language.t("disk.toast.livePaused"),
+          description: language.t("disk.toast.livePausedBody", { message: update.watchError }),
+          actions: [{ label: language.t("disk.common.rescan"), onClick: () => void rescanCurrent(true) }],
         })
       } else if (!update.watchError) {
         lastWatchError = undefined
@@ -807,7 +822,7 @@ export default function DiskUtilityPage() {
     setDrivesError(undefined)
     setStorageDiagnostics(undefined)
     try {
-      const list = await withTimeout(api.getDrives(), 8000, "Listing drives")
+      const list = await withTimeout(api.getDrives(), 8000, language.t("disk.toast.listingDrives"))
       setDrives(
         list.map((drive) => {
           const facts = receivedDriveFacts.find((candidate) => diskPathEquals(candidate.path, drive.path, platform.os))
@@ -817,14 +832,14 @@ export default function DiskUtilityPage() {
       // Diagnostics are helpful context, not a dependency for the main drive
       // chooser. Let it settle independently so a permission probe never
       // delays the first useful screen.
-      void withTimeout(api.getStorageDiagnostics(), 8000, "Checking connected storage")
+      void withTimeout(api.getStorageDiagnostics(), 8000, language.t("disk.toast.checkingStorage"))
         .then(setStorageDiagnostics)
         .catch(() => undefined)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       setDrivesError(message)
       setDrives([])
-      showToast({ variant: "error", title: "Could not list drives", description: message })
+      showToast({ variant: "error", title: language.t("disk.toast.listFailed"), description: message })
     } finally {
       setDrivesLoading(false)
     }
@@ -851,11 +866,11 @@ export default function DiskUtilityPage() {
     try {
       const opened = await api.openDiskAccessSettings()
       if (opened) return
-      showToast({ variant: "default", title: "No privacy settings page is available on this platform" })
+      showToast({ variant: "default", title: language.t("disk.toast.noPrivacy") })
     } catch (error) {
       showToast({
         variant: "error",
-        title: "Could not open privacy settings",
+        title: language.t("disk.toast.privacyFailed"),
         description: error instanceof Error ? error.message : String(error),
       })
     }
@@ -873,8 +888,8 @@ export default function DiskUtilityPage() {
     if (runningVolumeScans() >= MAX_PARALLEL_VOLUME_SCANS) {
       showToast({
         variant: "default",
-        title: "Three scans are already running",
-        description: "Let one finish or cancel it before starting another.",
+        title: language.t("disk.toast.scanLimit"),
+        description: language.t("disk.toast.scanLimitBody"),
       })
       return
     }
@@ -933,8 +948,8 @@ export default function DiskUtilityPage() {
       })
       showToast({
         variant: "default",
-        title: `${drive.name} is ready`,
-        description: "Open its storage map when you’re ready.",
+        title: language.t("disk.toast.driveReady", { name: drive.name }),
+        description: language.t("disk.toast.driveReadyBody"),
       })
     } catch (error) {
       if (!volumeScanJobs[id] || isScanCancellation(error)) return
@@ -1163,7 +1178,7 @@ export default function DiskUtilityPage() {
     } catch (err) {
       if (token !== scanToken || isScanCancellation(err)) return
       const message = err instanceof Error ? err.message : String(err)
-      showToast({ variant: "error", title: "Scan failed", description: message })
+      showToast({ variant: "error", title: language.t("disk.toast.scanFailed"), description: message })
       if (volumeScanJobs[sessionID]) setVolumeScanJobs(sessionID, { status: "failed", error: message })
       setView("drives")
       setScanSourcePath("")
@@ -1213,7 +1228,7 @@ export default function DiskUtilityPage() {
       if (token !== scanToken || !scannedTree) return
       const replacement = asBrowseableRoot(scannedTree)
       const nextRoot = replaceScanSubtree(root, node.path, replacement, platform.os)
-      if (nextRoot === root) throw new Error("The folder changed while it was being scanned. Try opening it again.")
+      if (nextRoot === root) throw new Error(language.t("disk.toast.folderChanged"))
       setScanPct(100)
       setTreeRoot(nextRoot)
       setViewNode(replacement)
@@ -1235,7 +1250,7 @@ export default function DiskUtilityPage() {
       if (token !== scanToken || isScanCancellation(error)) return
       showToast({
         variant: "error",
-        title: `Could not open ${node.name}`,
+        title: language.t("disk.toast.openFailed", { name: node.name }),
         description: error instanceof Error ? error.message : String(error),
       })
     } finally {
@@ -1262,7 +1277,7 @@ export default function DiskUtilityPage() {
     // rebuilding a destructive-action source of truth.
     const scan = startScan(path, label, drive, false, forceFresh)
     if (drive) {
-      void withTimeout(api.getDrives(), 8000, "Refreshing drive totals")
+      void withTimeout(api.getDrives(), 8000, language.t("disk.toast.refreshingTotals"))
         .then(setDrives)
         // A scan remains useful when a removable/network drive cannot refresh
         // its capacity metadata.
@@ -1428,15 +1443,15 @@ export default function DiskUtilityPage() {
     if (!wasPinned && !isPinnedScanLocation(next, path, platform.os)) {
       showToast({
         variant: "default",
-        title: "Saved locations are full",
-        description: "Remove a saved location before adding another.",
+        title: language.t("disk.toast.savedFull"),
+        description: language.t("disk.toast.savedFullBody"),
       })
       return
     }
     settings.general.setDiskPinnedLocations(next)
     showToast({
       variant: "default",
-      title: wasPinned ? "Removed from saved locations" : "Location saved",
+      title: wasPinned ? language.t("disk.toast.savedRemoved") : language.t("disk.toast.savedAdded"),
       description: label,
     })
   }
@@ -1447,8 +1462,8 @@ export default function DiskUtilityPage() {
     if (!wasLocked && !isCleanupLock(path, next, platform.os)) {
       showToast({
         variant: "default",
-        title: "Protected trees are full",
-        description: "Unlock a tree before protecting another.",
+        title: language.t("disk.toast.protectedFull"),
+        description: language.t("disk.toast.protectedFullBody"),
       })
       return
     }
@@ -1456,10 +1471,10 @@ export default function DiskUtilityPage() {
     setCollection((items) => withoutCleanupLockedNodes(items, next, platform.os))
     showToast({
       variant: "default",
-      title: wasLocked ? "Cleanup unlocked" : "Protected from cleanup",
+      title: wasLocked ? language.t("disk.toast.cleanupUnlocked") : language.t("disk.toast.cleanupProtected"),
       description: wasLocked
-        ? `${label} can be reviewed again.`
-        : `${label} stays on the map, but it will not go to review or Trash.`,
+        ? language.t("disk.toast.cleanupUnlockedBodyLegacy", { name: label })
+        : language.t("disk.toast.cleanupProtectedBodyLegacy", { name: label }),
     })
   }
 
@@ -1760,7 +1775,7 @@ export default function DiskUtilityPage() {
     } catch (err) {
       showToast({
         variant: "error",
-        title: "Could not reveal",
+        title: language.t("disk.toast.revealFailed"),
         description: err instanceof Error ? err.message : String(err),
       })
     }
@@ -1818,7 +1833,7 @@ export default function DiskUtilityPage() {
     } catch (error) {
       showToast({
         variant: "error",
-        title: "Could not open file",
+        title: language.t("disk.toast.openFileFailed"),
         description: error instanceof Error ? error.message : String(error),
       })
     }
@@ -1832,7 +1847,7 @@ export default function DiskUtilityPage() {
     } catch (error) {
       showToast({
         variant: "error",
-        title: "Could not open Quick Look",
+        title: language.t("disk.toast.quickLookFailed"),
         description: error instanceof Error ? error.message : String(error),
       })
     }
@@ -1848,7 +1863,7 @@ export default function DiskUtilityPage() {
     } catch (error) {
       showToast({
         variant: "error",
-        title: `Could not open ${nativeTrashName(platform.os)}`,
+        title: language.t("disk.toast.trashOpenFailed", { trash: nativeTrashName(platform.os) }),
         description: error instanceof Error ? error.message : String(error),
       })
     }
@@ -1967,7 +1982,7 @@ export default function DiskUtilityPage() {
     try {
       const [prepared] = await api.authorizeDeletePaths([node.path])
       if (!prepared || !diskPathEquals(prepared.path, node.path, platform.os)) {
-        throw new Error("Delete authorization did not match the reviewed item.")
+        throw new Error(language.t("disk.toast.authorizationMismatch"))
       }
       await api.deletePath(node.path, {
         authorization: prepared.authorization,
@@ -1980,15 +1995,18 @@ export default function DiskUtilityPage() {
       applyDeletedNodes([node])
       showToast({
         variant: "success",
-        title: `Moved to ${nativeTrashName(platform.os)}`,
+        title: language.t("disk.toast.moved", { trash: nativeTrashName(platform.os) }),
         description: deepInventoryNeedsRefresh
-          ? `${node.name} moved. Rebuilding the full map before reporting disk space.`
+          ? language.t("disk.toast.movedRebuild", { name: node.name })
           : physicalAccountingNeedsRefresh
-            ? `${node.name} moved. Recomputing storage allocation before reporting free space.`
+            ? language.t("disk.toast.movedRecompute", { name: node.name })
             : node.name,
         actions: [
-          { label: `Show in ${nativeTrashName(platform.os)}`, onClick: () => void openTrash() },
-          { label: "Rescan", onClick: () => void rescanCurrent() },
+          {
+            label: language.t("disk.toast.showTrash", { trash: nativeTrashName(platform.os) }),
+            onClick: () => void openTrash(),
+          },
+          { label: language.t("disk.common.rescan"), onClick: () => void rescanCurrent() },
         ],
       })
     } catch (err) {
@@ -1998,7 +2016,7 @@ export default function DiskUtilityPage() {
       }
       showToast({
         variant: "error",
-        title: "Delete failed",
+        title: language.t("disk.toast.deleteFailed"),
         description: err instanceof Error ? err.message : String(err),
       })
     } finally {
@@ -2022,10 +2040,10 @@ export default function DiskUtilityPage() {
       const lock = cleanupLockForPath(node.path, cleanupLocks(), platform.os)
       showToast({
         variant: "default",
-        title: lock ? "Protected from cleanup" : "Protected item",
+        title: lock ? language.t("disk.toast.cleanupProtected") : language.t("disk.toast.protectedItem"),
         description: lock
           ? cleanupLockMessage(lock)
-          : "DiskLizard protects system paths, configuration-bearing developer data, worktrees, and version history from direct removal.",
+          : language.t("disk.toast.protectedBody"),
       })
       return
     }
@@ -2089,12 +2107,16 @@ export default function DiskUtilityPage() {
   ) {
     showToast({
       variant: "default",
-      title: reason === "changed" ? "Artifact changed — rescan required" : "Rescan required before removal",
+      title:
+        reason === "changed" ? language.t("disk.toast.artifactChanged") : language.t("disk.toast.rescanRemoval"),
       description:
         reason === "changed"
-          ? `${node.name} no longer matches the deep artifact result that was reviewed. Rebuild the full map, then review it again before moving it to ${nativeTrashName(platform.os)}.`
-          : `${node.name} does not have a current deep-scan directory identity. Rebuild the full map, then review it again before moving it to ${nativeTrashName(platform.os)}.`,
-      actions: [{ label: "Rescan", onClick: () => void rescanCurrent(true) }],
+          ? language.t("disk.toast.changedBody", { name: node.name, trash: nativeTrashName(platform.os) })
+          : language.t("disk.toast.missingIdentityBody", {
+              name: node.name,
+              trash: nativeTrashName(platform.os),
+            }),
+      actions: [{ label: language.t("disk.common.rescan"), onClick: () => void rescanCurrent(true) }],
     })
   }
   const isCollected = (path: string) => collection().some((node) => diskPathEquals(node.path, path, platform.os))
@@ -2232,10 +2254,10 @@ export default function DiskUtilityPage() {
           try {
             const deepDeletePrecondition = developerInventoryDeletePrecondition(node)
             if (isDeveloperInventoryNode(node) && !deepDeletePrecondition) {
-              throw new Error("Deep inventory result requires a fresh directory identity before removal.")
+              throw new Error(language.t("disk.toast.deepIdentity"))
             }
             const authorization = authorizations.get(node.path)
-            if (!authorization) throw new Error("Delete authorization did not match the reviewed item.")
+            if (!authorization) throw new Error(language.t("disk.toast.authorizationMismatch"))
             return await api.deletePath(node.path, {
               authorization,
               ...(deepDeletePrecondition ? { precondition: deepDeletePrecondition } : {}),
@@ -2258,18 +2280,30 @@ export default function DiskUtilityPage() {
         showToast({
           variant: "success",
           title: physicalAccountingNeedsRefresh
-            ? `Moved ${removed.length} ${removed.length === 1 ? "item" : "items"} to ${nativeTrashName(platform.os)}`
-            : `Moved ${formatBytes(removed.reduce((sum, node) => sum + node.size, 0))} to ${nativeTrashName(platform.os)}`,
+            ? language.t("disk.toast.movedItems", {
+                items: language.plural("disk.count.item", removed.length),
+                trash: nativeTrashName(platform.os),
+              })
+            : language.t("disk.toast.movedBytes", {
+                bytes: formatBytes(removed.reduce((sum, node) => sum + node.size, 0)),
+                trash: nativeTrashName(platform.os),
+              }),
           description: physicalAccountingNeedsRefresh
             ? deepInventoryNeedsRefresh
-              ? "A selected path changed the deep artifact inventory. DiskLizard is rebuilding the full map before reporting disk space."
+              ? language.t("disk.toast.batchDeep")
               : knownSharedStorage
-                ? "Some paths share file allocation. DiskLizard is recomputing the map before reporting allocation."
-                : "This scan could not verify shared file allocation. DiskLizard is recomputing the map before reporting allocation."
-            : `${removed.length} ${removed.length === 1 ? "item" : "items"} moved to ${nativeTrashName(platform.os)}`,
+                ? language.t("disk.toast.batchShared")
+                : language.t("disk.toast.batchUnverified")
+            : language.t("disk.toast.batchMoved", {
+                items: language.plural("disk.count.item", removed.length),
+                trash: nativeTrashName(platform.os),
+              }),
           actions: [
-            { label: `Show in ${nativeTrashName(platform.os)}`, onClick: () => void openTrash() },
-            { label: "Rescan", onClick: () => void rescanCurrent() },
+            {
+              label: language.t("disk.toast.showTrash", { trash: nativeTrashName(platform.os) }),
+              onClick: () => void openTrash(),
+            },
+            { label: language.t("disk.common.rescan"), onClick: () => void rescanCurrent() },
           ],
         })
       }
@@ -2300,14 +2334,14 @@ export default function DiskUtilityPage() {
         const first = retryableFailures[0].error
         showToast({
           variant: "error",
-          title: `${retryableFailures.length} ${retryableFailures.length === 1 ? "item" : "items"} could not be removed`,
+          title: language.plural("disk.count.removalFailed", retryableFailures.length),
           description: first instanceof Error ? first.message : String(first),
         })
       }
     } catch (error) {
       showToast({
         variant: "error",
-        title: "Delete failed",
+        title: language.t("disk.toast.deleteFailed"),
         description: error instanceof Error ? error.message : String(error),
       })
     } finally {
@@ -2343,11 +2377,11 @@ export default function DiskUtilityPage() {
     const file = event.dataTransfer?.files.item(0)
     const path = file && platform.getPathForFile?.(file)
     if (!file || !path) {
-      showToast({ variant: "error", title: "Could not read dropped item" })
+      showToast({ variant: "error", title: language.t("disk.toast.readDroppedFailed") })
       return
     }
     if ((event.dataTransfer?.files.length ?? 0) > 1) {
-      showToast({ variant: "default", title: "Scanning the first dropped item", description: file.name })
+      showToast({ variant: "default", title: language.t("disk.toast.scanningFirstDrop"), description: file.name })
     }
     await startScan(path, file.name || path.split(/[/\\]/).pop() || path, driveForPath(path, drives(), platform.os))
   }
@@ -2495,8 +2529,8 @@ export default function DiskUtilityPage() {
             <span class="dl-pulse dl-accent-text mx-auto grid size-16 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
               <Icon name="folder-add-left" class="size-6" />
             </span>
-            <p class="mt-5 text-20-medium tracking-[-0.03em] text-text-strong">Drop to scan</p>
-            <p class="mt-2 text-12-regular text-text-weak">Folders, volumes, and individual files are supported.</p>
+            <p class="mt-5 text-20-medium tracking-[-0.03em] text-text-strong">{language.t("disk.drop.title")}</p>
+            <p class="mt-2 text-12-regular text-text-weak">{language.t("disk.drop.body")}</p>
           </div>
         </div>
       </Show>
@@ -2511,23 +2545,25 @@ export default function DiskUtilityPage() {
           type="button"
           data-disk-navigation-home
           class="dl-touch-target group flex min-h-10 shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
-          aria-label="Back to volumes"
+          aria-label={language.t("disk.top.backToVolumes")}
           onClick={() => backToDrives()}
         >
           <span class="dl-mark dl-accent-text relative grid size-7 place-items-center rounded-full" aria-hidden="true">
             <span class="size-2 rounded-full bg-current" />
           </span>
-          <span class="dl-brand-name text-14-semibold tracking-[-0.02em] text-text-strong">DiskLizard</span>
+          <span class="dl-brand-name text-14-semibold tracking-[-0.02em] text-text-strong">
+            {language.t("disk.brand")}
+          </span>
         </button>
 
         <Show when={view() === "scan" && crumbs().length > 0}>
           <span class="h-4 w-px bg-border-weaker-base" aria-hidden />
           <Button class="dl-touch-target" variant="ghost" size="small" icon="chevron-left" onClick={() => goUp()}>
-            {crumbs().length <= 1 ? "Volumes" : "Back"}
+            {crumbs().length <= 1 ? language.t("disk.common.volumes") : language.t("disk.common.back")}
           </Button>
           <nav
             class="dl-breadcrumbs flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            aria-label="Current location"
+            aria-label={language.t("disk.top.currentLocation")}
           >
             <For each={crumbs()}>
               {(crumb, i) => (
@@ -2557,10 +2593,12 @@ export default function DiskUtilityPage() {
               variant="ghost"
               size="small"
               icon={currentScanPinned() ? "circle-check" : "plus-small"}
-              aria-label={currentScanPinned() ? "Remove this saved location" : "Save this scan location"}
+              aria-label={currentScanPinned() ? language.t("disk.top.unsave") : language.t("disk.top.save")}
               onClick={() => togglePinnedLocation(scanSourcePath(), scanLabel())}
             >
-              <span class="dl-responsive-label">{currentScanPinned() ? "Saved" : "Save location"}</span>
+              <span class="dl-responsive-label">
+                {currentScanPinned() ? language.t("disk.common.saved") : language.t("disk.common.saveLocation")}
+              </span>
             </Button>
             <Button
               class="dl-touch-target"
@@ -2568,20 +2606,22 @@ export default function DiskUtilityPage() {
               size="small"
               icon="shield"
               aria-pressed={currentScanLocked()}
-              aria-label={currentScanLocked() ? "Allow cleanup in this tree" : "Protect this tree from cleanup"}
+              aria-label={currentScanLocked() ? language.t("disk.top.unprotect") : language.t("disk.top.protect")}
               onClick={() => toggleProtectedTree(scanSourcePath(), scanLabel())}
             >
-              <span class="dl-responsive-label">{currentScanLocked() ? "Protected" : "Protect"}</span>
+              <span class="dl-responsive-label">
+                {currentScanLocked() ? language.t("disk.detail.protected") : language.t("disk.detail.protect")}
+              </span>
             </Button>
             <Button
               class="dl-touch-target dl-rescan"
               variant="ghost"
               size="small"
               icon="reset"
-              aria-label="Rescan this location"
+              aria-label={language.t("disk.top.rescan")}
               onClick={() => void rescanCurrent()}
             >
-              <span class="dl-responsive-label">Rescan</span>
+              <span class="dl-responsive-label">{language.t("disk.common.rescan")}</span>
             </Button>
           </Show>
           <Show when={view() === "drives" && disk()}>
@@ -2593,7 +2633,7 @@ export default function DiskUtilityPage() {
               onClick={() => void loadDrives()}
               disabled={drivesLoading()}
             >
-              Refresh
+              {language.t("disk.common.refresh")}
             </Button>
           </Show>
         </div>
@@ -2609,8 +2649,8 @@ export default function DiskUtilityPage() {
           fallback={
             <Placeholder
               icon="folder"
-              title="Open DiskLizard on desktop"
-              body="Reading storage requires the secure desktop scanner."
+              title={language.t("disk.top.openDesktop")}
+              body={language.t("disk.top.desktopBody")}
             />
           }
         >
@@ -2619,8 +2659,8 @@ export default function DiskUtilityPage() {
             fallback={
               <Placeholder
                 icon="folder"
-                title="Scanner disconnected"
-                body="The secure desktop bridge is unavailable. Reopen DiskLizard to reconnect it."
+                title={language.t("disk.top.scannerDisconnected")}
+                body={language.t("disk.top.disconnectedBody")}
               />
             }
           >
@@ -2680,10 +2720,10 @@ export default function DiskUtilityPage() {
                               class="absolute inset-0 size-full rounded-full outline-none [touch-action:none] focus-visible:ring-2 focus-visible:ring-text-weak"
                               tabIndex={0}
                               role="region"
-                              aria-roledescription="interactive storage map"
+                              aria-roledescription={language.t("disk.map.role")}
                               aria-describedby="disklizard-orbit-help"
                               aria-controls="disklizard-storage-list"
-                              aria-label={`Storage map for ${scanLabel()}. Select an item to inspect it; use the results list to browse every item.`}
+                              aria-label={language.t("disk.map.label", { label: scanLabel() })}
                               aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home End PageUp PageDown Enter Space C Escape"
                               onPointerDown={beginMapDrag}
                               onPointerMove={moveMapDrag}
@@ -2691,11 +2731,7 @@ export default function DiskUtilityPage() {
                               onPointerCancel={(event) => finishMapDrag(event, true)}
                             />
                             <span id="disklizard-orbit-help" class="sr-only">
-                              Click once to select an item and double-click a folder to open it. Drag a folder to the
-                              review area to select it. Use the Up and Down arrow keys to select an item, Home, End, or
-                              Page Up and Page Down to move through the list, Enter or Right Arrow to open a folder,
-                              Space to preview it, C to add it to review, and Escape or Left Arrow to move up one level.
-                              The results list contains an accessible entry for every item in this map.
+                              {language.t("disk.map.instructions")}
                             </span>
                             <CenterOverlay
                               node={focusNode()}
@@ -2746,42 +2782,42 @@ export default function DiskUtilityPage() {
                             active={scanMode() === "map"}
                             onClick={() => chooseScanMode("map")}
                             icon="dot-grid"
-                            label="Map"
+                            label={language.t("disk.common.map")}
                             shortcut="1"
                           />
                           <SegmentedButton
                             active={scanMode() === "grid"}
                             onClick={() => chooseScanMode("grid")}
                             icon="file-tree"
-                            label="Tiles"
+                            label={language.t("disk.common.tiles")}
                             shortcut="2"
                           />
                           <SegmentedButton
                             active={scanMode() === "list"}
                             onClick={() => chooseScanMode("list")}
                             icon="bullet-list"
-                            label="List"
+                            label={language.t("disk.common.list")}
                             shortcut="3"
                           />
                           <details class="relative">
                             <summary
                               class="dl-touch-target grid size-11 cursor-pointer list-none place-items-center rounded-full text-12-semibold text-text-weak outline-none transition-colors focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
-                              aria-label="Show keyboard shortcuts"
+                              aria-label={language.t("disk.shortcuts.show")}
                             >
                               ?
                             </summary>
                             <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-12-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
-                              <p class="text-12-semibold text-text-strong">Keyboard shortcuts</p>
-                              <p class="mt-2">
-                                ↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump
+                              <p class="text-12-semibold text-text-strong">{language.t("disk.shortcuts.heading")}</p>
+                              <p class="mt-2">{language.t("disk.shortcuts.navigation")}</p>
+                              <p class="mt-1">
+                                {platform.os === "macos"
+                                  ? language.t("disk.shortcuts.openMac")
+                                  : language.t("disk.shortcuts.open")}
                               </p>
                               <p class="mt-1">
-                                ← / Escape goes up · → / Enter opens · Space previews
-                                {platform.os === "macos" ? " with Quick Look" : ""} · C selects for review · L protects
-                                from cleanup
-                              </p>
-                              <p class="mt-1">
-                                1 Map · 2 Tiles · 3 List · {platform.os === "macos" ? "⌘" : "Ctrl"}-click reveals
+                                {language.t("disk.shortcuts.views", {
+                                  modifier: platform.os === "macos" ? "⌘" : "Ctrl",
+                                })}
                               </p>
                             </div>
                           </details>
@@ -2807,13 +2843,13 @@ export default function DiskUtilityPage() {
                                   )
                                 : indexFilter.lens === "developer"
                                   ? indexFilter.developerCategory === "all"
-                                    ? "Developer files"
-                                    : DEVELOPER_CATEGORY_LABEL[indexFilter.developerCategory]
+                                    ? language.t("disk.explore.developerFiles")
+                                    : language.t(DEVELOPER_CATEGORY_LABEL[indexFilter.developerCategory])
                                   : indexFilter.lens === "recommendations"
-                                    ? "Recommendations across this scan"
+                                    ? language.t("disk.explore.recommendationsScan")
                                     : indexFilter.lens === "changes"
                                       ? language.t("disk.history.heading")
-                                      : "Folder contents"}
+                                      : language.t("disk.explore.folderContents")}
                             </p>
                             <div class="mt-2 flex min-w-0 items-baseline justify-between gap-4">
                               <h2 class="min-w-0 truncate text-18-medium tracking-[-0.035em] text-text-strong">
@@ -2828,12 +2864,17 @@ export default function DiskUtilityPage() {
                             <p class="mt-1.5 text-12-regular tabular-nums text-text-weak">
                               {indexFilter.lens === "changes" ? (
                                 <>
-                                  {formatCount(indexCount())} {language.t("disk.history.changes")} ·{" "}
-                                  {language.t("disk.history.summary")}
+                                  {language.t("disk.history.changeSummary", {
+                                    changes: language.plural("disk.count.change", indexCount()),
+                                    summary: language.t("disk.history.summary"),
+                                  })}
                                 </>
                               ) : (
                                 <>
-                                  {formatCount(indexCount())} items · {sizeBasisLabel()}
+                                  {language.t("disk.explore.summary", {
+                                    count: language.plural("disk.count.item", indexCount()),
+                                    basis: sizeBasisLabel(),
+                                  })}
                                 </>
                               )}
                             </p>
@@ -2844,30 +2885,30 @@ export default function DiskUtilityPage() {
                                 active={scanMode() === "map"}
                                 onClick={() => chooseScanMode("map")}
                                 icon="dot-grid"
-                                label="Map"
+                                label={language.t("disk.common.map")}
                               />
                               <SegmentedButton
                                 active={scanMode() === "grid"}
                                 onClick={() => chooseScanMode("grid")}
                                 icon="file-tree"
-                                label="Tiles"
+                                label={language.t("disk.common.tiles")}
                               />
-                              <SegmentedButton active icon="bullet-list" label="List" />
+                              <SegmentedButton active icon="bullet-list" label={language.t("disk.common.list")} />
                             </div>
                           </Show>
                         </div>
                         <details class="group mt-4" open={indexFilter.lens !== "all"}>
                           <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 border-b border-border-weaker-base px-1 text-12-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
                             <Icon name="sliders" class="size-3.5" />
-                            <span class="flex-1">Explore this scan</span>
+                            <span class="flex-1">{language.t("disk.explore.heading")}</span>
                             <span class="text-12-regular text-text-weaker">
                               {indexFilter.lens === "all"
-                                ? "Folder contents"
+                                ? language.t("disk.explore.folderContents")
                                 : indexFilter.lens === "developer"
-                                  ? "Developer files"
+                                  ? language.t("disk.explore.developerFiles")
                                   : indexFilter.lens === "changes"
                                     ? language.t("disk.history.summary")
-                                    : "Recommendations"}
+                                    : language.t("disk.common.recommendations")}
                             </span>
                             <Icon
                               name="chevron-down"
@@ -2876,29 +2917,29 @@ export default function DiskUtilityPage() {
                           </summary>
                           <div
                             role="group"
-                            aria-label="Choose what to show"
+                            aria-label={language.t("disk.explore.choose")}
                             class="mt-2 grid grid-cols-2 sm:grid-cols-4"
                           >
                             <IndexLensButton
                               active={indexFilter.lens === "all"}
                               icon="bullet-list"
-                              label="All"
+                              label={language.t("disk.common.all")}
                               onClick={() => chooseLens("all")}
                             />
                             <IndexLensButton
                               active={indexFilter.lens === "developer"}
                               icon="code-lines"
-                              label="Developer"
+                              label={language.t("disk.common.developer")}
                               onClick={() => chooseLens("developer")}
                             />
                             <IndexLensButton
                               active={indexFilter.lens === "recommendations"}
                               icon="shield"
-                              label="Recommendations"
+                              label={language.t("disk.common.recommendations")}
                               disabled={physicalCloneAccountingUncertain()}
                               title={
                                 physicalCloneAccountingUncertain()
-                                  ? "Reclaim estimates wait for verified clone metadata."
+                                  ? language.t("disk.explore.reclaimWait")
                                   : undefined
                               }
                               onClick={() => chooseLens("recommendations")}
@@ -2927,11 +2968,11 @@ export default function DiskUtilityPage() {
                           <Show when={developer().buckets.length > 0}>
                             <div
                               class="mt-2 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
-                              aria-label="Developer categories"
+                              aria-label={language.t("disk.explore.developerCategories")}
                             >
                               <DeveloperCategoryButton
                                 active={indexFilter.developerCategory === "all"}
-                                label="All developer files"
+                                label={language.t("disk.explore.allDeveloper")}
                                 bytes={developer().totalBytes}
                                 onClick={() => chooseDeveloperCategory("all")}
                               />
@@ -2939,7 +2980,7 @@ export default function DiskUtilityPage() {
                                 {(bucket) => (
                                   <DeveloperCategoryButton
                                     active={indexFilter.developerCategory === bucket.category}
-                                    label={DEVELOPER_CATEGORY_LABEL[bucket.category]}
+                                    label={language.t(DEVELOPER_CATEGORY_LABEL[bucket.category])}
                                     bytes={bucket.bytes}
                                     onClick={() => chooseDeveloperCategory(bucket.category)}
                                   />
@@ -2969,11 +3010,13 @@ export default function DiskUtilityPage() {
                             <div
                               class="mt-3 flex gap-2 rounded-xl border border-border-warning-base/55 bg-surface-warning-weak/45 px-3 py-2.5"
                               role="note"
-                              aria-label="Physical storage accounting is unverified"
+                              aria-label={language.t("disk.explore.physicalLabel")}
                             >
                               <Icon name="shield" class="mt-0.5 size-3.5 shrink-0 text-icon-warning-base" />
                               <div>
-                                <p class="text-12-semibold text-text-strong">Physical reclaim estimate paused</p>
+                                <p class="text-12-semibold text-text-strong">
+                                  {language.t("disk.explore.physicalPaused")}
+                                </p>
                                 <p class="mt-1 text-12-regular leading-relaxed text-text-weak">{warning()}</p>
                               </div>
                             </div>
@@ -2985,10 +3028,12 @@ export default function DiskUtilityPage() {
                               <summary class="dl-touch-target flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-xl px-3 py-2 outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
                                 <Icon name="warning" class="size-3.5 shrink-0 text-icon-warning-base" />
                                 <span class="min-w-0 flex-1 text-12-semibold text-text-strong">
-                                  {formatCount(issues().unreadableCount)} unreadable
-                                  {issues().unreadableCount === 1 ? " location" : " locations"}
+                                  {language.t("disk.explore.unreadable", {
+                                    count: formatCount(issues().unreadableCount),
+                                    locations: language.plural("disk.count.locationNoun", issues().unreadableCount),
+                                  })}
                                 </span>
-                                <span class="text-12-regular text-text-weak">Totals may be low</span>
+                                <span class="text-12-regular text-text-weak">{language.t("disk.explore.totalsLow")}</span>
                                 <Icon
                                   name="chevron-down"
                                   class="size-3 shrink-0 text-icon-weak transition-transform duration-150 group-open:rotate-180"
@@ -3007,10 +3052,13 @@ export default function DiskUtilityPage() {
                                     icon="square-arrow-top-right"
                                     onClick={() => void openDiskAccessSettings()}
                                   >
-                                    Open privacy settings
+                                    {language.t("disk.explore.openPrivacy")}
                                   </Button>
                                 </Show>
-                                <ul class="mt-2 space-y-1" aria-label="Unreadable locations sampled during this scan">
+                                <ul
+                                  class="mt-2 space-y-1"
+                                  aria-label={language.t("disk.explore.unreadableList")}
+                                >
                                   <For each={issues().samplePaths.slice(0, 5)}>
                                     {(path) => (
                                       <li class="truncate font-mono text-12-regular text-text-weaker" title={path}>
@@ -3021,7 +3069,9 @@ export default function DiskUtilityPage() {
                                 </ul>
                                 <Show when={issues().samplePaths.length > 5 || issues().unreadableCount > 5}>
                                   <p class="mt-1.5 text-12-regular text-text-weaker">
-                                    Showing 5 of {formatCount(issues().unreadableCount)} locations
+                                    {language.t("disk.explore.showingUnreadable", {
+                                      count: formatCount(issues().unreadableCount),
+                                    })}
                                   </p>
                                 </Show>
                               </div>
@@ -3202,7 +3252,7 @@ export default function DiskUtilityPage() {
                                             class="flex min-w-0 flex-1 items-center gap-1.5 text-12-regular text-text-weak"
                                             title={
                                               indexFilter.lens === "developer"
-                                                ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? "Inspect this folder before changing it"}\n${entry.node.path}`
+                                                ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? language.t("disk.explore.inspectHint")}\n${entry.node.path}`
                                                 : entry.node.path
                                             }
                                           >
@@ -3217,7 +3267,9 @@ export default function DiskUtilityPage() {
                                             <span class="min-w-0 truncate font-mono">
                                               {truncatePath(entry.node.path, 92)}
                                               <Show when={entry.displaySize !== entry.node.size}>
-                                                {` · ${shortBytes(entry.node.size)} including nested categories`}
+                                                {language.t("disk.explore.nestedCategories", {
+                                                  size: shortBytes(entry.node.size),
+                                                })}
                                               </Show>
                                             </span>
                                           </span>
@@ -3235,7 +3287,9 @@ export default function DiskUtilityPage() {
                                                   "dl-accent-text":
                                                     indexFilter.lens === "developer" && isDormant(changedAt()),
                                                 }}
-                                                title={`Last changed ${new Date(changedAt()).toLocaleString()}`}
+                                                title={language.t("disk.explore.lastChanged", {
+                                                  date: new Date(changedAt()).toLocaleString(),
+                                                })}
                                               >
                                                 {formatLastChanged(changedAt())}
                                               </span>
@@ -3259,8 +3313,8 @@ export default function DiskUtilityPage() {
                                       aria-pressed={isCollected(entry.node.path)}
                                       aria-label={
                                         isCollected(entry.node.path)
-                                          ? `Remove ${entry.node.name} from review`
-                                          : `Select ${entry.node.name} for review`
+                                          ? language.t("disk.explore.removeReview", { name: entry.node.name })
+                                          : language.t("disk.explore.selectReview", { name: entry.node.name })
                                       }
                                     >
                                       <Icon
@@ -3289,9 +3343,11 @@ export default function DiskUtilityPage() {
                                 <Icon name="window-cursor" class="size-4" />
                               </span>
                               <div class="min-w-0">
-                                <p class="text-12-semibold text-text-strong">Select an item to inspect it</p>
+                                <p class="text-12-semibold text-text-strong">
+                                  {language.t("disk.explore.selectTitle")}
+                                </p>
                                 <p class="mt-0.5 truncate text-12-regular text-text-weak">
-                                  Select an item, then press C or drag it here to review it
+                                  {language.t("disk.explore.selectBody")}
                                 </p>
                               </div>
                             </div>
@@ -3379,7 +3435,7 @@ export default function DiskUtilityPage() {
             onPrevious={previewPosition() > 0 ? () => previewAdjacent(-1) : undefined}
             onNext={previewPosition() + 1 < previewableEntries().length ? () => previewAdjacent(1) : undefined}
             onReveal={() => void reveal(node().path)}
-            systemPreviewLabel={platform.os === "macos" ? "Quick Look" : undefined}
+            systemPreviewLabel={platform.os === "macos" ? language.t("disk.common.quickLook") : undefined}
             onSystemPreview={platform.os === "macos" ? () => void openSystemPreview(node()) : undefined}
             onOpen={() => void openInDefaultApp(node())}
           />

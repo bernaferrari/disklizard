@@ -1,7 +1,7 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { createMemo, Show } from "solid-js"
-import { formatBytes, formatCount, truncatePath } from "./format"
+import { formatBytes, truncatePath } from "./format"
 import { useLanguage } from "./runtime"
 import type { ScanHistoryChange, ScanHistoryEntry } from "./scan-history"
 import { VirtualRows } from "./DiskUtilityVirtualList"

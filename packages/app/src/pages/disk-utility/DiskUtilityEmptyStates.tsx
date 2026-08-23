@@ -3,8 +3,10 @@ import { Icon, type IconProps } from "@opencode-ai/ui/icon"
 import { Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes, formatPct } from "./format"
+import { diskLanguageText, useLanguage } from "./runtime"
 
 export function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {
+  const language = useLanguage()
   return (
     <div class="px-5 py-6">
       <Show
@@ -17,13 +19,15 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
               <span class="mt-2 block h-3 w-52 rounded-sm bg-surface-raised-base/70" />
             </span>
             <span class="hidden h-1.5 w-[148px] rounded-full bg-surface-raised-base sm:block" />
-            <span class="text-13-regular text-text-weaker">Reading volumes</span>
+            <span class="text-13-regular text-text-weaker">{language.t("disk.drive.reading")}</span>
           </div>
         }
       >
-        <h2 class="text-14-medium text-text-strong">{props.error ? "Volumes could not be read" : "No volumes yet"}</h2>
+        <h2 class="text-14-medium text-text-strong">
+          {props.error ? language.t("disk.drive.readFailed") : language.t("disk.drive.none")}
+        </h2>
         <p class="mt-1 max-w-[48ch] text-13-regular leading-relaxed text-text-weak">
-          {props.error ?? "Pick a folder and DiskLizard will map it without changing a thing."}
+          {props.error ?? language.t("disk.drive.pickFolder")}
         </p>
         <Button
           data-disk-primary-action
@@ -33,7 +37,7 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
           icon="folder-add-left"
           onClick={props.onChoose}
         >
-          Scan Folder…
+          {language.t("disk.drive.scanFolder")}
         </Button>
       </Show>
     </div>
@@ -41,22 +45,23 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
 }
 
 export function IndexEmpty(props: { filtered: boolean; onReset: () => void }) {
+  const language = useLanguage()
   return (
     <div class="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
       <span class="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
         <Icon name={props.filtered ? "magnifying-glass" : "folder"} class="size-4" />
       </span>
       <h3 class="mt-4 text-13-semibold text-text-strong">
-        {props.filtered ? "Nothing matches these filters" : "This folder is empty"}
+        {props.filtered ? language.t("disk.drive.emptyFiltered") : language.t("disk.drive.emptyFolder")}
       </h3>
       <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
         {props.filtered
-          ? "Clear the filters to show every item in this folder."
-          : "There are no files or folders here."}
+          ? language.t("disk.drive.clearFilters")
+          : language.t("disk.drive.noItems")}
       </p>
       <Show when={props.filtered}>
         <Button class="dl-touch-target mt-4" size="small" variant="secondary" onClick={props.onReset}>
-          Show everything
+          {language.t("disk.drive.showEverything")}
         </Button>
       </Show>
     </div>
@@ -98,7 +103,7 @@ export function centerOverlayBehavior(
     canOpen: !!node?.isDir && !node.isOther && !isInventoryOnly && canOpen,
     inventoryOnly: isInventoryOnly,
     ...(isInventoryOnly
-      ? { reviewOnlyCopy: "Deep inventory result · review it from the results list. It can’t be opened in the map." }
+      ? { reviewOnlyCopy: diskLanguageText("disk.drive.inventoryOnly") }
       : {}),
   }
 }
@@ -111,6 +116,7 @@ export function CenterOverlay(props: {
   inventoryOnly: boolean
   onOpen: () => void
 }) {
+  const language = useLanguage()
   const behavior = () => centerOverlayBehavior(props.node, props.canOpen, props.inventoryOnly)
   return (
     <div class="pointer-events-none absolute inset-0 grid place-items-center">
@@ -125,7 +131,7 @@ export function CenterOverlay(props: {
           </p>
           <Show when={props.parentSize && props.node!.path}>
             <p class="mt-2 text-13-regular tabular-nums text-text-weaker">
-              {formatPct(props.node!.size, props.parentSize)} of this level
+              {formatPct(props.node!.size, props.parentSize)} {language.t("disk.drive.ofLevel")}
             </p>
           </Show>
           <Show when={behavior().canOpen}>
@@ -134,7 +140,7 @@ export function CenterOverlay(props: {
               class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
               onClick={props.onOpen}
             >
-              Open folder <Icon name="arrow-right" class="size-3" />
+              {language.t("disk.common.openFolder")} <Icon name="arrow-right" class="size-3" />
             </button>
           </Show>
           <Show when={behavior().inventoryOnly}>

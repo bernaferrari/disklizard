@@ -9,17 +9,18 @@ use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
+mod accounting;
 mod classification;
 mod clone_metadata;
 mod config;
 mod filesystem;
+mod retention;
 use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
 };
 use clone_metadata::{
-    compare_path_segments as compare_lexical_path_segments, compare_utf16 as compare_utf16_strings,
-    emitted_evidence as emitted_clone_evidence,
+    compare_utf16 as compare_utf16_strings, emitted_evidence as emitted_clone_evidence,
     evidence_from_attributes as clone_evidence_from_attributes,
 };
 #[cfg(any(target_os = "macos", test))]
@@ -29,6 +30,7 @@ use clone_metadata::{EF_MAY_SHARE_BLOCKS, EF_SHARES_ALL_BLOCKS};
 #[cfg(target_os = "windows")]
 use filesystem::metadata_kind;
 use filesystem::read_entries_portable;
+use retention::ChildRetention;
 
 const MAX_DISCOVERIES: usize = 96;
 const MAX_FILE_DISCOVERIES: usize = 24;
@@ -469,16 +471,6 @@ fn is_worse_developer_artifact(left: &DeveloperArtifact, right: &DeveloperArtifa
     compare_developer_artifact_retention(left, right) == std::cmp::Ordering::Greater
 }
 
-/// Visual tree ties need the same deterministic ordering as the TypeScript
-/// fallback. Without it, native selection depended on directory enumeration
-/// and `select_nth_unstable` scheduling, producing different visible maps.
-fn compare_compact_node_retention(left: &CompactNode, right: &CompactNode) -> std::cmp::Ordering {
-    right
-        .size
-        .cmp(&left.size)
-        .then_with(|| compare_utf16_strings(&left.name, &right.name))
-}
-
 /// A record is not safely deletable merely because it was classified. Its
 /// opaque direct-directory identity must be present and non-zero so the
 /// desktop can reject replacements between scan and Trash.
@@ -562,140 +554,6 @@ struct Measurement {
     signatures: Option<Vec<String>>,
 }
 
-struct ChildRetention {
-    max_children: usize,
-    top: Vec<CompactNode>,
-    preserved: Vec<CompactNode>,
-    hidden_sample: Vec<CompactNode>,
-    hidden_count: usize,
-    hidden_size: u64,
-    hidden_logical_size: u64,
-    hidden_modified_at: Option<u64>,
-    hidden_has_shared_storage_risk: bool,
-    omitted_has_shared_storage_risk: bool,
-    total: u64,
-    logical_size: u64,
-    modified_at: Option<u64>,
-    has_shared_storage_risk: bool,
-}
-
-impl ChildRetention {
-    fn new(max_children: usize) -> Self {
-        Self {
-            max_children,
-            top: Vec::with_capacity(max_children.saturating_add(1)),
-            preserved: Vec::new(),
-            hidden_sample: Vec::with_capacity(13),
-            hidden_count: 0,
-            hidden_size: 0,
-            hidden_logical_size: 0,
-            hidden_modified_at: None,
-            hidden_has_shared_storage_risk: false,
-            omitted_has_shared_storage_risk: false,
-            total: 0,
-            logical_size: 0,
-            modified_at: None,
-            has_shared_storage_risk: false,
-        }
-    }
-
-    fn insert_sorted(
-        nodes: &mut Vec<CompactNode>,
-        node: CompactNode,
-        limit: usize,
-    ) -> Option<CompactNode> {
-        let mut low = 0;
-        let mut high = nodes.len();
-        while low < high {
-            let middle = (low + high) / 2;
-            if compare_compact_node_retention(&node, &nodes[middle]).is_lt() {
-                high = middle;
-            } else {
-                low = middle + 1;
-            }
-        }
-        nodes.insert(low, node);
-        (nodes.len() > limit).then(|| nodes.pop().expect("bounded child retention overflow"))
-    }
-
-    fn push_hidden(&mut self, node: CompactNode) {
-        self.hidden_count += 1;
-        self.hidden_size = self.hidden_size.saturating_add(node.size);
-        self.hidden_logical_size = self
-            .hidden_logical_size
-            .saturating_add(node.logical_size.unwrap_or(node.size));
-        self.hidden_modified_at = latest(self.hidden_modified_at, node.modified_at);
-        self.hidden_has_shared_storage_risk |= node.has_shared_storage_risk;
-        if let Some(omitted) = Self::insert_sorted(&mut self.hidden_sample, node, 12) {
-            self.omitted_has_shared_storage_risk |= omitted.has_shared_storage_risk;
-        }
-    }
-
-    fn push(&mut self, node: CompactNode, preserve_names: &HashSet<String>) {
-        if node.size == 0
-            && node.children.is_empty()
-            && node.hard_link.is_none()
-            && !node.has_shared_storage_risk
-        {
-            return;
-        }
-        self.total = self.total.saturating_add(node.size);
-        self.logical_size = self
-            .logical_size
-            .saturating_add(node.logical_size.unwrap_or(node.size));
-        self.modified_at = latest(self.modified_at, node.modified_at);
-        self.has_shared_storage_risk |= node.has_shared_storage_risk;
-
-        let Some(overflow) = Self::insert_sorted(&mut self.top, node, self.max_children) else {
-            return;
-        };
-        if contains_preserved(&overflow, preserve_names) {
-            self.preserved.push(overflow);
-        } else {
-            self.push_hidden(overflow);
-        }
-    }
-
-    fn finish(mut self, state: &State) -> Vec<CompactNode> {
-        self.preserved
-            .sort_unstable_by(compare_compact_node_retention);
-        self.top.extend(self.preserved);
-        if self.hidden_size == 0 {
-            if self.hidden_has_shared_storage_risk {
-                state.mark_shared_storage_evidence_partial();
-            }
-            return self.top;
-        }
-        if self.omitted_has_shared_storage_risk {
-            state.mark_shared_storage_evidence_partial();
-        }
-        self.top.push(CompactNode {
-            name: format!("Other ({} items)", self.hidden_count),
-            size: self.hidden_size,
-            logical_size: (self.hidden_logical_size != self.hidden_size)
-                .then_some(self.hidden_logical_size),
-            modified_at: self.hidden_modified_at,
-            hard_link: None,
-            clone_evidence: None,
-            clone_accounting: None,
-            clone_metadata: None,
-            shared_storage_evidence: None,
-            developer_artifact_inventory: None,
-            hard_link_identity: None,
-            reported_hard_link_count: None,
-            hard_link_physical_size: None,
-            has_shared_storage_risk: self.hidden_has_shared_storage_risk,
-            is_dir: true,
-            children: self.hidden_sample,
-            is_other: true,
-            is_collapsed: false,
-            signatures: None,
-            scan_issues: None,
-        });
-        self.top
-    }
-}
-
 // Ordered by how conservatively a whole scan must be presented. One
 // unobservable subtree means the root can no longer promise clone awareness,
 // even when another directory returned APFS metadata successfully.
@@ -752,15 +610,6 @@ fn clone_metadata_capability(status: u8) -> CloneMetadataCapability {
     }
 }
 
-#[derive(Clone)]
-struct CloneCandidate {
-    indices: Vec<usize>,
-    sort_key: Vec<String>,
-    reported_full_clone_count: u32,
-    size: u64,
-    logical_size: u64,
-}
-
 struct DeveloperArtifactObservation<'a> {
     path: &'a Path,
     name: &'a str,
@@ -775,25 +624,6 @@ struct DirectoryWalk {
     directory: Directory,
     directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
     inventory_scope_allowed: bool,
-}
-
-#[derive(Default)]
-struct CloneGroup {
-    candidates: Vec<CloneCandidate>,
-    /// Another visible pathname has this clone ID, but does not meet every
-    /// full-clone invariant. Its presence makes the group incomplete.
-    has_non_candidate_member: bool,
-}
-
-#[derive(Clone)]
-struct HardLinkCandidate {
-    indices: Vec<usize>,
-    sort_key: Vec<String>,
-    reported_hard_link_count: u64,
-    physical_size: u64,
-    logical_size: u64,
-    charged_size: u64,
-    hard_link: HardLink,
 }
 
 struct Directory {
@@ -1015,8 +845,7 @@ impl Scanner {
         })?;
 
         if self.state.request.size_mode == SizeMode::Physical {
-            normalize_complete_hard_link_groups(&mut root);
-            normalize_complete_clone_groups(&mut root);
+            accounting::normalize_complete_groups(&mut root);
             root.shared_storage_evidence = Some(self.state.shared_storage_evidence());
         }
         root.clone_metadata = Some(self.state.clone_metadata_capability());
@@ -1409,22 +1238,12 @@ impl State {
         let retention = retention
             .into_inner()
             .expect("child retention lock poisoned");
-        let total = retention.total;
-        let logical_size = retention.logical_size;
-        let modified_at = retention.modified_at;
-        let has_shared_storage_risk = retention.has_shared_storage_risk;
-        let children = retention.finish(self);
+        let retained = retention.finish(name);
+        if retained.evidence_became_partial {
+            self.mark_shared_storage_evidence_partial();
+        }
         self.emit_progress(path, None, false, false);
-        let mut node = CompactNode::directory(
-            name,
-            total,
-            logical_size,
-            modified_at,
-            children,
-            false,
-            None,
-        );
-        node.has_shared_storage_risk = has_shared_storage_risk;
+        let node = retained.node;
         if inventory_scope_allowed {
             self.record_developer_artifact(DeveloperArtifactObservation {
                 path,
@@ -1849,414 +1668,6 @@ pub(crate) fn metadata_clone_evidence() -> CloneEvidence {
     }
 }
 
-/// Hard-link discovery happens during parallel traversal, so the first
-/// pathname to claim an inode is inherently scheduling-dependent. Reassign
-/// that one physical charge to the lexical first path only when the entire
-/// inode group is provably represented in the retained tree. Anything pruned,
-/// partial, or internally inconsistent keeps its original safe accounting.
-fn normalize_complete_hard_link_groups(root: &mut CompactNode) {
-    let mut groups = HashMap::<(u64, u64), Vec<HardLinkCandidate>>::new();
-    let mut affected_directories = HashSet::<Vec<usize>>::new();
-    collect_hard_link_candidates(root, &mut Vec::new(), &mut Vec::new(), &mut groups);
-
-    for members in groups.values_mut() {
-        let Some(first) = members.first() else {
-            continue;
-        };
-        // Copy the invariants out before ordering the candidates. Apart from
-        // avoiding a borrow across the sort, this makes it explicit that one
-        // agreed physical/logical shape is required for the whole group.
-        let reported_hard_link_count = first.reported_hard_link_count;
-        let physical_size = first.physical_size;
-        let logical_size = first.logical_size;
-        let Some(expected_count) = usize::try_from(reported_hard_link_count)
-            .ok()
-            .filter(|count| *count > 1)
-        else {
-            continue;
-        };
-        let distinct_paths = members
-            .iter()
-            .map(|member| member.indices.clone())
-            .collect::<HashSet<_>>();
-        let primary_count = members
-            .iter()
-            .filter(|member| member.hard_link == HardLink::Primary)
-            .count();
-        if members.len() != expected_count
-            || distinct_paths.len() != members.len()
-            || primary_count != 1
-            || members.iter().any(|member| {
-                member.reported_hard_link_count != reported_hard_link_count
-                    || member.physical_size != physical_size
-                    || member.logical_size != logical_size
-                    || member.charged_size
-                        != if member.hard_link == HardLink::Primary {
-                            physical_size
-                        } else {
-                            0
-                        }
-            })
-        {
-            continue;
-        }
-
-        let Some(current_primary) = members
-            .iter()
-            .find(|member| member.hard_link == HardLink::Primary)
-            .cloned()
-        else {
-            continue;
-        };
-        members.sort_unstable_by(|left, right| {
-            compare_lexical_path_segments(&left.sort_key, &right.sort_key)
-        });
-        let desired_primary = members[0].clone();
-
-        if current_primary.indices != desired_primary.indices {
-            if !can_transfer_hard_link_charge(
-                root,
-                &current_primary.indices,
-                &desired_primary.indices,
-                physical_size,
-            ) {
-                continue;
-            }
-            subtract_hard_link_charge(root, &current_primary.indices, physical_size);
-            add_hard_link_charge(root, &desired_primary.indices, physical_size);
-            mark_affected_hard_link_directories(
-                &mut affected_directories,
-                &current_primary.indices,
-            );
-            mark_affected_hard_link_directories(
-                &mut affected_directories,
-                &desired_primary.indices,
-            );
-        }
-
-        for member in members.iter() {
-            let is_primary = member.indices == desired_primary.indices;
-            let Some(node) = compact_node_mut(root, &member.indices) else {
-                continue;
-            };
-            node.size = if is_primary { physical_size } else { 0 };
-            node.logical_size = (logical_size != node.size).then_some(logical_size);
-            node.hard_link = Some(if is_primary {
-                HardLink::Primary
-            } else {
-                HardLink::Secondary
-            });
-        }
-    }
-
-    // Traversal initially orders nodes by whichever parallel task charged the
-    // inode. Re-sort only branches whose charge moved, bottom-up, so the final
-    // compact tree (not just its primary marker) is deterministic.
-    if !affected_directories.is_empty() {
-        sort_affected_hard_link_directories(root, &mut Vec::new(), &affected_directories);
-    }
-}
-
-fn mark_affected_hard_link_directories(
-    affected_directories: &mut HashSet<Vec<usize>>,
-    indices: &[usize],
-) {
-    // `indices` points to a leaf; each strict prefix is a directory whose
-    // child ordering can change after the charge moves.
-    for depth in 0..indices.len() {
-        affected_directories.insert(indices[..depth].to_vec());
-    }
-}
-
-fn sort_affected_hard_link_directories(
-    node: &mut CompactNode,
-    indices: &mut Vec<usize>,
-    affected_directories: &HashSet<Vec<usize>>,
-) {
-    for (index, child) in node.children.iter_mut().enumerate() {
-        indices.push(index);
-        sort_affected_hard_link_directories(child, indices, affected_directories);
-        indices.pop();
-    }
-    if affected_directories.contains(indices) {
-        node.children.sort_unstable_by(|left, right| {
-            right
-                .size
-                .cmp(&left.size)
-                .then_with(|| compare_utf16_strings(&left.name, &right.name))
-        });
-    }
-}
-
-fn collect_hard_link_candidates(
-    node: &CompactNode,
-    indices: &mut Vec<usize>,
-    sort_key: &mut Vec<String>,
-    groups: &mut HashMap<(u64, u64), Vec<HardLinkCandidate>>,
-) {
-    // `Other` is a visualization wrapper, not part of a retained pathname.
-    // Its synthetic label must never participate in lexical primary choice.
-    let pushed_name = !node.is_other;
-    if pushed_name {
-        sort_key.push(node.name.clone());
-    }
-    if !node.is_dir {
-        if let (
-            Some(identity),
-            Some(reported_hard_link_count),
-            Some(physical_size),
-            Some(hard_link),
-        ) = (
-            node.hard_link_identity,
-            node.reported_hard_link_count,
-            node.hard_link_physical_size,
-            node.hard_link,
-        ) {
-            groups.entry(identity).or_default().push(HardLinkCandidate {
-                indices: indices.clone(),
-                sort_key: sort_key.clone(),
-                reported_hard_link_count,
-                physical_size,
-                logical_size: node.logical_size.unwrap_or(node.size),
-                charged_size: node.size,
-                hard_link,
-            });
-        }
-    }
-    for (index, child) in node.children.iter().enumerate() {
-        indices.push(index);
-        collect_hard_link_candidates(child, indices, sort_key, groups);
-        indices.pop();
-    }
-    if pushed_name {
-        sort_key.pop();
-    }
-}
-
-fn can_transfer_hard_link_charge(
-    root: &CompactNode,
-    source: &[usize],
-    destination: &[usize],
-    size: u64,
-) -> bool {
-    if root.size < size {
-        return false;
-    }
-    let mut source_node = root;
-    for index in source {
-        source_node = &source_node.children[*index];
-        if source_node.is_dir && source_node.size < size {
-            return false;
-        }
-    }
-
-    // Shared ancestors (including the root) are reduced before they are
-    // increased, so only the destination-only branch can overflow.
-    let mut destination_node = root;
-    let mut shared_prefix = true;
-    for (depth, index) in destination.iter().enumerate() {
-        destination_node = &destination_node.children[*index];
-        shared_prefix &= source.get(depth) == Some(index);
-        if destination_node.is_dir
-            && !shared_prefix
-            && destination_node.size > u64::MAX.saturating_sub(size)
-        {
-            return false;
-        }
-    }
-    true
-}
-
-fn subtract_hard_link_charge(root: &mut CompactNode, indices: &[usize], size: u64) {
-    adjust_hard_link_directory_size(root, -(size as i128));
-    let mut current = root;
-    for index in indices {
-        current = &mut current.children[*index];
-        if current.is_dir {
-            adjust_hard_link_directory_size(current, -(size as i128));
-        }
-    }
-}
-
-fn add_hard_link_charge(root: &mut CompactNode, indices: &[usize], size: u64) {
-    adjust_hard_link_directory_size(root, size as i128);
-    let mut current = root;
-    for index in indices {
-        current = &mut current.children[*index];
-        if current.is_dir {
-            adjust_hard_link_directory_size(current, size as i128);
-        }
-    }
-}
-
-fn adjust_hard_link_directory_size(node: &mut CompactNode, delta: i128) {
-    let logical_size = node.logical_size.unwrap_or(node.size);
-    node.size = if delta < 0 {
-        node.size - (-delta as u64)
-    } else {
-        node.size + delta as u64
-    };
-    node.logical_size = (logical_size != node.size).then_some(logical_size);
-}
-
-/// Charge a complete APFS full-clone data stream once for map visualization,
-/// but never treat that charge as a deletion/reclaim estimate. This is allowed
-/// only when the filesystem proves every member is visible in this tree. A
-/// partial scan, an `Other`-trimmed tree, a missing clone ID, or a conflicting
-/// count cannot make that claim and stays untouched.
-fn normalize_complete_clone_groups(root: &mut CompactNode) {
-    let mut groups = HashMap::<String, CloneGroup>::new();
-    collect_clone_candidates(root, &mut Vec::new(), &mut Vec::new(), &mut groups);
-
-    for group in groups.values_mut() {
-        if group.has_non_candidate_member {
-            continue;
-        }
-        let members = &mut group.candidates;
-        let Some(expected_count) = u32::try_from(members.len()).ok().filter(|count| *count > 1)
-        else {
-            continue;
-        };
-        let Some(first) = members.first() else {
-            continue;
-        };
-        let distinct_paths = members
-            .iter()
-            .map(|member| member.indices.clone())
-            .collect::<HashSet<_>>();
-        if first.size == 0
-            || distinct_paths.len() != members.len()
-            || members.iter().any(|member| {
-                member.reported_full_clone_count != expected_count
-                    || member.size != first.size
-                    || member.logical_size != first.logical_size
-            })
-            || members
-                .iter()
-                .skip(1)
-                .any(|member| !can_subtract_clone_bytes(root, &member.indices, member.size))
-        {
-            continue;
-        }
-
-        members.sort_unstable_by(|left, right| {
-            compare_lexical_path_segments(&left.sort_key, &right.sort_key)
-        });
-        let primary = &members[0];
-        if let Some(node) = compact_node_mut(root, &primary.indices) {
-            node.clone_accounting = Some(CloneAccounting::Primary);
-        }
-
-        for member in members.iter().skip(1) {
-            let Some(node) = compact_node_mut(root, &member.indices) else {
-                continue;
-            };
-            let logical_size = node.logical_size.unwrap_or(node.size);
-            node.size = 0;
-            node.logical_size = Some(logical_size);
-            node.clone_accounting = Some(CloneAccounting::Secondary);
-            subtract_clone_bytes(root, &member.indices, member.size);
-        }
-    }
-}
-
-fn collect_clone_candidates(
-    node: &CompactNode,
-    indices: &mut Vec<usize>,
-    sort_key: &mut Vec<String>,
-    groups: &mut HashMap<String, CloneGroup>,
-) {
-    // See hard-link collection above: an `Other` wrapper is not a real path
-    // segment, so do not let it select an APFS clone-accounting primary.
-    let pushed_name = !node.is_other;
-    if pushed_name {
-        sort_key.push(node.name.clone());
-    }
-    if !node.is_dir {
-        match node.clone_evidence.as_ref() {
-            Some(CloneEvidence::SharesAllBlocks {
-                clone_id: Some(clone_id),
-                reported_full_clone_count: Some(reported_full_clone_count),
-            }) if node.hard_link.is_none() && !clone_id.is_empty() => {
-                groups
-                    .entry(clone_id.clone())
-                    .or_default()
-                    .candidates
-                    .push(CloneCandidate {
-                        indices: indices.clone(),
-                        sort_key: sort_key.clone(),
-                        reported_full_clone_count: *reported_full_clone_count,
-                        size: node.size,
-                        logical_size: node.logical_size.unwrap_or(node.size),
-                    });
-            }
-            Some(CloneEvidence::SharesAllBlocks {
-                clone_id: Some(clone_id),
-                ..
-            })
-            | Some(CloneEvidence::MayShareBlocks {
-                clone_id: Some(clone_id),
-            }) if !clone_id.is_empty() => {
-                groups
-                    .entry(clone_id.clone())
-                    .or_default()
-                    .has_non_candidate_member = true;
-            }
-            _ => {}
-        }
-    }
-    for (index, child) in node.children.iter().enumerate() {
-        indices.push(index);
-        collect_clone_candidates(child, indices, sort_key, groups);
-        indices.pop();
-    }
-    if pushed_name {
-        sort_key.pop();
-    }
-}
-
-fn compact_node_mut<'a>(
-    node: &'a mut CompactNode,
-    indices: &[usize],
-) -> Option<&'a mut CompactNode> {
-    let mut current = node;
-    for index in indices {
-        current = current.children.get_mut(*index)?;
-    }
-    Some(current)
-}
-
-fn can_subtract_clone_bytes(node: &CompactNode, indices: &[usize], size: u64) -> bool {
-    if node.size < size {
-        return false;
-    }
-    let mut current = node;
-    for index in indices {
-        current = &current.children[*index];
-        if current.is_dir && current.size < size {
-            return false;
-        }
-    }
-    true
-}
-
-fn subtract_clone_bytes(root: &mut CompactNode, indices: &[usize], size: u64) {
-    reduce_size_preserving_logical(root, size);
-    let mut current = root;
-    for index in indices {
-        current = &mut current.children[*index];
-        if current.is_dir {
-            reduce_size_preserving_logical(current, size);
-        }
-    }
-}
-
-fn reduce_size_preserving_logical(node: &mut CompactNode, size: u64) {
-    let logical_size = node.logical_size.unwrap_or(node.size);
-    node.size -= size;
-    node.logical_size = (logical_size != node.size).then_some(logical_size);
-}
-
 impl Entry {
     /// A regular file whose physical ownership cannot be inferred from its
     /// lone pathname. This stays scanner-private; it is used only to decide
@@ -2309,15 +1720,6 @@ fn latest(left: Option<u64>, right: Option<u64>) -> Option<u64> {
         (Some(value), None) | (None, Some(value)) => Some(value),
         (None, None) => None,
     }
-}
-
-fn contains_preserved(node: &CompactNode, preserve_names: &HashSet<String>) -> bool {
-    if preserve_names.contains(&node.name.to_lowercase()) {
-        return true;
-    }
-    node.children
-        .iter()
-        .any(|child| contains_preserved(child, preserve_names))
 }
 
 #[cfg(target_os = "linux")]
@@ -3133,23 +2535,15 @@ mod macos {
         // meaningful. The optional clone scalars exist only in the extended
         // request; the basic fallback intentionally does not consume them.
         let raw_link_count = take::<u32>(buffer, &mut cursor)? as u64;
-        let raw_file_allocated_size = take::<i64>(buffer, &mut cursor)?.max(0) as u64;
-        let raw_file_length = take::<i64>(buffer, &mut cursor)?.max(0) as u64;
+        let raw_file_allocated_size = take::<i64>(buffer, &mut cursor)?;
+        let raw_file_length = take::<i64>(buffer, &mut cursor)?;
         let link_count = if (returned.fileattr & ATTR_FILE_LINKCOUNT) != 0 {
             raw_link_count
         } else {
             1
         };
-        let file_allocated_size = if (returned.fileattr & ATTR_FILE_ALLOCSIZE) != 0 {
-            raw_file_allocated_size
-        } else {
-            0
-        };
-        let file_length = if (returned.fileattr & ATTR_FILE_DATALENGTH) != 0 {
-            raw_file_length
-        } else {
-            0
-        };
+        let (file_allocated_size, file_length) =
+            decoded_file_sizes(returned.fileattr, raw_file_allocated_size, raw_file_length);
         let clone_evidence = if include_clone_attributes {
             let raw_clone_id = take::<u64>(buffer, &mut cursor)?;
             let raw_extended_flags = take::<u64>(buffer, &mut cursor)?;
@@ -3205,6 +2599,24 @@ mod macos {
         })
     }
 
+    fn decoded_file_sizes(
+        returned_file_attributes: u32,
+        raw_allocated_size: i64,
+        raw_data_length: i64,
+    ) -> (u64, u64) {
+        let allocated_size = if (returned_file_attributes & ATTR_FILE_ALLOCSIZE) != 0 {
+            raw_allocated_size.max(0) as u64
+        } else {
+            0
+        };
+        let logical_size = if (returned_file_attributes & ATTR_FILE_DATALENGTH) != 0 {
+            raw_data_length.max(0) as u64
+        } else {
+            0
+        };
+        (allocated_size, logical_size)
+    }
+
     fn take<T: Copy>(buffer: &[u8], cursor: &mut usize) -> io::Result<T> {
         let value = read::<T>(buffer, *cursor)?;
         *cursor += std::mem::size_of::<T>();
@@ -3232,6 +2644,23 @@ mod macos {
         fn as_bytes(&self) -> &[u8] {
             use std::os::unix::ffi::OsStrExt;
             self.as_os_str().as_bytes()
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn dataless_file_keeps_logical_size_with_zero_allocation() {
+            let (allocated_size, logical_size) = decoded_file_sizes(
+                ATTR_FILE_ALLOCSIZE | ATTR_FILE_DATALENGTH,
+                0,
+                8 * 1024 * 1024,
+            );
+
+            assert_eq!(allocated_size, 0);
+            assert_eq!(logical_size, 8 * 1024 * 1024);
         }
     }
 }
@@ -3317,67 +2746,6 @@ mod tests {
         assert_eq!(progress.lock().unwrap().as_slice(), &[result.size]);
     }
 
-    fn full_clone_file(name: &str, size: u64, clone_id: &str, count: u32) -> CompactNode {
-        CompactNode {
-            name: name.into(),
-            size,
-            logical_size: None,
-            modified_at: None,
-            hard_link: None,
-            clone_evidence: Some(CloneEvidence::SharesAllBlocks {
-                clone_id: Some(clone_id.into()),
-                reported_full_clone_count: Some(count),
-            }),
-            clone_accounting: None,
-            clone_metadata: None,
-            shared_storage_evidence: None,
-            developer_artifact_inventory: None,
-            hard_link_identity: None,
-            reported_hard_link_count: None,
-            hard_link_physical_size: None,
-            has_shared_storage_risk: true,
-            is_dir: false,
-            children: Vec::new(),
-            is_other: false,
-            is_collapsed: false,
-            signatures: None,
-            scan_issues: None,
-        }
-    }
-
-    fn hard_link_file(
-        name: &str,
-        charged_size: u64,
-        physical_size: u64,
-        logical_size: u64,
-        identity: (u64, u64),
-        reported_hard_link_count: u64,
-        hard_link: HardLink,
-    ) -> CompactNode {
-        CompactNode {
-            name: name.into(),
-            size: charged_size,
-            logical_size: (logical_size != charged_size).then_some(logical_size),
-            modified_at: None,
-            hard_link: Some(hard_link),
-            clone_evidence: None,
-            clone_accounting: None,
-            clone_metadata: None,
-            shared_storage_evidence: None,
-            developer_artifact_inventory: None,
-            hard_link_identity: Some(identity),
-            reported_hard_link_count: Some(reported_hard_link_count),
-            hard_link_physical_size: Some(physical_size),
-            has_shared_storage_risk: true,
-            is_dir: false,
-            children: Vec::new(),
-            is_other: false,
-            is_collapsed: false,
-            signatures: None,
-            scan_issues: None,
-        }
-    }
-
     #[test]
     fn scans_nested_logical_sizes() {
         let root = tempfile::tempdir().unwrap();
@@ -3446,78 +2814,6 @@ mod tests {
                 .and_then(|child| child.hard_link),
             Some(HardLink::Secondary)
         );
-    }
-
-    #[test]
-    fn normalizes_only_a_proven_complete_hard_link_group() {
-        let identity = (7, 9);
-        let mut root = CompactNode::directory(
-            "root".into(),
-            100,
-            200,
-            None,
-            vec![
-                CompactNode::directory(
-                    "z".into(),
-                    100,
-                    100,
-                    None,
-                    vec![hard_link_file(
-                        "z.bin",
-                        100,
-                        100,
-                        100,
-                        identity,
-                        2,
-                        HardLink::Primary,
-                    )],
-                    false,
-                    None,
-                ),
-                CompactNode::directory(
-                    "a".into(),
-                    0,
-                    100,
-                    None,
-                    vec![hard_link_file(
-                        "a.bin",
-                        0,
-                        100,
-                        100,
-                        identity,
-                        2,
-                        HardLink::Secondary,
-                    )],
-                    false,
-                    None,
-                ),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_hard_link_groups(&mut root);
-
-        assert_eq!(root.size, 100);
-        assert_eq!(root.logical_size, Some(200));
-        let a = root.children.iter().find(|node| node.name == "a").unwrap();
-        let z = root.children.iter().find(|node| node.name == "z").unwrap();
-        assert_eq!(z.size, 0);
-        assert_eq!(z.logical_size, Some(100));
-        assert_eq!(z.children[0].hard_link, Some(HardLink::Secondary));
-        assert_eq!(z.children[0].size, 0);
-        assert_eq!(z.children[0].logical_size, Some(100));
-        assert_eq!(a.size, 100);
-        assert!(a.logical_size.is_none());
-        assert_eq!(a.children[0].hard_link, Some(HardLink::Primary));
-        assert_eq!(a.children[0].size, 100);
-        assert!(a.children[0].logical_size.is_none());
-        // Scanner-only group metadata is never inflated into the compact IPC
-        // protocol.
-        assert!(serde_json::to_value(&root)
-            .unwrap()
-            .get("hard_link_identity")
-            .is_none());
     }
 
     #[cfg(unix)]
@@ -3603,115 +2899,6 @@ mod tests {
     }
 
     #[test]
-    fn ignores_synthetic_other_when_choosing_a_hard_link_primary() {
-        let identity = (7, 10);
-        let mut other = CompactNode::directory(
-            "Other (1 items)".into(),
-            100,
-            100,
-            None,
-            vec![hard_link_file(
-                "z.bin",
-                100,
-                100,
-                100,
-                identity,
-                2,
-                HardLink::Primary,
-            )],
-            false,
-            None,
-        );
-        other.is_other = true;
-        let mut root = CompactNode::directory(
-            "root".into(),
-            100,
-            200,
-            None,
-            vec![
-                hard_link_file("a.bin", 0, 100, 100, identity, 2, HardLink::Secondary),
-                other,
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_hard_link_groups(&mut root);
-
-        let a = root
-            .children
-            .iter()
-            .find(|node| node.name == "a.bin")
-            .unwrap();
-        let other = root.children.iter().find(|node| node.is_other).unwrap();
-        assert_eq!(a.hard_link, Some(HardLink::Primary));
-        assert_eq!(a.size, 100);
-        assert_eq!(other.children[0].hard_link, Some(HardLink::Secondary));
-        assert_eq!(other.children[0].size, 0);
-    }
-
-    #[test]
-    fn matches_javascript_utf16_lexical_order_for_hard_link_primaries() {
-        let identity = (7, 12);
-        let mut root = CompactNode::directory(
-            "root".into(),
-            100,
-            200,
-            None,
-            vec![
-                hard_link_file(
-                    "\u{e000}.bin",
-                    100,
-                    100,
-                    100,
-                    identity,
-                    2,
-                    HardLink::Primary,
-                ),
-                hard_link_file("😀.bin", 0, 100, 100, identity, 2, HardLink::Secondary),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_hard_link_groups(&mut root);
-
-        assert_eq!(
-            root.children
-                .iter()
-                .find(|node| node.name == "😀.bin")
-                .and_then(|node| node.hard_link),
-            Some(HardLink::Primary)
-        );
-    }
-
-    #[test]
-    fn leaves_an_incomplete_hard_link_group_scheduling_accounting_unchanged() {
-        let identity = (7, 11);
-        let mut root = CompactNode::directory(
-            "root".into(),
-            100,
-            200,
-            None,
-            vec![
-                hard_link_file("first.bin", 100, 100, 100, identity, 3, HardLink::Primary),
-                hard_link_file("second.bin", 0, 100, 100, identity, 3, HardLink::Secondary),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_hard_link_groups(&mut root);
-
-        assert_eq!(root.size, 100);
-        assert_eq!(root.logical_size, Some(200));
-        assert_eq!(root.children[0].hard_link, Some(HardLink::Primary));
-        assert_eq!(root.children[0].size, 100);
-        assert_eq!(root.children[1].hard_link, Some(HardLink::Secondary));
-        assert_eq!(root.children[1].size, 0);
-    }
-
-    #[test]
     fn preserves_clone_evidence_without_reassigning_bytes() {
         let full = clone_evidence_from_attributes(
             ATTR_CMNEXT_CLONE_ID | ATTR_CMNEXT_EXT_FLAGS | ATTR_CMNEXT_CLONE_REFCNT,
@@ -3770,220 +2957,6 @@ mod tests {
             clone_metadata_capability(CLONE_METADATA_UNKNOWN),
             CloneMetadataCapability::Unknown
         );
-    }
-
-    #[test]
-    fn deduplicates_only_a_proven_complete_full_clone_group() {
-        let mut root = CompactNode::directory(
-            "root".into(),
-            300,
-            300,
-            None,
-            vec![
-                full_clone_file("z.bin", 100, "group", 3),
-                full_clone_file("a.bin", 100, "group", 3),
-                full_clone_file("m.bin", 100, "group", 3),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 100);
-        assert_eq!(root.logical_size, Some(300));
-        assert_eq!(root.children[0].size, 0);
-        assert_eq!(root.children[0].logical_size, Some(100));
-        assert_eq!(
-            root.children[0].clone_accounting,
-            Some(CloneAccounting::Secondary)
-        );
-        assert_eq!(root.children[1].size, 100);
-        assert_eq!(
-            root.children[1].clone_accounting,
-            Some(CloneAccounting::Primary)
-        );
-        assert_eq!(root.children[2].size, 0);
-        assert_eq!(root.children[2].logical_size, Some(100));
-        assert_eq!(
-            root.children[2].clone_accounting,
-            Some(CloneAccounting::Secondary)
-        );
-    }
-
-    #[test]
-    fn ignores_synthetic_other_when_choosing_a_clone_primary() {
-        let mut other = CompactNode::directory(
-            "Other (1 items)".into(),
-            100,
-            100,
-            None,
-            vec![full_clone_file("z.bin", 100, "group", 2)],
-            false,
-            None,
-        );
-        other.is_other = true;
-        let mut root = CompactNode::directory(
-            "root".into(),
-            200,
-            200,
-            None,
-            vec![full_clone_file("a.bin", 100, "group", 2), other],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        let a = root
-            .children
-            .iter()
-            .find(|node| node.name == "a.bin")
-            .unwrap();
-        let other = root.children.iter().find(|node| node.is_other).unwrap();
-        assert_eq!(a.clone_accounting, Some(CloneAccounting::Primary));
-        assert_eq!(a.size, 100);
-        assert_eq!(
-            other.children[0].clone_accounting,
-            Some(CloneAccounting::Secondary)
-        );
-        assert_eq!(other.children[0].size, 0);
-    }
-
-    #[test]
-    fn leaves_incomplete_or_mismatched_clone_groups_unchanged() {
-        let mut root = CompactNode::directory(
-            "root".into(),
-            200,
-            200,
-            None,
-            vec![
-                full_clone_file("first.bin", 100, "partial", 3),
-                full_clone_file("second.bin", 100, "partial", 3),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 200);
-        assert!(root.logical_size.is_none());
-        assert!(root.children.iter().all(|node| node.size == 100));
-        assert!(root
-            .children
-            .iter()
-            .all(|node| node.clone_accounting.is_none()));
-    }
-
-    #[test]
-    fn leaves_a_mismatched_reported_clone_count_unchanged() {
-        let mut root = CompactNode::directory(
-            "root".into(),
-            200,
-            200,
-            None,
-            vec![
-                full_clone_file("first.bin", 100, "group", 2),
-                full_clone_file("second.bin", 100, "group", 3),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 200);
-        assert!(root.logical_size.is_none());
-        assert!(root
-            .children
-            .iter()
-            .all(|node| node.clone_accounting.is_none()));
-    }
-
-    #[test]
-    fn leaves_a_group_unchanged_when_any_observed_path_is_not_a_full_clone_candidate() {
-        let mut partial = full_clone_file("partial.bin", 100, "group", 3);
-        partial.clone_evidence = Some(CloneEvidence::MayShareBlocks {
-            clone_id: Some("group".into()),
-        });
-        let mut root = CompactNode::directory(
-            "root".into(),
-            300,
-            300,
-            None,
-            vec![
-                full_clone_file("first.bin", 100, "group", 2),
-                full_clone_file("second.bin", 100, "group", 2),
-                partial,
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 300);
-        assert!(root.logical_size.is_none());
-        assert!(root.children.iter().all(|node| node.size == 100));
-        assert!(root
-            .children
-            .iter()
-            .all(|node| node.clone_accounting.is_none()));
-    }
-
-    #[test]
-    fn leaves_an_empty_clone_id_unchanged() {
-        let mut root = CompactNode::directory(
-            "root".into(),
-            200,
-            200,
-            None,
-            vec![
-                full_clone_file("first.bin", 100, "", 2),
-                full_clone_file("second.bin", 100, "", 2),
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 200);
-        assert!(root.logical_size.is_none());
-        assert!(root
-            .children
-            .iter()
-            .all(|node| node.clone_accounting.is_none()));
-    }
-
-    #[test]
-    fn leaves_a_group_unchanged_when_a_hard_link_adds_an_observed_path() {
-        let mut linked_path = full_clone_file("linked.bin", 0, "group", 2);
-        linked_path.logical_size = Some(100);
-        linked_path.hard_link = Some(HardLink::Secondary);
-        let mut root = CompactNode::directory(
-            "root".into(),
-            200,
-            300,
-            None,
-            vec![
-                full_clone_file("first.bin", 100, "group", 2),
-                full_clone_file("second.bin", 100, "group", 2),
-                linked_path,
-            ],
-            false,
-            None,
-        );
-
-        normalize_complete_clone_groups(&mut root);
-
-        assert_eq!(root.size, 200);
-        assert_eq!(root.logical_size, Some(300));
-        assert!(root
-            .children
-            .iter()
-            .all(|node| node.clone_accounting.is_none()));
     }
 
     #[cfg(target_os = "macos")]

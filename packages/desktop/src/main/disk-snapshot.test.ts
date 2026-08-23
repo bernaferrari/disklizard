@@ -514,6 +514,52 @@ describe("disk scan snapshots", () => {
     expect(second.root.developerArtifactInventory).toBeUndefined()
   })
 
+  test("lets the event loop advance while indexing and reconciling a large incremental delta", async () => {
+    const rootPath = "/benchmark-root"
+    const children = Array.from({ length: 1_024 }, (_, index): DiskNode => ({
+      name: `file-${index}.bin`,
+      path: `${rootPath}/file-${index}.bin`,
+      size: 1,
+      isDir: false,
+      children: [],
+      ext: "bin",
+    }))
+    const root: DiskNode = {
+      name: "benchmark-root",
+      path: rootPath,
+      size: children.length,
+      isDir: true,
+      children,
+      ext: "",
+    }
+    const changed = { ...children.at(-1)!, size: 9 }
+    let eventLoopTurns = 0
+    let active = true
+    let turn: ReturnType<typeof setImmediate>
+    const scheduleTurn = () => {
+      turn = setImmediate(() => {
+        eventLoopTurns++
+        if (active) scheduleTurn()
+      })
+    }
+    scheduleTurn()
+
+    try {
+      const result = await applyDiskDelta(
+        root,
+        [{ path: changed.path, type: "update" }],
+        async () => changed,
+        { sizeMode: "logical" },
+      )
+      expect(result.changedPaths).toEqual([changed.path])
+      expect(result.root.size).toBe(children.length + 8)
+      expect(eventLoopTurns).toBeGreaterThan(2)
+    } finally {
+      active = false
+      clearImmediate(turn!)
+    }
+  })
+
   test("pushes live changes into the open tree", async () => {
     const root = await temp()
     const cacheDir = await temp()
@@ -774,7 +820,7 @@ describe("disk scan snapshots", () => {
     await manager.stopAll()
   })
 
-  test("rescans above collapsed aggregates and coalesces nested events", () => {
+  test("rescans above collapsed aggregates and coalesces nested events", async () => {
     const root: DiskNode = {
       name: "root",
       path: "/root",
@@ -803,14 +849,14 @@ describe("disk scan snapshots", () => {
       ],
     }
     expect(
-      deltaRoots(root, [
+      await deltaRoots(root, [
         { path: "/root/project/node_modules/a/index.js", type: "update" },
         { path: "/root/project/node_modules/b/index.js", type: "create" },
       ]),
     ).toEqual(["/root/project"])
   })
 
-  test("drops coalesced ancestor updates when FSEvents includes a specific child", () => {
+  test("drops coalesced ancestor updates when FSEvents includes a specific child", async () => {
     const file: DiskNode = {
       name: "file.bin",
       path: "/root/file.bin",
@@ -828,7 +874,7 @@ describe("disk scan snapshots", () => {
       children: [file],
     }
     expect(
-      deltaRoots(root, [
+      await deltaRoots(root, [
         { path: "/root", type: "update" },
         { path: "/root/file.bin", type: "update" },
       ]),

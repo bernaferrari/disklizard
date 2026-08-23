@@ -5,6 +5,8 @@ import { formatBytes, formatCount, shortBytes } from "./format"
 import { animateCount } from "./motion"
 import { formatScanDuration, formatScanRate, scanPerformance, type ScanPerformance } from "./scan-metrics"
 import { usageStroke } from "./ui-tokens"
+import { diskLanguageText, useLanguage } from "./runtime"
+import { ApfsSnapshotEvidenceList } from "./ApfsSnapshotEvidence"
 
 export type VolumeScanJob = {
   id: string
@@ -39,15 +41,15 @@ export function volumePressure(used: number, total: number): VolumePressure {
 }
 
 export function volumeActionLabel(status?: VolumeScanJob["status"]): string {
-  if (status === "scanning") return "Cancel"
-  if (status === "complete") return "View"
-  if (status === "failed") return "Retry"
-  return "Scan"
+  if (status === "scanning") return diskLanguageText("disk.drive.action.cancel")
+  if (status === "complete") return diskLanguageText("disk.drive.action.view")
+  if (status === "failed") return diskLanguageText("disk.drive.action.retry")
+  return diskLanguageText("disk.common.scan")
 }
 
 export function volumeKindLabel(type: DiskDriveInfo["type"]): string | undefined {
-  if (type === "removable") return "removable disk"
-  if (type === "network") return "network volume"
+  if (type === "removable") return diskLanguageText("disk.drive.kind.removable")
+  if (type === "network") return diskLanguageText("disk.drive.kind.network")
   return undefined
 }
 
@@ -63,10 +65,13 @@ export function isStartupVolume(path: string): boolean {
 export function volumeSubtitle(drive: DiskDriveInfo): string {
   const parts: string[] = []
   if (drive.total > 0) parts.push(formatBytes(drive.total))
-  if (isStartupVolume(drive.path)) parts.push("startup disk")
+  if (isStartupVolume(drive.path)) parts.push(diskLanguageText("disk.drive.startup"))
   else {
     const kind = volumeKindLabel(drive.type)
     if (kind) parts.push(kind)
+  }
+  if (drive.sharedFree !== undefined) {
+    parts.push(diskLanguageText("disk.drive.sharedContainerFree", { size: formatBytes(drive.sharedFree) }))
   }
   return parts.join(" ")
 }
@@ -81,6 +86,7 @@ export function VolumeRow(props: {
   onCancel: (id: string) => void
   onOpen: (job: VolumeScanJob) => void
 }) {
+  const language = useLanguage()
   const hasTotal = () => props.drive.total > 0
   const used = () => volumeUsedRatio(props.drive.used, props.drive.total)
   const scanning = () => props.job?.status === "scanning"
@@ -100,7 +106,7 @@ export function VolumeRow(props: {
   }
   const readout = () => {
     if (failed()) return "—"
-    if (complete()) return "Ready"
+    if (complete()) return language.t("disk.drive.ready")
     if (scanning()) return `${Math.round(props.job?.pct ?? 0)}%`
     return hasTotal() ? formatBytes(props.drive.free) : "—"
   }
@@ -122,10 +128,13 @@ export function VolumeRow(props: {
   }
   const disabled = () => !scanning() && !complete() && !failed() && !props.canStart
   const subtitle = () => {
-    if (props.job?.status === "failed") return props.job.error || "Scan stopped"
+    if (props.job?.status === "failed") return props.job.error || language.t("disk.drive.stopped")
     if (props.job?.status === "complete") return volumeCompletionLabel(props.job.source, completedPerformance())
     if (props.job?.status === "scanning") {
-      return `${formatCount(props.job.files)} files · ${shortBytes(props.job.bytes)}`
+      return language.t("disk.drive.scanningSummary", {
+        files: formatCount(props.job.files),
+        bytes: shortBytes(props.job.bytes),
+      })
     }
     return volumeSubtitle(props.drive)
   }
@@ -143,10 +152,10 @@ export function VolumeRow(props: {
           class="mt-0.5 truncate text-13-regular text-text-weaker"
           title={
             props.job?.status === "complete" && completedPerformance()
-              ? `Completed in ${formatScanDuration(completedPerformance()!.elapsedMs)} at ${formatScanRate(
-                  completedPerformance()!.filesPerSecond,
-                  "files",
-                )}`
+              ? language.t("disk.drive.completedTitle", {
+                  duration: formatScanDuration(completedPerformance()!.elapsedMs),
+                  rate: formatScanRate(completedPerformance()!.filesPerSecond, "files"),
+                })
               : (props.job?.currentPath ?? props.drive.path)
           }
         >
@@ -165,19 +174,33 @@ export function VolumeRow(props: {
           data-disk-primary-action={props.primary ? "" : undefined}
           class="dl-volume-view outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
           disabled={disabled()}
-          title={disabled() ? "Three scans are already running" : undefined}
+          title={disabled() ? language.t("disk.drive.scanLimit") : undefined}
           aria-label={
             scanning()
-              ? `Cancel scan of ${props.drive.name}`
+              ? language.t("disk.drive.cancelLabel", { name: props.drive.name })
               : complete()
-                ? `View map of ${props.drive.name}`
-                : `Scan ${props.drive.name}${hasTotal() ? `, ${formatBytes(props.drive.free)} left` : ""}`
+                ? language.t("disk.drive.viewLabel", { name: props.drive.name })
+                : hasTotal()
+                  ? language.t("disk.drive.scanFreeLabel", {
+                      name: props.drive.name,
+                      free: formatBytes(props.drive.free),
+                    })
+                  : language.t("disk.drive.scanLabel", { name: props.drive.name })
           }
           onClick={activate}
         >
           {volumeActionLabel(props.job?.status)}
         </button>
       </div>
+      <Show when={(props.drive.snapshotCount ?? 0) > 0}>
+        <ApfsSnapshotEvidenceList
+          class="col-start-2 col-end-4 pb-3"
+          snapshotCount={props.drive.snapshotCount}
+          purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
+          timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
+          snapshots={props.drive.apfsSnapshots}
+        />
+      </Show>
     </div>
   )
 }
@@ -212,16 +235,17 @@ function VolumeGlyph(props: { type: DiskDriveInfo["type"]; startup: boolean }) {
 
 /** Never turn a cached-map restore or a delta refresh into an invented speed claim. */
 export function volumeCompletionLabel(source: VolumeScanJob["source"], performance?: ScanPerformance): string {
-  if (source === "snapshot") return "Restored local map"
-  if (source === "delta") return "Updated cached map"
+  if (source === "snapshot") return diskLanguageText("disk.drive.restored")
+  if (source === "delta") return diskLanguageText("disk.drive.updated")
   if (source === "scan" && performance) {
     return `${formatScanDuration(performance.elapsedMs)} · ${formatScanRate(performance.filesPerSecond, "files")}`
   }
-  return "Map ready"
+  return diskLanguageText("disk.drive.mapReady")
 }
 
 /** Recommendations live with the inspector controls instead of obscuring the map. */
 export function ReclaimBanner(props: { bytes: number; count: number; onReview: () => void }) {
+  const language = useLanguage()
   let valueElement!: HTMLSpanElement
   let displayed = 0
 
@@ -244,20 +268,23 @@ export function ReclaimBanner(props: { bytes: number; count: number; onReview: (
       type="button"
       class="dl-hover-row dl-touch-target mt-2 flex min-h-12 w-full items-center gap-2.5 border-b border-border-weaker-base px-1 py-2 text-left outline-none transition-[color,background-color,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.99]"
       onClick={props.onReview}
-      aria-label={`Review ${formatBytes(props.bytes)} across ${formatCount(props.count)} recommendations`}
+      aria-label={language.t("disk.drive.reviewLabel", {
+        bytes: formatBytes(props.bytes),
+        count: formatCount(props.count),
+      })}
     >
       <span class="dl-accent-text grid size-7 shrink-0 place-items-center">
         <Icon name="models" class="size-3.5" />
       </span>
       <span class="min-w-0 flex-1">
-        <span class="block text-13-semibold text-text-strong">Recommendations</span>
+        <span class="block text-13-semibold text-text-strong">{language.t("disk.common.recommendations")}</span>
         <span class="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak">
           <span ref={valueElement}>{formatBytes(0)}</span>
-          {` · ${props.count === 1 ? "1 item" : `${formatCount(props.count)} items`}`}
+          {` · ${language.plural("disk.drive.itemCount", props.count, { formattedCount: formatCount(props.count) })}`}
         </span>{" "}
       </span>
       <span class="flex shrink-0 items-center gap-1.5 text-13-semibold text-text-strong">
-        Review <Icon name="chevron-right" class="size-3" />
+        {language.t("disk.common.review")} <Icon name="chevron-right" class="size-3" />
       </span>
     </button>
   )

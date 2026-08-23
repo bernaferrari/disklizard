@@ -98,7 +98,7 @@ export function CollectionDropTarget(props: {
         </span>
       ) : (
         <kbd class="dl-shortcut-key shrink-0" aria-label={language.t("disk.collection.shortcutC")}>
-          C
+          {language.t("disk.shortcut.keyC")}
         </kbd>
       )}
 

@@ -1,6 +1,7 @@
 import { For, Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
+import { diskLanguageText, useLanguage } from "./runtime"
 
 export type StorageAccountingFact = {
   label: string
@@ -15,52 +16,57 @@ export function storageAccountingFacts(node: DiskScanNode): StorageAccountingFac
   const facts: StorageAccountingFact[] = []
   if (node.logicalSize !== undefined && node.logicalSize !== node.size) {
     facts.push({
-      label: `File size ${formatBytes(node.logicalSize)}`,
-      detail: `This item occupies ${formatBytes(node.size)} in the current scan but has an apparent length of ${formatBytes(node.logicalSize)}.`,
+      label: diskLanguageText("disk.accounting.fileSize", { size: formatBytes(node.logicalSize) }),
+      detail: diskLanguageText("disk.accounting.fileSizeDetail", {
+        size: formatBytes(node.size),
+        logicalSize: formatBytes(node.logicalSize),
+      }),
     })
   }
   if (node.hardLink === "secondary") {
     facts.push({
-      label: "Shared hard link",
-      detail: "This pathname shares the same allocation as an earlier hard link, so it is not charged a second time.",
+      label: diskLanguageText("disk.accounting.hardLink"),
+      detail: diskLanguageText("disk.accounting.hardLinkDetail"),
     })
   }
   if (node.cloneAccounting === "primary") {
     facts.push({
-      label: "Clone group charged once",
-      detail:
-        "Every full clone in this group was observed by the scan. This pathname carries the shared allocation exactly once; the other clone paths retain their apparent file size.",
+      label: diskLanguageText("disk.accounting.clonePrimary"),
+      detail: diskLanguageText("disk.accounting.clonePrimaryDetail"),
     })
   }
   if (node.cloneAccounting === "secondary") {
     facts.push({
-      label: "Clone allocation counted once",
-      detail:
-        "Every full clone in this group was observed by the scan. Its shared allocation is charged to the canonical clone, so this pathname adds no extra physical bytes.",
+      label: diskLanguageText("disk.accounting.cloneSecondary"),
+      detail: diskLanguageText("disk.accounting.cloneSecondaryDetail"),
     })
   }
   if (node.clone?.state === "may-share-blocks") {
     facts.push({
-      label: "APFS clone may share blocks",
-      detail: "The filesystem reports possible shared blocks. DiskLizard does not guess which bytes belong to this pathname.",
+      label: diskLanguageText("disk.accounting.cloneMaybe"),
+      detail: diskLanguageText("disk.accounting.cloneMaybeDetail"),
     })
   }
   if (node.clone?.state === "shares-all-blocks" && !node.cloneAccounting) {
     facts.push({
-      label: "APFS clone shares blocks",
+      label: diskLanguageText("disk.accounting.cloneShares"),
       detail: node.clone.reportedFullCloneCount
-        ? `The filesystem reports ${node.clone.reportedFullCloneCount} full clones. Byte ownership stays explicit unless every member is present in this scan.`
-        : "The filesystem reports that this file shares all of its blocks with a clone.",
+        ? diskLanguageText("disk.accounting.cloneSharesCount", { count: node.clone.reportedFullCloneCount })
+        : diskLanguageText("disk.accounting.cloneSharesDetail"),
     })
   }
   return facts
 }
 
 export function StorageAccountingFacts(props: { node: DiskScanNode; class?: string }) {
+  const language = useLanguage()
   const facts = () => storageAccountingFacts(props.node)
   return (
     <Show when={facts().length > 0}>
-      <div class={`flex max-w-full flex-wrap items-start gap-1.5 ${props.class ?? ""}`} aria-label="Storage accounting details">
+      <div
+        class={`flex max-w-full flex-wrap items-start gap-1.5 ${props.class ?? ""}`}
+        aria-label={language.t("disk.accounting.label")}
+      >
         <For each={facts()}>
           {(fact) => (
             <details class="max-w-full">

@@ -5,6 +5,7 @@ import type { DiskFilePreview, DiskScanNode } from "./types"
 import { formatBytes, formatLastChanged } from "./format"
 import type { SurfacePhase } from "./motion"
 import { StorageAccountingFacts } from "./StorageAccounting"
+import { diskLanguageText, useLanguage } from "./runtime"
 
 const focusable =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), iframe:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
@@ -12,19 +13,19 @@ const focusable =
 function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported" }>) {
   if (preview.reason === "too-large") {
     return {
-      title: "This file is too large for instant preview",
-      detail: "DiskLizard bounds embedded previews to keep inspection fast and memory use predictable. Open it in its default app or Quick Look instead.",
+      title: diskLanguageText("disk.preview.tooLarge.title"),
+      detail: diskLanguageText("disk.preview.tooLarge.body"),
     }
   }
   if (preview.reason === "binary") {
     return {
-      title: "This file contains binary data",
-      detail: "Open it in its default application to inspect it safely.",
+      title: diskLanguageText("disk.preview.binary.title"),
+      detail: diskLanguageText("disk.preview.binary.body"),
     }
   }
   return {
-    title: "Preview is not available for this format",
-    detail: "DiskLizard previews common images, source code, configuration, logs, and plain-text files.",
+    title: diskLanguageText("disk.preview.unsupported.title"),
+    detail: diskLanguageText("disk.preview.unsupported.body"),
   }
 }
 
@@ -44,6 +45,7 @@ export function PreviewDialog(props: {
   onSystemPreview?: () => void
   onOpen: () => void
 }) {
+  const language = useLanguage()
   let panel!: HTMLDivElement
   let restoreFocus: HTMLElement | undefined
   const largestChildren = () =>
@@ -114,7 +116,9 @@ export function PreviewDialog(props: {
             />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Quick preview</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+              {language.t("disk.preview.heading")}
+            </p>
             <h2 id="preview-title" class="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
               {props.node.name}
             </h2>
@@ -128,7 +132,7 @@ export function PreviewDialog(props: {
             variant="ghost"
             icon="close"
             onClick={props.onClose}
-            aria-label="Close preview"
+            aria-label={language.t("disk.preview.close")}
           />
         </header>
 
@@ -137,7 +141,7 @@ export function PreviewDialog(props: {
             <div class="grid size-full place-items-center" role="status" aria-live="polite">
               <div class="flex flex-col items-center gap-3 text-text-weak">
                 <span class="dl-spin size-5 rounded-full border border-border-weaker-base border-t-current" />
-                <p class="text-13-regular">Loading preview…</p>
+                <p class="text-13-regular">{language.t("disk.preview.loading")}</p>
               </div>
             </div>
           </Show>
@@ -149,7 +153,7 @@ export function PreviewDialog(props: {
                   <span class="dl-critical-text mx-auto grid size-12 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.1)]">
                     <Icon name="warning" class="size-4.5" />
                   </span>
-                  <h3 class="mt-4 text-14-semibold text-text-strong">DiskLizard could not read this file</h3>
+                  <h3 class="mt-4 text-14-semibold text-text-strong">{language.t("disk.preview.readError")}</h3>
                   <p class="mt-2 text-13-regular leading-relaxed text-text-weak">{message()}</p>
                 </div>
               </div>
@@ -164,15 +168,16 @@ export function PreviewDialog(props: {
                     <Icon name="folder" class="size-5" />
                   </span>
                   <div class="min-w-0">
-                    <h3 class="text-14-semibold text-text-strong">Folder summary</h3>
+                    <h3 class="text-14-semibold text-text-strong">{language.t("disk.preview.folderSummary")}</h3>
                     <p class="mt-1 text-13-regular leading-relaxed text-text-weak">
-                      {props.node.children.length.toLocaleString()} immediate {props.node.children.length === 1 ? "item" : "items"}
-                      {" · "}
-                      {formatBytes(props.node.size)} in this scanned folder.
+                      {language.t("disk.preview.folderCount", {
+                        count: props.node.children.length.toLocaleString(),
+                        items: language.plural("disk.count.itemNoun", props.node.children.length),
+                        size: formatBytes(props.node.size),
+                      })}
                     </p>
                     <p class="mt-2 text-13-regular leading-relaxed text-text-weaker">
-                      This summary uses the current scan only. Open the folder to browse its map, or use Quick Look for the
-                      system view.
+                      {language.t("disk.preview.folderBody")}
                     </p>
                   </div>
                 </div>
@@ -181,10 +186,10 @@ export function PreviewDialog(props: {
                   <section class="mt-6" aria-labelledby="preview-largest-items">
                     <div class="flex items-center justify-between gap-4">
                       <h3 id="preview-largest-items" class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker">
-                        Largest visible items
+                        {language.t("disk.preview.largest")}
                       </h3>
                       <span class="text-13-regular tabular-nums text-text-weaker">
-                        {formatBytes(props.node.size)} total
+                        {language.t("disk.preview.total", { count: formatBytes(props.node.size) })}
                       </span>
                     </div>
                     <ul class="mt-2 divide-y divide-border-weaker-base rounded-xl bg-surface-raised-base/45 px-4 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
@@ -213,7 +218,7 @@ export function PreviewDialog(props: {
                     <img
                       class="max-h-full max-w-full rounded-xl object-contain shadow-[0_0_0_1px_rgb(127_127_127/0.16),0_18px_50px_rgb(0_0_0/0.18)]"
                       src={preview.dataUrl}
-                      alt={`Preview of ${props.node.name}`}
+                      alt={language.t("disk.preview.imageLabel", { name: props.node.name })}
                       decoding="async"
                       draggable={false}
                     />
@@ -224,17 +229,19 @@ export function PreviewDialog(props: {
                 return (
                   <div class="flex size-full min-h-0 flex-col">
                     <div class="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-13-regular text-text-weaker">
-                      <span>{preview.text.split("\n").length.toLocaleString()} lines shown</span>
+                      <span>
+                        {language.t("disk.preview.lines", { count: preview.text.split("\n").length.toLocaleString() })}
+                      </span>
                       <Show when={preview.truncated}>
                         <span class="rounded-full bg-surface-raised-base px-2 py-1 text-13-semibold text-text-weak">
-                          Preview truncated
+                          {language.t("disk.preview.truncated")}
                         </span>
                       </Show>
                     </div>
                     <pre
                       class="min-h-0 flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.65] text-text-base outline-none selection:bg-[oklch(0.72_0.12_176/0.24)] sm:p-5"
                       tabIndex={0}
-                      aria-label={`Text preview of ${props.node.name}`}
+                      aria-label={language.t("disk.preview.textLabel", { name: props.node.name })}
                     >
                       {preview.text}
                     </pre>
@@ -246,7 +253,7 @@ export function PreviewDialog(props: {
                   <iframe
                     class="size-full border-0 bg-surface-raised-strong outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
                     src={preview.dataUrl}
-                    title={`PDF preview of ${props.node.name}`}
+                    title={language.t("disk.preview.pdfLabel", { name: props.node.name })}
                     tabIndex={0}
                   />
                 )
@@ -268,7 +275,11 @@ export function PreviewDialog(props: {
         </main>
 
         <footer class="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
-          <div class="flex shrink-0 items-center gap-1" role="group" aria-label="Preview navigation">
+          <div
+            class="flex shrink-0 items-center gap-1"
+            role="group"
+            aria-label={language.t("disk.preview.navigation")}
+          >
             <Button
               class="dl-touch-target"
               size="small"
@@ -276,11 +287,11 @@ export function PreviewDialog(props: {
               icon="chevron-left"
               disabled={!props.onPrevious}
               onClick={props.onPrevious}
-              aria-label="Preview previous file"
+              aria-label={language.t("disk.preview.previous")}
             />
             <span class="min-w-12 text-center text-13-regular tabular-nums text-text-weaker">
-              <Show when={!props.node.isDir} fallback="Folder">
-                {props.position} of {props.total}
+              <Show when={!props.node.isDir} fallback={language.t("disk.preview.folder")}>
+                {language.t("disk.preview.position", { current: props.position, total: props.total })}
               </Show>
             </span>
             <Button
@@ -290,7 +301,7 @@ export function PreviewDialog(props: {
               icon="chevron-right"
               disabled={!props.onNext}
               onClick={props.onNext}
-              aria-label="Preview next file"
+              aria-label={language.t("disk.preview.next")}
             />
           </div>
           <div class="min-w-0 flex-1">
@@ -298,8 +309,10 @@ export function PreviewDialog(props: {
               {formatBytes(props.preview?.bytes ?? props.node.size)}
             </p>
             <p class="mt-0.5 text-13-regular text-text-weaker">
-              <Show when={props.node.modifiedAt} fallback="Read locally · Nothing uploaded">
-                {(changed) => `${formatLastChanged(changed())} · Nothing uploaded`}
+              <Show when={props.node.modifiedAt} fallback={language.t("disk.preview.local")}>
+                {(changed) =>
+                  language.t("disk.preview.changedLocal", { changed: formatLastChanged(changed()) })
+                }
               </Show>
             </p>
             <StorageAccountingFacts node={props.node} class="mt-1" />
@@ -311,7 +324,7 @@ export function PreviewDialog(props: {
             icon="square-arrow-top-right"
             onClick={props.onReveal}
           >
-            Reveal
+            {language.t("disk.common.reveal")}
           </Button>
           <Show when={props.onSystemPreview && props.systemPreviewLabel}>
             <Button
@@ -325,7 +338,7 @@ export function PreviewDialog(props: {
             </Button>
           </Show>
           <Button class="dl-touch-target" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
-            Open in default app
+            {language.t("disk.preview.openDefault")}
           </Button>
         </footer>
       </div>

@@ -1,6 +1,7 @@
 import { Icon, type IconProps } from "@opencode-ai/ui/icon"
 import { Show } from "solid-js"
 import { formatBytes, shortBytes } from "./format"
+import { useLanguage } from "./runtime"
 
 export function SegmentedButton(props: {
   active: boolean
@@ -9,6 +10,7 @@ export function SegmentedButton(props: {
   label: string
   shortcut?: string
 }) {
+  const language = useLanguage()
   return (
     <button
       type="button"
@@ -83,7 +85,15 @@ export function DeveloperCategoryButton(props: {
     <button
       type="button"
       aria-pressed={props.active}
-      aria-label={props.description ? `${props.label}. ${props.description}. ${formatBytes(props.bytes)}` : undefined}
+      aria-label={
+        props.description
+          ? language.t("disk.explore.categoryDescription", {
+              label: props.label,
+              description: props.description,
+              size: formatBytes(props.bytes),
+            })
+          : undefined
+      }
       title={props.description}
       class="dl-touch-target flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-3 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
       classList={{

@@ -4,6 +4,7 @@ import { createRoot } from "solid-js"
 import { DISK_CHOOSE_FOLDER_COMMAND } from "./choose-folder"
 import {
   createDiskLizardMenu,
+  createPersistenceErrorDeduper,
   createDiskSettings,
   DISK_ACCESS_GUIDANCE,
   DISK_LANGUAGE_TEXT,
@@ -94,5 +95,14 @@ describe("DiskLizard runtime language", () => {
       expect(settings.general.persistenceError()).toBe("disk full")
       dispose()
     })
+  })
+
+  test("deduplicates persistence feedback until the error clears", () => {
+    const nextError = createPersistenceErrorDeduper()
+    expect(nextError("disk full")).toBe("disk full")
+    expect(nextError("disk full")).toBeUndefined()
+    expect(nextError("permission denied")).toBe("permission denied")
+    expect(nextError(undefined)).toBeUndefined()
+    expect(nextError("disk full")).toBe("disk full")
   })
 })

@@ -1,11 +1,14 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "composite": false,
+    "emitDeclarationOnly": false,
     "noEmit": true,
-    "rootDir": "..",
-    "types": ["node", "bun"]
+    "types": ["vite/client", "node", "bun"]
   },
   "include": [
+    "./disk-utility/**/*.ts",
+    "./disk-utility/**/*.tsx",
     "./performance/timeline-stability/**/*.spec.ts",
     "./performance/timeline-stability/fixture.test.ts",
     "./performance/timeline-stability/fixture.ts",

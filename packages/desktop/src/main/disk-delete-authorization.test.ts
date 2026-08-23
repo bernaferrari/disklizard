@@ -60,4 +60,72 @@ describe("scan-bound delete authorization", () => {
       INVALID_DELETE_AUTHORIZATION_ERROR,
     )
   })
+
+  test("does not publish capabilities when the reviewed scan changes during authorization", async () => {
+    const rootPath = await mkdtemp(join(tmpdir(), "disklizard-delete-auth-"))
+    temporary.push(rootPath)
+    const filePath = join(rootPath, "stale.txt")
+    await writeFile(filePath, "stale")
+    const manager = new DiskDeleteAuthorizationManager()
+    manager.updateRoot("11:scan", 11, {
+      name: "root",
+      path: rootPath,
+      size: 5,
+      isDir: true,
+      ext: "",
+      children: [{ name: "stale.txt", path: filePath, size: 5, isDir: false, ext: "txt", children: [] }],
+    })
+
+    await expect(
+      manager.authorize(11, [filePath], async () => {
+        manager.updateRoot("11:scan", 11, {
+          name: "root",
+          path: rootPath,
+          size: 0,
+          isDir: true,
+          ext: "",
+          children: [],
+        })
+      }),
+    ).rejects.toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+    await expect(manager.authorize(11, [filePath], async () => undefined)).rejects.toThrow(
+      UNSCANNED_DELETE_TARGET_ERROR,
+    )
+  })
+
+  test("bounds filesystem checks while preserving reviewed batch order", async () => {
+    const rootPath = await mkdtemp(join(tmpdir(), "disklizard-delete-auth-"))
+    temporary.push(rootPath)
+    const paths = Array.from({ length: 32 }, (_, index) => join(rootPath, `${index}.txt`))
+    await Promise.all(paths.map((path) => writeFile(path, "x")))
+    const manager = new DiskDeleteAuthorizationManager()
+    manager.updateRoot("13:scan", 13, {
+      name: "root",
+      path: rootPath,
+      size: paths.length,
+      isDir: true,
+      ext: "",
+      children: paths.map((path, index) => ({
+        name: `${index}.txt`,
+        path,
+        size: 1,
+        isDir: false,
+        ext: "txt",
+        children: [],
+      })),
+    })
+
+    let active = 0
+    let peak = 0
+    const prepared = await manager.authorize(13, [...paths, paths[0]!], async () => {
+      active += 1
+      peak = Math.max(peak, active)
+      await new Promise<void>((resolve) => setImmediate(resolve))
+      active -= 1
+    })
+
+    expect(peak).toBeGreaterThan(1)
+    expect(peak).toBeLessThanOrEqual(16)
+    expect(prepared.map(({ path }) => path)).toEqual(paths)
+  })
 })

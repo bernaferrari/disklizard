@@ -2,11 +2,12 @@ import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { createMemo, onCleanup, onMount, Show } from "solid-js"
 import type { DiskScanNode } from "./types"
-import { formatBytes, formatCount, shortBytes, truncatePath } from "./format"
+import { formatBytes, shortBytes, truncatePath } from "./format"
 import type { SurfacePhase } from "./motion"
 import type { ReclaimSummary } from "./recognize"
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { VirtualRows } from "./DiskUtilityVirtualList"
+import { useLanguage } from "./runtime"
 
 export type DeletionProgress = { completed: number; total: number }
 type ReclaimReviewRow =
@@ -80,6 +81,7 @@ export function CollectionDialog(props: {
   onQuickLook?: (node: DiskScanNode) => void
   onConfirm: () => void
 }) {
+  const language = useLanguage()
   const focusDialog = createDialogFocusRestoration()
   const requiresFullMapRebuild = () =>
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
@@ -105,25 +107,31 @@ export function CollectionDialog(props: {
             <Icon name="checklist" class="size-4" />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Review selected items</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+              {language.t("disk.dialog.collection.heading")}
+            </p>
             <h2 id="collection-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
-              {requiresFullMapRebuild() ? "Selected file sizes: " : ""}
-              {formatBytes(props.bytes)} across {props.items.length} {props.items.length === 1 ? "item" : "items"}
+              {(() => {
+                const summary = language.t("disk.dialog.collection.summary", {
+                  count: language.plural("disk.count.item", props.items.length),
+                  size: formatBytes(props.bytes),
+                })
+                return requiresFullMapRebuild()
+                  ? language.t("disk.dialog.collection.selectedSizes", { summary })
+                  : summary
+              })()}
             </h2>
             <p class="mt-2 text-13-regular leading-relaxed text-text-weak">
-              Check every item before anything leaves its original location.
+              {language.t("disk.dialog.collection.body")}
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                A selected path changes data represented by the deep artifact inventory. It can move to {props.trashName},
-                but its displayed size is not a reclaim estimate. DiskLizard will rebuild the full map afterward.
+                {language.t("disk.dialog.collection.deepWarning", { trash: props.trashName })}
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                Some selected paths share physical storage through APFS clones or hard links. They can move to
-                {` ${props.trashName}`}, but their displayed allocation is not a promise of freed disk space.
-                DiskLizard will recompute the map afterward.
+                {language.t("disk.dialog.collection.sharedWarning", { trash: props.trashName })}
               </p>
             </Show>
             <Show
@@ -132,8 +140,7 @@ export function CollectionDialog(props: {
               }
             >
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                This scan could not verify filesystem clone metadata. The paths can move to {props.trashName}, but their
-                displayed allocation is not a promise of freed disk space. DiskLizard will refresh the map afterward.
+                {language.t("disk.dialog.collection.unverifiedWarning", { trash: props.trashName })}
               </p>
             </Show>
           </div>
@@ -144,12 +151,12 @@ export function CollectionDialog(props: {
             icon="close"
             disabled={props.deleting}
             onClick={props.onClose}
-            aria-label="Close selected-item review"
+            aria-label={language.t("disk.dialog.collection.close")}
           />
         </div>
         <VirtualRows
           items={props.items}
-          ariaLabel="Items selected for review"
+          ariaLabel={language.t("disk.dialog.collection.itemsLabel")}
           estimateSize={() => 64}
           itemKey={(item) => item.path}
           render={(item) => (
@@ -171,7 +178,7 @@ export function CollectionDialog(props: {
                   variant="ghost"
                   icon="eye"
                   disabled={props.deleting}
-                  aria-label={`Quick Look ${item.name}`}
+                  aria-label={language.t("disk.dialog.collection.quickLook", { name: item.name })}
                   onClick={() => props.onQuickLook?.(item)}
                 />
               </Show>
@@ -181,7 +188,7 @@ export function CollectionDialog(props: {
                 variant="ghost"
                 icon="close-small"
                 disabled={props.deleting}
-                aria-label={`Remove ${item.name} from review`}
+                aria-label={language.t("disk.dialog.collection.remove", { name: item.name })}
                 onClick={() => props.onRemove(item)}
               />
             </div>
@@ -194,10 +201,10 @@ export function CollectionDialog(props: {
               <p class="flex items-center gap-1.5 text-13-regular text-text-weak">
                 <Icon name="shield" class="size-3.5" />
                 {props.requiresDeepInventoryRefresh
-                  ? `Items can be restored from ${props.trashName}. DiskLizard will rebuild the full map after the move.`
+                  ? language.t("disk.dialog.restore.rebuild", { trash: props.trashName })
                   : props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
-                    ? `Items can be restored from ${props.trashName}. Storage allocation will be recomputed after the move.`
-                  : `Items can be restored from ${props.trashName}. Space is freed after you empty it.`}
+                    ? language.t("disk.dialog.restore.recompute", { trash: props.trashName })
+                    : language.t("disk.dialog.restore.space", { trash: props.trashName })}
               </p>
             }
           >
@@ -209,18 +216,25 @@ export function CollectionDialog(props: {
                 aria-atomic="true"
               >
                 <span class="dl-spin size-3.5 rounded-full border border-border-weaker-base border-t-current" />
-                Moving {progress().completed} of {progress().total}…
+                {language.t("disk.dialog.collection.moving", {
+                  current: progress().completed,
+                  total: progress().total,
+                })}
+                …
               </p>
             )}
           </Show>
           <div class="ml-auto flex shrink-0 items-center gap-2">
             <Button class="dl-touch-target" size="small" variant="ghost" disabled={props.deleting} onClick={props.onClose}>
-              Back
+              {language.t("disk.common.back")}
             </Button>
             <Button class="dl-touch-target" size="small" variant="primary" icon="trash" disabled={props.deleting} onClick={props.onConfirm}>
               {props.progress
-                ? `Moving ${props.progress.completed}/${props.progress.total}…`
-                : `Move to ${props.trashName}`}
+                ? language.t("disk.dialog.collection.movingCompact", {
+                    current: props.progress.completed,
+                    total: props.progress.total,
+                  })
+                : language.t("disk.detail.moveTo", { trash: props.trashName })}
             </Button>
           </div>
         </div>
@@ -239,6 +253,7 @@ export function ReclaimDrawer(props: {
   isSelected: (node: DiskScanNode) => boolean
   deleting: boolean
 }) {
+  const language = useLanguage()
   const focusDialog = createDialogFocusRestoration()
   const rows = createMemo<ReclaimReviewRow[]>(() =>
     props.reclaim.buckets.flatMap((bucket) => [
@@ -277,21 +292,29 @@ export function ReclaimDrawer(props: {
               <Icon name="shield" class="size-4.5" />
             </span>
             <div class="min-w-0 flex-1">
-              <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Recommendations</p>
+              <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+                {language.t("disk.common.recommendations")}
+              </p>
               <h2 id="reclaim-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
-                {formatBytes(props.reclaim.totalBytes)} worth reviewing
+                {language.t("disk.dialog.reclaim.summary", { count: formatBytes(props.reclaim.totalBytes) })}
               </h2>
               <p class="mt-2 max-w-[38ch] text-13-regular leading-relaxed text-text-weak">
-                DiskLizard thinks these can usually be recreated or downloaded again. They are recommendations, not
-                permission—select only the items you want to review.
+                {language.t("disk.dialog.reclaim.body")}
               </p>
             </div>
-            <Button class="dl-touch-target" size="small" variant="ghost" icon="close" onClick={props.onClose} aria-label="Close review" />
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              icon="close"
+              onClick={props.onClose}
+              aria-label={language.t("disk.dialog.reclaim.close")}
+            />
           </div>
         </div>
         <VirtualRows
           items={rows()}
-          ariaLabel="Recommended items"
+          ariaLabel={language.t("disk.dialog.reclaim.itemsLabel")}
           estimateSize={(row) => (row.type === "header" ? 46 : 64)}
           itemKey={(row) => row.key}
           isFocusable={(row) => row.type === "item"}
@@ -340,8 +363,8 @@ export function ReclaimDrawer(props: {
                   aria-pressed={props.isSelected(row.item.node)}
                   aria-label={
                     props.isSelected(row.item.node)
-                      ? `Remove ${row.item.node.name} from review`
-                      : `Select ${row.item.node.name} for review`
+                      ? language.t("disk.dialog.reclaim.remove", { name: row.item.node.name })
+                      : language.t("disk.dialog.reclaim.select", { name: row.item.node.name })
                   }
                   disabled={props.deleting}
                   onClick={() => props.onToggle(row.item.node)}
@@ -353,11 +376,10 @@ export function ReclaimDrawer(props: {
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
           <div class="min-w-0">
             <p class="text-13-semibold text-text-strong">
-              {formatCount(props.reclaim.totalCount)}{" "}
-              {props.reclaim.totalCount === 1 ? "recommendation" : "recommendations"}
+              {language.plural("disk.count.recommendation", props.reclaim.totalCount)}
             </p>
             <p class="mt-0.5 truncate text-13-regular text-text-weak">
-              {formatBytes(props.reclaim.totalBytes)} · Nothing moves until you review the selected items
+              {language.t("disk.dialog.reclaim.action", { action: formatBytes(props.reclaim.totalBytes) })}
             </p>
           </div>
           <Button
@@ -368,7 +390,7 @@ export function ReclaimDrawer(props: {
             disabled={props.deleting || props.reclaim.totalCount === 0}
             onClick={props.onCollectAll}
           >
-            Select all for review
+            {language.t("disk.dialog.reclaim.selectAll")}
           </Button>
         </div>
       </div>
@@ -388,6 +410,7 @@ export function DeleteConfirmDialog(props: {
   onClose: () => void
   onConfirm: () => void
 }) {
+  const language = useLanguage()
   const focusDialog = createDialogFocusRestoration()
   const requiresFullMapRebuild = () =>
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
@@ -414,9 +437,11 @@ export function DeleteConfirmDialog(props: {
             <Icon name="trash" class="size-4" />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">Confirm removal</p>
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+              {language.t("disk.dialog.delete.heading")}
+            </p>
             <h3 id="delete-title" class="mt-1 text-18-medium tracking-[-0.025em] text-text-strong">
-              Move this item to {props.trashName}?
+              {language.t("disk.dialog.delete.prompt", { trash: props.trashName })}
             </h3>
             <div
               id="delete-description"
@@ -425,28 +450,27 @@ export function DeleteConfirmDialog(props: {
               <p class="truncate text-12-semibold text-text-strong">{props.node.name}</p>
               <p class="mt-0.5 truncate text-13-mono text-text-weaker">{props.node.path}</p>
               <p class="mt-2 text-13-semibold tabular-nums text-text-strong">
-                {requiresFullMapRebuild() ? "Selected file size: " : ""}
-                {formatBytes(props.node.size)}
+                {requiresFullMapRebuild()
+                  ? language.t("disk.dialog.delete.selectedSize", { size: formatBytes(props.node.size) })
+                  : formatBytes(props.node.size)}
               </p>
             </div>
             <p class="mt-3 flex items-center gap-1.5 text-13-regular text-text-weak">
               <Icon name="shield" class="size-3.5" />
               {props.requiresDeepInventoryRefresh
-                ? `You can restore it from ${props.trashName}. DiskLizard will rebuild the full map after the move.`
+                ? language.t("disk.dialog.delete.restoreRebuild", { trash: props.trashName })
                 : props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
-                  ? `You can restore it from ${props.trashName}. Storage allocation will be recomputed after the move.`
-                : `You can restore it from ${props.trashName}. Space is freed after you empty it.`}
+                  ? language.t("disk.dialog.delete.restoreRecompute", { trash: props.trashName })
+                  : language.t("disk.dialog.delete.restoreSpace", { trash: props.trashName })}
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                This path changes data represented by the deep artifact inventory. Moving it does not make its displayed
-                size a reclaim promise; DiskLizard will rebuild the full map afterward.
+                {language.t("disk.dialog.delete.deepWarning")}
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                This path shares physical storage through an APFS clone or hard link. Moving it does not guarantee
-                that its displayed bytes become free; DiskLizard will recompute shared storage afterward.
+                {language.t("disk.dialog.delete.sharedWarning")}
               </p>
             </Show>
             <Show
@@ -455,15 +479,14 @@ export function DeleteConfirmDialog(props: {
               }
             >
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
-                This scan could not verify filesystem clone metadata. Moving the path does not guarantee that its displayed
-                bytes become free; DiskLizard will refresh the map afterward.
+                {language.t("disk.dialog.delete.unverifiedWarning")}
               </p>
             </Show>
           </div>
         </div>
         <div class="mt-5 flex justify-end gap-2">
           <Button data-autofocus class="dl-touch-target" size="small" variant="ghost" disabled={props.deleting} onClick={props.onClose}>
-            Keep it
+            {language.t("disk.dialog.delete.keep")}
           </Button>
           <Button
             class="dl-touch-target"
@@ -473,7 +496,9 @@ export function DeleteConfirmDialog(props: {
             icon="trash"
             onClick={props.onConfirm}
           >
-            {props.deleting ? "Moving…" : `Move to ${props.trashName}`}
+            {props.deleting
+              ? language.t("disk.dialog.delete.moving")
+              : language.t("disk.detail.moveTo", { trash: props.trashName })}
           </Button>
         </div>
       </div>

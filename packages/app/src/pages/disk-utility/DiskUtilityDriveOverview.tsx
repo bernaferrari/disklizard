@@ -11,6 +11,7 @@ import { DriveFallback } from "./DiskUtilityEmptyStates"
 import { VolumeRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"
 import { StorageDiagnostics } from "./StorageDiagnostics"
+import { useLanguage } from "./runtime"
 
 /** The volume landing surface is presentation-only; scan/session ownership stays in the page controller. */
 export function DriveOverview(props: {
@@ -34,6 +35,7 @@ export function DriveOverview(props: {
   cleanupLocks?: readonly DiskCleanupLock[]
   onUnlockCleanupLock?: (location: DiskCleanupLock) => void
 }) {
+  const language = useLanguage()
   return (
     <div class="flex h-full min-h-0 flex-col">
       <ScrollView class="min-h-0 flex-1">
@@ -41,7 +43,7 @@ export function DriveOverview(props: {
           when={!props.loading && props.drives.length > 0}
           fallback={<DriveFallback loading={props.loading} error={props.error} onChoose={props.onChooseFolder} />}
         >
-          <section aria-label="Volumes">
+          <section aria-label={language.t("disk.drive.volumes")}>
             <For each={props.drives}>
               {(drive, index) => (
                 <VolumeRow
@@ -67,8 +69,8 @@ export function DriveOverview(props: {
             <Show when={(props.cleanupLocks ?? []).length > 0}>
               <section class="border-t border-border-weaker-base py-5">
                 <div class="mb-3 flex items-baseline justify-between gap-4">
-                  <h3 class="text-13-semibold text-text-strong">Protected from cleanup</h3>
-                  <span class="text-13-regular text-text-weaker">L locks the selected item</span>
+                  <h3 class="text-13-semibold text-text-strong">{language.t("disk.drive.protected")}</h3>
+                  <span class="text-13-regular text-text-weaker">{language.t("disk.drive.lockHint")}</span>
                 </div>
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <For each={props.cleanupLocks}>
@@ -77,7 +79,7 @@ export function DriveOverview(props: {
                         location={location}
                         onScan={() => props.onScanPinnedLocation(location)}
                         onRemove={() => props.onUnlockCleanupLock?.(location)}
-                        removeLabel={`Allow cleanup in ${location.label}`}
+                        removeLabel={language.t("disk.drive.allowCleanup", { name: location.label })}
                       />
                     )}
                   </For>
@@ -88,8 +90,8 @@ export function DriveOverview(props: {
             <Show when={props.pinnedLocations.length > 0}>
               <section class="border-t border-border-weaker-base py-5">
                 <div class="mb-3 flex items-baseline justify-between gap-4">
-                  <h3 class="text-13-semibold text-text-strong">Saved locations</h3>
-                  <span class="text-13-regular text-text-weaker">This device only</span>
+                  <h3 class="text-13-semibold text-text-strong">{language.t("disk.drive.saved")}</h3>
+                  <span class="text-13-regular text-text-weaker">{language.t("disk.drive.deviceOnly")}</span>
                 </div>
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <For each={props.pinnedLocations}>
@@ -110,7 +112,7 @@ export function DriveOverview(props: {
 
       <footer class="dl-volume-footer flex h-12 shrink-0 items-center px-3 sm:px-4">
         <Button class="dl-touch-target" variant="ghost" size="small" icon="folder-add-left" onClick={props.onChooseFolder}>
-          Scan Folder…
+          {language.t("disk.drive.scanFolder")}
         </Button>
       </footer>
     </div>

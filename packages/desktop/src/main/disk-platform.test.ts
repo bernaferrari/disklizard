@@ -166,11 +166,24 @@ describe("disk platform diagnostics", () => {
       checkAccess: async () => undefined,
       runCommand: async () => '"High","S-1-16-12288"',
     })
+    const conflictingIntegrity = await getDiskStorageDiagnostics({
+      platform: "win32",
+      homePath: "C:\\Users\\Ada",
+      readDirectory: async () => [],
+      checkAccess: async () => undefined,
+      runCommand: async () =>
+        '"Administrators","S-1-5-32-544"\n"Medium","S-1-16-8192"\n"High","S-1-16-12288"',
+    })
 
     expect(unavailable.access.wholeVolume).toMatchObject({ status: "inconclusive", mapCoverage: "unknown" })
     expect(highWithoutAdmin.access.wholeVolume).toMatchObject({
       status: "inconclusive",
       mapCoverage: "unknown",
+    })
+    expect(conflictingIntegrity.access.wholeVolume).toMatchObject({
+      status: "inconclusive",
+      mapCoverage: "unknown",
+      evidence: { integrityLevel: "unknown" },
     })
   })
 
