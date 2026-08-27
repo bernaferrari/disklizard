@@ -2,6 +2,7 @@ import type { DiskCleanupLock, DiskDriveInfo, DiskPinnedLocation, DiskScanNode }
 import { canDeletePath } from "@disklizard/core/safety"
 import { isPathCleanupLocked } from "./cleanup-lock"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
+import { diskLanguageText } from "./runtime"
 
 function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
   const normalized = path.replace(/\\/g, "/").replace(/\/+$/, "") || "/"
@@ -81,7 +82,7 @@ export function includeHiddenSpace(root: DiskScanNode, drive?: DiskDriveInfo): D
   if (!drive || !diskPathEquals(root.path, drive.path) || drive.used <= root.size) return root
   const hiddenSize = drive.used - root.size
   const hidden: DiskScanNode = {
-    name: "Hidden space",
+    name: diskLanguageText("disk.node.hiddenSpace"),
     path: `disklizard:hidden:${root.path}`,
     size: hiddenSize,
     isDir: true,
@@ -101,7 +102,7 @@ export function includeHiddenSpace(root: DiskScanNode, drive?: DiskDriveInfo): D
 export function asBrowseableRoot(node: DiskScanNode): DiskScanNode {
   if (node.isDir) return node
   return {
-    name: "Selected file",
+    name: diskLanguageText("disk.node.selectedFile"),
     path: `disklizard:selection:${node.path}`,
     size: node.size,
     ...(node.cloneMetadata ? { cloneMetadata: node.cloneMetadata } : {}),
@@ -167,7 +168,20 @@ export function replaceScanSubtree(
     return withReconciledChildren(current, children)
   }
 
-  return visit(root, true)
+  const result = visit(root, true)
+  if (
+    result === root ||
+    diskPathEquals(root.path, targetPath, os) ||
+    result.sharedStorageEvidence !== "complete"
+  ) {
+    return result
+  }
+
+  // The replacement came from an independent scan boundary. Its local
+  // hard-link/clone decisions cannot prove relationships with siblings in the
+  // outer map, so whole-root physical reclaim claims must remain disabled
+  // until a fresh authoritative root scan reconciles the complete boundary.
+  return { ...result, sharedStorageEvidence: "partial" }
 }
 
 /** Remove confirmed filesystem deletions while preserving unaffected tree object identity. */

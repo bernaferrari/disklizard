@@ -683,6 +683,13 @@ export const dict = {
   "toast.update.description": "Versi baru OpenCode ({{version}}) sekarang tersedia untuk diinstal.",
   "toast.update.action.installRestart": "Instal dan mulai ulang",
   "toast.update.action.notYet": "Nanti saja",
+  "disk.accessGuidance.macos": "Berikan Full Disk Access kepada DiskLizard di System Settings, lalu pindai lagi.",
+  "disk.accessGuidance.windows": "Gunakan akun yang memiliki akses ke drive ini, atau pindai folder yang dapat dibaca oleh akun Anda.",
+  "disk.accessGuidance.linux": "Periksa izin folder dan mount, lalu pindai lagi.",
+  "disk.accessGuidance.default": "Periksa akses ke folder-folder ini, lalu pindai lagi.",
+  "disk.accessGuidance.rescan": "Gunakan Pindai Ulang di bilah atas setelah mengubah akses.",
+  "toast.update.installFailed.title": "Tidak dapat menginstal pembaruan",
+  "toast.update.installFailed.retry": "Coba lagi",
 
   "error.page.title": "Terjadi kesalahan",
   "error.page.description": "Terjadi kesalahan saat memuat aplikasi.",

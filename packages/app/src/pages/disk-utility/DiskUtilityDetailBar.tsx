@@ -1,13 +1,30 @@
 import { Button } from "@opencode-ai/ui/button"
 import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Icon, type IconProps } from "@opencode-ai/ui/icon"
 import { Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { StorageAccountingFacts } from "./StorageAccounting"
 import { formatBytes, formatPct } from "./format"
-import { developerArtifactContext, recognize } from "./recognize"
+import { developerArtifactContext, fileKind, recognize } from "./recognize"
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { useLanguage } from "./runtime"
+import { diskNodeDisplayName } from "./node-display"
+
+const GLYPH_BY_KIND: Record<string, IconProps["name"]> = {
+  image: "photo",
+  video: "photo",
+  audio: "review",
+  archive: "archive",
+  document: "review",
+  data: "review",
+  code: "console",
+}
+
+/** Pick a glyph that reflects what a file is instead of a generic code-lines mark. */
+function nodeGlyph(node: DiskScanNode): IconProps["name"] {
+  if (node.isDir) return "folder"
+  return GLYPH_BY_KIND[fileKind(node.ext).kind] ?? "code-lines"
+}
 
 /** Detail / action bar pinned under the scan results. */
 export function DetailBar(props: {
@@ -33,11 +50,13 @@ export function DetailBar(props: {
     <div class="flex min-h-16 min-w-0 flex-wrap items-center justify-between gap-3 px-2">
       <div class="flex min-w-0 items-center gap-3">
         <span class="grid size-9 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-          <Icon name={props.node.isHidden ? "shield" : props.node.isDir ? "folder" : "code-lines"} class="size-4" />
+          <Icon name={nodeGlyph(props.node)} class="size-4" />
         </span>
         <div class="min-w-0">
           <div class="flex min-w-0 items-baseline gap-2">
-            <span class="truncate text-13-semibold tracking-[-0.015em] text-text-strong">{props.node.name}</span>
+            <span class="truncate text-13-semibold tracking-[-0.015em] text-text-strong">
+              {diskNodeDisplayName(props.node)}
+            </span>
             <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</span>
             <span class="shrink-0 text-13-regular tabular-nums text-text-weak">
               {formatPct(props.node.size, props.parentSize)}
@@ -46,7 +65,7 @@ export function DetailBar(props: {
               <span
                 class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-13-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
               >
-                {rec().tag}
+                {language.t(rec().tag!)}
               </span>
             </Show>
           </div>
@@ -59,7 +78,9 @@ export function DetailBar(props: {
                 </>
               )}
             </Show>
-            <span class="font-mono">{props.node.path}</span>
+            <Show when={!props.node.isOther} fallback={<span>{language.t("disk.node.aggregateDescription")}</span>}>
+              <span class="font-mono">{props.node.path}</span>
+            </Show>
           </p>
           <StorageAccountingFacts node={props.node} class="mt-1" />
         </div>
@@ -72,13 +93,14 @@ export function DetailBar(props: {
             </Button>
           </Show>
           <Show when={props.onPreview}>
-            <Button class="dl-touch-target" size="small" variant="ghost" icon="eye" onClick={props.onPreview}>
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              icon="bullet-list"
+              onClick={props.onPreview}
+            >
               {language.t("disk.common.preview")}
-            </Button>
-          </Show>
-          <Show when={props.node.isDir && props.onOpen}>
-            <Button class="dl-touch-target" size="small" variant="ghost" icon="enter" onClick={props.onOpen}>
-              {language.t("disk.common.open")}
             </Button>
           </Show>
           <Button
@@ -89,6 +111,16 @@ export function DetailBar(props: {
             onClick={props.onReveal}
           >
             {language.t("disk.common.reveal")}
+          </Button>
+        </Show>
+        <Show when={props.node.isDir && props.onOpen}>
+          <Button class="dl-touch-target" size="small" variant="ghost" icon="enter" onClick={props.onOpen}>
+            {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.open")}
+          </Button>
+        </Show>
+        <Show when={props.deletable}>
+          <Button class="dl-touch-target" size="small" variant="ghost" icon="trash" onClick={props.onTrash}>
+            {props.trashName}
           </Button>
         </Show>
         <Show when={props.onToggleLock}>
@@ -109,9 +141,6 @@ export function DetailBar(props: {
           </span>
         </Show>
         <Show when={props.deletable}>
-          <Button class="dl-touch-target" size="small" variant="ghost" icon="trash" onClick={props.onTrash}>
-            {props.trashName}
-          </Button>
           <Button
             class="dl-touch-target"
             size="small"
@@ -144,7 +173,7 @@ export function DetailBar(props: {
             size="small"
             variant="secondary"
             icon="dot-grid"
-            aria-label={language.t("disk.detail.moreFor", { name: props.node.name })}
+            aria-label={language.t("disk.detail.moreFor", { name: diskNodeDisplayName(props.node) })}
           >
             {language.t("disk.detail.more")}
           </DropdownMenu.Trigger>
@@ -161,13 +190,15 @@ export function DetailBar(props: {
                     <DropdownMenu.ItemLabel>{language.t("disk.common.preview")}</DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
-                <Show when={props.node.isDir && props.onOpen}>
-                  <DropdownMenu.Item onSelect={props.onOpen}>
-                    <DropdownMenu.ItemLabel>{language.t("disk.common.openFolder")}</DropdownMenu.ItemLabel>
-                  </DropdownMenu.Item>
-                </Show>
                 <DropdownMenu.Item onSelect={props.onReveal}>
                   <DropdownMenu.ItemLabel>{language.t("disk.detail.revealManager")}</DropdownMenu.ItemLabel>
+                </DropdownMenu.Item>
+              </Show>
+              <Show when={props.node.isDir && props.onOpen}>
+                <DropdownMenu.Item onSelect={props.onOpen}>
+                  <DropdownMenu.ItemLabel>
+                    {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.openFolder")}
+                  </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
               <Show when={props.onToggleLock}>
@@ -181,7 +212,9 @@ export function DetailBar(props: {
               <Show when={props.deletable}>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onSelect={props.onTrash}>
-                  <DropdownMenu.ItemLabel>{language.t("disk.detail.moveTo", { trash: props.trashName })}</DropdownMenu.ItemLabel>
+                  <DropdownMenu.ItemLabel>
+                    {language.t("disk.detail.moveTo", { trash: props.trashName })}
+                  </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
             </DropdownMenu.Content>

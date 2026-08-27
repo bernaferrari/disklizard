@@ -7,10 +7,12 @@
  * inside flex panels; a single rAF loop drives the hover springs + animations.
  */
 
+import { batch } from "solid-js"
 import type { DiskScanNode } from "./types"
+import { surfaceRing } from "./ui-tokens"
 
 /** Keep the complete center summary inside the quiet disc at every desktop size. */
-const INNER_HOLE_RATIO = 0.3
+const INNER_HOLE_RATIO = 0.22
 
 /** Node shape the engine consumes — identical to DiskScanNode, aliased for seamless interop. */
 export type SunNode = DiskScanNode
@@ -21,6 +23,8 @@ export type Segment = {
   depth: number
   hue: number
   path: string
+  /** Angular enter stagger (ms) — segments sweep in around the compass. */
+  delay: number
   // interpolated pose
   start: number
   end: number
@@ -64,7 +68,7 @@ export type SunburstTransitionMode = "enter" | "drill" | "up" | "update"
 export type SunburstEntryIntent = "scan-complete" | "pointer" | "keyboard"
 
 /** Reserve the expressive reveal for scan completion; repeated mode switches must feel immediate. */
-export function sunburstEntryDuration(intent: SunburstEntryIntent, navigationMs = 240, revealMs = 340) {
+export function sunburstEntryDuration(intent: SunburstEntryIntent, navigationMs = 240, revealMs = 560) {
   if (intent === "keyboard") return 1
   return intent === "pointer" ? navigationMs : revealMs
 }
@@ -77,7 +81,7 @@ export function sunburstTransitionDuration(
   mode: SunburstTransitionMode,
   reducedMotion: boolean,
   navigationMs = 240,
-  enterMs = 340,
+  enterMs = 560,
   instant = false,
 ) {
   if (reducedMotion || instant) return 1
@@ -94,8 +98,8 @@ function oklchCss(L: number, C: number, hDeg: number, alpha = 1): string {
 
 /** One chromatic family carried through depth; hierarchy comes from measured lightness. */
 function baseForDepth(depth: number): { L: number; C: number } {
-  if (depth === 0) return { L: 0.7, C: 0.115 }
-  if (depth === 1) return { L: 0.65, C: 0.095 }
+  if (depth === 0) return { L: 0.7, C: 0.15 }
+  if (depth === 1) return { L: 0.65, C: 0.125 }
   if (depth === 2) return { L: 0.6, C: 0.078 }
   return { L: 0.55, C: 0.06 }
 }
@@ -129,11 +133,12 @@ function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: 
   if (maxChildren < 2) {
     return [
       {
-        name: `${children.length} smaller items`,
+        name: "",
         path: `disklizard:orbit-more:${node.path}`,
         size: children.reduce((sum, child) => sum + child.size, 0),
         isDir: true,
         isOther: true,
+        otherCount: children.length,
         children: [],
         ext: "",
       },
@@ -150,11 +155,12 @@ function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: 
   return [
     ...kept,
     {
-      name: `${remainder.length} smaller items`,
+      name: "",
       path: `disklizard:orbit-more:${node.path}`,
       size: remainder.reduce((sum, child) => sum + child.size, 0),
       isDir: true,
       isOther: true,
+      otherCount: remainder.length,
       children: [],
       ext: "",
     },
@@ -195,7 +201,11 @@ function layoutTree(
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
       const perBranchLimit = parent.depth === 0 ? 120 : 40
-      const children = collapseVisualChildren(parent.node, Math.min(perBranchLimit, remainingBudget), parent.end - parent.start)
+      const children = collapseVisualChildren(
+        parent.node,
+        Math.min(perBranchLimit, remainingBudget),
+        parent.end - parent.start,
+      )
       if (!children?.length) continue
       const total = children.reduce((sum, child) => sum + Math.max(0, child.size || 0), 0)
       if (total === 0) continue
@@ -246,15 +256,17 @@ export function primaryHueForIndex(i: number): number {
 }
 
 /**
- * Folder hues are positional, never a safety verdict. Files intentionally recede
- * into a neutral treatment so the map exposes hierarchy before decoration.
+ * Folder hues are positional, never a safety verdict. Files carry a dimmed,
+ * desaturated tint of their branch hue so the map keeps its chroma while
+ * hierarchy still reads before decoration.
  */
 export function primarySegmentColor(i: number, alpha = 1, isDir = true): string {
-  if (!isDir) return alpha >= 1 ? "oklch(0.56 0.018 255)" : `oklch(0.56 0.018 255 / ${alpha})`
   const hue = primaryHueForIndex(i)
-  return alpha >= 1 ? `oklch(0.7 0.115 ${hue.toFixed(1)})` : `oklch(0.7 0.115 ${hue.toFixed(1)} / ${alpha})`
+  const [L, C] = isDir ? [0.7, 0.115] : [0.56, 0.063]
+  return alpha >= 1
+    ? `oklch(${L} ${C} ${hue.toFixed(1)})`
+    : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
-
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
 export function primarySegmentForeground(isDir = true): string {
   return isDir ? "oklch(0.18 0.015 255)" : "oklch(1 0 0)"
@@ -283,6 +295,8 @@ export class Sunburst {
   animating = false
   entering = false
   pulseT = 0
+  /** True while a full-reveal (mode "enter") transition is in flight. */
+  private enterMode = false
   lastFrame = 0
 
   dpr = 1
@@ -295,7 +309,18 @@ export class Sunburst {
   themeObserver: MutationObserver | null = null
   motionQuery: MediaQueryList
   reducedMotion = false
-  theme = { background: "#0c0c14", surface: "#0c0c14", border: "rgba(127,127,127,0.16)" }
+  /** True while a ViewMorph owns the canvas; drawing and pointer handling yield. */
+  morphing = false
+  theme = {
+    background: "#0c0c14",
+    surface: "#0c0c14",
+    border: "rgba(127,127,127,0.16)",
+    ring: "rgba(255,255,255,0.86)",
+  }
+  /** Cached canvas bounding rect — invalidated by resize/scroll, read lazily in _hitTest. */
+  rect: DOMRect | null = null
+  lastMoveX = -1
+  lastMoveY = -1
   suppressClickUntil = 0
 
   constructor(canvas: HTMLCanvasElement, options: SunburstOptions = {}) {
@@ -309,15 +334,16 @@ export class Sunburst {
       padAngle: 0.0016,
       ringGap: 0.004,
       animMs: 240,
-      enterAnimMs: 340,
+      enterAnimMs: 560,
       ...options,
     }
+    this.motionQuery.addEventListener("change", this._onMotionPreference)
 
     canvas.addEventListener("pointermove", this._onMouseMove)
     canvas.addEventListener("pointerleave", this._onMouseLeave)
     canvas.addEventListener("click", this._onClick)
     canvas.addEventListener("dblclick", this._onDoubleClick)
-    this.motionQuery.addEventListener("change", this._onMotionPreference)
+    window.addEventListener("scroll", this._onScroll, { passive: true })
     this.ro = new ResizeObserver(this._onResize)
     this.ro.observe(canvas)
     this.themeObserver = new MutationObserver(() => {
@@ -339,22 +365,23 @@ export class Sunburst {
     this.canvas.removeEventListener("pointermove", this._onMouseMove)
     this.canvas.removeEventListener("pointerleave", this._onMouseLeave)
     this.canvas.removeEventListener("click", this._onClick)
-    this.canvas.removeEventListener("dblclick", this._onDoubleClick)
-    this.motionQuery.removeEventListener("change", this._onMotionPreference)
+    window.removeEventListener("scroll", this._onScroll)
     this.ro?.disconnect()
     this.themeObserver?.disconnect()
     if (this.raf) cancelAnimationFrame(this.raf)
+    this.motionQuery.removeEventListener("change", this._onMotionPreference)
   }
 
   _resize() {
     const rect = this.canvas.getBoundingClientRect()
+    this.rect = rect
     const size = Math.max(1, Math.min(rect.width, rect.height))
     this.dpr = Math.min(2, window.devicePixelRatio || 1)
     this.canvas.width = Math.max(1, Math.round(size * this.dpr))
     this.canvas.height = Math.max(1, Math.round(size * this.dpr))
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
-    this.maxR = (this.canvas.width / 2) * 0.93
+    this.maxR = (this.canvas.width / 2) * 0.985
     this.innerHole = this.maxR * INNER_HOLE_RATIO
     this._applyRadiiToTargets()
   }
@@ -362,6 +389,10 @@ export class Sunburst {
   private _onResize = () => {
     this._resize()
     this.requestFrame()
+  }
+
+  private _onScroll = () => {
+    this.rect = null
   }
 
   private _onMotionPreference = (event: MediaQueryListEvent) => {
@@ -515,6 +546,8 @@ export class Sunburst {
         depth: L.depth,
         hue: L.hue,
         path: L.path,
+        // Angular enter stagger: the reveal sweeps around the compass like a clock.
+        delay: mode === "enter" ? (L.start / (Math.PI * 2)) * 220 : 0,
         fromStart,
         fromEnd,
         fromInner,
@@ -572,6 +605,7 @@ export class Sunburst {
     )
     this.animT = 0
     this.animating = true
+    this.enterMode = mode === "enter"
     this.entering = shouldPulseSunburstEntry(mode, this.reducedMotion, instant)
     this.pulseT = 0
     this.requestFrame()
@@ -582,8 +616,17 @@ export class Sunburst {
     this.lastFrame = now
     if (this.animating) {
       this.animT = Math.min(1, (now - this.animStart) / this.activeAnimMs)
-      const e = easeOutExpo(this.animT)
+      // Enter sweeps in around the compass; every other mode shares one clock.
+      const staggered = this.enterMode && !this.reducedMotion
       for (const s of this.segments) {
+        const t = staggered
+          ? Math.min(1, Math.max(0, (now - this.animStart - s.delay) / this.activeAnimMs))
+          : this.animT
+        if (t <= 0) {
+          s.opacity = 0
+          continue
+        }
+        const e = easeOutExpo(t)
         s.start = lerpAngle(s.fromStart, s.toStart, e)
         s.end = lerpAngle(s.fromEnd, s.toEnd, e)
         s.inner = lerp(s.fromInner, s.toInner, e)
@@ -592,6 +635,7 @@ export class Sunburst {
       }
       if (this.animT >= 1) {
         this.animating = false
+        this.enterMode = false
         this.segments = this.segments.filter((s) => s.toOpacity > 0.01)
         for (const s of this.segments) {
           s.start = s.toStart
@@ -653,6 +697,7 @@ export class Sunburst {
   }
 
   _draw() {
+    if (this.morphing) return
     const ctx = this.ctx
     const w = this.canvas.width
     const h = this.canvas.height
@@ -671,11 +716,17 @@ export class Sunburst {
       this._drawSegment(s)
     }
 
-    // Center disc stays flat so labels remain the focal point.
+    // A whisper of lens depth: the disc reads as glass over the data, not flat paint.
     const surface = this.theme.surface
     ctx.beginPath()
     ctx.arc(this.cx, this.cy, safeCanvasRadius(this.innerHole - 1), 0, Math.PI * 2)
     ctx.fillStyle = surface
+    ctx.fill()
+
+    const glass = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, safeCanvasRadius(this.innerHole))
+    glass.addColorStop(0, surface)
+    glass.addColorStop(1, oklchCss(0.5, 0.02, 252, 0.06))
+    ctx.fillStyle = glass
     ctx.fill()
 
     ctx.beginPath()
@@ -689,7 +740,7 @@ export class Sunburst {
       const p = easeOutCubic(this.pulseT)
       ctx.beginPath()
       ctx.arc(this.cx, this.cy, safeCanvasRadius(lerp(this.innerHole * 0.4, this.maxR * 1.02, p)), 0, Math.PI * 2)
-      ctx.strokeStyle = oklchCss(0.78, 0.11, 176, 1 - p)
+      ctx.strokeStyle = oklchCss(0.78, 0.11, 252, 1 - p)
       ctx.lineWidth = (4 * (1 - p) + 1) * this.dpr
       ctx.stroke()
     }
@@ -705,6 +756,8 @@ export class Sunburst {
     const base = baseForDepth(s.depth)
     const isPrimary = s.depth === 0
     const isHi = s.hover > 0.02
+    const L = (s.node.isDir ? base.L : base.L - 0.07) + (isHi ? 0.04 : 0)
+    const C = (s.node.isDir ? base.C : base.C * 0.55) + (isHi ? 0.018 : 0)
     const isSel = this.selectedPath === s.path
     const dimOthers = this.hovered && this.hovered.path !== s.path && !this.highlightPath
     const dimHi = this.highlightPath && this.highlightPath !== s.path
@@ -713,9 +766,6 @@ export class Sunburst {
     const inner = safeCanvasRadius(s.inner - lift * 0.25)
     const outer = safeCanvasRadius(s.outer + lift)
     const alpha = s.opacity * (dimOthers ? 0.58 : dimHi ? 0.68 : 1)
-
-    const L = (s.node.isDir ? base.L : 0.54 - Math.min(s.depth, 2) * 0.035) + (isHi ? 0.04 : 0)
-    const C = (s.node.isDir ? base.C : 0.018) + (isHi ? 0.018 : 0)
 
     ctx.save()
     ctx.globalAlpha = alpha
@@ -741,11 +791,15 @@ export class Sunburst {
     }
 
     if (isSel) {
+      ctx.save()
       ctx.beginPath()
-      ctx.arc(this.cx, this.cy, safeCanvasRadius(outer + 3.5 * this.dpr), start, end)
-      ctx.strokeStyle = "rgba(255,255,255,0.86)"
-      ctx.lineWidth = 2 * this.dpr
+      ctx.arc(this.cx, this.cy, safeCanvasRadius(outer + 2.5 * this.dpr), start, end)
+      ctx.shadowColor = this.theme.ring
+      ctx.shadowBlur = 6 * this.dpr
+      ctx.strokeStyle = this.theme.ring
+      ctx.lineWidth = 2.5 * this.dpr
       ctx.stroke()
+      ctx.restore()
     }
 
     ctx.restore()
@@ -760,12 +814,14 @@ export class Sunburst {
         style.getPropertyValue("--surface-panel").trim() ||
         style.getPropertyValue("--surface-base").trim() ||
         background,
+      // Accent ring in the shell's blue family — visible on both themes, never a hard monochrome arc.
+      ring: surfaceRing(),
       border: style.getPropertyValue("--border-weaker-base").trim() || "rgba(127,127,127,0.16)",
     }
   }
 
   _hitTest(mx: number, my: number) {
-    const rect = this.canvas.getBoundingClientRect()
+    const rect = this.rect ?? (this.rect = this.canvas.getBoundingClientRect())
     const x = (mx - rect.left) * (this.canvas.width / rect.width)
     const y = (my - rect.top) * (this.canvas.height / rect.height)
     const dx = x - this.cx
@@ -789,22 +845,28 @@ export class Sunburst {
   }
 
   private _onMouseMove = (e: PointerEvent) => {
+    if (this.morphing) return
+    if (e.clientX === this.lastMoveX && e.clientY === this.lastMoveY) return
+    this.lastMoveX = e.clientX
+    this.lastMoveY = e.clientY
     const hit = this._hitTest(e.clientX, e.clientY)
     const prev = this.hovered
+    let cursor: string
     if (!hit || hit.type === "center") {
       this.hovered = null
-      this.canvas.style.cursor = hit?.type === "center" && this._canGoUp() ? "pointer" : "default"
-      if (prev) this.options.onHover?.(null)
-      this.requestFrame()
-      return
+      cursor = hit?.type === "center" && this._canGoUp() ? "pointer" : "default"
+      if (prev) batch(() => this.options.onHover?.(null))
+    } else {
+      this.hovered = hit.segment
+      cursor = this.options.canDrag?.(hit.segment.node)
+        ? "grab"
+        : hit.segment.node.isDir
+          ? "pointer"
+          : "default"
+      if (prev?.path !== hit.segment.path) batch(() => this.options.onHover?.(hit.segment))
     }
-    this.hovered = hit.segment
-    this.canvas.style.cursor = this.options.canDrag?.(hit.segment.node)
-      ? "grab"
-      : hit.segment.node.isDir
-        ? "pointer"
-        : "default"
-    if (prev?.path !== hit.segment.path) this.options.onHover?.(hit.segment)
+    // One style write + one frame request per move instead of scattered writes.
+    this.canvas.style.cursor = cursor
     this.requestFrame()
   }
 
@@ -820,6 +882,7 @@ export class Sunburst {
   }
 
   private _onClick = (e: MouseEvent) => {
+    if (this.morphing) return
     if (performance.now() < this.suppressClickUntil) return
     const hit = this._hitTest(e.clientX, e.clientY)
     if (!hit) return
@@ -837,6 +900,7 @@ export class Sunburst {
   }
 
   private _onDoubleClick = (e: MouseEvent) => {
+    if (this.morphing) return
     if (performance.now() < this.suppressClickUntil) return
     const hit = this._hitTest(e.clientX, e.clientY)
     if (!hit || hit.type === "center") return
@@ -855,5 +919,24 @@ export class Sunburst {
 
   getPrimarySegments(): Segment[] {
     return this.segments.filter((s) => s.depth === 0 && s.toOpacity > 0.5).sort((a, b) => b.node.size - a.node.size)
+  }
+
+  /** Depth-0 wedges visible enough to morph into treemap tiles. */
+  primarySegments(): Segment[] {
+    return this.segments.filter((s) => s.depth === 0 && s.toOpacity > 0.3)
+  }
+
+  /** While active the sunburst clears itself and ignores pointers; ViewMorph draws instead. */
+  setMorphing(active: boolean) {
+    this.morphing = active
+    if (active) {
+      this.hovered = null
+      if (this.raf) cancelAnimationFrame(this.raf)
+      this.running = false
+      this.raf = null
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      return
+    }
+    this.requestFrame()
   }
 }

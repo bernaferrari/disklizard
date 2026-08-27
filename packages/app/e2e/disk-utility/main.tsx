@@ -17,11 +17,73 @@ import "../../src/index.css"
 
 const MIB = 1024 * 1024
 
+const denseFiles = Array.from({ length: 40 }, (_, index) => ({
+  name: `small-${String(index + 1).padStart(2, "0")}.bin`,
+  path: `/Users/alex/Dense/small-${String(index + 1).padStart(2, "0")}.bin`,
+  size: MIB,
+  logicalSize: MIB,
+  modifiedAt: Date.UTC(2026, 7, 19),
+  isDir: false,
+  ext: ".bin",
+  children: [],
+})) satisfies DiskScanNode[]
+
+const nestedWorkspacePath = "/Users/alex/Projects/nested-workspace"
+const nestedPayloadPath = `${nestedWorkspacePath}/Payload`
+const nestedWorkspaceTree: DiskScanNode = {
+  name: "Nested workspace",
+  path: nestedWorkspacePath,
+  size: 16 * MIB,
+  logicalSize: 16 * MIB,
+  modifiedAt: Date.UTC(2026, 7, 23),
+  cloneMetadata: { state: "available" },
+  sharedStorageEvidence: "complete",
+  isDir: true,
+  ext: "",
+  children: [
+    {
+      name: "Payload",
+      path: nestedPayloadPath,
+      size: 16 * MIB,
+      logicalSize: 16 * MIB,
+      modifiedAt: Date.UTC(2026, 7, 23),
+      isDir: true,
+      isCollapsed: true,
+      ext: "",
+      children: [],
+    },
+  ],
+}
+
+const nestedPayloadTree: DiskScanNode = {
+  name: "Payload",
+  path: nestedPayloadPath,
+  size: 16 * MIB,
+  logicalSize: 16 * MIB,
+  modifiedAt: Date.UTC(2026, 7, 23),
+  cloneMetadata: { state: "available" },
+  sharedStorageEvidence: "complete",
+  isDir: true,
+  ext: "",
+  children: [
+    {
+      name: "deep-artifact.bin",
+      path: `${nestedPayloadPath}/deep-artifact.bin`,
+      size: 16 * MIB,
+      logicalSize: 16 * MIB,
+      modifiedAt: Date.UTC(2026, 7, 23),
+      isDir: false,
+      ext: ".bin",
+      children: [],
+    },
+  ],
+}
+
 const journeyScanTree: DiskScanNode = {
   name: "Test volume",
   path: "/Users/alex",
-  size: 640 * MIB,
-  logicalSize: 640 * MIB,
+  size: 696 * MIB,
+  logicalSize: 696 * MIB,
   modifiedAt: Date.UTC(2026, 7, 23),
   cloneMetadata: { state: "available" },
   sharedStorageEvidence: "complete",
@@ -60,7 +122,36 @@ const journeyScanTree: DiskScanNode = {
       ext: ".zip",
       children: [],
     },
+    {
+      name: "Other (40 items)",
+      path: "/Users/alex/__other__",
+      size: 40 * MIB,
+      logicalSize: 40 * MIB,
+      modifiedAt: Date.UTC(2026, 7, 19),
+      isDir: true,
+      isOther: true,
+      otherCount: 40,
+      ext: "",
+      children: denseFiles.slice(0, 2),
+    },
+    {
+      name: "Nested workspace",
+      path: nestedWorkspacePath,
+      size: 16 * MIB,
+      logicalSize: 16 * MIB,
+      modifiedAt: Date.UTC(2026, 7, 23),
+      isDir: true,
+      isCollapsed: true,
+      ext: "",
+      children: [],
+    },
   ],
+}
+
+function expandedJourneyTree() {
+  const root = structuredClone(journeyScanTree)
+  root.children = [...root.children.filter((node) => !node.isOther), ...structuredClone(denseFiles)]
+  return root
 }
 
 function benchmarkScanTree(width: number): DiskScanNode {
@@ -116,18 +207,25 @@ function countNodes(root: DiskScanNode) {
 const fixtureParameters = new URLSearchParams(location.search)
 const requestedWidth = Number(fixtureParameters.get("width") ?? 24)
 const benchmarkWidth = Number.isInteger(requestedWidth) ? Math.min(32, Math.max(4, requestedWidth)) : 24
-const scanTree = fixtureParameters.get("benchmark") === "1" ? benchmarkScanTree(benchmarkWidth) : journeyScanTree
+const benchmarkFixture = fixtureParameters.get("benchmark") === "1"
+let scanTree = benchmarkFixture ? benchmarkScanTree(benchmarkWidth) : journeyScanTree
+const scanTreeSize = scanTree.size
 const scanTreePayloadBytes = new TextEncoder().encode(JSON.stringify(scanTree)).byteLength
 
 type DeletedItem = { path: string; options: DiskDeleteOptions }
 type FixtureState = {
   scans: string[]
+  scanRequests: Array<{ path: string; scanId: string; maxChildren?: number }>
+  stopWatchingRequests: Array<{ scanId?: string; retainTrustedSubtree?: true }>
   authorizationRequests: string[][]
   deleted: DeletedItem[]
   treeNodes: number
   payloadBytes: number
   emitUpdate(update: DiskScanUpdate): void
   emitBuildCacheGrowth(): void
+  emitArchiveGrowth(): void
+  holdNextScan(path: string): void
+  releaseHeldScan(): void
 }
 
 declare global {
@@ -139,10 +237,15 @@ declare global {
 const progressListeners = new Set<(progress: DiskScanProgress) => void>()
 const updateListeners = new Set<(update: DiskScanUpdate) => void>()
 const storage = new Map<string, string>()
-let lastScanId = "fixture-scan"
+let primaryScanId = "fixture-scan"
+let heldScanPath: string | undefined
+let releaseHeldScan: (() => void) | undefined
+let heldScanReleaseRequested = false
 
 const fixture: FixtureState = {
   scans: [],
+  scanRequests: [],
+  stopWatchingRequests: [],
   authorizationRequests: [],
   deleted: [],
   treeNodes: countNodes(scanTree),
@@ -158,29 +261,56 @@ const fixture: FixtureState = {
     cache.logicalSize = 400 * MIB
     cache.children[0].size = 400 * MIB
     cache.children[0].logicalSize = 400 * MIB
-    root.size = 680 * MIB
-    root.logicalSize = 680 * MIB
+    root.size = 736 * MIB
+    root.logicalSize = 736 * MIB
     fixture.emitUpdate({
-      scanId: lastScanId,
+      scanId: primaryScanId,
       rootPath: root.path,
       root,
       changedPaths: [cache.path],
     })
+  },
+  emitArchiveGrowth() {
+    const root = structuredClone(journeyScanTree)
+    const archive = root.children.find((node) => node.name === "Archive.zip")
+    if (!archive) throw new Error("Archive fixture is missing")
+    archive.size = 300 * MIB
+    archive.logicalSize = 300 * MIB
+    root.size = 716 * MIB
+    root.logicalSize = 716 * MIB
+    fixture.emitUpdate({
+      scanId: primaryScanId,
+      rootPath: root.path,
+      root,
+      changedPaths: [archive.path],
+    })
+  },
+  holdNextScan(path) {
+    heldScanPath = path
+    heldScanReleaseRequested = false
+  },
+  releaseHeldScan() {
+    if (releaseHeldScan) {
+      releaseHeldScan()
+      releaseHeldScan = undefined
+    } else {
+      heldScanReleaseRequested = true
+    }
   },
 }
 window.diskLizardFixture = fixture
 
 const diskUtility: DiskUtilityAPI = {
   async getDrives() {
-    const total = Math.max(1024 * MIB, Math.ceil(scanTree.size * 1.25))
+    const total = Math.max(1024 * MIB, Math.ceil(scanTreeSize * 1.25))
     return [
       {
         path: "/Users/alex",
         name: "Test volume",
         label: "Test volume",
         total,
-        used: scanTree.size,
-        free: total - scanTree.size,
+        used: scanTreeSize,
+        free: total - scanTreeSize,
         type: "local",
         filesystem: "apfs",
       },
@@ -207,9 +337,10 @@ const diskUtility: DiskUtilityAPI = {
   async openDiskAccessSettings() {
     return false
   },
-  async scanPath(path, _options, scanId = "fixture-scan") {
-    lastScanId = scanId
+  async scanPath(path, options, scanId = "fixture-scan") {
+    if (!scanId.startsWith("expand-")) primaryScanId = scanId
     fixture.scans.push(path)
+    fixture.scanRequests.push({ path, scanId, ...(options?.maxChildren ? { maxChildren: options.maxChildren } : {}) })
     progressListeners.forEach((listener) =>
       listener({ scanId, filesScanned: 1, dirsScanned: 1, currentPath: `${path}/Projects`, size: 360 * MIB }),
     )
@@ -220,15 +351,48 @@ const diskUtility: DiskUtilityAPI = {
         filesScanned: 2,
         dirsScanned: 2,
         currentPath: path,
-        size: scanTree.size,
+        size: scanTreeSize,
         done: true,
         source: "scan",
       }),
     )
-    return structuredClone(scanTree)
+    if (heldScanPath === path) {
+      heldScanPath = undefined
+      await new Promise<void>((resolve) => {
+        if (heldScanReleaseRequested) {
+          heldScanReleaseRequested = false
+          resolve()
+        } else {
+          releaseHeldScan = resolve
+        }
+      })
+    }
+    const source =
+      !benchmarkFixture && path === nestedWorkspacePath
+        ? nestedWorkspaceTree
+        : !benchmarkFixture && path === nestedPayloadPath
+          ? nestedPayloadTree
+          : !benchmarkFixture && path === journeyScanTree.path && options?.maxChildren
+            ? expandedJourneyTree()
+            : scanTree
+    const result = structuredClone(source)
+    // A real renderer receives one structured-cloned IPC payload; the source
+    // tree stays in Electron main. Drop the benchmark fixture's renderer-side
+    // source copy so retained-heap reporting measures the product state rather
+    // than a test-only duplicate.
+    if (benchmarkFixture) scanTree = journeyScanTree
+    return result
   },
   async cancelScan() {},
-  async stopWatching() {},
+  async stopWatching(scanId, options) {
+    if (options?.retainTrustedSubtree && !scanId) {
+      throw new Error("A focused scan ID is required to retain trusted subtree authority")
+    }
+    fixture.stopWatchingRequests.push({
+      ...(scanId ? { scanId } : {}),
+      ...(options?.retainTrustedSubtree ? { retainTrustedSubtree: true } : {}),
+    })
+  },
   async authorizeDeletePaths(paths) {
     const requested = [...paths]
     fixture.authorizationRequests.push(requested)

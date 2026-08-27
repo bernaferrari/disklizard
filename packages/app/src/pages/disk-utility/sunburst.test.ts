@@ -64,7 +64,7 @@ describe("primarySegmentColor", () => {
     expect(primarySegmentColor(0, 0.5)).toContain("/ 0.5")
   })
   it("keeps files visually secondary to folder branches", () => {
-    expect(primarySegmentColor(2, 1, false)).toBe("oklch(0.56 0.018 255)")
+    expect(primarySegmentColor(2, 1, false)).toBe(`oklch(0.56 0.063 ${primaryHueForIndex(2).toFixed(1)})`)
   })
   it("keeps every tile label above normal-text AA contrast", () => {
     for (let index = 0; index < 10; index++) {
@@ -85,7 +85,7 @@ describe("safeCanvasRadius", () => {
 
 describe("sunburstTransitionDuration", () => {
   it("keeps repeated navigation faster than the one-time reveal", () => {
-    expect(sunburstTransitionDuration("enter", false)).toBe(340)
+    expect(sunburstTransitionDuration("enter", false)).toBe(560)
     expect(sunburstTransitionDuration("drill", false)).toBe(240)
     expect(sunburstTransitionDuration("up", false)).toBe(240)
     expect(sunburstTransitionDuration("update", false)).toBe(240)
@@ -97,15 +97,15 @@ describe("sunburstTransitionDuration", () => {
   })
 
   it("settles keyboard navigation immediately without disabling pointer motion", () => {
-    expect(sunburstTransitionDuration("drill", false, 240, 340, true)).toBe(1)
-    expect(sunburstTransitionDuration("up", false, 240, 340, true)).toBe(1)
-    expect(sunburstTransitionDuration("drill", false, 240, 340, false)).toBe(240)
+    expect(sunburstTransitionDuration("drill", false, 240, 560, true)).toBe(1)
+    expect(sunburstTransitionDuration("up", false, 240, 560, true)).toBe(1)
+    expect(sunburstTransitionDuration("drill", false, 240, 560, false)).toBe(240)
   })
 })
 
 describe("sunburstEntryDuration", () => {
   it("reserves the full reveal for scan completion and keeps keyboard mode switches instant", () => {
-    expect(sunburstEntryDuration("scan-complete")).toBe(340)
+    expect(sunburstEntryDuration("scan-complete")).toBe(560)
     expect(sunburstEntryDuration("pointer")).toBe(240)
     expect(sunburstEntryDuration("keyboard")).toBe(1)
   })
@@ -148,19 +148,22 @@ describe("layoutSunburstSegments", () => {
     const primary = segments.filter((segment) => segment.depth === 0)
 
     expect(primary).toHaveLength(120)
-    expect(primary.at(-1)?.node).toMatchObject({ name: "881 smaller items", isOther: true })
+    expect(primary.at(-1)?.node).toMatchObject({ name: "", isOther: true, otherCount: 881 })
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(500_500)
     expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
   })
 
   it("rolls sub-pixel tails into a truthful segment instead of silently dropping their storage", () => {
-    const root = node("root", 10_000, [node("large", 9_990), ...Array.from({ length: 10 }, (_, i) => node(`tiny-${i}`, 1))])
+    const root = node("root", 10_000, [
+      node("large", 9_990),
+      ...Array.from({ length: 10 }, (_, i) => node(`tiny-${i}`, 1)),
+    ])
     const segments = layoutSunburstSegments(root, 1, 360)
     const primary = segments.filter((segment) => segment.depth === 0)
     const aggregate = primary.find((segment) => segment.node.isOther)
 
     expect(MIN_VISIBLE_SEGMENT_ANGLE).toBeGreaterThan(0)
-    expect(aggregate).toMatchObject({ node: { name: "10 smaller items", size: 10, isOther: true } })
+    expect(aggregate).toMatchObject({ node: { name: "", size: 10, isOther: true, otherCount: 10 } })
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(root.size)
     expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
   })
@@ -173,7 +176,11 @@ describe("layoutSunburstSegments", () => {
         Array.from({ length: 80 }, (_, inner) => node(`outer-${outer}/inner-${inner}`, 1 + inner)),
       ),
     )
-    const root = node("root", children.reduce((sum, child) => sum + child.size, 0), children)
+    const root = node(
+      "root",
+      children.reduce((sum, child) => sum + child.size, 0),
+      children,
+    )
     const segments = layoutSunburstSegments(root, 3, 360)
     const primary = segments.filter((segment) => segment.depth === 0)
 

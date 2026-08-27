@@ -63,7 +63,7 @@ export function ScanFormation(props: ScanFormationProps) {
       <header class="flex min-h-[94px] flex-wrap items-end justify-between gap-5 border-b border-border-weaker-base pb-5">
         <div class="min-w-0">
           <div class="mb-2 flex items-center gap-2 text-13-semibold uppercase tracking-[0.16em] text-text-weak">
-            <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_176)]" />
+            <span class="dl-scan-beacon size-1.5 rounded-full bg-[oklch(0.74_0.13_252)]" />
             {language.t("disk.scan.scanning")}
           </div>
           <h2 class="truncate text-[clamp(32px,4vw,52px)] font-medium leading-none tracking-[-0.05em] text-text-strong">
@@ -107,7 +107,7 @@ export function ScanFormation(props: ScanFormationProps) {
           </div>
 
           <div class="flex min-h-[190px] flex-1 items-center py-6">
-            <div class="border-l border-[oklch(0.74_0.13_176)] py-1 pl-5">
+            <div class="border-l border-[oklch(0.74_0.13_252)] py-1 pl-5">
               <h3 class="text-12-semibold text-text-strong">{language.t("disk.scan.building")}</h3>
               <p class="mt-2 max-w-[44ch] text-13-regular leading-relaxed text-text-weak">
                 {language.t("disk.scan.buildingBody")}
@@ -138,11 +138,24 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
           cy="200"
           r="145"
           fill="none"
-          stroke="oklch(0.74 0.13 176)"
+          stroke="oklch(0.74 0.13 252)"
           stroke-width="22"
           pathLength="100"
-          stroke-dasharray="8 92"
+          stroke-dasharray="22 78"
           stroke-linecap="round"
+        />
+        <circle
+          class="dl-scan-sweep"
+          cx="200"
+          cy="200"
+          r="145"
+          fill="none"
+          stroke="oklch(0.74 0.13 252 / 0.35)"
+          stroke-width="22"
+          pathLength="100"
+          stroke-dasharray="14 86"
+          stroke-linecap="round"
+          style="animation-delay:-0.18s"
         />
         <circle cx="200" cy="200" r="114" fill="none" stroke="var(--border-weaker-base)" stroke-width="1" />
         <circle
@@ -151,7 +164,7 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
           cy="200"
           r="104"
           fill="none"
-          stroke="oklch(0.74 0.13 176)"
+          stroke="oklch(0.74 0.13 252)"
           stroke-width="3"
           pathLength="100"
           stroke-dasharray="100"

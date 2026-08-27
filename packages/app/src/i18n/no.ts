@@ -2,6 +2,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "disk.accessGuidance.macos": "Gi DiskLizard Full disktilgang i Systeminnstillinger, og skann på nytt.",
+  "disk.accessGuidance.windows": "Bruk en konto med tilgang til denne stasjonen, eller skann en mappe kontoen din kan lese.",
+  "disk.accessGuidance.linux": "Kontroller mappe- og monteringsrettigheter, og skann på nytt.",
+  "disk.accessGuidance.default": "Kontroller tilgangen til disse mappene, og skann på nytt.",
+  "disk.accessGuidance.rescan": "Bruk Skann på nytt i toppfeltet etter at du har endret tilgangen.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Arkiv",
   "desktop.menu.edit": "Rediger",
@@ -577,6 +582,8 @@ export const dict = {
   "toast.update.description": "En ny versjon av OpenCode ({{version}}) er nå tilgjengelig for installasjon.",
   "toast.update.action.installRestart": "Installer og start på nytt",
   "toast.update.action.notYet": "Ikke nå",
+  "toast.update.installFailed.title": "Kunne ikke installere oppdateringen",
+  "toast.update.installFailed.retry": "Prøv igjen",
 
   "error.page.title": "Noe gikk galt",
   "error.page.description": "Det oppstod en feil under lasting av applikasjonen.",

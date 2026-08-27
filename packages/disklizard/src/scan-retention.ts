@@ -93,7 +93,7 @@ export class ChildRetention {
     const children = this.preservedOverflow.length ? [...this.top, ...this.preservedOverflow] : this.top
     if (this.restSize > 0) {
       children.push({
-        name: `Other (${this.restCount} items)`,
+        name: `Other (${this.restCount} ${this.restCount === 1 ? "item" : "items"})`,
         path: joinChildPath(this.parentPath, "__other__"),
         size: this.restSize,
         ...(this.restLogicalSize === this.restSize ? {} : { logicalSize: this.restLogicalSize }),
@@ -102,6 +102,7 @@ export class ChildRetention {
         children: this.restSample,
         ext: "",
         isOther: true,
+        otherCount: this.restCount,
       })
     }
 

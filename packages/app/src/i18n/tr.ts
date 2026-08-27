@@ -3,6 +3,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "disk.accessGuidance.macos": "System Settings'te DiskLizard'a Tam Disk Erişimi verin, ardından yeniden tarayın.",
+  "disk.accessGuidance.windows": "Bu sürücüye erişimi olan bir hesap kullanın veya hesabınızın okuyabileceği bir klasörü tarayın.",
+  "disk.accessGuidance.linux": "Klasör ve bağlama izinlerini gözden geçirin, ardından yeniden tarayın.",
+  "disk.accessGuidance.default": "Bu klasörlere erişimi gözden geçirin, ardından yeniden tarayın.",
+  "disk.accessGuidance.rescan": "Erişimi değiştirdikten sonra üst çubuktaki Yeniden tara seçeneğini kullanın.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Dosya",
   "desktop.menu.edit": "Düzen",
@@ -676,6 +681,8 @@ export const dict = {
   "toast.update.description": "OpenCode'un yeni bir sürümü ({{version}}) yüklemeye hazır.",
   "toast.update.action.installRestart": "Yükle ve yeniden başlat",
   "toast.update.action.notYet": "Şimdi değil",
+  "toast.update.installFailed.title": "Güncelleme yüklenemedi",
+  "toast.update.installFailed.retry": "Tekrar dene",
 
   "error.page.title": "Bir şeyler yanlış gitti",
   "error.page.description": "Uygulama yüklenirken bir hata oluştu.",

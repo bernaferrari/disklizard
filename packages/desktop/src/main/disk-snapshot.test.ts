@@ -177,18 +177,160 @@ describe("disk scan snapshots", () => {
     await second.stopAll()
   })
 
+  test("round-trips and validates explicit Other aggregate counts", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scannedRoot: DiskNode = {
+      name: path.basename(root),
+      path: root,
+      size: 18,
+      isDir: true,
+      ext: "",
+      sharedStorageEvidence: "complete",
+      children: [
+        {
+          name: "Other (18 items)",
+          path: path.join(root, "__other__"),
+          size: 18,
+          isDir: true,
+          isOther: true,
+          otherCount: 18,
+          ext: "",
+          children: [
+            {
+              name: "sample.bin",
+              path: path.join(root, "sample.bin"),
+              size: 1,
+              isDir: false,
+              ext: "bin",
+              children: [],
+            },
+          ],
+        },
+      ],
+    }
+    const scan = async () => {
+      scans++
+      return scannedRoot
+    }
+
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    const restored = await second.scan(2, root, {}, () => {})
+    expect(restored.source).toBe("snapshot")
+    expect(restored.root.children[0]).toMatchObject({ isOther: true, otherCount: 18 })
+    expect(restored.root.children[0]?.children).toHaveLength(1)
+    expect(scans).toBe(1)
+    await second.stopAll()
+
+    const snapshotDir = path.join(cacheDir, diskSnapshotKey(root, {}))
+    const metadata = JSON.parse(await readFile(path.join(snapshotDir, "metadata.json"), "utf8")) as { tree: string }
+    const treePath = path.join(snapshotDir, metadata.tree)
+    const records = (await readFile(treePath, "utf8"))
+      .trimEnd()
+      .split("\n")
+      .map((line) => JSON.parse(line) as Record<string, unknown>)
+    const otherRecord = records.find(
+      (record) =>
+        record.type === "node" &&
+        typeof record.node === "object" &&
+        record.node !== null &&
+        (record.node as Record<string, unknown>).isOther === true,
+    )
+    expect(otherRecord).toBeDefined()
+    ;(otherRecord!.node as Record<string, unknown>).otherCount = 0
+    await writeFile(treePath, `${records.map((record) => JSON.stringify(record)).join("\n")}\n`)
+
+    const third = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await third.scan(3, root, {}, () => {})).source).toBe("scan")
+    expect(scans).toBe(2)
+    await third.stopAll()
+
+    const replacementMetadata = JSON.parse(await readFile(path.join(snapshotDir, "metadata.json"), "utf8")) as {
+      tree: string
+    }
+    const replacementTreePath = path.join(snapshotDir, replacementMetadata.tree)
+    const replacementRecords = (await readFile(replacementTreePath, "utf8"))
+      .trimEnd()
+      .split("\n")
+      .map((line) => JSON.parse(line) as Record<string, unknown>)
+    const sampleRecord = replacementRecords.find(
+      (record) =>
+        record.type === "node" &&
+        typeof record.node === "object" &&
+        record.node !== null &&
+        (record.node as Record<string, unknown>).path === path.join(root, "sample.bin"),
+    )
+    expect(sampleRecord).toBeDefined()
+    ;(sampleRecord!.node as Record<string, unknown>).otherCount = 1
+    await writeFile(replacementTreePath, `${replacementRecords.map((record) => JSON.stringify(record)).join("\n")}\n`)
+
+    const fourth = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    expect((await fourth.scan(4, root, {}, () => {})).source).toBe("scan")
+    expect(scans).toBe(3)
+    await fourth.stopAll()
+  })
+
+  test("restores legacy Other aggregates without explicit counts", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const watcher = fakeWatcher()
+    let scans = 0
+    const scan = async (): Promise<DiskNode> => {
+      scans++
+      return {
+        name: path.basename(root),
+        path: root,
+        size: 1,
+        isDir: true,
+        ext: "",
+        sharedStorageEvidence: "complete",
+        children: [
+          {
+            name: "Other (1 items)",
+            path: path.join(root, "__other__"),
+            size: 1,
+            isDir: true,
+            isOther: true,
+            ext: "",
+            children: [],
+          },
+        ],
+      }
+    }
+
+    const first = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    await first.scan(1, root, {}, () => {})
+    await first.stopAll()
+    const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    const restored = await second.scan(2, root, {}, () => {})
+    expect(restored.source).toBe("snapshot")
+    expect(restored.root.children[0]).toMatchObject({ isOther: true })
+    expect(restored.root.children[0]?.otherCount).toBeUndefined()
+    expect(scans).toBe(1)
+    await second.stopAll()
+  })
+
   test("keeps the event loop responsive while persisting and restoring a tree above 100k nodes", async () => {
     const root = await temp()
     const cacheDir = await temp()
     const watcher = fakeWatcher()
-    const children = Array.from({ length: 100_001 }, (_, index): DiskNode => ({
-      name: `child-${index}`,
-      path: path.join(root, `child-${index}`),
-      size: 0,
-      isDir: false,
-      children: [],
-      ext: "",
-    }))
+    const children = Array.from(
+      { length: 100_001 },
+      (_, index): DiskNode => ({
+        name: `child-${index}`,
+        path: path.join(root, `child-${index}`),
+        size: 0,
+        isDir: false,
+        children: [],
+        ext: "",
+      }),
+    )
     const largeRoot: DiskNode = {
       name: path.basename(root),
       path: root,
@@ -262,10 +404,7 @@ describe("disk scan snapshots", () => {
     const metadata = JSON.parse(await readFile(metadataPath, "utf8")) as Record<string, unknown>
     const legacyTree = path.join(snapshotDir, `tree-${Date.now()}-00000000-0000-4000-8000-000000000000.bin`)
     await writeFile(legacyTree, new Uint8Array([0xff]))
-    await writeFile(
-      metadataPath,
-      JSON.stringify({ ...metadata, schema: 7, tree: path.basename(legacyTree) }),
-    )
+    await writeFile(metadataPath, JSON.stringify({ ...metadata, schema: 7, tree: path.basename(legacyTree) }))
 
     const second = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
     expect((await second.scan(2, root, {}, () => {})).source).toBe("scan")
@@ -516,14 +655,17 @@ describe("disk scan snapshots", () => {
 
   test("lets the event loop advance while indexing and reconciling a large incremental delta", async () => {
     const rootPath = "/benchmark-root"
-    const children = Array.from({ length: 1_024 }, (_, index): DiskNode => ({
-      name: `file-${index}.bin`,
-      path: `${rootPath}/file-${index}.bin`,
-      size: 1,
-      isDir: false,
-      children: [],
-      ext: "bin",
-    }))
+    const children = Array.from(
+      { length: 1_024 },
+      (_, index): DiskNode => ({
+        name: `file-${index}.bin`,
+        path: `${rootPath}/file-${index}.bin`,
+        size: 1,
+        isDir: false,
+        children: [],
+        ext: "bin",
+      }),
+    )
     const root: DiskNode = {
       name: "benchmark-root",
       path: rootPath,
@@ -545,12 +687,9 @@ describe("disk scan snapshots", () => {
     scheduleTurn()
 
     try {
-      const result = await applyDiskDelta(
-        root,
-        [{ path: changed.path, type: "update" }],
-        async () => changed,
-        { sizeMode: "logical" },
-      )
+      const result = await applyDiskDelta(root, [{ path: changed.path, type: "update" }], async () => changed, {
+        sizeMode: "logical",
+      })
       expect(result.changedPaths).toEqual([changed.path])
       expect(result.root.size).toBe(children.length + 8)
       expect(eventLoopTurns).toBeGreaterThan(2)
@@ -922,7 +1061,12 @@ describe("disk scan snapshots", () => {
   })
 
   test("rebases an exact APFS clone group instead of leaving a stale zero-byte secondary", async () => {
-    const clone = (name: string, nodePath: string, size: number, cloneAccounting: "primary" | "secondary"): DiskNode => ({
+    const clone = (
+      name: string,
+      nodePath: string,
+      size: number,
+      cloneAccounting: "primary" | "secondary",
+    ): DiskNode => ({
       name,
       path: nodePath,
       size,

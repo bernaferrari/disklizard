@@ -3,6 +3,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "disk.accessGuidance.macos": "请在系统设置中授予 DiskLizard 完全磁盘访问权限，然后重新扫描。",
+  "disk.accessGuidance.windows": "请使用有权访问此驱动器的账户，或扫描你的账户可以读取的文件夹。",
+  "disk.accessGuidance.linux": "请检查文件夹和挂载权限，然后重新扫描。",
+  "disk.accessGuidance.default": "请检查对这些文件夹的访问权限，然后重新扫描。",
+  "disk.accessGuidance.rescan": "更改访问权限后，请使用顶栏中的“重新扫描”。",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "文件",
   "desktop.menu.edit": "编辑",
@@ -671,6 +676,8 @@ export const dict = {
   "toast.update.description": "OpenCode 有新版本 ({{version}}) 可安装。",
   "toast.update.action.installRestart": "安装并重启",
   "toast.update.action.notYet": "稍后",
+  "toast.update.installFailed.title": "无法安装更新",
+  "toast.update.installFailed.retry": "重试",
 
   "error.page.title": "出了点问题",
   "error.page.description": "加载应用程序时发生错误。",

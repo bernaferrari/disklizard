@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Odobrite DiskLizardu Full Disk Access u System Settings, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.windows": "Koristite račun s pristupom ovom disku ili skenirajte folder koji vaš račun može čitati.",
+  "disk.accessGuidance.linux": "Provjerite dozvole foldera i mount tačke, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.default": "Provjerite pristup ovim folderima, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.rescan": "Nakon promjene pristupa koristite Rescan u gornjoj traci.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Datoteka",
   "desktop.menu.edit": "Uredi",
@@ -673,6 +678,8 @@ export const dict = {
   "toast.update.description": "Nova verzija OpenCode-a ({{version}}) je dostupna za instalaciju.",
   "toast.update.action.installRestart": "Instaliraj i ponovo pokreni",
   "toast.update.action.notYet": "Ne još",
+  "toast.update.installFailed.title": "Ažuriranje nije moglo biti instalirano",
+  "toast.update.installFailed.retry": "Pokušaj ponovo",
 
   "error.page.title": "Nešto je pošlo po zlu",
   "error.page.description": "Došlo je do greške prilikom učitavanja aplikacije.",

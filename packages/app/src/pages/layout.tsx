@@ -163,7 +163,21 @@ export default function LegacyLayout(props: ParentProps) {
     if (state?.status !== "ready") return
     return state.version
   }
-  const installUpdate = () => void platform.updater?.install()
+  const installUpdate = () => {
+    void platform.updater?.install().catch((err) => {
+      showToast({
+        variant: "error",
+        title: language.t("toast.update.installFailed.title"),
+        description: errorMessage(err, language.t("common.requestFailed")),
+        actions: [
+          {
+            label: language.t("toast.update.installFailed.retry"),
+            onClick: installUpdate,
+          },
+        ],
+      })
+    })
+  }
   const titlebarUpdate: TitlebarUpdate = {
     version: updateVersion,
     installing: () => platform.updater?.state().status === "installing",

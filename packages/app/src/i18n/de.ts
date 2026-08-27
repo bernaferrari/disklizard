@@ -3,6 +3,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "disk.accessGuidance.macos": "Gewähren Sie DiskLizard in den Systemeinstellungen Vollplattenzugriff und scannen Sie erneut.",
+  "disk.accessGuidance.windows": "Verwenden Sie ein Konto mit Zugriff auf dieses Laufwerk oder scannen Sie einen Ordner, den Ihr Konto lesen kann.",
+  "disk.accessGuidance.linux": "Überprüfen Sie die Ordner- und Mount-Berechtigungen und scannen Sie erneut.",
+  "disk.accessGuidance.default": "Überprüfen Sie den Zugriff auf diese Ordner und scannen Sie erneut.",
+  "disk.accessGuidance.rescan": "Verwenden Sie nach dem Ändern des Zugriffs „Neu scannen“ in der oberen Leiste.",
   "command.category.suggested": "Vorgeschlagen",
   "command.category.view": "Ansicht",
   "command.category.project": "Projekt",
@@ -518,6 +523,8 @@ export const dict = {
   "toast.update.description": "Eine neue Version von OpenCode ({{version}}) ist zur Installation verfügbar.",
   "toast.update.action.installRestart": "Installieren und neu starten",
   "toast.update.action.notYet": "Noch nicht",
+  "toast.update.installFailed.title": "Update konnte nicht installiert werden",
+  "toast.update.installFailed.retry": "Erneut versuchen",
   "error.page.title": "Etwas ist schiefgelaufen",
   "error.page.description": "Beim Laden der Anwendung ist ein Fehler aufgetreten.",
   "error.page.description.localServerStartup": "Beim Starten des lokalen Servers ist ein Fehler aufgetreten.",

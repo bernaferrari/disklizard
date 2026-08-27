@@ -4,10 +4,21 @@ import { createMemo, onCleanup, onMount, Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes, shortBytes, truncatePath } from "./format"
 import type { SurfacePhase } from "./motion"
-import type { ReclaimSummary } from "./recognize"
+import type { ReclaimSummary, Safety } from "./recognize"
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { VirtualRows } from "./DiskUtilityVirtualList"
-import { useLanguage } from "./runtime"
+import { useLanguage, type DiskLanguageKey } from "./runtime"
+
+const SAFETY_LABEL = {
+  regenerable: "disk.safety.regenerable",
+  cache: "disk.safety.cache",
+  logs: "disk.safety.logs",
+  trash: "disk.safety.trash",
+  media: "disk.safety.media",
+  "version-control": "disk.safety.versionControl",
+  system: "disk.safety.system",
+  unknown: "disk.safety.unknown",
+} as const satisfies Record<Safety, DiskLanguageKey>
 
 export type DeletionProgress = { completed: number; total: number }
 type ReclaimReviewRow =
@@ -125,21 +136,23 @@ export function CollectionDialog(props: {
               {language.t("disk.dialog.collection.body")}
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.collection.deepWarning", { trash: props.trashName })}
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.collection.sharedWarning", { trash: props.trashName })}
               </p>
             </Show>
             <Show
               when={
-                !props.requiresDeepInventoryRefresh && !props.hasSharedPhysicalStorage && props.hasUnverifiedPhysicalStorage
+                !props.requiresDeepInventoryRefresh &&
+                !props.hasSharedPhysicalStorage &&
+                props.hasUnverifiedPhysicalStorage
               }
             >
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.collection.unverifiedWarning", { trash: props.trashName })}
               </p>
             </Show>
@@ -225,10 +238,23 @@ export function CollectionDialog(props: {
             )}
           </Show>
           <div class="ml-auto flex shrink-0 items-center gap-2">
-            <Button class="dl-touch-target" size="small" variant="ghost" disabled={props.deleting} onClick={props.onClose}>
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              disabled={props.deleting}
+              onClick={props.onClose}
+            >
               {language.t("disk.common.back")}
             </Button>
-            <Button class="dl-touch-target" size="small" variant="primary" icon="trash" disabled={props.deleting} onClick={props.onConfirm}>
+            <Button
+              class="dl-touch-target"
+              size="small"
+              variant="primary"
+              icon="trash"
+              disabled={props.deleting}
+              onClick={props.onConfirm}
+            >
               {props.progress
                 ? language.t("disk.dialog.collection.movingCompact", {
                     current: props.progress.completed,
@@ -246,7 +272,7 @@ export function CollectionDialog(props: {
 /** Slide-over drawer reviewing reclaimable items by category. */
 export function ReclaimDrawer(props: {
   phase: SurfacePhase
-  reclaim: ReclaimSummary
+  reclaim: () => ReclaimSummary
   onClose: () => void
   onCollectAll: () => void
   onToggle: (node: DiskScanNode) => void
@@ -256,7 +282,7 @@ export function ReclaimDrawer(props: {
   const language = useLanguage()
   const focusDialog = createDialogFocusRestoration()
   const rows = createMemo<ReclaimReviewRow[]>(() =>
-    props.reclaim.buckets.flatMap((bucket) => [
+    props.reclaim().buckets.flatMap((bucket) => [
       { type: "header" as const, key: `header:${bucket.safety}`, bucket },
       ...bucket.items.map((item, index) => ({
         type: "item" as const,
@@ -296,7 +322,7 @@ export function ReclaimDrawer(props: {
                 {language.t("disk.common.recommendations")}
               </p>
               <h2 id="reclaim-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
-                {language.t("disk.dialog.reclaim.summary", { count: formatBytes(props.reclaim.totalBytes) })}
+                {language.t("disk.dialog.reclaim.summary", { count: formatBytes(props.reclaim().totalBytes) })}
               </h2>
               <p class="mt-2 max-w-[38ch] text-13-regular leading-relaxed text-text-weak">
                 {language.t("disk.dialog.reclaim.body")}
@@ -324,7 +350,7 @@ export function ReclaimDrawer(props: {
                 <div class="flex h-full items-end gap-2 px-5 pb-2">
                   <span class={`mb-0.5 size-2 rounded-full ${SAFETY_ACCENT[row.bucket.safety].dot}`} />
                   <h3 class="text-13-semibold uppercase tracking-[0.14em] text-text-weak">
-                    {row.bucket.safety.replace("-", " ")}
+                    {language.t(SAFETY_LABEL[row.bucket.safety])}
                   </h3>
                   <span class="ml-auto text-13-semibold tabular-nums text-text-strong">
                     {formatBytes(row.bucket.bytes)}
@@ -347,9 +373,11 @@ export function ReclaimDrawer(props: {
                   <p class="truncate text-12-semibold text-text-strong">{row.item.node.name}</p>
                   <p
                     class="mt-0.5 truncate text-13-mono text-text-weaker"
-                    title={row.item.recognition.hint ?? row.item.node.path}
+                    title={row.item.recognition.hint ? language.t(row.item.recognition.hint) : row.item.node.path}
                   >
-                    {row.item.recognition.hint ?? truncatePath(row.item.node.path, 44)}
+                    {row.item.recognition.hint
+                      ? language.t(row.item.recognition.hint)
+                      : truncatePath(row.item.node.path, 44)}
                   </p>
                 </div>
                 <span class="shrink-0 text-13-semibold tabular-nums text-text-strong">
@@ -376,10 +404,10 @@ export function ReclaimDrawer(props: {
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
           <div class="min-w-0">
             <p class="text-13-semibold text-text-strong">
-              {language.plural("disk.count.recommendation", props.reclaim.totalCount)}
+              {language.plural("disk.count.recommendation", props.reclaim().totalCount)}
             </p>
             <p class="mt-0.5 truncate text-13-regular text-text-weak">
-              {language.t("disk.dialog.reclaim.action", { action: formatBytes(props.reclaim.totalBytes) })}
+              {language.t("disk.dialog.reclaim.action", { action: formatBytes(props.reclaim().totalBytes) })}
             </p>
           </div>
           <Button
@@ -387,7 +415,7 @@ export function ReclaimDrawer(props: {
             size="small"
             variant="secondary"
             icon="checklist"
-            disabled={props.deleting || props.reclaim.totalCount === 0}
+            disabled={props.deleting || props.reclaim().totalCount === 0}
             onClick={props.onCollectAll}
           >
             {language.t("disk.dialog.reclaim.selectAll")}
@@ -464,28 +492,37 @@ export function DeleteConfirmDialog(props: {
                   : language.t("disk.dialog.delete.restoreSpace", { trash: props.trashName })}
             </p>
             <Show when={props.requiresDeepInventoryRefresh}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.delete.deepWarning")}
               </p>
             </Show>
             <Show when={!props.requiresDeepInventoryRefresh && props.hasSharedPhysicalStorage}>
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.delete.sharedWarning")}
               </p>
             </Show>
             <Show
               when={
-                !props.requiresDeepInventoryRefresh && !props.hasSharedPhysicalStorage && props.hasUnverifiedPhysicalStorage
+                !props.requiresDeepInventoryRefresh &&
+                !props.hasSharedPhysicalStorage &&
+                props.hasUnverifiedPhysicalStorage
               }
             >
-              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-text-weak">
+              <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.delete.unverifiedWarning")}
               </p>
             </Show>
           </div>
         </div>
         <div class="mt-5 flex justify-end gap-2">
-          <Button data-autofocus class="dl-touch-target" size="small" variant="ghost" disabled={props.deleting} onClick={props.onClose}>
+          <Button
+            data-autofocus
+            class="dl-touch-target"
+            size="small"
+            variant="ghost"
+            disabled={props.deleting}
+            onClick={props.onClose}
+          >
             {language.t("disk.dialog.delete.keep")}
           </Button>
           <Button

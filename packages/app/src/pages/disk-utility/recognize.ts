@@ -12,6 +12,8 @@
 import type { DiskScanNode } from "./types"
 import { developerArtifactFromInventoryNode, developerInventoryNode } from "./developer-inventory"
 import { daysSinceChanged, isDormant } from "./format"
+import { diskLanguageText } from "./runtime"
+import type { DiskRecognitionLanguageKey } from "./recognition-language"
 
 export type Safety = "regenerable" | "cache" | "logs" | "trash" | "media" | "version-control" | "system" | "unknown"
 
@@ -63,44 +65,44 @@ export type DeveloperArtifactCleanupReadiness = "eligible" | "review" | "protect
 export function artifactEcosystemLabel(ecosystem: ArtifactEcosystem): string {
   switch (ecosystem) {
     case "node":
-      return "Node.js"
+      return diskLanguageText("Node.js")
     case "python":
-      return "Python"
+      return diskLanguageText("Python")
     case "rust":
-      return "Rust"
+      return diskLanguageText("Rust")
     case "jvm":
-      return "Java / Kotlin"
+      return diskLanguageText("Java / Kotlin")
     case "cpp":
-      return "C / C++"
+      return diskLanguageText("C / C++")
     case "go":
-      return "Go"
+      return diskLanguageText("Go")
     case "dotnet":
-      return ".NET"
+      return diskLanguageText(".NET")
     case "dart":
-      return "Dart / Flutter"
+      return diskLanguageText("Dart / Flutter")
     case "apple":
-      return "Apple"
+      return diskLanguageText("Apple")
     case "web":
-      return "Web tooling"
+      return diskLanguageText("Web tooling")
     case "containers":
-      return "Containers"
+      return diskLanguageText("Containers")
     case "tooling":
-      return "Developer tooling"
+      return diskLanguageText("Developer tooling")
     case "generic":
-      return "Unclassified"
+      return diskLanguageText("Unclassified")
     case "agent":
-      return "Coding agents"
+      return diskLanguageText("Coding agents")
     case "git":
-      return "Git"
+      return diskLanguageText("Git")
   }
 }
 
 export type Recognition = {
   /** Short human label, e.g. "Node dependencies". */
-  tag?: string
+  tag?: DiskRecognitionLanguageKey
   safety: Safety
   /** Actionable hint, e.g. "npm install regenerates it". */
-  hint?: string
+  hint?: DiskRecognitionLanguageKey
   /** Developer-storage lens grouping. Presence means this belongs in the global developer index. */
   developer?: DeveloperCategory
   /** Toolchain/language classification backed by the matched name, path, or child evidence. */
@@ -115,21 +117,14 @@ export type DeveloperArtifactContext = {
   /** Human scope, such as `Project · storefront` or `Gradle user data`. */
   scope: string
   /** The decision a user should make before acting. */
-  disposition:
-    | "Reinstallable"
-    | "Rebuildable"
-    | "Redownloadable"
-    | "Manage with Git"
-    | "Keep"
-    | "Protected"
-    | "Review first"
+  disposition: string
 }
 
 type Rule = {
   re: RegExp
   safety: Safety
-  tag: string
-  hint?: string
+  tag: DiskRecognitionLanguageKey
+  hint?: DiskRecognitionLanguageKey
   developer?: DeveloperCategory
   ecosystem?: ArtifactEcosystem
   confidence?: ArtifactConfidence
@@ -652,11 +647,7 @@ function recognizeDeveloperInventoryArtifact(node: DiskScanNode): Recognition | 
   if (pathRecognition) return pathRecognition
 
   const safeToPreselect = artifact.cleanup === "eligible"
-  const safety: Safety = safeToPreselect
-    ? artifact.kind === "toolchain-cache"
-      ? "cache"
-      : "regenerable"
-    : "system"
+  const safety: Safety = safeToPreselect ? (artifact.kind === "toolchain-cache" ? "cache" : "regenerable") : "system"
   const tag =
     artifact.kind === "dependencies"
       ? "Developer dependencies"
@@ -721,7 +712,9 @@ export function recognize(node: DiskScanNode): Recognition {
       })
     }
     const k = fileKind(node.ext)
-    return k.safety !== "unknown" ? { safety: k.safety, tag: cap(k.kind) } : { safety: "unknown" }
+    return k.safety !== "unknown"
+      ? { safety: k.safety, tag: k.kind === "video" ? "Video" : k.kind === "audio" ? "Audio" : "Image" }
+      : { safety: "unknown" }
   }
   if (node.children?.some((child) => !child.isDir && child.name.toLowerCase() === ".git")) {
     return finalizeDeveloperRecognition({
@@ -779,10 +772,7 @@ export function recognize(node: DiskScanNode): Recognition {
     "libs",
     "intermediates",
   )
-  if (
-    base === "build" &&
-    (isCmakeBuild || generatedBuildChildCount >= 2)
-  ) {
+  if (base === "build" && (isCmakeBuild || generatedBuildChildCount >= 2)) {
     return finalizeDeveloperRecognition({
       safety: "regenerable",
       tag: "Generated build output",
@@ -826,7 +816,10 @@ export function developerArtifactContext(
   const lower = normalized.toLowerCase()
   const parts = normalized.split("/").filter(Boolean)
   const parent = parts.at(-2)
-  const project = !parent || /^[a-z]:$/i.test(parent) ? "Selected folder" : `Project · ${parent}`
+  const project =
+    !parent || /^[a-z]:$/i.test(parent)
+      ? diskLanguageText("Selected folder")
+      : diskLanguageText("disk.recognition.projectScope", { name: parent })
 
   const includesSegment = (segment: string) =>
     lower === segment ||
@@ -836,33 +829,35 @@ export function developerArtifactContext(
 
   let scope = project
   if (recognition.developer === "agent-data") {
-    if (includesSegment(".codex")) scope = "Codex agent home"
-    else if (includesSegment(".claude")) scope = "Claude Code agent home"
+    if (includesSegment(".codex")) scope = diskLanguageText("Codex agent home")
+    else if (includesSegment(".claude")) scope = diskLanguageText("Claude Code agent home")
     else if (includesSegment(".opencode") || /\/(?:\.config|\.local\/(?:share|state))\/opencode(?:\/|$)/i.test(lower))
-      scope = "OpenCode agent home"
-    else scope = "Coding-agent data"
+      scope = diskLanguageText("OpenCode agent home")
+    else scope = diskLanguageText("Coding-agent data")
   } else if (recognition.developer === "worktree") {
-    if (includesSegment(".codex")) scope = "Codex-managed checkout"
-    else if (includesSegment(".claude")) scope = "Claude Code-managed checkout"
-    else scope = "Git-managed checkout"
+    if (includesSegment(".codex")) scope = diskLanguageText("Codex-managed checkout")
+    else if (includesSegment(".claude")) scope = diskLanguageText("Claude Code-managed checkout")
+    else scope = diskLanguageText("Git-managed checkout")
   } else if (recognition.developer === "toolchain-cache") {
-    if (includesSegment(".gradle")) scope = "Gradle user data"
-    else if (includesSegment(".m2")) scope = "Maven user data"
-    else if (includesSegment(".cargo")) scope = "Cargo user data"
-    else if (includesSegment(".nuget")) scope = "NuGet user data"
-    else if (includesSegment(".bun")) scope = "Bun user data"
-    else if (/\/go\/pkg\/mod(?:\/|$)/i.test(lower)) scope = "Go module cache"
-    else if (/\/library\/developer\/xcode(?:\/|$)/i.test(lower)) scope = "Xcode build data"
+    if (includesSegment(".gradle")) scope = diskLanguageText("Gradle user data")
+    else if (includesSegment(".m2")) scope = diskLanguageText("Maven user data")
+    else if (includesSegment(".cargo")) scope = diskLanguageText("Cargo user data")
+    else if (includesSegment(".nuget")) scope = diskLanguageText("NuGet user data")
+    else if (includesSegment(".bun")) scope = diskLanguageText("Bun user data")
+    else if (/\/go\/pkg\/mod(?:\/|$)/i.test(lower)) scope = diskLanguageText("Go module cache")
+    else if (/\/library\/developer\/xcode(?:\/|$)/i.test(lower)) scope = diskLanguageText("Xcode build data")
   }
 
   let disposition: DeveloperArtifactContext["disposition"]
   if (recognition.safety === "regenerable") {
-    disposition = recognition.developer === "dependencies" ? "Reinstallable" : "Rebuildable"
-  } else if (recognition.safety === "cache") disposition = "Redownloadable"
+    disposition =
+      recognition.developer === "dependencies" ? diskLanguageText("Reinstallable") : diskLanguageText("Rebuildable")
+  } else if (recognition.safety === "cache") disposition = diskLanguageText("Redownloadable")
   else if (recognition.safety === "version-control")
-    disposition = recognition.developer === "worktree" ? "Manage with Git" : "Keep"
-  else if (recognition.safety === "system" && recognition.developer === "agent-data") disposition = "Protected"
-  else disposition = "Review first"
+    disposition = recognition.developer === "worktree" ? diskLanguageText("Manage with Git") : diskLanguageText("Keep")
+  else if (recognition.safety === "system" && recognition.developer === "agent-data")
+    disposition = diskLanguageText("Protected")
+  else disposition = diskLanguageText("Review first")
 
   return { scope, disposition }
 }
@@ -930,10 +925,6 @@ export function isSmartCleanupEligible(node: DiskScanNode, recognition: Recognit
     developerArtifactCleanupReadiness(recognition) === "eligible" &&
     !containsSharedPhysicalStorage(node)
   )
-}
-
-function cap(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 export type ReclaimBucket = {
@@ -1016,7 +1007,10 @@ export type DormantDeveloperSummary = {
  * recognized directory represents its complete subtree, so `.codex` or
  * `node_modules` appears once instead of also counting every cache inside it.
  */
-export function computeDeveloperSummary(root: DiskScanNode | null): DeveloperSummary {
+export function computeDeveloperSummary(
+  root: DiskScanNode | null,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+): DeveloperSummary {
   const buckets = new Map<DeveloperCategory, DeveloperBucket>()
 
   function add(node: DiskScanNode, recognition: Recognition, bytes: number) {
@@ -1032,7 +1026,7 @@ export function computeDeveloperSummary(root: DiskScanNode | null): DeveloperSum
   }
 
   function walk(node: DiskScanNode): number {
-    const recognition = recognize(node)
+    const recognition = recognizeNode(node)
     if (recognition.developer && node.size > 0) {
       // Agent and VCS roots are meaningful containers. Peel out recognizable
       // worktrees/caches below them, then attribute only the remainder here.
@@ -1155,8 +1149,11 @@ function insertAcceptedDeveloperPath(root: DeveloperPathTrie, segments: readonly
  * review-only container may be split around a precise deep child; an eligible
  * root already covers its descendants and remains the safer, simpler choice.
  */
-export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null): DeveloperSummary {
-  const visible = computeDeveloperSummary(root)
+export function computeDeveloperSummaryWithInventory(
+  root: DiskScanNode | null,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+): DeveloperSummary {
+  const visible = computeDeveloperSummary(root, recognizeNode)
   const inventory = root?.developerArtifactInventory
   if (!inventory?.items.length) return visible
 
@@ -1174,7 +1171,7 @@ export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null):
     .filter((artifact) => artifact.size > 0 && artifact.path.trim().length > 0)
     .map((artifact) => {
       const node = developerInventoryNode(artifact)
-      const recognition = recognize(node)
+      const recognition = recognizeNode(node)
       const path = normalizedDeveloperPath(node.path)
       return {
         item: { node, recognition, bytes: node.size },
@@ -1188,8 +1185,7 @@ export function computeDeveloperSummaryWithInventory(root: DiskScanNode | null):
     // it has navigable map context and may have richer direct evidence.
     .filter(
       (candidate) =>
-        !visualPaths.has(candidate.path) &&
-        !hasStrictDeveloperDescendant(visualPathTrie, candidate.segments),
+        !visualPaths.has(candidate.path) && !hasStrictDeveloperDescendant(visualPathTrie, candidate.segments),
     )
 
   const candidatesByPath = new Map<string, DeveloperSummaryCandidate>()
@@ -1272,7 +1268,10 @@ export function computeDormantDeveloperSummary(summary: DeveloperSummary, now = 
  * Walk the tree summing reclaimable space WITHOUT double counting: when a node is
  * itself reclaimable, its whole subtree is counted once and we stop descending.
  */
-export function computeReclaim(root: DiskScanNode | null): ReclaimSummary {
+export function computeReclaim(
+  root: DiskScanNode | null,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+): ReclaimSummary {
   const buckets = new Map<Safety, ReclaimBucket>()
   const bucket = (s: Safety): ReclaimBucket => {
     let b = buckets.get(s)
@@ -1284,7 +1283,7 @@ export function computeReclaim(root: DiskScanNode | null): ReclaimSummary {
   }
 
   function walk(node: DiskScanNode) {
-    const r = recognize(node)
+    const r = recognizeNode(node)
     if (isReclaimable(r) && node.size > 0 && !containsSharedPhysicalStorage(node)) {
       const b = bucket(r.safety)
       b.bytes += node.size
@@ -1303,4 +1302,86 @@ export function computeReclaim(root: DiskScanNode | null): ReclaimSummary {
     totalCount: list.reduce((s, b) => s + b.count, 0),
     buckets: list,
   }
+}
+
+/** Cooperative yield so long renderer walks cannot freeze a frame. */
+export function yieldToMain() {
+  return new Promise<void>((resolve) => setTimeout(resolve))
+}
+
+const SUMMARY_VISITS_PER_SLICE = 2000
+
+/**
+ * Depth-first walk that visits at most `budget` nodes per slice and awaits
+ * between slices. The visitor may return `false` to stop descending (mirroring
+ * the early returns in the synchronous walkers); node order is identical to
+ * the synchronous traversals, so summaries built this way match exactly.
+ */
+export async function walkDiskTreeCooperatively(
+  root: DiskScanNode | null,
+  visit: (node: DiskScanNode) => boolean | void,
+) {
+  if (!root) return
+  let budget = SUMMARY_VISITS_PER_SLICE
+
+  const recurse = async (node: DiskScanNode): Promise<void> => {
+    const descend = visit(node)
+    if (descend === false) return
+    for (const child of node.children ?? []) {
+      await recurse(child)
+      if (--budget <= 0) {
+        budget = SUMMARY_VISITS_PER_SLICE
+        await yieldToMain()
+      }
+    }
+  }
+
+  await recurse(root)
+}
+
+/**
+ * Chunked counterpart of `computeDeveloperSummaryWithInventory`. Recognition is
+ * the unbounded work: it is warmed across yielded slices through the caller's
+ * `recognizeNode` (expected to memoize), then the synchronous aggregation runs
+ * against a warm cache — so output is identical to the synchronous function.
+ */
+export async function computeDeveloperSummaryWithInventoryAsync(
+  root: DiskScanNode | null,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+): Promise<DeveloperSummary> {
+  let consulted = 0
+  await walkDiskTreeCooperatively(root, (node) => {
+    recognizeNode(node)
+    return true
+  })
+  const inventory = root?.developerArtifactInventory
+  if (inventory) {
+    for (const artifact of inventory.items) {
+      recognizeNode(developerInventoryNode(artifact))
+      if (++consulted >= SUMMARY_VISITS_PER_SLICE) {
+        consulted = 0
+        await yieldToMain()
+      }
+    }
+  }
+  return computeDeveloperSummaryWithInventory(root, recognizeNode)
+}
+
+/**
+ * Chunked counterpart of `computeReclaim`. Warms recognition across yielded
+ * slices through the caller's memoizing `recognizeNode`, then aggregates
+ * synchronously — output is identical to `computeReclaim`.
+ */
+export async function computeReclaimAsync(
+  root: DiskScanNode | null,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+): Promise<ReclaimSummary> {
+  await walkDiskTreeCooperatively(root, (node) => {
+    recognizeNode(node)
+    // containsSharedPhysicalStorage recurses without consulting the budget;
+    // its cost is proportional to reclaimable subtrees only, which stay rare.
+    if (isReclaimable(recognizeNode(node))) containsSharedPhysicalStorage(node)
+    return true
+  })
+  return computeReclaim(root, recognizeNode)
 }

@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "시스템 설정에서 DiskLizard에 전체 디스크 접근 권한을 부여한 후 다시 스캔하세요.",
+  "disk.accessGuidance.windows": "이 드라이브에 접근할 수 있는 계정을 사용하거나, 내 계정이 읽을 수 있는 폴더를 스캔하세요.",
+  "disk.accessGuidance.linux": "폴더 및 마운트 권한을 확인한 후 다시 스캔하세요.",
+  "disk.accessGuidance.default": "이 폴더들에 대한 접근을 확인한 후 다시 스캔하세요.",
+  "disk.accessGuidance.rescan": "접근 권한을 변경한 후 상단 바의 다시 스캔을 사용하세요.",
   "command.category.suggested": "추천",
   "command.category.view": "보기",
   "command.category.project": "프로젝트",
@@ -427,6 +432,8 @@ export const dict = {
   "toast.update.description": "OpenCode의 새 버전({{version}})을 설치할 수 있습니다.",
   "toast.update.action.installRestart": "설치 및 다시 시작",
   "toast.update.action.notYet": "나중에",
+  "toast.update.installFailed.title": "업데이트를 설치할 수 없습니다",
+  "toast.update.installFailed.retry": "다시 시도",
   "error.page.title": "문제가 발생했습니다",
   "error.page.description": "애플리케이션을 로드하는 동안 오류가 발생했습니다.",
   "error.page.details.label": "오류 세부 정보",

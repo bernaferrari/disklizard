@@ -49,12 +49,13 @@ describe("ChildRetention", () => {
       "large-a.bin",
       "large-b.bin",
       "project",
-      "Other (1 items)",
+      "Other (1 item)",
     ])
     expect(result.children.at(-1)).toMatchObject({
       path: join("/fixture", "__other__"),
       size: 30,
       isOther: true,
+      otherCount: 1,
     })
   })
 
@@ -68,7 +69,8 @@ describe("ChildRetention", () => {
     const other = result.children.at(-1)
 
     expect(result.children.slice(0, 2).map((child) => child.name)).toEqual(["file-00", "file-01"])
-    expect(other).toMatchObject({ name: "Other (18 items)", size: 18 })
+    expect(other).toMatchObject({ name: "Other (18 items)", size: 18, isOther: true, otherCount: 18 })
+    expect(other?.otherCount).toBeGreaterThan(other?.children.length ?? 0)
     expect(other?.children.map((child) => child.name)).toEqual(
       Array.from({ length: 12 }, (_, index) => `file-${String(index + 2).padStart(2, "0")}`),
     )

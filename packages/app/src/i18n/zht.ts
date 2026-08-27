@@ -664,6 +664,13 @@ export const dict = {
   "toast.update.description": "OpenCode 有新版本 ({{version}}) 可安裝。",
   "toast.update.action.installRestart": "安裝並重新啟動",
   "toast.update.action.notYet": "稍後",
+  "disk.accessGuidance.macos": "在「系統設定」中授予 DiskLizard「完整磁碟存取權」，然後重新掃描。",
+  "disk.accessGuidance.windows": "請使用有權存取此磁碟的帳號，或掃描您的帳號可讀取的資料夾。",
+  "disk.accessGuidance.linux": "檢查資料夾與掛載權限，然後重新掃描。",
+  "disk.accessGuidance.default": "檢查這些資料夾的存取權限，然後重新掃描。",
+  "disk.accessGuidance.rescan": "變更存取權後，請使用頂端列的「重新掃描」。",
+  "toast.update.installFailed.title": "無法安裝更新",
+  "toast.update.installFailed.retry": "重試",
 
   "error.page.title": "出了點問題",
   "error.page.description": "載入應用程式時發生錯誤。",

@@ -18,6 +18,10 @@ describe("centerOverlayBehavior", () => {
 
   it("keeps the open affordance for a materialized directory", () => {
     expect(centerOverlayBehavior(directory("src"), true, false)).toEqual({ canOpen: true, inventoryOnly: false })
+    expect(centerOverlayBehavior({ ...directory("Other"), isOther: true, otherCount: 20 }, true, false)).toEqual({
+      canOpen: true,
+      inventoryOnly: false,
+    })
     expect(centerOverlayBehavior({ ...directory("package.json"), isDir: false }, true, false)).toEqual({
       canOpen: false,
       inventoryOnly: false,

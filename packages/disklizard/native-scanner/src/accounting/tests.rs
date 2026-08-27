@@ -22,6 +22,7 @@ fn full_clone_file(name: &str, size: u64, clone_id: &str, count: u32) -> Compact
         is_dir: false,
         children: Vec::new(),
         is_other: false,
+        other_count: None,
         is_collapsed: false,
         signatures: None,
         scan_issues: None,
@@ -55,6 +56,7 @@ fn hard_link_file(
         is_dir: false,
         children: Vec::new(),
         is_other: false,
+        other_count: None,
         is_collapsed: false,
         signatures: None,
         scan_issues: None,
@@ -137,7 +139,7 @@ fn normalizes_only_a_proven_complete_hard_link_group() {
 fn ignores_synthetic_other_when_choosing_a_hard_link_primary() {
     let identity = (7, 10);
     let mut other = CompactNode::directory(
-        "Other (1 items)".into(),
+        "Other (1 item)".into(),
         100,
         100,
         None,
@@ -284,7 +286,7 @@ fn deduplicates_only_a_proven_complete_full_clone_group() {
 #[test]
 fn ignores_synthetic_other_when_choosing_a_clone_primary() {
     let mut other = CompactNode::directory(
-        "Other (1 items)".into(),
+        "Other (1 item)".into(),
         100,
         100,
         None,

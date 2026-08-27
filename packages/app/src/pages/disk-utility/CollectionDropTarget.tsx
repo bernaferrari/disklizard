@@ -75,8 +75,8 @@ export function CollectionDropTarget(props: {
       </span>
 
       <span class="min-w-0 flex-1">
-        <span class="block truncate text-12-semibold tracking-[-0.01em] text-text-strong">{title()}</span>
-        <span class="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak" title={detail()}>
+        <span class="block truncate text-13-semibold tracking-[-0.01em] text-text-strong">{title()}</span>
+        <span class="mt-0.5 block truncate text-12-regular tabular-nums text-text-weak" title={detail()}>
           {detail()}
         </span>
       </span>

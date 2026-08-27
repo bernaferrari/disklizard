@@ -1,4 +1,5 @@
 /** Human-readable sizes & numbers for the disk utility UI. */
+import { diskLanguageText } from "./runtime"
 
 const UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
 const DAY_MS = 24 * 60 * 60 * 1_000
@@ -50,11 +51,11 @@ export function isDormant(modifiedAt?: number, now = Date.now()): boolean {
 
 export function formatLastChanged(modifiedAt?: number, now = Date.now()): string {
   const days = daysSinceChanged(modifiedAt, now)
-  if (days === null) return "Change date unavailable"
-  if (days === 0) return "Changed today"
-  if (days === 1) return "Changed yesterday"
-  if (days < 14) return `Changed ${days}d ago`
-  if (days < 60) return `Changed ${Math.floor(days / 7)}w ago`
-  if (days < 730) return `Changed ${Math.floor(days / 30)}mo ago`
-  return `Changed ${Math.floor(days / 365)}y ago`
+  if (days === null) return diskLanguageText("disk.changed.unavailable")
+  if (days === 0) return diskLanguageText("disk.changed.today")
+  if (days === 1) return diskLanguageText("disk.changed.yesterday")
+  if (days < 14) return diskLanguageText("disk.changed.days", { count: days })
+  if (days < 60) return diskLanguageText("disk.changed.weeks", { count: Math.floor(days / 7) })
+  if (days < 730) return diskLanguageText("disk.changed.months", { count: Math.floor(days / 30) })
+  return diskLanguageText("disk.changed.years", { count: Math.floor(days / 365) })
 }

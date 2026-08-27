@@ -185,6 +185,8 @@ describe("includeHiddenSpace", () => {
       path: "/work/app",
       children: [collapsed],
       developerArtifactInventory: inventory,
+      cloneMetadata: { state: "available" },
+      sharedStorageEvidence: "complete",
     }
     const focusedInventory: DeveloperArtifactInventory = { ...inventory, status: { ...inventory.status } }
     const expanded: DiskScanNode = {
@@ -198,9 +200,22 @@ describe("includeHiddenSpace", () => {
     const result = replaceScanSubtree(project, collapsed.path, expanded, "linux")
 
     expect(result.developerArtifactInventory).toBe(inventory)
+    expect(result.cloneMetadata).toEqual({ state: "available" })
+    expect(result.sharedStorageEvidence).toBe("partial")
+    expect(hasUnverifiedPhysicalCloneAccounting(result, "linux")).toBe(true)
     expect(result.children[0].developerArtifactInventory).toBeUndefined()
     expect(result.children[0].cloneMetadata).toBeUndefined()
     expect(result.children[0].sharedStorageEvidence).toBeUndefined()
+  })
+
+  it("keeps complete physical evidence when the authoritative scan root itself is replaced", () => {
+    const replacement: DiskScanNode = {
+      ...root,
+      cloneMetadata: { state: "available" },
+      sharedStorageEvidence: "complete",
+    }
+
+    expect(replaceScanSubtree(root, root.path, replacement, "linux")).toBe(replacement)
   })
 
   it("reconciles apparent bytes when focused subtrees change or are removed", () => {

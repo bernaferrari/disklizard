@@ -107,9 +107,8 @@ export const DISK_UTILITY_STYLES = `
 }
 .dl-preview-image-stage img { animation: dl-preview-arrive 180ms cubic-bezier(0.32,0.72,0,1) both; }
 .dl-scan-sweep {
-  opacity: .82;
   transform-origin: 200px 200px;
-  animation: dl-scan-sweep 2.8s linear infinite;
+  animation: dl-scan-sweep 3.6s linear infinite;
 }
 .dl-drag-preview {
   position: fixed; left: -9999px; top: -9999px; z-index: 80; pointer-events: none;
@@ -139,7 +138,11 @@ export const DISK_UTILITY_STYLES = `
   background: var(--dl-volume-ink);
   transition: width 220ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease;
 }
-.dl-volume-free { color: var(--dl-volume-ink); }
+.dl-volume-bar-fill[data-settled] { animation: dl-volume-settle 420ms cubic-bezier(0.32, 0.72, 0, 1) 1; }
+@keyframes dl-volume-settle {
+  from { filter: brightness(1.35); }
+  to { filter: brightness(1); }
+}
 .dl-volume-view {
   position: relative; min-width: 64px; height: 28px; padding: 0 10px; border-radius: 6px;
   color: var(--text-strong);
@@ -161,30 +164,34 @@ export const DISK_UTILITY_STYLES = `
 .dl-scan-progress-ring {
   transition: stroke-dashoffset 220ms cubic-bezier(0.32,0.72,0,1);
 }
-.dl-scan-indeterminate { width: 20%; animation: dl-scan-travel 1.2s cubic-bezier(0.32,0.72,0,1) infinite alternate; }
 @keyframes dl-scan-sweep { to { transform: rotate(360deg); } }
 @keyframes dl-preview-arrive { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
 @keyframes dl-pop { from { opacity: 0; transform: scale(0.96) translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes dl-spin { to { transform: rotate(360deg); } }
 @keyframes dl-pulse { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.12); opacity: 1; } }
 @keyframes dl-scan-beacon { 0%,100% { opacity: .42; } 50% { opacity: 1; } }
-@keyframes dl-scan-travel { from { transform: translateX(-100%); } to { transform: translateX(500%); } }
 @media (hover: hover) and (pointer: fine) {
   .dl-center-open:hover {
     background: var(--surface-raised-strong);
     box-shadow: 0 0 0 1px rgb(127 127 127 / 0.2), 0 5px 14px rgb(0 0 0 / 0.14);
   }
   .dl-hover-card:hover { background: color-mix(in oklch, var(--surface-raised-base) 35%, transparent); }
-  .dl-hover-card:hover .dl-hover-card-label, .dl-hover-button:hover, .dl-hover-text:hover, .dl-hover-tab:hover,
-  .dl-hover-drive:hover .dl-hover-drive-icon { color: var(--text-strong); }
+  .dl-hover-card:hover .dl-hover-card-label, .dl-hover-button:hover, .dl-hover-text:hover, .dl-hover-tab:hover { color: var(--text-strong); }
   .dl-volume-view:hover:not(:disabled) {
     background: color-mix(in oklch, var(--surface-raised-base) 70%, var(--background-base));
     box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--text-strong) 20%, transparent);
   }
+  .dl-volume-view-primary {
+    color: var(--background-base);
+    background: color-mix(in oklch, oklch(0.72 0.15 148) 78%, var(--text-strong));
+  }
+  .dl-volume-view-primary:hover:not(:disabled) {
+    background: color-mix(in oklch, oklch(0.72 0.15 148) 88%, var(--text-strong));
+    box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, oklch(0.72 0.15 148) 45%, transparent);
+  }
   .dl-hover-quiet-button:hover { background: color-mix(in oklch, var(--background-base) 70%, transparent); color: var(--text-strong); opacity: 1; }
-  .dl-hover-brighten:hover { filter: brightness(1.05); }
   .dl-hover-tab:hover, .dl-hover-button:hover, .dl-hover-action:hover { background: var(--surface-raised-base); }
-  .dl-hover-reveal:hover, .dl-hover-action:hover { opacity: 1; }
+  .dl-hover-action:hover { opacity: 1; }
   .dl-hover-action:not(.dl-accent-text):hover { color: var(--text-strong); }
   .dl-hover-row:hover { background: color-mix(in oklch, var(--surface-raised-base) 45%, transparent); }
   .dl-hover-drive:hover { background: color-mix(in oklch, var(--surface-raised-strong) 28%, transparent); }

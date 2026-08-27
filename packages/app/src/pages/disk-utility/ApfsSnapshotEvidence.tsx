@@ -1,6 +1,12 @@
 import { For, Show } from "solid-js"
 import type { ApfsSnapshotEvidence } from "@disklizard/core"
-import { diskLanguageText, useLanguage } from "./runtime"
+import { diskLanguagePlural, diskLanguageText, useLanguage } from "./runtime"
+
+export const APFS_SNAPSHOT_EVIDENCE_LIMIT = 5
+
+export function boundedSnapshotEvidence(snapshots: readonly ApfsSnapshotEvidence[] | undefined) {
+  return (snapshots ?? []).slice(0, APFS_SNAPSHOT_EVIDENCE_LIMIT)
+}
 
 export function snapshotEvidenceLabel(snapshot: ApfsSnapshotEvidence): string {
   return snapshot.name ?? snapshot.uuid ?? diskLanguageText("disk.apfs.unnamed")
@@ -8,16 +14,19 @@ export function snapshotEvidenceLabel(snapshot: ApfsSnapshotEvidence): string {
 
 export function snapshotEvidenceCaption(snapshotCount: number, visibleCount: number): string {
   if (visibleCount === 0) {
-    return snapshotCount === 1
-      ? diskLanguageText("disk.apfs.noIdentity.one")
-      : diskLanguageText("disk.apfs.noIdentity.other", { count: snapshotCount })
+    return diskLanguagePlural("disk.apfs.noIdentity", snapshotCount)
   }
   if (visibleCount < snapshotCount) {
     return diskLanguageText("disk.apfs.showing", { count: snapshotCount, visible: visibleCount })
   }
-  return snapshotCount === 1
-    ? diskLanguageText("disk.apfs.present.one")
-    : diskLanguageText("disk.apfs.present.other", { count: snapshotCount })
+  return diskLanguagePlural("disk.apfs.present", snapshotCount)
+}
+
+export function snapshotEvidenceCountSummary(purgeableCount = 0, timeMachineCount = 0): string {
+  const parts: string[] = []
+  if (purgeableCount > 0) parts.push(diskLanguagePlural("disk.apfs.purgeableCount", purgeableCount))
+  if (timeMachineCount > 0) parts.push(diskLanguagePlural("disk.apfs.timeMachineCount", timeMachineCount))
+  return parts.join(" · ")
 }
 
 /**
@@ -34,24 +43,13 @@ export function ApfsSnapshotEvidenceList(props: {
 }) {
   const language = useLanguage()
   const snapshotCount = () => props.snapshotCount ?? 0
-  const snapshots = () => props.snapshots ?? []
-  const countSummary = () => {
-    const parts = []
-    if (props.purgeableSnapshotCount) {
-      parts.push(language.plural("disk.apfs.purgeableCount", props.purgeableSnapshotCount))
-    }
-    if (props.timeMachineSnapshotCount) {
-      parts.push(language.plural("disk.apfs.timeMachineCount", props.timeMachineSnapshotCount))
-    }
-    return parts.join(" · ")
-  }
+  const snapshots = () => boundedSnapshotEvidence(props.snapshots)
+  const countSummary = () => snapshotEvidenceCountSummary(props.purgeableSnapshotCount, props.timeMachineSnapshotCount)
   if (snapshotCount() < 1) return null
 
   const evidence = () => (
     <div class={props.embedded ? "mt-2" : "mt-2 border-t border-border-weaker-base pt-2"}>
-      <p class="max-w-[62ch] text-13-regular leading-relaxed text-text-weaker">
-        {language.t("disk.apfs.body")}
-      </p>
+      <p class="max-w-[62ch] text-13-regular leading-relaxed text-text-weaker">{language.t("disk.apfs.body")}</p>
       <Show when={countSummary()}>
         <p class="mt-1.5 text-13-regular tabular-nums text-text-weaker">{countSummary()}</p>
       </Show>
@@ -60,7 +58,10 @@ export function ApfsSnapshotEvidenceList(props: {
           <For each={snapshots()}>
             {(snapshot) => (
               <li class="flex min-w-0 items-center gap-2 rounded-lg bg-background-base/45 px-2 py-1.5">
-                <span class="min-w-0 flex-1 truncate text-13-mono text-text-weak" title={snapshotEvidenceLabel(snapshot)}>
+                <span
+                  class="min-w-0 flex-1 truncate text-13-mono text-text-weak"
+                  title={snapshotEvidenceLabel(snapshot)}
+                >
                   {snapshotEvidenceLabel(snapshot)}
                 </span>
                 <Show when={snapshot.purgeable}>
@@ -105,7 +106,10 @@ export function ApfsSnapshotEvidenceList(props: {
               {snapshotEvidenceCaption(snapshotCount(), snapshots().length)}
             </span>
           </span>
-          <span class="text-13-semibold text-text-weak transition-transform duration-150 group-open:rotate-90" aria-hidden="true">
+          <span
+            class="text-13-semibold text-text-weak transition-transform duration-150 group-open:rotate-90"
+            aria-hidden="true"
+          >
             ›
           </span>
         </span>

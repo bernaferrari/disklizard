@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "システム設定で DiskLizard にフルディスクアクセスを許可してから、再スキャンしてください。",
+  "disk.accessGuidance.windows": "このドライブにアクセスできるアカウントを使用するか、お使いのアカウントが読み取れるフォルダーをスキャンしてください。",
+  "disk.accessGuidance.linux": "フォルダーとマウントの権限を確認してから、再スキャンしてください。",
+  "disk.accessGuidance.default": "これらのフォルダーへのアクセスを確認してから、再スキャンしてください。",
+  "disk.accessGuidance.rescan": "アクセスを変更したら、上部バーの再スキャンを使用してください。",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ファイル",
   "desktop.menu.edit": "編集",
@@ -625,6 +630,8 @@ export const dict = {
   "toast.update.description": "OpenCodeの新しいバージョン ({{version}}) がインストール可能です。",
   "toast.update.action.installRestart": "インストールして再起動",
   "toast.update.action.notYet": "今はしない",
+  "toast.update.installFailed.title": "アップデートをインストールできませんでした",
+  "toast.update.installFailed.retry": "再試行",
   "error.page.title": "問題が発生しました",
   "error.page.description": "アプリケーションの読み込み中にエラーが発生しました。",
   "error.page.description.localServerStartup": "ローカルサーバーの起動中にエラーが発生しました。",

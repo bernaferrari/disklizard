@@ -18,10 +18,12 @@ declare global {
 
 async function installMapPaintObservation(page: Page) {
   await page.evaluate(() => {
-    const view = [...document.querySelectorAll<HTMLButtonElement>("button")].find((button) =>
-      button.getAttribute("aria-label")?.startsWith("View map of Test volume"),
+    // The map opens automatically when the scan completes; measure from the
+    // moment the map region mounts rather than a View-button click.
+    const region = [...document.querySelectorAll<HTMLElement>("[role=region]")].find((node) =>
+      node.getAttribute("aria-label")?.startsWith("Storage map for Test volume"),
     )
-    if (!view) throw new Error("Map action was not found")
+    if (!region) throw new Error("Map region was not found")
 
     window.diskLizardBenchmarkObservation = new Promise<PaintObservation>((resolve) => {
       const gaps: number[] = []
@@ -75,15 +77,9 @@ async function installMapPaintObservation(page: Page) {
         frame = requestAnimationFrame(sample)
       }
 
-      view.addEventListener(
-        "click",
-        () => {
-          startedAt = performance.now()
-          previousFrame = startedAt
-          frame = requestAnimationFrame(sample)
-        },
-        { capture: true, once: true },
-      )
+      startedAt = performance.now()
+      previousFrame = startedAt
+      frame = requestAnimationFrame(sample)
     })
   })
 }
@@ -162,12 +158,8 @@ benchmark("DiskLizard large retained tree reaches a usable map and stays respons
 
   const scanStartedAt = await page.evaluate(() => performance.now())
   await scan.click()
-  const view = page.getByRole("button", { name: "View map of Test volume" })
-  await expect(view).toBeEnabled()
-  const scanResultReadyMs = await page.evaluate((startedAt) => performance.now() - startedAt, scanStartedAt)
-
+  // The map now opens automatically when the scan completes (2-step flow).
   await installMapPaintObservation(page)
-  await view.click()
   const map = page.getByRole("region", { name: /^Storage map for Test volume/ })
   await expect(map).toBeVisible()
   const mapPaint = await readObservation(page)
@@ -214,7 +206,7 @@ benchmark("DiskLizard large retained tree reaches a usable map and stays respons
   expect(searchPaint.durationMs).toBeGreaterThanOrEqual(0)
   report(
     {
-      scanResultReadyMs,
+      scanResultReadyMs: mapPaint.durationMs,
       mapFirstUsableObservedMs: mapPaint.durationMs,
       mapRafGapP50Ms: mapPaint.rafGapP50Ms,
       mapRafGapP95Ms: mapPaint.rafGapP95Ms,

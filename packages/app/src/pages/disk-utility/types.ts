@@ -105,6 +105,8 @@ export type DiskScanNode = {
   children: DiskScanNode[]
   ext: string
   isOther?: boolean
+  /** Exact number of direct entries represented by a synthetic `Other` bucket. */
+  otherCount?: number
   isHidden?: boolean
   isCollapsed?: boolean
   signatures?: string[]
@@ -156,6 +158,8 @@ export type DiskUtilityAPI = {
     path: string,
     options?: {
       maxDepth?: number
+      /** Maximum direct children retained per directory before they are grouped into `Other`. */
+      maxChildren?: number
       sizeMode?: "physical" | "logical"
       /** Recompute instead of restoring an otherwise unchanged local map. */
       forceFresh?: boolean
@@ -167,7 +171,7 @@ export type DiskUtilityAPI = {
     scanId?: string,
   ): Promise<DiskScanNode | null>
   cancelScan(scanId?: string): Promise<void>
-  stopWatching(scanId?: string): Promise<void>
+  stopWatching(scanId?: string, options?: { retainTrustedSubtree: true }): Promise<void>
   authorizeDeletePaths(paths: readonly string[]): Promise<Array<{ path: string; authorization: string }>>
   deletePath(path: string, options: DiskDeleteOptions): Promise<{ ok: true }>
   previewPath(path: string): Promise<DiskFilePreview>

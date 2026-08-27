@@ -107,8 +107,12 @@ describe("native disk scanner", () => {
   test("keeps equal-size top-K children and Other samples in fallback-compatible lexical order", async () => {
     const root = await mkdtemp(path.join(tmpdir(), "disklizard-native-equal-siblings-"))
     roots.push(root)
-    const files = Array.from({ length: 60 }, (_, index) => path.join(root, `file-${String(index).padStart(2, "0")}.bin`))
-    const directories = Array.from({ length: 8 }, (_, index) => path.join(root, `dir-${String(index).padStart(2, "0")}`))
+    const files = Array.from({ length: 60 }, (_, index) =>
+      path.join(root, `file-${String(index).padStart(2, "0")}.bin`),
+    )
+    const directories = Array.from({ length: 8 }, (_, index) =>
+      path.join(root, `dir-${String(index).padStart(2, "0")}`),
+    )
     await Promise.all([
       ...files.map((target) => writeFile(target, new Uint8Array(1))),
       ...directories.map(async (directory) => {
@@ -142,6 +146,8 @@ describe("native disk scanner", () => {
     expect(fallback.children.map((child) => child.name)).toEqual(expectedTopLevelNames)
     expect(native.children.at(-1)?.children.map((child) => child.name)).toEqual(expectedOtherSampleNames)
     expect(fallback.children.at(-1)?.children.map((child) => child.name)).toEqual(expectedOtherSampleNames)
+    expect(native.children.at(-1)?.otherCount).toBe(65)
+    expect(fallback.children.at(-1)?.otherCount).toBe(65)
   })
 
   test("normalizes invalid options before serializing a native request", async () => {
@@ -154,15 +160,12 @@ describe("native disk scanner", () => {
         progressIntervalMs: 0,
         sizeMode: "logical" as const,
       }
-      const [native, typescript] = await Promise.all([
-        scanPathNative(root, options),
-        scanPathSync(root, options),
-      ])
+      const [native, typescript] = await Promise.all([scanPathNative(root, options), scanPathSync(root, options)])
 
       expect(native.size).toBe(typescript.size)
       expect(native.children.map((child) => child.name)).toEqual(typescript.children.map((child) => child.name))
       expect(native.children).toHaveLength(2)
-      expect(native.children.at(-1)).toMatchObject({ name: "Other (1 items)", size: 7 })
+      expect(native.children.at(-1)).toMatchObject({ name: "Other (1 item)", size: 7 })
     }
   })
 
@@ -290,6 +293,44 @@ describe("native disk scanner", () => {
         JSON.stringify(compactDonePayload("C:\\workspace", undefined, [{ n: "..\\outside", s: 1, d: true }])),
       ),
     ).toBeUndefined()
+  })
+
+  test("validates compact Other aggregate counts", () => {
+    expect(
+      parseNativeMessage(
+        JSON.stringify(
+          compactDonePayload("/workspace", undefined, [{ n: "Other (18 items)", s: 18, d: true, o: true, r: 18 }]),
+        ),
+      ),
+    ).toMatchObject({ type: "done", root: { children: [{ isOther: true, otherCount: 18 }] } })
+
+    // Old protocol payloads may omit the new aggregate count.
+    expect(
+      parseNativeMessage(
+        JSON.stringify(
+          compactDonePayload("/workspace", undefined, [{ n: "Other (18 items)", s: 18, d: true, o: true }]),
+        ),
+      )?.type,
+    ).toBe("done")
+
+    for (const child of [
+      { n: "ordinary", s: 1, r: 1 },
+      { n: "Other (0 items)", s: 0, d: true, o: true, r: 0 },
+      { n: "Other (1 items)", s: 1, d: true, o: true, r: 1.5 },
+      {
+        n: "Other (1 items)",
+        s: 2,
+        d: true,
+        o: true,
+        r: 1,
+        c: [
+          { n: "a", s: 1 },
+          { n: "b", s: 1 },
+        ],
+      },
+    ]) {
+      expect(parseNativeMessage(JSON.stringify(compactDonePayload("/workspace", undefined, [child])))).toBeUndefined()
+    }
   })
 
   test("bounds compact protocol depth without throwing and accepts a near-bound chain", () => {
@@ -509,7 +550,7 @@ describe("native disk scanner", () => {
               a: "secondary",
             },
             { n: "target", s: 8, d: true, x: true, g: ["debug"] },
-            { n: "Other (2 items)", s: 0, d: true, o: true },
+            { n: "Other (2 items)", s: 0, d: true, o: true, r: 2 },
           ],
         },
       }),
@@ -554,7 +595,11 @@ describe("native disk scanner", () => {
       isCollapsed: true,
       signatures: ["debug"],
     })
-    expect(message.root.children[2].path).toBe(path.join("/workspace", "__other__"))
+    expect(message.root.children[2]).toMatchObject({
+      path: path.join("/workspace", "__other__"),
+      isOther: true,
+      otherCount: 2,
+    })
   })
 
   test("hydrates missing native inventory identities with Node-compatible Windows stats", async () => {
@@ -828,6 +873,62 @@ describe("native disk scanner", () => {
             ],
           },
         }),
+      ),
+    ).toBeUndefined()
+  })
+
+  test("validates legacy native Other aggregate counts while allowing omission", () => {
+    const root = (child: Record<string, unknown>) => ({
+      type: "done",
+      root: {
+        name: "workspace",
+        path: "/workspace",
+        size: 1,
+        isDir: true,
+        ext: "",
+        children: [child],
+      },
+    })
+    const other = {
+      name: "Other (1 items)",
+      path: "/workspace/__other__",
+      size: 1,
+      isDir: true,
+      isOther: true,
+      ext: "",
+      children: [],
+    }
+
+    expect(parseNativeMessage(JSON.stringify(root({ ...other, otherCount: 1 })))?.type).toBe("done")
+    expect(parseNativeMessage(JSON.stringify(root(other)))?.type).toBe("done")
+    expect(parseNativeMessage(JSON.stringify(root({ ...other, otherCount: 0 })))).toBeUndefined()
+    expect(
+      parseNativeMessage(
+        JSON.stringify(
+          root({
+            ...other,
+            otherCount: 1,
+            children: [
+              { name: "a", path: "/workspace/a", size: 1, isDir: false, ext: "", children: [] },
+              { name: "b", path: "/workspace/b", size: 1, isDir: false, ext: "", children: [] },
+            ],
+          }),
+        ),
+      ),
+    ).toBeUndefined()
+    expect(
+      parseNativeMessage(
+        JSON.stringify(
+          root({
+            name: "ordinary",
+            path: "/workspace/ordinary",
+            size: 1,
+            isDir: false,
+            otherCount: 1,
+            ext: "",
+            children: [],
+          }),
+        ),
       ),
     ).toBeUndefined()
   })

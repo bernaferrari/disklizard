@@ -1,7 +1,7 @@
 import { app, dialog } from "electron"
 import pkg from "electron-updater"
 import { CHANNEL, UPDATER_ENABLED, updaterFeedChannel } from "./constants"
-import { createUpdaterController, type UpdaterReadyRecord } from "./updater-controller"
+import { createUpdaterController, type UpdaterController, type UpdaterReadyRecord } from "./updater-controller"
 import { getLogger } from "./logging"
 import { getStore } from "./store"
 import { setAppQuitting } from "./windows"
@@ -68,18 +68,20 @@ export function setupAutoUpdater() {
   })
 }
 
-export async function showUpdaterDialog(controller: ReturnType<typeof setupAutoUpdater>, alertOnFail: boolean) {
-  const state = await controller.check()
-  if (state.status === "error") {
-    if (!alertOnFail) return
-    await dialog.showMessageBox({
-      type: "error",
-      message: nativeT("desktop.updater.dialog.checkFailed.message"),
-      title: nativeT("desktop.updater.dialog.checkFailed.title"),
-    })
-    return
-  }
-  if (state.status === "up-to-date") {
+export async function showUpdaterDialog(controller: UpdaterController, alertOnFail: boolean) {
+  // A manual check must not silently pull the full update; ask first and
+  // download only once confirmed.
+  const availability = await controller.checkOnly()
+  if (!availability.updateAvailable) {
+    if (controller.getState().status === "error") {
+      if (!alertOnFail) return
+      await dialog.showMessageBox({
+        type: "error",
+        message: nativeT("desktop.updater.dialog.checkFailed.message"),
+        title: nativeT("desktop.updater.dialog.checkFailed.title"),
+      })
+      return
+    }
     if (!alertOnFail) return
     await dialog.showMessageBox({
       type: "info",
@@ -88,15 +90,22 @@ export async function showUpdaterDialog(controller: ReturnType<typeof setupAutoU
     })
     return
   }
-  if (state.status !== "ready") return
 
   const response = await dialog.showMessageBox({
     type: "info",
-    message: nativeT("desktop.updater.dialog.ready.message", { version: state.version }),
+    message: nativeT("desktop.updater.dialog.ready.message", {
+      version: availability.version ?? "",
+    }),
     title: nativeT("desktop.updater.dialog.ready.title"),
     buttons: [nativeT("desktop.updater.dialog.restart"), nativeT("desktop.updater.dialog.later")],
     defaultId: 0,
     cancelId: 1,
   })
-  if (response.response === 0) await controller.install()
+  if (response.response !== 0) {
+    await controller.dismiss()
+    return
+  }
+
+  await controller.download()
+  await controller.install()
 }

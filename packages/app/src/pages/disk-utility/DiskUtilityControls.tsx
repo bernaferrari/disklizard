@@ -41,7 +41,8 @@ export function IndexLensButton(props: {
   disabled?: boolean
   title?: string
 }) {
-  const explanationID = () => (props.disabled && props.title ? `disklizard-lens-${props.label.toLowerCase()}-reason` : undefined)
+  const explanationID = () =>
+    props.disabled && props.title ? `disklizard-lens-${props.label.toLowerCase()}-reason` : undefined
   return (
     <span class="contents">
       <button
@@ -81,6 +82,7 @@ export function DeveloperCategoryButton(props: {
   description?: string
   onClick: () => void
 }) {
+  const language = useLanguage()
   return (
     <button
       type="button"

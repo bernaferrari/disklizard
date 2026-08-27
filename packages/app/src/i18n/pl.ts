@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Przyznaj DiskLizardowi Pełny dostęp do dysku w Ustawieniach systemowych, a następnie przeskanuj ponownie.",
+  "disk.accessGuidance.windows": "Użyj konta z dostępem do tego dysku albo przeskanuj folder, który Twoje konto może odczytać.",
+  "disk.accessGuidance.linux": "Sprawdź uprawnienia folderu i punktu montowania, a następnie przeskanuj ponownie.",
+  "disk.accessGuidance.default": "Sprawdź dostęp do tych folderów, a następnie przeskanuj ponownie.",
+  "disk.accessGuidance.rescan": "Po zmianie dostępu użyj opcji Skanuj ponownie na górnym pasku.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Plik",
   "desktop.menu.edit": "Edycja",
@@ -627,6 +632,8 @@ export const dict = {
   "toast.update.description": "Nowa wersja OpenCode ({{version}}) jest teraz dostępna do instalacji.",
   "toast.update.action.installRestart": "Zainstaluj i uruchom ponownie",
   "toast.update.action.notYet": "Jeszcze nie",
+  "toast.update.installFailed.title": "Nie można zainstalować aktualizacji",
+  "toast.update.installFailed.retry": "Ponów",
   "error.page.title": "Coś poszło nie tak",
   "error.page.description": "Wystąpił błąd podczas ładowania aplikacji.",
   "error.page.description.localServerStartup": "Wystąpił błąd podczas uruchamiania serwera lokalnego.",

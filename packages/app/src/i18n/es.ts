@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Concede Acceso Total al Disco a DiskLizard en Ajustes del Sistema y vuelve a escanear.",
+  "disk.accessGuidance.windows": "Usa una cuenta con acceso a esta unidad o escanea una carpeta que tu cuenta pueda leer.",
+  "disk.accessGuidance.linux": "Revisa los permisos de la carpeta y del punto de montaje y vuelve a escanear.",
+  "disk.accessGuidance.default": "Revisa el acceso a estas carpetas y vuelve a escanear.",
+  "disk.accessGuidance.rescan": "Usa Volver a escanear en la barra superior después de cambiar el acceso.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Archivo",
   "desktop.menu.edit": "Editar",
@@ -675,6 +680,8 @@ export const dict = {
   "toast.update.description": "Una nueva versión de OpenCode ({{version}}) está disponible para instalar.",
   "toast.update.action.installRestart": "Instalar y reiniciar",
   "toast.update.action.notYet": "Todavía no",
+  "toast.update.installFailed.title": "No se pudo instalar la actualización",
+  "toast.update.installFailed.retry": "Reintentar",
 
   "error.page.title": "Algo salió mal",
   "error.page.description": "Ocurrió un error al cargar la aplicación.",

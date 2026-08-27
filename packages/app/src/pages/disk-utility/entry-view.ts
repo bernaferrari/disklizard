@@ -33,34 +33,55 @@ export function diskEntrySearchText(node: DiskScanNode, extra = "") {
 }
 
 /**
- * Index every materialized descendant while retaining its local size rank.
+ * Children ranked by descending size with a stable original-order tiebreak.
  * That rank is the shared color identity used by the orbit, tiles, and list;
- * sorting search results must never recolor an item.
+ * sorting search results must never recolor an item. Every renderer index
+ * walks the retained tree through this ordering so ranks, colors, and source
+ * indices agree across views.
+ */
+export function rankedDiskChildren(parent: DiskScanNode) {
+  return (parent.children ?? [])
+    .map((node, originalIndex) => ({ node, originalIndex }))
+    .toSorted((left, right) => right.node.size - left.node.size || left.originalIndex - right.originalIndex)
+}
+
+/** Depth-first retained-tree walk in shared color-rank order. */
+export function walkRankedDiskTree(
+  root: DiskScanNode | null | undefined,
+  visit: (node: DiskScanNode, colorIndex: number, sourceIndex: number) => void,
+) {
+  if (!root) return
+  let sourceIndex = 0
+
+  const recurse = (parent: DiskScanNode) => {
+    const children = rankedDiskChildren(parent)
+    for (let colorIndex = 0; colorIndex < children.length; colorIndex++) {
+      const node = children[colorIndex].node
+      visit(node, colorIndex, sourceIndex++)
+      if (node.children?.length) recurse(node)
+    }
+  }
+
+  recurse(root)
+}
+
+/**
+ * Index every materialized descendant while retaining its local size rank.
+ * Sorting search results must never recolor an item.
  */
 export function indexRetainedDiskTree(
   root: DiskScanNode | null | undefined,
   extraSearchText: (node: DiskScanNode) => string | undefined = () => undefined,
 ): IndexedDiskEntry[] {
-  if (!root) return []
   const indexed: IndexedDiskEntry[] = []
-
-  const visit = (parent: DiskScanNode) => {
-    const children = (parent.children ?? [])
-      .map((node, originalIndex) => ({ node, originalIndex }))
-      .toSorted((left, right) => right.node.size - left.node.size || left.originalIndex - right.originalIndex)
-    for (let colorIndex = 0; colorIndex < children.length; colorIndex++) {
-      const node = children[colorIndex].node
-      indexed.push({
-        node,
-        colorIndex,
-        sourceIndex: indexed.length,
-        searchText: diskEntrySearchText(node, extraSearchText(node) ?? ""),
-      })
-      if (node.children?.length) visit(node)
-    }
-  }
-
-  visit(root)
+  walkRankedDiskTree(root, (node, colorIndex, sourceIndex) => {
+    indexed.push({
+      node,
+      colorIndex,
+      sourceIndex,
+      searchText: diskEntrySearchText(node, extraSearchText(node) ?? ""),
+    })
+  })
   return indexed
 }
 

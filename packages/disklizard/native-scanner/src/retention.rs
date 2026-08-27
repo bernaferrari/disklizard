@@ -164,7 +164,10 @@ fn other_node(
     children: Vec<CompactNode>,
 ) -> CompactNode {
     let mut node = CompactNode::directory(
-        format!("Other ({count} items)"),
+        format!(
+            "Other ({count} {})",
+            if count == 1 { "item" } else { "items" }
+        ),
         size,
         logical_size,
         modified_at,
@@ -173,6 +176,7 @@ fn other_node(
         None,
     );
     node.is_other = true;
+    node.other_count = Some(count);
     node.has_shared_storage_risk = has_shared_storage_risk;
     node
 }
@@ -208,6 +212,7 @@ mod tests {
             is_dir: false,
             children: Vec::new(),
             is_other: false,
+            other_count: None,
             is_collapsed: false,
             signatures: None,
             scan_issues: None,
@@ -254,7 +259,7 @@ mod tests {
                 .iter()
                 .map(|node| node.name.as_str())
                 .collect::<Vec<_>>(),
-            ["large-a", "large-b", "project", "Other (1 items)"]
+            ["large-a", "large-b", "project", "Other (1 item)"]
         );
         assert_eq!(retained.node.children[3].size, 30);
     }
@@ -280,6 +285,7 @@ mod tests {
 
         assert!(retained.evidence_became_partial);
         assert_eq!(other.name, "Other (13 items)");
+        assert_eq!(other.other_count, Some(13));
         assert_eq!(other.children.len(), HIDDEN_SAMPLE_LIMIT);
         assert_eq!(other.children[0].name, "linked-00");
         assert_eq!(other.children[11].name, "linked-11");

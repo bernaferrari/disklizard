@@ -62,6 +62,8 @@ export type DiskLizardNode = {
   children: DiskLizardNode[]
   ext: string
   isOther?: boolean
+  /** Total direct items represented by a synthetic `Other` node, including unsampled items. */
+  otherCount?: number
   isHidden?: boolean
   isCollapsed?: boolean
   signatures?: string[]
@@ -82,6 +84,11 @@ export type DiskLizardDeveloperArtifactDeletePrecondition = {
 export type DiskLizardDeleteOptions = {
   authorization: string
   precondition?: DiskLizardDeveloperArtifactDeletePrecondition
+}
+
+export type DiskLizardStopWatchingOptions = {
+  /** Preserve a main-produced focused subtree under its active trusted parent scan. */
+  retainTrustedSubtree?: true
 }
 
 export type DiskLizardScanProgress = {
@@ -125,6 +132,8 @@ export type DiskLizardAPI = {
     path: string,
     options?: {
       maxDepth?: number
+      /** Maximum retained children per directory; validated by the main process. */
+      maxChildren?: number
       sizeMode?: "physical" | "logical"
       /** Recompute instead of restoring an otherwise unchanged local map. */
       forceFresh?: boolean
@@ -136,7 +145,7 @@ export type DiskLizardAPI = {
     scanId?: string,
   ) => Promise<DiskLizardNode | null>
   cancelScan: (scanId?: string) => Promise<void>
-  stopWatching: (scanId?: string) => Promise<void>
+  stopWatching: (scanId?: string, options?: DiskLizardStopWatchingOptions) => Promise<void>
   authorizeDeletePaths: (paths: readonly string[]) => Promise<Array<{ path: string; authorization: string }>>
   deletePath: (path: string, options: DiskLizardDeleteOptions) => Promise<{ ok: true }>
   previewPath: (path: string) => Promise<DiskLizardFilePreview>

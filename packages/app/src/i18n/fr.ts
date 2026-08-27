@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Accordez l'Accès complet au disque à DiskLizard dans Réglages Système, puis analysez à nouveau.",
+  "disk.accessGuidance.windows": "Utilisez un compte ayant accès à ce lecteur ou analysez un dossier que votre compte peut lire.",
+  "disk.accessGuidance.linux": "Vérifiez les permissions du dossier et du point de montage, puis analysez à nouveau.",
+  "disk.accessGuidance.default": "Vérifiez l'accès à ces dossiers, puis analysez à nouveau.",
+  "disk.accessGuidance.rescan": "Utilisez Réanalyser dans la barre supérieure après avoir modifié les accès.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Fichier",
   "desktop.menu.edit": "Édition",
@@ -635,6 +640,8 @@ export const dict = {
     "Une nouvelle version d'OpenCode ({{version}}) est maintenant disponible pour installation.",
   "toast.update.action.installRestart": "Installer et redémarrer",
   "toast.update.action.notYet": "Plus tard",
+  "toast.update.installFailed.title": "Impossible d'installer la mise à jour",
+  "toast.update.installFailed.retry": "Réessayer",
   "error.page.title": "Un problème est survenu",
   "error.page.description": "Une erreur s'est produite lors du chargement de l'application.",
   "error.page.description.localServerStartup": "Une erreur s'est produite lors du démarrage du serveur local.",

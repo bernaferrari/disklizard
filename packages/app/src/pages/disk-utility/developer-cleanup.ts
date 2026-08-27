@@ -1,5 +1,6 @@
 import type { DeveloperItem } from "./recognize"
 import { daysSinceChanged } from "./format"
+import { diskLanguageText } from "./runtime"
 
 /**
  * Age controls deliberately describe modification time rather than "last used":
@@ -10,17 +11,12 @@ export const DEVELOPER_CLEANUP_AGE_PRESETS = ["all", "30", "60", "90", "180", "c
 
 export type DeveloperCleanupAgePreset = (typeof DEVELOPER_CLEANUP_AGE_PRESETS)[number]
 
-export type DeveloperCleanupAge =
-  | { valid: true; days?: number }
-  | { valid: false; days?: never }
+export type DeveloperCleanupAge = { valid: true; days?: number } | { valid: false; days?: never }
 
 const MAX_CUSTOM_AGE_DAYS = 3650
 
 /** Resolve the UI value without treating an invalid custom value as "all". */
-export function resolveDeveloperCleanupAge(
-  preset: DeveloperCleanupAgePreset,
-  customDays: string,
-): DeveloperCleanupAge {
+export function resolveDeveloperCleanupAge(preset: DeveloperCleanupAgePreset, customDays: string): DeveloperCleanupAge {
   if (preset === "all") return { valid: true }
   if (preset !== "custom") return { valid: true, days: Number(preset) }
 
@@ -53,6 +49,8 @@ export function filterDeveloperItemsByAge(
 }
 
 export function developerCleanupAgeLabel(age: DeveloperCleanupAge): string {
-  if (!age.valid) return "Set a whole number from 1 to 3,650 days"
-  return age.days === undefined ? "Any modification date" : `Unchanged for at least ${age.days} days`
+  if (!age.valid) return diskLanguageText("disk.developer.policy.invalidAge")
+  return age.days === undefined
+    ? diskLanguageText("disk.developer.policy.anyDate")
+    : diskLanguageText("disk.developer.policy.ageLabel", { count: age.days })
 }

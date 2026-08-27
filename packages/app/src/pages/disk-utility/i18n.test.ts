@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test"
 import ts from "typescript"
 import { DISK_LANGUAGE_PLURALS, DISK_LANGUAGE_TEXT } from "./runtime"
+import { DISK_RECOGNITION_LANGUAGE_KEYS } from "./recognition-language"
 
 const ROOT = new URL(".", import.meta.url).pathname
 const VISIBLE_ATTRIBUTES = new Set(["alt", "aria-label", "aria-roledescription", "placeholder", "title"])
@@ -15,6 +16,22 @@ async function productionTsxSources() {
   return files
 }
 
+async function productionSources() {
+  const files: Array<{ path: string; source: string; kind: ts.ScriptKind }> = []
+  for (const pattern of ["*.ts", "*.tsx"]) {
+    for await (const name of new Bun.Glob(pattern).scan(ROOT)) {
+      if (name === "runtime.tsx" || name === "recognition-language.ts" || name.includes(".test.")) continue
+      const path = `${ROOT}${name}`
+      files.push({
+        path,
+        source: await Bun.file(path).text(),
+        kind: name.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+      })
+    }
+  }
+  return files
+}
+
 function lineOf(file: ts.SourceFile, node: ts.Node) {
   return file.getLineAndCharacterOfPosition(node.getStart(file)).line + 1
 }
@@ -22,8 +39,8 @@ function lineOf(file: ts.SourceFile, node: ts.Node) {
 describe("Disk Utility localization boundary", () => {
   it("keeps visible JSX and toast copy behind the typed language adapter", async () => {
     const violations: string[] = []
-    for (const { path, source } of await productionTsxSources()) {
-      const file = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+    for (const { path, source, kind } of await productionSources()) {
+      const file = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, kind)
       const visit = (node: ts.Node, insideToast = false) => {
         const toastCall =
           ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "showToast"
@@ -38,7 +55,9 @@ describe("Disk Utility localization boundary", () => {
           ts.isStringLiteral(node.initializer) &&
           /[A-Za-z]/.test(node.initializer.text)
         ) {
-          violations.push(`${path}:${lineOf(file, node)} ${node.name.getText(file)}=${JSON.stringify(node.initializer.text)}`)
+          violations.push(
+            `${path}:${lineOf(file, node)} ${node.name.getText(file)}=${JSON.stringify(node.initializer.text)}`,
+          )
         }
         if (inToast && ts.isPropertyAssignment(node)) {
           const name = node.name.getText(file).replaceAll(/["']/g, "")
@@ -79,5 +98,9 @@ describe("Disk Utility localization boundary", () => {
       visit(file)
     }
     expect(missing).toEqual([])
+  })
+
+  it("keeps every recognizer display key in the typed language catalog", () => {
+    expect(DISK_RECOGNITION_LANGUAGE_KEYS.filter((key) => !(key in DISK_LANGUAGE_TEXT))).toEqual([])
   })
 })

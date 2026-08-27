@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Conceda Acesso Total ao Disco ao DiskLizard nos Ajustes do Sistema e digitalize novamente.",
+  "disk.accessGuidance.windows": "Use uma conta com acesso a esta unidade ou digitalize uma pasta que sua conta consiga ler.",
+  "disk.accessGuidance.linux": "Verifique as permissões da pasta e da montagem e digitalize novamente.",
+  "disk.accessGuidance.default": "Verifique o acesso a estas pastas e digitalize novamente.",
+  "disk.accessGuidance.rescan": "Use Repetir verificação na barra superior após alterar o acesso.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Arquivo",
   "desktop.menu.edit": "Editar",
@@ -627,6 +632,8 @@ export const dict = {
   "toast.update.description": "Uma nova versão do OpenCode ({{version}}) está disponível para instalação.",
   "toast.update.action.installRestart": "Instalar e reiniciar",
   "toast.update.action.notYet": "Agora não",
+  "toast.update.installFailed.title": "Não foi possível instalar a atualização",
+  "toast.update.installFailed.retry": "Tentar novamente",
   "error.page.title": "Algo deu errado",
   "error.page.description": "Ocorreu um erro ao carregar a aplicação.",
   "error.page.description.localServerStartup": "Ocorreu um erro ao iniciar o servidor local.",

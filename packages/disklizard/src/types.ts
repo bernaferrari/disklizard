@@ -253,6 +253,8 @@ export type DiskNode = {
   children: DiskNode[]
   ext: string
   isOther?: boolean
+  /** Total direct items represented by a synthetic `Other` node, including unsampled items. */
+  otherCount?: number
   isHidden?: boolean
   /** Children were intentionally omitted; opening this node starts a focused scan. */
   isCollapsed?: boolean

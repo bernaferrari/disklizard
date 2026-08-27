@@ -66,7 +66,7 @@ describe("layoutTreemap", () => {
     const collapsed = collapseTreemapChildren(children, 100)
 
     expect(collapsed).toHaveLength(100)
-    expect(collapsed.at(-1)).toMatchObject({ name: "901 smaller items", isOther: true })
+    expect(collapsed.at(-1)).toMatchObject({ name: "", isOther: true, otherCount: 901 })
     expect(collapsed.reduce((sum, child) => sum + child.size, 0)).toBe(
       children.reduce((sum, child) => sum + child.size, 0),
     )

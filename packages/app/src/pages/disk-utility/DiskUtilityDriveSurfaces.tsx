@@ -110,6 +110,7 @@ export function VolumeRow(props: {
     if (scanning()) return `${Math.round(props.job?.pct ?? 0)}%`
     return hasTotal() ? formatBytes(props.drive.free) : "—"
   }
+  const readoutFree = () => !props.job && hasTotal()
   const completedPerformance = () => {
     const job = props.job
     if (!job?.completedAt || job.source !== "scan") return
@@ -142,8 +143,29 @@ export function VolumeRow(props: {
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
-      class="dl-hover-drive dl-volume-row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:gap-5 sm:px-5"
-      style={{ "--dl-volume-ink": ink() }}
+      role="button"
+      tabIndex={0}
+      aria-disabled={disabled()}
+      onKeyDown={(event) => {
+        if (disabled()) return
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault()
+          activate()
+        }
+      }}
+      onClick={(event) => {
+        // The explicit action button and the snapshot disclosure own their own
+        // activation; the row only answers direct surface clicks.
+        if (event.target instanceof Element && event.target.closest("button, a, input, summary")) return
+        if (!disabled()) activate()
+      }}
+      class="dl-hover-drive dl-volume-row grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak sm:gap-5 sm:px-5"
+      style={{
+        "--dl-volume-ink": ink(),
+        // Readout text rides on the same hue but leans on --text-strong so it
+        // clears 4.5:1 in both themes; the bar fill keeps the vivid ink.
+        "--dl-volume-readout": `color-mix(in oklch, ${ink()} 45%, var(--text-strong))`,
+      }}
     >
       <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
       <div class="min-w-0">
@@ -165,14 +187,27 @@ export function VolumeRow(props: {
       <div class="flex shrink-0 items-center gap-3 sm:gap-4">
         <div class="hidden w-[148px] sm:block">
           <div class="dl-volume-bar" aria-hidden="true">
-            <div class="dl-volume-bar-fill" style={{ width: `${Math.round(fill() * 1000) / 10}%` }} />
+            <div
+              class="dl-volume-bar-fill"
+              data-settled={complete() ? "" : undefined}
+              style={{ width: `${Math.round(fill() * 1000) / 10}%` }}
+            />
           </div>
         </div>
-        <p class="dl-volume-free w-[4.75rem] text-right text-14-medium tabular-nums tracking-[-0.02em]">{readout()}</p>
+        <p
+          class="w-[4.75rem] text-right text-14-medium tabular-nums tracking-[-0.02em]"
+          style={{ color: "var(--dl-volume-readout, var(--dl-volume-ink))" }}
+        >
+          {readout()}
+          <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
+        </p>
         <button
           type="button"
           data-disk-primary-action={props.primary ? "" : undefined}
-          class="dl-volume-view outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+          classList={{
+            "dl-volume-view outline-none focus-visible:ring-2 focus-visible:ring-text-weak": true,
+            "dl-volume-view-primary": complete() && !scanning(),
+          }}
           disabled={disabled()}
           title={disabled() ? language.t("disk.drive.scanLimit") : undefined}
           aria-label={
@@ -226,8 +261,20 @@ function VolumeGlyph(props: { type: DiskDriveInfo["type"]; startup: boolean }) {
           stroke="color-mix(in oklch, var(--text-strong) 28%, transparent)"
           stroke-width="1.25"
         />
-        <rect x="9" y="11" width="8" height="2" rx="1" fill="color-mix(in oklch, var(--text-strong) 28%, transparent)" />
-        <circle cx="22" cy="16" r="1.6" fill={props.startup ? "var(--dl-volume-ink)" : "color-mix(in oklch, var(--text-strong) 28%, transparent)"} />
+        <rect
+          x="9"
+          y="11"
+          width="8"
+          height="2"
+          rx="1"
+          fill="color-mix(in oklch, var(--text-strong) 28%, transparent)"
+        />
+        <circle
+          cx="22"
+          cy="16"
+          r="1.6"
+          fill={props.startup ? "var(--dl-volume-ink)" : "color-mix(in oklch, var(--text-strong) 28%, transparent)"}
+        />
       </svg>
     </span>
   )
@@ -238,7 +285,10 @@ export function volumeCompletionLabel(source: VolumeScanJob["source"], performan
   if (source === "snapshot") return diskLanguageText("disk.drive.restored")
   if (source === "delta") return diskLanguageText("disk.drive.updated")
   if (source === "scan" && performance) {
-    return `${formatScanDuration(performance.elapsedMs)} · ${formatScanRate(performance.filesPerSecond, "files")}`
+    return diskLanguageText("disk.drive.performance", {
+      duration: formatScanDuration(performance.elapsedMs),
+      rate: formatScanRate(performance.filesPerSecond, "files"),
+    })
   }
   return diskLanguageText("disk.drive.mapReady")
 }

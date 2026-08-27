@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "ให้สิทธิ์ Full Disk Access แก่ DiskLizard ใน System Settings แล้วสแกนอีกครั้ง",
+  "disk.accessGuidance.windows": "ใช้บัญชีที่เข้าถึงไดรฟ์นี้ได้ หรือสแกนโฟลเดอร์ที่บัญชีของคุณอ่านได้",
+  "disk.accessGuidance.linux": "ตรวจสอบสิทธิ์ของโฟลเดอร์และจุดเมาต์ แล้วสแกนอีกครั้ง",
+  "disk.accessGuidance.default": "ตรวจสอบการเข้าถึงโฟลเดอร์เหล่านี้ แล้วสแกนอีกครั้ง",
+  "disk.accessGuidance.rescan": "หลังเปลี่ยนสิทธิ์การเข้าถึง ให้ใช้ปุ่ม Rescan ในแถบด้านบน.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ไฟล์",
   "desktop.menu.edit": "แก้ไข",
@@ -668,6 +673,8 @@ export const dict = {
   "toast.update.description": "เวอร์ชันใหม่ของ OpenCode ({{version}}) พร้อมใช้งานสำหรับติดตั้ง",
   "toast.update.action.installRestart": "ติดตั้งและรีสตาร์ท",
   "toast.update.action.notYet": "ยังไม่",
+  "toast.update.installFailed.title": "ไม่สามารถติดตั้งการอัปเดตได้",
+  "toast.update.installFailed.retry": "ลองอีกครั้ง",
 
   "error.page.title": "เกิดข้อผิดพลาด",
   "error.page.description": "เกิดข้อผิดพลาดระหว่างการโหลดแอปพลิเคชัน",

@@ -1,5 +1,7 @@
 import type { DiskScanNode } from "./types"
 import { formatBytes, formatPct } from "./format"
+import { diskLanguageText } from "./runtime"
+import { diskNodeDisplayName } from "./node-display"
 
 export type Crumb = { name: string; path: string; node: DiskScanNode }
 
@@ -55,8 +57,8 @@ export function scanAccessGuidance(os?: DesktopOS): ScanAccessGuidanceKey {
 }
 
 /** Use the operating system's own name for its recoverable deletion destination. */
-export function nativeTrashName(os?: DesktopOS): "Recycle Bin" | "Trash" {
-  return os === "windows" ? "Recycle Bin" : "Trash"
+export function nativeTrashName(os?: DesktopOS): string {
+  return os === "windows" ? diskLanguageText("disk.common.recycleBin") : diskLanguageText("disk.common.trash")
 }
 
 /** A concise screen-reader update for keyboard navigation inside the canvas map. */
@@ -66,24 +68,31 @@ export function describeStorageNode(
   capabilities: StorageNodeCapabilities = {},
 ): string {
   if (!node) return ""
-  const share = parentSize > 0 ? `, ${formatPct(node.size, parentSize)} of this level` : ""
+  const share = parentSize > 0 ? diskLanguageText("disk.node.share", { value: formatPct(node.size, parentSize) }) : ""
   const canPreview = !node.isOther && !node.isHidden && capabilities.canPreview !== false
   const canReview = !node.isOther && capabilities.canReview !== false
   const inventoryOnly = (node as DiskScanNode & { inventoryOnly?: boolean }).inventoryOnly === true
-  const action =
-    inventoryOnly
-      ? " Deep inventory result; it cannot be explored from the map."
-      : node.isDir && !node.isOther
-        ? " Press Enter to explore."
+  const action = inventoryOnly
+    ? diskLanguageText("disk.node.inventoryAction")
+    : node.isOther && !node.isHidden
+      ? diskLanguageText("disk.node.moreAction")
+      : node.isDir
+        ? diskLanguageText("disk.node.exploreAction")
         : canPreview
-          ? " Press Space to preview."
+          ? diskLanguageText("disk.node.previewAction")
           : ""
   const cleanup = canReview
-    ? " Press C to add it to review."
+    ? diskLanguageText("disk.node.reviewAction")
     : capabilities.requiresRescanBeforeReview
-      ? " Rescan before adding it to review."
+      ? diskLanguageText("disk.node.rescanAction")
       : ""
-  return `${node.name}, ${formatBytes(node.size)}${share}.${action}${cleanup}`
+  return diskLanguageText("disk.node.description", {
+    name: diskNodeDisplayName(node),
+    size: formatBytes(node.size),
+    share,
+    action,
+    cleanup,
+  })
 }
 
 /**
@@ -108,7 +117,7 @@ export function buildCrumbs(root: DiskScanNode | null, view: DiskScanNode | null
 
   if (!visit(root)) return [{ name: root._label || root.name || root.path, path: root.path, node: root }]
   return chain.map((node, index) => ({
-    name: index === 0 ? root._label || root.name || root.path : node.name,
+    name: index === 0 ? root._label || root.name || root.path : diskNodeDisplayName(node),
     path: node.path,
     node,
   }))

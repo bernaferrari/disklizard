@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Предоставьте DiskLizard полный доступ к диску в «Системных настройках», затем выполните сканирование снова.",
+  "disk.accessGuidance.windows": "Используйте учётную запись с доступом к этому диску или просканируйте папку, доступную вашей учётной записи.",
+  "disk.accessGuidance.linux": "Проверьте права доступа к папке и точке монтирования, затем выполните сканирование снова.",
+  "disk.accessGuidance.default": "Проверьте доступ к этим папкам, затем выполните сканирование снова.",
+  "disk.accessGuidance.rescan": "После изменения доступа используйте «Пересканировать» в верхней панели.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Файл",
   "desktop.menu.edit": "Правка",
@@ -671,6 +676,8 @@ export const dict = {
   "toast.update.description": "Новая версия OpenCode ({{version}}) доступна для установки.",
   "toast.update.action.installRestart": "Установить и перезапустить",
   "toast.update.action.notYet": "Пока нет",
+  "toast.update.installFailed.title": "Не удалось установить обновление",
+  "toast.update.installFailed.retry": "Повторить",
 
   "error.page.title": "Что-то пошло не так",
   "error.page.description": "Произошла ошибка при загрузке приложения.",

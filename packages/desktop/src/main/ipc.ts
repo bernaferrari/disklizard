@@ -5,6 +5,7 @@ import { app, BrowserWindow, Notification, clipboard, dialog, ipcMain, shell } f
 import type { IpcMainEvent, IpcMainInvokeEvent, WebContents } from "electron"
 import type { DesktopMenuAction } from "./desktop-menu"
 import { parseDesktopNativeBundle, type DesktopNativeBundle } from "../../../app/src/i18n/desktop-native"
+import { normalizeScanOptions } from "../../../disklizard/src/scan"
 
 import type { FatalRendererError, TitlebarTheme } from "../preload/types"
 import { runDesktopMenuAction } from "./desktop-menu-actions"
@@ -40,6 +41,30 @@ const pickerFilters = (ext?: string[]) => {
 
 const pickedFiles = createPickedFileAuthorizations()
 
+function parseRendererMaxChildren(value: unknown) {
+  const scannerDefault = normalizeScanOptions({}).maxChildren!
+  if (value === undefined) return scannerDefault
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) throw new Error("Invalid maxChildren scan option")
+  const normalized = normalizeScanOptions({ maxChildren: value }).maxChildren!
+  if (normalized !== value) throw new Error("Invalid maxChildren scan option")
+  return normalized
+}
+
+function parseStopWatchingOptions(value: unknown) {
+  if (value === undefined) return false
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("Invalid stop-watching options")
+  }
+  const options = value as Record<string, unknown>
+  if (
+    Object.keys(options).some((key) => key !== "retainTrustedSubtree") ||
+    (options.retainTrustedSubtree !== undefined && options.retainTrustedSubtree !== true)
+  ) {
+    throw new Error("Invalid stop-watching options")
+  }
+  return options.retainTrustedSubtree === true
+}
+
 type Deps = {
   relaunch: () => void
   consumeInitialDeepLinks: () => Promise<string[]> | string[]
@@ -53,12 +78,7 @@ type Deps = {
 
 export function assertTrustedRenderer(event: Pick<IpcMainInvokeEvent, "sender" | "senderFrame">) {
   const win = BrowserWindow.fromWebContents(event.sender)
-  if (
-    !win ||
-    win.isDestroyed() ||
-    win.webContents !== event.sender ||
-    event.senderFrame !== event.sender.mainFrame
-  ) {
+  if (!win || win.isDestroyed() || win.webContents !== event.sender || event.senderFrame !== event.sender.mainFrame) {
     throw new Error("Invalid IPC sender")
   }
   return win
@@ -106,10 +126,23 @@ export function registerIpcHandlers(deps: Deps) {
     if (!tracked.sender.isDestroyed()) tracked.sender.removeListener("destroyed", tracked.onDestroyed)
   }
 
-  const stopDiskSnapshotOwner = (owner: string) => {
+  const stopDiskSnapshotOwner = async (owner: string, retainTrustedSubtree = false) => {
+    if (!retainTrustedSubtree) {
+      detachDiskSnapshotOwner(owner)
+      diskDeleteAuthorizations.removeOwner(owner)
+      return diskSnapshots.stop(owner)
+    }
+    try {
+      // Stop first so an in-flight watcher update cannot recreate an active
+      // authority after its renderer-lifetime tracking has been detached.
+      await diskSnapshots.stop(owner)
+    } catch (error) {
+      detachDiskSnapshotOwner(owner)
+      diskDeleteAuthorizations.removeOwner(owner)
+      throw error
+    }
     detachDiskSnapshotOwner(owner)
-    diskDeleteAuthorizations.removeOwner(owner)
-    return diskSnapshots.stop(owner)
+    diskDeleteAuthorizations.retainOwnerAsTrustedSubtree(owner)
   }
 
   const trackDiskSnapshotOwner = (sender: WebContents, owner: string) => {
@@ -176,9 +209,7 @@ export function registerIpcHandlers(deps: Deps) {
     }
     return drives
   })
-  handle("disklizard:get-storage-diagnostics", async () =>
-    getDiskStorageDiagnostics({ drives: await getDrives() }),
-  )
+  handle("disklizard:get-storage-diagnostics", async () => getDiskStorageDiagnostics({ drives: await getDrives() }))
   handle("disklizard:open-disk-access-settings", async () => {
     const url = diskAccessSettingsUrl()
     if (!url) return false
@@ -193,6 +224,7 @@ export function registerIpcHandlers(deps: Deps) {
       options?: {
         maxDepth?: number
         concurrency?: number
+        maxChildren?: number
         sizeMode?: "physical" | "logical"
         /** Bypass an unchanged persisted map for a one-off exact recomputation. */
         forceFresh?: boolean
@@ -203,6 +235,7 @@ export function registerIpcHandlers(deps: Deps) {
       },
       requestedScanID?: string,
     ) => {
+      const maxChildren = parseRendererMaxChildren(options?.maxChildren)
       const senderID = event.sender.id
       const scanID = requestedScanID || "primary"
       const owner = `${senderID}:${scanID}`
@@ -221,7 +254,7 @@ export function registerIpcHandlers(deps: Deps) {
         const scanOptions: ScanOptions = {
           maxDepth: options?.maxDepth ?? 10,
           concurrency: options?.concurrency,
-          maxChildren: 48,
+          maxChildren,
           preserveNames: options?.preserveNames,
           collapseNames: options?.collapseNames,
           signatureNames: options?.signatureNames,
@@ -250,6 +283,8 @@ export function registerIpcHandlers(deps: Deps) {
                 return
               }
               diskDeleteAuthorizations.updateRoot(owner, senderID, update.root)
+              // `revision` is an additive renderer hint (stale-clone guard);
+              // the existing update shape stays backward compatible.
               event.sender.send("disklizard:scan-update", { ...update, scanId: scanID })
             },
             options?.forceFresh === true,
@@ -297,38 +332,41 @@ export function registerIpcHandlers(deps: Deps) {
           ]),
         ]
     owners.forEach((owner) => diskScans.get(owner)?.abort(new Error("Scan cancelled")))
-    void Promise.all(owners.map(stopDiskSnapshotOwner))
-  })
-  handle("disklizard:stop-watching", (event: IpcMainInvokeEvent, requestedScanID?: string) => {
-    const prefix = `${event.sender.id}:`
-    if (requestedScanID) return stopDiskSnapshotOwner(`${prefix}${requestedScanID}`)
-    return Promise.all(
-      [...diskSnapshots.activeOwners()]
-        .filter((owner) => String(owner).startsWith(prefix))
-        .map((owner) => stopDiskSnapshotOwner(String(owner))),
-    )
+    void Promise.all(owners.map((owner) => stopDiskSnapshotOwner(owner)))
   })
   handle(
-    "disklizard:authorize-delete-paths",
-    (event: IpcMainInvokeEvent, paths: readonly string[]) =>
-      diskDeleteAuthorizations.authorize(event.sender.id, paths, assertSafeDeletionPath),
+    "disklizard:stop-watching",
+    async (event: IpcMainInvokeEvent, requestedScanID?: string, rawOptions?: unknown) => {
+      const retainTrustedSubtree = parseStopWatchingOptions(rawOptions)
+      if (retainTrustedSubtree && !requestedScanID) throw new Error("Invalid stop-watching options")
+      const prefix = `${event.sender.id}:`
+      if (requestedScanID) return stopDiskSnapshotOwner(`${prefix}${requestedScanID}`, retainTrustedSubtree)
+      return Promise.all(
+        [...diskSnapshots.activeOwners()]
+          .filter((owner) => String(owner).startsWith(prefix))
+          .map((owner) => stopDiskSnapshotOwner(String(owner))),
+      )
+    },
+  )
+  handle("disklizard:authorize-delete-paths", (event: IpcMainInvokeEvent, paths: readonly string[]) =>
+    diskDeleteAuthorizations.authorize(event.sender.id, paths, assertSafeDeletionPath),
   )
   handle(
     "disklizard:delete-path",
     async (event: IpcMainInvokeEvent, targetPath: string, options: DiskDeleteOptions) => {
-      await diskDeleteAuthorizations.consume(event.sender.id, targetPath, options?.authorization)
-      await runGuardedDiskDelete(
+      const validateAuthorization = await diskDeleteAuthorizations.consume(
+        event.sender.id,
         targetPath,
-        options?.precondition,
-        assertSafeDeletionPath,
-        async (path) => shell.trashItem(path),
+        options?.authorization,
       )
+      await runGuardedDiskDelete(targetPath, options?.precondition, assertSafeDeletionPath, async (path) => {
+        await validateAuthorization()
+        await shell.trashItem(path)
+      })
       return { ok: true }
     },
   )
-  handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) =>
-    readDiskPreview(targetPath),
-  )
+  handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) => readDiskPreview(targetPath))
   handle("disklizard:system-preview-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
     const metadata = await stat(targetPath)
     if (!metadata.isFile() && !metadata.isDirectory()) throw new Error("Only files and folders can be previewed")
@@ -352,7 +390,7 @@ export function registerIpcHandlers(deps: Deps) {
     const path =
       process.platform === "darwin"
         ? join(app.getPath("home"), ".Trash")
-        : join(app.getPath("home"), ".local", "share", "Trash", "files")
+        : join(process.env.XDG_DATA_HOME || join(app.getPath("home"), ".local", "share"), "Trash", "files")
     const error = await shell.openPath(path)
     if (error) throw new Error(error)
   })
@@ -364,7 +402,7 @@ export function registerIpcHandlers(deps: Deps) {
     const win = BrowserWindow.fromWebContents(event.sender)
     const result = await dialog.showOpenDialog(win ?? undefined!, {
       properties: ["openDirectory"],
-      title: "Choose folder to scan",
+      title: nativeT("desktop.dialog.chooseFolder"),
     })
     if (result.canceled || !result.filePaths[0]) return null
     return result.filePaths[0]
@@ -475,17 +513,14 @@ export function registerIpcHandlers(deps: Deps) {
     pickedFiles.release(event.sender.id, token)
   })
 
-  handle(
-    "save-file-picker",
-    async (_event: IpcMainInvokeEvent, opts?: { title?: string; defaultPath?: string }) => {
-      const result = await dialog.showSaveDialog({
-        title: opts?.title ?? nativeT("desktop.dialog.saveFile"),
-        defaultPath: opts?.defaultPath,
-      })
-      if (result.canceled) return null
-      return result.filePath ?? null
-    },
-  )
+  handle("save-file-picker", async (_event: IpcMainInvokeEvent, opts?: { title?: string; defaultPath?: string }) => {
+    const result = await dialog.showSaveDialog({
+      title: opts?.title ?? nativeT("desktop.dialog.saveFile"),
+      defaultPath: opts?.defaultPath,
+    })
+    if (result.canceled) return null
+    return result.filePath ?? null
+  })
 
   on("open-external", (_event: IpcMainEvent, url: string) => openExternalURL(url))
   on("open-local-file", (_event: IpcMainEvent, url: string) => openLocalFileURL(url))

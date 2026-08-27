@@ -3,6 +3,12 @@ import { existsSync } from "node:fs"
 import { lstat } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { Worker } from "node:worker_threads"
+import {
+  nativeParseWorkerHref,
+  type NativeParseWorkerMessage,
+  type NativeParseWorkerRequest,
+} from "./native-parse-worker"
 import {
   MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
   normalizeDeveloperArtifactInventoryOptions,
@@ -52,7 +58,7 @@ type NativeMessage =
   | { type: "done"; root: DiskNode; declaredRootPath?: string }
   | { type: "error"; message: string }
 
-type NativeDoneValidation = {
+export type NativeDoneValidation = {
   /** The lexical, absolute request root that this sidecar response must echo. */
   expectedRootPath?: string
   /** Exact normalized cap sent with an opt-in inventory request. */
@@ -84,35 +90,41 @@ function appendNativeNdjsonBytes(state: NativeNdjsonBuffer, bytes: Buffer): bool
   return true
 }
 
-function emitNativeNdjsonLine(state: NativeNdjsonBuffer, onLine: (line: string) => boolean): NativeNdjsonReadResult {
+async function emitNativeNdjsonLine(
+  state: NativeNdjsonBuffer,
+  onLine: (line: string) => boolean | Promise<boolean>,
+): Promise<NativeNdjsonReadResult> {
   const chunks = state.chunks
   state.chunks = []
   state.bytes = 0
   try {
     const line = new TextDecoder("utf-8", { fatal: true }).decode(Buffer.concat(chunks))
-    return onLine(line) ? "ok" : "stop"
+    return (await onLine(line)) ? "ok" : "stop"
   } catch {
     return "malformed"
   }
 }
 
-function consumeNativeNdjsonChunk(
+async function consumeNativeNdjsonChunk(
   state: NativeNdjsonBuffer,
   chunk: Buffer,
-  onLine: (line: string) => boolean,
-): NativeNdjsonReadResult {
+  onLine: (line: string) => boolean | Promise<boolean>,
+): Promise<NativeNdjsonReadResult> {
   let start = 0
   for (let index = 0; index < chunk.length; index++) {
     if (chunk[index] !== 0x0a) continue
     if (!appendNativeNdjsonBytes(state, chunk.subarray(start, index))) return "oversized"
-    const result = emitNativeNdjsonLine(state, onLine)
+    const result = await emitNativeNdjsonLine(state, onLine)
     if (result !== "ok") return result
     start = index + 1
   }
   return appendNativeNdjsonBytes(state, chunk.subarray(start)) ? "ok" : "oversized"
 }
 
-function flushNativeNdjsonBuffer(state: NativeNdjsonBuffer, onLine: (line: string) => boolean): NativeNdjsonReadResult {
+async function flushNativeNdjsonBuffer(
+  state: NativeNdjsonBuffer,
+  onLine: (line: string) => boolean | Promise<boolean>,
+): Promise<NativeNdjsonReadResult> {
   return state.bytes === 0 ? "ok" : emitNativeNdjsonLine(state, onLine)
 }
 
@@ -134,6 +146,8 @@ type CompactNode = {
   d?: boolean
   c?: CompactNode[]
   o?: boolean
+  /** Total direct items represented by an aggregate `Other` node. */
+  r?: number
   x?: boolean
   g?: string[]
   q?: DiskNode["scanIssues"]
@@ -169,7 +183,13 @@ function isDiskNode(value: unknown): value is DiskNode {
       (node.sharedStorageEvidence !== undefined &&
         (!current.isRoot || !isSharedStorageEvidence(node.sharedStorageEvidence))) ||
       (node.developerArtifactInventory !== undefined &&
-        (!current.isRoot || !isDeveloperArtifactInventory(node.developerArtifactInventory)))
+        (!current.isRoot || !isDeveloperArtifactInventory(node.developerArtifactInventory))) ||
+      (node.isOther !== undefined && typeof node.isOther !== "boolean") ||
+      (node.isOther === true && !node.isDir) ||
+      (node.otherCount !== undefined &&
+        (!isPositiveSafeInteger(node.otherCount) ||
+          node.isOther !== true ||
+          (Array.isArray(node.children) && node.otherCount < node.children.length)))
     ) {
       return false
     }
@@ -189,6 +209,10 @@ function isStringArray(value: unknown): value is string[] {
 
 function isNonNegativeSafeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0
+}
+
+function isPositiveSafeInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value > 0
 }
 
 type NativePathApi = typeof path.posix | typeof path.win32
@@ -582,11 +606,13 @@ function isCompactNodeShape(value: unknown, isRoot: boolean): value is CompactNo
     (value.a === undefined || (isCloneAccounting(value.a) && hasCompleteCloneEvidence(value.v))) &&
     (value.d === undefined || typeof value.d === "boolean") &&
     (value.o === undefined || typeof value.o === "boolean") &&
+    (value.r === undefined || isPositiveSafeInteger(value.r)) &&
     (value.x === undefined || typeof value.x === "boolean") &&
     (value.g === undefined || isStringArray(value.g)) &&
     (value.q === undefined || isScanIssueSummary(value.q)) &&
     (value.c === undefined || Array.isArray(value.c)) &&
     (value.o !== true || (!isRoot && value.d === true)) &&
+    (value.r === undefined || (value.o === true && (!Array.isArray(value.c) || value.r >= value.c.length))) &&
     (value.x !== true || value.d === true)
   )
 }
@@ -704,6 +730,7 @@ function hydrateCompactNode(node: CompactNode, nodePath: string, isRoot: boolean
     children: [],
     ext: node.d === true ? "" : extension(node.n),
     ...(node.o === true ? { isOther: true } : {}),
+    ...(node.r === undefined ? {} : { otherCount: node.r }),
     ...(node.x === true ? { isCollapsed: true } : {}),
     ...(node.g === undefined ? {} : { signatures: node.g }),
     ...(node.q === undefined ? {} : { scanIssues: node.q }),
@@ -995,130 +1022,56 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
       : { developerArtifactInventory: { maxItems: expectedInventory.maxItems } }),
   }
 
-  return new Promise((resolve, reject) => {
-    const child = spawn(nativeScannerPath(), [], {
-      stdio: ["pipe", "pipe", "pipe"],
-      windowsHide: true,
+  return new Promise<DiskNode>((resolve, reject) => {
+    if (normalizedOptions.signal?.aborted) {
+      reject(normalizedOptions.signal.reason)
+      return
+    }
+
+    const worker = new Worker(nativeParseWorkerHref(), {
+      workerData: {
+        scannerPath: nativeScannerPath(),
+        requestJson: JSON.stringify(request),
+        platform: process.platform,
+        expectedRootPath: requestedRoot.root,
+        inventoryEnabled: expectedInventory !== undefined,
+        expectedInventoryMaxItems: expectedInventory?.maxItems,
+      } satisfies NativeParseWorkerRequest,
     })
-    const stdoutBuffer: NativeNdjsonBuffer = { chunks: [], bytes: 0 }
     let settled = false
     let doneReceived = false
-    let hydratingDoneInventory = false
-    let stderr = ""
-    // Initialized before an already-aborted signal can call `cleanup`; the
-    // real listeners are assigned immediately below before being attached.
-    let onStdoutData: (chunk: Buffer) => void = () => {}
-    let onStdoutEnd: () => void = () => {}
-    let onStdoutError: () => void = () => {}
 
-    const cleanup = () => {
-      normalizedOptions.signal?.removeEventListener("abort", onAbort)
-      child.stdout.removeListener("data", onStdoutData)
-      child.stdout.removeListener("end", onStdoutEnd)
-      child.stdout.removeListener("error", onStdoutError)
-      stdoutBuffer.chunks = []
-      stdoutBuffer.bytes = 0
-    }
+    const cleanup = () => normalizedOptions.signal?.removeEventListener("abort", onAbort)
     const finish = (result: { root: DiskNode } | { error: unknown }) => {
       if (settled) return
       settled = true
       cleanup()
+      void worker.terminate()
       if ("root" in result) resolve(result.root)
       else reject(result.error)
     }
-    const onAbort = () => {
-      child.kill()
-      finish({ error: normalizedOptions.signal?.reason ?? new Error("Scan cancelled") })
-    }
+    const onAbort = () => finish({ error: normalizedOptions.signal?.reason ?? new Error("Scan cancelled") })
 
     normalizedOptions.signal?.addEventListener("abort", onAbort, { once: true })
-    if (normalizedOptions.signal?.aborted) {
-      onAbort()
-      return
-    }
 
-    child.stderr.setEncoding("utf8")
-    child.stderr.on("data", (chunk: string) => {
-      if (stderr.length < 8192) stderr += chunk.slice(0, 8192 - stderr.length)
-    })
-    const invalidNativeMessage = () => {
-      child.kill()
-      finish({ error: new Error("Native scanner returned an invalid message") })
-    }
-    const failNativeProtocolFrame = (result: Exclude<NativeNdjsonReadResult, "ok" | "stop">) => {
-      child.kill()
-      finish({
-        error: new Error(
-          result === "oversized"
-            ? "Native scanner emitted an oversized protocol line"
-            : "Native scanner returned malformed UTF-8 protocol output",
-        ),
-      })
-    }
-    const handleNativeLine = (line: string): boolean => {
-      if (settled || doneReceived) return false
-      const message = parseNativeMessage(line, {
-        expectedRootPath: requestedRoot.root,
-        expectedInventoryMaxItems: expectedInventory?.maxItems,
-        requireDeclaredRootPath: true,
-        inventoryEnabled: expectedInventory !== undefined,
-      })
-      if (!message) {
-        invalidNativeMessage()
-        return false
-      }
-      if (message.type === "progress") {
-        normalizedOptions.onProgress?.(message.progress)
-        return !settled
-      }
-      if (message.type === "done") {
-        // The native child commonly exits immediately after its `done` line.
-        // Keep that expected close from racing this asynchronous, bounded
-        // lstat pass; explicit aborts still call `finish` and win.
+    worker.on("message", (msg: NativeParseWorkerMessage) => {
+      if (settled || doneReceived) return
+      if (msg.type === "progress") {
+        normalizedOptions.onProgress?.(msg.progress)
+      } else if (msg.type === "done") {
         doneReceived = true
-        hydratingDoneInventory = true
-        void hydrateDeveloperArtifactDirectoryIdentities(
-          message.root,
-          undefined,
-          process.platform,
-          requestedRoot.root,
-          expectedInventory?.maxItems,
-        )
-          .then((root) => {
-            normalizedOptions.signal?.throwIfAborted()
-            finish({ root })
-          })
-          .catch((error) => finish({ error }))
-        return false
+        finish({ root: msg.root })
+      } else {
+        finish({ error: new Error(msg.message) })
       }
-      finish({ error: new Error(message.message) })
-      return false
-    }
-    onStdoutData = (chunk: Buffer) => {
-      if (settled || doneReceived) return
-      const result = consumeNativeNdjsonChunk(stdoutBuffer, chunk, handleNativeLine)
-      if (result === "oversized" || result === "malformed") failNativeProtocolFrame(result)
-    }
-    onStdoutEnd = () => {
-      if (settled || doneReceived) return
-      const result = flushNativeNdjsonBuffer(stdoutBuffer, handleNativeLine)
-      if (result === "oversized" || result === "malformed") failNativeProtocolFrame(result)
-    }
-    onStdoutError = () => {
-      if (settled || doneReceived) return
-      finish({ error: new Error("Native scanner stdout failed") })
-    }
-    child.stdout.on("data", onStdoutData)
-    child.stdout.once("end", onStdoutEnd)
-    child.stdout.once("error", onStdoutError)
-    child.once("error", (error) => finish({ error }))
-    child.once("close", (code, signal) => {
-      if (settled || hydratingDoneInventory) return
-      const detail = stderr.trim()
-      const suffix = detail ? `: ${detail}` : ""
-      finish({ error: new Error(`Native scanner exited (${signal ?? code ?? "unknown"})${suffix}`) })
     })
-
-    child.stdin.end(`${JSON.stringify(request)}\n`)
+    worker.on("error", (error) => finish({ error }))
+    worker.on("exit", (code) => {
+      // A posted error already settled the promise; a bare non-zero exit here
+      // means the worker died before reporting the sidecar failure.
+      if (!settled && !doneReceived) {
+        finish({ error: new Error(`Native scanner exited (${code})`) })
+      }
+    })
   })
 }

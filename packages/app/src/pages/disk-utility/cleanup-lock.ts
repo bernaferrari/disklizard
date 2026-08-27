@@ -1,4 +1,5 @@
 import type { DiskCleanupLock, DiskScanNode } from "./types"
+import { diskLanguageText } from "./runtime"
 
 export const CLEANUP_LOCK_LIMIT = 24
 
@@ -22,7 +23,9 @@ export function cleanupLockForPath(
 ): DiskCleanupLock | undefined {
   return locks
     .filter((lock) => pathCoveredByLock(path, lock.path, os))
-    .sort((left, right) => normalizedCleanupPath(right.path, os).length - normalizedCleanupPath(left.path, os).length)[0]
+    .sort(
+      (left, right) => normalizedCleanupPath(right.path, os).length - normalizedCleanupPath(left.path, os).length,
+    )[0]
 }
 
 export function isPathCleanupLocked(
@@ -65,5 +68,5 @@ export function withoutCleanupLockedNodes(
 }
 
 export function cleanupLockMessage(lock: DiskCleanupLock) {
-  return `${lock.label} is protected from cleanup. DiskLizard will still map it, but it will not go to review or Trash.`
+  return diskLanguageText("disk.cleanup.lockMessage", { name: lock.label })
 }

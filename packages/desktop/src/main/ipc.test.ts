@@ -1,8 +1,11 @@
 import { afterAll, describe, expect, mock, test } from "bun:test"
 import { EventEmitter } from "node:events"
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import path from "node:path"
 import type { IpcMainInvokeEvent } from "electron"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
+import type { DiskLizardAPI } from "../preload/types"
 
 type RegisteredHandler = (...args: unknown[]) => unknown
 
@@ -73,17 +76,20 @@ mock.module("./windows", () => ({
 
 class FakeDiskSnapshotManager {
   readonly owners = new Set<string>()
+  readonly roots = new Map<string, DiskNode>()
+  readonly scans: Array<{ owner: string; rootPath: string; options: ScanOptions }> = []
   readonly stopped: string[] = []
 
   async scan(
     owner: string,
     rootPath: string,
-    _options: ScanOptions,
+    options: ScanOptions,
     _onUpdate: (update: unknown) => void,
     _forceFresh: boolean,
   ) {
     this.owners.add(owner)
-    const root: DiskNode = {
+    this.scans.push({ owner, rootPath, options })
+    const root: DiskNode = this.roots.get(rootPath) ?? {
       name: path.basename(rootPath),
       path: rootPath,
       size: 0,
@@ -163,13 +169,18 @@ function event(sender: FakeSender) {
 const scanPath = handlers.get("disklizard:scan-path") as (
   event: IpcMainInvokeEvent,
   targetPath: string,
-  options: object,
+  options: unknown,
   scanID: string,
 ) => Promise<DiskNode>
 const stopWatching = handlers.get("disklizard:stop-watching") as (
   event: IpcMainInvokeEvent,
   scanID?: string,
+  options?: unknown,
 ) => Promise<unknown>
+const authorizeDeletePaths = handlers.get("disklizard:authorize-delete-paths") as (
+  event: IpcMainInvokeEvent,
+  paths: readonly string[],
+) => Promise<Array<{ path: string; authorization: string }>>
 
 afterAll(() => mock.restore())
 
@@ -184,6 +195,36 @@ describe("disk snapshot IPC lifecycle", () => {
     const sender = new FakeSender(43)
     const setStore = handlers.get("store-set")!
     expect(() => setStore(event(sender), "/tmp/escaped.json", "key", "value")).toThrow("Invalid renderer store")
+  })
+
+  test("validates and forwards maxChildren at the renderer boundary", async () => {
+    const sender = new FakeSender(44)
+    const expansionOptions = {
+      maxChildren: 256,
+    } satisfies NonNullable<Parameters<DiskLizardAPI["scanPath"]>[1]>
+
+    await scanPath(event(sender), "/tmp/expanded", expansionOptions, "expanded")
+    expect(diskSnapshots.scans.at(-1)?.options.maxChildren).toBe(256)
+
+    for (const maxChildren of [1, 10_000]) {
+      await scanPath(event(sender), `/tmp/boundary-${maxChildren}`, { maxChildren }, `boundary-${maxChildren}`)
+      expect(diskSnapshots.scans.at(-1)?.options.maxChildren).toBe(maxChildren)
+      await stopWatching(event(sender), `boundary-${maxChildren}`)
+    }
+
+    await scanPath(event(sender), "/tmp/default", {}, "default")
+    expect(diskSnapshots.scans.at(-1)?.options.maxChildren).toBe(48)
+
+    const scansBeforeInvalidInput = diskSnapshots.scans.length
+    for (const maxChildren of [0, 10_001, 1.5, Number.NaN, Number.POSITIVE_INFINITY, "256", null]) {
+      await expect(
+        scanPath(event(sender), "/tmp/invalid", { maxChildren }, `invalid-${String(maxChildren)}`),
+      ).rejects.toThrow("Invalid maxChildren scan option")
+    }
+    expect(diskSnapshots.scans).toHaveLength(scansBeforeInvalidInput)
+
+    await stopWatching(event(sender), "expanded")
+    await stopWatching(event(sender), "default")
   })
 
   test("keeps one renderer destruction listener across repeated and parallel scans", async () => {
@@ -214,5 +255,80 @@ describe("disk snapshot IPC lifecycle", () => {
     expect(sender.listenerCount("destroyed")).toBe(0)
     expect(diskSnapshots.stopped).toContain("42:first")
     expect(diskSnapshots.stopped).toContain("42:second")
+  })
+
+  test("retains trusted focused authority only for an explicit stop option", async () => {
+    const rootPath = await mkdtemp(path.join(tmpdir(), "disklizard-ipc-focused-"))
+    const focusedPath = path.join(rootPath, "focused")
+    const expandedPath = path.join(focusedPath, "expanded.txt")
+    await mkdir(focusedPath)
+    await writeFile(expandedPath, "expanded")
+    try {
+      const sender = new FakeSender(45)
+      diskSnapshots.roots.set(rootPath, {
+        name: path.basename(rootPath),
+        path: rootPath,
+        size: 8,
+        isDir: true,
+        ext: "",
+        children: [
+          {
+            name: "focused",
+            path: focusedPath,
+            size: 8,
+            isDir: true,
+            isCollapsed: true,
+            ext: "",
+            children: [],
+          },
+        ],
+      })
+      diskSnapshots.roots.set(focusedPath, {
+        name: "focused",
+        path: focusedPath,
+        size: 8,
+        isDir: true,
+        ext: "",
+        children: [{ name: "expanded.txt", path: expandedPath, size: 8, isDir: false, ext: "txt", children: [] }],
+      })
+
+      await scanPath(event(sender), rootPath, {}, "primary")
+      await scanPath(event(sender), focusedPath, {}, "expand")
+      await stopWatching(event(sender), "expand")
+
+      await expect(authorizeDeletePaths(event(sender), [expandedPath])).rejects.toThrow(
+        "Item is not part of an active scan",
+      )
+
+      await scanPath(event(sender), focusedPath, {}, "expand")
+      for (const options of [
+        null,
+        true,
+        { retainTrustedSubtree: false },
+        { retainTrustedSubtree: "yes" },
+        { retainTrustedSubtree: true, unknown: true },
+      ]) {
+        await expect(stopWatching(event(sender), "expand", options)).rejects.toThrow("Invalid stop-watching options")
+      }
+      expect(diskSnapshots.owners).toContain("45:expand")
+
+      const retainOptions = {
+        retainTrustedSubtree: true,
+      } satisfies NonNullable<Parameters<DiskLizardAPI["stopWatching"]>[1]>
+      await expect(stopWatching(event(sender), undefined, retainOptions)).rejects.toThrow(
+        "Invalid stop-watching options",
+      )
+      expect(diskSnapshots.owners).toContain("45:primary")
+      expect(diskSnapshots.owners).toContain("45:expand")
+
+      await stopWatching(event(sender), "expand", retainOptions)
+
+      await expect(authorizeDeletePaths(event(sender), [expandedPath])).resolves.toEqual([
+        { path: expandedPath, authorization: expect.any(String) },
+      ])
+      await stopWatching(event(sender), "primary")
+    } finally {
+      await rm(rootPath, { recursive: true, force: true })
+    }
   })
 })

@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "امنح DiskLizard صلاحية Full Disk Access في System Settings، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.windows": "استخدم حسابًا لديه صلاحية الوصول إلى هذا القرص، أو امسح مجلدًا يمكن لحسابك قراءته.",
+  "disk.accessGuidance.linux": "راجع أذونات المجلد والتحميل (mount)، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.default": "راجع صلاحية الوصول إلى هذه المجلدات، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.rescan": "استخدم خيار Rescan في الشريط العلوي بعد تغيير الصلاحيات.",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ملف",
   "desktop.menu.edit": "تحرير",
@@ -623,6 +628,8 @@ export const dict = {
   "toast.update.description": "يتوفر الآن إصدار جديد من OpenCode ({{version}}) للتثبيت.",
   "toast.update.action.installRestart": "تثبيت وإعادة تشغيل",
   "toast.update.action.notYet": "ليس الآن",
+  "toast.update.installFailed.title": "تعذّر تثبيت التحديث",
+  "toast.update.installFailed.retry": "إعادة المحاولة",
   "error.page.title": "حدث خطأ ما",
   "error.page.description": "حدث خطأ أثناء تحميل التطبيق.",
   "error.page.description.localServerStartup": "حدث خطأ أثناء بدء تشغيل الخادم المحلي.",

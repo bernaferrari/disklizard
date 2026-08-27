@@ -86,7 +86,7 @@ describe("describeStorageNode", () => {
       "target, 1.00 B, 25% of this level. Press Enter to explore. Press C to add it to review.",
     )
     expect(describeStorageNode({ ...dir("Other", "disklizard:other"), isOther: true }, 4)).toBe(
-      "Other, 1.00 B, 25% of this level.",
+      "Other items, 1.00 B, 25% of this level. Press Enter to show more items.",
     )
     expect(describeStorageNode({ ...dir("main.rs", "/repo/main.rs"), isDir: false }, 4)).toBe(
       "main.rs, 1.00 B, 25% of this level. Press Space to preview. Press C to add it to review.",

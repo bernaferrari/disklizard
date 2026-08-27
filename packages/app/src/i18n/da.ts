@@ -1,4 +1,9 @@
 export const dict = {
+  "disk.accessGuidance.macos": "Giv DiskLizard Fuldt Diskadgang i Systemindstillinger, og scan igen.",
+  "disk.accessGuidance.windows": "Brug en konto med adgang til dette drev, eller scan en mappe, som din konto kan læse.",
+  "disk.accessGuidance.linux": "Kontrollér mappe- og monteringsrettigheder, og scan igen.",
+  "disk.accessGuidance.default": "Kontrollér adgangen til disse mapper, og scan igen.",
+  "disk.accessGuidance.rescan": "Brug Scan igen i den øverste bjælke, efter du har ændret adgangen.",
   "command.category.suggested": "Foreslået",
   "command.category.view": "Vis",
   "command.category.project": "Projekt",
@@ -553,6 +558,8 @@ export const dict = {
   "toast.update.description": "En ny version af OpenCode ({{version}}) er nu tilgængelig til installation.",
   "toast.update.action.installRestart": "Installer og genstart",
   "toast.update.action.notYet": "Ikke endnu",
+  "toast.update.installFailed.title": "Opdateringen kunne ikke installeres",
+  "toast.update.installFailed.retry": "Prøv igen",
 
   "error.page.title": "Noget gik galt",
   "error.page.description": "Der opstod en fejl under indlæsning af applikationen.",

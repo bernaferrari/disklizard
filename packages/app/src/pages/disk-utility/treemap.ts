@@ -28,11 +28,12 @@ export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320
   if (maxTiles < 2) {
     return [
       {
-        name: `${visible.length} smaller items`,
+        name: "",
         path: `disklizard:mosaic-more:${visible[0]?.path ?? "unknown"}`,
         size: visible.reduce((sum, child) => sum + child.size, 0),
         isDir: true,
         isOther: true,
+        otherCount: visible.length,
         children: [],
         ext: "",
       },
@@ -43,11 +44,12 @@ export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320
   return [
     ...kept,
     {
-      name: `${remainder.length} smaller items`,
+      name: "",
       path: `disklizard:mosaic-more:${remainder[0]?.path ?? "unknown"}`,
       size: remainder.reduce((sum, child) => sum + child.size, 0),
       isDir: true,
       isOther: true,
+      otherCount: remainder.length,
       children: [],
       ext: "",
     },

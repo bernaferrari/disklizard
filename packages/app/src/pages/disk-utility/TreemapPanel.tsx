@@ -10,7 +10,8 @@ import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
-import { useLanguage } from "./runtime"
+import { diskLanguageText, useLanguage } from "./runtime"
+import { diskNodeDisplayName } from "./node-display"
 
 export function Treemap(props: {
   children: DiskScanNode[]
@@ -62,7 +63,9 @@ export function Treemap(props: {
           const content = () => (
             <Show when={r.w > 0.08 && r.h > 0.06}>
               <span class="flex h-full flex-col justify-between p-3">
-                <span class="block max-w-full truncate text-13-semibold tracking-[-0.01em]">{r.node.name}</span>
+                <span class="block max-w-full truncate text-13-semibold tracking-[-0.01em]">
+                  {diskNodeDisplayName(r.node)}
+                </span>
                 <Show when={r.w > 0.14 && r.h > 0.1}>
                   <span class="inline-flex max-w-full self-start truncate text-13-regular tabular-nums">
                     {r.node.path.startsWith("disklizard:mosaic-more:") ? (
@@ -94,14 +97,13 @@ export function Treemap(props: {
                 aria-pressed={props.selectedPath === r.node.path}
                 aria-label={
                   r.node.path.startsWith("disklizard:mosaic-more:")
-                    ? language.t("disk.treemap.moreLabel", { name: r.node.name })
-                    : language.t(
-                        r.node.isDir && !r.node.isOther ? "disk.treemap.folderLabel" : "disk.treemap.fileLabel",
-                        { name: r.node.name },
-                      )
+                    ? language.t("disk.treemap.moreLabel", { name: diskNodeDisplayName(r.node) })
+                    : language.t(r.node.isDir ? "disk.treemap.folderLabel" : "disk.treemap.fileLabel", {
+                        name: diskNodeDisplayName(r.node),
+                      })
                 }
                 data-disk-tile-path={r.node.path}
-                class="absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-white"
+                class="absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-weak"
                 style={style()}
                 onPointerEnter={() => props.onHover(r.node)}
                 onPointerLeave={() => props.onHover(null)}
@@ -115,7 +117,7 @@ export function Treemap(props: {
                   if (event.key === "Enter") {
                     event.preventDefault()
                     if (r.node.path.startsWith("disklizard:mosaic-more:")) props.onShowAll(true)
-                    else if (r.node.isDir && !r.node.isOther) props.onDrill(r.node, true)
+                    else if (r.node.isDir) props.onDrill(r.node, true)
                     return
                   }
                   if (event.key === " " && !r.node.isOther && !r.node.isHidden) {
@@ -135,7 +137,8 @@ export function Treemap(props: {
                   props.onSelect(r.node.path)
                 }}
                 onDblClick={() => {
-                  if (r.node.isDir && !r.node.isOther) props.onDrill(r.node)
+                  if (r.node.path.startsWith("disklizard:mosaic-more:")) props.onShowAll()
+                  else if (r.node.isDir) props.onDrill(r.node)
                 }}
               >
                 {content()}
@@ -148,7 +151,12 @@ export function Treemap(props: {
         <div class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-background-base/84 px-3 py-1.5 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_8px_24px_rgb(0_0_0/0.1)] backdrop-blur-xl">
           {(() => {
             const node = rects().find((r) => r.node.path === props.hoveredPath)?.node
-            return node ? `${node.name} · ${formatBytes(node.size)}` : ""
+            return node
+              ? diskLanguageText("disk.treemap.hover", {
+                  name: diskNodeDisplayName(node),
+                  size: formatBytes(node.size),
+                })
+              : ""
           })()}
         </div>
       </Show>

@@ -121,7 +121,7 @@ setInterval(() => {}, 1_000)`,
 
 type ComparableNode = Pick<
   DiskNode,
-  "name" | "size" | "logicalSize" | "hardLink" | "isDir" | "isOther" | "isCollapsed" | "signatures"
+  "name" | "size" | "logicalSize" | "hardLink" | "isDir" | "isOther" | "otherCount" | "isCollapsed" | "signatures"
 > & { children: ComparableNode[] }
 
 function comparableTree(node: DiskNode): ComparableNode {
@@ -132,6 +132,7 @@ function comparableTree(node: DiskNode): ComparableNode {
     hardLink: node.hardLink,
     isDir: node.isDir,
     isOther: node.isOther,
+    otherCount: node.otherCount,
     isCollapsed: node.isCollapsed,
     signatures: node.signatures,
     children: node.children.map(comparableTree),
@@ -176,13 +177,14 @@ describe("native and TypeScript scanner parity", () => {
     const options = {
       sizeMode: "logical" as const,
       maxDepth: 8,
-      maxChildren: 100,
+      maxChildren: 2,
       developerArtifactInventory: { maxItems: 10 },
     }
     const [native, typescript] = await Promise.all([scanPathNative(root, options), scanPathSync(root, options)])
 
     expect(native.size).toBe(1_048_641)
     expect(comparableTree(native)).toEqual(comparableTree(typescript))
+    expect(native.children.find((node) => node.isOther)?.otherCount).toBeGreaterThan(0)
     expect(comparableInventory(native)).toEqual(comparableInventory(typescript))
   })
 

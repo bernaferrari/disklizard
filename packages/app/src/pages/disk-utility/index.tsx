@@ -14,10 +14,11 @@ import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import { ScrollView } from "@opencode-ai/ui/scroll-view"
 import { showToast } from "@opencode-ai/ui/toast"
-import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
-import { createStore } from "solid-js/store"
+import { batch, createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, untrack } from "solid-js"
+import { createStore, unwrap } from "solid-js/store"
 import {
   createPersistenceErrorDeduper,
+  diskLanguageText,
   useLanguage,
   usePlatform,
   useSettings,
@@ -33,6 +34,8 @@ import type {
 } from "./types"
 import { Sunburst, primarySegmentColor, sunburstEntryDuration, type SunburstEntryIntent } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
+import { collapseTreemapChildren, layoutTreemap } from "./treemap"
+import { ViewMorph, type MorphTile } from "./ViewMorph"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
 import { PreviewDialog } from "./PreviewDialog"
@@ -47,18 +50,14 @@ import {
 } from "./list-navigation"
 import {
   ARTIFACT_ECOSYSTEMS,
-  computeDeveloperSummaryWithInventory,
-  computeReclaim,
   containsSharedPhysicalStorage,
   developerArtifactCleanupReadiness,
   developerArtifactContext,
   isSmartCleanupEligible,
   matchesArtifactEcosystem,
-  recognize,
   type ArtifactEcosystem,
   type ArtifactEcosystemFilter,
   type DeveloperCategory,
-  type DeveloperSummary,
   type ReclaimSummary,
 } from "./recognize"
 import {
@@ -88,18 +87,26 @@ import { DiskScanHistory } from "./DiskScanHistory"
 import { createScanHistory, filterScanHistoryEntries } from "./scan-history"
 import { clearReviewForRootScan } from "./scan-lifecycle"
 import { refreshScanTabsForWatcherUpdate } from "./scan-tabs"
+import { recentChangeNodes } from "./recent-changes"
 import { DISK_UTILITY_STYLES } from "./styles"
 import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "./choose-folder"
 import {
   diskEntrySortDirection,
   diskEntrySortKey,
-  diskEntrySearchText,
-  filterIndexedDiskEntries,
-  indexRetainedDiskTree,
-  sortDiskEntries,
   type DiskEntrySortDirection,
   type DiskEntrySortKey,
 } from "./entry-view"
+import { createScanInvestigation, type ScanInvestigationEntry, type ScanInvestigationLens } from "./scan-investigation"
+import { DISK_RECOGNITION_LANGUAGE_KEYS } from "./recognition-language"
+import {
+  EMPTY_DISK_BROWSE_HISTORY,
+  resolveDiskBrowseHistoryMove,
+  transitionDiskBrowseHistory,
+  type DiskBrowseDirection,
+  type DiskBrowseHistory,
+} from "./browse-history"
+import { diskNodeDisplayName } from "./node-display"
+import { planOtherExpansion } from "./other-expansion"
 import {
   cleanupLockForPath,
   cleanupLockMessage,
@@ -136,10 +143,14 @@ import {
 
 type ViewMode = "drives" | "scan"
 type ScanMode = "map" | "list" | "grid"
-type IndexLens = "all" | "developer" | "recommendations" | "changes"
+type IndexLens = ScanInvestigationLens
 type DeveloperCategoryFilter = DeveloperCategory | "all"
-type Entry = { node: DiskScanNode; colorIndex: number; displaySize: number; sourceIndex: number }
+type Entry = ScanInvestigationEntry
 type CanvasPointerEvent = PointerEvent & { currentTarget: HTMLCanvasElement }
+type FocusedExpansionOptions = {
+  label?: string
+  maxChildren?: number
+}
 type ScanTab = {
   id: string
   sessionID?: string
@@ -147,11 +158,14 @@ type ScanTab = {
   sourcePath: string
   tree: DiskScanNode
   view: DiskScanNode
+  browseHistory: DiskBrowseHistory
   drive?: DiskDriveInfo
 }
 
 const MAX_PARALLEL_VOLUME_SCANS = 3
 const DEFAULT_LIST_PAGE_SIZE = 10
+/** Bounded trusted-rescan budget for expanding a scanner-collapsed subtree. */
+const COLLAPSED_EXPANSION_MAX_CHILDREN = 48
 const EMPTY_RECLAIM: ReclaimSummary = { totalBytes: 0, totalCount: 0, buckets: [] }
 
 const IMPORTANT_PRESERVE_NAMES = [
@@ -269,7 +283,10 @@ const DEVELOPER_CATEGORY_LABEL = {
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   const { promise: timed, resolve, reject } = Promise.withResolvers<T>()
-  const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+  const timer = setTimeout(
+    () => reject(new Error(diskLanguageText("disk.error.timeout", { operation: label, milliseconds: ms }))),
+    ms,
+  )
   promise.then(
     (v) => {
       clearTimeout(timer)
@@ -348,6 +365,11 @@ export default function DiskUtilityPage() {
   const [previewLoading, setPreviewLoading] = createSignal(false)
   const [previewError, setPreviewError] = createSignal<string>()
   const [tabs, setTabs] = createSignal<ScanTab[]>([])
+  const [browseHistory, setBrowseHistory] = createStore<{
+    past: string[]
+    current?: string
+    future: string[]
+  }>({ past: [], future: [] })
   const scanHistory = createScanHistory({ os: platform.os })
   const [historyEntries, setHistoryEntries] = createSignal(scanHistory.entries())
   const [volumeScanJobs, setVolumeScanJobs] = createStore<Record<string, VolumeScanJob | undefined>>({})
@@ -357,12 +379,96 @@ export default function DiskUtilityPage() {
   const [collectionDragNode, setCollectionDragNode] = createSignal<DiskScanNode | null>(null)
   const [collectionDropActive, setCollectionDropActive] = createSignal(false)
   const [focusedScan, setFocusedScan] = createSignal<{ label: string } | null>(null)
+  // A foreground scan cancels only on a second Escape inside this window.
+  const SCAN_CANCEL_ARM_MS = 2000
+  let cancelArmedAt = 0
+  // The shortcuts popover (<details>) tracks open state for Escape/outside-click dismissal.
+  const [shortcutsOpen, setShortcutsOpen] = createSignal(false)
+  let scanProgressRegion: HTMLDivElement | undefined
+  let shortcutsDetails: HTMLDetailsElement | undefined
+  const [landscapeEl, setLandscapeEl] = createSignal<HTMLElement | undefined>()
   const volumeJobs = createMemo(() => Object.values(volumeScanJobs).filter((job): job is VolumeScanJob => !!job))
 
+  /** False while the canvas morph owns the view; the Treemap DOM mounts only when true. */
+  const [gridInteractive, setGridInteractive] = createSignal(false)
+  const [gridVisible, setGridVisible] = createSignal(false)
+  const [morphing, setMorphing] = createSignal(false)
+  let morph: ViewMorph | null = null
+  const volumeScanUnsubs = new Map<string, () => void>()
   const [canvasEl, setCanvasEl] = createSignal<HTMLCanvasElement | undefined>()
   const [sunburst, setSunburst] = createSignal<Sunburst | undefined>()
+
   let scanUnsub: (() => void) | undefined
-  const volumeScanUnsubs = new Map<string, () => void>()
+
+  /** The morph draws on the sunburst's own canvas; both live and die with it. */
+  function ensureMorph(el: HTMLCanvasElement): ViewMorph {
+    if (!morph || morph.canvas !== el) {
+      const ctx = el.getContext("2d", { alpha: true })!
+      morph = new ViewMorph(
+        el,
+        ctx,
+        () => {
+          const sb = sunburst()
+          return { cx: sb?.cx ?? el.width / 2, cy: sb?.cy ?? el.height / 2, maxR: sb?.maxR ?? 0 }
+        },
+        () => sunburst()?.reducedMotion ?? false,
+      )
+    }
+    return morph
+  }
+
+  /**
+   * Build one tile per primary wedge, matched by path to its treemap rect so a
+   * segment lands exactly on the DOM tile that replaces it.
+   */
+  function buildMorphTiles(): MorphTile[] {
+    const sb = sunburst()
+    const landscape = landscapeEl()
+    if (!sb || !landscape) return []
+    // The overlay's content box is the exact tile space the Treemap DOM lays
+    // out in (its padding lives on the same element), so unit rects scale by
+    // it — canvas tiles land precisely under their DOM successors.
+    const overlay = landscape.querySelector(".dl-treemap-overlay")
+    const overlayStyle = overlay ? getComputedStyle(overlay) : undefined
+    const padLeft = overlayStyle ? parseFloat(overlayStyle.paddingLeft) : 0
+    const padTop = overlayStyle ? parseFloat(overlayStyle.paddingTop) : 0
+    const box = landscape.getBoundingClientRect()
+    if (box.width <= 0 || box.height <= 0) return []
+    const contentW = Math.max(1, box.width - padLeft * 2)
+    const contentH = Math.max(1, box.height - padTop * 2)
+    const toPixels = (rect: { x: number; y: number; w: number; h: number }) => ({
+      x: padLeft + rect.x * contentW,
+      y: padTop + rect.y * contentH,
+      w: rect.w * contentW,
+      h: rect.h * contentH,
+    })
+    const rectByPath = new Map(
+      layoutTreemap(collapseTreemapChildren(sortedChildren()), undefined, true).map((rect) => [
+        rect.node.path,
+        rect,
+      ]),
+    )
+    const tiles: MorphTile[] = []
+    for (const seg of sb.primarySegments()) {
+      const rect = rectByPath.get(seg.path)
+      if (!rect) continue
+      tiles.push({
+        path: seg.path,
+        node: seg.node,
+        colorIndex: rect.index,
+        from: {
+          wedge: { start: seg.start, end: seg.end, inner: seg.inner, outer: seg.outer },
+          rect: toPixels(rect),
+        },
+        to: {
+          wedge: { start: seg.start, end: seg.end, inner: seg.inner, outer: seg.outer },
+          rect: toPixels(rect),
+        },
+      })
+    }
+    return tiles
+  }
+
   let scanUpdateUnsub: (() => void) | undefined
   let driveFactsUnsub: (() => void) | undefined
   let receivedDriveFacts: DiskDriveFactsUpdate[] = []
@@ -416,16 +522,28 @@ export default function DiskUtilityPage() {
     }
     return language.t("disk.explore.unverifiedDefault")
   })
-  const reclaim = createMemo<ReclaimSummary>(() =>
+  const investigation = createMemo(() =>
+    createScanInvestigation(treeRoot(), {
+      recognitionText(recognition) {
+        return recognition.tag ? language.t(recognition.tag) : ""
+      },
+      recognitionQueryMayMatch(normalizedQuery) {
+        return DISK_RECOGNITION_LANGUAGE_KEYS.some((key) =>
+          language.t(key).toLocaleLowerCase().includes(normalizedQuery),
+        )
+      },
+    }),
+  )
+  const reclaim = (): ReclaimSummary =>
     physicalCloneAccountingUncertain()
       ? EMPTY_RECLAIM
-      : actionableReclaimSummary(computeReclaim(treeRoot()), platform.os, cleanupLocks()),
-  )
-  const developer = createMemo<DeveloperSummary>(() => computeDeveloperSummaryWithInventory(treeRoot()))
+      : actionableReclaimSummary(investigation().recommendations(), platform.os, cleanupLocks())
+  const developer = () => investigation().developer()
   const developerAge = createMemo(() =>
     resolveDeveloperCleanupAge(indexFilter.developerAge, indexFilter.customDeveloperAgeDays),
   )
   const developerItems = createMemo(() => {
+    if (indexFilter.lens !== "developer") return []
     const category = indexFilter.developerCategory
     const ecosystem = indexFilter.developerEcosystem
     const categorized = developer().items.filter(
@@ -435,12 +553,17 @@ export default function DiskUtilityPage() {
     return filterDeveloperItemsByAge(categorized, developerAge())
   })
   const developerEcosystems = createMemo<ArtifactEcosystem[]>(() =>
-    ARTIFACT_ECOSYSTEMS.filter((ecosystem) =>
-      developer().items.some((item) => item.recognition.ecosystem === ecosystem),
-    ),
+    indexFilter.lens === "developer"
+      ? ARTIFACT_ECOSYSTEMS.filter((ecosystem) =>
+          developer().items.some((item) => item.recognition.ecosystem === ecosystem),
+        )
+      : [],
   )
   const parentSize = createMemo(() => viewNode()?.size ?? 0)
   const parentCount = createMemo(() => viewNode()?.children?.length ?? 0)
+  const sortedChildren = createMemo(() =>
+    [...(viewNode()?.children ?? [])].sort((left, right) => right.size - left.size),
+  )
   const sizeBasisLabel = createMemo(() => {
     if (!usesPhysicalByteAccounting()) return language.t("disk.explore.fileSize")
     return physicalCloneAccountingUncertain()
@@ -448,61 +571,36 @@ export default function DiskUtilityPage() {
       : language.t("disk.explore.diskSpaceUsed")
   })
 
-  const sortedChildren = createMemo<DiskScanNode[]>(() => {
-    const node = viewNode()
-    if (!node) return []
-    return [...(node.children ?? [])].sort((a, b) => b.size - a.size)
-  })
-  const retainedScanIndex = createMemo(() => indexRetainedDiskTree(treeRoot(), (node) => recognize(node).tag))
-  const retainedColorIndices = createMemo(
-    () => new Map(retainedScanIndex().map((entry) => [entry.node.path, entry.colorIndex] as const)),
-  )
   const currentHistoryEntries = createMemo(() =>
     filterScanHistoryEntries(historyEntries(), scanSession.activeID, query()),
   )
   const historyChangeCount = createMemo(() =>
     currentHistoryEntries().reduce((total, entry) => total + entry.changes.length, 0),
   )
+  const recentChanges = createMemo(() => recentChangeNodes(treeRoot()))
+  /**
+   * The Recent lens is a page-level overlay on the "all" view: the typed
+   * investigation lenses stay closed, so no scan-wide summary is rebuilt.
+   */
+  const [recentLens, setRecentLens] = createSignal(false)
   const entries = createMemo<Entry[]>(() => {
-    const q = query().trim()
-    const decorate = (nodes: Array<{ node: DiskScanNode; displaySize: number }>): Entry[] =>
-      nodes.map(({ node, displaySize }, sourceIndex) => ({
-        node,
-        displaySize,
-        sourceIndex,
-        colorIndex: retainedColorIndices().get(node.path) ?? sourceIndex,
-      }))
-    const candidates =
-      indexFilter.lens === "developer"
-        ? decorate(developerItems().map(({ node, bytes }) => ({ node, displaySize: bytes })))
-        : indexFilter.lens === "recommendations"
-          ? decorate(
-              reclaim()
-                .buckets.flatMap((bucket) => bucket.items.map(({ node }) => node))
-                .map((node) => ({ node, displaySize: node.size })),
-            )
-          : indexFilter.lens === "changes"
-            ? []
-            : q
-              ? filterIndexedDiskEntries(retainedScanIndex(), q).map(({ node, colorIndex, sourceIndex }) => ({
-                  node,
-                  displaySize: node.size,
-                  colorIndex,
-                  sourceIndex,
-                }))
-              : sortedChildren().map((node, sourceIndex) => ({
-                  node,
-                  displaySize: node.size,
-                  colorIndex: sourceIndex,
-                  sourceIndex,
-                }))
-    const filtered =
-      q && indexFilter.lens !== "all"
-        ? candidates.filter((entry) =>
-            diskEntrySearchText(entry.node, recognize(entry.node).tag ?? "").includes(q.toLocaleLowerCase()),
-          )
-        : candidates
-    return sortDiskEntries(filtered, indexFilter.sortKey, indexFilter.sortDirection)
+    const investigationEntries = investigation().entries({
+      viewNode: viewNode(),
+      query: query(),
+      lens: indexFilter.lens,
+      sortKey: indexFilter.sortKey,
+      sortDirection: indexFilter.sortDirection,
+      developerCandidates: () => developerItems().map(({ node, bytes }) => ({ node, displaySize: bytes })),
+      recommendationCandidates: () =>
+        reclaim()
+          .buckets.flatMap((bucket) => bucket.items.map(({ node }) => node))
+          .map((node) => ({ node, displaySize: node.size })),
+    })
+    if (!recentLens()) return investigationEntries
+    // The Recent lens is a page-level overlay: the typed investigation lenses
+    // stay untouched while it lists recently modified items for this root.
+    const matches = new Set(recentChanges())
+    return investigationEntries.filter((entry) => matches.has(entry.node))
   })
   const selectedNode = createMemo(() => {
     const path = selectedPath()
@@ -520,24 +618,28 @@ export default function DiskUtilityPage() {
     return previewableEntries().findIndex((node) => diskPathEquals(node.path, target.path, platform.os))
   })
   const indexSize = createMemo(() =>
-    indexFilter.lens === "developer"
-      ? developerItems().reduce((total, item) => total + item.bytes, 0)
-      : indexFilter.lens === "recommendations"
-        ? reclaim().totalBytes
-        : indexFilter.lens === "changes"
-          ? 0
-          : parentSize(),
+    recentLens()
+      ? entries().reduce((total, entry) => total + entry.displaySize, 0)
+      : indexFilter.lens === "developer"
+        ? developerItems().reduce((total, item) => total + item.bytes, 0)
+        : indexFilter.lens === "recommendations"
+          ? reclaim().totalBytes
+          : indexFilter.lens === "changes"
+            ? 0
+            : parentSize(),
   )
   const indexCount = createMemo(() =>
-    indexFilter.lens === "changes"
-      ? historyChangeCount()
-      : query().trim()
-        ? entries().length
-        : indexFilter.lens === "developer"
-          ? developerItems().length
-          : indexFilter.lens === "recommendations"
-            ? reclaim().totalCount
-            : parentCount(),
+    recentLens()
+      ? entries().length
+      : indexFilter.lens === "changes"
+        ? historyChangeCount()
+        : query().trim()
+          ? entries().length
+          : indexFilter.lens === "developer"
+            ? developerItems().length
+            : indexFilter.lens === "recommendations"
+              ? reclaim().totalCount
+              : parentCount(),
   )
   // A watcher can rebase a selected deep result against a newer inventory.
   // Never let an identity-less replacement remain actionable while that
@@ -558,7 +660,7 @@ export default function DiskUtilityPage() {
     return entries()
       .map(({ node }) => node)
       .filter((node) => {
-        const recognition = recognize(node)
+        const recognition = investigation().recognitionFor(node)
         return isSmartCleanupEligible(node, recognition) && canModifyNode(node)
       })
   })
@@ -580,19 +682,20 @@ export default function DiskUtilityPage() {
   const collectionSize = createMemo(() => effectiveCollection().reduce((s, n) => s + n.size, 0))
   const collectionHasSharedPhysicalStorage = createMemo(() => effectiveCollection().some(containsSharedPhysicalStorage))
   const collectionNeedsDeepInventoryRefresh = createMemo(() => requiresDeepInventoryRefresh(effectiveCollection()))
-  const driveTotals = createMemo(() =>
-    drives().reduce(
-      (total, drive) => ({
-        capacity: total.capacity + drive.total,
-        used: total.used + drive.used,
-        free: total.free + drive.free,
-      }),
-      { capacity: 0, used: 0, free: 0 },
-    ),
-  )
   const runningVolumeScans = createMemo(() => volumeJobs().filter((job) => job.status === "scanning").length)
   const volumeJobForDrive = (drive: DiskDriveInfo) =>
     volumeJobs().find((job) => diskPathEquals(job.sourcePath, drive.path, platform.os))
+  /**
+   * A move is real only when resolving it lands on a surviving node. Stale
+   * history entries are discarded during resolution without changing `current`,
+   * so the buttons must not advertise those as navigable.
+   */
+  const browseMoveAvailable = (direction: DiskBrowseDirection) => {
+    const root = treeRoot()
+    if (!root || !browseHistory.current) return false
+    const next = resolveDiskBrowseHistoryMove(browseHistory, direction, (path) => !!findScanNode(root, path))
+    return !!next.current && !diskPathEquals(next.current, browseHistory.current, platform.os)
+  }
   /** The node the sunburst center + list header should describe right now. */
   const focusNode = createMemo<DiskScanNode | null>(() => {
     const visual = visualHoverNode()
@@ -658,7 +761,12 @@ export default function DiskUtilityPage() {
       const job = volumeScanJobs[update.scanId]
       if (job) {
         const tree = scanUpdateTree(update.root, job.drive, job.label)
-        setVolumeScanJobs(update.scanId, "tree", tree)
+        // The volume card's byte readout must track the refreshed map, not the
+        // count captured at completion time.
+        setVolumeScanJobs(update.scanId, {
+          tree,
+          ...(job.status === "complete" ? { bytes: tree.size } : {}),
+        })
       }
 
       // Watchers keep running for parked tabs. Give a matching background tab
@@ -702,16 +810,21 @@ export default function DiskUtilityPage() {
         setVisualHoverNode(null)
         reconcileCollectionForScanUpdate(tree, update.rootPath)
       })
+      if (!nextView) resetBrowseHistory(tree.path)
     })
   })
 
-  // (Re)create the sunburst when its canvas mounts.
+  // (Re)create the sunburst when its canvas mounts. The canvas persists across
+  // map⇄grid now, so this runs once per mount — never rebuild for a mode switch.
   createEffect(() => {
     const el = canvasEl()
     if (!el) {
       setSunburst(undefined)
+      morph?.abort()
+      morph = null
       return
     }
+    if (untrack(() => sunburst())) return
     const sb = new Sunburst(el, {
       rings: 3,
       maxSegments: 360,
@@ -735,12 +848,12 @@ export default function DiskUtilityPage() {
         if (!seg.node.isOther) void reveal(seg.path)
       },
       onDoubleClick: (seg) => {
-        if (seg.node.isDir && !seg.node.isOther) drill(seg.node)
+        if (seg.node.isDir && !isVisualAggregate(seg.node)) drill(seg.node)
       },
       onCenterClick: () => goUp(),
     })
-    const root = treeRoot()
-    if (root) sb.setData(root, viewNode(), orbitEntryIntent === "keyboard")
+    const root = untrack(() => treeRoot())
+    if (root) sb.setData(root, untrack(() => viewNode()), orbitEntryIntent === "keyboard")
     orbitEntryIntent = "scan-complete"
     setSunburst(sb)
     onCleanup(() => {
@@ -776,6 +889,53 @@ export default function DiskUtilityPage() {
       if (match) return match
     }
     return undefined
+  }
+
+  function replaceBrowseHistory(next: DiskBrowseHistory) {
+    setBrowseHistory({ past: [...next.past], current: next.current, future: [...next.future] })
+  }
+
+  function resetBrowseHistory(path?: string) {
+    replaceBrowseHistory(
+      transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, { type: "reset", ...(path ? { path } : {}) }),
+    )
+  }
+
+  function recordBrowseVisit(path: string) {
+    replaceBrowseHistory(
+      transitionDiskBrowseHistory(
+        browseHistory,
+        { type: "visit", path },
+        { equals: (left, right) => diskPathEquals(left, right, platform.os) },
+      ),
+    )
+  }
+
+  function showBrowseNode(node: DiskScanNode, instant = false) {
+    clearSelectionAnnouncement()
+    sunburst()?.navigateTo(node, instant)
+    setViewNode(node)
+    setIndexFilter({ lens: "all", developerCategory: "all" })
+    setSelectedPath(undefined)
+    setHoveredPath(null)
+    setVisualHoverNode(null)
+    setQuery("")
+    setFocusIdx(0)
+    setRangeAnchorIndex(undefined)
+  }
+
+  function moveBrowseHistory(direction: DiskBrowseDirection) {
+    if (scanning()) return
+    const root = treeRoot()
+    if (!root) return
+    const current = browseHistory.current
+    const next = resolveDiskBrowseHistoryMove(browseHistory, direction, (path) => !!findScanNode(root, path))
+    const changed = next !== browseHistory
+    if (changed) replaceBrowseHistory(next)
+    if (!next.current || diskPathEquals(next.current, current ?? "", platform.os)) return
+    const node = findScanNode(root, next.current)
+    if (!node) return
+    showBrowseNode(node, true)
   }
 
   function scanUpdateTree(root: DiskScanNode, drive: DiskDriveInfo | undefined, label: string): DiskScanNode {
@@ -946,11 +1106,29 @@ export default function DiskUtilityPage() {
         currentPath: "",
         completedAt: Date.now(),
       })
-      showToast({
-        variant: "default",
-        title: language.t("disk.toast.driveReady", { name: drive.name }),
-        description: language.t("disk.toast.driveReadyBody"),
-      })
+      // A finished scan is an invitation: land the user in the map instead of
+      // making them find the View affordance (DaisyDisk-style 2-step flow).
+      const job = volumeScanJobs[id]
+      if (job?.tree && view() === "drives" && !scanning()) {
+        openVolumeScan(job)
+      } else {
+        // Background completion (or the user moved on): the toast with its
+        // View action is the only path into the map, so keep it.
+        showToast({
+          variant: "default",
+          title: language.t("disk.toast.driveReady", { name: drive.name }),
+          description: language.t("disk.toast.driveReadyBody"),
+          actions: [
+            {
+              label: language.t("disk.drive.action.view"),
+              onClick: () => {
+                const latest = volumeScanJobs[id]
+                if (latest?.tree) openVolumeScan(latest)
+              },
+            },
+          ],
+        })
+      }
     } catch (error) {
       if (!volumeScanJobs[id] || isScanCancellation(error)) return
       setVolumeScanJobs(id, {
@@ -984,6 +1162,10 @@ export default function DiskUtilityPage() {
 
   function openVolumeScan(job: VolumeScanJob) {
     if (!job.tree) return
+    // A completed tree is immutable renderer data. Keep it outside the deep
+    // createStore proxy graph so traversing a large scan does not allocate a
+    // signal/property wrapper for every node and field.
+    const tree = unwrap(job.tree)
     saveCurrentTab()
     setScanSession({ activeID: job.id, foregroundID: undefined })
     orbitEntryIntent = "scan-complete"
@@ -991,8 +1173,9 @@ export default function DiskUtilityPage() {
       setView("scan")
       setScanning(false)
       setFocusedScan(null)
-      setTreeRoot(job.tree!)
-      setViewNode(job.tree!)
+      setTreeRoot(tree)
+      setViewNode(tree)
+      resetBrowseHistory(tree.path)
       setScanSourcePath(job.sourcePath)
       setScanLabel(job.label)
       setScanDrive(job.drive)
@@ -1008,8 +1191,8 @@ export default function DiskUtilityPage() {
       setFocusIdx(0)
       setRangeAnchorIndex(undefined)
     })
-  }
 
+  }
   /** Snapshot the current completed scan as a background tab before replacing it. */
   function saveCurrentTab() {
     const root = treeRoot()
@@ -1023,6 +1206,11 @@ export default function DiskUtilityPage() {
         sourcePath: scanSourcePath() || root.path,
         tree: root,
         view: viewNode() ?? root,
+        browseHistory: {
+          past: [...browseHistory.past],
+          current: browseHistory.current ?? (viewNode() ?? root).path,
+          future: [...browseHistory.future],
+        },
         drive: scanDrive(),
       },
     ])
@@ -1037,6 +1225,11 @@ export default function DiskUtilityPage() {
     setTabs((prev) => prev.filter((t) => t.id !== id))
     setTreeRoot(tab.tree)
     setViewNode(tab.view)
+    replaceBrowseHistory(
+      tab.browseHistory.current && findScanNode(tab.tree, tab.browseHistory.current)
+        ? tab.browseHistory
+        : transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, { type: "reset", path: tab.view.path }),
+    )
     setScanSourcePath(tab.sourcePath)
     setScanLabel(tab.label)
     setScanDrive(tab.drive)
@@ -1106,6 +1299,8 @@ export default function DiskUtilityPage() {
     setFocusedScan(null)
     setView("scan")
     setScanning(true)
+    focusScanProgress()
+    clearSelectionAnnouncement()
     // A root scan replaces the authoritative map. The review basket can hold
     // deep inventory nodes from a prior root (or another tab), so clear it
     // synchronously before the old map disappears or the first scan await.
@@ -1125,6 +1320,7 @@ export default function DiskUtilityPage() {
     setScanTail("")
     setTreeRoot(null)
     setViewNode(null)
+    resetBrowseHistory()
     setSelectedPath(undefined)
     setHoveredPath(null)
     setQuery("")
@@ -1159,22 +1355,27 @@ export default function DiskUtilityPage() {
         sessionID,
       )
       if (token !== scanToken || !scannedTree) return // superseded or cancelled
+      if (scanSession.foregroundID !== sessionID) return // viewport moved to another scan
       scanHistory.seed(sessionID, scannedTree)
       const tree = includeHiddenSpace(asBrowseableRoot(scannedTree), drive)
       tree._label = label
-      setScanPct(100)
-      setTreeRoot(tree)
-      setViewNode(tree)
-      if (volumeScanJobs[sessionID]) {
-        setVolumeScanJobs(sessionID, {
-          status: "complete",
-          tree,
-          bytes: tree.size,
-          pct: 100,
-          currentPath: "",
-          completedAt: Date.now(),
-        })
-      }
+      batch(() => {
+        setScanPct(100)
+        setTreeRoot(tree)
+        setViewNode(tree)
+        resetBrowseHistory(tree.path)
+        if (volumeScanJobs[sessionID]) {
+          setVolumeScanJobs(sessionID, {
+            status: "complete",
+            tree,
+            bytes: tree.size,
+            pct: 100,
+            currentPath: "",
+            completedAt: Date.now(),
+          })
+        }
+      })
+      focusAfterScanCompletion()
     } catch (err) {
       if (token !== scanToken || isScanCancellation(err)) return
       const message = err instanceof Error ? err.message : String(err)
@@ -1184,7 +1385,7 @@ export default function DiskUtilityPage() {
       setScanSourcePath("")
       setScanLabel("")
       setScanDrive(undefined)
-      setScanSession("activeID", undefined)
+      if (scanSession.activeID === sessionID) setScanSession("activeID", undefined)
       scanHistory.forget(sessionID)
     } finally {
       if (token === scanToken) {
@@ -1196,17 +1397,22 @@ export default function DiskUtilityPage() {
     }
   }
 
-  async function expandCollapsedNode(node: DiskScanNode, restoreListFocus = false) {
+  async function expandFocusedNode(
+    node: DiskScanNode,
+    restoreListFocus = false,
+    options: FocusedExpansionOptions = {},
+  ) {
     const api = disk()
-    const root = treeRoot()
-    if (!api || !root) return
+    const initialRoot = treeRoot()
+    if (!api || !initialRoot) return
     scanUnsub?.()
     const token = ++scanToken
     const sessionID = newScanID("expand")
     setScanSession("foregroundID", sessionID)
     orbitEntryIntent = "scan-complete"
     const drive = driveForPath(node.path, drives(), platform.os) ?? scanDrive()
-    setFocusedScan({ label: node.name })
+    const isScanRoot = diskPathEquals(initialRoot.path, node.path, platform.os)
+    setFocusedScan({ label: options.label ?? diskNodeDisplayName(node) })
     setScanning(true)
     setScanFiles(0)
     setScanTotal(0)
@@ -1214,7 +1420,7 @@ export default function DiskUtilityPage() {
     setScanBytes(0)
     scanMaxBytes = 0
     setScanTail("")
-    scanUnsub = api.onScanProgress((progress) => {
+    const unsubscribe = api.onScanProgress((progress) => {
       if (token !== scanToken || progress.scanId !== sessionID) return
       setScanFiles(progress.filesScanned)
       setScanTail(progress.currentPath)
@@ -1222,21 +1428,55 @@ export default function DiskUtilityPage() {
       scanMaxBytes = progress.size
       setScanBytes(scanMaxBytes)
     })
+    scanUnsub = unsubscribe
+    let retainTrustedSubtree = false
 
     try {
-      const scannedTree = await api.scanPath(node.path, scannerOptions(drive, false), sessionID)
+      const scannedTree = await api.scanPath(
+        node.path,
+        {
+          ...scannerOptions(drive, isScanRoot),
+          ...(options.maxChildren === undefined ? {} : { maxChildren: options.maxChildren }),
+        },
+        sessionID,
+      )
       if (token !== scanToken || !scannedTree) return
-      const replacement = asBrowseableRoot(scannedTree)
-      const nextRoot = replaceScanSubtree(root, node.path, replacement, platform.os)
-      if (nextRoot === root) throw new Error(language.t("disk.toast.folderChanged"))
+      const latestRoot = treeRoot()
+      if (
+        !latestRoot ||
+        !diskPathEquals(latestRoot.path, initialRoot.path, platform.os) ||
+        !findScanNode(latestRoot, node.path)
+      ) {
+        throw new Error(language.t("disk.toast.folderChanged"))
+      }
+      const browsable = asBrowseableRoot(scannedTree)
+      const replacement = isScanRoot
+        ? { ...includeHiddenSpace(browsable, drive), _label: latestRoot._label }
+        : browsable
+      // A primary watcher may have published a newer generation while the
+      // focused scan was in flight. Graft into that latest root so unrelated
+      // watcher changes cannot be resurrected by the completion callback.
+      const nextRoot = replaceScanSubtree(latestRoot, node.path, replacement, platform.os)
+      if (nextRoot === latestRoot) throw new Error(language.t("disk.toast.folderChanged"))
+      const nextView = findScanNode(nextRoot, replacement.path)
+      if (!nextView) throw new Error(language.t("disk.toast.folderChanged"))
+      retainTrustedSubtree = true
+      clearSelectionAnnouncement()
       setScanPct(100)
       setTreeRoot(nextRoot)
-      setViewNode(replacement)
+      setViewNode(nextView)
+      recordBrowseVisit(nextView.path)
       if (scanSession.activeID && volumeScanJobs[scanSession.activeID]) {
         setVolumeScanJobs(scanSession.activeID, "tree", nextRoot)
       }
       setCollection((items) =>
-        items.map((item) => (diskPathEquals(item.path, node.path, platform.os) ? replacement : item)),
+        items.flatMap((item) => {
+          if (!pathBelongsToScanRoot(item.path, node.path)) return [item]
+          const refreshed =
+            findScanNode(nextRoot, item.path) ??
+            developerInventoryCollectionNodeForPath(nextRoot, item.path, platform.os)
+          return refreshed ? [refreshed] : []
+        }),
       )
       setIndexFilter({ lens: "all", developerCategory: "all" })
       setSelectedPath(undefined)
@@ -1250,19 +1490,33 @@ export default function DiskUtilityPage() {
       if (token !== scanToken || isScanCancellation(error)) return
       showToast({
         variant: "error",
-        title: language.t("disk.toast.openFailed", { name: node.name }),
+        title: language.t("disk.toast.openFailed", { name: options.label ?? diskNodeDisplayName(node) }),
         description: error instanceof Error ? error.message : String(error),
       })
     } finally {
+      unsubscribe()
+      if (scanUnsub === unsubscribe) scanUnsub = undefined
+      void api.stopWatching(sessionID, retainTrustedSubtree ? { retainTrustedSubtree: true } : undefined)
       if (token === scanToken) {
         setFocusedScan(null)
         setScanning(false)
-        scanUnsub?.()
-        scanUnsub = undefined
         setScanSession("foregroundID", undefined)
-        void api.stopWatching(sessionID)
       }
     }
+  }
+
+  function expandOtherNode(node: DiskScanNode, restoreListFocus = false) {
+    const root = treeRoot()
+    if (!root) return
+    const plan = planOtherExpansion(root, node, platform.os)
+    if (!plan) {
+      showToast({ variant: "default", title: language.t("disk.toast.moreLimit") })
+      return
+    }
+    void expandFocusedNode(plan.parent, restoreListFocus, {
+      label: diskNodeDisplayName(node),
+      maxChildren: plan.maxChildren,
+    })
   }
 
   async function rescanCurrent(forceFresh = false) {
@@ -1287,40 +1541,64 @@ export default function DiskUtilityPage() {
   }
 
   /** Abort a focused expansion in place; primary scans return to the volume list. */
-  function cancelScan() {
+  function cancelScan({ confirmed = false }: { confirmed?: boolean } = {}) {
+    // A foreground scan is expensive to throw away. The first Escape only arms
+    // the cancellation; a second press inside the window confirms it.
+    if (!confirmed && !focusedScan()) {
+      if (Date.now() - cancelArmedAt < SCAN_CANCEL_ARM_MS) {
+        cancelArmedAt = 0
+      } else {
+        cancelArmedAt = Date.now()
+        showToast({
+          variant: "default",
+          title: language.t("disk.scan.label", { label: scanLabel() }),
+          actions: [
+            {
+              label: language.t("disk.common.cancelScan"),
+              onClick: () => cancelScan({ confirmed: true }),
+            },
+          ],
+        })
+        return
+      }
+    }
     const focused = focusedScan()
     const sessionID = scanSession.foregroundID
     scanToken++
     scanUnsub?.()
     scanUnsub = undefined
     setScanSession("foregroundID", undefined)
-    if (sessionID) void disk()?.cancelScan(sessionID)
+    if (sessionID) {
+      void disk()?.cancelScan(sessionID)
+      if (focused) void disk()?.stopWatching(sessionID)
+    }
     if (sessionID && volumeScanJobs[sessionID]) setVolumeScanJobs(sessionID, undefined)
     setFocusedScan(null)
     setScanning(false)
+    focusPersistentDiskAction()
     if (!focused) backToDrives()
   }
 
   function drill(node: DiskScanNode, instant = false, restoreListFocus = false) {
-    if (scanning() || !node.isDir || node.isOther || isDeveloperInventoryNode(node)) return
-    if (node.isCollapsed) {
-      void expandCollapsedNode(node, restoreListFocus)
+    if (scanning() || !node.isDir || isDeveloperInventoryNode(node)) return
+    if (node.isOther) {
+      expandOtherNode(node, restoreListFocus)
       return
     }
-    sunburst()?.navigateTo(node, instant)
-    setViewNode(node)
-    setIndexFilter({ lens: "all", developerCategory: "all" })
-    setSelectedPath(undefined)
-    setHoveredPath(null)
-    setVisualHoverNode(null)
-    setQuery("")
-    setFocusIdx(0)
-    setRangeAnchorIndex(undefined)
+    if (node.isCollapsed) {
+      void expandFocusedNode(node, restoreListFocus, {
+        maxChildren: COLLAPSED_EXPANSION_MAX_CHILDREN,
+      })
+      return
+    }
+    recordBrowseVisit(node.path)
+    showBrowseNode(node, instant)
     if (restoreListFocus) focusListEntry(0)
   }
 
-  function chooseLens(lens: IndexLens) {
-    setIndexFilter({ lens, developerCategory: "all" })
+  function chooseLens(lens: IndexLens | "recent") {
+    setRecentLens(lens === "recent")
+    setIndexFilter({ lens: lens === "recent" ? "all" : lens, developerCategory: "all" })
     setQuery("")
     setSelectedPath(undefined)
     setHoveredPath(null)
@@ -1381,12 +1659,64 @@ export default function DiskUtilityPage() {
     if (nextIndex >= 0) {
       setFocusIdx(nextIndex)
       scrollIndexIntoView?.(nextIndex)
+    }
+  }
+
+  function chooseScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer") {
+    if (mode === "map" && scanMode() !== "map") orbitEntryIntent = intent
+    const previous = scanMode()
+    setScanMode(mode)
+    setVisualHoverNode(null)
+    setHoveredPath(null)
+    if (mode === "grid" && previous !== "list") {
+      runViewMorph("toGrid", mode, intent)
+    } else if (mode === "map" && previous === "grid") {
+      // Tiles fade out quickly, then the corners fly back into the wheel.
+      setGridInteractive(false)
+      setTimeout(() => {
+        if (scanMode() === "map") runViewMorph("toMap", mode, intent)
+      }, 120)
+    } else {
+      setGridVisible(mode === "grid")
+      setGridInteractive(mode === "grid")
+    }
+    // Keyboard focus lands on the target view; during a morph the tiles don't
+    // exist yet, so runViewMorph re-issues it when the flight lands.
+    if (intent === "keyboard" && !morphing()) restoreKeyboardViewFocus(mode)
+  }
+
+  /**
+   * The map⇄tiles morph: the sunburst yields its canvas, primary wedges fly
+   * their corners to (or from) their treemap rects, and the Treemap DOM takes
+   * over only once the flight has landed on exact tile geometry.
+   */
+  function runViewMorph(dir: "toGrid" | "toMap", mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete">) {
+    const sb = sunburst()
+    const el = canvasEl()
+    if (!sb || !el || sb.reducedMotion) {
+      setGridVisible(mode === "grid")
+      setGridInteractive(mode === "grid")
       return
     }
-    setSelectedPath(undefined)
-    sunburst()?.setSelected(null)
-    setFocusIdx(0)
-    scrollIndexIntoView?.(0)
+    const tiles = buildMorphTiles()
+    if (!tiles.length) {
+      setGridVisible(mode === "grid")
+      setGridInteractive(mode === "grid")
+      return
+    }
+    // An interrupted morph must not fire a stale completion callback.
+    morph?.abort()
+    setMorphing(true)
+    sb.setMorphing(true)
+    ensureMorph(el).play(tiles, dir, () => {
+      setMorphing(false)
+      sb.setMorphing(false)
+      if (mode === "grid" && scanMode() === mode) {
+        setGridVisible(true)
+        setGridInteractive(true)
+        if (intent === "keyboard") restoreKeyboardViewFocus(mode)
+      }
+    })
   }
 
   function updateSort(key: DiskEntrySortKey, direction: DiskEntrySortDirection) {
@@ -1429,12 +1759,24 @@ export default function DiskUtilityPage() {
     })
   }
 
-  function chooseScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer") {
-    if (mode === "map" && scanMode() !== "map") orbitEntryIntent = intent
-    setScanMode(mode)
-    setVisualHoverNode(null)
-    setHoveredPath(null)
-    if (intent === "keyboard") restoreKeyboardViewFocus(mode)
+
+  /** A newly started scan announces itself from its progress region. */
+  function focusScanProgress() {
+    requestAnimationFrame(() => scanProgressRegion?.focus({ preventScroll: true }))
+  }
+
+  /** Scan completion lands keyboard users on the fresh map or the results list. */
+  function focusAfterScanCompletion() {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (scanMode() === "map") {
+          canvasEl()?.focus({ preventScroll: true })
+          return
+        }
+        if (entries().length > 0) focusListEntry(0)
+        else focusPersistentDiskAction()
+      })
+    })
   }
 
   function togglePinnedLocation(path: string, label: string) {
@@ -1491,13 +1833,8 @@ export default function DiskUtilityPage() {
     }
     const parent = list[list.length - 2]
     if (parent?.node) {
-      sunburst()?.navigateTo(parent.node, instant)
-      setViewNode(parent.node)
-      setSelectedPath(undefined)
-      setHoveredPath(null)
-      setVisualHoverNode(null)
-      setFocusIdx(0)
-      setRangeAnchorIndex(undefined)
+      recordBrowseVisit(parent.node.path)
+      showBrowseNode(parent.node, instant)
       if (restoreListFocus && current) {
         const index = entries().findIndex((entry) => diskPathEquals(entry.node.path, current.path, platform.os))
         if (index >= 0) {
@@ -1515,8 +1852,10 @@ export default function DiskUtilityPage() {
     if (preserveCurrent) saveCurrentTab()
     setScanSession({ activeID: undefined, foregroundID: undefined })
     setView("drives")
+    clearSelectionAnnouncement()
     setTreeRoot(null)
     setViewNode(null)
+    resetBrowseHistory()
     setScanSourcePath("")
     setScanLabel("")
     setScanDrive(undefined)
@@ -1528,13 +1867,8 @@ export default function DiskUtilityPage() {
 
   function goToCrumb(crumb: Crumb) {
     if (crumb.node && !scanning()) {
-      sunburst()?.navigateTo(crumb.node)
-      setViewNode(crumb.node)
-      setSelectedPath(undefined)
-      setHoveredPath(null)
-      setVisualHoverNode(null)
-      setFocusIdx(0)
-      setRangeAnchorIndex(undefined)
+      recordBrowseVisit(crumb.node.path)
+      showBrowseNode(crumb.node)
     }
   }
 
@@ -1565,24 +1899,40 @@ export default function DiskUtilityPage() {
   function selectPath(path: string) {
     setSelectedPath(path)
     sunburst()?.setSelected(path)
-    const idx = entries().findIndex((e) => e.node.path === path)
-    if (idx >= 0) setFocusIdx(idx)
     const root = treeRoot()
-    const node =
-      entries().find((entry) => entry.node.path === path)?.node ?? (root ? findScanNode(root, path) : undefined)
+    // One pass resolves both the row index and the node; the deep-tree search
+    // only runs when the selection lives outside the visible lens.
+    const list = entries()
+    let idx = -1
+    let node: DiskScanNode | undefined
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].node.path === path) {
+        idx = i
+        node = list[i].node
+        break
+      }
+    }
+    if (idx >= 0) setFocusIdx(idx)
+    else node ??= root ? findScanNode(root, path) : undefined
     if (!node) return
+    const announced = node
     if (selectionAnnouncementTimer) clearTimeout(selectionAnnouncementTimer)
-    selectionAnnouncementTimer = setTimeout(
-      () =>
-        setAnnouncedSelection(
-          describeStorageNode(node, indexFilter.lens === "all" ? parentSize() : indexSize(), {
-            canPreview: !!disk(),
-            canReview: canModifyNode(node),
-            requiresRescanBeforeReview: inventoryDeletionNeedsRescan(node),
-          }),
-        ),
-      120,
-    )
+    selectionAnnouncementTimer = setTimeout(() => {
+      selectionAnnouncementTimer = undefined
+      setAnnouncedSelection(
+        describeStorageNode(announced, indexFilter.lens === "all" ? parentSize() : indexSize(), {
+          canPreview: !!disk(),
+          canReview: canModifyNode(announced),
+          requiresRescanBeforeReview: inventoryDeletionNeedsRescan(announced),
+        }),
+      )
+    }, 120)
+  }
+
+  function clearSelectionAnnouncement() {
+    if (selectionAnnouncementTimer) clearTimeout(selectionAnnouncementTimer)
+    selectionAnnouncementTimer = undefined
+    setAnnouncedSelection("")
   }
 
   /** Shift selection is intentionally routed into the review basket: inspection stays singular and destructive work stays reviewable. */
@@ -1656,7 +2006,7 @@ export default function DiskUtilityPage() {
     const node = focusedEntryNode()
     if (!node) return
     if (node.isDir) {
-      if (!node.isOther && !isDeveloperInventoryNode(node)) drill(node, true)
+      if (!isDeveloperInventoryNode(node)) drill(node, true)
       return
     }
     if (!node.isOther) void openPreview(node)
@@ -1666,6 +2016,17 @@ export default function DiskUtilityPage() {
     if (event.defaultPrevented) return
     const supportsRangeNavigation = !event.metaKey && !event.ctrlKey && !event.altKey
     const isPlainShortcut = supportsRangeNavigation && !event.shiftKey
+    if (
+      event.altKey &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      (event.key === "ArrowLeft" || event.key === "ArrowRight")
+    ) {
+      event.preventDefault()
+      moveBrowseHistory(event.key === "ArrowLeft" ? "back" : "forward")
+      return
+    }
     if (
       supportsRangeNavigation &&
       (event.key === "ArrowDown" ||
@@ -1695,7 +2056,7 @@ export default function DiskUtilityPage() {
       return
     }
     if (isPlainShortcut && event.key === "ArrowRight") {
-      if (!node.isDir || node.isOther || isDeveloperInventoryNode(node)) return
+      if (!node.isDir || isDeveloperInventoryNode(node)) return
       event.preventDefault()
       drill(node, true, true)
       return
@@ -1703,7 +2064,7 @@ export default function DiskUtilityPage() {
     if (isPlainShortcut && event.key === "Enter") {
       event.preventDefault()
       if (node.isDir) {
-        if (!node.isOther && !isDeveloperInventoryNode(node)) drill(node, true, true)
+        if (!isDeveloperInventoryNode(node)) drill(node, true, true)
         return
       }
       if (!node.isOther) void openPreview(node)
@@ -1940,9 +2301,27 @@ export default function DiskUtilityPage() {
         const tree = removeScanSubtrees(tab.tree, removed, platform.os)
         if (!tree) return []
         if (tree === tab.tree) return [tab]
-        return [{ ...tab, tree, view: viewAfterDeletion(tab.tree, tree, tab.view, removed) }]
+        const nextView = viewAfterDeletion(tab.tree, tree, tab.view, removed)
+        return [
+          {
+            ...tab,
+            tree,
+            view: nextView,
+            browseHistory: diskPathEquals(nextView.path, tab.view.path, platform.os)
+              ? tab.browseHistory
+              : transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, { type: "reset", path: nextView.path }),
+          },
+        ]
       }),
     )
+
+    // A completed volume card keeps its own retained map. Patch it here too,
+    // or reopening the volume would resurrect the deleted subtrees.
+    for (const job of volumeJobs()) {
+      if (!job.tree) continue
+      const tree = removeScanSubtrees(job.tree, removed, platform.os)
+      if (tree && tree !== job.tree) setVolumeScanJobs(job.id, "tree", tree)
+    }
 
     const root = treeRoot()
     const view = viewNode()
@@ -1954,14 +2333,16 @@ export default function DiskUtilityPage() {
       return
     }
     if (tree === root) return
+    const nextView = viewAfterDeletion(root, tree, view, removed)
     batch(() => {
       setTreeRoot(tree)
-      setViewNode(viewAfterDeletion(root, tree, view, removed))
+      setViewNode(nextView)
       setSelectedPath(undefined)
       setHoveredPath(null)
       setVisualHoverNode(null)
       setFocusIdx(0)
     })
+    if (!diskPathEquals(nextView.path, view.path, platform.os)) resetBrowseHistory(nextView.path)
     restoreFocusAfterDeletion()
   }
 
@@ -2041,9 +2422,7 @@ export default function DiskUtilityPage() {
       showToast({
         variant: "default",
         title: lock ? language.t("disk.toast.cleanupProtected") : language.t("disk.toast.protectedItem"),
-        description: lock
-          ? cleanupLockMessage(lock)
-          : language.t("disk.toast.protectedBody"),
+        description: lock ? cleanupLockMessage(lock) : language.t("disk.toast.protectedBody"),
       })
       return
     }
@@ -2085,7 +2464,7 @@ export default function DiskUtilityPage() {
   function canModifyNode(node: DiskScanNode) {
     if (!canActOnNode(node, platform.os, cleanupLocks())) return false
     if (inventoryDeletionNeedsRescan(node)) return false
-    const recognition = recognize(node)
+    const recognition = investigation().recognitionFor(node)
     // Ambiguous build/target/dist records may be individually moved through
     // the confirmation + Trash flow, but are never Smart Cleanup defaults.
     if (recognition.developer && developerArtifactCleanupReadiness(recognition) === "review") return true
@@ -2107,8 +2486,7 @@ export default function DiskUtilityPage() {
   ) {
     showToast({
       variant: "default",
-      title:
-        reason === "changed" ? language.t("disk.toast.artifactChanged") : language.t("disk.toast.rescanRemoval"),
+      title: reason === "changed" ? language.t("disk.toast.artifactChanged") : language.t("disk.toast.rescanRemoval"),
       description:
         reason === "changed"
           ? language.t("disk.toast.changedBody", { name: node.name, trash: nativeTrashName(platform.os) })
@@ -2145,7 +2523,7 @@ export default function DiskUtilityPage() {
   }
 
   function beginMapDrag(event: CanvasPointerEvent) {
-    if (event.button !== 0) return
+    if (event.button !== 0 || morphing()) return
     const node = sunburst()?.nodeAtPoint(event.clientX, event.clientY)
     if (!node || !canModifyNode(node)) {
       mapDrag = undefined
@@ -2386,6 +2764,32 @@ export default function DiskUtilityPage() {
     await startScan(path, file.name || path.split(/[/\\]/).pop() || path, driveForPath(path, drives(), platform.os))
   }
 
+  // Shortcuts popover: Escape and any outside pointer press dismiss it.
+  onMount(() => {
+    const closeShortcuts = () => {
+      if (!shortcutsDetails) return
+      shortcutsDetails.open = false
+      setShortcutsOpen(false)
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || !shortcutsOpen()) return
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      closeShortcuts()
+      shortcutsDetails?.querySelector("summary")?.focus()
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Node && shortcutsDetails?.contains(event.target)) return
+      if (shortcutsOpen()) closeShortcuts()
+    }
+    document.addEventListener("keydown", onKeyDown)
+    document.addEventListener("pointerdown", onPointerDown)
+    onCleanup(() => {
+      document.removeEventListener("keydown", onKeyDown)
+      document.removeEventListener("pointerdown", onPointerDown)
+    })
+  })
+
   // Keyboard navigation
   onMount(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -2407,7 +2811,13 @@ export default function DiskUtilityPage() {
         if (isPlainShortcut && (e.key === "Escape" || e.key === "Backspace")) {
           e.preventDefault()
           cancelScan()
+          cancelArmedAt = 0
         }
+        return
+      }
+      if (e.altKey && !e.metaKey && !e.ctrlKey && !e.shiftKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+        e.preventDefault()
+        moveBrowseHistory(e.key === "ArrowLeft" ? "back" : "forward")
         return
       }
       if (
@@ -2435,7 +2845,7 @@ export default function DiskUtilityPage() {
       }
       if (isPlainShortcut && e.key === "ArrowRight") {
         const node = focusedEntryNode()
-        if (!node?.isDir || node.isOther || isDeveloperInventoryNode(node)) return
+        if (!node?.isDir || isDeveloperInventoryNode(node)) return
         e.preventDefault()
         drill(node, true)
         return
@@ -2480,6 +2890,13 @@ export default function DiskUtilityPage() {
         if (!node || !canModifyNode(node)) return
         e.preventDefault()
         toggleCollect(node)
+        return
+      }
+      if (isPlainShortcut && e.key.toLowerCase() === "l") {
+        const node = focusedEntryNode()
+        if (!node || node.isOther || node.isHidden) return
+        e.preventDefault()
+        toggleProtectedTree(node.path, node.name)
         return
       }
       if (e.key.toLowerCase() === "r" && (e.metaKey || e.ctrlKey) && !e.altKey) {
@@ -2558,6 +2975,28 @@ export default function DiskUtilityPage() {
 
         <Show when={view() === "scan" && crumbs().length > 0}>
           <span class="h-4 w-px bg-border-weaker-base" aria-hidden />
+          <div class="flex shrink-0 items-center gap-0.5">
+            <Button
+              class="dl-touch-target"
+              variant="ghost"
+              size="small"
+              icon="chevron-left"
+              data-disk-history-back
+              aria-label={language.t("disk.top.previousLocation")}
+              disabled={!browseMoveAvailable("back")}
+              onClick={() => moveBrowseHistory("back")}
+            />
+            <Button
+              class="dl-touch-target"
+              variant="ghost"
+              size="small"
+              icon="chevron-right"
+              data-disk-history-forward
+              aria-label={language.t("disk.top.nextLocation")}
+              disabled={!browseMoveAvailable("forward")}
+              onClick={() => moveBrowseHistory("forward")}
+            />
+          </div>
           <Button class="dl-touch-target" variant="ghost" size="small" icon="chevron-left" onClick={() => goUp()}>
             {crumbs().length <= 1 ? language.t("disk.common.volumes") : language.t("disk.common.back")}
           </Button>
@@ -2669,7 +3108,6 @@ export default function DiskUtilityPage() {
                 drives={drives()}
                 loading={drivesLoading()}
                 error={drivesError()}
-                freeBytes={driveTotals().free}
                 runningScans={runningVolumeScans()}
                 maxParallelScans={MAX_PARALLEL_VOLUME_SCANS}
                 diagnostics={storageDiagnostics()}
@@ -2694,14 +3132,20 @@ export default function DiskUtilityPage() {
               <Show
                 when={!scanning()}
                 fallback={
-                  <div class="relative flex h-full items-center justify-center overflow-auto px-5 py-8 sm:px-8 sm:py-10">
+                  <div
+                    ref={scanProgressRegion}
+                    class="relative flex h-full items-center justify-center overflow-auto px-5 py-8 sm:px-8 sm:py-10 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+                    tabIndex={0}
+                    role="region"
+                    aria-label={language.t("disk.scan.label", { label: focusedScan()?.label ?? scanLabel() })}
+                  >
                     <ScanFormation
                       label={focusedScan()?.label ?? scanLabel()}
                       files={scanFiles()}
                       bytes={scanBytes()}
                       currentPath={scanTail()}
                       pct={scanTotal() > 0 ? scanPct() : null}
-                      onCancel={cancelScan}
+                      onCancel={() => cancelScan({ confirmed: true })}
                     />
                   </div>
                 }
@@ -2710,11 +3154,62 @@ export default function DiskUtilityPage() {
                   <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
                     {announcedSelection()}
                   </span>
-                  <div class="dl-workspace-frame mx-4 mb-3 mt-2 flex min-h-0 flex-1 overflow-hidden rounded-[22px]">
+                  <Show when={tabs().length > 0}>
+                    <div
+                      class="flex shrink-0 items-center gap-1 overflow-x-auto px-4 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                      role="tablist"
+                      aria-label={language.t("disk.drive.saved")}
+                    >
+                      <For each={tabs()}>
+                        {(tab) => (
+                          <div class="dl-hover-tab flex min-w-0 max-w-[220px] shrink-0 items-center rounded-lg bg-surface-raised-base/55 shadow-[0_0_0_1px_rgb(127_127_127/0.12)]">
+                            <button
+                              type="button"
+                              role="tab"
+                              aria-selected="false"
+                              data-disk-tab={tab.id}
+                              class="dl-touch-target flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg py-2 pl-3 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+                              title={tab.sourcePath}
+                              onClick={() => switchToTab(tab.id)}
+                              onAuxClick={(event) => {
+                                if (event.button === 1) {
+                                  event.preventDefault()
+                                  closeTab(tab.id)
+                                }
+                              }}
+                            >
+                              <span class="truncate text-12-semibold text-text-strong">{tab.label}</span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dl-hover-quiet-button dl-touch-target mr-1 grid size-8 shrink-0 place-items-center rounded-full text-text-weaker opacity-55 outline-none transition-[color,opacity,background-color] duration-150 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak active:bg-background-base"
+                              aria-label={language.t("disk.pinned.remove", { name: tab.label })}
+                              onClick={() => closeTab(tab.id)}
+                            >
+                              <Icon name="close-small" class="size-3" />
+                            </button>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
+                  <div class="dl-workspace-frame mx-2 mb-2 mt-2 flex min-h-0 flex-1 overflow-hidden rounded-[16px]">
                     <Show when={scanMode() !== "list"}>
-                      <section class="dl-landscape relative grid min-w-0 flex-1 place-items-center overflow-hidden">
-                        <Show when={scanMode() === "map"}>
-                          <div class="relative aspect-square h-[min(94%,900px)] max-h-[900px] max-w-[94%]">
+                      <section
+                        ref={(el: HTMLElement) => setLandscapeEl(el)}
+                        class="dl-landscape relative grid min-w-0 flex-1 place-items-center overflow-hidden"
+                      >
+                        {/* The map canvas persists across map⇄grid so ViewMorph can fly
+                            wedges into tile poses on one surface; CenterOverlay yields
+                            while a morph owns the view. */}
+                        <div
+                          class="relative aspect-square h-[min(100%,1100px)] max-h-[1100px] max-w-[100%]"
+                          style={{
+                            // Yield to the DOM tiles once grid has fully landed;
+                            // stay visible while a morph is flying.
+                            visibility: scanMode() === "grid" && !morphing() ? "hidden" : "visible",
+                          }}
+                        >
                             <canvas
                               ref={(el: HTMLCanvasElement) => setCanvasEl(el)}
                               class="absolute inset-0 size-full rounded-full outline-none [touch-action:none] focus-visible:ring-2 focus-visible:ring-text-weak"
@@ -2733,26 +3228,33 @@ export default function DiskUtilityPage() {
                             <span id="disklizard-orbit-help" class="sr-only">
                               {language.t("disk.map.instructions")}
                             </span>
-                            <CenterOverlay
-                              node={focusNode()}
-                              parentSize={parentSize()}
-                              canOpen={
-                                !!focusNode() &&
-                                focusNode()!.isDir &&
-                                !focusNode()!.isOther &&
-                                !isDeveloperInventoryNode(focusNode()!)
-                              }
-                              inventoryOnly={!!focusNode() && isDeveloperInventoryNode(focusNode()!)}
-                              onOpen={() => {
-                                const node = focusNode()
-                                if (node?.isDir && !node.isOther && !isDeveloperInventoryNode(node))
-                                  drill(node, true, true)
-                              }}
-                            />
-                          </div>
-                        </Show>
-                        <Show when={scanMode() === "grid"}>
-                          <div class="relative size-full px-5 pb-5 pt-5 lg:px-8 lg:pb-8 lg:pt-8">
+                            <Show when={!morphing()}>
+                              <CenterOverlay
+                                node={focusNode()}
+                                parentSize={parentSize()}
+                                canOpen={
+                                  !!focusNode() &&
+                                  focusNode()!.isDir &&
+                                  !isVisualAggregate(focusNode()) &&
+                                  !isDeveloperInventoryNode(focusNode()!)
+                                }
+                                inventoryOnly={!!focusNode() && isDeveloperInventoryNode(focusNode()!)}
+                                onOpen={() => {
+                                  const node = focusNode()
+                                  if (node?.isDir && !isVisualAggregate(node) && !isDeveloperInventoryNode(node))
+                                    drill(node, true, true)
+                                }}
+                              />
+                            </Show>
+                        </div>
+                        {/* Treemap overlay: mounted in both map and grid, but only
+                            visible/interactive once the morph has landed (or motion is
+                            reduced and the swap was instant). */}
+                        <Show when={gridVisible()}>
+                          <div
+                            class="dl-treemap-overlay absolute inset-0 px-5 pb-5 pt-5 transition-opacity duration-150 lg:px-8 lg:pb-8 lg:pt-8"
+                            classList={{ "pointer-events-none opacity-0": !gridInteractive() }}
+                          >
                             <Treemap
                               children={sortedChildren()}
                               hoveredPath={hoveredPath()}
@@ -2799,7 +3301,12 @@ export default function DiskUtilityPage() {
                             label={language.t("disk.common.list")}
                             shortcut="3"
                           />
-                          <details class="relative">
+                          <details
+                            ref={shortcutsDetails}
+                            class="relative"
+                            open={shortcutsOpen()}
+                            onToggle={(event) => setShortcutsOpen(event.currentTarget.open)}
+                          >
                             <summary
                               class="dl-touch-target grid size-11 cursor-pointer list-none place-items-center rounded-full text-12-semibold text-text-weak outline-none transition-colors focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
                               aria-label={language.t("disk.shortcuts.show")}
@@ -2809,6 +3316,7 @@ export default function DiskUtilityPage() {
                             <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-12-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
                               <p class="text-12-semibold text-text-strong">{language.t("disk.shortcuts.heading")}</p>
                               <p class="mt-2">{language.t("disk.shortcuts.navigation")}</p>
+                              <p class="mt-2">{language.t("disk.shortcuts.history")}</p>
                               <p class="mt-1">
                                 {platform.os === "macos"
                                   ? language.t("disk.shortcuts.openMac")
@@ -2833,10 +3341,10 @@ export default function DiskUtilityPage() {
                         "flex-1": scanMode() === "list",
                       }}
                     >
-                      <div class="shrink-0 border-b border-border-weaker-base px-5 pb-4 pt-5">
+                      <div class="shrink-0 border-b border-border-weaker-base px-6 pb-4 pt-5">
                         <div class="flex items-start justify-between gap-4">
                           <div class="min-w-0 flex-1">
-                            <p class="text-12-semibold uppercase tracking-[0.16em] text-text-weaker">
+                            <p class="text-12-semibold uppercase tracking-[0.14em] text-text-weaker">
                               {query().trim()
                                 ? language.t(
                                     indexFilter.lens === "changes" ? "disk.history.results" : "disk.search.results",
@@ -2849,14 +3357,16 @@ export default function DiskUtilityPage() {
                                     ? language.t("disk.explore.recommendationsScan")
                                     : indexFilter.lens === "changes"
                                       ? language.t("disk.history.heading")
-                                      : language.t("disk.explore.folderContents")}
+                                      : recentLens()
+                                        ? language.t("disk.changed.today")
+                                        : language.t("disk.explore.folderContents")}
                             </p>
                             <div class="mt-2 flex min-w-0 items-baseline justify-between gap-4">
                               <h2 class="min-w-0 truncate text-18-medium tracking-[-0.035em] text-text-strong">
-                                {viewNode()?.name || scanLabel()}
+                                {viewNode() ? diskNodeDisplayName(viewNode()!) : scanLabel()}
                               </h2>
                               <Show when={!query().trim() && indexFilter.lens !== "changes"}>
-                                <span class="shrink-0 text-[24px] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
+                                <span class="shrink-0 text-[24px] font-medium leading-none tracking-[-0.03em] tabular-nums text-text-strong">
                                   {formatBytes(indexSize())}
                                 </span>
                               </Show>
@@ -2897,18 +3407,20 @@ export default function DiskUtilityPage() {
                             </div>
                           </Show>
                         </div>
-                        <details class="group mt-4" open={indexFilter.lens !== "all"}>
+                        <details class="group mt-4" open={indexFilter.lens !== "all" || recentLens()}>
                           <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 border-b border-border-weaker-base px-1 text-12-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
                             <Icon name="sliders" class="size-3.5" />
                             <span class="flex-1">{language.t("disk.explore.heading")}</span>
                             <span class="text-12-regular text-text-weaker">
-                              {indexFilter.lens === "all"
-                                ? language.t("disk.explore.folderContents")
-                                : indexFilter.lens === "developer"
-                                  ? language.t("disk.explore.developerFiles")
-                                  : indexFilter.lens === "changes"
-                                    ? language.t("disk.history.summary")
-                                    : language.t("disk.common.recommendations")}
+                              {recentLens()
+                                ? language.t("disk.changed.today")
+                                : indexFilter.lens === "all"
+                                  ? language.t("disk.explore.folderContents")
+                                  : indexFilter.lens === "developer"
+                                    ? language.t("disk.explore.developerFiles")
+                                    : indexFilter.lens === "changes"
+                                      ? language.t("disk.history.summary")
+                                      : language.t("disk.common.recommendations")}
                             </span>
                             <Icon
                               name="chevron-down"
@@ -2938,9 +3450,7 @@ export default function DiskUtilityPage() {
                               label={language.t("disk.common.recommendations")}
                               disabled={physicalCloneAccountingUncertain()}
                               title={
-                                physicalCloneAccountingUncertain()
-                                  ? language.t("disk.explore.reclaimWait")
-                                  : undefined
+                                physicalCloneAccountingUncertain() ? language.t("disk.explore.reclaimWait") : undefined
                               }
                               onClick={() => chooseLens("recommendations")}
                             />
@@ -2950,9 +3460,16 @@ export default function DiskUtilityPage() {
                               label={language.t("disk.history.lens")}
                               onClick={() => chooseLens("changes")}
                             />
+                            <IndexLensButton
+                              active={recentLens()}
+                              icon="reset"
+                              label={language.t("disk.changed.today")}
+                              disabled={recentChanges().length === 0}
+                              onClick={() => chooseLens("recent")}
+                            />
                           </div>
                         </details>
-                        <Show when={reclaim().totalBytes > 0 && indexFilter.lens !== "recommendations"}>
+                        <Show when={indexFilter.lens === "recommendations" && reclaim().totalBytes > 0}>
                           <ReclaimBanner
                             bytes={reclaim().totalBytes}
                             count={reclaim().totalCount}
@@ -3033,7 +3550,9 @@ export default function DiskUtilityPage() {
                                     locations: language.plural("disk.count.locationNoun", issues().unreadableCount),
                                   })}
                                 </span>
-                                <span class="text-12-regular text-text-weak">{language.t("disk.explore.totalsLow")}</span>
+                                <span class="text-12-regular text-text-weak">
+                                  {language.t("disk.explore.totalsLow")}
+                                </span>
                                 <Icon
                                   name="chevron-down"
                                   class="size-3 shrink-0 text-icon-weak transition-transform duration-150 group-open:rotate-180"
@@ -3055,10 +3574,7 @@ export default function DiskUtilityPage() {
                                     {language.t("disk.explore.openPrivacy")}
                                   </Button>
                                 </Show>
-                                <ul
-                                  class="mt-2 space-y-1"
-                                  aria-label={language.t("disk.explore.unreadableList")}
-                                >
+                                <ul class="mt-2 space-y-1" aria-label={language.t("disk.explore.unreadableList")}>
                                   <For each={issues().samplePaths.slice(0, 5)}>
                                     {(path) => (
                                       <li class="truncate font-mono text-12-regular text-text-weaker" title={path}>
@@ -3130,7 +3646,7 @@ export default function DiskUtilityPage() {
                                 <option value="type">{language.t("disk.sort.key.type")}</option>
                               </select>
                             </label>
-                            <label class="min-w-0 flex-1">
+                            <label class="w-[136px] shrink-0">
                               <span class="sr-only">{language.t("disk.sort.direction.label")}</span>
                               <select
                                 class="dl-sort-select dl-touch-target h-11 w-full rounded-[10px] bg-surface-raised-base/55 px-3 text-12-semibold text-text-strong shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
@@ -3176,7 +3692,7 @@ export default function DiskUtilityPage() {
                             onPageFocus={moveFocusByPage}
                             onMoveFocusToBoundary={moveFocusToBoundary}
                             render={(entry, i) => {
-                              const rec = () => recognize(entry.node)
+                              const rec = () => investigation().recognitionFor(entry.node)
                               const developerContext = () => developerArtifactContext(entry.node, rec())
                               const pct = () => (indexSize() ? (entry.displaySize / indexSize()) * 100 : 0)
                               const isActive = () =>
@@ -3195,7 +3711,7 @@ export default function DiskUtilityPage() {
                                     data-disk-index={i()}
                                     aria-current={isActive() ? "true" : undefined}
                                     draggable={canModifyNode(entry.node)}
-                                    class="flex h-full min-h-11 min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+                                    class="flex h-full min-h-11 min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color-mix(in_oklch,var(--dl-accent)_60%,transparent)]"
                                     onClick={(event) => {
                                       if (event.metaKey || event.ctrlKey) {
                                         void reveal(entry.node.path)
@@ -3204,7 +3720,7 @@ export default function DiskUtilityPage() {
                                       selectEntry(entry.node, i(), event.shiftKey)
                                     }}
                                     onDblClick={() => {
-                                      if (entry.node.isDir && !entry.node.isOther) drill(entry.node)
+                                      if (entry.node.isDir) drill(entry.node)
                                       else if (!entry.node.isOther) void openPreview(entry.node)
                                     }}
                                     onFocus={() => {
@@ -3222,23 +3738,23 @@ export default function DiskUtilityPage() {
                                     />
                                     <span class="min-w-0 flex-1">
                                       <span class="flex min-w-0 items-center gap-1.5">
-                                        <span class="truncate text-12-semibold text-text-strong">
-                                          {entry.node.name}
+                                        <span class="truncate text-13-semibold text-text-strong">
+                                          {diskNodeDisplayName(entry.node)}
                                         </span>
                                         <Show when={indexFilter.lens !== "all" && rec().tag}>
                                           <span
                                             class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-12-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
                                           >
-                                            {rec().tag}
+                                            {language.t(rec().tag!)}
                                           </span>
                                         </Show>
                                       </span>
                                       <Show
                                         when={indexFilter.lens !== "all"}
                                         fallback={
-                                          <span class="mt-1.5 block h-px min-w-0 overflow-hidden bg-surface-raised-base">
+                                          <span class="mt-1 block h-[3px] min-w-0 overflow-hidden rounded-full bg-surface-raised-base">
                                             <span
-                                              class="block h-full"
+                                              class="block h-full rounded-full"
                                               style={{
                                                 width: `${Math.max(1, Math.min(100, pct()))}%`,
                                                 background: primarySegmentColor(entry.colorIndex, 1, entry.node.isDir),
@@ -3252,7 +3768,7 @@ export default function DiskUtilityPage() {
                                             class="flex min-w-0 flex-1 items-center gap-1.5 text-12-regular text-text-weak"
                                             title={
                                               indexFilter.lens === "developer"
-                                                ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ?? language.t("disk.explore.inspectHint")}\n${entry.node.path}`
+                                                ? `${developerContext().scope} · ${developerContext().disposition}\n${rec().hint ? language.t(rec().hint!) : language.t("disk.explore.inspectHint")}\n${entry.node.path}`
                                                 : entry.node.path
                                             }
                                           >
@@ -3298,7 +3814,7 @@ export default function DiskUtilityPage() {
                                         </span>
                                       </Show>
                                     </span>
-                                    <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">
+                                    <span class="w-[4.75rem] shrink-0 text-right text-12-semibold tabular-nums text-text-strong">
                                       {shortBytes(entry.displaySize)}
                                     </span>
                                   </button>
@@ -3385,7 +3901,7 @@ export default function DiskUtilityPage() {
                         class="dl-cleanup-slot shrink-0"
                         classList={{
                           "w-[min(360px,30vw)]": effectiveCollection().length > 0 || !!collectionDragNode(),
-                          "w-[220px]": effectiveCollection().length === 0 && !collectionDragNode(),
+                          "w-[260px]": effectiveCollection().length === 0 && !collectionDragNode(),
                         }}
                       >
                         <CollectionDropTarget
@@ -3446,7 +3962,7 @@ export default function DiskUtilityPage() {
       <Show when={reviewSurface.mounted()}>
         <ReclaimDrawer
           phase={reviewSurface.phase()}
-          reclaim={reclaim()}
+          reclaim={reclaim}
           onClose={() => reviewSurface.close()}
           onCollectAll={() => {
             collectNodes(reclaim().buckets.flatMap((bucket) => bucket.items.map(({ node }) => node)))
