@@ -143,23 +143,7 @@ export function VolumeRow(props: {
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
-      role="button"
-      tabIndex={0}
-      aria-disabled={disabled()}
-      onKeyDown={(event) => {
-        if (disabled()) return
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault()
-          activate()
-        }
-      }}
-      onClick={(event) => {
-        // The explicit action button and the snapshot disclosure own their own
-        // activation; the row only answers direct surface clicks.
-        if (event.target instanceof Element && event.target.closest("button, a, input, summary")) return
-        if (!disabled()) activate()
-      }}
-      class="dl-hover-drive dl-volume-row grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak sm:gap-5 sm:px-5"
+      class="dl-hover-drive dl-volume-row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:gap-5 sm:px-5"
       style={{
         "--dl-volume-ink": ink(),
         // Readout text rides on the same hue but leans on --text-strong so it
@@ -206,7 +190,7 @@ export function VolumeRow(props: {
           data-disk-primary-action={props.primary ? "" : undefined}
           classList={{
             "dl-volume-view outline-none focus-visible:ring-2 focus-visible:ring-text-weak": true,
-            "dl-volume-view-primary": complete() && !scanning(),
+            "dl-volume-view-primary": props.primary && !scanning(),
           }}
           disabled={disabled()}
           title={disabled() ? language.t("disk.drive.scanLimit") : undefined}

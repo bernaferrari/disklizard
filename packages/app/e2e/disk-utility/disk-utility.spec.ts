@@ -4,6 +4,7 @@ import { expect, test, type Page } from "@playwright/test"
 async function openStorageMap(page: Page) {
   await page.goto("/")
   const scan = page.getByRole("button", { name: /^Scan Test volume/ })
+  await expect(scan).toHaveCount(1)
   await expect(scan).toBeEnabled()
   await scan.click()
   // The map opens automatically when the scan completes (2-step flow).
@@ -46,9 +47,15 @@ test("supports keyboard review in a narrow reduced-motion layout", async ({ page
   await page.emulateMedia({ reducedMotion: "reduce" })
   await openStorageMap(page)
 
+  const mapResults = page.getByRole("list", { name: "Storage entries" }).locator("..")
+  await expect
+    .poll(() => mapResults.evaluate((element) => element.getBoundingClientRect().height))
+    .toBeGreaterThanOrEqual(120)
+
   await page.getByRole("button", { name: "List" }).click()
   const row = page.getByRole("button").filter({ hasText: "Archive.zip" })
   await expect(row).toHaveCount(1)
+  await expect(row).toBeVisible()
   await row.focus()
   await row.press("c")
   await expect(page.getByRole("button", { name: "Review selected" })).toBeVisible()
@@ -56,6 +63,7 @@ test("supports keyboard review in a narrow reduced-motion layout", async ({ page
   const layout = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     content: document.documentElement.scrollWidth,
+    workspace: document.querySelector<HTMLElement>(".dl-workspace-frame")?.getBoundingClientRect().width ?? -1,
     animations:
       document
         .querySelector<HTMLElement>(".dl-shell")
@@ -63,7 +71,18 @@ test("supports keyboard review in a narrow reduced-motion layout", async ({ page
         .filter((animation) => animation.playState === "running").length ?? -1,
   }))
   expect(layout.content).toBeLessThanOrEqual(layout.viewport)
+  expect(layout.workspace).toBeLessThanOrEqual(layout.viewport)
   expect(layout.animations).toBe(0)
+})
+
+test("keeps storage results usable at the desktop minimum size", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 640 })
+  await openStorageMap(page)
+
+  const resultsViewport = page.getByRole("list", { name: "Storage entries" }).locator("..")
+  await expect
+    .poll(() => resultsViewport.evaluate((element) => element.getBoundingClientRect().height))
+    .toBeGreaterThanOrEqual(120)
 })
 
 test("moves backward and forward through visited folders", async ({ page }) => {
@@ -150,9 +169,7 @@ test("rebases focused scans over watcher updates and hands off nested scan autho
       maxChildren: 48,
     },
   ])
-  expect(handoffs.stops).toEqual(
-    handoffs.requests.map(({ scanId }) => ({ scanId, retainTrustedSubtree: true })),
-  )
+  expect(handoffs.stops).toEqual(handoffs.requests.map(({ scanId }) => ({ scanId, retainTrustedSubtree: true })))
 
   await page.keyboard.press("Alt+ArrowLeft")
   await page.keyboard.press("Alt+ArrowLeft")
@@ -165,7 +182,9 @@ test("shows bounded before-and-after watcher history", async ({ page }) => {
   await page.evaluate(() => window.diskLizardFixture.emitBuildCacheGrowth())
 
   await page.getByText("Explore this scan", { exact: true }).click()
-  await page.getByRole("button", { name: "History" }).click()
+  const changes = page.getByRole("button", { name: "Changes", exact: true })
+  await changes.click()
+  await expect(changes).toHaveAttribute("aria-pressed", "true")
   await expect(page.getByText("Storage changes", { exact: true })).toBeVisible()
   const history = page.getByRole("list", { name: "Storage change history" })
   await expect(history.getByText("Build cache", { exact: true })).toBeVisible()

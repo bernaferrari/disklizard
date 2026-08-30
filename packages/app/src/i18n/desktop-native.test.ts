@@ -85,6 +85,21 @@ describe("desktop native translations", () => {
     expect(parseDesktopNativeBundle(bundle)).toEqual(bundle)
   })
 
+  test("never exposes the inherited OpenCode brand in standalone native UI", () => {
+    const bundle = createDesktopNativeBundle("fr", (key) =>
+      key.startsWith("desktop.menu.") || key.startsWith("desktop.recovery.")
+        ? `Localized OpenCode ${key}`
+        : DESKTOP_NATIVE_ENGLISH[key],
+    )
+    const visibleShellMessages = DESKTOP_NATIVE_KEYS.filter(
+      (key) => key.startsWith("desktop.menu.") || key.startsWith("desktop.recovery."),
+    ).map((key) => bundle.messages[key])
+
+    expect(visibleShellMessages.join("\n")).not.toMatch(/opencode/i)
+    expect(visibleShellMessages.join("\n")).toContain("DiskLizard")
+    expect(Object.values(DESKTOP_NATIVE_ENGLISH).join("\n")).not.toMatch(/opencode/i)
+  })
+
   test("rejects unsupported locales and mismatched key sets", () => {
     const bundle = createDesktopNativeBundle("en", (key) => DESKTOP_NATIVE_ENGLISH[key])
     expect(parseDesktopNativeBundle({ ...bundle, locale: "en-US" })).toBeUndefined()

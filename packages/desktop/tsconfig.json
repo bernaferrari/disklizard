@@ -17,12 +17,6 @@
     "outDir": "node_modules/.ts-dist",
     "types": ["vite/client", "node", "electron"]
   },
-  "references": [{ "path": "../app" }],
   "include": ["src", "package.json"],
-  "exclude": [
-    "src/**/*.test.ts",
-    "src/renderer/onboarding.tsx",
-    "src/renderer/cli.ts",
-    "src/renderer/initialization.ts"
-  ]
+  "exclude": ["src/**/*.test.ts"]
 }

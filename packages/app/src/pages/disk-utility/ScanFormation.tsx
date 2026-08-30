@@ -3,6 +3,7 @@ import { Icon } from "@opencode-ai/ui/icon"
 import { Show, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 import { formatCount, shortBytes, truncatePath } from "./format"
 import { useLanguage } from "./runtime"
+import { determinateScanProgress } from "./scan-progress"
 
 type ScanFormationProps = {
   label: string
@@ -84,7 +85,7 @@ export function ScanFormation(props: ScanFormationProps) {
 
       <div class="grid min-h-[500px] lg:grid-cols-[minmax(420px,0.92fr)_minmax(380px,1.08fr)]">
         <div class="relative grid min-h-[430px] place-items-center overflow-hidden border-b border-border-weaker-base py-7 lg:border-b-0 lg:border-r">
-          <ScanAperture bytes={props.bytes} files={props.files} pct={props.pct} />
+          <ScanAperture label={props.label} bytes={props.bytes} files={props.files} pct={props.pct} />
         </div>
 
         <div class="flex min-w-0 flex-col px-5 py-7 sm:px-8">
@@ -116,20 +117,33 @@ export function ScanFormation(props: ScanFormationProps) {
           </div>
         </div>
       </div>
-
-      <span class="sr-only" role="status">
-        {language.t("disk.scan.status", { label: props.label, files: formatCount(props.files) })}
-      </span>
     </section>
   )
 }
 
-function ScanAperture(props: { bytes: number; files: number; pct: number | null }) {
+function ScanAperture(props: { label: string; bytes: number; files: number; pct: number | null }) {
   const language = useLanguage()
-  const progress = () => Math.max(0.6, Math.min(100, props.pct ?? 8))
+  const progress = createMemo(() => determinateScanProgress(props.pct))
+  const bytes = () => (props.bytes > 0 ? shortBytes(props.bytes) : "0 B")
   return (
-    <div class="relative size-[clamp(260px,76vw,390px)]" aria-hidden="true">
-      <svg class="size-full overflow-visible" viewBox="0 0 400 400">
+    <div
+      class="relative size-[clamp(260px,76vw,390px)]"
+      role="progressbar"
+      aria-label={language.t("disk.scan.progressLabel", { label: props.label })}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={progress() ?? undefined}
+      aria-valuetext={
+        progress() === null
+          ? language.t("disk.scan.progressIndeterminate", { bytes: bytes(), files: formatCount(props.files) })
+          : language.t("disk.scan.progressValue", {
+              percent: Math.round(progress()!),
+              bytes: bytes(),
+              files: formatCount(props.files),
+            })
+      }
+    >
+      <svg class="size-full overflow-visible" viewBox="0 0 400 400" aria-hidden="true">
         <circle cx="200" cy="200" r="166" fill="none" stroke="var(--border-weaker-base)" stroke-width="1" />
         <circle cx="200" cy="200" r="145" fill="none" stroke="var(--surface-raised-strong)" stroke-width="22" />
         <circle
@@ -158,19 +172,21 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
           style="animation-delay:-0.18s"
         />
         <circle cx="200" cy="200" r="114" fill="none" stroke="var(--border-weaker-base)" stroke-width="1" />
-        <circle
-          class="dl-scan-progress-ring"
-          cx="200"
-          cy="200"
-          r="104"
-          fill="none"
-          stroke="oklch(0.74 0.13 252)"
-          stroke-width="3"
-          pathLength="100"
-          stroke-dasharray="100"
-          stroke-dashoffset={`${100 - progress()}`}
-          transform="rotate(-90 200 200)"
-        />
+        <Show when={progress() !== null}>
+          <circle
+            class="dl-scan-progress-ring"
+            cx="200"
+            cy="200"
+            r="104"
+            fill="none"
+            stroke="oklch(0.74 0.13 252)"
+            stroke-width="3"
+            pathLength="100"
+            stroke-dasharray="100"
+            stroke-dashoffset={`${100 - progress()!}`}
+            transform="rotate(-90 200 200)"
+          />
+        </Show>
         <circle
           cx="200"
           cy="200"
@@ -180,7 +196,7 @@ function ScanAperture(props: { bytes: number; files: number; pct: number | null 
           stroke-width="1"
         />
       </svg>
-      <div class="absolute inset-0 grid place-content-center text-center">
+      <div class="absolute inset-0 grid place-content-center text-center" aria-hidden="true">
         <span class="text-[clamp(26px,3.2vw,38px)] font-medium tracking-[-0.045em] tabular-nums text-text-strong">
           {props.bytes > 0 ? shortBytes(props.bytes) : "—"}
         </span>

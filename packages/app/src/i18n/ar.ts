@@ -52,11 +52,15 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "فشل التحقق من وجود تحديثات.",
   "desktop.updater.dialog.checkFailed.title": "خطأ في التحديث",
+  "desktop.updater.dialog.installFailed.message":
+    "تعذر على DiskLizard بدء تثبيت التحديث. حاول مرة أخرى، أو ثبّته لاحقًا.",
+  "desktop.updater.dialog.installFailed.title": "تعذر تثبيت التحديث",
   "desktop.updater.dialog.upToDate.message": "لديك أحدث إصدار.",
   "desktop.updater.dialog.upToDate.title": "لا توجد تحديثات",
   "desktop.updater.dialog.ready.message": "تم تنزيل التحديث {{version}}. هل تريد إعادة التشغيل الآن؟",
   "desktop.updater.dialog.ready.title": "التحديث جاهز",
   "desktop.updater.dialog.restart": "إعادة التشغيل",
+  "desktop.updater.dialog.retry": "إعادة المحاولة",
   "desktop.updater.dialog.later": "لاحقًا",
 
   "desktop.recovery.action.relaunch": "إعادة تشغيل التطبيق",

@@ -2,7 +2,8 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 import type { Configuration } from "electron-builder"
-import { updaterPublishConfig, type DesktopChannel } from "./src/main/product-identity"
+import { resolveDesktopChannel, updaterPublishConfig, type DesktopChannel } from "./src/main/product-identity"
+import { resolveWindowsPublisherName } from "./src/main/updater-policy"
 
 const packageDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -14,14 +15,22 @@ const PRODUCT = {
 
 const metainfoFpm = (appId: string) =>
   `${path.join(packageDir, "resources", `${appId}.metainfo.xml`)}=/usr/share/metainfo/${appId}.metainfo.xml`
+const inertAfterInstall = path.join(packageDir, "resources", "linux-after-install.sh")
+const inertAfterRemove = path.join(packageDir, "resources", "linux-after-remove.sh")
 
-const channel = ((): DesktopChannel => {
-  // OPENCODE_CHANNEL is kept only so existing local packaging commands continue
-  // to select their channel while the desktop runtime migrates to DISKLIZARD_CHANNEL.
-  const raw = process.env.DISKLIZARD_CHANNEL ?? process.env.OPENCODE_CHANNEL
-  if (raw === "dev" || raw === "beta" || raw === "prod") return raw
-  return "dev"
-})()
+// This mode is intentionally opt-in. It exists only for CI/local unpacked-app
+// smoke tests, where release credentials must never be discovered or used.
+const packagedSmoke = process.env.DISKLIZARD_PACKAGED_SMOKE === "1"
+// OPENCODE_CHANNEL remains a strict compatibility input. Feed names such as
+// `latest` are not build identities and therefore fail closed to `dev`.
+// A smoke artifact is always a dev build, even in a release-configured shell.
+const channel: DesktopChannel = packagedSmoke
+  ? "dev"
+  : resolveDesktopChannel(process.env.DISKLIZARD_CHANNEL, process.env.OPENCODE_CHANNEL)
+const windowsPublisherName = packagedSmoke
+  ? undefined
+  : resolveWindowsPublisherName(process.env.DISKLIZARD_WINDOWS_PUBLISHER_NAME)
+const publicRelease = packagedSmoke ? undefined : updaterPublishConfig(channel)
 
 const APP_IDS = {
   dev: `${PRODUCT.appId}.dev`,
@@ -32,7 +41,7 @@ const APP_IDS = {
 const getBase = (appId: string): Configuration => ({
   artifactName: "disklizard-${os}-${arch}.${ext}",
   directories: {
-    output: "dist",
+    output: packagedSmoke ? "dist-smoke" : "dist",
     buildResources: "resources",
   },
   // Linux launchers are .desktop files, so this is the desktop file name,
@@ -42,7 +51,7 @@ const getBase = (appId: string): Configuration => ({
   extraMetadata: {
     desktopName: `${appId}.desktop`,
   },
-  files: ["out/**/*", "resources/**/*", "!resources/opencode-cli*"],
+  files: ["out/**/*", "!out/**/*.map", "resources/**/*", "!resources/opencode-cli*"],
   extraResources: [
     {
       from: "native/",
@@ -60,28 +69,33 @@ const getBase = (appId: string): Configuration => ({
   mac: {
     category: "public.app-category.utilities",
     icon: `resources/icons/icon.icns`,
-    hardenedRuntime: true,
+    hardenedRuntime: !packagedSmoke,
     gatekeeperAssess: false,
     entitlements: "resources/entitlements.plist",
     entitlementsInherit: "resources/entitlements.plist",
-    notarize: true,
+    identity: packagedSmoke ? null : undefined,
+    notarize: !packagedSmoke,
     target: ["dmg", "zip"],
   },
   dmg: {
-    sign: true,
-  },
-  protocols: {
-    name: PRODUCT.name,
-    schemes: ["disklizard"],
+    sign: !packagedSmoke,
   },
   win: {
     icon: `resources/icons/icon.ico`,
     target: ["nsis"],
     verifyUpdateCodeSignature: true,
+    ...(windowsPublisherName ? { signtoolOptions: { publisherName: windowsPublisherName } } : {}),
+    ...(publicRelease && !packagedSmoke ? { forceCodeSigning: true } : {}),
+    // Keep version/icon resource editing in smoke builds while making it
+    // impossible for an ambient CSC_LINK/WIN_CSC_LINK to sign the fixture.
+    ...(packagedSmoke ? { signExecutable: false } : {}),
   },
   nsis: {
     oneClick: true,
     perMachine: false,
+    createDesktopShortcut: !packagedSmoke,
+    createStartMenuShortcut: !packagedSmoke,
+    runAfterFinish: !packagedSmoke,
     installerIcon: `resources/icons/icon.ico`,
     installerHeaderIcon: `resources/icons/icon.ico`,
   },
@@ -103,6 +117,12 @@ const getBase = (appId: string): Configuration => ({
 function getConfig() {
   const appId = APP_IDS[channel]
   const base = getBase(appId)
+  const publish = publicRelease
+  if (publish && !packagedSmoke && !windowsPublisherName) {
+    throw new Error(
+      "DISKLIZARD_WINDOWS_PUBLISHER_NAME must match the code-signing certificate before public updates are enabled",
+    )
+  }
 
   switch (channel) {
     case "dev": {
@@ -110,9 +130,13 @@ function getConfig() {
         ...base,
         appId,
         productName: `${PRODUCT.name} Dev`,
-        protocols: { name: `${PRODUCT.name} Dev`, schemes: ["disklizard"] },
-        deb: { fpm: [metainfoFpm(appId)] },
-        rpm: { packageName: "disklizard-dev", fpm: [metainfoFpm(appId)] },
+        deb: { afterInstall: inertAfterInstall, afterRemove: inertAfterRemove, fpm: [metainfoFpm(appId)] },
+        rpm: {
+          packageName: "disklizard-dev",
+          afterInstall: inertAfterInstall,
+          afterRemove: inertAfterRemove,
+          fpm: [metainfoFpm(appId)],
+        },
       }
     }
     case "beta": {
@@ -120,10 +144,14 @@ function getConfig() {
         ...base,
         appId,
         productName: `${PRODUCT.name} Beta`,
-        protocols: { name: `${PRODUCT.name} Beta`, schemes: ["disklizard"] },
-        publish: updaterPublishConfig("beta"),
-        deb: { fpm: [metainfoFpm(appId)] },
-        rpm: { packageName: "disklizard-beta", fpm: [metainfoFpm(appId)] },
+        publish,
+        deb: { afterInstall: inertAfterInstall, afterRemove: inertAfterRemove, fpm: [metainfoFpm(appId)] },
+        rpm: {
+          packageName: "disklizard-beta",
+          afterInstall: inertAfterInstall,
+          afterRemove: inertAfterRemove,
+          fpm: [metainfoFpm(appId)],
+        },
       }
     }
     case "prod": {
@@ -131,10 +159,14 @@ function getConfig() {
         ...base,
         appId,
         productName: PRODUCT.name,
-        protocols: { name: PRODUCT.name, schemes: ["disklizard"] },
-        publish: updaterPublishConfig("prod"),
-        deb: { fpm: [metainfoFpm(appId)] },
-        rpm: { packageName: "disklizard", fpm: [metainfoFpm(appId)] },
+        publish,
+        deb: { afterInstall: inertAfterInstall, afterRemove: inertAfterRemove, fpm: [metainfoFpm(appId)] },
+        rpm: {
+          packageName: "disklizard",
+          afterInstall: inertAfterInstall,
+          afterRemove: inertAfterRemove,
+          fpm: [metainfoFpm(appId)],
+        },
       }
     }
   }

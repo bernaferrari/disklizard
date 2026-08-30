@@ -21,6 +21,17 @@ describe("window registry", () => {
     expect(setup(undefined).registry.persisted()).toEqual([])
   })
 
+  test("collapses legacy multi-window state to one restored window", () => {
+    const app = setup(["primary", "secondary", "third"])
+    expect(app.registry.restoreSingle(() => "new")).toBe("primary")
+    expect(app.state.stored).toEqual(["primary"])
+    expect(app.cleaned).toEqual(["secondary", "third"])
+
+    const fresh = setup()
+    expect(fresh.registry.restoreSingle(() => "new")).toBe("new")
+    expect(fresh.state.stored).toEqual(["new"])
+  })
+
   test("registers windows and persists each id once", () => {
     const app = setup()
     app.registry.register("a", { name: "a" })

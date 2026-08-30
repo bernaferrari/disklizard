@@ -15,6 +15,8 @@ The desktop app uses Electron and Solid. A native Rust scanner performs the firs
 > [!NOTE]
 > DiskLizard is under active development. The scanner, desktop experience, and safety model are functional, but packaged releases are not yet published from this repository.
 
+The first public beta will ship in English. Translation source catalogs are kept in the repository for future completion and review, but incomplete catalogs are not bundled or advertised as supported product languages.
+
 ## Why DiskLizard
 
 General-purpose disk tools can tell you that a directory is large. Developer machines need more context: whether that directory is generated, how it can be recreated, whether it belongs to an active worktree, and whether an agent stores important state inside it.
@@ -137,7 +139,9 @@ Build the native scanner and Electron application:
 bun run --cwd packages/desktop build
 ```
 
-Create an installer for the current platform:
+Create an installer for the current platform. Each command performs the build
+and package stages with one frozen channel/release environment, so a stale or
+differently configured renderer cannot be placed into a release artifact:
 
 ```bash
 # macOS
@@ -161,6 +165,10 @@ Packaged artifacts are written to `packages/desktop/dist`.
 | `bun run --cwd packages/disklizard native:build` | Build and copy the release Rust scanner                    |
 | `bun run --cwd packages/disklizard native:test`  | Run native scanner tests                                   |
 | `bun run --cwd packages/desktop benchmark:disk -- --path <path>` | Explicit, read-only scan measurement with backend and throughput |
+| `bun run test:disklizard`                         | Run the canonical scanner, desktop, storage, and locale suites    |
+| `bun run --cwd packages/app test:e2e:disk`       | Run the rendered cleanup journey and accessibility checks         |
+| `bun run --cwd packages/app benchmark:disk-ui`   | Exercise the production renderer against the large-tree budget    |
+| `bun run --cwd packages/desktop verify:packaged-smoke` | Build installers and drive the current platform package end to end |
 | `bun run --cwd packages/app typecheck`           | Type-check the renderer                                    |
 | `bun run --cwd packages/desktop typecheck`       | Type-check Electron main, preload, and renderer code       |
 

@@ -18,13 +18,8 @@ declare global {
 
 async function installMapPaintObservation(page: Page) {
   await page.evaluate(() => {
-    // The map opens automatically when the scan completes; measure from the
-    // moment the map region mounts rather than a View-button click.
-    const region = [...document.querySelectorAll<HTMLElement>("[role=region]")].find((node) =>
-      node.getAttribute("aria-label")?.startsWith("Storage map for Test volume"),
-    )
-    if (!region) throw new Error("Map region was not found")
-
+    // Install before the Scan click so the result includes scan-to-first-usable
+    // latency and cannot miss a very fast map mount.
     window.diskLizardBenchmarkObservation = new Promise<PaintObservation>((resolve) => {
       const gaps: number[] = []
       const longTasks: Array<{ startTime: number; duration: number }> = []
@@ -156,10 +151,9 @@ benchmark("DiskLizard large retained tree reaches a usable map and stays respons
     payloadBytes: window.diskLizardFixture.payloadBytes,
   }))
 
-  const scanStartedAt = await page.evaluate(() => performance.now())
-  await scan.click()
   // The map now opens automatically when the scan completes (2-step flow).
   await installMapPaintObservation(page)
+  await scan.click()
   const map = page.getByRole("region", { name: /^Storage map for Test volume/ })
   await expect(map).toBeVisible()
   const mapPaint = await readObservation(page)
@@ -201,9 +195,19 @@ benchmark("DiskLizard large retained tree reaches a usable map and stays respons
 
   expect(fixture.treeNodes).toBeGreaterThan(10_000)
   expect(fixture.payloadBytes).toBeGreaterThan(0)
-  expect(mapPaint.durationMs).toBeGreaterThanOrEqual(0)
-  expect(selectionPaint.durationMs).toBeGreaterThanOrEqual(0)
-  expect(searchPaint.durationMs).toBeGreaterThanOrEqual(0)
+  // These deliberately generous budgets catch catastrophic regressions while
+  // leaving enough headroom for shared CI runners. The emitted artifact keeps
+  // the precise measurements for trend analysis.
+  expect(mapPaint.durationMs).toBeLessThan(5_000)
+  expect(mapPaint.rafGapMaxMs).toBeLessThan(500)
+  expect(mapPaint.longTaskCount).toBeLessThanOrEqual(12)
+  expect(mapPaint.longTaskDurationMs).toBeLessThan(2_000)
+  expect(selectionPaint.durationMs).toBeLessThan(750)
+  expect(searchPaint.durationMs).toBeLessThan(2_000)
+  expect(rendered.elements).toBeLessThan(5_000)
+  if (heapBefore !== null && heapAfter !== null) {
+    expect(heapAfter - heapBefore).toBeLessThan(96 * 1024 * 1024)
+  }
   report(
     {
       scanResultReadyMs: mapPaint.durationMs,

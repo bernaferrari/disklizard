@@ -3,6 +3,11 @@ import type { AsyncStorage, SyncStorage } from "@solid-primitives/storage"
 import type { Accessor, ParentProps } from "solid-js"
 import { createStore } from "solid-js/store"
 import {
+  DESKTOP_NATIVE_LOCALE_TAGS,
+  resolveDiskLizardReleaseLocale,
+  type DesktopNativeLocale,
+} from "../../i18n/desktop-native"
+import {
   diskCleanupLocksDefault,
   diskPinnedLocationsDefault,
   type DiskAccessGuidanceKey,
@@ -11,6 +16,14 @@ import {
   type DiskUtilityAPI,
 } from "./types"
 import { DISK_RECOGNITION_LANGUAGE_TEXT } from "./recognition-language"
+import {
+  CLEANUP_LOCK_LIMIT,
+  decodeSavedPaths,
+  PINNED_LOCATION_LIMIT,
+  sanitizeSavedPaths,
+  type SavedPath,
+  type SavedPathOptions,
+} from "./saved-paths"
 
 export type DiskLizardOS = "macos" | "windows" | "linux"
 
@@ -50,7 +63,6 @@ export type DiskLizardPlatform = {
   version?: string
   diskUtility: DiskUtilityAPI
   menu?: DiskLizardMenu
-  openPath?: (path: string) => Promise<void>
   getPathForFile?: (file: File) => string
   storage?: (name?: string) => SyncStorage | AsyncStorage
   updater?: {
@@ -59,8 +71,8 @@ export type DiskLizardPlatform = {
     install(): Promise<void>
   }
   restart?: () => Promise<void>
+  exportDiagnostics?: () => Promise<string>
   openExternal?: (url: string) => void
-  revealPath?: (path: string) => Promise<boolean>
   windowFullscreen?: Accessor<boolean>
   dispose?: () => void
 }
@@ -84,8 +96,10 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.reveal": "Reveal",
   "disk.common.preview": "Preview",
   "disk.common.quickLook": "Quick Look",
+  "disk.common.previewHere": "Preview in DiskLizard",
   "disk.common.open": "Open",
   "disk.common.openFolder": "Open folder",
+  "disk.common.exploreFolder": "Explore folder",
   "disk.common.showMore": "Show more",
   "disk.common.recommendations": "Recommendations",
   "disk.common.review": "Review",
@@ -100,7 +114,9 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.tiles": "Tiles",
   "disk.common.list": "List",
   "disk.common.all": "All",
+  "disk.common.contents": "Contents",
   "disk.common.developer": "Developer",
+  "disk.common.cleanup": "Cleanup",
   "disk.common.purgeable": "Purgeable",
   "disk.common.timeMachine": "Time Machine",
   "disk.common.days": "days",
@@ -124,8 +140,10 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.sort.direction.ascending": "Ascending",
   "disk.sort.direction.descending": "Descending",
   "disk.history.heading": "Storage changes",
-  "disk.history.summary": "Changes detected while this map is open",
-  "disk.history.lens": "History",
+  "disk.history.summary": "Live changes detected while this map is open",
+  "disk.history.lens": "Changes",
+  "disk.history.live": "Live activity",
+  "disk.history.modifiedToday": "Modified today",
   "disk.history.search": "Search change history",
   "disk.history.results": "Matching storage changes",
   "disk.history.empty.title": "No live changes yet",
@@ -158,6 +176,22 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.top.scannerDisconnected": "Scanner disconnected",
   "disk.top.desktopBody": "Reading storage requires the secure desktop scanner.",
   "disk.top.disconnectedBody": "The secure desktop bridge is unavailable. Reopen DiskLizard to reconnect it.",
+  "disk.top.restart": "Restart DiskLizard",
+  "disk.app.menu": "DiskLizard menu",
+  "disk.app.about": "DiskLizard {version}",
+  "disk.app.checkUpdates": "Check for updates",
+  "disk.app.installUpdate": "Restart to install {version}",
+  "disk.app.updateChecking": "Checking for updates…",
+  "disk.app.updateDownloading": "Downloading {version}…",
+  "disk.app.restart": "Restart DiskLizard",
+  "disk.app.exportDiagnostics": "Export diagnostics…",
+  "disk.app.updateReady": "Update ready",
+  "disk.app.updateReadyBody": "Version {version} is ready to install.",
+  "disk.app.upToDate": "DiskLizard is up to date",
+  "disk.app.updateFailed": "Could not check for updates",
+  "disk.app.diagnosticsSaved": "Diagnostics exported",
+  "disk.app.diagnosticsSavedBody": "Saved to {path}",
+  "disk.app.diagnosticsFailed": "Could not export diagnostics",
   "disk.map.label": "Storage map for {label}. Select an item to inspect it; use the results list to browse every item.",
   "disk.map.role": "interactive storage map",
   "disk.map.instructions":
@@ -212,6 +246,16 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.changed.weeks": "Changed {count}w ago",
   "disk.changed.months": "Changed {count}mo ago",
   "disk.changed.years": "Changed {count}y ago",
+  "disk.empty.search.title": "No matching files",
+  "disk.empty.search.body": "Try another name or path, or return to all contents.",
+  "disk.empty.developer.title": "No developer storage found",
+  "disk.empty.developer.body":
+    "DiskLizard did not recognize build output, dependencies, toolchain caches, or other developer artifacts in this scan.",
+  "disk.empty.recommendations.title": "Nothing is ready for cleanup",
+  "disk.empty.recommendations.body":
+    "DiskLizard only recommends items when it can explain and verify why they are recoverable.",
+  "disk.empty.recent.title": "Nothing was modified today",
+  "disk.empty.recent.body": "No items in this scan have a modification date from today.",
   "disk.explore.removeReview": "Remove {name} from review",
   "disk.explore.selectReview": "Select {name} for review",
   "disk.explore.unreadable": "{count} unreadable {locations}",
@@ -281,12 +325,15 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.detail.more": "More",
   "disk.detail.moreFor": "More actions for {name}",
   "disk.detail.revealManager": "Reveal in file manager",
+  "disk.detail.revealFinder": "Show in Finder",
+  "disk.detail.revealExplorer": "Show in File Explorer",
+  "disk.detail.revealFiles": "Show in Files",
   "disk.detail.moveTo": "Move to {trash}",
   "disk.detail.under": "Under {name}",
   "disk.detail.protected": "Protected",
   "disk.detail.protect": "Protect",
-  "disk.detail.selectedReview": "Selected for review",
-  "disk.detail.selectReview": "Select for review",
+  "disk.detail.selectedReview": "In review",
+  "disk.detail.selectReview": "Add to review",
   "disk.detail.selected": "Selected",
   "disk.detail.allowCleanup": "Allow cleanup",
   "disk.detail.protectCleanup": "Protect from cleanup",
@@ -303,6 +350,8 @@ export const DISK_LANGUAGE_TEXT = {
     "This scan could not verify filesystem clone metadata. The paths can move to {trash}, but their displayed allocation is not a promise of freed disk space. DiskLizard will refresh the map afterward.",
   "disk.dialog.collection.close": "Close selected-item review",
   "disk.dialog.collection.quickLook": "Quick Look {name}",
+  "disk.dialog.collection.preview": "Preview {name}",
+  "disk.dialog.collection.reveal": "Show {name} in the file browser",
   "disk.dialog.collection.remove": "Remove {name} from review",
   "disk.dialog.collection.moving": "Moving {current} of {total}",
   "disk.dialog.collection.movingCompact": "Moving {current}/{total}…",
@@ -315,6 +364,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.reclaim.itemsLabel": "Recommended items",
   "disk.dialog.reclaim.remove": "Remove {name} from review",
   "disk.dialog.reclaim.select": "Select {name} for review",
+  "disk.dialog.reclaim.inspect": "Inspect {name}",
   "disk.dialog.reclaim.body":
     "DiskLizard thinks these can usually be recreated or downloaded again. They are recommendations, not permission—select only the items you want to review.",
   "disk.dialog.reclaim.close": "Close review",
@@ -369,6 +419,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.preview.local": "Read locally · Nothing uploaded",
   "disk.preview.changedLocal": "{changed} · Nothing uploaded",
   "disk.preview.openDefault": "Open in default app",
+  "disk.preview.openMap": "Explore in DiskLizard",
   "disk.scan.label": "Scanning {label}",
   "disk.scan.scanning": "Scanning",
   "disk.scan.readOnly": "Read-only",
@@ -385,6 +436,9 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.scan.status": "Scanning {label}. {files} files scanned. Use Cancel scan to stop.",
   "disk.scan.scanned": "scanned",
   "disk.scan.fileCount": "{count} files",
+  "disk.scan.progressLabel": "Scan progress for {label}",
+  "disk.scan.progressValue": "{percent}% · {bytes} scanned across {files} files",
+  "disk.scan.progressIndeterminate": "{bytes} scanned across {files} files · completion estimate unavailable",
   "disk.apfs.unnamed": "Unnamed APFS snapshot",
   "disk.apfs.showing": "{count} APFS snapshots are present; showing {visible} read-only identities.",
   "disk.apfs.body":
@@ -414,7 +468,11 @@ export const DISK_LANGUAGE_TEXT = {
     "The filesystem reports {count} full clones. Byte ownership stays explicit unless every member is present in this scan.",
   "disk.accounting.cloneSharesDetail": "The filesystem reports that this file shares all of its blocks with a clone.",
   "disk.storage.connected": "Connected storage",
-  "disk.storage.mountedMac": "Already mounted on this Mac",
+  "disk.storage.mountedMac": "Available on this device",
+  "disk.storage.diagnosticsErrorTitle": "Storage coverage could not be verified",
+  "disk.storage.diagnosticsErrorBody":
+    "Volumes are still available to scan, but DiskLizard could not check connected storage or permission coverage.",
+  "disk.storage.retryDiagnostics": "Check again",
   "disk.storage.accessTitle": "Some protected folders could not be read",
   "disk.storage.accessBody":
     "DiskLizard observed an OS permission denial. Open privacy settings to review access, then rescan—access is never assumed.",
@@ -437,12 +495,15 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.virtual.entries": "Storage entries",
   "disk.drive.volumes": "Volumes",
   "disk.drive.protected": "Protected from cleanup",
-  "disk.drive.lockHint": "L locks the selected item",
+  "disk.drive.lockHint": "Protected folders stay visible but are never added to cleanup.",
+  "disk.drive.openMaps": "Open maps",
+  "disk.drive.openMapsHint": "Kept live on this device",
+  "disk.drive.closeMap": "Close map of {name}",
   "disk.drive.saved": "Saved locations",
   "disk.drive.deviceOnly": "This device only",
-  "disk.drive.savedEmpty": "Folders you scan appear here — save one from a scan's topbar.",
+  "disk.drive.savedEmpty": "Use Save location after scanning a folder to keep it here.",
   "disk.drive.freeSuffix": "free",
-  "disk.drive.firstRun.title": "Map any folder in seconds",
+  "disk.drive.firstRun.title": "Scan any folder",
   "disk.drive.firstRun.body":
     "Scan a volume above, drop a folder anywhere in this window, or pick a folder to map it without changing a thing.",
   "disk.drive.scanFolder": "Scan Folder…",
@@ -450,9 +511,9 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.drive.readFailed": "Volumes could not be read",
   "disk.drive.none": "No volumes yet",
   "disk.drive.pickFolder": "Pick a folder and DiskLizard will map it without changing a thing.",
-  "disk.drive.emptyFiltered": "Nothing matches these filters",
+  "disk.drive.emptyFiltered": "Nothing matches this view",
   "disk.drive.emptyFolder": "This folder is empty",
-  "disk.drive.clearFilters": "Clear the filters to show every item in this folder.",
+  "disk.drive.clearFilters": "Return to Contents to show every item in this folder.",
   "disk.drive.noItems": "There are no files or folders here.",
   "disk.drive.showEverything": "Show everything",
   "disk.drive.ofLevel": "of this level",
@@ -553,6 +614,32 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.safety.unknown": "unknown",
   "disk.cleanup.lockMessage":
     "{name} is protected from cleanup. DiskLizard will still map it, but it will not go to review or Trash.",
+  "disk.cleanup.protectionsLoadingTitle": "Loading cleanup protections",
+  "disk.cleanup.protectionsLoading":
+    "Review and Trash stay disabled until DiskLizard has loaded your saved protections.",
+  "disk.cleanup.protectionsSavingTitle": "Saving cleanup protections",
+  "disk.cleanup.protectionsSaving": "Review and Trash stay disabled until the protection change has been saved.",
+  "disk.cleanup.protectionsErrorTitle": "Cleanup is disabled",
+  "disk.cleanup.protectionsError":
+    "DiskLizard could not load saved protections. Try again after repairing or resetting DiskLizard's saved settings.",
+  "disk.cleanup.protectionsUnavailable": "Saved cleanup protections are not ready.",
+  "disk.cleanup.protectionsChanged": "Cleanup protections changed. Review this item again before moving it to Trash.",
+  "disk.cleanup.retryProtections": "Try again",
+  "disk.cleanup.resetProtections": "Reset saved protections",
+  "disk.cleanup.resetHeading": "Protection recovery",
+  "disk.cleanup.resetTitle": "Reset cleanup protections?",
+  "disk.cleanup.resetBody":
+    "Use this only if retry keeps failing. DiskLizard will replace the unreadable protection list with an empty one. No files will be deleted.",
+  "disk.cleanup.resetContinue": "Continue to final confirmation",
+  "disk.cleanup.resetFinalTitle": "Confirm an empty protection list",
+  "disk.cleanup.resetFinalBody":
+    "Folders protected before this error will no longer be protected. Cleanup stays disabled until the empty list is safely saved.",
+  "disk.cleanup.resetConfirm": "Reset saved protections",
+  "disk.cleanup.resetting": "Saving empty protection list…",
+  "disk.cleanup.resetFailedTitle": "Reset failed",
+  "disk.cleanup.resetFailed":
+    "DiskLizard could not save the empty protection list. Cleanup is still disabled. Check your settings storage and try again.",
+  "disk.cleanup.resetCancel": "Cancel",
   "disk.metric.underSecond": "under 1s",
   "disk.metric.seconds": "{count}s",
   "disk.metric.minutes": "{minutes}m {seconds}s",
@@ -608,6 +695,8 @@ export const DISK_LANGUAGE_PLURALS = {
 
 export type DiskLanguageKey = keyof typeof DISK_LANGUAGE_TEXT
 export type DiskLanguagePluralKey = keyof typeof DISK_LANGUAGE_PLURALS
+export type DiskLanguagePluralCategory = "zero" | "one" | "two" | "few" | "many" | "other"
+export type DiskLanguageMessageKey = DiskLanguageKey | `${DiskLanguagePluralKey}.${DiskLanguagePluralCategory}`
 
 type Placeholder<S extends string> = S extends `${string}{${infer Name}}${infer Rest}`
   ? Name | Placeholder<Rest>
@@ -630,11 +719,55 @@ type PluralArgs<Key extends DiskLanguagePluralKey> = [Exclude<Placeholder<Plural
   : [params: PluralParams<Key>]
 
 function interpolate(template: string, params: Readonly<Record<string, string | number>>) {
-  return template.replace(/\{([^}]+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`))
+  return template.replace(/\{\{\s*([^{}]+?)\s*\}\}|\{\s*([^{}]+?)\s*\}/g, (match, double, single) => {
+    const name = String(double ?? single)
+    return params[name] === undefined ? match : String(params[name])
+  })
+}
+
+export function resolveDiskLanguageLocale(languages: readonly string[]) {
+  const locale = resolveDiskLizardReleaseLocale(languages)
+  return {
+    locale,
+    intl: DESKTOP_NATIVE_LOCALE_TAGS[locale],
+  } as const
+}
+
+export function createDiskLanguage(
+  locale: DesktopNativeLocale,
+  messages: Readonly<Partial<Record<DiskLanguageMessageKey, string>>> = {},
+) {
+  const intl = DESKTOP_NATIVE_LOCALE_TAGS[locale]
+  const rules = new Intl.PluralRules(intl)
+  const englishRules = new Intl.PluralRules(DESKTOP_NATIVE_LOCALE_TAGS.en)
+
+  return {
+    locale,
+    intl,
+    t<Key extends DiskLanguageKey>(key: Key, ...args: TextArgs<Key>) {
+      return interpolate(messages[key] ?? DISK_LANGUAGE_TEXT[key], args[0] ?? {})
+    },
+    plural<Key extends DiskLanguagePluralKey>(key: Key, count: number, ...args: PluralArgs<Key>) {
+      const category = rules.select(count) as DiskLanguagePluralCategory
+      const localized = messages[`${key}.${category}`] ?? messages[`${key}.other`]
+      const englishCategory = englishRules.select(count)
+      const english = DISK_LANGUAGE_PLURALS[key][englishCategory === "one" ? "one" : "other"]
+      return interpolate(localized ?? english, { count, ...args[0] })
+    },
+  }
+}
+
+export type DiskLanguage = ReturnType<typeof createDiskLanguage>
+
+let activeDiskLanguage = createDiskLanguage("en")
+
+export function configureDiskLanguage(locale: DesktopNativeLocale, messages: Readonly<Record<string, string>> = {}) {
+  activeDiskLanguage = createDiskLanguage(locale, messages)
+  return activeDiskLanguage
 }
 
 export function diskLanguageText<Key extends DiskLanguageKey>(key: Key, ...args: TextArgs<Key>) {
-  return interpolate(DISK_LANGUAGE_TEXT[key], args[0] ?? {})
+  return activeDiskLanguage.t(key, ...args)
 }
 
 export function diskLanguagePlural<Key extends DiskLanguagePluralKey>(
@@ -642,28 +775,12 @@ export function diskLanguagePlural<Key extends DiskLanguagePluralKey>(
   count: number,
   ...args: PluralArgs<Key>
 ) {
-  const templates = DISK_LANGUAGE_PLURALS[key]
-  return interpolate(count === 1 ? templates.one : templates.other, { count, ...(args[0] ?? {}) })
+  return activeDiskLanguage.plural(key, count, ...args)
 }
 
 const PINNED_STORAGE_NAME = "disklizard.dat"
 const PINNED_STORAGE_KEY = "pinned-locations"
 const CLEANUP_LOCK_STORAGE_KEY = "cleanup-locks"
-
-function parsePathList<T extends { path: string; label: string }>(raw: string | null | undefined): T[] | undefined {
-  if (!raw) return
-  try {
-    const value = JSON.parse(raw) as unknown
-    if (!Array.isArray(value)) return
-    const locations = value.filter(
-      (item): item is T =>
-        !!item && typeof item === "object" && typeof item.path === "string" && typeof item.label === "string",
-    )
-    return locations
-  } catch {
-    return
-  }
-}
 
 export const { use: usePlatform, provider: DiskLizardPlatformProvider } = createSimpleContext({
   name: "DiskLizardPlatform",
@@ -672,12 +789,25 @@ export const { use: usePlatform, provider: DiskLizardPlatformProvider } = create
 
 export function useLanguage() {
   return {
+    locale: () => activeDiskLanguage.locale,
+    intl: () => activeDiskLanguage.intl,
     t: diskLanguageText,
     plural: diskLanguagePlural,
   }
 }
 
 type DiskSettingsStorage = SyncStorage | AsyncStorage
+export type DiskCleanupLocksStatus = "loading" | "saving" | "ready" | "error"
+
+export type DiskSettingsWriteResult<T extends SavedPath> = {
+  ok: boolean
+  /** The in-memory value after persistence succeeds or a failed write rolls back. */
+  value: T[]
+}
+
+type DiskSettingsOptions = {
+  os?: DiskLizardOS
+}
 
 function storageErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
@@ -692,68 +822,140 @@ export function diskPreviewTooLargeBody(os?: DiskLizardOS) {
   return diskLanguageText(os === "macos" ? "disk.preview.tooLarge.body" : "disk.preview.tooLarge.bodyDefault")
 }
 
-export function createDiskSettings(storage?: DiskSettingsStorage) {
+export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskSettingsOptions = {}) {
   const [state, setState] = createStore({
     locations: [...diskPinnedLocationsDefault] as DiskPinnedLocation[],
     locks: [...diskCleanupLocksDefault] as DiskCleanupLock[],
-    persistenceError: undefined as string | undefined,
+    pinsError: undefined as string | undefined,
+    locksError: undefined as string | undefined,
+    cleanupLocksStatus: (storage ? "loading" : "ready") as DiskCleanupLocksStatus,
   })
   let pinsRevision = 0
   let locksRevision = 0
-  let writes = Promise.resolve()
+  let writes: Promise<unknown> = Promise.resolve()
 
-  const read = async <T extends { path: string; label: string }>(
+  const read = async (
+    kind: "pins" | "locks",
     key: string,
+    pathOptions: SavedPathOptions,
     revision: number,
     currentRevision: () => number,
-    apply: (value: T[]) => void,
+    apply: (value: SavedPath[]) => void,
   ) => {
-    if (!storage) return
+    if (!storage) {
+      if (kind === "locks") setState("cleanupLocksStatus", "ready")
+      return true
+    }
     try {
-      const parsed = parsePathList<T>(await storage.getItem(key))
-      if (parsed && revision === currentRevision()) apply(parsed)
+      const parsed = decodeSavedPaths(await storage.getItem(key), pathOptions)
+      if (parsed.status === "invalid") {
+        throw new Error(kind === "locks" ? "Saved cleanup protections are invalid" : "Saved scan locations are invalid")
+      }
+      if (revision === currentRevision()) apply(parsed.status === "valid" ? parsed.value : [])
+      setState(kind === "locks" ? "locksError" : "pinsError", undefined)
+      if (kind === "locks") setState("cleanupLocksStatus", "ready")
+      return true
     } catch (error) {
-      setState("persistenceError", storageErrorMessage(error))
+      setState(kind === "locks" ? "locksError" : "pinsError", storageErrorMessage(error))
+      if (kind === "locks") setState("cleanupLocksStatus", "error")
+      return false
     }
   }
 
+  const pinnedPathOptions = { limit: PINNED_LOCATION_LIMIT, os: options.os } satisfies SavedPathOptions
+  const cleanupLockPathOptions = {
+    limit: CLEANUP_LOCK_LIMIT,
+    os: options.os,
+    foldWindowsCase: true,
+    rejectDiscardedEntries: true,
+  } satisfies SavedPathOptions
+
   const ready = Promise.all([
-    read<DiskPinnedLocation>(
+    read(
+      "pins",
       PINNED_STORAGE_KEY,
+      pinnedPathOptions,
       pinsRevision,
       () => pinsRevision,
       (value) => setState("locations", value),
     ),
-    read<DiskCleanupLock>(
+    read(
+      "locks",
       CLEANUP_LOCK_STORAGE_KEY,
+      cleanupLockPathOptions,
       locksRevision,
       () => locksRevision,
       (value) => setState("locks", value),
     ),
   ]).then(() => undefined)
 
-  const write = (key: string, value: unknown) => {
-    if (!storage) return Promise.resolve()
-    writes = writes.then(async () => {
+  const write = (kind: "pins" | "locks", key: string, value: unknown) => {
+    if (!storage) {
+      setState(kind === "locks" ? "locksError" : "pinsError", undefined)
+      return Promise.resolve(true)
+    }
+    const operation = writes.then(async () => {
       try {
         await storage.setItem(key, JSON.stringify(value))
-        setState("persistenceError", undefined)
+        setState(kind === "locks" ? "locksError" : "pinsError", undefined)
+        return true
       } catch (error) {
-        setState("persistenceError", storageErrorMessage(error))
+        setState(kind === "locks" ? "locksError" : "pinsError", storageErrorMessage(error))
+        return false
       }
     })
-    return writes
+    writes = operation
+    return operation
   }
 
-  const persistPins = (next: DiskPinnedLocation[]) => {
-    pinsRevision += 1
-    setState("locations", next)
-    return write(PINNED_STORAGE_KEY, next)
+  const persistPins = async (next: DiskPinnedLocation[]): Promise<DiskSettingsWriteResult<DiskPinnedLocation>> => {
+    const sanitized = sanitizeSavedPaths(next, pinnedPathOptions)
+    const previous = [...state.locations]
+    const revision = ++pinsRevision
+    setState("locations", sanitized)
+    const ok = await write("pins", PINNED_STORAGE_KEY, sanitized)
+    if (!ok && revision === pinsRevision) setState("locations", previous)
+    return { ok, value: [...state.locations] }
   }
-  const persistLocks = (next: DiskCleanupLock[]) => {
-    locksRevision += 1
-    setState("locks", next)
-    return write(CLEANUP_LOCK_STORAGE_KEY, next)
+  const persistLocks = async (next: DiskCleanupLock[]): Promise<DiskSettingsWriteResult<DiskCleanupLock>> => {
+    if (state.cleanupLocksStatus !== "ready") return { ok: false, value: [...state.locks] }
+    const sanitized = sanitizeSavedPaths(next, cleanupLockPathOptions)
+    const revision = ++locksRevision
+    setState("cleanupLocksStatus", "saving")
+    const ok = await write("locks", CLEANUP_LOCK_STORAGE_KEY, sanitized)
+    if (ok && revision === locksRevision) setState("locks", sanitized)
+    if (revision === locksRevision) setState("cleanupLocksStatus", "ready")
+    return { ok, value: [...state.locks] }
+  }
+
+  const retryCleanupLocks = async () => {
+    if (!storage || state.cleanupLocksStatus !== "error") return false
+    setState("cleanupLocksStatus", "loading")
+    setState("locksError", undefined)
+    return read(
+      "locks",
+      CLEANUP_LOCK_STORAGE_KEY,
+      cleanupLockPathOptions,
+      locksRevision,
+      () => locksRevision,
+      (value) => setState("locks", value),
+    )
+  }
+
+  const resetCleanupLocks = async () => {
+    if (!storage || state.cleanupLocksStatus !== "error") return false
+    const revision = ++locksRevision
+    setState("cleanupLocksStatus", "saving")
+    setState("locksError", undefined)
+    const ok = await write("locks", CLEANUP_LOCK_STORAGE_KEY, [])
+    if (revision !== locksRevision) return false
+    if (!ok) {
+      setState("cleanupLocksStatus", "error")
+      return false
+    }
+    setState("locks", [])
+    setState("cleanupLocksStatus", "ready")
+    return true
   }
 
   return {
@@ -763,7 +965,10 @@ export function createDiskSettings(storage?: DiskSettingsStorage) {
       setDiskPinnedLocations: persistPins,
       diskCleanupLocks: () => state.locks,
       setDiskCleanupLocks: persistLocks,
-      persistenceError: () => state.persistenceError,
+      cleanupLocksStatus: () => state.cleanupLocksStatus,
+      retryDiskCleanupLocks: retryCleanupLocks,
+      resetDiskCleanupLocks: resetCleanupLocks,
+      persistenceError: () => state.locksError ?? state.pinsError,
     },
   }
 }
@@ -783,7 +988,7 @@ export function createPersistenceErrorDeduper() {
 
 export function useSettings() {
   const platform = usePlatform()
-  return createDiskSettings(platform.storage?.(PINNED_STORAGE_NAME))
+  return createDiskSettings(platform.storage?.(PINNED_STORAGE_NAME), { os: platform.os })
 }
 
 export function DiskLizardRuntime(props: ParentProps<{ platform: DiskLizardPlatform }>) {

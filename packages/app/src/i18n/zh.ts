@@ -56,11 +56,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "检查更新失败。",
   "desktop.updater.dialog.checkFailed.title": "更新错误",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "你使用的是最新版本。",
   "desktop.updater.dialog.upToDate.title": "无可用更新",
   "desktop.updater.dialog.ready.message": "已下载更新 {{version}}。是否立即重启？",
   "desktop.updater.dialog.ready.title": "更新已就绪",
   "desktop.updater.dialog.restart": "重启",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "稍后",
 
   "desktop.recovery.action.relaunch": "重新启动",

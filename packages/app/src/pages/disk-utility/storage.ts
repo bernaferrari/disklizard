@@ -3,15 +3,32 @@ import { canDeletePath } from "@disklizard/core/safety"
 import { isPathCleanupLocked } from "./cleanup-lock"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 import { diskLanguageText } from "./runtime"
+import { PINNED_LOCATION_LIMIT } from "./saved-paths"
 
 function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
-  const normalized = path.replace(/\\/g, "/").replace(/\/+$/, "") || "/"
-  const windowsPath = os === "windows" || /^[a-z]:\//i.test(normalized) || normalized.startsWith("//")
-  return windowsPath ? normalized.toLowerCase() : normalized
+  // Exact casing is significant on APFS and on NTFS directories with the
+  // per-directory case-sensitive flag. Scanner-produced paths already carry
+  // the spelling needed for stable identity.
+  const windowsPath =
+    os === "windows" ||
+    (os === undefined && (/^[a-z]:[\\/]/i.test(path) || path.startsWith("\\\\")))
+  let normalized = windowsPath
+    ? path.replace(/\\/g, "/").replace(/^\/\/+/, "//").replace(/(?<!^)\/{2,}/g, "/")
+    : path.replace(/\/+/g, "/")
+  normalized = normalized.replace(/\/+$/, "") || "/"
+  if (windowsPath && /^[a-z]:$/i.test(normalized)) normalized += "/"
+  return normalized
 }
 
 export function diskPathEquals(a: string, b: string, os?: "macos" | "windows" | "linux") {
   return normalizedDiskPath(a, os) === normalizedDiskPath(b, os)
+}
+
+/** Exact scanner-path containment; never case-folds case-sensitive NTFS directories. */
+export function diskPathIsWithin(path: string, rootPath: string, os?: "macos" | "windows" | "linux") {
+  const candidate = normalizedDiskPath(path, os)
+  const root = normalizedDiskPath(rootPath, os)
+  return candidate === root || candidate.startsWith(root.endsWith("/") ? root : `${root}/`)
 }
 
 export function isPinnedScanLocation(
@@ -27,7 +44,7 @@ export function togglePinnedScanLocation(
   locations: readonly DiskPinnedLocation[],
   candidate: DiskPinnedLocation,
   os?: "macos" | "windows" | "linux",
-  limit = 12,
+  limit = PINNED_LOCATION_LIMIT,
 ): DiskPinnedLocation[] {
   if (!candidate.path.trim()) return [...locations]
   if (isPinnedScanLocation(locations, candidate.path, os)) {
@@ -44,11 +61,13 @@ export function driveForPath(
   os?: "macos" | "windows" | "linux",
 ): DiskDriveInfo | undefined {
   const candidate = normalizedDiskPath(path, os)
+  const comparableCandidate = os === "windows" ? candidate.toLowerCase() : candidate
   return [...drives]
     .sort((a, b) => normalizedDiskPath(b.path, os).length - normalizedDiskPath(a.path, os).length)
     .find((drive) => {
-      const root = normalizedDiskPath(drive.path, os)
-      return candidate === root || (root === "/" ? candidate.startsWith("/") : candidate.startsWith(`${root}/`))
+      const normalizedRoot = normalizedDiskPath(drive.path, os)
+      const root = os === "windows" ? normalizedRoot.toLowerCase() : normalizedRoot
+      return comparableCandidate === root || comparableCandidate.startsWith(root.endsWith("/") ? root : `${root}/`)
     })
 }
 
@@ -239,8 +258,7 @@ export function uniqueDeletionRoots(
   os?: "macos" | "windows" | "linux",
 ): DiskScanNode[] {
   const key = (node: DiskScanNode) => {
-    const normalized = node.path.replace(/\\/g, "/").replace(/\/+$/, "")
-    return os === "windows" ? normalized.toLowerCase() : normalized
+    return node.path.replace(/\\/g, "/").replace(/\/+$/, "")
   }
   const sorted = [...nodes].sort((a, b) => key(a).length - key(b).length)
   const roots: DiskScanNode[] = []
@@ -275,8 +293,7 @@ export function withoutDeletedNodes(
   os?: "macos" | "windows" | "linux",
 ): DiskScanNode[] {
   const key = (node: DiskScanNode) => {
-    const normalized = node.path.replace(/\\/g, "/").replace(/\/+$/, "")
-    return os === "windows" ? normalized.toLowerCase() : normalized
+    return node.path.replace(/\\/g, "/").replace(/\/+$/, "")
   }
   const roots = uniqueDeletionRoots(deleted, os).map(key)
   return nodes.filter((node) => {

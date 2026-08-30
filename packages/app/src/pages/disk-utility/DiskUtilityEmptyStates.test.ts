@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import type { DiskScanNode } from "./types"
-import { centerOverlayBehavior } from "./DiskUtilityEmptyStates"
+import { centerOverlayBehavior, indexEmptyCopy } from "./DiskUtilityEmptyStates"
 
 function directory(name: string): DiskScanNode {
   return { name, path: `/workspace/${name}`, size: 1, isDir: true, children: [], ext: "" }
@@ -26,5 +26,15 @@ describe("centerOverlayBehavior", () => {
       canOpen: false,
       inventoryOnly: false,
     })
+  })
+})
+
+describe("indexEmptyCopy", () => {
+  it("explains product lenses instead of blaming generic filters", () => {
+    expect(indexEmptyCopy("developer").title).toBe("No developer storage found")
+    expect(indexEmptyCopy("recommendations").title).toBe("Nothing is ready for cleanup")
+    expect(indexEmptyCopy("recent").title).toBe("Nothing was modified today")
+    expect(indexEmptyCopy("search").title).toBe("No matching files")
+    expect(indexEmptyCopy("folder").title).toBe("This folder is empty")
   })
 })

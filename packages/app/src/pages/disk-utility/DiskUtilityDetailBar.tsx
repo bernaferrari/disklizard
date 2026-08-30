@@ -35,6 +35,7 @@ export function DetailBar(props: {
   locked?: boolean
   lockLabel?: string
   trashName: string
+  revealLabel: string
   onPreview?: () => void
   onQuickLook?: () => void
   onReveal: () => void
@@ -87,58 +88,75 @@ export function DetailBar(props: {
       </div>
       <div class="hidden shrink-0 items-center gap-1.5 md:flex">
         <Show when={!props.node.isOther}>
-          <Show when={props.onQuickLook}>
+          <Show
+            when={props.onQuickLook}
+            fallback={
+              <Show when={props.onPreview}>
+                <Button
+                  class="dl-touch-target"
+                  size="small"
+                  variant="ghost"
+                  icon="bullet-list"
+                  onClick={props.onPreview}
+                >
+                  {language.t("disk.common.preview")}
+                </Button>
+              </Show>
+            }
+          >
             <Button class="dl-touch-target" size="small" variant="ghost" icon="eye" onClick={props.onQuickLook}>
               {language.t("disk.common.quickLook")}
             </Button>
           </Show>
-          <Show when={props.onPreview}>
-            <Button
-              class="dl-touch-target"
-              size="small"
-              variant="ghost"
-              icon="bullet-list"
-              onClick={props.onPreview}
-            >
-              {language.t("disk.common.preview")}
-            </Button>
-          </Show>
-          <Button
-            class="dl-touch-target"
-            size="small"
-            variant="ghost"
-            icon="square-arrow-top-right"
-            onClick={props.onReveal}
-          >
-            {language.t("disk.common.reveal")}
-          </Button>
         </Show>
         <Show when={props.node.isDir && props.onOpen}>
           <Button class="dl-touch-target" size="small" variant="ghost" icon="enter" onClick={props.onOpen}>
-            {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.open")}
+            {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.exploreFolder")}
           </Button>
         </Show>
-        <Show when={props.deletable}>
-          <Button class="dl-touch-target" size="small" variant="ghost" icon="trash" onClick={props.onTrash}>
-            {props.trashName}
-          </Button>
-        </Show>
-        <Show when={props.onToggleLock}>
-          <Button
-            class="dl-touch-target"
-            size="small"
-            variant={props.locked ? "secondary" : "ghost"}
-            icon="shield"
-            aria-pressed={props.locked}
-            onClick={props.onToggleLock}
-          >
-            {props.locked ? language.t("disk.detail.protected") : language.t("disk.detail.protect")}
-          </Button>
-        </Show>
-        <Show when={props.locked && props.lockLabel}>
-          <span class="hidden max-w-[28ch] truncate text-12-regular text-text-weak lg:inline">
-            {language.t("disk.detail.under", { name: props.lockLabel! })}
-          </span>
+        <Show when={!props.node.isOther || props.onToggleLock || props.deletable}>
+          <DropdownMenu placement="top-end" gutter={6}>
+            <DropdownMenu.Trigger
+              as={Button}
+              class="dl-touch-target"
+              size="small"
+              variant="ghost"
+              icon="dot-grid"
+              aria-label={language.t("disk.detail.moreFor", { name: diskNodeDisplayName(props.node) })}
+            >
+              {language.t("disk.detail.more")}
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content>
+                <Show when={props.onQuickLook && props.onPreview}>
+                  <DropdownMenu.Item onSelect={props.onPreview}>
+                    <DropdownMenu.ItemLabel>{language.t("disk.common.previewHere")}</DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={!props.node.isOther}>
+                  <DropdownMenu.Item onSelect={props.onReveal}>
+                    <DropdownMenu.ItemLabel>{props.revealLabel}</DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={props.onToggleLock}>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item onSelect={props.onToggleLock}>
+                    <DropdownMenu.ItemLabel>
+                      {props.locked ? language.t("disk.detail.allowCleanup") : language.t("disk.detail.protectCleanup")}
+                    </DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={props.deletable}>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item onSelect={props.onTrash}>
+                    <DropdownMenu.ItemLabel>
+                      {language.t("disk.detail.moveTo", { trash: props.trashName })}
+                    </DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu>
         </Show>
         <Show when={props.deletable}>
           <Button
@@ -185,19 +203,21 @@ export function DetailBar(props: {
                     <DropdownMenu.ItemLabel>{language.t("disk.common.quickLook")}</DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
-                <Show when={!props.onQuickLook && props.onPreview}>
+                <Show when={props.onPreview}>
                   <DropdownMenu.Item onSelect={props.onPreview}>
-                    <DropdownMenu.ItemLabel>{language.t("disk.common.preview")}</DropdownMenu.ItemLabel>
+                    <DropdownMenu.ItemLabel>
+                      {language.t(props.onQuickLook ? "disk.common.previewHere" : "disk.common.preview")}
+                    </DropdownMenu.ItemLabel>
                   </DropdownMenu.Item>
                 </Show>
                 <DropdownMenu.Item onSelect={props.onReveal}>
-                  <DropdownMenu.ItemLabel>{language.t("disk.detail.revealManager")}</DropdownMenu.ItemLabel>
+                  <DropdownMenu.ItemLabel>{props.revealLabel}</DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
               <Show when={props.node.isDir && props.onOpen}>
                 <DropdownMenu.Item onSelect={props.onOpen}>
                   <DropdownMenu.ItemLabel>
-                    {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.openFolder")}
+                    {language.t(props.node.isOther ? "disk.common.showMore" : "disk.common.exploreFolder")}
                   </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>

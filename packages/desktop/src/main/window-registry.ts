@@ -17,6 +17,20 @@ export function createWindowRegistry<W>(persistence: {
 
   return {
     persisted,
+    /**
+     * DiskLizard's cleanup protections are process-wide product state. Until
+     * they are centralized in main, restoring more than one renderer would
+     * let stale per-window state bypass a protection saved in another window.
+     */
+    restoreSingle(createID: () => string) {
+      const ids = persisted()
+      const id = ids[0] ?? createID()
+      persistence.write([id])
+      for (const stale of new Set(ids.slice(1).filter((candidate) => candidate !== id))) {
+        persistence.cleanup(stale)
+      }
+      return id
+    },
     setQuitting(value = true) {
       quitting = value
     },

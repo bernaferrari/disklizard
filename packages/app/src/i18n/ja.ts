@@ -52,11 +52,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "アップデートを確認できませんでした。",
   "desktop.updater.dialog.checkFailed.title": "アップデートエラー",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "最新の状態です。",
   "desktop.updater.dialog.upToDate.title": "アップデートはありません",
   "desktop.updater.dialog.ready.message": "アップデート{{version}}をダウンロードしました。今すぐ再起動しますか？",
   "desktop.updater.dialog.ready.title": "アップデートの準備ができました",
   "desktop.updater.dialog.restart": "再起動",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "後で",
 
   "desktop.recovery.action.relaunch": "再起動",

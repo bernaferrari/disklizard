@@ -2,7 +2,7 @@ import {
   createDiskLizardMenu,
   type DiskLizardPlatform,
   type DiskLizardUpdaterState,
-} from "../../../app/src/pages/disk-utility/runtime"
+} from "@disklizard/app/runtime"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { createSignal } from "solid-js"
 import pkg from "../../package.json"
@@ -18,12 +18,12 @@ export function desktopOS(): DiskLizardPlatform["os"] {
 
 export function createDesktopStorage() {
   const api: AsyncStorage = {
-    getItem: (key: string) => window.api.storeGet("disklizard", key),
-    setItem: (key: string, value: string) => window.api.storeSet("disklizard", key, value),
-    removeItem: (key: string) => window.api.storeDelete("disklizard", key),
-    clear: () => window.api.storeClear("disklizard"),
-    key: async (index: number) => (await window.api.storeKeys("disklizard"))[index],
-    getLength: () => window.api.storeLength("disklizard"),
+    getItem: (key: string) => window.api.storeGet(key),
+    setItem: (key: string, value: string) => window.api.storeSet(key, value),
+    removeItem: (key: string) => window.api.storeDelete(key),
+    clear: () => window.api.storeClear(),
+    key: async (index: number) => (await window.api.storeKeys())[index],
+    getLength: () => window.api.storeLength(),
     get length() {
       return api.getLength()
     },
@@ -51,13 +51,13 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
       deletePath: (path, options) => window.api.disklizard.deletePath(path, options),
       previewPath: (path) => window.api.disklizard.previewPath(path),
       systemPreviewPath: (path) => window.api.disklizard.systemPreviewPath(path),
+      openPath: (path) => window.api.disklizard.openPath(path),
       openTrash: () => window.api.disklizard.openTrash(),
       revealPath: (path) => window.api.disklizard.revealPath(path),
       chooseFolder: () => window.api.disklizard.chooseFolder(),
       onScanProgress: (cb) => window.api.disklizard.onScanProgress(cb),
       onScanUpdate: (cb) => window.api.disklizard.onScanUpdate(cb),
     },
-    openPath: (path) => window.api.openPath(path),
     getPathForFile: (file) => window.api.getPathForFile(file),
     storage: createDesktopStorage(),
     updater: {
@@ -68,8 +68,8 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
     restart: async () => {
       window.api.relaunch()
     },
+    exportDiagnostics: () => window.api.exportDebugLogs(),
     openExternal: (url) => window.api.openExternal(url),
-    revealPath: (path) => window.api.revealPath(path),
     windowFullscreen: fullscreen.value,
     dispose: fullscreen.dispose,
   }

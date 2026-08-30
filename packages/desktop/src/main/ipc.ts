@@ -1,16 +1,14 @@
 import { spawn } from "node:child_process"
 import { stat } from "node:fs/promises"
-import { basename, join } from "node:path"
-import { app, BrowserWindow, Notification, clipboard, dialog, ipcMain, shell } from "electron"
+import { join } from "node:path"
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
 import type { IpcMainEvent, IpcMainInvokeEvent, WebContents } from "electron"
 import type { DesktopMenuAction } from "./desktop-menu"
-import { parseDesktopNativeBundle, type DesktopNativeBundle } from "../../../app/src/i18n/desktop-native"
+import { parseDesktopNativeBundle, type DesktopNativeBundle } from "@disklizard/app/native-i18n"
 import { normalizeScanOptions } from "../../../disklizard/src/scan"
 
-import type { FatalRendererError, TitlebarTheme } from "../preload/types"
+import type { TitlebarTheme } from "../preload/types"
 import { runDesktopMenuAction } from "./desktop-menu-actions"
-import { setForceFocus } from "./debug"
-import { assertAttachmentBudget, createPickedFileAuthorizations } from "./attachment-picker"
 import { diskAccessSettingsUrl, getDiskStorageDiagnostics } from "./disk-platform"
 import { DiskDeleteAuthorizationManager } from "./disk-delete-authorization"
 import { runGuardedDiskDelete, type DiskDeleteOptions } from "./disk-delete-precondition"
@@ -20,12 +18,9 @@ import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scan
 import type { ScanOptions, ScanProgress } from "./disk-scanner"
 import { DiskSnapshotManager } from "./disk-snapshot"
 import { getStore, removeStoreFileIfEmpty } from "./store"
-import { resolveRendererStoreName } from "./renderer-store"
 import {
   getPinchZoomEnabled,
-  getWindowID,
   openExternalURL,
-  openLocalFileURL,
   setPinchZoomEnabled,
   setTitlebar,
   updateTitlebar,
@@ -34,12 +29,82 @@ import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
 import { nativeT } from "./native-translations"
 
-const pickerFilters = (ext?: string[]) => {
-  if (!ext || ext.length === 0) return undefined
-  return [{ name: nativeT("desktop.dialog.files"), extensions: ext }]
+const DISKLIZARD_RENDERER_STORE = "disklizard.dat"
+const DISKLIZARD_STORAGE_KEYS = new Set(["pinned-locations", "cleanup-locks"])
+const MAX_DISKLIZARD_STORAGE_BYTES = 1024 * 1024
+const MIN_RENDERER_ZOOM_FACTOR = 0.2
+const MAX_RENDERER_ZOOM_FACTOR = 10
+const RENDERER_BACKGROUND_COLOR = /^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$/
+const DESKTOP_MENU_ACTIONS: Readonly<Record<DesktopMenuAction, true>> = {
+  "app.checkForUpdates": true,
+  "app.relaunch": true,
+  "edit.undo": true,
+  "edit.redo": true,
+  "edit.cut": true,
+  "edit.copy": true,
+  "edit.paste": true,
+  "edit.delete": true,
+  "edit.selectAll": true,
+  "view.reload": true,
+  "view.toggleDevTools": true,
+  "view.resetZoom": true,
+  "view.zoomIn": true,
+  "view.zoomOut": true,
+  "view.toggleFullscreen": true,
+  "window.close": true,
+  "window.minimize": true,
+  "window.toggleMaximize": true,
 }
 
-const pickedFiles = createPickedFileAuthorizations()
+function diskLizardStorageKey(value: unknown) {
+  if (typeof value !== "string" || !DISKLIZARD_STORAGE_KEYS.has(value)) {
+    throw new Error("Invalid DiskLizard storage key")
+  }
+  return value
+}
+
+function serializeDiskLizardStorageValue(value: unknown) {
+  if (value === undefined || value === null) throw new Error("Invalid DiskLizard storage value")
+  const serialized = typeof value === "string" ? value : JSON.stringify(value)
+  if (typeof serialized !== "string" || Buffer.byteLength(serialized, "utf8") > MAX_DISKLIZARD_STORAGE_BYTES) {
+    throw new Error("Invalid DiskLizard storage value")
+  }
+  return serialized
+}
+
+function parseRendererBackgroundColor(value: unknown) {
+  if (typeof value !== "string" || !RENDERER_BACKGROUND_COLOR.test(value)) {
+    throw new Error("Invalid background color")
+  }
+  return value
+}
+
+function parseRendererZoomFactor(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("Invalid zoom factor")
+  return Math.min(Math.max(value, MIN_RENDERER_ZOOM_FACTOR), MAX_RENDERER_ZOOM_FACTOR)
+}
+
+function parseRendererTitlebarTheme(value: unknown): TitlebarTheme {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("Invalid titlebar theme")
+  }
+  const theme = value as Record<string, unknown>
+  if (Object.keys(theme).some((key) => key !== "mode" && key !== "scheme")) {
+    throw new Error("Invalid titlebar theme")
+  }
+  if (theme.mode !== "light" && theme.mode !== "dark") throw new Error("Invalid titlebar theme")
+  if (theme.scheme !== undefined && theme.scheme !== "system" && theme.scheme !== "light" && theme.scheme !== "dark") {
+    throw new Error("Invalid titlebar theme")
+  }
+  return theme.scheme === undefined ? { mode: theme.mode } : { mode: theme.mode, scheme: theme.scheme }
+}
+
+function parseDesktopMenuAction(value: unknown): DesktopMenuAction {
+  if (typeof value !== "string" || !Object.hasOwn(DESKTOP_MENU_ACTIONS, value)) {
+    throw new Error("Invalid desktop menu action")
+  }
+  return value as DesktopMenuAction
+}
 
 function parseRendererMaxChildren(value: unknown) {
   const scannerDefault = normalizeScanOptions({}).maxChildren!
@@ -67,13 +132,13 @@ function parseStopWatchingOptions(value: unknown) {
 
 type Deps = {
   relaunch: () => void
-  consumeInitialDeepLinks: () => Promise<string[]> | string[]
   updater: UpdaterController
   showUpdater: () => Promise<void> | void
   setBackgroundColor: (color: string) => void
   exportDebugLogs: () => Promise<string>
-  recordFatalRendererError: (error: FatalRendererError) => Promise<void> | void
   setNativeTranslations: (bundle: DesktopNativeBundle) => void
+  /** Present only in an explicit packaged-smoke build; replaces the native folder picker, not disk operations. */
+  packagedSmokeFixturePath?: string
 }
 
 export function assertTrustedRenderer(event: Pick<IpcMainInvokeEvent, "sender" | "senderFrame">) {
@@ -155,6 +220,7 @@ export function registerIpcHandlers(deps: Deps) {
     if (!tracked || tracked.sender !== sender) {
       if (tracked) {
         if (!tracked.sender.isDestroyed()) tracked.sender.removeListener("destroyed", tracked.onDestroyed)
+        diskDeleteAuthorizations.removeSender(sender.id)
         for (const staleOwner of tracked.owners) {
           diskSnapshotOwnerSenders.delete(staleOwner)
           void diskSnapshots.stop(staleOwner)
@@ -165,6 +231,7 @@ export function registerIpcHandlers(deps: Deps) {
         const current = diskSnapshotSenders.get(sender.id)
         if (!current || current.onDestroyed !== onDestroyed) return
         diskSnapshotSenders.delete(sender.id)
+        diskDeleteAuthorizations.removeSender(sender.id)
         for (const currentOwner of current.owners) {
           diskSnapshotOwnerSenders.delete(currentOwner)
           diskScans.get(currentOwner)?.abort(new Error("Scan window closed"))
@@ -366,8 +433,12 @@ export function registerIpcHandlers(deps: Deps) {
       return { ok: true }
     },
   )
-  handle("disklizard:preview-path", (_event: IpcMainInvokeEvent, targetPath: string) => readDiskPreview(targetPath))
-  handle("disklizard:system-preview-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+  handle("disklizard:preview-path", (event: IpcMainInvokeEvent, targetPath: string) => {
+    diskDeleteAuthorizations.assertTrustedPath(event.sender.id, targetPath)
+    return readDiskPreview(targetPath)
+  })
+  handle("disklizard:system-preview-path", async (event: IpcMainInvokeEvent, targetPath: string) => {
+    diskDeleteAuthorizations.assertTrustedPath(event.sender.id, targetPath)
     const metadata = await stat(targetPath)
     if (!metadata.isFile() && !metadata.isDirectory()) throw new Error("Only files and folders can be previewed")
     const command = quickLookCommand(targetPath)
@@ -377,6 +448,11 @@ export function registerIpcHandlers(deps: Deps) {
       preview.unref()
       return
     }
+    const error = await shell.openPath(targetPath)
+    if (error) throw new Error(error)
+  })
+  handle("disklizard:open-path", async (event: IpcMainInvokeEvent, targetPath: string) => {
+    diskDeleteAuthorizations.assertTrustedPath(event.sender.id, targetPath)
     const error = await shell.openPath(targetPath)
     if (error) throw new Error(error)
   })
@@ -394,11 +470,17 @@ export function registerIpcHandlers(deps: Deps) {
     const error = await shell.openPath(path)
     if (error) throw new Error(error)
   })
-  handle("disklizard:reveal-path", async (_event: IpcMainInvokeEvent, targetPath: string) => {
+  handle("disklizard:reveal-path", async (event: IpcMainInvokeEvent, targetPath: string) => {
+    diskDeleteAuthorizations.assertTrustedPath(event.sender.id, targetPath)
     await stat(targetPath)
     shell.showItemInFolder(targetPath)
   })
   handle("disklizard:choose-folder", async (event: IpcMainInvokeEvent) => {
+    if (import.meta.env.DISKLIZARD_PACKAGED_SMOKE === "1" && deps.packagedSmokeFixturePath) {
+      const fixture = await stat(deps.packagedSmokeFixturePath)
+      if (!fixture.isDirectory()) throw new Error("Packaged smoke fixture is not a directory")
+      return deps.packagedSmokeFixturePath
+    }
     const win = BrowserWindow.fromWebContents(event.sender)
     const result = await dialog.showOpenDialog(win ?? undefined!, {
       properties: ["openDirectory"],
@@ -408,7 +490,6 @@ export function registerIpcHandlers(deps: Deps) {
     return result.filePaths[0]
   })
 
-  handle("consume-initial-deep-links", () => deps.consumeInitialDeepLinks())
   handle("updater-subscribe", (event) => {
     const id = event.sender.id
     updaterSubscriptions.set(
@@ -423,173 +504,76 @@ export function registerIpcHandlers(deps: Deps) {
   handle("updater-unsubscribe", (event) => updaterSubscriptions.delete(event.sender.id))
   handle("updater-check", () => deps.updater.check())
   handle("updater-install", () => deps.updater.install())
-  handle("set-background-color", (_event: IpcMainInvokeEvent, color: string) => deps.setBackgroundColor(color))
-  handle("export-debug-logs", () => deps.exportDebugLogs())
-  handle("set-force-focus", (event: IpcMainInvokeEvent, enabled: boolean) => setForceFocus(event.sender, enabled))
-  handle("record-fatal-renderer-error", (_event: IpcMainInvokeEvent, error: FatalRendererError) =>
-    deps.recordFatalRendererError(error),
+  handle("set-background-color", (_event: IpcMainInvokeEvent, color: unknown) =>
+    deps.setBackgroundColor(parseRendererBackgroundColor(color)),
   )
+  handle("export-debug-logs", () => deps.exportDebugLogs())
   handle("set-native-translations", (_event: IpcMainInvokeEvent, value: unknown) => {
     const bundle = parseDesktopNativeBundle(value)
     if (!bundle) throw new Error("Invalid native translation bundle")
     deps.setNativeTranslations(bundle)
   })
-  handle("store-get", (_event: IpcMainInvokeEvent, id: unknown, key: string) => {
-    try {
-      const store = getStore(resolveRendererStoreName(id))
-      const value = store.get(key)
-      if (value === undefined || value === null) return null
-      return typeof value === "string" ? value : JSON.stringify(value)
-    } catch {
-      return null
+  handle("disklizard:store-get", (_event: IpcMainInvokeEvent, input: unknown) => {
+    const key = diskLizardStorageKey(input)
+    const store = getStore(DISKLIZARD_RENDERER_STORE)
+    if (!store.has(key)) return null
+    return serializeDiskLizardStorageValue(store.get(key))
+  })
+  handle("disklizard:store-set", (_event: IpcMainInvokeEvent, input: unknown, value: unknown) => {
+    const key = diskLizardStorageKey(input)
+    if (typeof value !== "string" || Buffer.byteLength(value, "utf8") > MAX_DISKLIZARD_STORAGE_BYTES) {
+      throw new Error("Invalid DiskLizard storage value")
     }
+    getStore(DISKLIZARD_RENDERER_STORE).set(key, value)
   })
-  handle("store-set", (_event: IpcMainInvokeEvent, id: unknown, key: string, value: string) => {
-    getStore(resolveRendererStoreName(id)).set(key, value)
+  handle("disklizard:store-delete", (_event: IpcMainInvokeEvent, input: unknown) => {
+    const key = diskLizardStorageKey(input)
+    getStore(DISKLIZARD_RENDERER_STORE).delete(key)
+    void removeStoreFileIfEmpty(DISKLIZARD_RENDERER_STORE)
   })
-  handle("store-delete", (_event: IpcMainInvokeEvent, id: unknown, key: string) => {
-    const name = resolveRendererStoreName(id)
-    getStore(name).delete(key)
-    void removeStoreFileIfEmpty(name)
+  handle("disklizard:store-clear", () => {
+    getStore(DISKLIZARD_RENDERER_STORE).clear()
+    void removeStoreFileIfEmpty(DISKLIZARD_RENDERER_STORE)
   })
-  handle("store-clear", (_event: IpcMainInvokeEvent, id: unknown) => {
-    const name = resolveRendererStoreName(id)
-    getStore(name).clear()
-    void removeStoreFileIfEmpty(name)
+  handle("disklizard:store-keys", () => {
+    const store = getStore(DISKLIZARD_RENDERER_STORE)
+    return Object.keys(store.store).filter((key) => DISKLIZARD_STORAGE_KEYS.has(key))
   })
-  handle("store-keys", (_event: IpcMainInvokeEvent, id: unknown) => {
-    const store = getStore(resolveRendererStoreName(id))
-    return Object.keys(store.store)
-  })
-  handle("store-length", (_event: IpcMainInvokeEvent, id: unknown) => {
-    const store = getStore(resolveRendererStoreName(id))
-    return Object.keys(store.store).length
-  })
-
-  handle(
-    "open-directory-picker",
-    async (_event: IpcMainInvokeEvent, opts?: { multiple?: boolean; title?: string; defaultPath?: string }) => {
-      const result = await dialog.showOpenDialog({
-        properties: ["openDirectory", ...(opts?.multiple ? ["multiSelections" as const] : []), "createDirectory"],
-        title: opts?.title ?? nativeT("desktop.dialog.chooseFolder"),
-        defaultPath: opts?.defaultPath,
-      })
-      if (result.canceled) return null
-      return opts?.multiple ? result.filePaths : result.filePaths[0]
-    },
-  )
-
-  handle(
-    "open-file-picker",
-    async (
-      event: IpcMainInvokeEvent,
-      opts?: { multiple?: boolean; title?: string; defaultPath?: string; extensions?: string[] },
-    ) => {
-      const result = await dialog.showOpenDialog({
-        properties: ["openFile", ...(opts?.multiple ? ["multiSelections" as const] : [])],
-        title: opts?.title ?? nativeT("desktop.dialog.chooseFile"),
-        defaultPath: opts?.defaultPath,
-        filters: pickerFilters(opts?.extensions),
-      })
-      if (result.canceled) return null
-      const files = await Promise.all(
-        result.filePaths.map(async (filePath) => ({
-          path: filePath,
-          name: basename(filePath),
-          size: (await stat(filePath)).size,
-        })),
-      )
-      assertAttachmentBudget(files)
-      const token = pickedFiles.add(event.sender.id, result.filePaths)
-      return { token, files }
-    },
-  )
-
-  handle("read-picked-file", async (event: IpcMainInvokeEvent, token: string, filePath: string) => {
-    return pickedFiles.read(event.sender.id, token, filePath)
-  })
-
-  handle("release-picked-files", (event: IpcMainInvokeEvent, token: string) => {
-    pickedFiles.release(event.sender.id, token)
-  })
-
-  handle("save-file-picker", async (_event: IpcMainInvokeEvent, opts?: { title?: string; defaultPath?: string }) => {
-    const result = await dialog.showSaveDialog({
-      title: opts?.title ?? nativeT("desktop.dialog.saveFile"),
-      defaultPath: opts?.defaultPath,
-    })
-    if (result.canceled) return null
-    return result.filePath ?? null
+  handle("disklizard:store-length", () => {
+    const store = getStore(DISKLIZARD_RENDERER_STORE)
+    return Object.keys(store.store).filter((key) => DISKLIZARD_STORAGE_KEYS.has(key)).length
   })
 
   on("open-external", (_event: IpcMainEvent, url: string) => openExternalURL(url))
-  on("open-local-file", (_event: IpcMainEvent, url: string) => openLocalFileURL(url))
-
-  handle("open-path", (_event: IpcMainInvokeEvent, path: string) => shell.openPath(path))
-
-  handle("read-clipboard-image", () => {
-    const image = clipboard.readImage()
-    if (image.isEmpty()) return null
-    const buffer = image.toPNG().buffer
-    const size = image.getSize()
-    return { buffer, width: size.width, height: size.height }
-  })
-
-  on("show-notification", (_event: IpcMainEvent, title: string, body?: string) => {
-    new Notification({ title, body }).show()
-  })
-
-  handle("get-window-count", () => BrowserWindow.getAllWindows().length)
-
-  handle("get-window-id", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) throw new Error("Window not found")
-    const id = getWindowID(win)
-    if (!id) throw new Error("Window ID not found")
-    return id
-  })
-
-  handle("get-window-focused", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    return win?.isFocused() ?? false
-  })
 
   handle("get-window-fullscreen", (event: IpcMainInvokeEvent) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     return win?.isFullScreen() ?? false
   })
 
-  handle("set-window-focus", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    win?.focus()
-  })
-
-  handle("show-window", (event: IpcMainInvokeEvent) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    win?.show()
-  })
-
   on("relaunch", () => {
     deps.relaunch()
   })
 
-  handle("get-zoom-factor", (event: IpcMainInvokeEvent) => event.sender.getZoomFactor())
-  handle("set-zoom-factor", (event: IpcMainInvokeEvent, factor: number) => {
-    event.sender.setZoomFactor(factor)
+  handle("set-zoom-factor", (event: IpcMainInvokeEvent, factor: unknown) => {
+    event.sender.setZoomFactor(parseRendererZoomFactor(factor))
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) return
     updateTitlebar(win)
   })
   handle("get-pinch-zoom-enabled", () => getPinchZoomEnabled())
-  handle("set-pinch-zoom-enabled", (_event: IpcMainInvokeEvent, enabled: boolean) => {
+  handle("set-pinch-zoom-enabled", (_event: IpcMainInvokeEvent, enabled: unknown) => {
+    if (typeof enabled !== "boolean") throw new Error("Invalid pinch zoom value")
     setPinchZoomEnabled(enabled)
   })
-  handle("set-titlebar", (event: IpcMainInvokeEvent, theme: TitlebarTheme) => {
+  handle("set-titlebar", (event: IpcMainInvokeEvent, value: unknown) => {
+    const theme = parseRendererTitlebarTheme(value)
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) return
     setTitlebar(win, theme)
   })
-  handle("run-desktop-menu-action", (event: IpcMainInvokeEvent, action: DesktopMenuAction) => {
+  handle("run-desktop-menu-action", (event: IpcMainInvokeEvent, value: unknown) => {
+    const action = parseDesktopMenuAction(value)
     runDesktopMenuAction(BrowserWindow.fromWebContents(event.sender), action, {
       checkForUpdates: () => void deps.showUpdater(),
       relaunch: deps.relaunch,
@@ -599,8 +583,4 @@ export function registerIpcHandlers(deps: Deps) {
 
 export function sendMenuCommand(win: BrowserWindow, id: string) {
   win.webContents.send("menu-command", id)
-}
-
-export function sendDeepLinks(win: BrowserWindow, urls: string[]) {
-  win.webContents.send("deep-link", urls)
 }

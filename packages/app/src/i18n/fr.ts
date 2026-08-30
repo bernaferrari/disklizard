@@ -52,11 +52,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "La recherche de mises à jour a échoué.",
   "desktop.updater.dialog.checkFailed.title": "Erreur de mise à jour",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Vous êtes à jour.",
   "desktop.updater.dialog.upToDate.title": "Aucune mise à jour",
   "desktop.updater.dialog.ready.message": "La mise à jour {{version}} a été téléchargée. Redémarrer maintenant ?",
   "desktop.updater.dialog.ready.title": "Mise à jour prête",
   "desktop.updater.dialog.restart": "Redémarrer",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Plus tard",
 
   "desktop.recovery.action.relaunch": "Relancer",

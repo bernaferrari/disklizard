@@ -56,11 +56,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Güncellemeler kontrol edilemedi.",
   "desktop.updater.dialog.checkFailed.title": "Güncelleme hatası",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "En son sürümü kullanıyorsunuz.",
   "desktop.updater.dialog.upToDate.title": "Güncelleme yok",
   "desktop.updater.dialog.ready.message": "{{version}} güncellemesi indirildi. Şimdi yeniden başlatılsın mı?",
   "desktop.updater.dialog.ready.title": "Güncelleme hazır",
   "desktop.updater.dialog.restart": "Yeniden başlat",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Daha sonra",
 
   "desktop.recovery.action.relaunch": "Uygulamayı yeniden başlat",

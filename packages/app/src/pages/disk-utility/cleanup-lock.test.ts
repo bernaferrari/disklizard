@@ -31,6 +31,16 @@ describe("cleanup locks", () => {
     const locks = [{ path: "C:\\Work\\Starlink", label: "Starlink" }]
     expect(isPathCleanupLocked("c:\\work\\starlink\\bazel-bin", locks, "windows")).toBe(true)
     expect(isCleanupLock("c:\\WORK\\starlink", locks, "windows")).toBe(true)
+    expect(isPathCleanupLocked("c:\\work\\starlink", [{ path: "C:\\", label: "Drive" }], "windows")).toBe(true)
+  })
+
+  test("uses POSIX separators without conflating literal backslashes", () => {
+    const locks = [{ path: "/srv/name\\with\\slashes", label: "Literal" }]
+    expect(isPathCleanupLocked("/srv/name\\with\\slashes/cache", locks, "linux")).toBe(true)
+    expect(isPathCleanupLocked("/srv/name/with/slashes/cache", locks, "linux")).toBe(false)
+    expect(isPathCleanupLocked("/srv/project/cache", [{ path: "/srv//project/", label: "Project" }], "linux")).toBe(
+      true,
+    )
   })
 
   test("toggles a lock without silently dropping an existing one when the list is full", () => {

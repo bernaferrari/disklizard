@@ -55,11 +55,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Søket etter oppdateringer mislyktes.",
   "desktop.updater.dialog.checkFailed.title": "Oppdateringsfeil",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Du har den nyeste versjonen.",
   "desktop.updater.dialog.upToDate.title": "Ingen oppdateringer",
   "desktop.updater.dialog.ready.message": "Oppdateringen {{version}} er lastet ned. Vil du starte på nytt nå?",
   "desktop.updater.dialog.ready.title": "Oppdateringen er klar",
   "desktop.updater.dialog.restart": "Start på nytt",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Senere",
 
   "desktop.recovery.action.relaunch": "Start appen på nytt",

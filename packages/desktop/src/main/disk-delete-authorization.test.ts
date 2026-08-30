@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
 import {
+  authorizationPathKey,
   DiskDeleteAuthorizationManager,
   INVALID_DELETE_AUTHORIZATION_ERROR,
   UNSCANNED_DELETE_TARGET_ERROR,
@@ -15,6 +16,18 @@ afterEach(async () => {
 })
 
 describe("scan-bound delete authorization", () => {
+  test("binds authority to exact scanner spelling without lexical or case normalization", () => {
+    expect(authorizationPathKey("C:\\Work\\Project\\..\\Artifact", "win32")).toBe(
+      "C:\\Work\\Project\\..\\Artifact",
+    )
+    expect(authorizationPathKey("C:\\Work\\Project", "win32")).not.toBe(
+      authorizationPathKey("c:\\work\\PROJECT", "win32"),
+    )
+    expect(authorizationPathKey("/Volumes/CaseSensitive/Project", "darwin")).not.toBe(
+      authorizationPathKey("/Volumes/CaseSensitive/project", "darwin"),
+    )
+  })
+
   test("authorizes only an item issued by the sender's active scan", async () => {
     const rootPath = await mkdtemp(join(tmpdir(), "disklizard-delete-auth-"))
     temporary.push(rootPath)
@@ -36,6 +49,63 @@ describe("scan-bound delete authorization", () => {
     await expect(validate()).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
     await expect(manager.authorize(8, [filePath], async () => undefined)).rejects.toThrow(UNSCANNED_DELETE_TARGET_ERROR)
     await expect(manager.authorize(7, [join(rootPath, "other.txt")], async () => undefined)).rejects.toThrow(
+      UNSCANNED_DELETE_TARGET_ERROR,
+    )
+  })
+
+  test("trusts preview and open paths only while the sender owns their exact scan generation", () => {
+    const manager = new DiskDeleteAuthorizationManager()
+    const filePath = "/work/project/readme.txt"
+    manager.updateRoot("21:primary", 21, {
+      name: "project",
+      path: "/work/project",
+      size: 8,
+      isDir: true,
+      ext: "",
+      children: [{ name: "readme.txt", path: filePath, size: 8, isDir: false, ext: "txt", children: [] }],
+    })
+
+    expect(() => manager.assertTrustedPath(21, filePath)).not.toThrow()
+    expect(() => manager.assertTrustedPath(22, filePath)).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+    expect(() => manager.assertTrustedPath(21, "/work/project/unscanned.txt")).toThrow(
+      UNSCANNED_DELETE_TARGET_ERROR,
+    )
+    expect(() => manager.assertTrustedPath(21, "/work/project/link/../readme.txt")).toThrow(
+      UNSCANNED_DELETE_TARGET_ERROR,
+    )
+    expect(() => manager.assertTrustedPath(21, "bad\0path")).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+
+    manager.updateRoot("21:primary", 21, {
+      name: "project",
+      path: "/work/project",
+      size: 0,
+      isDir: true,
+      ext: "",
+      children: [],
+    })
+    expect(() => manager.assertTrustedPath(21, filePath)).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+    expect(() => manager.assertTrustedPath(21, "/work/project")).not.toThrow()
+
+    manager.removeOwner("21:primary")
+    expect(() => manager.assertTrustedPath(21, "/work/project")).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+  })
+
+  test("does not derive Windows authority across case-distinct names", async () => {
+    const manager = new DiskDeleteAuthorizationManager({
+      readIdentity: async () => ({ device: "1", fileID: "1", modifiedAt: 1, size: "1", kind: "file" }),
+    })
+    manager.updateRoot("23:primary", 23, {
+      name: "root",
+      path: "C:\\work",
+      size: 1,
+      isDir: true,
+      ext: "",
+      children: [{ name: "A.txt", path: "C:\\work\\A.txt", size: 1, isDir: false, ext: "txt", children: [] }],
+    })
+
+    expect(() => manager.assertTrustedPath(23, "C:\\work\\A.txt")).not.toThrow()
+    expect(() => manager.assertTrustedPath(23, "C:\\work\\a.txt")).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
+    await expect(manager.authorize(23, ["C:\\work\\a.txt"], async () => undefined)).rejects.toThrow(
       UNSCANNED_DELETE_TARGET_ERROR,
     )
   })
@@ -154,6 +224,47 @@ describe("scan-bound delete authorization", () => {
       children: [],
     })
     await expect(validate()).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
+  })
+
+  test("rejects the final guard when filesystem identity resolves after its deadline", async () => {
+    let now = 0
+    const filePath = "/synthetic/slow-stat.txt"
+    const identity = {
+      device: "1",
+      fileID: "slow-stat",
+      modifiedAt: 1,
+      size: "1",
+      kind: "file" as const,
+    }
+    let reads = 0
+    let resolveGuardIdentity!: (value: typeof identity) => void
+    const guardIdentity = new Promise<typeof identity>((resolve) => {
+      resolveGuardIdentity = resolve
+    })
+    const manager = new DiskDeleteAuthorizationManager({
+      now: () => now,
+      ttlMs: 100,
+      readIdentity: async () => {
+        reads += 1
+        return reads === 1 ? identity : guardIdentity
+      },
+    })
+    manager.updateRoot("16:scan", 16, {
+      name: "synthetic",
+      path: "/synthetic",
+      size: 1,
+      isDir: true,
+      ext: "",
+      children: [{ name: "slow-stat.txt", path: filePath, size: 1, isDir: false, ext: "txt", children: [] }],
+    })
+
+    const [prepared] = await manager.authorize(16, [filePath], async () => undefined)
+    const validate = await manager.consume(16, filePath, prepared.authorization)
+    const validation = validate()
+    now = 100
+    resolveGuardIdentity(identity)
+
+    await expect(validation).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
   })
 
   test("retains a trusted focused subtree only while its trusted parent generation remains active", async () => {
@@ -340,6 +451,149 @@ describe("scan-bound delete authorization", () => {
     await expect(manager.authorize(23, [filePath], async () => undefined)).rejects.toThrow(
       UNSCANNED_DELETE_TARGET_ERROR,
     )
+  })
+
+  test("renews a complete 4,096-item authorization group during a slow sequential cleanup", async () => {
+    let now = 0
+    const paths = Array.from({ length: 4096 }, (_, index) => `/synthetic/reviewed-${index}.bin`)
+    const manager = new DiskDeleteAuthorizationManager({
+      now: () => now,
+      ttlMs: 100,
+      readIdentity: async (path) => ({
+        device: "1",
+        fileID: path,
+        modifiedAt: 1,
+        size: "1",
+        kind: "file",
+      }),
+    })
+    manager.updateRoot("25:scan", 25, {
+      name: "synthetic",
+      path: "/synthetic",
+      size: paths.length,
+      isDir: true,
+      ext: "",
+      children: paths.map((path, index) => ({
+        name: `reviewed-${index}.bin`,
+        path,
+        size: 1,
+        isDir: false,
+        ext: "bin",
+        children: [],
+      })),
+    })
+
+    const prepared = await manager.authorize(25, paths, async () => undefined)
+    expect(prepared).toHaveLength(4096)
+    for (const item of prepared) {
+      now += 90
+      const validate = await manager.consume(25, item.path, item.authorization)
+      await expect(validate()).resolves.toBeUndefined()
+    }
+  })
+
+  test("prunes expired groups and bounds abandoned capabilities per sender and globally", async () => {
+    let now = 0
+    const identity = async (path: string) => ({
+      device: "1",
+      fileID: path,
+      modifiedAt: 1,
+      size: "1",
+      kind: "file" as const,
+    })
+    const node = (path: string) => ({
+      name: path.split("/").at(-1)!,
+      path,
+      size: 1,
+      isDir: false,
+      ext: "txt",
+      children: [],
+    })
+    const senderOnePaths = Array.from({ length: 6 }, (_, index) => `/one/${index}.txt`)
+    const senderTwoPaths = Array.from({ length: 2 }, (_, index) => `/two/${index}.txt`)
+    const manager = new DiskDeleteAuthorizationManager({
+      now: () => now,
+      ttlMs: 100,
+      maxPerSender: 3,
+      maxGlobal: 3,
+      readIdentity: identity,
+    })
+    manager.updateRoot("27:scan", 27, {
+      name: "one",
+      path: "/one",
+      size: 6,
+      isDir: true,
+      ext: "",
+      children: senderOnePaths.map(node),
+    })
+    manager.updateRoot("28:scan", 28, {
+      name: "two",
+      path: "/two",
+      size: 2,
+      isDir: true,
+      ext: "",
+      children: senderTwoPaths.map(node),
+    })
+
+    const abandoned = await manager.authorize(27, senderOnePaths.slice(0, 2), async () => undefined)
+    const senderOneCurrent = await manager.authorize(27, senderOnePaths.slice(2, 4), async () => undefined)
+    await expect(manager.consume(27, abandoned[0]!.path, abandoned[0]!.authorization)).rejects.toThrow(
+      INVALID_DELETE_AUTHORIZATION_ERROR,
+    )
+
+    const senderTwoCurrent = await manager.authorize(28, senderTwoPaths, async () => undefined)
+    await expect(
+      manager.consume(27, senderOneCurrent[0]!.path, senderOneCurrent[0]!.authorization),
+    ).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
+    const validateSenderTwo = await manager.consume(
+      28,
+      senderTwoCurrent[0]!.path,
+      senderTwoCurrent[0]!.authorization,
+    )
+    expect(typeof validateSenderTwo).toBe("function")
+
+    // Expiration is a half-open lifetime: the capability is invalid at the
+    // exact deadline, not one clock tick later.
+    now = 100
+    const afterExpiry = await manager.authorize(27, senderOnePaths.slice(4), async () => undefined)
+    await expect(
+      manager.consume(28, senderTwoCurrent[1]!.path, senderTwoCurrent[1]!.authorization),
+    ).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
+    const validateAfterExpiry = await manager.consume(27, afterExpiry[0]!.path, afterExpiry[0]!.authorization)
+    expect(typeof validateAfterExpiry).toBe("function")
+  })
+
+  test("removes every pending capability with its owner or renderer sender", async () => {
+    const rootPath = await mkdtemp(join(tmpdir(), "disklizard-delete-auth-"))
+    temporary.push(rootPath)
+    const firstPath = join(rootPath, "first.txt")
+    const secondPath = join(rootPath, "second.txt")
+    await Promise.all([writeFile(firstPath, "first"), writeFile(secondPath, "second")])
+    const manager = new DiskDeleteAuthorizationManager()
+    const root = {
+      name: "root",
+      path: rootPath,
+      size: 11,
+      isDir: true,
+      ext: "",
+      children: [
+        { name: "first.txt", path: firstPath, size: 5, isDir: false, ext: "txt", children: [] },
+        { name: "second.txt", path: secondPath, size: 6, isDir: false, ext: "txt", children: [] },
+      ],
+    }
+    manager.updateRoot("29:scan", 29, root)
+    const ownerCapabilities = await manager.authorize(29, [firstPath, secondPath], async () => undefined)
+    manager.removeOwner("29:scan")
+    await expect(
+      manager.consume(29, firstPath, ownerCapabilities[0]!.authorization),
+    ).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
+
+    manager.updateRoot("29:scan-new", 29, root)
+    const senderCapabilities = await manager.authorize(29, [firstPath, secondPath], async () => undefined)
+    manager.removeSender(29)
+    await expect(
+      manager.consume(29, secondPath, senderCapabilities[1]!.authorization),
+    ).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
   })
 
   test("bounds retained focused authority roots", async () => {

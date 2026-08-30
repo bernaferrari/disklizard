@@ -6,7 +6,9 @@ import {
   PRODUCT_NAME,
   appIdentity,
   resolveDesktopChannel,
+  resolvePublicReleaseRepository,
   updaterFeedChannel,
+  updaterPublishConfig,
 } from "./product-identity"
 
 describe("desktop product identity", () => {
@@ -24,6 +26,7 @@ describe("desktop product identity", () => {
     expect(resolveDesktopChannel("beta", "prod")).toBe("beta")
     expect(resolveDesktopChannel(undefined, "prod")).toBe("prod")
     expect(resolveDesktopChannel("unknown", "beta")).toBe("dev")
+    expect(resolveDesktopChannel(undefined, "latest")).toBe("dev")
   })
 
   test("uses dev identity for unpackaged runs and isolates the beta feed", () => {
@@ -41,16 +44,42 @@ describe("desktop product identity", () => {
     expect(PRODUCT_NAME).toBe("DiskLizard")
   })
 
-  test("publishes updates from a publicly consumable GitHub repository", async () => {
-    const { PUBLIC_RELEASE_REPOSITORY, updaterPublishConfig } = await import("./product-identity")
-    expect(PUBLIC_RELEASE_REPOSITORY.private).toBe(false)
-    expect(updaterPublishConfig("prod")).toMatchObject({
+  test("requires an explicitly acknowledged public update repository", () => {
+    expect(resolvePublicReleaseRepository({})).toBeUndefined()
+    expect(
+      resolvePublicReleaseRepository({
+        DISKLIZARD_RELEASE_REPO: "disklizard-releases",
+      }),
+    ).toBeUndefined()
+
+    const repository = resolvePublicReleaseRepository({
+      DISKLIZARD_RELEASE_REPO: "disklizard-releases",
+      DISKLIZARD_RELEASE_PUBLIC: "true",
+    })
+    expect(repository).toEqual({ owner: "bernaferrari", repo: "disklizard-releases", private: false })
+    expect(updaterPublishConfig("prod", repository)).toEqual({
       provider: "github",
       owner: "bernaferrari",
-      repo: "disklizard",
+      repo: "disklizard-releases",
       channel: "latest",
       private: false,
     })
-    expect(updaterPublishConfig("dev")).toBeUndefined()
+    expect(updaterPublishConfig("dev", repository)).toBeUndefined()
+  })
+
+  test("fails closed for malformed release repository identifiers", () => {
+    expect(
+      resolvePublicReleaseRepository({
+        DISKLIZARD_RELEASE_OWNER: "not/an/owner",
+        DISKLIZARD_RELEASE_REPO: "disklizard-releases",
+        DISKLIZARD_RELEASE_PUBLIC: "true",
+      }),
+    ).toBeUndefined()
+    expect(
+      resolvePublicReleaseRepository({
+        DISKLIZARD_RELEASE_REPO: "../private-source",
+        DISKLIZARD_RELEASE_PUBLIC: "true",
+      }),
+    ).toBeUndefined()
   })
 })

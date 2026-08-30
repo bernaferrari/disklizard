@@ -4,16 +4,9 @@ import { dict as uiEn } from "@opencode-ai/ui/i18n/en"
 import { ThemeProvider } from "@opencode-ai/ui/theme/context"
 import { Toast } from "@opencode-ai/ui/toast"
 import { render } from "solid-js/web"
-import DiskUtilityPage from "../../src/pages/disk-utility"
-import { DiskLizardRuntime } from "../../src/pages/disk-utility/runtime"
-import type {
-  DiskDeleteOptions,
-  DiskScanNode,
-  DiskScanProgress,
-  DiskScanUpdate,
-  DiskUtilityAPI,
-} from "../../src/pages/disk-utility/types"
-import "../../src/index.css"
+import { DiskLizardRuntime, DiskUtilityPage } from "@disklizard/app"
+import type { DiskDeleteOptions, DiskScanNode, DiskScanProgress, DiskScanUpdate, DiskUtilityAPI } from "@disklizard/app"
+import "@disklizard/app/styles.css"
 
 const MIB = 1024 * 1024
 
@@ -406,6 +399,7 @@ const diskUtility: DiskUtilityAPI = {
     return { kind: "unsupported", bytes: 0, reason: "format" }
   },
   async systemPreviewPath() {},
+  async openPath() {},
   async openTrash() {},
   async revealPath() {},
   async chooseFolder() {

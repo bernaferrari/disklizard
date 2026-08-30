@@ -1,7 +1,8 @@
 import { defineConfig } from "vite"
-import desktopPlugin from "../../vite.js"
+import diskLizardAppPlugin, { diskLizardPublicDir } from "@disklizard/app/vite"
 
 export default defineConfig({
   root: import.meta.dirname,
-  plugins: [desktopPlugin],
+  publicDir: diskLizardPublicDir,
+  plugins: [diskLizardAppPlugin],
 })

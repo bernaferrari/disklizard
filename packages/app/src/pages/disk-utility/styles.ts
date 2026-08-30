@@ -1,9 +1,10 @@
-import { MAC_TRAFFIC_LIGHT_INSET } from "./titlebar"
+import { MAC_TRAFFIC_LIGHT_INSET, WINDOWS_CAPTION_BUTTONS_INSET } from "./titlebar"
 
 export const DISK_UTILITY_STYLES = `
 .dl-shell {
   --dl-accent: oklch(0.74 0.13 252);
   --dl-accent-strong: oklch(0.66 0.15 252);
+  --dl-scrim: rgb(0 0 0 / 0.58);
   --dl-hairline: 1px;
   --text-weak: color-mix(in oklch, var(--text-strong) 72%, var(--background-base));
   --text-weaker: color-mix(in oklch, var(--text-strong) 58%, var(--background-base));
@@ -39,7 +40,12 @@ export const DISK_UTILITY_STYLES = `
 .dl-shell[data-os="macos"]:not([data-fullscreen="true"]) .dl-topbar {
   padding-left: ${MAC_TRAFFIC_LIGHT_INSET}px;
 }
-.dl-shell button, .dl-shell a, .dl-shell input, .dl-shell summary { touch-action: manipulation; }
+.dl-shell[data-os="windows"]:not([data-fullscreen="true"]) .dl-topbar {
+  width: env(titlebar-area-width, calc(100vw - ${WINDOWS_CAPTION_BUTTONS_INSET}px));
+  max-width: env(titlebar-area-width, calc(100vw - ${WINDOWS_CAPTION_BUTTONS_INSET}px));
+  margin-right: auto;
+}
+.dl-shell button, .dl-shell a, .dl-shell input, .dl-shell select, .dl-shell summary { touch-action: manipulation; }
 .dl-touch-target { min-width: 44px; min-height: 44px; }
 .dl-row-action { width: 44px; height: 44px; }
 .dl-shell ::selection { background: oklch(0.74 0.13 252 / 0.22); }
@@ -50,6 +56,7 @@ export const DISK_UTILITY_STYLES = `
 .dl-mark::before { inset: 5px; border-left-color: transparent; transform: rotate(28deg); }
 .dl-mark::after { inset: 9px; border-right-color: transparent; transform: rotate(-22deg); }
 .dl-pop { animation: dl-pop 0.24s cubic-bezier(0.32,0.72,0,1) both; }
+.dl-modal-scrim { background: var(--dl-scrim); }
 .dl-command-dock { box-shadow: 0 -1px 0 rgb(127 127 127 / 0.06); }
 .dl-cleanup-dock {
   color: var(--text-weak);
@@ -154,6 +161,10 @@ export const DISK_UTILITY_STYLES = `
 .dl-volume-view::before { content: ""; position: absolute; inset: -8px; }
 .dl-volume-view:active:not(:disabled) { transform: scale(0.96); }
 .dl-volume-view:disabled { opacity: 0.4; }
+.dl-volume-view-primary {
+  background: color-mix(in oklch, var(--dl-accent) 22%, var(--background-base));
+  box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--dl-accent) 42%, transparent);
+}
 .dl-volume-footer {
   background: color-mix(in oklch, var(--surface-raised-strong) 42%, var(--background-base));
   box-shadow: 0 -1px 0 rgb(127 127 127 / 0.1);
@@ -181,13 +192,9 @@ export const DISK_UTILITY_STYLES = `
     background: color-mix(in oklch, var(--surface-raised-base) 70%, var(--background-base));
     box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--text-strong) 20%, transparent);
   }
-  .dl-volume-view-primary {
-    color: var(--background-base);
-    background: color-mix(in oklch, oklch(0.72 0.15 148) 78%, var(--text-strong));
-  }
   .dl-volume-view-primary:hover:not(:disabled) {
-    background: color-mix(in oklch, oklch(0.72 0.15 148) 88%, var(--text-strong));
-    box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, oklch(0.72 0.15 148) 45%, transparent);
+    background: color-mix(in oklch, var(--dl-accent) 30%, var(--background-base));
+    box-shadow: 0 0 0 var(--dl-hairline) color-mix(in oklch, var(--dl-accent) 55%, transparent);
   }
   .dl-hover-quiet-button:hover { background: color-mix(in oklch, var(--background-base) 70%, transparent); color: var(--text-strong); opacity: 1; }
   .dl-hover-tab:hover, .dl-hover-button:hover, .dl-hover-action:hover { background: var(--surface-raised-base); }
@@ -205,18 +212,37 @@ export const DISK_UTILITY_STYLES = `
 @media only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
   .dl-shell { --dl-hairline: 0.5px; }
 }
-@media (max-width: 980px) {
-  .dl-workspace-frame { flex-direction: column; }
-  .dl-landscape { min-height: 52%; }
-  .dl-inspector { width: 100% !important; min-height: 42%; border-left: 0 !important; border-top: 1px solid var(--border-weaker-base); }
+@media (max-width: 840px) {
+  .dl-workspace-frame {
+    display: grid;
+    grid-template-rows: minmax(220px, 40%) minmax(0, 1fr);
+  }
+  .dl-workspace-frame.dl-workspace-frame-list { grid-template-rows: minmax(0, 1fr); }
+  .dl-landscape { min-height: 0; }
+  .dl-inspector { width: 100% !important; min-height: 0; border-left: 0 !important; border-top: 1px solid var(--border-weaker-base); }
   .dl-view-switch { top: 10px; right: 10px; }
 }
 @media (max-width: 760px) {
   .dl-brand-name { display: none; }
   .dl-breadcrumbs, .dl-responsive-label { display: none; }
   .dl-pin-scan, .dl-rescan { width: 44px; overflow: hidden; padding-inline: 0; }
+  .dl-view-switch .dl-segmented { padding-inline: 10px; }
+  .dl-view-switch .dl-segmented-icon, .dl-view-switch .dl-segmented-shortcut { display: none; }
+  .dl-treemap-overlay { padding-top: 64px; }
+  .dl-workspace-frame:not(.dl-workspace-frame-list) { grid-template-rows: 180px minmax(0, 1fr); }
+  .dl-inspector-header { padding: 12px 16px 8px; }
+  .dl-lens-section { margin-top: 8px; padding-bottom: 4px; }
+  .dl-inspector-search { margin-top: 8px; }
+}
+@media (max-width: 640px) {
   .dl-command-dock-inner { align-items: stretch; flex-direction: column; }
   .dl-cleanup-slot { width: 100% !important; }
+}
+.dl-map-stage { container-type: inline-size; }
+@container (max-width: 399px) {
+  .dl-center-summary { max-width: 46%; }
+  .dl-center-context { display: none; }
+  .dl-center-open { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dl-shell * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

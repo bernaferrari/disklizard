@@ -12,15 +12,13 @@ import type {
   SharedStorageEvidence,
 } from "@disklizard/core"
 import type { UpdaterState } from "../main/updater-controller"
-import type { DesktopNativeBundle } from "../../../app/src/i18n/desktop-native"
+import type { DesktopNativeBundle } from "@disklizard/app/native-i18n"
 import type { DiskStorageDiagnostics } from "../main/disk-platform"
 export type UpdaterAPI = {
   subscribe: (cb: (state: UpdaterState) => void) => Promise<() => void>
   check: () => Promise<UpdaterState>
   install: () => Promise<void>
 }
-
-export type RendererStoreID = "disklizard" | "global"
 
 export type LinuxDisplayBackend = "wayland" | "auto"
 export type TitlebarTheme = {
@@ -86,6 +84,12 @@ export type DiskLizardDeleteOptions = {
   precondition?: DiskLizardDeveloperArtifactDeletePrecondition
 }
 
+export type DiskLizardDeleteAuthorizationOutcome = {
+  path: string
+  authorization?: string
+  error?: string
+}
+
 export type DiskLizardStopWatchingOptions = {
   /** Preserve a main-produced focused subtree under its active trusted parent scan. */
   retainTrustedSubtree?: true
@@ -146,10 +150,11 @@ export type DiskLizardAPI = {
   ) => Promise<DiskLizardNode | null>
   cancelScan: (scanId?: string) => Promise<void>
   stopWatching: (scanId?: string, options?: DiskLizardStopWatchingOptions) => Promise<void>
-  authorizeDeletePaths: (paths: readonly string[]) => Promise<Array<{ path: string; authorization: string }>>
+  authorizeDeletePaths: (paths: readonly string[]) => Promise<DiskLizardDeleteAuthorizationOutcome[]>
   deletePath: (path: string, options: DiskLizardDeleteOptions) => Promise<{ ok: true }>
   previewPath: (path: string) => Promise<DiskLizardFilePreview>
   systemPreviewPath: (path: string) => Promise<void>
+  openPath: (path: string) => Promise<void>
   openTrash: () => Promise<void>
   revealPath: (path: string) => Promise<void>
   chooseFolder: () => Promise<string | null>
@@ -157,58 +162,21 @@ export type DiskLizardAPI = {
   onScanUpdate: (cb: (update: DiskLizardScanUpdate) => void) => () => void
 }
 
-export type FatalRendererError = {
-  error: string
-  url: string
-  version?: string
-  platform: string
-  os?: string
-}
-
 export type ElectronAPI = {
   disklizard: DiskLizardAPI
   updater: UpdaterAPI
-  consumeInitialDeepLinks: () => Promise<string[]>
-  storeGet: (id: RendererStoreID, key: string) => Promise<string | null>
-  storeSet: (id: RendererStoreID, key: string, value: string) => Promise<void>
-  storeDelete: (id: RendererStoreID, key: string) => Promise<void>
-  storeClear: (id: RendererStoreID) => Promise<void>
-  storeKeys: (id: RendererStoreID) => Promise<string[]>
-  storeLength: (id: RendererStoreID) => Promise<number>
-  getWindowID: () => Promise<string>
-
-  getWindowCount?: () => Promise<number>
+  storeGet: (key: string) => Promise<string | null>
+  storeSet: (key: string, value: string) => Promise<void>
+  storeDelete: (key: string) => Promise<void>
+  storeClear: () => Promise<void>
+  storeKeys: () => Promise<string[]>
+  storeLength: () => Promise<number>
   onMenuCommand: (cb: (id: string) => void) => () => void
-  onDeepLink: (cb: (urls: string[]) => void) => () => void
-
-  openDirectoryPicker: (opts?: {
-    multiple?: boolean
-    title?: string
-    defaultPath?: string
-  }) => Promise<string | string[] | null>
-  openFilePicker: (opts?: {
-    multiple?: boolean
-    title?: string
-    defaultPath?: string
-    extensions?: string[]
-  }) => Promise<{ token: string; files: { path: string; name: string; size: number }[] } | null>
-  readPickedFile: (token: string, path: string) => Promise<ArrayBuffer>
-  releasePickedFiles: (token: string) => Promise<void>
   getPathForFile: (file: File) => string
-  saveFilePicker: (opts?: { title?: string; defaultPath?: string }) => Promise<string | null>
   openExternal: (url: string) => void
-  openLocalFile: (url: string) => void
-  openPath: (path: string) => Promise<void>
-  revealPath: (path: string) => Promise<boolean>
-  readClipboardImage: () => Promise<{ buffer: ArrayBuffer; width: number; height: number } | null>
-  showNotification?: (title: string, body?: string) => void
-  getWindowFocused: () => Promise<boolean>
   getWindowFullscreen: () => Promise<boolean>
   onWindowFullscreenChanged: (cb: (fullscreen: boolean) => void) => () => void
-  setWindowFocus: () => Promise<void>
-  showWindow: () => Promise<void>
   relaunch: () => void
-  getZoomFactor: () => Promise<number>
   setZoomFactor: (factor: number) => Promise<void>
   getPinchZoomEnabled: () => Promise<boolean>
   setPinchZoomEnabled: (enabled: boolean) => Promise<void>
@@ -218,7 +186,5 @@ export type ElectronAPI = {
   runDesktopMenuAction: (action: DesktopMenuAction) => Promise<void>
   setBackgroundColor: (color: string) => Promise<void>
   exportDebugLogs: () => Promise<string>
-  recordFatalRendererError: (error: FatalRendererError) => Promise<void>
-  setForceFocus: (enabled: boolean) => Promise<void>
   setNativeTranslations: (bundle: DesktopNativeBundle) => Promise<void>
 }

@@ -4,6 +4,7 @@ import { dict } from "@/i18n/en"
 import {
   buildCrumbs,
   describeStorageNode,
+  nativeRevealLabel,
   nativeTrashName,
   scanAccessGuidance,
   shouldHandleDiskShortcut,
@@ -77,6 +78,15 @@ describe("nativeTrashName", () => {
     expect(nativeTrashName("macos")).toBe("Trash")
     expect(nativeTrashName("linux")).toBe("Trash")
     expect(nativeTrashName()).toBe("Trash")
+  })
+})
+
+describe("nativeRevealLabel", () => {
+  it("names the platform file browser", () => {
+    expect(nativeRevealLabel("macos")).toBe("Show in Finder")
+    expect(nativeRevealLabel("windows")).toBe("Show in File Explorer")
+    expect(nativeRevealLabel("linux")).toBe("Show in Files")
+    expect(nativeRevealLabel()).toBe("Reveal in file manager")
   })
 })
 

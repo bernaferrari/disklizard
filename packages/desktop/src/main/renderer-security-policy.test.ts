@@ -7,6 +7,7 @@ describe("renderer response security", () => {
   test("ships a closed production content security policy", () => {
     expect(RENDERER_CONTENT_SECURITY_POLICY).toContain("default-src 'self'")
     expect(RENDERER_CONTENT_SECURITY_POLICY).toContain("object-src 'none'")
+    expect(RENDERER_CONTENT_SECURITY_POLICY).toContain("frame-src data:")
     expect(RENDERER_CONTENT_SECURITY_POLICY).toContain("frame-ancestors 'none'")
     expect(RENDERER_CONTENT_SECURITY_POLICY).not.toContain("unsafe-eval")
     expect(RENDERER_CONTENT_SECURITY_POLICY).not.toContain("https:")
@@ -16,5 +17,6 @@ describe("renderer response security", () => {
     const source = readFileSync(join(import.meta.dir, "windows.ts"), "utf8")
     expect(source).not.toContain("Access-Control-Allow-Origin")
     expect(source).not.toContain("Access-Control-Allow-Headers")
+    expect(source).not.toContain("include-js-call-stacks-in-crash-reports")
   })
 })

@@ -47,11 +47,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "اپ ڈیٹ دی پڑتال ناکام ہو گئی۔",
   "desktop.updater.dialog.checkFailed.title": "اپ ڈیٹ دی غلطی",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "تہاڈے کول تازہ ترین ورژن اے۔",
   "desktop.updater.dialog.upToDate.title": "کوئی اپ ڈیٹ نئیں",
   "desktop.updater.dialog.ready.message": "اپ ڈیٹ {{version}} ڈاؤن لوڈ ہو گئی اے۔ ہن دوبارہ شروع کرنا اے؟",
   "desktop.updater.dialog.ready.title": "اپ ڈیٹ تیار اے",
   "desktop.updater.dialog.restart": "دوبارہ شروع کرو",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "پچھوں",
 
   "desktop.recovery.action.relaunch": "دوبارہ چلاؤ",

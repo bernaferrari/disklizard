@@ -47,10 +47,10 @@ export function developerInventoryCoverage(inventory: DeveloperArtifactInventory
     status.excludedCount
       ? diskLanguageText("disk.developer.inventory.excludedGap", { count: status.excludedCount.toLocaleString() })
       : undefined,
-    status.skippedSymlinkCount ? diskLanguagePlural("disk.count.symlinkSkipped", status.skippedSymlinkCount) : undefined,
-    skippedDirectoryCount
-      ? diskLanguagePlural("disk.count.folderSkipped", skippedDirectoryCount)
+    status.skippedSymlinkCount
+      ? diskLanguagePlural("disk.count.symlinkSkipped", status.skippedSymlinkCount)
       : undefined,
+    skippedDirectoryCount ? diskLanguagePlural("disk.count.folderSkipped", skippedDirectoryCount) : undefined,
     unavailableDirectoryIdentityCount
       ? diskLanguagePlural("disk.count.artifactRefresh", unavailableDirectoryIdentityCount)
       : undefined,
@@ -122,9 +122,7 @@ export function DeveloperCleanupPolicy(props: {
         : language.t("disk.developer.policy.noneMatch")
     const eligible = language.plural("disk.count.item", props.eligibleCount)
     const excluded =
-      props.excludedCount > 0
-        ? language.t("disk.developer.policy.excluded", { count: props.excludedCount })
-        : ""
+      props.excludedCount > 0 ? language.t("disk.developer.policy.excluded", { count: props.excludedCount }) : ""
     return language.t("disk.developer.policy.status", {
       eligible,
       size: formatBytes(props.eligibleBytes),
@@ -137,174 +135,203 @@ export function DeveloperCleanupPolicy(props: {
       class="mt-3 rounded-xl border border-border-weaker-base bg-surface-raised-base/35 px-3 py-3"
       aria-labelledby="developer-cleanup-policy-title"
     >
-      <div class="flex min-w-0 items-start gap-2">
-        <span class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.13_252/0.12)] text-text-weak" aria-hidden="true">
-          <Icon name="shield" class="size-3.5" />
-        </span>
-        <div class="min-w-0 flex-1">
-          <p id="developer-cleanup-policy-title" class="text-13-semibold text-text-strong">
-            {language.t("disk.developer.policy.heading")}
-          </p>
-          <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
+      <details class="group">
+        <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-lg outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+          <span
+            class="grid size-7 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.13_252/0.12)] text-text-weak"
+            aria-hidden="true"
+          >
+            <Icon name="shield" class="size-3.5" />
+          </span>
+          <span class="min-w-0 flex-1">
+            <span id="developer-cleanup-policy-title" class="block text-13-semibold text-text-strong">
+              {language.t("disk.developer.policy.heading")}
+            </span>
+            <span
+              id="developer-cleanup-policy-status"
+              class="mt-0.5 block truncate text-13-regular text-text-weak"
+              aria-live="polite"
+            >
+              {status()}
+            </span>
+          </span>
+          <Icon
+            name="chevron-down"
+            class="size-3.5 shrink-0 text-text-weaker transition-transform duration-150 group-open:rotate-180"
+          />
+        </summary>
+
+        <div class="pt-1">
+          <p class="max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
             {language.t("disk.developer.policy.body")}
           </p>
-        </div>
-      </div>
 
-      <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
-        <legend class="sr-only">{language.t("disk.developer.policy.minimum")}</legend>
-        <div class="flex max-w-full gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label={language.t("disk.developer.policy.minimum")}>
-          <For each={DEVELOPER_CLEANUP_AGE_PRESETS}>
-            {(preset) => (
-              <button
-                type="button"
-                class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-                classList={{
-                  "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
-                    props.preset === preset,
-                  "dl-hover-text bg-background-base/45 text-text-weak": props.preset !== preset,
-                }}
-                aria-pressed={props.preset === preset}
-                onClick={() => props.onPresetChange(preset)}
-              >
-                {language.t(AGE_LABELS[preset])}
-              </button>
-            )}
-          </For>
-        </div>
-      </fieldset>
-
-      <Show when={props.ecosystems.length > 0}>
-        <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
-          <legend class="text-13-semibold text-text-weak">{language.t("disk.developer.policy.toolchain")}</legend>
-          <div class="mt-1.5 flex max-w-full gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label={language.t("disk.developer.policy.toolchainLabel")}>
-            <button
-              type="button"
-              class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-              classList={{
-                "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
-                  props.ecosystem === "all",
-                "dl-hover-text bg-background-base/45 text-text-weak": props.ecosystem !== "all",
-              }}
-              aria-pressed={props.ecosystem === "all"}
-              onClick={() => props.onEcosystemChange("all")}
+          <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
+            <legend class="sr-only">{language.t("disk.developer.policy.minimum")}</legend>
+            <div
+              class="flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
+              role="group"
+              aria-label={language.t("disk.developer.policy.minimum")}
             >
-              {language.t("disk.common.allEcosystems")}
-            </button>
-            <For each={props.ecosystems}>
-              {(ecosystem) => (
+              <For each={DEVELOPER_CLEANUP_AGE_PRESETS}>
+                {(preset) => (
+                  <button
+                    type="button"
+                    class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+                    classList={{
+                      "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
+                        props.preset === preset,
+                      "dl-hover-text bg-background-base/45 text-text-weak": props.preset !== preset,
+                    }}
+                    aria-pressed={props.preset === preset}
+                    onClick={() => props.onPresetChange(preset)}
+                  >
+                    {language.t(AGE_LABELS[preset])}
+                  </button>
+                )}
+              </For>
+            </div>
+          </fieldset>
+
+          <Show when={props.ecosystems.length > 0}>
+            <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
+              <legend class="text-13-semibold text-text-weak">{language.t("disk.developer.policy.toolchain")}</legend>
+              <div
+                class="mt-1.5 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
+                role="group"
+                aria-label={language.t("disk.developer.policy.toolchainLabel")}
+              >
                 <button
                   type="button"
                   class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
                   classList={{
                     "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
-                      props.ecosystem === ecosystem,
-                    "dl-hover-text bg-background-base/45 text-text-weak": props.ecosystem !== ecosystem,
+                      props.ecosystem === "all",
+                    "dl-hover-text bg-background-base/45 text-text-weak": props.ecosystem !== "all",
                   }}
-                  aria-pressed={props.ecosystem === ecosystem}
-                  onClick={() => props.onEcosystemChange(ecosystem)}
+                  aria-pressed={props.ecosystem === "all"}
+                  onClick={() => props.onEcosystemChange("all")}
                 >
-                  {artifactEcosystemLabel(ecosystem)}
+                  {language.t("disk.common.allEcosystems")}
                 </button>
-              )}
-            </For>
-          </div>
-        </fieldset>
-      </Show>
-
-      <Show when={props.preset === "custom"}>
-        <label class="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] bg-background-base/65 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
-          <span class="shrink-0 text-13-semibold text-text-weak">{language.t("disk.developer.policy.customPrefix")}</span>
-          <input
-            class="dl-smart-age-input min-w-0 flex-1 bg-transparent text-right text-12-regular tabular-nums text-text-strong outline-none"
-            type="number"
-            min="1"
-            max="3650"
-            step="1"
-            inputmode="numeric"
-            value={props.customDays}
-            aria-invalid={!props.age.valid}
-            aria-label={language.t("disk.developer.policy.customLabel")}
-            onInput={(event) => props.onCustomDaysChange(event.currentTarget.value)}
-          />
-          <span class="shrink-0 text-13-regular text-text-weak">{language.t("disk.common.days")}</span>
-        </label>
-      </Show>
-
-      <Show when={props.inventory}>
-        {(inventory) => (
-          <div
-            class="mt-3 rounded-[10px] bg-background-base/45 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
-            role="status"
-            aria-live="polite"
-            aria-label={language.t("disk.developer.policy.inventoryLabel", { coverage: inventoryCoverage() ?? "" })}
-          >
-            <div class="flex min-w-0 items-start gap-2">
-              <Icon
-                name={inventory().status.state === "complete" ? "circle-check" : "warning"}
-                class="mt-0.5 size-3.5 shrink-0 text-text-weak"
-                aria-hidden="true"
-              />
-              <div class="min-w-0 flex-1">
-                <p class="text-13-semibold text-text-strong">
-                  {language.t("disk.developer.policy.inventoryHeading", {
-                    state:
-                      inventory().status.state === "complete"
-                        ? language.t("disk.common.complete")
-                        : language.t("disk.common.partial"),
-                  })}
-                </p>
-                <p class="mt-0.5 text-13-regular leading-relaxed text-text-weak">{inventoryCoverage()}</p>
+                <For each={props.ecosystems}>
+                  {(ecosystem) => (
+                    <button
+                      type="button"
+                      class="dl-touch-target shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+                      classList={{
+                        "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]":
+                          props.ecosystem === ecosystem,
+                        "dl-hover-text bg-background-base/45 text-text-weak": props.ecosystem !== ecosystem,
+                      }}
+                      aria-pressed={props.ecosystem === ecosystem}
+                      onClick={() => props.onEcosystemChange(ecosystem)}
+                    >
+                      {artifactEcosystemLabel(ecosystem)}
+                    </button>
+                  )}
+                </For>
               </div>
-            </div>
-            <Show when={inventory().status.state === "partial"}>
-              <details class="group mt-2">
-                <summary class="dl-touch-target flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-                  <span class="flex-1">{language.t("disk.developer.policy.coverageDetails")}</span>
-                  <Icon name="chevron-down" class="size-3 transition-transform duration-150 group-open:rotate-180" />
-                </summary>
-                <div class="border-t border-border-weaker-base/60 pb-1 pt-2">
-                  <Show when={inventory().status.truncated}>
-                    <p class="text-13-regular leading-relaxed text-text-weak">
-                      {language.t("disk.developer.policy.cap", {
-                        count: inventory().status.maxItems.toLocaleString(),
+            </fieldset>
+          </Show>
+
+          <Show when={props.preset === "custom"}>
+            <label class="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] bg-background-base/65 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
+              <span class="shrink-0 text-13-semibold text-text-weak">
+                {language.t("disk.developer.policy.customPrefix")}
+              </span>
+              <input
+                class="dl-smart-age-input min-w-0 flex-1 bg-transparent text-right text-12-regular tabular-nums text-text-strong outline-none"
+                type="number"
+                min="1"
+                max="3650"
+                step="1"
+                inputmode="numeric"
+                value={props.customDays}
+                aria-invalid={!props.age.valid}
+                aria-label={language.t("disk.developer.policy.customLabel")}
+                onInput={(event) => props.onCustomDaysChange(event.currentTarget.value)}
+              />
+              <span class="shrink-0 text-13-regular text-text-weak">{language.t("disk.common.days")}</span>
+            </label>
+          </Show>
+
+          <Show when={props.inventory}>
+            {(inventory) => (
+              <div
+                class="mt-3 rounded-[10px] bg-background-base/45 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
+                role="status"
+                aria-live="polite"
+                aria-label={language.t("disk.developer.policy.inventoryLabel", { coverage: inventoryCoverage() ?? "" })}
+              >
+                <div class="flex min-w-0 items-start gap-2">
+                  <Icon
+                    name={inventory().status.state === "complete" ? "circle-check" : "warning"}
+                    class="mt-0.5 size-3.5 shrink-0 text-text-weak"
+                    aria-hidden="true"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <p class="text-13-semibold text-text-strong">
+                      {language.t("disk.developer.policy.inventoryHeading", {
+                        state:
+                          inventory().status.state === "complete"
+                            ? language.t("disk.common.complete")
+                            : language.t("disk.common.partial"),
                       })}
                     </p>
-                  </Show>
-                  <For each={inventoryIssueRows()}>
-                    {(issue) => (
-                      <div class="mt-2">
-                        <p class="text-13-semibold text-text-weak">
-                          {issue.label} · {issue.count.toLocaleString()}
-                        </p>
-                        <Show when={issue.paths.length > 0}>
-                          <ul
-                            class="mt-1 space-y-0.5"
-                            aria-label={language.t("disk.developer.policy.samplePaths", { label: issue.label })}
-                          >
-                            <For each={issue.paths.slice(0, 3)}>
-                              {(path) => (
-                                <li class="truncate text-13-mono text-text-weaker" title={path}>
-                                  {path}
-                                </li>
-                              )}
-                            </For>
-                          </ul>
-                        </Show>
-                      </div>
-                    )}
-                  </For>
+                    <p class="mt-0.5 text-13-regular leading-relaxed text-text-weak">{inventoryCoverage()}</p>
+                  </div>
                 </div>
-              </details>
-            </Show>
-          </div>
-        )}
-      </Show>
+                <Show when={inventory().status.state === "partial"}>
+                  <details class="group mt-2">
+                    <summary class="dl-touch-target flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+                      <span class="flex-1">{language.t("disk.developer.policy.coverageDetails")}</span>
+                      <Icon
+                        name="chevron-down"
+                        class="size-3 transition-transform duration-150 group-open:rotate-180"
+                      />
+                    </summary>
+                    <div class="border-t border-border-weaker-base/60 pb-1 pt-2">
+                      <Show when={inventory().status.truncated}>
+                        <p class="text-13-regular leading-relaxed text-text-weak">
+                          {language.t("disk.developer.policy.cap", {
+                            count: inventory().status.maxItems.toLocaleString(),
+                          })}
+                        </p>
+                      </Show>
+                      <For each={inventoryIssueRows()}>
+                        {(issue) => (
+                          <div class="mt-2">
+                            <p class="text-13-semibold text-text-weak">
+                              {issue.label} · {issue.count.toLocaleString()}
+                            </p>
+                            <Show when={issue.paths.length > 0}>
+                              <ul
+                                class="mt-1 space-y-0.5"
+                                aria-label={language.t("disk.developer.policy.samplePaths", { label: issue.label })}
+                              >
+                                <For each={issue.paths.slice(0, 3)}>
+                                  {(path) => (
+                                    <li class="truncate text-13-mono text-text-weaker" title={path}>
+                                      {path}
+                                    </li>
+                                  )}
+                                </For>
+                              </ul>
+                            </Show>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </details>
+                </Show>
+              </div>
+            )}
+          </Show>
+        </div>
+      </details>
 
-      <div class="mt-3 flex flex-wrap items-center gap-2">
-        <p id="developer-cleanup-policy-status" class="min-w-0 flex-1 text-13-regular leading-relaxed text-text-weak" aria-live="polite">
-          {status()}
-        </p>
+      <div class="mt-3 flex justify-end">
         <Button
           class="dl-touch-target shrink-0"
           size="small"

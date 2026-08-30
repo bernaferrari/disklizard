@@ -11,6 +11,13 @@ type RegisteredHandler = (...args: unknown[]) => unknown
 
 const handlers = new Map<string, RegisteredHandler>()
 const appEvents = Object.assign(new EventEmitter(), { getPath: () => "/tmp/disklizard-ipc-test" })
+const rendererStore = new Map<string, unknown>()
+let rendererStoreReadError: Error | undefined
+const requestedStoreNames: string[] = []
+const backgroundColors: string[] = []
+const pinchZoomValues: boolean[] = []
+const titlebarThemes: unknown[] = []
+const desktopMenuActions: unknown[] = []
 
 mock.module("electron", () => ({
   app: appEvents,
@@ -21,27 +28,23 @@ mock.module("electron", () => ({
     }),
     getAllWindows: () => [],
   },
-  Notification: class {
-    show() {}
-  },
-  clipboard: { readImage: () => ({ isEmpty: () => true }) },
   dialog: {},
   ipcMain: {
     handle: (name: string, handler: RegisteredHandler) => handlers.set(name, handler),
     on: () => undefined,
   },
-  shell: {},
+  shell: {
+    openPath: async () => "",
+    showItemInFolder: () => undefined,
+  },
 }))
 
-mock.module("../../../app/src/i18n/desktop-native", () => ({
+mock.module("@disklizard/app/native-i18n", () => ({
   parseDesktopNativeBundle: () => undefined,
 }))
-mock.module("./attachment-picker", () => ({
-  assertAttachmentBudget: () => undefined,
-  createPickedFileAuthorizations: () => ({}),
+mock.module("./desktop-menu-actions", () => ({
+  runDesktopMenuAction: (_window: unknown, action: unknown) => desktopMenuActions.push(action),
 }))
-mock.module("./debug", () => ({ setForceFocus: () => undefined }))
-mock.module("./desktop-menu-actions", () => ({ runDesktopMenuAction: () => undefined }))
 mock.module("./disk-delete-precondition", () => ({ runGuardedDiskDelete: () => undefined }))
 mock.module("./disk-drive-facts", () => ({ publishDriveFacts: () => undefined }))
 mock.module("./disk-platform", () => ({
@@ -61,16 +64,30 @@ mock.module("./disk-scanner", () => ({
 }))
 mock.module("./native-translations", () => ({ nativeT: (key: string) => key }))
 mock.module("./store", () => ({
-  getStore: () => undefined,
+  getStore: (name: string) => {
+    requestedStoreNames.push(name)
+    return {
+      get: (key: string) => {
+        if (rendererStoreReadError) throw rendererStoreReadError
+        return rendererStore.get(key)
+      },
+      has: (key: string) => rendererStore.has(key),
+      set: (key: string, value: string) => rendererStore.set(key, value),
+      delete: (key: string) => rendererStore.delete(key),
+      clear: () => rendererStore.clear(),
+      get store() {
+        return Object.fromEntries(rendererStore)
+      },
+    }
+  },
   removeStoreFileIfEmpty: () => undefined,
 }))
 mock.module("./windows", () => ({
   getPinchZoomEnabled: () => false,
-  getWindowID: () => undefined,
   openExternalURL: () => undefined,
   openLocalFileURL: () => undefined,
-  setPinchZoomEnabled: () => undefined,
-  setTitlebar: () => undefined,
+  setPinchZoomEnabled: (enabled: boolean) => pinchZoomValues.push(enabled),
+  setTitlebar: (_window: unknown, theme: unknown) => titlebarThemes.push(theme),
   updateTitlebar: () => undefined,
 }))
 
@@ -128,22 +145,21 @@ const { registerIpcHandlers } = await import("./ipc")
 
 registerIpcHandlers({
   relaunch: () => undefined,
-  consumeInitialDeepLinks: () => [],
   updater: {
     subscribe: () => () => undefined,
     check: async () => undefined,
     install: () => undefined,
   } as never,
   showUpdater: () => undefined,
-  setBackgroundColor: () => undefined,
+  setBackgroundColor: (color) => backgroundColors.push(color),
   exportDebugLogs: async () => "",
-  recordFatalRendererError: () => undefined,
   setNativeTranslations: () => undefined,
 })
 
 class FakeSender extends EventEmitter {
   destroyed = false
   readonly mainFrame = {}
+  zoomFactor = 1
 
   constructor(readonly id: number) {
     super()
@@ -155,6 +171,10 @@ class FakeSender extends EventEmitter {
   }
 
   send() {}
+
+  setZoomFactor(factor: number) {
+    this.zoomFactor = factor
+  }
 
   destroy() {
     this.destroyed = true
@@ -181,6 +201,10 @@ const authorizeDeletePaths = handlers.get("disklizard:authorize-delete-paths") a
   event: IpcMainInvokeEvent,
   paths: readonly string[],
 ) => Promise<Array<{ path: string; authorization: string }>>
+const previewPath = handlers.get("disklizard:preview-path")!
+const systemPreviewPath = handlers.get("disklizard:system-preview-path")!
+const openPath = handlers.get("disklizard:open-path")!
+const revealPath = handlers.get("disklizard:reveal-path")!
 
 afterAll(() => mock.restore())
 
@@ -191,10 +215,122 @@ describe("disk snapshot IPC lifecycle", () => {
     expect(() => getDrives({ sender, senderFrame: {} })).toThrow("Invalid IPC sender")
   })
 
-  test("rejects renderer-selected store paths", () => {
+  test("limits renderer persistence to the two DiskLizard settings keys", () => {
     const sender = new FakeSender(43)
-    const setStore = handlers.get("store-set")!
-    expect(() => setStore(event(sender), "/tmp/escaped.json", "key", "value")).toThrow("Invalid renderer store")
+    const setStore = handlers.get("disklizard:store-set")!
+    expect(() => setStore(event(sender), "/tmp/escaped.json", "value")).toThrow("Invalid DiskLizard storage key")
+    expect(() => setStore(event(sender), "opencode.global", "value")).toThrow("Invalid DiskLizard storage key")
+    expect(() => setStore(event(sender), "pinned-locations", "x".repeat(1024 * 1024 + 1))).toThrow(
+      "Invalid DiskLizard storage value",
+    )
+    expect(() => setStore(event(sender), "pinned-locations", "[]")).not.toThrow()
+    expect(requestedStoreNames.at(-1)).toBe("disklizard.dat")
+    expect(rendererStore.get("pinned-locations")).toBe("[]")
+  })
+
+  test("returns null only for missing values and rejects invalid legacy values", () => {
+    const sender = new FakeSender(47)
+    const getStoreValue = handlers.get("disklizard:store-get")!
+
+    rendererStore.delete("pinned-locations")
+    expect(getStoreValue(event(sender), "pinned-locations")).toBeNull()
+
+    rendererStore.set("pinned-locations", [{ path: "/tmp/project", label: "Project" }])
+    expect(getStoreValue(event(sender), "pinned-locations")).toBe(
+      '[{"path":"/tmp/project","label":"Project"}]',
+    )
+
+    rendererStore.set("pinned-locations", null)
+    expect(() => getStoreValue(event(sender), "pinned-locations")).toThrow("Invalid DiskLizard storage value")
+
+    rendererStore.set("pinned-locations", "x".repeat(1024 * 1024 + 1))
+    expect(() => getStoreValue(event(sender), "pinned-locations")).toThrow("Invalid DiskLizard storage value")
+
+    rendererStore.set("pinned-locations", { value: "x".repeat(1024 * 1024) })
+    expect(() => getStoreValue(event(sender), "pinned-locations")).toThrow("Invalid DiskLizard storage value")
+  })
+
+  test("propagates cleanup-protection store failures instead of reporting a missing value", () => {
+    const sender = new FakeSender(49)
+    const getStoreValue = handlers.get("disklizard:store-get")!
+    rendererStore.delete("cleanup-locks")
+    expect(getStoreValue(event(sender), "cleanup-locks")).toBeNull()
+
+    rendererStore.set("cleanup-locks", "[]")
+    rendererStoreReadError = new Error("settings unreadable")
+    try {
+      expect(() => getStoreValue(event(sender), "cleanup-locks")).toThrow("settings unreadable")
+    } finally {
+      rendererStoreReadError = undefined
+    }
+  })
+
+  test("validates window appearance inputs before invoking Electron", () => {
+    const sender = new FakeSender(48)
+    const setBackgroundColor = handlers.get("set-background-color")!
+    const setTitlebar = handlers.get("set-titlebar")!
+
+    expect(() => setBackgroundColor(event(sender), "#f8f8f8")).not.toThrow()
+    expect(() => setBackgroundColor(event(sender), "#00000000")).not.toThrow()
+    expect(backgroundColors.slice(-2)).toEqual(["#f8f8f8", "#00000000"])
+    for (const color of [undefined, null, "", "red", "#fff", "#gggggg", "rgb(0, 0, 0)"]) {
+      expect(() => setBackgroundColor(event(sender), color)).toThrow("Invalid background color")
+    }
+
+    expect(() => setTitlebar(event(sender), { mode: "dark", scheme: "system" })).not.toThrow()
+    expect(titlebarThemes.at(-1)).toEqual({ mode: "dark", scheme: "system" })
+    for (const theme of [
+      undefined,
+      null,
+      "dark",
+      {},
+      { mode: "system" },
+      { mode: "light", scheme: "auto" },
+      { mode: "dark", scheme: "system", extra: true },
+    ]) {
+      expect(() => setTitlebar(event(sender), theme)).toThrow("Invalid titlebar theme")
+    }
+  })
+
+  test("validates and clamps renderer zoom controls", () => {
+    const sender = new FakeSender(49)
+    const setZoomFactor = handlers.get("set-zoom-factor")!
+    const setPinchZoomEnabled = handlers.get("set-pinch-zoom-enabled")!
+
+    setZoomFactor(event(sender), 1.5)
+    expect(sender.zoomFactor).toBe(1.5)
+    setZoomFactor(event(sender), 0.01)
+    expect(sender.zoomFactor).toBe(0.2)
+    setZoomFactor(event(sender), 100)
+    expect(sender.zoomFactor).toBe(10)
+    for (const factor of [undefined, null, "1", Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(() => setZoomFactor(event(sender), factor)).toThrow("Invalid zoom factor")
+    }
+
+    setPinchZoomEnabled(event(sender), true)
+    setPinchZoomEnabled(event(sender), false)
+    expect(pinchZoomValues.slice(-2)).toEqual([true, false])
+    for (const enabled of [undefined, null, 0, 1, "true"]) {
+      expect(() => setPinchZoomEnabled(event(sender), enabled)).toThrow("Invalid pinch zoom value")
+    }
+  })
+
+  test("accepts only declared desktop menu actions from the renderer", () => {
+    const sender = new FakeSender(50)
+    const runDesktopMenuAction = handlers.get("run-desktop-menu-action")!
+
+    for (const action of ["app.checkForUpdates", "edit.delete", "view.reload", "window.toggleMaximize"]) {
+      expect(() => runDesktopMenuAction(event(sender), action)).not.toThrow()
+    }
+    expect(desktopMenuActions.slice(-4)).toEqual([
+      "app.checkForUpdates",
+      "edit.delete",
+      "view.reload",
+      "window.toggleMaximize",
+    ])
+    for (const action of [undefined, null, {}, "", "view.unknown", "window.new", "__proto__"]) {
+      expect(() => runDesktopMenuAction(event(sender), action)).toThrow("Invalid desktop menu action")
+    }
   })
 
   test("validates and forwards maxChildren at the renderer boundary", async () => {
@@ -327,6 +463,42 @@ describe("disk snapshot IPC lifecycle", () => {
         { path: expandedPath, authorization: expect.any(String) },
       ])
       await stopWatching(event(sender), "primary")
+    } finally {
+      await rm(rootPath, { recursive: true, force: true })
+    }
+  })
+
+  test("gates preview, open, system preview, and reveal to the sender's active scan", async () => {
+    const rootPath = await mkdtemp(path.join(tmpdir(), "disklizard-ipc-preview-"))
+    const filePath = path.join(rootPath, "visible.txt")
+    await writeFile(filePath, "visible")
+    try {
+      const sender = new FakeSender(46)
+      for (const handler of [previewPath, systemPreviewPath, openPath, revealPath]) {
+        await expect(Promise.resolve().then(() => handler(event(sender), filePath))).rejects.toThrow(
+          "Item is not part of an active scan",
+        )
+      }
+
+      diskSnapshots.roots.set(rootPath, {
+        name: path.basename(rootPath),
+        path: rootPath,
+        size: 7,
+        isDir: true,
+        ext: "",
+        children: [{ name: "visible.txt", path: filePath, size: 7, isDir: false, ext: "txt", children: [] }],
+      })
+      await scanPath(event(sender), rootPath, {}, "primary")
+
+      await expect(Promise.resolve().then(() => previewPath(event(sender), filePath))).resolves.toBeUndefined()
+      await expect(Promise.resolve().then(() => systemPreviewPath(event(sender), filePath))).resolves.toBeUndefined()
+      await expect(Promise.resolve().then(() => openPath(event(sender), filePath))).resolves.toBeUndefined()
+      await expect(Promise.resolve().then(() => revealPath(event(sender), filePath))).resolves.toBeUndefined()
+
+      await stopWatching(event(sender), "primary")
+      await expect(Promise.resolve().then(() => previewPath(event(sender), filePath))).rejects.toThrow(
+        "Item is not part of an active scan",
+      )
     } finally {
       await rm(rootPath, { recursive: true, force: true })
     }

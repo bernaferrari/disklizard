@@ -1,4 +1,4 @@
-import type { DesktopNativeKey } from "../../../app/src/i18n/desktop-native"
+import type { DesktopNativeKey } from "@disklizard/app/native-i18n"
 
 export type DesktopMenuPlatform = "macos" | "windows"
 
@@ -18,7 +18,6 @@ export type DesktopMenuAction =
   | "view.zoomIn"
   | "view.zoomOut"
   | "view.toggleFullscreen"
-  | "window.new"
   | "window.close"
   | "window.minimize"
   | "window.toggleMaximize"
@@ -103,15 +102,9 @@ export const DESKTOP_MENU: DesktopMenu[] = [
     items: [
       {
         type: "item",
-        label: "Scan Folder…",
+        labelKey: "desktop.dialog.chooseFolder",
         command: "disk.chooseFolder",
         accelerator: { macos: "Cmd+O", windows: "Ctrl+O" },
-      },
-      {
-        type: "item",
-        labelKey: "desktop.menu.newWindow",
-        action: "window.new",
-        accelerator: { macos: "Cmd+Shift+N", windows: "Ctrl+Shift+N" },
       },
       { type: "separator" },
       { type: "item", labelKey: "desktop.menu.closeWindow", action: "window.close", role: "close" },

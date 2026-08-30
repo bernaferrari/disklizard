@@ -38,7 +38,9 @@
   max-height: min(420px, calc(100dvh - 96px));
   overflow: hidden;
   pointer-events: auto;
-  transition: all 150ms ease-out;
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
 
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-weak-base);
@@ -201,6 +203,32 @@
     width: var(--kb-toast-progress-fill-width);
     background-color: var(--color-primary);
     transition: width 250ms linear;
+  }
+}
+
+/*
+ * DiskLizard keeps its cleanup controls docked to the bottom of the window.
+ * Bound the toast region between the titlebar and that dock so a long stack
+ * scrolls instead of covering a destructive action.
+ */
+body:has(.dl-shell) [data-component="toast-region"] {
+  top: 72px;
+  bottom: 96px;
+  max-height: none;
+}
+
+@media (max-width: 760px) {
+  body:has(.dl-shell) [data-component="toast-region"] {
+    bottom: 176px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-component="toast"],
+  [data-component="toast"][data-swipe="cancel"],
+  [data-component="toast"] [data-slot="toast-progress-fill"] {
+    animation: none !important;
+    transition: none !important;
   }
 }
 

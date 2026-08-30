@@ -241,7 +241,9 @@ describe("native disk scanner", () => {
   test("keeps fallback clone capability on the scan root", async () => {
     const root = await fixture()
     const previous = process.env.DISKLIZARD_NATIVE_SCANNER
+    const previousRequired = process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER
     process.env.DISKLIZARD_NATIVE_SCANNER = "0"
+    delete process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER
     try {
       const result = await scanPathWithBackend(root, { sizeMode: "physical", useWorker: false })
       expect(result.backend).toBe("typescript-fallback")
@@ -252,6 +254,25 @@ describe("native disk scanner", () => {
     } finally {
       if (previous === undefined) delete process.env.DISKLIZARD_NATIVE_SCANNER
       else process.env.DISKLIZARD_NATIVE_SCANNER = previous
+      if (previousRequired === undefined) delete process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER
+      else process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER = previousRequired
+    }
+  })
+
+  test("a packaged smoke requirement cannot be defeated by the fallback override", async () => {
+    const root = await fixture()
+    const previousNative = process.env.DISKLIZARD_NATIVE_SCANNER
+    const previousRequired = process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER
+    process.env.DISKLIZARD_NATIVE_SCANNER = "0"
+    process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER = "1"
+    try {
+      const result = await scanPathWithBackend(root, { sizeMode: "physical", useWorker: false })
+      expect(result.backend).toBe("native")
+    } finally {
+      if (previousNative === undefined) delete process.env.DISKLIZARD_NATIVE_SCANNER
+      else process.env.DISKLIZARD_NATIVE_SCANNER = previousNative
+      if (previousRequired === undefined) delete process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER
+      else process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER = previousRequired
     }
   })
 

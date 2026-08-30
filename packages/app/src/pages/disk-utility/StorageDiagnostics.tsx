@@ -13,8 +13,8 @@ export function storageProviderLabel(provider: DiskStorageLocation["provider"]):
   return provider[0].toUpperCase() + provider.slice(1)
 }
 
-export function shouldShowStorageDiagnostics(diagnostics?: DiskStorageDiagnostics): boolean {
-  return !!diagnostics && (diagnostics.locations.length > 0 || !!storageAccessGuidance(diagnostics))
+export function shouldShowStorageDiagnostics(diagnostics?: DiskStorageDiagnostics, error = false): boolean {
+  return error || (!!diagnostics && (diagnostics.locations.length > 0 || !!storageAccessGuidance(diagnostics)))
 }
 
 export function storageAccessGuidance(diagnostics: DiskStorageDiagnostics) {
@@ -38,13 +38,15 @@ export function storageAccessGuidance(diagnostics: DiskStorageDiagnostics) {
 
 export function StorageDiagnostics(props: {
   diagnostics?: DiskStorageDiagnostics
+  error?: boolean
   onScan: (location: DiskStorageLocation) => void
   onOpenAccessSettings?: () => void
+  onRetry?: () => void
 }) {
   const language = useLanguage()
   const locations = () => props.diagnostics?.locations ?? []
   const accessGuidance = () => (props.diagnostics ? storageAccessGuidance(props.diagnostics) : undefined)
-  if (!shouldShowStorageDiagnostics(props.diagnostics)) return null
+  if (!shouldShowStorageDiagnostics(props.diagnostics, props.error)) return null
 
   return (
     <section class="border-t border-border-weaker-base py-6" aria-labelledby="disklizard-connected-storage">
@@ -55,22 +57,50 @@ export function StorageDiagnostics(props: {
         <span class="text-13-regular text-text-weaker">{language.t("disk.storage.mountedMac")}</span>
       </div>
 
-      <Show when={accessGuidance()}>
-        {(guidance) => (
-        <div class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl border border-border-warning-base/50 bg-surface-warning-weak/42 px-4 py-3">
+      <Show when={props.error}>
+        <div
+          class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl border border-border-warning-base/50 bg-surface-warning-weak/42 px-4 py-3"
+          role="status"
+        >
           <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-background-base/60 text-icon-warning-base">
-            <Icon name="shield" class="size-4" />
+            <Icon name="warning" class="size-4" />
           </span>
           <div class="min-w-[min(100%,24rem)] flex-1">
-            <p class="text-13-semibold text-text-strong">{guidance().title}</p>
-            <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">{guidance().body}</p>
+            <p class="text-13-semibold text-text-strong">{language.t("disk.storage.diagnosticsErrorTitle")}</p>
+            <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
+              {language.t("disk.storage.diagnosticsErrorBody")}
+            </p>
           </div>
-          <Show when={props.onOpenAccessSettings}>
-            <Button class="dl-touch-target" size="small" variant="secondary" icon="square-arrow-top-right" onClick={props.onOpenAccessSettings}>
-              {language.t("disk.explore.openPrivacy")}
+          <Show when={props.onRetry}>
+            <Button class="dl-touch-target" size="small" variant="secondary" onClick={props.onRetry}>
+              {language.t("disk.storage.retryDiagnostics")}
             </Button>
           </Show>
         </div>
+      </Show>
+
+      <Show when={!props.error && accessGuidance()}>
+        {(guidance) => (
+          <div class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl border border-border-warning-base/50 bg-surface-warning-weak/42 px-4 py-3">
+            <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-background-base/60 text-icon-warning-base">
+              <Icon name="shield" class="size-4" />
+            </span>
+            <div class="min-w-[min(100%,24rem)] flex-1">
+              <p class="text-13-semibold text-text-strong">{guidance().title}</p>
+              <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">{guidance().body}</p>
+            </div>
+            <Show when={props.onOpenAccessSettings}>
+              <Button
+                class="dl-touch-target"
+                size="small"
+                variant="secondary"
+                icon="square-arrow-top-right"
+                onClick={props.onOpenAccessSettings}
+              >
+                {language.t("disk.explore.openPrivacy")}
+              </Button>
+            </Show>
+          </div>
         )}
       </Show>
 

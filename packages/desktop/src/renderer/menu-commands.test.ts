@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test"
-import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "../../../app/src/pages/disk-utility/choose-folder"
-import { createDiskLizardMenu } from "../../../app/src/pages/disk-utility/runtime"
+import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "@disklizard/app/choose-folder"
+import { createDiskLizardMenu } from "@disklizard/app/runtime"
 import { DESKTOP_MENU } from "../main/desktop-menu"
 import { handleRendererMenuCommand, rendererMenuHandlers } from "./menu-commands"
-import type { DiskDriveInfo } from "../../../app/src/pages/disk-utility/types"
+import type { DiskDriveInfo } from "@disklizard/app/types"
 
 const volume: DiskDriveInfo = {
   path: "/Users/me",
@@ -18,7 +18,10 @@ const volume: DiskDriveInfo = {
 describe("standalone File → Scan Folder menu command", () => {
   test("is the File menu command shipped to the native menu", () => {
     const file = DESKTOP_MENU.find((menu) => menu.id === "file")
-    expect(file?.items?.some((item) => item.type === "item" && item.command === DISK_CHOOSE_FOLDER_COMMAND)).toBe(true)
+    const scan = file?.items?.find((item) => item.type === "item" && item.command === DISK_CHOOSE_FOLDER_COMMAND)
+    expect(scan).toMatchObject({ labelKey: "desktop.dialog.chooseFolder" })
+    expect(scan).not.toHaveProperty("label")
+    expect(file?.items?.some((item) => item.type === "item" && item.action === "window.new")).toBe(false)
   })
 
   test("runs the page chooseFolder+startScan path instead of falling through to desktop menu actions", async () => {

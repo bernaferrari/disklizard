@@ -6,6 +6,9 @@ export const RENDERER_CONTENT_SECURITY_POLICY = [
   "font-src 'self' data:",
   "connect-src 'self'",
   "media-src 'self' data: blob:",
+  // PDF previews are bounded local bytes emitted as data: URLs. No remote or
+  // blob frame origin is permitted.
+  "frame-src data:",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'none'",

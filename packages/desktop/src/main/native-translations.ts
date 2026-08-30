@@ -4,7 +4,7 @@ import {
   formatDesktopNativeMessage,
   type DesktopNativeBundle,
   type DesktopNativeKey,
-} from "../../../app/src/i18n/desktop-native"
+} from "@disklizard/app/native-i18n"
 
 let bundle: DesktopNativeBundle = { locale: "en", messages: { ...DESKTOP_NATIVE_ENGLISH } }
 

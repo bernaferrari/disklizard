@@ -1,14 +1,19 @@
 import { Font } from "@opencode-ai/ui/font"
-import { I18nProvider, useI18n } from "@opencode-ai/ui/context/i18n"
-import { dict as uiEn } from "@opencode-ai/ui/i18n/en"
-import { ThemeProvider, useTheme } from "@opencode-ai/ui/theme/context"
+import { I18nProvider } from "@opencode-ai/ui/context/i18n"
 import { Toast } from "@opencode-ai/ui/toast"
-import { createEffect, createSignal, onCleanup } from "solid-js"
+import { createSignal, onCleanup } from "solid-js"
 import { render } from "solid-js/web"
-import DiskUtilityPage from "../../../app/src/pages/disk-utility"
-import { DiskLizardRuntime, type DiskLizardUpdaterState } from "../../../app/src/pages/disk-utility/runtime"
+import {
+  configureDiskLanguage,
+  DiskUtilityPage,
+  DiskLizardRuntime,
+  type DiskLizardUpdaterState,
+} from "@disklizard/app"
+import { createDesktopNativeBundle, DESKTOP_NATIVE_ENGLISH } from "@disklizard/app/native-i18n"
+import { createRendererUiI18n, loadRendererLanguage, type RendererLanguage } from "./i18n"
 import { handleRendererMenuCommand, rendererMenuHandlers } from "./menu-commands"
 import { createDiskLizardPlatform, runRendererMenuAction } from "./platform"
+import { DiskLizardTheme } from "./disklizard-theme"
 import { resetZoom, zoomIn, zoomOut } from "./webview-zoom"
 import "./styles.css"
 
@@ -17,34 +22,11 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error("DiskLizard renderer root was not found")
 }
 
-const uiI18n = {
-  locale: () => "en",
-  t: (key: keyof typeof uiEn, params?: Record<string, string | number | boolean>) => {
-    const value = uiEn[key] ?? String(key)
-    if (!params) return value
-    return value.replace(/{{\s*([^}]+?)\s*}}/g, (_, rawKey) => {
-      const next = params[String(rawKey)]
-      return next === undefined ? "" : String(next)
-    })
-  },
-  plural: (key: Parameters<ReturnType<typeof useI18n>["plural"]>[0], count: number) => String(count) + String(key),
-}
-
-function ThemeBridge() {
-  const theme = useTheme()
-  createEffect(() => {
-    theme.themeId()
-    theme.mode()
-    const bg = getComputedStyle(document.documentElement).getPropertyValue("--background-base").trim()
-    if (bg) void window.api.setBackgroundColor(bg)
-  })
-  return null
-}
-
-function DiskLizardApp() {
+function DiskLizardApp(props: { language: RendererLanguage }) {
   const [updaterState, setUpdaterState] = createSignal<DiskLizardUpdaterState>({ status: "disabled" })
   void window.api.updater.subscribe(setUpdaterState)
   const platform = createDiskLizardPlatform(updaterState)
+  const uiI18n = createRendererUiI18n(props.language)
   onCleanup(() => platform.dispose?.())
 
   const onMenu = window.api.onMenuCommand((id) => {
@@ -63,21 +45,34 @@ function DiskLizardApp() {
   onCleanup(onMenu)
 
   return (
-    <ThemeProvider
-      onThemeApplied={(_, mode, scheme) => {
-        void window.api.setTitlebar?.({ mode, scheme })
+    <DiskLizardTheme
+      onThemeApplied={(mode, background) => {
+        void window.api.setTitlebar({ mode, scheme: "system" })
+        void window.api.setBackgroundColor(background)
       }}
     >
       <I18nProvider value={uiI18n}>
         <Font />
         <Toast.Region />
-        <ThemeBridge />
         <DiskLizardRuntime platform={platform}>
           <DiskUtilityPage />
         </DiskLizardRuntime>
       </I18nProvider>
-    </ThemeProvider>
+    </DiskLizardTheme>
   )
 }
 
-render(() => <DiskLizardApp />, root!)
+async function mountDiskLizard() {
+  const language = await loadRendererLanguage()
+  configureDiskLanguage(language.locale, language.messages)
+  document.documentElement.lang = language.intl
+  document.documentElement.dir = language.direction
+  await window.api
+    .setNativeTranslations(
+      createDesktopNativeBundle(language.locale, (key) => language.messages[key] ?? DESKTOP_NATIVE_ENGLISH[key]),
+    )
+    .catch(() => undefined)
+  render(() => <DiskLizardApp language={language} />, root!)
+}
+
+void mountDiskLizard()

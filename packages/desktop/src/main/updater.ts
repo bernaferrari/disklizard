@@ -1,35 +1,39 @@
 import { app, dialog } from "electron"
 import pkg from "electron-updater"
-import { CHANNEL, UPDATER_ENABLED, updaterFeedChannel } from "./constants"
-import { createUpdaterController, type UpdaterController, type UpdaterReadyRecord } from "./updater-controller"
+import { CHANNEL, RELEASE_REPOSITORY, UPDATER_ENABLED } from "./constants"
+import {
+  createUpdaterController,
+  UPDATER_DOWNLOAD_POLICY,
+  type UpdaterController,
+  type UpdaterReadyRecord,
+} from "./updater-controller"
 import { getLogger } from "./logging"
 import { getStore } from "./store"
 import { setAppQuitting } from "./windows"
 import { nativeT } from "./native-translations"
-import { productionUpdaterDowngradeAllowed, productionVerifyUpdateCodeSignature } from "./updater-policy"
+import { applyUpdaterReleasePolicy, productionUpdaterDowngradeAllowed, updaterAllowsPrerelease } from "./updater-policy"
+import { createUpdaterPromptCoordinator } from "./updater-prompt"
+import { beginTerminalInstallHandoff } from "./updater-install-handoff"
 
 const { autoUpdater } = pkg
 const key = "ready"
 
-export { productionUpdaterDowngradeAllowed, productionVerifyUpdateCodeSignature }
+export { productionUpdaterDowngradeAllowed, updaterAllowsPrerelease }
 
 export function setupAutoUpdater() {
   const logger = getLogger()
   autoUpdater.logger = logger
-  autoUpdater.channel = updaterFeedChannel(CHANNEL)
-  autoUpdater.allowPrerelease = false
-  autoUpdater.allowDowngrade = productionUpdaterDowngradeAllowed(CHANNEL)
+  applyUpdaterReleasePolicy(autoUpdater, CHANNEL)
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = false
-  const windowsUpdater = autoUpdater as typeof autoUpdater & { verifyUpdateCodeSignature?: boolean }
-  if (process.platform === "win32") {
-    windowsUpdater.verifyUpdateCodeSignature = productionVerifyUpdateCodeSignature()
-  }
   logger.log("auto updater configured", {
+    enabled: UPDATER_ENABLED,
     channel: autoUpdater.channel,
+    downloadPolicy: UPDATER_DOWNLOAD_POLICY,
+    releaseRepository: RELEASE_REPOSITORY ? `${RELEASE_REPOSITORY.owner}/${RELEASE_REPOSITORY.repo}` : undefined,
     allowPrerelease: autoUpdater.allowPrerelease,
     allowDowngrade: autoUpdater.allowDowngrade,
-    verifyUpdateCodeSignature: process.platform === "win32" ? windowsUpdater.verifyUpdateCodeSignature : undefined,
+    windowsSignatureVerification: process.platform === "win32" ? "electron-updater-default" : undefined,
     currentVersion: app.getVersion(),
   })
 
@@ -40,19 +44,16 @@ export function setupAutoUpdater() {
     backend: {
       checkForUpdates: () => autoUpdater.checkForUpdates(),
       downloadUpdate: () => autoUpdater.downloadUpdate(),
-      quitAndInstall: () => {
-        // quitAndInstall closes all windows before emitting before-quit, so
-        // flag the quit first to keep window ids persisted for restore.
-        setAppQuitting()
-        try {
-          autoUpdater.quitAndInstall()
-        } catch (error) {
-          // The install failed and the app keeps running; clear the flag so
-          // deliberate window closes prune ids again.
-          setAppQuitting(false)
-          throw error
-        }
-      },
+      quitAndInstall: () =>
+        beginTerminalInstallHandoff({
+          updater: autoUpdater,
+          // quitAndInstall closes all windows before emitting before-quit, so
+          // flag the quit first to keep window ids persisted for restore.
+          onStart: () => setAppQuitting(),
+          // A native error is the only supported return path from the terminal
+          // handoff. Restore ordinary window-close bookkeeping for a retry.
+          onFailure: () => setAppQuitting(false),
+        }),
     },
     persistence: {
       get() {
@@ -68,44 +69,43 @@ export function setupAutoUpdater() {
   })
 }
 
-export async function showUpdaterDialog(controller: UpdaterController, alertOnFail: boolean) {
-  // A manual check must not silently pull the full update; ask first and
-  // download only once confirmed.
-  const availability = await controller.checkOnly()
-  if (!availability.updateAvailable) {
-    if (controller.getState().status === "error") {
-      if (!alertOnFail) return
-      await dialog.showMessageBox({
-        type: "error",
-        message: nativeT("desktop.updater.dialog.checkFailed.message"),
-        title: nativeT("desktop.updater.dialog.checkFailed.title"),
-      })
-      return
-    }
-    if (!alertOnFail) return
-    await dialog.showMessageBox({
-      type: "info",
-      message: nativeT("desktop.updater.dialog.upToDate.message"),
-      title: nativeT("desktop.updater.dialog.upToDate.title"),
-    })
-    return
-  }
-
-  const response = await dialog.showMessageBox({
-    type: "info",
-    message: nativeT("desktop.updater.dialog.ready.message", {
-      version: availability.version ?? "",
-    }),
-    title: nativeT("desktop.updater.dialog.ready.title"),
-    buttons: [nativeT("desktop.updater.dialog.restart"), nativeT("desktop.updater.dialog.later")],
-    defaultId: 0,
-    cancelId: 1,
+export function createUpdaterDialogPresenter(controller: UpdaterController) {
+  return createUpdaterPromptCoordinator({
+    controller,
+    showMessageBox: (options) => dialog.showMessageBox(options),
+    messages: {
+      get checkFailedMessage() {
+        return nativeT("desktop.updater.dialog.checkFailed.message")
+      },
+      get checkFailedTitle() {
+        return nativeT("desktop.updater.dialog.checkFailed.title")
+      },
+      get installFailedMessage() {
+        return nativeT("desktop.updater.dialog.installFailed.message")
+      },
+      get installFailedTitle() {
+        return nativeT("desktop.updater.dialog.installFailed.title")
+      },
+      get upToDateMessage() {
+        return nativeT("desktop.updater.dialog.upToDate.message")
+      },
+      get upToDateTitle() {
+        return nativeT("desktop.updater.dialog.upToDate.title")
+      },
+      readyMessage: (version) => nativeT("desktop.updater.dialog.ready.message", { version }),
+      get readyTitle() {
+        return nativeT("desktop.updater.dialog.ready.title")
+      },
+      get restart() {
+        return nativeT("desktop.updater.dialog.restart")
+      },
+      get retry() {
+        return nativeT("desktop.updater.dialog.retry")
+      },
+      get later() {
+        return nativeT("desktop.updater.dialog.later")
+      },
+    },
+    log: (message, data) => getLogger().warn(message, data),
   })
-  if (response.response !== 0) {
-    await controller.dismiss()
-    return
-  }
-
-  await controller.download()
-  await controller.install()
 }

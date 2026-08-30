@@ -1,6 +1,6 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon, type IconProps } from "@opencode-ai/ui/icon"
-import { Show } from "solid-js"
+import { Show, type JSX } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes, formatPct } from "./format"
 import { diskLanguageText, useLanguage } from "./runtime"
@@ -48,29 +48,65 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
   )
 }
 
-export function IndexEmpty(props: { filtered: boolean; onReset: () => void }) {
+export type IndexEmptyKind = "folder" | "search" | "developer" | "recommendations" | "recent"
+
+export function indexEmptyCopy(kind: IndexEmptyKind) {
+  if (kind === "search") {
+    return {
+      icon: "magnifying-glass" as const,
+      title: diskLanguageText("disk.empty.search.title"),
+      body: diskLanguageText("disk.empty.search.body"),
+    }
+  }
+  if (kind === "developer") {
+    return {
+      icon: "code-lines" as const,
+      title: diskLanguageText("disk.empty.developer.title"),
+      body: diskLanguageText("disk.empty.developer.body"),
+    }
+  }
+  if (kind === "recommendations") {
+    return {
+      icon: "shield" as const,
+      title: diskLanguageText("disk.empty.recommendations.title"),
+      body: diskLanguageText("disk.empty.recommendations.body"),
+    }
+  }
+  if (kind === "recent") {
+    return {
+      icon: "reset" as const,
+      title: diskLanguageText("disk.empty.recent.title"),
+      body: diskLanguageText("disk.empty.recent.body"),
+    }
+  }
+  return {
+    icon: "folder" as const,
+    title: diskLanguageText("disk.drive.emptyFolder"),
+    body: diskLanguageText("disk.drive.noItems"),
+  }
+}
+
+export function IndexEmpty(props: { kind: IndexEmptyKind; onReset: () => void }) {
   const language = useLanguage()
+  const copy = () => indexEmptyCopy(props.kind)
+  const filtered = () => props.kind !== "folder"
   return (
-    <div class="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
+    <div class="flex min-h-full flex-col items-center justify-center px-8 py-8 text-center">
       <span class="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-        <Icon name={props.filtered ? "magnifying-glass" : "folder"} class="size-4" />
+        <Icon name={copy().icon} class="size-4" />
       </span>
-      <h3 class="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">
-        {props.filtered ? language.t("disk.drive.emptyFiltered") : language.t("disk.drive.emptyFolder")}
-      </h3>
-      <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
-        {props.filtered ? language.t("disk.drive.clearFilters") : language.t("disk.drive.noItems")}
-      </p>
-      <Show when={props.filtered}>
+      <h3 class="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">{copy().title}</h3>
+      <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">{copy().body}</p>
+      <Show when={filtered()}>
         <Button class="dl-touch-target mt-4" size="small" variant="secondary" onClick={props.onReset}>
-          {language.t("disk.drive.showEverything")}
+          {language.t("disk.common.contents")}
         </Button>
       </Show>
     </div>
   )
 }
 
-export function Placeholder(props: { icon: IconProps["name"]; title: string; body: string }) {
+export function Placeholder(props: { icon: IconProps["name"]; title: string; body: string; actions?: JSX.Element }) {
   return (
     <div class="flex h-full items-center justify-center px-6">
       <div class="max-w-md text-center">
@@ -79,6 +115,9 @@ export function Placeholder(props: { icon: IconProps["name"]; title: string; bod
         </div>
         <h2 class="text-14-medium tracking-[-0.015em] text-text-strong">{props.title}</h2>
         <p class="mt-1 text-13-regular leading-relaxed text-text-weak">{props.body}</p>
+        <Show when={props.actions}>
+          <div class="mt-4 flex flex-wrap justify-center gap-2">{props.actions}</div>
+        </Show>
       </div>
     </div>
   )
@@ -120,19 +159,16 @@ export function CenterOverlay(props: {
   const behavior = () => centerOverlayBehavior(props.node, props.canOpen, props.inventoryOnly)
   return (
     <div class="pointer-events-none absolute inset-0 grid place-items-center">
-      <div class="max-w-[70%] text-center">
+      <div class="dl-center-summary max-w-[29%] text-center">
         <Show when={props.node}>
           <p class="truncate text-13-semibold tracking-[-0.01em] text-text-strong">
             {diskNodeDisplayName(props.node!)}
           </p>
-          <p
-            class="mt-1.5 text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong"
-            style={{ "text-wrap": "balance" }}
-          >
+          <p class="dl-center-size mt-1.5 whitespace-nowrap text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong">
             {formatBytes(props.node!.size)}
           </p>
           <Show when={props.parentSize && props.node!.path}>
-            <p class="mt-2 text-13-regular tabular-nums text-text-weaker">
+            <p class="dl-center-context mt-2 text-13-regular tabular-nums text-text-weaker">
               {formatPct(props.node!.size, props.parentSize)} {language.t("disk.drive.ofLevel")}
             </p>
           </Show>
@@ -142,7 +178,7 @@ export function CenterOverlay(props: {
               class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
               onClick={props.onOpen}
             >
-              {language.t(props.node!.isOther ? "disk.common.showMore" : "disk.common.openFolder")}
+              {language.t(props.node!.isOther ? "disk.common.showMore" : "disk.common.exploreFolder")}
               <Icon name="arrow-right" class="size-3" />
             </button>
           </Show>

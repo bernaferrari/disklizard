@@ -24,10 +24,10 @@ export function SegmentedButton(props: {
       aria-pressed={props.active}
       aria-keyshortcuts={props.shortcut}
     >
-      <Icon name={props.icon} class="size-3" />
-      {props.label}
+      <Icon name={props.icon} class="dl-segmented-icon size-3" />
+      <span>{props.label}</span>
       <Show when={props.shortcut}>
-        <kbd class="ml-0.5 text-13-regular opacity-45">{props.shortcut}</kbd>
+        <kbd class="dl-segmented-shortcut ml-0.5 text-13-regular opacity-45">{props.shortcut}</kbd>
       </Show>
     </button>
   )
@@ -50,7 +50,7 @@ export function IndexLensButton(props: {
         aria-pressed={props.active}
         aria-disabled={props.disabled ? "true" : undefined}
         aria-describedby={explanationID()}
-        class="dl-touch-target flex min-h-11 items-center justify-center gap-1.5 px-2 text-13-semibold outline-none transition-[color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.98]"
+        class="dl-touch-target flex min-h-11 flex-col items-center justify-center gap-0.5 px-1 text-13-semibold leading-none outline-none transition-[color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.98]"
         classList={{
           "text-text-strong shadow-[inset_0_-2px_0_var(--dl-accent)]": props.active,
           "dl-hover-text text-text-weak": !props.active,

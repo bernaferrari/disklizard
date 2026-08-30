@@ -1184,11 +1184,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Søgningen efter opdateringer mislykkedes.",
   "desktop.updater.dialog.checkFailed.title": "Opdateringsfejl",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Du er opdateret.",
   "desktop.updater.dialog.upToDate.title": "Ingen opdateringer",
   "desktop.updater.dialog.ready.message": "Opdatering {{version}} er downloadet. Vil du genstarte nu?",
   "desktop.updater.dialog.ready.title": "Opdateringen er klar",
   "desktop.updater.dialog.restart": "Genstart",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Senere",
 
   "desktop.recovery.action.relaunch": "Start igen",

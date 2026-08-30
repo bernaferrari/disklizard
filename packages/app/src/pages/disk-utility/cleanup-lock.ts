@@ -1,18 +1,25 @@
 import type { DiskCleanupLock, DiskScanNode } from "./types"
 import { diskLanguageText } from "./runtime"
+import { CLEANUP_LOCK_LIMIT } from "./saved-paths"
 
-export const CLEANUP_LOCK_LIMIT = 24
+export { CLEANUP_LOCK_LIMIT } from "./saved-paths"
 
 function normalizedCleanupPath(path: string, os?: "macos" | "windows" | "linux") {
-  const normalized = path.replace(/\\/g, "/").replace(/\/+$/, "") || "/"
-  const windowsPath = os === "windows" || /^[a-z]:\//i.test(normalized) || normalized.startsWith("//")
+  const windowsPath =
+    os === "windows" ||
+    (os === undefined && (/^[a-z]:[\\/]/i.test(path) || path.startsWith("\\\\")))
+  let normalized = windowsPath
+    ? path.replace(/\\/g, "/").replace(/^\/\/+/, "//").replace(/(?<!^)\/{2,}/g, "/")
+    : path.replace(/\/+/g, "/")
+  normalized = normalized.replace(/\/+$/, "") || "/"
+  if (windowsPath && /^[a-z]:$/i.test(normalized)) normalized += "/"
   return windowsPath ? normalized.toLowerCase() : normalized
 }
 
 function pathCoveredByLock(path: string, lockPath: string, os?: "macos" | "windows" | "linux") {
   const candidate = normalizedCleanupPath(path, os)
   const root = normalizedCleanupPath(lockPath, os)
-  return candidate === root || (root === "/" ? candidate.startsWith("/") : candidate.startsWith(`${root}/`))
+  return candidate === root || candidate.startsWith(root.endsWith("/") ? root : `${root}/`)
 }
 
 /** The most specific user lock covering this path, if any. */

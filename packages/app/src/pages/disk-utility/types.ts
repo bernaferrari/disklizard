@@ -45,6 +45,12 @@ export type DiskDeleteOptions = {
   precondition?: DiskDeveloperArtifactDeletePrecondition
 }
 
+export type DiskDeleteAuthorizationOutcome = {
+  path: string
+  authorization?: string
+  error?: string
+}
+
 /** Already-mounted storage roots discovered locally; no account or remote service is queried. */
 export type DiskStorageLocation = {
   path: string
@@ -172,10 +178,11 @@ export type DiskUtilityAPI = {
   ): Promise<DiskScanNode | null>
   cancelScan(scanId?: string): Promise<void>
   stopWatching(scanId?: string, options?: { retainTrustedSubtree: true }): Promise<void>
-  authorizeDeletePaths(paths: readonly string[]): Promise<Array<{ path: string; authorization: string }>>
+  authorizeDeletePaths(paths: readonly string[]): Promise<DiskDeleteAuthorizationOutcome[]>
   deletePath(path: string, options: DiskDeleteOptions): Promise<{ ok: true }>
   previewPath(path: string): Promise<DiskFilePreview>
   systemPreviewPath(path: string): Promise<void>
+  openPath(path: string): Promise<void>
   openTrash(): Promise<void>
   revealPath(path: string): Promise<void>
   chooseFolder(): Promise<string | null>

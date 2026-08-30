@@ -12,7 +12,7 @@ import type { DiskScanNode } from "./types"
 import { surfaceRing } from "./ui-tokens"
 
 /** Keep the complete center summary inside the quiet disc at every desktop size. */
-const INNER_HOLE_RATIO = 0.22
+const INNER_HOLE_RATIO = 0.29
 
 /** Node shape the engine consumes — identical to DiskScanNode, aliased for seamless interop. */
 export type SunNode = DiskScanNode
@@ -263,9 +263,7 @@ export function primaryHueForIndex(i: number): number {
 export function primarySegmentColor(i: number, alpha = 1, isDir = true): string {
   const hue = primaryHueForIndex(i)
   const [L, C] = isDir ? [0.7, 0.115] : [0.56, 0.063]
-  return alpha >= 1
-    ? `oklch(${L} ${C} ${hue.toFixed(1)})`
-    : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
+  return alpha >= 1 ? `oklch(${L} ${C} ${hue.toFixed(1)})` : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
 export function primarySegmentForeground(isDir = true): string {
@@ -858,11 +856,7 @@ export class Sunburst {
       if (prev) batch(() => this.options.onHover?.(null))
     } else {
       this.hovered = hit.segment
-      cursor = this.options.canDrag?.(hit.segment.node)
-        ? "grab"
-        : hit.segment.node.isDir
-          ? "pointer"
-          : "default"
+      cursor = this.options.canDrag?.(hit.segment.node) ? "grab" : hit.segment.node.isDir ? "pointer" : "default"
       if (prev?.path !== hit.segment.path) batch(() => this.options.onHover?.(hit.segment))
     }
     // One style write + one frame request per move instead of scattered writes.

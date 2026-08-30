@@ -61,6 +61,14 @@ export function nativeTrashName(os?: DesktopOS): string {
   return os === "windows" ? diskLanguageText("disk.common.recycleBin") : diskLanguageText("disk.common.trash")
 }
 
+/** Name the exact system file browser instead of the ambiguous verb "Reveal". */
+export function nativeRevealLabel(os?: DesktopOS): string {
+  if (os === "macos") return diskLanguageText("disk.detail.revealFinder")
+  if (os === "windows") return diskLanguageText("disk.detail.revealExplorer")
+  if (os === "linux") return diskLanguageText("disk.detail.revealFiles")
+  return diskLanguageText("disk.detail.revealManager")
+}
+
 /** A concise screen-reader update for keyboard navigation inside the canvas map. */
 export function describeStorageNode(
   node: DiskScanNode | null,

@@ -41,6 +41,7 @@ export function PreviewDialog(props: {
   onPrevious?: () => void
   onNext?: () => void
   onReveal: () => void
+  revealLabel: string
   systemPreviewLabel?: string
   onSystemPreview?: () => void
   onOpen: () => void
@@ -92,7 +93,7 @@ export function PreviewDialog(props: {
 
   return (
     <div
-      class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/68 p-3 backdrop-blur-md sm:p-6"
+      class="dl-dialog-surface dl-modal-scrim fixed inset-0 z-50 grid place-items-center p-3 backdrop-blur-md sm:p-6"
       data-state={props.phase}
       onClick={props.onClose}
       role="presentation"
@@ -185,7 +186,10 @@ export function PreviewDialog(props: {
                 <Show when={largestChildren().length}>
                   <section class="mt-6" aria-labelledby="preview-largest-items">
                     <div class="flex items-center justify-between gap-4">
-                      <h3 id="preview-largest-items" class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker">
+                      <h3
+                        id="preview-largest-items"
+                        class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker"
+                      >
                         {language.t("disk.preview.largest")}
                       </h3>
                       <span class="text-13-regular tabular-nums text-text-weaker">
@@ -196,9 +200,14 @@ export function PreviewDialog(props: {
                       <For each={largestChildren()}>
                         {(child) => (
                           <li class="flex min-w-0 items-center gap-3 py-3">
-                            <Icon name={child.isDir ? "folder" : "open-file"} class="size-3.5 shrink-0 text-icon-weak" />
+                            <Icon
+                              name={child.isDir ? "folder" : "open-file"}
+                              class="size-3.5 shrink-0 text-icon-weak"
+                            />
                             <span class="min-w-0 flex-1 truncate text-13-semibold text-text-strong">{child.name}</span>
-                            <span class="shrink-0 text-13-semibold tabular-nums text-text-weak">{formatBytes(child.size)}</span>
+                            <span class="shrink-0 text-13-semibold tabular-nums text-text-weak">
+                              {formatBytes(child.size)}
+                            </span>
                           </li>
                         )}
                       </For>
@@ -275,11 +284,7 @@ export function PreviewDialog(props: {
         </main>
 
         <footer class="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
-          <div
-            class="flex shrink-0 items-center gap-1"
-            role="group"
-            aria-label={language.t("disk.preview.navigation")}
-          >
+          <div class="flex shrink-0 items-center gap-1" role="group" aria-label={language.t("disk.preview.navigation")}>
             <Button
               class="dl-touch-target"
               size="small"
@@ -305,14 +310,10 @@ export function PreviewDialog(props: {
             />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-13-semibold tabular-nums text-text-strong">
-              {formatBytes(props.preview?.bytes ?? props.node.size)}
-            </p>
+            <p class="text-13-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</p>
             <p class="mt-0.5 text-13-regular text-text-weaker">
               <Show when={props.node.modifiedAt} fallback={language.t("disk.preview.local")}>
-                {(changed) =>
-                  language.t("disk.preview.changedLocal", { changed: formatLastChanged(changed()) })
-                }
+                {(changed) => language.t("disk.preview.changedLocal", { changed: formatLastChanged(changed()) })}
               </Show>
             </p>
             <StorageAccountingFacts node={props.node} class="mt-1" />
@@ -324,21 +325,15 @@ export function PreviewDialog(props: {
             icon="square-arrow-top-right"
             onClick={props.onReveal}
           >
-            {language.t("disk.common.reveal")}
+            {props.revealLabel}
           </Button>
           <Show when={props.onSystemPreview && props.systemPreviewLabel}>
-            <Button
-              class="dl-touch-target"
-              size="small"
-              variant="secondary"
-              icon="eye"
-              onClick={props.onSystemPreview}
-            >
+            <Button class="dl-touch-target" size="small" variant="secondary" icon="eye" onClick={props.onSystemPreview}>
               {props.systemPreviewLabel}
             </Button>
           </Show>
           <Button class="dl-touch-target" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
-            {language.t("disk.preview.openDefault")}
+            {language.t(props.node.isDir ? "disk.preview.openMap" : "disk.preview.openDefault")}
           </Button>
         </footer>
       </div>

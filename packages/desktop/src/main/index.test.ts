@@ -12,4 +12,9 @@ describe("desktop initialization", () => {
     expect(main).not.toContain("spawnLocalServer")
     expect(main).not.toContain("startBackgroundCli")
   })
+
+  test("enforces the single-window cleanup-protection boundary across app launches", () => {
+    expect(main).toContain("requestSingleInstanceLock")
+    expect(main).toContain('app.on("second-instance"')
+  })
 })

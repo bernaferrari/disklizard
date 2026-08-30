@@ -15,9 +15,10 @@ import { createUnresponsiveSampler } from "./unresponsive"
 import { nativeT } from "./native-translations"
 import { createWindowRegistry } from "./window-registry"
 import { safeWindowURL } from "./window-state"
-import { resolveExternalURL, resolveLocalFilePath } from "./external-url"
+import { resolveExternalURL } from "./external-url"
 import { APP_PROTOCOL } from "./product-identity"
 import { RENDERER_CONTENT_SECURITY_POLICY } from "./renderer-security-policy"
+import { mainWindowMinimumSize } from "./main-window-layout"
 
 const root = dirname(fileURLToPath(import.meta.url))
 const rendererRoot = join(root, "../renderer")
@@ -31,9 +32,7 @@ const oc2Background = {
   light: resolveThemeVariant(oc2Theme.light, false)["background-base"],
   dark: resolveThemeVariant(oc2Theme.dark, true)["background-base"],
 }
-const documentPolicyHeader = "Document-Policy"
 const contentSecurityPolicyHeader = "Content-Security-Policy"
-const jsCallStacksDocumentPolicy = "include-js-call-stacks-in-crash-reports"
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -158,8 +157,7 @@ export function getLastFocusedWindow() {
 }
 
 export function restoreMainWindows() {
-  const ids = registry.persisted()
-  return (ids.length ? ids : [randomUUID()]).map((id) => createMainWindow(id))
+  return [createMainWindow(registry.restoreSingle(randomUUID))]
 }
 
 export function setDockIcon() {
@@ -168,7 +166,7 @@ export function setDockIcon() {
   if (!icon.isEmpty()) app.dock?.setIcon(icon)
 }
 
-export function createMainWindow(id: string = randomUUID()) {
+function createMainWindow(id: string) {
   const state = windowState({
     file: windowStateFile(id),
     defaultWidth: 1280,
@@ -181,6 +179,7 @@ export function createMainWindow(id: string = randomUUID()) {
     y: state.y,
     width: state.width,
     height: state.height,
+    ...mainWindowMinimumSize(),
     show: false,
     autoHideMenuBar: true,
     title: app.getName(),
@@ -237,17 +236,6 @@ export function openExternalURL(value: string) {
     return
   }
   void shell.openExternal(url)
-}
-
-export function openLocalFileURL(value: string) {
-  const path = resolveLocalFilePath(value)
-  if (!path) {
-    writeLog("window", "blocked local file target", { url: value }, "warn")
-    return
-  }
-  void shell.openPath(path).then((error) => {
-    if (error) writeLog("window", "failed to open local file", { path, error }, "error")
-  })
 }
 
 function wireNavigationPolicy(win: BrowserWindow) {
@@ -471,7 +459,6 @@ function wireWindowRecovery(win: BrowserWindow, name: string) {
 function addDocumentPolicy(response: Response, file: string) {
   if (!file.toLowerCase().endsWith(".html")) return response
   const headers = new Headers(response.headers)
-  headers.set(documentPolicyHeader, jsCallStacksDocumentPolicy)
   headers.set(contentSecurityPolicyHeader, RENDERER_CONTENT_SECURITY_POLICY)
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
 }
@@ -499,7 +486,6 @@ function isTrustedRendererUrl(value?: string) {
 
 function addRendererHeaders(value: string, headers: Record<string, any>) {
   if (!isRendererUrl(value, true)) return
-  upsertKeyValue(headers, documentPolicyHeader, [jsCallStacksDocumentPolicy])
   upsertKeyValue(headers, contentSecurityPolicyHeader, [RENDERER_CONTENT_SECURITY_POLICY])
 }
 

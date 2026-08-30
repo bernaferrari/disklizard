@@ -23,6 +23,7 @@ Session.vim
 /opencode.json
 a.out
 target
+test-results
 .scripts
 .direnv/
 

@@ -112,6 +112,32 @@
   }
 }
 
+/*
+ * Menu content is portalled to the document body, so DiskLizard's scoped
+ * reduced-motion rule cannot reach it. Keep this preference global to the
+ * shared menu surface instead of coupling the component to one app shell.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-component="dropdown-menu-content"],
+  [data-component="dropdown-menu-sub-content"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (pointer: coarse) {
+  [data-component="dropdown-menu-content"],
+  [data-component="dropdown-menu-sub-content"] {
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"] {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+  }
+}
+
 @keyframes dropdown-menu-open {
   from {
     opacity: 0;

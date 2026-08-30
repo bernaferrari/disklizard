@@ -47,11 +47,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Pemeriksaan pembaruan gagal.",
   "desktop.updater.dialog.checkFailed.title": "Kesalahan pembaruan",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Versi Anda sudah terbaru.",
   "desktop.updater.dialog.upToDate.title": "Tidak ada pembaruan",
   "desktop.updater.dialog.ready.message": "Pembaruan {{version}} telah diunduh. Mulai ulang sekarang?",
   "desktop.updater.dialog.ready.title": "Pembaruan siap",
   "desktop.updater.dialog.restart": "Mulai ulang",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Nanti",
 
   "desktop.recovery.action.relaunch": "Luncurkan ulang",

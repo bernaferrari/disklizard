@@ -1,10 +1,10 @@
 import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
-import { createMemo, onCleanup, onMount, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes, shortBytes, truncatePath } from "./format"
 import type { SurfacePhase } from "./motion"
-import type { ReclaimSummary, Safety } from "./recognize"
+import { recognize, type ReclaimSummary, type Safety } from "./recognize"
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { VirtualRows } from "./DiskUtilityVirtualList"
 import { useLanguage, type DiskLanguageKey } from "./runtime"
@@ -76,6 +76,142 @@ function trapDialogFocus(event: KeyboardEvent) {
   }
 }
 
+export function CleanupProtectionsResetDialog(props: {
+  phase: SurfacePhase
+  onClose: () => void
+  onReset: () => Promise<boolean>
+}) {
+  const language = useLanguage()
+  const focusDialog = createDialogFocusRestoration()
+  const [step, setStep] = createSignal<"review" | "confirm">("review")
+  const [resetting, setResetting] = createSignal(false)
+  const [failed, setFailed] = createSignal(false)
+  let panel: HTMLDivElement | undefined
+
+  const focusFinalAction = () => {
+    queueMicrotask(() => panel?.querySelector<HTMLElement>("[data-reset-confirm]")?.focus({ preventScroll: true }))
+  }
+
+  createEffect(() => {
+    if (step() === "confirm") focusFinalAction()
+  })
+
+  const close = () => {
+    if (!resetting()) props.onClose()
+  }
+
+  const reset = async () => {
+    if (step() !== "confirm" || resetting()) return
+    setFailed(false)
+    setResetting(true)
+    const ok = await props.onReset()
+    setResetting(false)
+    if (ok) {
+      props.onClose()
+      return
+    }
+    setFailed(true)
+    focusFinalAction()
+  }
+
+  return (
+    <div
+      class="dl-dialog-surface dl-modal-scrim fixed inset-0 z-50 grid place-items-center p-4 backdrop-blur-sm"
+      data-state={props.phase}
+      onClick={close}
+      role="presentation"
+    >
+      <div
+        class="dl-dialog-panel w-full max-w-md rounded-2xl bg-surface-raised-strong p-5 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
+        ref={(element) => {
+          panel = element
+          focusDialog(element)
+        }}
+        tabIndex={-1}
+        aria-busy={resetting() ? "true" : undefined}
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => {
+          trapDialogFocus(event)
+          if (event.key !== "Escape" || event.defaultPrevented) return
+          event.preventDefault()
+          close()
+        }}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="cleanup-reset-title"
+        aria-describedby="cleanup-reset-description"
+      >
+        <div class="flex items-start gap-3">
+          <div class="dl-critical-text grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.12)]">
+            <Icon name="shield" class="size-4" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+              {language.t("disk.cleanup.resetHeading")}
+            </p>
+            <h2 id="cleanup-reset-title" class="mt-1 text-18-medium tracking-[-0.025em] text-text-strong">
+              {language.t(step() === "review" ? "disk.cleanup.resetTitle" : "disk.cleanup.resetFinalTitle")}
+            </h2>
+            <div
+              id="cleanup-reset-description"
+              class="mt-3 text-13-regular leading-relaxed text-text-weak"
+              role={failed() ? "alert" : "status"}
+              aria-live={step() === "confirm" || failed() ? "assertive" : "polite"}
+              aria-atomic="true"
+            >
+              <p>{language.t(step() === "review" ? "disk.cleanup.resetBody" : "disk.cleanup.resetFinalBody")}</p>
+              <Show when={failed()}>
+                <p class="mt-3 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-text-strong">
+                  <span class="text-13-semibold">{language.t("disk.cleanup.resetFailedTitle")}. </span>
+                  {language.t("disk.cleanup.resetFailed")}
+                </p>
+              </Show>
+              <Show when={resetting()}>
+                <p class="mt-3 flex items-center gap-2 text-text-strong">
+                  <span class="dl-spin size-3.5 rounded-full border border-border-weaker-base border-t-current" />
+                  {language.t("disk.cleanup.resetting")}
+                </p>
+              </Show>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 flex justify-end gap-2">
+          <Button
+            data-autofocus
+            class="dl-touch-target"
+            size="small"
+            variant="ghost"
+            disabled={resetting()}
+            onClick={close}
+          >
+            {language.t("disk.cleanup.resetCancel")}
+          </Button>
+          <Show
+            when={step() === "confirm"}
+            fallback={
+              <Button class="dl-touch-target" size="small" variant="secondary" onClick={() => setStep("confirm")}>
+                {language.t("disk.cleanup.resetContinue")}
+              </Button>
+            }
+          >
+            <Button
+              data-reset-confirm
+              class="dl-touch-target dl-critical-text"
+              size="small"
+              variant="primary"
+              icon="reset"
+              disabled={resetting()}
+              onClick={() => void reset()}
+            >
+              {resetting() ? language.t("disk.cleanup.resetting") : language.t("disk.cleanup.resetConfirm")}
+            </Button>
+          </Show>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function CollectionDialog(props: {
   phase: SurfacePhase
   items: DiskScanNode[]
@@ -90,6 +226,8 @@ export function CollectionDialog(props: {
   onClose: () => void
   onRemove: (node: DiskScanNode) => void
   onQuickLook?: (node: DiskScanNode) => void
+  onPreview: (node: DiskScanNode) => void
+  onReveal: (node: DiskScanNode) => void
   onConfirm: () => void
 }) {
   const language = useLanguage()
@@ -98,7 +236,7 @@ export function CollectionDialog(props: {
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
   return (
     <div
-      class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/62 p-4 backdrop-blur-sm"
+      class="dl-dialog-surface dl-modal-scrim fixed inset-0 z-50 grid place-items-center p-4 backdrop-blur-sm"
       data-state={props.phase}
       onClick={props.onClose}
       role="presentation"
@@ -170,42 +308,76 @@ export function CollectionDialog(props: {
         <VirtualRows
           items={props.items}
           ariaLabel={language.t("disk.dialog.collection.itemsLabel")}
-          estimateSize={() => 64}
+          estimateSize={() => 72}
           itemKey={(item) => item.path}
-          render={(item) => (
-            <div class="mx-3 flex h-full items-center gap-3 border-b border-border-weaker-base px-2 py-2 last:border-b-0">
-              <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak">
-                <Icon name={item.isDir ? "folder" : "code-lines"} class="size-3.5" />
-              </span>
-              <span class="min-w-0 flex-1">
-                <span class="block truncate text-12-semibold text-text-strong">{item.name}</span>
-                <span class="mt-0.5 block truncate text-13-mono text-text-weaker" title={item.path}>
-                  {item.path}
+          render={(item) => {
+            const recognition = recognize(item)
+            return (
+              <div class="mx-3 flex h-full items-center gap-2 border-b border-border-weaker-base px-2 py-2 last:border-b-0">
+                <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak">
+                  <Icon name={item.isDir ? "folder" : "code-lines"} class="size-3.5" />
                 </span>
-              </span>
-              <span class="shrink-0 text-13-semibold tabular-nums text-text-strong">{shortBytes(item.size)}</span>
-              <Show when={props.onQuickLook && !item.isOther && !item.isHidden}>
+                <span class="min-w-0 flex-1" title={item.path}>
+                  <span class="flex min-w-0 items-center gap-1.5">
+                    <span class="truncate text-12-semibold text-text-strong">{item.name}</span>
+                    <Show when={recognition.tag}>
+                      <span class="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-weaker">
+                        {language.t(recognition.tag!)}
+                      </span>
+                    </Show>
+                  </span>
+                  <span class="mt-0.5 block truncate text-13-regular text-text-weaker">
+                    {recognition.hint ? `${language.t(recognition.hint)} · ${truncatePath(item.path, 34)}` : item.path}
+                  </span>
+                </span>
+                <span class="shrink-0 text-13-semibold tabular-nums text-text-strong">{shortBytes(item.size)}</span>
+                <Show when={!item.isOther && !item.isHidden}>
+                  <Show
+                    when={props.onQuickLook}
+                    fallback={
+                      <Button
+                        class="dl-touch-target"
+                        size="small"
+                        variant="ghost"
+                        icon="bullet-list"
+                        disabled={props.deleting}
+                        aria-label={language.t("disk.dialog.collection.preview", { name: item.name })}
+                        onClick={() => props.onPreview(item)}
+                      />
+                    }
+                  >
+                    <Button
+                      class="dl-touch-target"
+                      size="small"
+                      variant="ghost"
+                      icon="eye"
+                      disabled={props.deleting}
+                      aria-label={language.t("disk.dialog.collection.quickLook", { name: item.name })}
+                      onClick={() => props.onQuickLook?.(item)}
+                    />
+                  </Show>
+                  <Button
+                    class="dl-touch-target"
+                    size="small"
+                    variant="ghost"
+                    icon="square-arrow-top-right"
+                    disabled={props.deleting}
+                    aria-label={language.t("disk.dialog.collection.reveal", { name: item.name })}
+                    onClick={() => props.onReveal(item)}
+                  />
+                </Show>
                 <Button
                   class="dl-touch-target"
                   size="small"
                   variant="ghost"
-                  icon="eye"
+                  icon="close-small"
                   disabled={props.deleting}
-                  aria-label={language.t("disk.dialog.collection.quickLook", { name: item.name })}
-                  onClick={() => props.onQuickLook?.(item)}
+                  aria-label={language.t("disk.dialog.collection.remove", { name: item.name })}
+                  onClick={() => props.onRemove(item)}
                 />
-              </Show>
-              <Button
-                class="dl-touch-target"
-                size="small"
-                variant="ghost"
-                icon="close-small"
-                disabled={props.deleting}
-                aria-label={language.t("disk.dialog.collection.remove", { name: item.name })}
-                onClick={() => props.onRemove(item)}
-              />
-            </div>
-          )}
+              </div>
+            )
+          }}
         />
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
           <Show
@@ -277,6 +449,7 @@ export function ReclaimDrawer(props: {
   onCollectAll: () => void
   onToggle: (node: DiskScanNode) => void
   isSelected: (node: DiskScanNode) => boolean
+  onInspect: (node: DiskScanNode) => void
   deleting: boolean
 }) {
   const language = useLanguage()
@@ -301,7 +474,7 @@ export function ReclaimDrawer(props: {
       onClick={props.onClose}
       role="presentation"
     >
-      <div class="dl-drawer-backdrop absolute inset-0 bg-background-base/58 backdrop-blur-sm" />
+      <div class="dl-drawer-backdrop dl-modal-scrim absolute inset-0 backdrop-blur-sm" />
       <div
         class="dl-drawer-panel relative m-2 flex h-[calc(100%-16px)] w-[calc(100%-16px)] max-w-md flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
         ref={focusDialog}
@@ -387,6 +560,15 @@ export function ReclaimDrawer(props: {
                   class="dl-touch-target"
                   size="small"
                   variant="ghost"
+                  icon="eye"
+                  aria-label={language.t("disk.dialog.reclaim.inspect", { name: row.item.node.name })}
+                  disabled={props.deleting || row.item.node.isOther || row.item.node.isHidden}
+                  onClick={() => props.onInspect(row.item.node)}
+                />
+                <Button
+                  class="dl-touch-target"
+                  size="small"
+                  variant="ghost"
                   icon={props.isSelected(row.item.node) ? "circle-check" : "plus-small"}
                   aria-pressed={props.isSelected(row.item.node)}
                   aria-label={
@@ -444,7 +626,7 @@ export function DeleteConfirmDialog(props: {
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
   return (
     <div
-      class="dl-dialog-surface fixed inset-0 z-50 grid place-items-center bg-background-base/62 p-4 backdrop-blur-sm"
+      class="dl-dialog-surface dl-modal-scrim fixed inset-0 z-50 grid place-items-center p-4 backdrop-blur-sm"
       data-state={props.phase}
       onClick={props.onClose}
       role="presentation"

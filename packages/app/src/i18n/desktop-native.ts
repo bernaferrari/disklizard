@@ -65,6 +65,20 @@ export const DESKTOP_NATIVE_LOCALES = [
 
 export type DesktopNativeLocale = (typeof DESKTOP_NATIVE_LOCALES)[number]
 
+/**
+ * Locales exposed by the current DiskLizard beta.
+ *
+ * Additional source catalogs are retained for completion and review, but are
+ * not product locales until the complete DiskLizard surface is translated.
+ */
+export const DISKLIZARD_RELEASE_LOCALES = ["en"] as const
+export type DiskLizardReleaseLocale = (typeof DISKLIZARD_RELEASE_LOCALES)[number]
+export const DISKLIZARD_RELEASE_LOCALE: DiskLizardReleaseLocale = "en"
+
+export function resolveDiskLizardReleaseLocale(_languages: readonly string[] = []): DiskLizardReleaseLocale {
+  return DISKLIZARD_RELEASE_LOCALE
+}
+
 export const DESKTOP_NATIVE_LABELS: Record<DesktopNativeLocale, string> = {
   en: "English",
   zh: "简体中文",
@@ -228,7 +242,7 @@ function locale(value: string) {
 }
 
 export const DESKTOP_NATIVE_ENGLISH = {
-  "desktop.menu.app": "OpenCode",
+  "desktop.menu.app": "DiskLizard",
   "desktop.menu.file": "File",
   "desktop.menu.edit": "Edit",
   "desktop.menu.view": "View",
@@ -268,34 +282,38 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.menu.nextProject": "Next Project",
   "desktop.menu.minimize": "Minimize",
   "desktop.menu.maximize": "Maximize",
-  "desktop.menu.documentation": "OpenCode Documentation",
+  "desktop.menu.documentation": "DiskLizard Documentation",
   "desktop.menu.supportForum": "Support Forum",
   "desktop.menu.shareFeedback": "Share Feedback",
   "desktop.menu.reportBug": "Report a Bug",
-  "desktop.menu.ariaLabel": "OpenCode menu",
+  "desktop.menu.ariaLabel": "DiskLizard menu",
 
   "desktop.updater.dialog.checkFailed.message": "Update check failed.",
   "desktop.updater.dialog.checkFailed.title": "Update Error",
+  "desktop.updater.dialog.installFailed.message":
+    "DiskLizard couldn't start the update installation. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't Install Update",
   "desktop.updater.dialog.upToDate.message": "You're up to date.",
   "desktop.updater.dialog.upToDate.title": "No Updates",
   "desktop.updater.dialog.ready.message": "Update {{version}} downloaded. Restart now?",
   "desktop.updater.dialog.ready.title": "Update Ready",
   "desktop.updater.dialog.restart": "Restart",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Later",
 
   "desktop.recovery.action.relaunch": "Relaunch",
   "desktop.recovery.action.exportLogs": "Export Logs",
   "desktop.recovery.action.keepWaiting": "Keep Waiting",
   "desktop.recovery.action.quit": "Quit",
-  "desktop.recovery.loadFailed": "OpenCode failed to load",
-  "desktop.recovery.terminated": "OpenCode window terminated unexpectedly",
-  "desktop.recovery.unresponsive": "OpenCode is not responding",
+  "desktop.recovery.loadFailed": "DiskLizard failed to load",
+  "desktop.recovery.terminated": "DiskLizard window terminated unexpectedly",
+  "desktop.recovery.unresponsive": "DiskLizard is not responding",
   "desktop.recovery.unresponsive.detail": "You can relaunch the app, open the logs, or keep waiting.",
   "desktop.recovery.loadFailed.detail": "Window: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
   "desktop.recovery.terminated.detail": "Window: {{window}}\nReason: {{reason}}\nCode: {{code}}",
   "desktop.recovery.unknown": "<unknown>",
 
-  "desktop.dialog.chooseFolder": "Choose a folder",
+  "desktop.dialog.chooseFolder": "Scan Folder...",
   "desktop.dialog.chooseFile": "Choose a file",
   "desktop.dialog.saveFile": "Save file",
   "desktop.dialog.files": "Files",
@@ -308,13 +326,13 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.wsl.error.executeDistro": "Cannot execute commands in distro",
   "desktop.wsl.error.installWsl": "WSL installation failed",
   "desktop.wsl.error.installDistro": "Failed to install distro: {{distro}}",
-  "desktop.wsl.error.installOpencode": "OpenCode installation failed",
+  "desktop.wsl.error.installOpencode": "DiskLizard installation failed",
   "desktop.wsl.error.alreadyAdded": "{{distro}} is already added",
-  "desktop.wsl.error.opencodeMissing": "opencode is not installed in this distro",
-  "desktop.wsl.error.opencodeCannotRun": "opencode is installed but could not run",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode is not installed in {{distro}}",
+  "desktop.wsl.error.opencodeMissing": "DiskLizard is not installed in this distro",
+  "desktop.wsl.error.opencodeCannotRun": "DiskLizard is installed but could not run",
+  "desktop.wsl.error.opencodeNotInstalled": "DiskLizard is not installed in {{distro}}",
   "desktop.wsl.error.updateVersion":
-    "OpenCode update finished but {{distro}} still reports {{installed}}; expected {{expected}}",
+    "DiskLizard update finished but {{distro}} still reports {{installed}}; expected {{expected}}",
   "desktop.wsl.error.noVersion": "no version",
   "desktop.wsl.error.serverExited": "WSL server exited after startup (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
@@ -340,7 +358,13 @@ export function createDesktopNativeBundle(
 ): DesktopNativeBundle {
   return {
     locale,
-    messages: Object.fromEntries(DESKTOP_NATIVE_KEYS.map((key) => [key, translate(key)])) as DesktopNativeMessages,
+    // The inherited locale files still contain the former product name in a
+    // few native-shell strings. Product branding is not linguistic content,
+    // so normalize it at the standalone bundle boundary while retaining the
+    // surrounding translation.
+    messages: Object.fromEntries(
+      DESKTOP_NATIVE_KEYS.map((key) => [key, translate(key).replace(/open[\s_-]*code/giu, "DiskLizard")]),
+    ) as DesktopNativeMessages,
   }
 }
 

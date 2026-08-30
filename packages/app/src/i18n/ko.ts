@@ -1122,11 +1122,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "업데이트를 확인하지 못했습니다.",
   "desktop.updater.dialog.checkFailed.title": "업데이트 오류",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "최신 버전을 사용 중입니다.",
   "desktop.updater.dialog.upToDate.title": "업데이트 없음",
   "desktop.updater.dialog.ready.message": "업데이트 {{version}} 다운로드가 완료되었습니다. 지금 다시 시작할까요?",
   "desktop.updater.dialog.ready.title": "업데이트 준비 완료",
   "desktop.updater.dialog.restart": "다시 시작",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "나중에",
 
   "desktop.recovery.action.relaunch": "다시 실행",

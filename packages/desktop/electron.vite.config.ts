@@ -1,45 +1,33 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin"
+import { diskLizardPublicDir } from "@disklizard/app/vite"
 import { defineConfig } from "electron-vite"
 import tailwindcss from "@tailwindcss/vite"
 import solidPlugin from "vite-plugin-solid"
-import { readFileSync } from "node:fs"
-import { fileURLToPath } from "node:url"
+import { resolveDesktopChannel, resolvePublicReleaseRepository } from "./src/main/product-identity"
 
-const channel = (() => {
-  const raw = process.env.DISKLIZARD_CHANNEL ?? process.env.OPENCODE_CHANNEL
-  if (raw === "dev" || raw === "beta" || raw === "prod") return raw
-  if (raw === "latest") return "prod"
-  return "dev"
-})()
-
-const theme = fileURLToPath(new URL("../app/public/oc-theme-preload.js", import.meta.url))
-
-const sentry =
-  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
-    ? sentryVitePlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        telemetry: false,
-        release: {
-          name: process.env.SENTRY_RELEASE ?? process.env.VITE_SENTRY_RELEASE,
-        },
-        sourcemaps: {
-          assets: "./out/renderer/**",
-          filesToDeleteAfterUpload: "./out/renderer/**/*.map",
-        },
-      })
-    : false
+const packagedSmoke = process.env.DISKLIZARD_PACKAGED_SMOKE === "1"
+const channel = packagedSmoke
+  ? "dev"
+  : resolveDesktopChannel(process.env.DISKLIZARD_CHANNEL, process.env.OPENCODE_CHANNEL)
+const releaseRepository = packagedSmoke ? undefined : resolvePublicReleaseRepository(process.env)
 
 export default defineConfig({
   main: {
     define: {
       "import.meta.env.DISKLIZARD_CHANNEL": JSON.stringify(channel),
       "import.meta.env.OPENCODE_CHANNEL": JSON.stringify(channel),
+      "import.meta.env.DISKLIZARD_RELEASE_OWNER": JSON.stringify(releaseRepository?.owner ?? ""),
+      "import.meta.env.DISKLIZARD_RELEASE_REPO": JSON.stringify(releaseRepository?.repo ?? ""),
+      "import.meta.env.DISKLIZARD_RELEASE_PUBLIC": JSON.stringify(releaseRepository ? "true" : ""),
+      "import.meta.env.DISKLIZARD_PACKAGED_SMOKE": JSON.stringify(packagedSmoke ? "1" : ""),
     },
     build: {
       rollupOptions: {
-        input: { index: "src/main/index.ts" },
+        // The parser is a Node worker_threads entry, not a browser Worker.
+        // Emit it explicitly so packaged builds never depend on a source .ts file.
+        input: {
+          index: "src/main/index.ts",
+          "native-parse-worker": "../disklizard/src/native-parse-worker.ts",
+        },
         output: {
           banner: `
 // -- CommonJS Shims --
@@ -50,11 +38,12 @@ const require = __cjs_mod__.createRequire(import.meta.url);
 `,
         },
       },
-      externalizeDeps: { exclude: ["@disklizard/core"] },
+      externalizeDeps: { exclude: ["@disklizard/app", "@disklizard/core"] },
     },
   },
   preload: {
     build: {
+      externalizeDeps: { exclude: ["@disklizard/app"] },
       rollupOptions: {
         input: { index: "src/preload/index.ts" },
         output: {
@@ -65,21 +54,8 @@ const require = __cjs_mod__.createRequire(import.meta.url);
     },
   },
   renderer: {
-    plugins: [
-      {
-        name: "disklizard:theme-preload",
-        transformIndexHtml(html: string) {
-          return html.replace(
-            '<script id="oc-theme-preload-script" src="./oc-theme-preload.js"></script>',
-            `<script id="oc-theme-preload-script">${readFileSync(theme, "utf8")}</script>`,
-          )
-        },
-      },
-      tailwindcss(),
-      solidPlugin(),
-      sentry,
-    ],
-    publicDir: "../../../app/public",
+    plugins: [tailwindcss(), solidPlugin()],
+    publicDir: diskLizardPublicDir,
     root: "src/renderer",
     build: {
       sourcemap: true,

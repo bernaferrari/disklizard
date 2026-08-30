@@ -1,9 +1,7 @@
-export type Channel = "dev" | "beta" | "prod"
+import { resolveDesktopChannel, type DesktopChannel } from "../src/main/product-identity"
+
+export type Channel = DesktopChannel
 
 export function resolveChannel(): Channel {
-  const raw = Bun.env.DISKLIZARD_CHANNEL ?? Bun.env.OPENCODE_CHANNEL
-  if (raw === "dev" || raw === "beta" || raw === "prod") return raw
-  return "dev"
+  return resolveDesktopChannel(Bun.env.DISKLIZARD_CHANNEL, Bun.env.OPENCODE_CHANNEL)
 }
-
-export const RUST_TARGET = Bun.env.RUST_TARGET

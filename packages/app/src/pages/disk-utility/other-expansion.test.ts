@@ -54,12 +54,14 @@ describe("Other expansion planning", () => {
     ).toBeUndefined()
   })
 
-  it("supports legacy aggregates and Windows path identity but rejects non-aggregate and hidden nodes", () => {
+  it("supports legacy aggregates with exact Windows identity but rejects case-distinct, ordinary, and hidden nodes", () => {
     const aggregate = other("C:\\Work\\__other__")
-    const equivalent = { ...aggregate, path: "c:\\work\\__OTHER__" }
+    const equivalent = { ...aggregate }
+    const caseDistinct = { ...aggregate, path: "c:\\work\\__OTHER__" }
     const root = directory("C:\\Work", [directory("C:\\Work\\a"), aggregate])
 
     expect(planOtherExpansion(root, equivalent, "windows")?.maxChildren).toBe(192)
+    expect(planOtherExpansion(root, caseDistinct, "windows")).toBeUndefined()
     expect(planOtherExpansion(root, directory("C:\\Work\\a"), "windows")).toBeUndefined()
     expect(planOtherExpansion(root, { ...aggregate, isHidden: true }, "windows")).toBeUndefined()
   })

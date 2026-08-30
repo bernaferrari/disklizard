@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { desktopMenuHasOpenCodeCommands } from "./desktop-menu"
-import { productionUpdaterDowngradeAllowed, productionVerifyUpdateCodeSignature } from "./updater-policy"
+import { productionUpdaterDowngradeAllowed, resolveWindowsPublisherName } from "./updater-policy"
 
 const dir = dirname(fileURLToPath(import.meta.url))
 
@@ -26,6 +26,9 @@ describe("DiskLizard standalone desktop runtime", () => {
     const legacyPaths = [
       "src/main/background-cli.ts",
       "src/main/draft-store.ts",
+      "src/main/attachment-picker.ts",
+      "src/main/debug.ts",
+      "src/main/renderer-store.ts",
       "src/main/server.ts",
       "src/main/shell-env.ts",
       "src/main/sidecar.ts",
@@ -66,24 +69,40 @@ describe("DiskLizard standalone desktop runtime", () => {
     const platform = readFileSync(join(dir, "../renderer/platform.ts"), "utf8")
     expect(renderer).toContain("DiskUtilityPage")
     expect(renderer).toContain("DiskLizardRuntime")
+    expect(renderer).toContain("DiskLizardTheme")
     expect(renderer).toContain("handleRendererMenuCommand")
     expect(renderer).toContain("rendererMenuHandlers")
     expect(renderer).not.toMatch(/AppInterface|ServerConnection|useWslServers|createDraftStore|DesktopFirstLaunchOnboarding/)
+    expect(renderer).not.toMatch(/ThemeProvider|useTheme/)
     expect(platform).not.toMatch(/ServerConnection|wslServers|draftStore|getDefaultServer|killSidecar/)
   })
 
   test("preload no longer exposes sidecar, WSL, or draft APIs", () => {
     const preload = readFileSync(join(dir, "../preload/index.ts"), "utf8")
+    const ipc = source("ipc.ts")
     expect(preload).toContain("disklizard")
     expect(preload).not.toMatch(/killSidecar|awaitInitialization|wslServers|draftGet|getDefaultServerUrl/)
+    expect(preload).not.toMatch(/open-local-file|ipcRenderer\.invoke\("open-path"|ipcRenderer\.invoke\("reveal-path"/)
+    expect(preload).toContain('ipcRenderer.invoke("disklizard:open-path"')
+    expect(preload).toContain('ipcRenderer.invoke("disklizard:store-get"')
+    expect(preload).not.toMatch(
+      /consumeInitialDeepLinks|onDeepLink|openDirectoryPicker|openFilePicker|readPickedFile|saveFilePicker|readClipboardImage|getWindowFocused|setWindowFocus|showWindow|setForceFocus|recordFatalRendererError/,
+    )
+    expect(ipc).not.toMatch(
+      /open-file-picker|read-picked-file|read-clipboard-image|show-notification|get-window-id|get-window-focused|set-window-focus|set-force-focus|record-fatal-renderer-error/,
+    )
   })
 
   test("native menu has no session or project commands", () => {
     expect(desktopMenuHasOpenCodeCommands()).toBe(false)
   })
 
-  test("production updates verify signatures and refuse downgrades", () => {
-    expect(productionVerifyUpdateCodeSignature()).toBe(true)
+  test("production updates require an expected Windows publisher and refuse downgrades", () => {
+    expect(resolveWindowsPublisherName("CN=DiskLizard Release, O=DiskLizard")).toBe(
+      "CN=DiskLizard Release, O=DiskLizard",
+    )
+    expect(resolveWindowsPublisherName("CN=DiskLizard Release")).toBeUndefined()
+    expect(resolveWindowsPublisherName(" ")).toBeUndefined()
     expect(productionUpdaterDowngradeAllowed("prod")).toBe(false)
     expect(productionUpdaterDowngradeAllowed("beta")).toBe(true)
     expect(productionUpdaterDowngradeAllowed("dev")).toBe(true)

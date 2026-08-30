@@ -27,6 +27,7 @@ const api: ElectronAPI = {
     deletePath: (path, options) => ipcRenderer.invoke("disklizard:delete-path", path, options),
     previewPath: (path) => ipcRenderer.invoke("disklizard:preview-path", path),
     systemPreviewPath: (path) => ipcRenderer.invoke("disklizard:system-preview-path", path),
+    openPath: (path) => ipcRenderer.invoke("disklizard:open-path", path),
     openTrash: () => ipcRenderer.invoke("disklizard:open-trash"),
     revealPath: (path) => ipcRenderer.invoke("disklizard:reveal-path", path),
     chooseFolder: () => ipcRenderer.invoke("disklizard:choose-folder"),
@@ -61,48 +62,27 @@ const api: ElectronAPI = {
     check: () => ipcRenderer.invoke("updater-check"),
     install: () => ipcRenderer.invoke("updater-install"),
   },
-  consumeInitialDeepLinks: () => ipcRenderer.invoke("consume-initial-deep-links"),
-  storeGet: (name, key) => ipcRenderer.invoke("store-get", name, key),
-  storeSet: (name, key, value) => ipcRenderer.invoke("store-set", name, key, value),
-  storeDelete: (name, key) => ipcRenderer.invoke("store-delete", name, key),
-  storeClear: (name) => ipcRenderer.invoke("store-clear", name),
-  storeKeys: (name) => ipcRenderer.invoke("store-keys", name),
-  storeLength: (name) => ipcRenderer.invoke("store-length", name),
+  storeGet: (key) => ipcRenderer.invoke("disklizard:store-get", key),
+  storeSet: (key, value) => ipcRenderer.invoke("disklizard:store-set", key, value),
+  storeDelete: (key) => ipcRenderer.invoke("disklizard:store-delete", key),
+  storeClear: () => ipcRenderer.invoke("disklizard:store-clear"),
+  storeKeys: () => ipcRenderer.invoke("disklizard:store-keys"),
+  storeLength: () => ipcRenderer.invoke("disklizard:store-length"),
 
-  getWindowID: () => ipcRenderer.invoke("get-window-id"),
   onMenuCommand: (cb) => {
     const handler = (_: unknown, id: string) => cb(id)
     ipcRenderer.on("menu-command", handler)
     return () => ipcRenderer.removeListener("menu-command", handler)
   },
-  onDeepLink: (cb) => {
-    const handler = (_: unknown, urls: string[]) => cb(urls)
-    ipcRenderer.on("deep-link", handler)
-    return () => ipcRenderer.removeListener("deep-link", handler)
-  },
-
-  openDirectoryPicker: (opts) => ipcRenderer.invoke("open-directory-picker", opts),
-  openFilePicker: (opts) => ipcRenderer.invoke("open-file-picker", opts),
-  readPickedFile: (token, path) => ipcRenderer.invoke("read-picked-file", token, path),
-  releasePickedFiles: (token) => ipcRenderer.invoke("release-picked-files", token),
   getPathForFile: (file) => webUtils.getPathForFile(file),
-  saveFilePicker: (opts) => ipcRenderer.invoke("save-file-picker", opts),
   openExternal: (url) => ipcRenderer.send("open-external", url),
-  openLocalFile: (url) => ipcRenderer.send("open-local-file", url),
-  openPath: (path) => ipcRenderer.invoke("open-path", path),
-  revealPath: (path) => ipcRenderer.invoke("reveal-path", path),
-  readClipboardImage: () => ipcRenderer.invoke("read-clipboard-image"),
-  getWindowFocused: () => ipcRenderer.invoke("get-window-focused"),
   getWindowFullscreen: () => ipcRenderer.invoke("get-window-fullscreen"),
   onWindowFullscreenChanged: (cb) => {
     const handler = (_: unknown, fullscreen: boolean) => cb(fullscreen)
     ipcRenderer.on("window-fullscreen-changed", handler)
     return () => ipcRenderer.removeListener("window-fullscreen-changed", handler)
   },
-  setWindowFocus: () => ipcRenderer.invoke("set-window-focus"),
-  showWindow: () => ipcRenderer.invoke("show-window"),
   relaunch: () => ipcRenderer.send("relaunch"),
-  getZoomFactor: () => ipcRenderer.invoke("get-zoom-factor"),
   setZoomFactor: (factor) => ipcRenderer.invoke("set-zoom-factor", factor),
   getPinchZoomEnabled: () => ipcRenderer.invoke("get-pinch-zoom-enabled"),
   setPinchZoomEnabled: (enabled) => ipcRenderer.invoke("set-pinch-zoom-enabled", enabled),
@@ -120,8 +100,6 @@ const api: ElectronAPI = {
   runDesktopMenuAction: (action) => ipcRenderer.invoke("run-desktop-menu-action", action),
   setBackgroundColor: (color: string) => ipcRenderer.invoke("set-background-color", color),
   exportDebugLogs: () => ipcRenderer.invoke("export-debug-logs"),
-  setForceFocus: (enabled) => ipcRenderer.invoke("set-force-focus", enabled),
-  recordFatalRendererError: (error) => ipcRenderer.invoke("record-fatal-renderer-error", error),
   setNativeTranslations: (bundle) => ipcRenderer.invoke("set-native-translations", bundle),
 }
 

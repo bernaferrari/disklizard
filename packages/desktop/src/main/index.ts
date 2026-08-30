@@ -1,12 +1,12 @@
-import { app, BrowserWindow } from "electron"
+import { app } from "electron"
 import contextMenu from "electron-context-menu"
 import { homedir } from "node:os"
 
-import { APP_PROTOCOL, CHANNEL, appIdentity } from "./constants"
-import { registerIpcHandlers, sendDeepLinks, sendMenuCommand } from "./ipc"
-import { exportDebugLogs, initCrashReporter, initLogging, write as writeLog } from "./logging"
+import { CHANNEL, appIdentity } from "./constants"
+import { registerIpcHandlers, sendMenuCommand } from "./ipc"
+import { exportDebugLogs, initLogging, write as writeLog } from "./logging"
 import { createMenu } from "./menu"
-import { setupAutoUpdater, showUpdaterDialog } from "./updater"
+import { createUpdaterDialogPresenter, setupAutoUpdater } from "./updater"
 import { safeWebContentsURL } from "./window-state"
 import {
   getLastFocusedWindow,
@@ -19,16 +19,13 @@ import {
 } from "./windows"
 import { cleanupStoreFiles } from "./store-cleanup"
 import { setNativeTranslations } from "./native-translations"
+import { resolvePackagedSmokeConfig } from "./packaged-smoke"
 
-const pendingDeepLinks: string[] = []
 let logger: ReturnType<typeof initLogging>
-
-function emitDeepLinks(urls: string[]) {
-  if (urls.length === 0) return
-  pendingDeepLinks.push(...urls)
-  const win = getLastFocusedWindow()
-  if (win) sendDeepLinks(win, urls)
-}
+const packagedSmokeConfig =
+  import.meta.env.DISKLIZARD_PACKAGED_SMOKE === "1"
+    ? resolvePackagedSmokeConfig(process.argv, app.isPackaged, true)
+    : undefined
 
 async function main() {
   contextMenu({ showSaveImageAs: true, showLookUpSelection: false, showSearchWithGoogle: false })
@@ -40,9 +37,8 @@ async function main() {
   const identity = appIdentity(CHANNEL, app.isPackaged)
   app.setName(identity.name)
   app.setAppUserModelId(identity.appId)
-  app.setPath("userData", `${app.getPath("appData")}/${identity.appId}`)
+  app.setPath("userData", packagedSmokeConfig?.userDataPath ?? `${app.getPath("appData")}/${identity.appId}`)
   logger = initLogging()
-  initCrashReporter()
 
   const relaunch = () => {
     setAppQuitting()
@@ -62,23 +58,12 @@ async function main() {
     return
   }
 
-  app.on("second-instance", (_event, argv: string[]) => {
-    const urls = argv.filter((arg: string) => arg.startsWith(`${APP_PROTOCOL}://`))
-    if (urls.length) {
-      logger.log("deep link received via second-instance", { urls })
-      emitDeepLinks(urls)
-    }
+  app.on("second-instance", () => {
     const win = getLastFocusedWindow()
     if (win) {
       win.show()
       win.focus()
     }
-  })
-
-  app.on("open-url", (event, url: string) => {
-    event.preventDefault()
-    logger.log("deep link received via open-url", { url })
-    emitDeepLinks([url])
   })
 
   app.on("child-process-gone", (_event, details) => {
@@ -95,35 +80,36 @@ async function main() {
   await cleanupStoreFiles(app.getPath("userData")).catch((error) => {
     logger.warn("failed to clean scoped store files", error)
   })
-  app.setAsDefaultProtocolClient(APP_PROTOCOL)
   registerRendererProtocol()
   setDockIcon()
 
   const updater = setupAutoUpdater()
+  const updaterPrompt = createUpdaterDialogPresenter(updater)
+  const reportUpdaterPromptError = (error: unknown) =>
+    writeLog("updater", "failed to present update state", { error }, "error")
   const menuDeps = {
     trigger: (id: string) => {
       const win = getLastFocusedWindow()
       if (win) sendMenuCommand(win, id)
     },
-    checkForUpdates: () => void showUpdaterDialog(updater, true),
+    checkForUpdates: () => void updaterPrompt.manual().catch(reportUpdaterPromptError),
     relaunch,
   }
 
   registerIpcHandlers({
     relaunch,
-    consumeInitialDeepLinks: () => pendingDeepLinks.splice(0),
     updater,
-    showUpdater: () => showUpdaterDialog(updater, true),
+    showUpdater: () => updaterPrompt.manual(),
     setBackgroundColor: (color) => setBackgroundColor(color),
     exportDebugLogs: () => exportDebugLogs(),
-    recordFatalRendererError: (error) => writeLog("renderer", "fatal renderer error", { ...error }, "error"),
     setNativeTranslations: (bundle) => {
       if (setNativeTranslations(bundle)) createMenu(menuDeps)
     },
+    packagedSmokeFixturePath: packagedSmokeConfig?.fixturePath,
   })
 
-  void updater.start()
-  const updateTimer = setInterval(() => void updater.check(), 10 * 60 * 1000)
+  const checkForUpdatesInBackground = () => void updaterPrompt.scheduled().catch(reportUpdaterPromptError)
+  const updateTimer = setInterval(checkForUpdatesInBackground, 10 * 60 * 1000)
   updateTimer.unref()
   app.once("will-quit", () => clearInterval(updateTimer))
 
@@ -132,12 +118,20 @@ async function main() {
     app.quit()
   })
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length > 0) return
+    const win = getLastFocusedWindow()
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.show()
+      win.focus()
+      return
+    }
     restoreMainWindows()
   })
 
   const windows = restoreMainWindows()
   if (windows.length) createMenu(menuDeps)
+  // Ensure a cached/very fast ready prompt has an application window behind it.
+  checkForUpdatesInBackground()
 }
 
 void main().catch((error) => {

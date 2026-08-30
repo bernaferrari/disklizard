@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test"
 import { readFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { createDiskLizardPlatform, desktopOS } from "./platform"
+import { createDiskSettings } from "@disklizard/app/runtime"
+import { createRoot } from "solid-js"
+import { createDesktopStorage, createDiskLizardPlatform, desktopOS } from "./platform"
 
 const renderer = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "index.tsx"), "utf8")
 
@@ -10,6 +12,8 @@ describe("desktop renderer initialization", () => {
   test("opens directly into the DiskLizard storage interface", () => {
     expect(renderer).toContain("<DiskUtilityPage")
     expect(renderer).toContain("DiskLizardRuntime")
+    expect(renderer).toContain("loadRendererLanguage")
+    expect(renderer).toContain("configureDiskLanguage")
     expect(renderer).not.toContain("LoadingSplash")
     expect(renderer).not.toContain("awaitInitialization")
   })
@@ -70,5 +74,33 @@ describe("desktop renderer initialization", () => {
     expect(platform.windowFullscreen?.()).toBe(true)
     platform.dispose?.()
     expect(fullscreenUnsubscribed).toBe(true)
+  })
+
+  test("keeps the cleanup gate closed when the desktop storage bridge rejects a read", async () => {
+    const api = {
+      storeGet: async (key: string) => {
+        if (key === "cleanup-locks") throw new Error("settings unreadable")
+        return null
+      },
+      storeSet: async () => undefined,
+      storeDelete: async () => undefined,
+      storeClear: async () => undefined,
+      storeKeys: async () => [],
+      storeLength: async () => 0,
+    }
+    ;(globalThis as { window?: { api: typeof api } }).window = { api }
+
+    const storage = createDesktopStorage()()
+    await expect(storage.getItem("cleanup-locks")).rejects.toThrow("settings unreadable")
+    await expect(storage.getItem("pinned-locations")).resolves.toBeNull()
+
+    await createRoot(async (dispose) => {
+      const settings = createDiskSettings(storage, { os: "linux" })
+      await settings.ready
+      expect(settings.general.cleanupLocksStatus()).toBe("error")
+      expect(settings.general.diskCleanupLocks()).toEqual([])
+      expect(settings.general.persistenceError()).toBe("settings unreadable")
+      dispose()
+    })
   })
 })

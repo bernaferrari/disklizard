@@ -52,11 +52,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Не удалось проверить наличие обновлений.",
   "desktop.updater.dialog.checkFailed.title": "Ошибка обновления",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "У вас установлена последняя версия.",
   "desktop.updater.dialog.upToDate.title": "Обновлений нет",
   "desktop.updater.dialog.ready.message": "Обновление {{version}} загружено. Перезапустить сейчас?",
   "desktop.updater.dialog.ready.title": "Обновление готово",
   "desktop.updater.dialog.restart": "Перезапустить",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Позже",
 
   "desktop.recovery.action.relaunch": "Запустить снова",

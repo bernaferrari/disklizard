@@ -39,19 +39,47 @@ export function updaterFeedChannel(channel: DesktopChannel): "beta" | "latest" {
   return channel === "beta" ? "beta" : "latest"
 }
 
-/** GitHub repository consumed by packaged updates. Must be publicly readable. */
-export const PUBLIC_RELEASE_REPOSITORY = {
-  owner: "bernaferrari",
-  repo: process.env.DISKLIZARD_RELEASE_REPO || "disklizard",
-  private: false,
-} as const
+export type PublicReleaseRepository = {
+  owner: string
+  repo: string
+  private: false
+}
 
-export function updaterPublishConfig(channel: DesktopChannel) {
+type ReleaseRepositoryEnvironment = {
+  DISKLIZARD_RELEASE_OWNER?: unknown
+  DISKLIZARD_RELEASE_REPO?: unknown
+  DISKLIZARD_RELEASE_PUBLIC?: unknown
+}
+
+const GITHUB_OWNER = /^[A-Za-z\d](?:[A-Za-z\d-]{0,37}[A-Za-z\d])?$/
+const GITHUB_REPOSITORY = /^[A-Za-z\d._-]{1,100}$/
+
+/**
+ * Updates are configured only after release automation explicitly identifies
+ * and acknowledges a public repository. Repository visibility cannot be
+ * inferred from electron-builder's `private` field.
+ */
+export function resolvePublicReleaseRepository(
+  environment: ReleaseRepositoryEnvironment = process.env,
+): PublicReleaseRepository | undefined {
+  if (environment.DISKLIZARD_RELEASE_PUBLIC !== "true") return
+  const owner = environment.DISKLIZARD_RELEASE_OWNER ?? "bernaferrari"
+  const repo = environment.DISKLIZARD_RELEASE_REPO
+  if (typeof owner !== "string" || !GITHUB_OWNER.test(owner)) return
+  if (typeof repo !== "string" || !GITHUB_REPOSITORY.test(repo) || repo === "." || repo === "..") return
+  return { owner, repo, private: false }
+}
+
+export function updaterPublishConfig(
+  channel: DesktopChannel,
+  repository: PublicReleaseRepository | undefined = resolvePublicReleaseRepository(),
+) {
   if (channel === "dev") return undefined
+  if (!repository) return undefined
   return {
     provider: "github" as const,
-    owner: PUBLIC_RELEASE_REPOSITORY.owner,
-    repo: PUBLIC_RELEASE_REPOSITORY.repo,
+    owner: repository.owner,
+    repo: repository.repo,
     channel: updaterFeedChannel(channel),
     private: false,
   }

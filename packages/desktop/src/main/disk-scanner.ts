@@ -37,11 +37,15 @@ export type { DriveFacts } from "../../../disklizard/src/types"
  * without changing the renderer-facing scan contract.
  */
 export async function scanPathWithBackend(targetPath: string, options: ScanOptions = {}): Promise<DiskScanResult> {
-  if (process.env.DISKLIZARD_NATIVE_SCANNER !== "0") {
+  const requireNative = process.env.DISKLIZARD_REQUIRE_NATIVE_SCANNER === "1"
+  if (requireNative || process.env.DISKLIZARD_NATIVE_SCANNER !== "0") {
     try {
       return { root: await scanPathNative(targetPath, options), backend: "native" }
     } catch (error) {
       options.signal?.throwIfAborted()
+      // Packaged release smoke must prove that the shipped native sidecar is
+      // executable. Falling back here would turn that proof into a false pass.
+      if (requireNative) throw error
       if (process.env.DISKLIZARD_SCAN_DEBUG) {
         console.warn("[disklizard] native scanner failed, TypeScript worker fallback", error)
       }

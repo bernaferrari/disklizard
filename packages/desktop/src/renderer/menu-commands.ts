@@ -1,5 +1,5 @@
-import { DISK_CHOOSE_FOLDER_COMMAND } from "../../../app/src/pages/disk-utility/choose-folder"
-import type { DiskLizardMenu } from "../../../app/src/pages/disk-utility/runtime"
+import { DISK_CHOOSE_FOLDER_COMMAND } from "@disklizard/app/choose-folder"
+import type { DiskLizardMenu } from "@disklizard/app/runtime"
 
 export type RendererMenuHandlers = {
   resetZoom: () => unknown

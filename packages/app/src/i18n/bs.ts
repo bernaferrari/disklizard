@@ -52,12 +52,15 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Provjera ažuriranja nije uspjela.",
   "desktop.updater.dialog.checkFailed.title": "Greška pri ažuriranju",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Sve je ažurno.",
   "desktop.updater.dialog.upToDate.title": "Nema ažuriranja",
   "desktop.updater.dialog.ready.message":
     "Ažuriranje {{version}} je preuzeto. Želiš li sada ponovo pokrenuti aplikaciju?",
   "desktop.updater.dialog.ready.title": "Ažuriranje je spremno",
   "desktop.updater.dialog.restart": "Ponovo pokreni",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Kasnije",
 
   "desktop.recovery.action.relaunch": "Ponovo pokreni",

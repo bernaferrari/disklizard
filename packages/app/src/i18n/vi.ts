@@ -47,11 +47,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Không kiểm tra được bản cập nhật.",
   "desktop.updater.dialog.checkFailed.title": "Lỗi cập nhật",
+  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Bạn đang dùng phiên bản mới nhất.",
   "desktop.updater.dialog.upToDate.title": "Không có bản cập nhật",
   "desktop.updater.dialog.ready.message": "Đã tải xuống bản cập nhật {{version}}. Khởi động lại ngay?",
   "desktop.updater.dialog.ready.title": "Bản cập nhật đã sẵn sàng",
   "desktop.updater.dialog.restart": "Khởi động lại",
+  "desktop.updater.dialog.retry": "Retry",
   "desktop.updater.dialog.later": "Để sau",
 
   "desktop.recovery.action.relaunch": "Khởi chạy lại",

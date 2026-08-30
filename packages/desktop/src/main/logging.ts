@@ -1,26 +1,31 @@
 import { MainLogger } from "electron-log"
 import log from "electron-log/main.js"
-import { app, crashReporter, netLog, shell } from "electron"
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
+import { app, shell } from "electron"
+import { mkdirSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs"
+import { open, readdir, stat, writeFile } from "node:fs/promises"
 import { ZipWriter, BlobWriter, BlobReader } from "@zip.js/zip.js"
 import { dirname, join } from "node:path"
-import { homedir } from "node:os"
+import { sanitizeDiagnosticLog, sanitizeDiagnosticText, sanitizeDiagnosticValue } from "./diagnostic-sanitizer"
+import {
+  createLocalDiagnosticExportAsync,
+  isCurrentRunDiagnosticLog,
+  type LocalDiagnosticLogCandidate,
+} from "./local-diagnostics"
 
 const MAX_LOG_AGE_DAYS = 7
 const TAIL_LINES = 1000
-const EXPORT_WINDOW = 24 * 60 * 60 * 1000
-const MAX_EXPORT_FILE_SIZE = 50 * 1024 * 1024
-const NET_LOG_SIZE = 20 * 1024 * 1024
+const MAX_EXPORT_LOG_FILES = 16
 
 let root = ""
 let run = ""
-let netLogPath: string | undefined
+let diagnosticHookInstalled = false
 
 let logger: MainLogger
 export const getLogger = () => logger
 
 export function initLogging() {
   initRunDirectory()
+  installDiagnosticSanitizer()
   log.transports.file.maxSize = 5 * 1024 * 1024
   log.transports.file.resolvePathFn = (_vars, message) =>
     join(
@@ -33,43 +38,31 @@ export function initLogging() {
   return (logger = log)
 }
 
-export function initCrashReporter() {
-  const dir = join(app.getPath("userData"), "Crashpad")
-  mkdirSync(dir, { recursive: true })
-  app.setPath("crashDumps", dir)
-  crashReporter.start({ uploadToServer: false, compress: true })
-  write("crash", "crash reporter started", { path: dir })
-}
-
-export async function startNetLog() {
-  if (netLog.currentlyLogging) return
-  netLogPath = join(run, "network.netlog")
-  await netLog.startLogging(netLogPath, { captureMode: "default", maxFileSize: NET_LOG_SIZE })
-  write("network", "net log started", { path: netLogPath })
-}
-
+/** A user-initiated, local-only export. Nothing here is uploaded automatically. */
 export async function exportDebugLogs() {
-  const restartNetLog = netLog.currentlyLogging
-  if (restartNetLog) {
-    await netLog.stopLogging().catch((error) => write("network", "failed to stop net log", { error }))
-  }
-
   const output = join(app.getPath("downloads"), `disklizard-debug-${stamp()}.zip`)
-  try {
-    write("main", "exporting debug logs", { output })
-    await writeZip(output, [
-      { name: "manifest.json", data: Buffer.from(JSON.stringify(manifest(), null, 2)) },
-      ...collect(root, "desktop"),
-      ...serverLogRoots().flatMap((dir, i) => collect(dir, `server-${i + 1}`)),
-      ...collect(app.getPath("crashDumps"), "crashpad"),
-    ])
-    shell.showItemInFolder(output)
-    return output
-  } finally {
-    if (restartNetLog) {
-      await startNetLog().catch((error) => write("network", "failed to restart net log", { error }))
-    }
-  }
+  write("main", "manual local debug export requested")
+
+  const candidates = await collectCurrentRunLogs()
+  const entries = (await createLocalDiagnosticExportAsync(
+    {
+      generatedAt: new Date().toISOString(),
+      version: app.getVersion(),
+      name: app.getName(),
+      packaged: app.isPackaged,
+      platform: process.platform,
+      arch: process.arch,
+      electronVersion: process.versions.electron,
+      chromeVersion: process.versions.chrome,
+      nodeVersion: process.versions.node,
+      uptimeSeconds: process.uptime(),
+    },
+    candidates,
+  )).map((entry) => ({ name: entry.name, data: Buffer.from(entry.contents) }))
+
+  await writeZip(output, entries)
+  shell.showItemInFolder(output)
+  return output
 }
 
 export function write(
@@ -81,18 +74,17 @@ export function write(
   if (!run) return
   const scoped = log.scope(safeLogName(name))
   if (extra !== undefined) {
-    scoped[level](message, extra)
+    scoped[level](sanitizeDiagnosticText(message), sanitizeDiagnosticValue(extra))
     return
   }
-  scoped[level](message)
+  scoped[level](sanitizeDiagnosticText(message))
 }
 
 export function tail(): string {
   try {
     const path = log.transports.file.getFile().path
     const contents = readFileSync(path, "utf8")
-    const lines = contents.split("\n")
-    return lines.slice(Math.max(0, lines.length - TAIL_LINES)).join("\n")
+    return sanitizeDiagnosticLog(contents, TAIL_LINES)
   } catch {
     return ""
   }
@@ -130,62 +122,72 @@ function cleanup() {
   }
 }
 
-function manifest() {
-  return {
-    generated: new Date().toISOString(),
-    version: app.getVersion(),
-    name: app.getName(),
-    packaged: app.isPackaged,
-    platform: process.platform,
-    arch: process.arch,
-    versions: process.versions,
-    uptime: process.uptime(),
-    userData: app.getPath("userData"),
-    logs: root,
-    currentRun: run,
-    crashDumps: app.getPath("crashDumps"),
-    serverLogs: serverLogRoots(),
-    netLog: netLogPath,
-  }
-}
+type Entry = { name: string; data: Buffer }
 
-function serverLogRoots() {
-  const xdgData = process.env.XDG_DATA_HOME || join(homedir(), ".local", "share")
-  return [...new Set([join(xdgData, "opencode", "log"), join(app.getPath("userData"), "opencode", "log")])]
-}
+async function collectCurrentRunLogs(): Promise<LocalDiagnosticLogCandidate[]> {
+  if (!run) return []
+  const result: LocalDiagnosticLogCandidate[] = []
+  const entries = (await readdir(run, { withFileTypes: true }).catch(() => [])).sort((a, b) => a.name.localeCompare(b.name))
 
-type Entry = { name: string; path?: string; data?: Buffer }
-
-function collect(dir: string, prefix: string): Entry[] {
-  if (!existsSync(dir)) return []
-  const cutoff = Date.now() - EXPORT_WINDOW
-  const result: Entry[] = []
-  const walk = (current: string) => {
-    for (const entry of readdirSync(current)) {
-      const file = join(current, entry)
-      const info = statSync(file)
-      if (info.isDirectory()) {
-        walk(file)
+  for (const entry of entries) {
+    if (result.length >= MAX_EXPORT_LOG_FILES) break
+    const file = join(run, entry.name)
+    let handle: Awaited<ReturnType<typeof open>> | undefined
+    try {
+      const info = await stat(file)
+      if (
+        !isCurrentRunDiagnosticLog({
+          name: entry.name,
+          isFile: entry.isFile() && info.isFile(),
+          size: info.size,
+          modifiedAt: info.mtimeMs,
+        })
+      ) {
         continue
       }
-      if (info.mtimeMs < cutoff) continue
-      if (info.size > MAX_EXPORT_FILE_SIZE) continue
-      if (file.endsWith(".heapsnapshot")) continue
-      result.push({ name: join(prefix, file.slice(dir.length + 1)).replace(/\\/g, "/"), path: file })
+      handle = await open(file, "r")
+      const openedInfo = await handle.stat()
+      if (!isCurrentRunDiagnosticLog({
+        name: entry.name,
+        isFile: openedInfo.isFile(),
+        size: openedInfo.size,
+        modifiedAt: openedInfo.mtimeMs,
+      })) continue
+      const data = Buffer.allocUnsafe(openedInfo.size)
+      const { bytesRead } = await handle.read(data, 0, data.length, 0)
+      result.push({
+        name: entry.name,
+        isFile: true,
+        size: bytesRead,
+        modifiedAt: openedInfo.mtimeMs,
+        contents: new TextDecoder("utf-8", { fatal: true }).decode(data.subarray(0, bytesRead)),
+      })
+    } catch {
+      continue
+    } finally {
+      await handle?.close().catch(() => undefined)
     }
   }
-  walk(dir)
+
   return result
 }
 
 async function writeZip(output: string, entries: Entry[]) {
   const writer = new ZipWriter(new BlobWriter("application/zip"))
   for (const entry of entries) {
-    const data = entry.data ?? readFileSync(entry.path!)
-    await writer.add(entry.name, new BlobReader(new Blob([new Uint8Array(data)])))
+    await writer.add(entry.name, new BlobReader(new Blob([new Uint8Array(entry.data)])))
   }
   const zip = await writer.close()
-  writeFileSync(output, Buffer.from(await zip.arrayBuffer()))
+  await writeFile(output, Buffer.from(await zip.arrayBuffer()))
+}
+
+function installDiagnosticSanitizer() {
+  if (diagnosticHookInstalled) return
+  diagnosticHookInstalled = true
+  log.hooks.push((message) => ({
+    ...message,
+    data: message.data.map((value) => sanitizeDiagnosticValue(value)),
+  }))
 }
 
 function initConsoleTransport() {
