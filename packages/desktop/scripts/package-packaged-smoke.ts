@@ -23,7 +23,7 @@ const target = packagedSmokeTargetArguments(process.platform)
 // notarization. It still builds a real installable/distributable target plus
 // electron-builder's unpacked staging application for Playwright Electron.
 const packageProcess = Bun.spawn(
-  [process.execPath, "x", "electron-builder", ...target, "--config", "electron-builder.config.ts"],
+  [process.execPath, "x", "electron-builder", ...target, "--publish", "never", "--config", "electron-builder.config.ts"],
   {
     cwd: desktopDirectory,
     env: packagedSmokeEnvironment(process.env),

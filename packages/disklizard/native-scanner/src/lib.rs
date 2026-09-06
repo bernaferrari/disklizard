@@ -19,6 +19,11 @@ use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
 };
+#[cfg(not(any(target_os = "macos", test)))]
+use clone_metadata::{
+    compare_utf16 as compare_utf16_strings, emitted_evidence as emitted_clone_evidence,
+};
+#[cfg(any(target_os = "macos", test))]
 use clone_metadata::{
     compare_utf16 as compare_utf16_strings, emitted_evidence as emitted_clone_evidence,
     evidence_from_attributes as clone_evidence_from_attributes,
@@ -29,7 +34,7 @@ use clone_metadata::{ATTR_CMNEXT_CLONE_ID, ATTR_CMNEXT_CLONE_REFCNT, ATTR_CMNEXT
 use clone_metadata::{EF_MAY_SHARE_BLOCKS, EF_SHARES_ALL_BLOCKS};
 #[cfg(target_os = "windows")]
 use filesystem::metadata_kind;
-use filesystem::read_entries_portable;
+use filesystem::{read_entries_portable, DirectoryRead};
 use retention::ChildRetention;
 
 const MAX_DISCOVERIES: usize = 96;
@@ -397,18 +402,24 @@ impl Directory {
         }
     }
 
-    fn read_entries(&self, path: &Path) -> io::Result<Vec<Entry>> {
+    fn read_entries(&self, path: &Path) -> io::Result<DirectoryRead> {
         #[cfg(target_os = "macos")]
         if let Ok(entries) = macos::read_entries(&self.file) {
-            return Ok(entries);
+            return Ok(DirectoryRead {
+                entries,
+                ..DirectoryRead::default()
+            });
         }
         #[cfg(target_os = "linux")]
-        if let Ok(entries) = linux::read_entries(&self.file) {
-            return Ok(entries);
+        if let Ok(read) = linux::read_entries(&self.file, path) {
+            return Ok(read);
         }
         #[cfg(target_os = "windows")]
         if let Ok(entries) = self.handle.read_entries() {
-            return Ok(entries);
+            return Ok(DirectoryRead {
+                entries,
+                ..DirectoryRead::default()
+            });
         }
         #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
         let _ = &self.path;
@@ -850,7 +861,12 @@ impl State {
         }
 
         let entries = match directory.read_entries(path) {
-            Ok(entries) => entries,
+            Ok(read) => {
+                // Readable siblings stay measured even when one child could
+                // not be inspected; the gap is reported, not widened.
+                self.record_partial_directory(path, &read);
+                read.entries
+            }
             Err(_) => {
                 self.record_unreadable(path);
                 let mut node = CompactNode::directory(name, 0, 0, None, Vec::new(), false, None);
@@ -974,7 +990,10 @@ impl State {
         inventory_scope_allowed: bool,
     ) -> Measurement {
         let entries = match directory.read_entries(path) {
-            Ok(entries) => entries,
+            Ok(read) => {
+                self.record_partial_directory(path, &read);
+                read.entries
+            }
             Err(_) => {
                 self.record_unreadable(path);
                 return Measurement::default();
@@ -1262,6 +1281,18 @@ impl State {
         }
     }
 
+    /// Report a directory whose enumeration succeeded but whose coverage is
+    /// partial: enumerated children that could not be inspected, or an
+    /// enumeration stream that ended early. The measured majority stays.
+    fn record_partial_directory(&self, path: &Path, read: &DirectoryRead) {
+        for child in &read.unreadable_children {
+            self.record_unreadable(child);
+        }
+        if read.enumeration_incomplete {
+            self.record_unreadable(path);
+        }
+    }
+
     fn emit_discovery(&self, node: &CompactNode, path: &Path) {
         if node.size == 0 {
             return;
@@ -1397,7 +1428,7 @@ fn latest(left: Option<u64>, right: Option<u64>) -> Option<u64> {
 
 #[cfg(target_os = "linux")]
 mod linux {
-    use super::{Entry, EntryKind};
+    use super::{DirectoryRead, Entry, EntryKind};
     use std::cell::RefCell;
     use std::ffi::{CString, OsStr, OsString};
     use std::fs::File;
@@ -1405,6 +1436,7 @@ mod linux {
     use std::mem::MaybeUninit;
     use std::os::fd::{AsRawFd, FromRawFd};
     use std::os::unix::ffi::{OsStrExt, OsStringExt};
+    use std::path::Path;
     use std::ptr;
 
     const DIRECTORY_BUFFER_SIZE: usize = 256 * 1024;
@@ -1430,13 +1462,17 @@ mod linux {
         Ok(unsafe { File::from_raw_fd(descriptor) })
     }
 
-    pub(super) fn read_entries(directory: &File) -> io::Result<Vec<Entry>> {
+    pub(super) fn read_entries(directory: &File, path: &Path) -> io::Result<DirectoryRead> {
         DIRECTORY_BUFFER
-            .with(|buffer| read_entries_into(directory.as_raw_fd(), &mut buffer.borrow_mut()))
+            .with(|buffer| read_entries_into(directory.as_raw_fd(), path, &mut buffer.borrow_mut()))
     }
 
-    fn read_entries_into(descriptor: libc::c_int, buffer: &mut [u8]) -> io::Result<Vec<Entry>> {
-        let mut entries = Vec::new();
+    fn read_entries_into(
+        descriptor: libc::c_int,
+        path: &Path,
+        buffer: &mut [u8],
+    ) -> io::Result<DirectoryRead> {
+        let mut read = DirectoryRead::default();
         loop {
             let bytes = unsafe {
                 libc::syscall(
@@ -1450,7 +1486,7 @@ mod linux {
                 return Err(io::Error::last_os_error());
             }
             if bytes == 0 {
-                return Ok(entries);
+                return Ok(read);
             }
 
             let mut offset = 0_usize;
@@ -1482,12 +1518,18 @@ mod linux {
                 if name == b"." || name == b".." || name.is_empty() {
                     continue;
                 }
-                entries.push(stat_entry(descriptor, OsString::from_vec(name.to_vec()))?);
+                let name = OsString::from_vec(name.to_vec());
+                // One child whose stat failed must not erase its readable
+                // siblings: report it and keep measuring the rest.
+                match stat_entry(descriptor, &name) {
+                    Ok(entry) => read.entries.push(entry),
+                    Err(_) => read.unreadable_children.push(path.join(&name)),
+                }
             }
         }
     }
 
-    fn stat_entry(descriptor: libc::c_int, name: OsString) -> io::Result<Entry> {
+    fn stat_entry(descriptor: libc::c_int, name: &OsStr) -> io::Result<Entry> {
         let encoded = CString::new(name.as_bytes())
             .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "NUL in filename"))?;
         let mut value = MaybeUninit::<libc::statx>::zeroed();
@@ -1513,7 +1555,7 @@ mod linux {
         let kind = mode_kind(value.stx_mode as libc::mode_t);
         let modified_at = timestamp_millis(value.stx_mtime.tv_sec, value.stx_mtime.tv_nsec as i64);
         Ok(Entry {
-            name,
+            name: name.to_os_string(),
             kind,
             logical_size: value.stx_size,
             allocated_size: value.stx_blocks.saturating_mul(512),
@@ -1527,7 +1569,7 @@ mod linux {
 
     fn stat_entry_fallback(
         descriptor: libc::c_int,
-        name: OsString,
+        name: &OsStr,
         encoded: &CString,
     ) -> io::Result<Entry> {
         let mut value = MaybeUninit::<libc::stat>::zeroed();
@@ -1544,7 +1586,7 @@ mod linux {
         }
         let value = unsafe { value.assume_init() };
         Ok(Entry {
-            name,
+            name: name.to_os_string(),
             kind: mode_kind(value.st_mode),
             logical_size: value.st_size.max(0) as u64,
             allocated_size: value.st_blocks.max(0) as u64 * 512,
@@ -2781,9 +2823,15 @@ mod tests {
             modules.ecosystem,
             DeveloperArtifactEcosystem::Node
         ));
+        // A basename alone is discovery, not verified disposability: the
+        // name-only match stays review-gated even though it is recognized.
+        assert!(matches!(
+            modules.confidence,
+            DeveloperArtifactConfidence::Likely
+        ));
         assert!(matches!(
             modules.cleanup,
-            DeveloperArtifactCleanupReadiness::Eligible
+            DeveloperArtifactCleanupReadiness::Review
         ));
         #[cfg(not(target_os = "windows"))]
         {

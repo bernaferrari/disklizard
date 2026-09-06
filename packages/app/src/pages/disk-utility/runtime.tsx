@@ -286,6 +286,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.developer.age.90": "90d+",
   "disk.developer.age.180": "180d+",
   "disk.developer.age.custom": "Custom",
+  "disk.developer.policy.explanation": "How this works",
   "disk.developer.policy.body":
     "Find rebuildable or redownloadable developer storage by modification date. This is not evidence that a folder was last used then.",
   "disk.developer.policy.minimum": "Minimum unchanged time",

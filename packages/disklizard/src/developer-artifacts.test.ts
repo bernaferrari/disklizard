@@ -7,11 +7,27 @@ import {
 } from "./developer-artifacts"
 
 describe("developer artifact inventory rules", () => {
-  test("only promotes verified local evidence to smart-cleanup eligibility", () => {
+  test("keeps a conventional name at review until local evidence corroborates it", () => {
+    // A basename match justifies discovery, not verified disposability.
     expect(classifyDeveloperArtifact("node_modules", "project", [])).toMatchObject({
       ecosystem: "node",
-      confidence: "verified",
-      cleanup: "eligible",
+      confidence: "likely",
+      cleanup: "review",
+    })
+    expect(classifyDeveloperArtifact(".output", "project", [])).toMatchObject({
+      ecosystem: "node",
+      confidence: "likely",
+      cleanup: "review",
+    })
+    expect(classifyDeveloperArtifact("deriveddata", "project", [])).toMatchObject({
+      ecosystem: "apple",
+      confidence: "likely",
+      cleanup: "review",
+    })
+    expect(classifyDeveloperArtifact("gocache", "project", [])).toMatchObject({
+      ecosystem: "go",
+      confidence: "likely",
+      cleanup: "review",
     })
     expect(classifyDeveloperArtifact("target", "project", ["debug"])).toMatchObject({
       ecosystem: "rust",

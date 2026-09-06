@@ -101,7 +101,11 @@ pub(crate) fn classify(
     let name = raw_name.to_lowercase();
     let parent_name = raw_parent_name.map(str::to_lowercase);
     match name.as_str() {
-        "node_modules" => Some(verified(
+        // Basename-only matches stay `likely`: a conventional name justifies
+        // discovery, never verified disposability. `verified` requires
+        // corroborating context — direct toolchain signatures below, or a
+        // parent basename that makes a generic name specific.
+        "node_modules" => Some(likely(
             DeveloperArtifactKind::Dependencies,
             DeveloperArtifactEcosystem::Node,
             &name,
@@ -113,13 +117,13 @@ pub(crate) fn classify(
             &name,
             &[],
         )),
-        ".pnpm-store" | ".npm" | ".turbo" | ".parcel-cache" | ".rollup.cache" => Some(verified(
+        ".pnpm-store" | ".npm" | ".turbo" | ".parcel-cache" | ".rollup.cache" => Some(likely(
             DeveloperArtifactKind::ToolchainCache,
             DeveloperArtifactEcosystem::Node,
             &name,
             &[],
         )),
-        "__pycache__" | ".mypy_cache" | ".pytest_cache" | ".ruff_cache" | ".tox" => Some(verified(
+        "__pycache__" | ".mypy_cache" | ".pytest_cache" | ".ruff_cache" | ".tox" => Some(likely(
             DeveloperArtifactKind::ToolchainCache,
             DeveloperArtifactEcosystem::Python,
             &name,
@@ -131,25 +135,25 @@ pub(crate) fn classify(
             &name,
             &[],
         )),
-        ".next" | ".nuxt" | ".output" | ".svelte-kit" | ".astro" => Some(verified(
+        ".next" | ".nuxt" | ".output" | ".svelte-kit" | ".astro" => Some(likely(
             DeveloperArtifactKind::BuildOutput,
             DeveloperArtifactEcosystem::Node,
             &name,
             &[],
         )),
-        "deriveddata" => Some(verified(
+        "deriveddata" => Some(likely(
             DeveloperArtifactKind::ToolchainCache,
             DeveloperArtifactEcosystem::Apple,
             &name,
             &[],
         )),
-        ".dart_tool" | ".pub-cache" => Some(verified(
+        ".dart_tool" | ".pub-cache" => Some(likely(
             DeveloperArtifactKind::ToolchainCache,
             DeveloperArtifactEcosystem::Dart,
             &name,
             &[],
         )),
-        "gocache" => Some(verified(
+        "gocache" => Some(likely(
             DeveloperArtifactKind::ToolchainCache,
             DeveloperArtifactEcosystem::Go,
             &name,
@@ -255,5 +259,66 @@ pub(crate) fn classify(
             &[],
         )),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_conventional_basename_alone_never_verifies_disposability() {
+        for name in [
+            ".output",
+            "deriveddata",
+            "gocache",
+            "node_modules",
+            "__pycache__",
+            ".next",
+        ] {
+            let classification = classify(name, Some("project"), &[]).unwrap();
+            assert!(
+                matches!(
+                    classification.confidence,
+                    DeveloperArtifactConfidence::Likely
+                ),
+                "{name} should stay likely from its name alone"
+            );
+            assert!(
+                matches!(
+                    classification.cleanup,
+                    DeveloperArtifactCleanupReadiness::Review
+                ),
+                "{name} should stay review-gated from its name alone"
+            );
+        }
+    }
+
+    #[test]
+    fn corroborating_context_promotes_to_verified_eligible() {
+        let rust = classify(
+            "target",
+            Some("project"),
+            &[".rustc_info.json".into(), "debug".into()],
+        )
+        .unwrap();
+        assert!(matches!(
+            rust.confidence,
+            DeveloperArtifactConfidence::Verified
+        ));
+        assert!(matches!(
+            rust.cleanup,
+            DeveloperArtifactCleanupReadiness::Eligible
+        ));
+
+        let gradle = classify("caches", Some(".gradle"), &[]).unwrap();
+        assert!(matches!(
+            gradle.confidence,
+            DeveloperArtifactConfidence::Verified
+        ));
+        assert!(matches!(
+            gradle.cleanup,
+            DeveloperArtifactCleanupReadiness::Eligible
+        ));
     }
 }

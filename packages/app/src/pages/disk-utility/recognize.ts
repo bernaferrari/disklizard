@@ -1,5 +1,5 @@
 /**
- * DiskLizard intelligence — the feature no disk cleaner has.
+ * DiskLizard intelligence — recognition for the developer storage lens.
  *
  * Recognizes well-known space hogs (node_modules, build artifacts, caches, Xcode
  * DerivedData, Trash, logs…) and tags each with a human label, a safety verdict,
@@ -141,6 +141,10 @@ const DIR_RULES: Rule[] = [
     hint: "Your package manager restores it from the project lockfile",
     developer: "dependencies",
     ecosystem: "node",
+    // The name alone justifies discovery, not verified disposability; bulk
+    // preselection stays reserved for path- or content-corroborated matches.
+    confidence: "likely",
+    cleanup: "review",
   },
   {
     re: /^bower_components$|^jspm_packages$/,
@@ -149,6 +153,8 @@ const DIR_RULES: Rule[] = [
     hint: "The project package manager regenerates it",
     developer: "dependencies",
     ecosystem: "web",
+    confidence: "likely",
+    cleanup: "review",
   },
   {
     re: /^vendor$/,
@@ -176,6 +182,27 @@ const DIR_RULES: Rule[] = [
     hint: "Recompiled on next run",
     developer: "toolchain-cache",
     ecosystem: "python",
+    confidence: "likely",
+    cleanup: "review",
+  },
+  {
+    re: /^\.next$|^\.nuxt$|^\.output$|^\.svelte-kit$/,
+    safety: "regenerable",
+    tag: "Framework build output",
+    hint: "Rebuilt by the project framework",
+    developer: "build-output",
+    ecosystem: "node",
+    confidence: "likely",
+    cleanup: "review",
+  },
+  {
+    re: /^\.turbo$|^\.parcel-cache$|^\.rollup\.cache$|^cache\.cache$/,
+    safety: "regenerable",
+    tag: "Bundler cache",
+    developer: "toolchain-cache",
+    ecosystem: "node",
+    confidence: "likely",
+    cleanup: "review",
   },
   {
     re: /^target$/,
@@ -188,14 +215,6 @@ const DIR_RULES: Rule[] = [
     cleanup: "review",
   },
   {
-    re: /^\.next$|^\.nuxt$|^\.output$|^\.svelte-kit$/,
-    safety: "regenerable",
-    tag: "Framework build output",
-    hint: "Rebuilt by the project framework",
-    developer: "build-output",
-    ecosystem: "node",
-  },
-  {
     re: /^build$|^dist$|^out$/,
     safety: "system",
     tag: "Possible build output",
@@ -206,19 +225,24 @@ const DIR_RULES: Rule[] = [
     cleanup: "review",
   },
   {
-    re: /^\.turbo$|^\.parcel-cache$|^\.rollup\.cache$|^cache\.cache$/,
-    safety: "regenerable",
-    tag: "Bundler cache",
-    developer: "toolchain-cache",
-    ecosystem: "node",
-  },
-  {
     re: /^deriveddata$/,
     safety: "regenerable",
     tag: "Build cache",
     hint: "Regenerated on next build",
     developer: "toolchain-cache",
     ecosystem: "apple",
+    confidence: "likely",
+    cleanup: "review",
+  },
+  {
+    re: /^\.dart_tool$/,
+    safety: "regenerable",
+    tag: "Dart build cache",
+    hint: "dart/pub regenerates it",
+    developer: "toolchain-cache",
+    ecosystem: "dart",
+    confidence: "likely",
+    cleanup: "review",
   },
   {
     re: /^\.gradle$|^\.m2$|^\.ivy2$/,
@@ -228,14 +252,6 @@ const DIR_RULES: Rule[] = [
     developer: "toolchain-cache",
     ecosystem: "jvm",
     cleanup: "protected",
-  },
-  {
-    re: /^\.dart_tool$/,
-    safety: "regenerable",
-    tag: "Dart build cache",
-    hint: "dart/pub regenerates it",
-    developer: "toolchain-cache",
-    ecosystem: "dart",
   },
 
   // — Caches (re-download / re-derive as needed) —
@@ -252,6 +268,8 @@ const DIR_RULES: Rule[] = [
     tag: "Package cache",
     developer: "toolchain-cache",
     ecosystem: "node",
+    confidence: "likely",
+    cleanup: "review",
   },
   {
     re: /^\.yarn$|^\.bun$/,

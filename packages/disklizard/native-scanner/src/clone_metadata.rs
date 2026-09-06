@@ -1,11 +1,20 @@
 //! Clone-evidence representation and stable ordering primitives.
 
-use super::{CloneEvidence, CloneUnavailableReason};
+use super::CloneEvidence;
+#[cfg(any(target_os = "macos", test))]
+use super::CloneUnavailableReason;
 
+/// APFS extended attributes are only requested by the macOS bulk reader.
+/// Tests on every platform exercise the same decoder, so gate to both.
+#[cfg(any(target_os = "macos", test))]
 pub(crate) const ATTR_CMNEXT_CLONE_ID: u32 = 0x0000_0100;
+#[cfg(any(target_os = "macos", test))]
 pub(crate) const ATTR_CMNEXT_EXT_FLAGS: u32 = 0x0000_0200;
+#[cfg(any(target_os = "macos", test))]
 pub(crate) const ATTR_CMNEXT_CLONE_REFCNT: u32 = 0x0000_1000;
+#[cfg(any(target_os = "macos", test))]
 pub(crate) const EF_MAY_SHARE_BLOCKS: u64 = 0x0000_0001;
+#[cfg(any(target_os = "macos", test))]
 pub(crate) const EF_SHARES_ALL_BLOCKS: u64 = 0x0000_0040;
 
 /// Omit inert per-file states from the compact protocol. Absence means no
@@ -49,6 +58,7 @@ pub(crate) fn compare_path_segments(left: &[String], right: &[String]) -> std::c
     left.len().cmp(&right.len())
 }
 
+#[cfg(any(target_os = "macos", test))]
 pub(crate) fn evidence_from_attributes(
     returned_attributes: u32,
     clone_id: u64,

@@ -141,6 +141,12 @@ export class ViewMorph {
   private raf: number | null = null
   private finished: (() => void) | null = null
   private _active = false
+  /**
+   * Monotonic per-flight token. A frame callback whose generation no longer
+   * matches belongs to an interrupted flight and must neither draw nor
+   * reschedule, even if a new play() has already reactivated the instance.
+   */
+  private generation = 0
   /** Tile separator color, read once per flight from the live theme. */
   private border = "#0c0c14"
   private canvasEl!: HTMLCanvasElement
@@ -171,11 +177,14 @@ export class ViewMorph {
   }
 
   play(tiles: MorphTile[], dir: MorphDirection, done: () => void): void {
+    // An empty flight still supersedes whatever is airborne: cancel it (its
+    // continuation runs, restoring the caller's pre-morph state) before
+    // reporting the empty transition complete.
+    this.cancel()
     if (!tiles.length) {
       done()
       return
     }
-    this.cancel()
     this.tiles = tiles
     this.dir = dir
     // One layout-free theme read per flight: a 500ms window tolerates a theme
@@ -189,46 +198,56 @@ export class ViewMorph {
       sourceCorners(tile, dir, cx, cy).map((corner) => rimControl(corner, cx, cy, maxR)),
     )
     this._active = true
+    this.generation++
     this.startTime = performance.now()
-    this.raf = requestAnimationFrame((now) => this.frame(now))
+    this.raf = requestAnimationFrame((now) => this.frame(now, this.generation))
   }
 
-  /** Hard-stop without landing: kill the frame loop, clear the canvas, and drop the caller's continuation. */
+  /**
+   * Stop mid-flight, clear the canvas, and release the caller's continuation
+   * without completing: used when the surface unmounts or is rebound, or when
+   * a caller must guarantee a stale completion never fires.
+   */
   abort() {
+    this.settle(false)
+  }
+
+  /**
+   * Stop the flight and run its continuation exactly once. Completing at the
+   * destination and an operator-driven cancel share this path — both leave
+   * the canvas clear and hand control back to the caller — but only `frame`
+   * reaches here after drawing the final pose.
+   */
+  cancel() {
+    this.settle(true)
+  }
+
+  /** One stop path: drop the scheduled frame, then optionally complete. */
+  private settle(runCompletion: boolean) {
     if (this.raf !== null) {
       cancelAnimationFrame(this.raf)
       this.raf = null
     }
     if (!this._active) return
     this._active = false
-    this.finished = null
     this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
-  }
-
-  /** Stop mid-flight, clear the canvas, and release the caller's continuation. */
-  cancel() {
-    if (!this._active) return
-    this._active = false
-    this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
-    const cb = this.finished
+    const cb = runCompletion ? this.finished : null
     this.finished = null
     cb?.()
   }
 
-  private frame(now: number) {
-    // cancel()/abort() drop the loop; a stale scheduled frame must not revive it.
-    if (!this._active) {
-      this.raf = null
-      return
-    }
+  private frame(now: number, generation: number) {
+    this.raf = null
+    // cancel()/abort() drop the loop, and a stale scheduled frame from an
+    // interrupted flight must not revive under a newer play()'s state.
+    if (!this._active || generation !== this.generation) return
     const raw = this.duration > 0 ? Math.min(1, (now - this.startTime) / this.duration) : 1
     this.draw(raw)
     if (raw >= 1) {
-      this.raf = null
-      this.cancel()
+      this.settle(true)
       return
     }
-    this.raf = requestAnimationFrame((next) => this.frame(next))
+    this.raf = requestAnimationFrame((next) => this.frame(next, generation))
   }
 
   private draw(raw: number) {

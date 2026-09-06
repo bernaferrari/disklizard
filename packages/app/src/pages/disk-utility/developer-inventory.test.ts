@@ -183,17 +183,24 @@ describe("deep developer artifact inventory", () => {
   })
 
   it("does not add a nested inventory record underneath an already eligible visible root", () => {
-    const dependencies = dir("node_modules", "/repo/node_modules", 100)
+    // `.m2/repository` is eligible through its precise path context, unlike a
+    // basename-only `node_modules`, which stays review after this policy.
+    const repository = dir("repository", "/Users/dev/.m2/repository", 100)
     const root: DiskScanNode = {
-      ...dir("repo", "/repo", 100, [dependencies]),
+      ...dir("repo", "/repo", 100, [repository]),
       developerArtifactInventory: inventory([
-        artifact({ path: "/repo/node_modules/.next", name: ".next", size: 40, kind: "build-output" }),
+        artifact({
+          path: "/Users/dev/.m2/repository/node_modules",
+          name: "node_modules",
+          size: 40,
+          kind: "dependencies",
+        }),
       ]),
     }
 
     const summary = computeDeveloperSummaryWithInventory(root)
     expect(summary).toMatchObject({ totalBytes: 100, totalCount: 1 })
-    expect(summary.items[0].node.path).toBe("/repo/node_modules")
+    expect(summary.items[0].node.path).toBe("/Users/dev/.m2/repository")
   })
 
   it("does not subtract an already-accounted visible Gradle cache twice", () => {

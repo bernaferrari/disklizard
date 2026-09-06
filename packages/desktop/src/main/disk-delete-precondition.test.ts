@@ -34,8 +34,8 @@ function nodeModulesPrecondition(directoryIdentity?: DeveloperArtifactDirectoryI
       name: "node_modules",
       kind: "dependencies",
       ecosystem: "node",
-      confidence: "verified",
-      cleanup: "eligible",
+      confidence: "likely",
+      cleanup: "review",
     },
   }
 }

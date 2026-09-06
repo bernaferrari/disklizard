@@ -135,37 +135,28 @@ export function DeveloperCleanupPolicy(props: {
       class="mt-3 rounded-xl border border-border-weaker-base bg-surface-raised-base/35 px-3 py-3"
       aria-labelledby="developer-cleanup-policy-title"
     >
-      <details class="group">
-        <summary class="dl-touch-target flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-lg outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+      <div class="dl-touch-target flex min-h-11 items-center gap-2 rounded-lg">
+        <span
+          class="grid size-7 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.13_252/0.12)] text-text-weak"
+          aria-hidden="true"
+        >
+          <Icon name="shield" class="size-3.5" />
+        </span>
+        <span class="min-w-0 flex-1">
+          <span id="developer-cleanup-policy-title" class="block text-13-semibold text-text-strong">
+            {language.t("disk.developer.policy.heading")}
+          </span>
           <span
-            class="grid size-7 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.13_252/0.12)] text-text-weak"
-            aria-hidden="true"
+            id="developer-cleanup-policy-status"
+            class="mt-0.5 block truncate text-13-regular text-text-weak"
+            aria-live="polite"
           >
-            <Icon name="shield" class="size-3.5" />
+            {status()}
           </span>
-          <span class="min-w-0 flex-1">
-            <span id="developer-cleanup-policy-title" class="block text-13-semibold text-text-strong">
-              {language.t("disk.developer.policy.heading")}
-            </span>
-            <span
-              id="developer-cleanup-policy-status"
-              class="mt-0.5 block truncate text-13-regular text-text-weak"
-              aria-live="polite"
-            >
-              {status()}
-            </span>
-          </span>
-          <Icon
-            name="chevron-down"
-            class="size-3.5 shrink-0 text-text-weaker transition-transform duration-150 group-open:rotate-180"
-          />
-        </summary>
+        </span>
+      </div>
 
-        <div class="pt-1">
-          <p class="max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
-            {language.t("disk.developer.policy.body")}
-          </p>
-
+      <div>
           <fieldset class="mt-3" aria-describedby="developer-cleanup-policy-status">
             <legend class="sr-only">{language.t("disk.developer.policy.minimum")}</legend>
             <div
@@ -328,6 +319,20 @@ export function DeveloperCleanupPolicy(props: {
               </div>
             )}
           </Show>
+      </div>
+
+      <details class="group mt-3">
+        <summary class="dl-touch-target flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+          <span class="flex-1">{language.t("disk.developer.policy.explanation")}</span>
+          <Icon
+            name="chevron-down"
+            class="size-3 transition-transform duration-150 group-open:rotate-180"
+          />
+        </summary>
+        <div class="pt-1">
+          <p class="max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
+            {language.t("disk.developer.policy.body")}
+          </p>
         </div>
       </details>
 

@@ -478,8 +478,8 @@ describe("disk scanner", () => {
           size: 13,
           kind: "dependencies",
           ecosystem: "node",
-          confidence: "verified",
-          cleanup: "eligible",
+          confidence: "likely",
+          cleanup: "review",
           inventoryOnly: true,
         }),
         expect.objectContaining({

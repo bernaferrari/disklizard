@@ -98,7 +98,7 @@ Smart cleanup follows that same review-to-Trash or Recycle Bin path; it never au
 ### Development
 
 ```bash
-git clone <your-repository-url> disklizard
+git clone https://github.com/bernaferrari/disklizard.git disklizard
 cd disklizard
 bun install
 bun dev:desktop

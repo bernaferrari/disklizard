@@ -42,6 +42,29 @@ test("scans, reviews, and moves the exact reviewed item to Trash", async ({ page
   await expect(page.getByRole("button", { name: "Select Build cache for review" })).toHaveCount(0)
 })
 
+test("keeps the smart cleanup policy controls visible without expanding a disclosure", async ({ page }) => {
+  await openStorageMap(page)
+
+  await page.getByText("Explore this scan", { exact: true }).click()
+  await page.getByRole("button", { name: "Developer", exact: true }).click()
+
+  await expect(page.getByText("Smart cleanup policy")).toBeVisible()
+  // The primary policy — minimum unchanged time and toolchain — sits on the
+  // surface. Only the explanation of the rules stays collapsible.
+  await expect(page.getByRole("button", { name: "90d+", exact: true })).toBeVisible()
+  await expect(page.getByText("Language & toolchain")).toBeVisible()
+
+  const explanation = page
+    .getByText("How this works", { exact: true })
+    .locator("xpath=ancestor::details[1]")
+  await expect(explanation).not.toHaveAttribute("open")
+  await page.getByText("How this works", { exact: true }).click()
+  await expect(explanation).toHaveAttribute("open")
+  await expect(page.getByText("This is not evidence that a folder was last used then.")).toBeVisible()
+
+  await page.screenshot({ path: "../test-results/developer-policy-panel.png" })
+})
+
 test("supports keyboard review in a narrow reduced-motion layout", async ({ page }) => {
   await page.setViewportSize({ width: 720, height: 820 })
   await page.emulateMedia({ reducedMotion: "reduce" })
@@ -126,7 +149,7 @@ test("expands a scanner Other bucket through a bounded trusted parent rescan", a
   expect(handoff.request).toEqual({
     path: "/Users/alex",
     scanId: expect.stringMatching(/^expand-/),
-    maxChildren: 43,
+    maxChildren: 44,
   })
   expect(handoff.stop).toEqual({ scanId: handoff.request.scanId, retainTrustedSubtree: true })
 })

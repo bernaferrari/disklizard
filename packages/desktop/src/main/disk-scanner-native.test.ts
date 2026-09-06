@@ -208,7 +208,8 @@ describe("native disk scanner", () => {
       items: expect.arrayContaining([
         expect.objectContaining({
           path: path.join(project, "node_modules"),
-          cleanup: "eligible",
+          confidence: "likely",
+          cleanup: "review",
           ecosystem: "node",
         }),
         expect.objectContaining({

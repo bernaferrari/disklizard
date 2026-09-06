@@ -125,8 +125,12 @@ export function classifyDeveloperArtifact(
   const has = (value: string) => signatures.includes(value)
 
   switch (name) {
+    // A conventional basename alone justifies discovery, never verified
+    // disposability: `verified` requires corroborating context (direct
+    // toolchain signatures, or a parent basename that makes the name
+    // specific). Keep these arms in lockstep with the Rust classifier.
     case "node_modules":
-      return verified("dependencies", "node", name)
+      return likely("dependencies", "node", name)
     case "bower_components":
     case "jspm_packages":
       return likely("dependencies", "web", name)
@@ -135,13 +139,13 @@ export function classifyDeveloperArtifact(
     case ".turbo":
     case ".parcel-cache":
     case ".rollup.cache":
-      return verified("toolchain-cache", "node", name)
+      return likely("toolchain-cache", "node", name)
     case "__pycache__":
     case ".mypy_cache":
     case ".pytest_cache":
     case ".ruff_cache":
     case ".tox":
-      return verified("toolchain-cache", "python", name)
+      return likely("toolchain-cache", "python", name)
     case ".venv":
     case "venv":
       return likely("dependencies", "python", name)
@@ -150,14 +154,14 @@ export function classifyDeveloperArtifact(
     case ".output":
     case ".svelte-kit":
     case ".astro":
-      return verified("build-output", "node", name)
+      return likely("build-output", "node", name)
     case "deriveddata":
-      return verified("toolchain-cache", "apple", name)
+      return likely("toolchain-cache", "apple", name)
     case ".dart_tool":
     case ".pub-cache":
-      return verified("toolchain-cache", "dart", name)
+      return likely("toolchain-cache", "dart", name)
     case "gocache":
-      return verified("toolchain-cache", "go", name)
+      return likely("toolchain-cache", "go", name)
     case "target": {
       const rust = signatures.filter((value) => [".rustc_info.json", "debug", "release"].includes(value))
       if (has(".rustc_info.json")) return verified("build-output", "rust", name, rust)

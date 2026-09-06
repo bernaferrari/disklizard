@@ -72,16 +72,18 @@ describe("recognize — directory rules", () => {
 
 describe("recognize — developer storage", () => {
   it("attaches evidence-backed ecosystem, confidence, and safe-bulk posture", () => {
+    // A basename alone is discovery, never verified disposability.
     expect(recognize(dir("node_modules", 100))).toMatchObject({
       ecosystem: "node",
-      confidence: "verified",
-      cleanup: "eligible",
+      confidence: "likely",
+      cleanup: "review",
     })
     expect(recognize(dir("__pycache__", 100))).toMatchObject({
       ecosystem: "python",
-      confidence: "verified",
-      cleanup: "eligible",
+      confidence: "likely",
+      cleanup: "review",
     })
+    // A precise cache path is corroborating context and stays preselectable.
     expect(recognize(at(dir("repository", 100), "/Users/dev/.m2/repository"))).toMatchObject({
       ecosystem: "jvm",
       confidence: "verified",
@@ -406,10 +408,10 @@ describe("computeDeveloperSummary — scan-wide developer index", () => {
     const build = byName.get("build")!
     const pytest = byName.get(".pytest_cache")!
 
-    expect(matchesDeveloperArtifact(nodeModules, { ecosystem: "node", readiness: "eligible", minAgeDays: 30 }, now)).toBe(true)
+    expect(matchesDeveloperArtifact(nodeModules, { ecosystem: "node", readiness: "review", minAgeDays: 30 }, now)).toBe(true)
+    expect(matchesDeveloperArtifact(nodeModules, { readiness: "eligible", minAgeDays: 30 }, now)).toBe(false)
     expect(matchesDeveloperArtifact(build, { readiness: "review", minAgeDays: 30 }, now)).toBe(true)
     expect(matchesDeveloperArtifact(build, { readiness: "eligible" }, now)).toBe(false)
-    expect(matchesDeveloperArtifact(pytest, { ecosystem: "python", minAgeDays: 30 }, now)).toBe(false)
     expect(matchesArtifactEcosystem(nodeModules.recognition, "all")).toBe(true)
     expect(isDeveloperArtifactOlderThan(oldNodeModules, 30, now)).toBe(true)
     expect(isDeveloperArtifactOlderThan({ ...oldNodeModules, modifiedAt: undefined }, 30, now)).toBe(false)
