@@ -83,11 +83,12 @@ describe("recognize — developer storage", () => {
       confidence: "likely",
       cleanup: "review",
     })
-    // A precise cache path is corroborating context and stays preselectable.
+    // A precise path corroborates identity, but a Maven local repository is
+    // not a disposable cache: locally installed artifacts have no remote.
     expect(recognize(at(dir("repository", 100), "/Users/dev/.m2/repository"))).toMatchObject({
       ecosystem: "jvm",
-      confidence: "verified",
-      cleanup: "eligible",
+      confidence: "likely",
+      cleanup: "review",
     })
     expect(artifactEcosystemLabel("cpp")).toBe("C / C++")
   })

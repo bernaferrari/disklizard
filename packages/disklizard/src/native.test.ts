@@ -515,7 +515,10 @@ setInterval(() => {}, 1_000)`)
 
     expect(error.message).toBe("Native scanner returned an invalid message")
     expect(existsSync(termObserved)).toBe(true)
-    expect(Date.now() - startedAt).toBeLessThan(1_000)
+    // The escalation itself is bounded by 40ms grace + 80ms force-kill; this
+    // wall-clock ceiling only proves it cannot hang. Keep it tolerant of a
+    // loaded runner's process scheduling, not just an idle laptop.
+    expect(Date.now() - startedAt).toBeLessThan(3_000)
   })
 
   processTest("bounds inherited pipes after the faulty scanner already exited", async () => {

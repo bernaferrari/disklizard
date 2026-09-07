@@ -84,7 +84,7 @@ export const DISK_RECOGNITION_LANGUAGE_KEYS = [
   "Manage with Git",
   "Managed worktree",
   "Maven build target",
-  "Maven re-downloads dependencies",
+  "Maven local repository — mostly re-downloadable, but locally installed artifacts are not; review before removing",
   "Maven repository",
   "Maven user data",
   "May contain configuration, history, or active sessions",

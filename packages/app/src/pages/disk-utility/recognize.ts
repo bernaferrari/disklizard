@@ -495,6 +495,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Xcode regenerates on next build",
       developer: "build-output",
       ecosystem: "apple",
+      confidence: "verified",
     },
   },
   {
@@ -505,16 +506,22 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Gradle downloads or rebuilds it",
       developer: "toolchain-cache",
       ecosystem: "jvm",
+      confidence: "verified",
     },
   },
   {
+    // Identifying the directory does not prove recoverability: a Maven local
+    // repository also holds locally built and manually installed artifacts
+    // that no remote can re-download. Review-only until provenance is known.
     re: /\/\.m2\/repository(?:\/|$)/i,
     r: {
       tag: "Maven repository",
-      safety: "cache",
-      hint: "Maven re-downloads dependencies",
+      safety: "system",
+      hint: "Maven local repository — mostly re-downloadable, but locally installed artifacts are not; review before removing",
       developer: "toolchain-cache",
       ecosystem: "jvm",
+      confidence: "likely",
+      cleanup: "review",
     },
   },
   {
@@ -525,6 +532,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Cargo re-downloads dependencies",
       developer: "toolchain-cache",
       ecosystem: "rust",
+      confidence: "verified",
     },
   },
   {
@@ -535,6 +543,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Ivy re-downloads dependencies",
       developer: "toolchain-cache",
       ecosystem: "jvm",
+      confidence: "verified",
     },
   },
   {
@@ -545,6 +554,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "NuGet restores packages",
       developer: "toolchain-cache",
       ecosystem: "dotnet",
+      confidence: "verified",
     },
   },
   {
@@ -555,6 +565,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Bun re-downloads packages",
       developer: "toolchain-cache",
       ecosystem: "node",
+      confidence: "verified",
     },
   },
   {
@@ -565,6 +576,7 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       hint: "Go re-downloads modules",
       developer: "toolchain-cache",
       ecosystem: "go",
+      confidence: "verified",
     },
   },
   { re: /\/Library\/Caches\b/i, r: { tag: "macOS caches", safety: "cache", hint: "Apps re-create as needed" } },
@@ -624,7 +636,9 @@ const PROTECTED_DEVELOPER_INVENTORY_ANCESTRY: { re: RegExp; r: Recognition }[] =
 /** Add conservative defaults without letting ambiguous names enter bulk cleanup. */
 function finalizeDeveloperRecognition(recognition: Recognition): Recognition {
   if (!recognition.developer) return recognition
-  const confidence = recognition.confidence ?? "verified"
+  // Missing confidence is not the strongest confidence: unqualified rules
+  // read as `likely` until they state their corroboration explicitly.
+  const confidence = recognition.confidence ?? "likely"
   const cleanup =
     recognition.cleanup ??
     (recognition.safety === "regenerable" || recognition.safety === "cache"
@@ -756,6 +770,7 @@ export function recognize(node: DiskScanNode): Recognition {
       hint: "cargo clean regenerates it",
       developer: "build-output",
       ecosystem: "rust",
+      confidence: "verified",
     })
   }
   if (base === "target" && hasRustOutput) {

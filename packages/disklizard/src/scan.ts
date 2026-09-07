@@ -21,6 +21,7 @@ import { deletionBlockReason, type DiskPlatform } from "./safety"
 import {
   DEVELOPER_ARTIFACT_EVIDENCE_NAMES,
   classifyDeveloperArtifact,
+  developerProjectMarkers,
   normalizeDeveloperArtifactInventoryOptions,
 } from "./developer-artifacts"
 import { ChildRetention, apparentBytes, compareNodesBySize } from "./scan-retention"
@@ -449,10 +450,16 @@ async function recordDeveloperArtifact(
   name: string,
   measured: Pick<DeveloperArtifact, "size" | "logicalSize" | "modifiedAt">,
   signatures: readonly string[] = [],
+  siblingMarkers: readonly string[] = [],
 ) {
   const inventory = st.artifactInventory
   if (!inventory) return
-  const classification = classifyDeveloperArtifact(name, basename(dirname(dirPath)), signatures)
+  const classification = classifyDeveloperArtifact(
+    name,
+    basename(dirname(dirPath)),
+    signatures,
+    siblingMarkers,
+  )
   if (!classification) return
   const directoryIdentity = await artifactDirectoryIdentity(st, dirPath)
   retainDeveloperArtifact(inventory, {
@@ -794,6 +801,7 @@ async function sizeOnly(
   depth: number,
   captureSignatures = false,
   inventoryScopeAllowed = false,
+  siblingMarkers: readonly string[] = [],
 ): Promise<{
   size: number
   logicalSize?: number
@@ -818,6 +826,8 @@ async function sizeOnly(
   let modifiedAt = 0
   const signatures: string[] = []
   const artifactSignatures: string[] = []
+  // Sibling project markers for records made inside child directories.
+  const childMarkers = st.artifactInventory ? developerProjectMarkers(entries.map((ent) => ent.name)) : []
 
   await st.pool.forEach(entries, async (ent) => {
     checkAborted(st)
@@ -839,10 +849,9 @@ async function sizeOnly(
     if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
       artifactSignatures.push(normalizedName)
     }
-
     if (ent.isDirectory()) {
       const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-      const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed)
+      const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed, childMarkers)
       total += measured.size
       totalLogicalSize += apparentBytes(measured)
       modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
@@ -867,7 +876,7 @@ async function sizeOnly(
         const s = await st.pool.run(() => stat(childPath))
         if (s.isDirectory()) {
           const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-          const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed)
+          const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed, childMarkers)
           total += measured.size
           totalLogicalSize += apparentBytes(measured)
           modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
@@ -895,7 +904,7 @@ async function sizeOnly(
     artifactSignatures: artifactSignatures.length > 0 ? [...new Set(artifactSignatures)].sort() : undefined,
   }
   if (inventoryScopeAllowed) {
-    await recordDeveloperArtifact(st, dirPath, basename(dirPath), result, result.artifactSignatures)
+    await recordDeveloperArtifact(st, dirPath, basename(dirPath), result, result.artifactSignatures, siblingMarkers)
   }
   return result
 }
@@ -906,8 +915,9 @@ async function walkCollapsedDir(
   st: WalkState,
   depth: number,
   inventoryScopeAllowed = false,
+  siblingMarkers: readonly string[] = [],
 ): Promise<DiskNode> {
-  const measured = await sizeOnly(dirPath, st, depth, true, inventoryScopeAllowed)
+  const measured = await sizeOnly(dirPath, st, depth, true, inventoryScopeAllowed, siblingMarkers)
   return {
     name,
     path: dirPath,
@@ -918,13 +928,13 @@ async function walkCollapsedDir(
     ext: "",
   }
 }
-
 async function walkDir(
   dirPath: string,
   name: string,
   st: WalkState,
   depth: number,
   inventoryScopeAllowed = false,
+  siblingMarkers: readonly string[] = [],
 ): Promise<DiskNode> {
   checkAborted(st)
   const node: DiskNode = {
@@ -938,7 +948,7 @@ async function walkDir(
 
   // Past viz depth: size-only, no tree — deadly fast for deep junk
   if (depth > st.maxDepth) {
-    const measured = await sizeOnly(dirPath, st, depth, false, inventoryScopeAllowed)
+    const measured = await sizeOnly(dirPath, st, depth, false, inventoryScopeAllowed, siblingMarkers)
     node.size = measured.size
     node.logicalSize = measured.logicalSize
     node.modifiedAt = measured.modifiedAt
@@ -958,6 +968,8 @@ async function walkDir(
   emitProgress(st, dirPath)
 
   const artifactSignatures: string[] = []
+  // Sibling project markers for records made inside child directories.
+  const childMarkers = st.artifactInventory ? developerProjectMarkers(entries.map((ent) => ent.name)) : []
   const retainedChildren = new ChildRetention(dirPath, st.maxChildren, st.preserveNames)
 
   await st.pool.forEach(entries, async (ent) => {
@@ -985,8 +997,8 @@ async function walkDir(
           (async () => {
             const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
             return st.collapseNames.has(entName.toLowerCase())
-              ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed)
-              : walkDir(childPath, entName, st, depth + 1, childScopeAllowed)
+              ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
+              : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
           })(),
         ),
       )
@@ -1035,8 +1047,8 @@ async function walkDir(
                 if (s.isDirectory()) {
                   const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
                   return st.collapseNames.has(entName.toLowerCase())
-                    ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed)
-                    : walkDir(childPath, entName, st, depth + 1, childScopeAllowed)
+                    ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
+                    : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
                 }
                 if (s.isFile()) {
                   const measured = measureFile(st, s, childPath)
@@ -1067,7 +1079,7 @@ async function walkDir(
 
   Object.assign(node, retainedChildren.finish())
   if (inventoryScopeAllowed) {
-    await recordDeveloperArtifact(st, dirPath, name, node, [...new Set(artifactSignatures)].sort())
+    await recordDeveloperArtifact(st, dirPath, name, node, [...new Set(artifactSignatures)].sort(), siblingMarkers)
   }
   emitProgress(st, dirPath)
   return node

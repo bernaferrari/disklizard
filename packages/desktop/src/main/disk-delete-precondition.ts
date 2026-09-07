@@ -1,7 +1,11 @@
 import { lstat, readdir } from "node:fs/promises"
 import type { Dirent } from "node:fs"
 import { basename, dirname } from "node:path"
-import { DEVELOPER_ARTIFACT_EVIDENCE_NAMES, classifyDeveloperArtifact } from "@disklizard/core"
+import {
+  DEVELOPER_ARTIFACT_EVIDENCE_NAMES,
+  classifyDeveloperArtifact,
+  developerProjectMarkers,
+} from "@disklizard/core"
 import type {
   DeveloperArtifact,
   DeveloperArtifactDirectoryIdentity,
@@ -131,11 +135,15 @@ export async function assertDeveloperArtifactDeletePrecondition(
       throw staleArtifactError()
     }
 
-    const entries = await readdir(targetPath, { withFileTypes: true })
+    const [entries, parentEntries] = await Promise.all([
+      readdir(targetPath, { withFileTypes: true }),
+      readdir(dirname(targetPath), { withFileTypes: true }).catch(() => [] as Dirent[]),
+    ])
     const actual = classifyDeveloperArtifact(
       basename(targetPath),
       basename(dirname(targetPath)),
       directArtifactSignatures(entries),
+      developerProjectMarkers(parentEntries.map((entry) => entry.name)),
     )
     const expected = precondition.artifact
     if (

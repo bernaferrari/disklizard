@@ -157,18 +157,20 @@ mod tests {
             }
         });
 
-        let mut names: Vec<OsString> = read
+        // Enumeration order is not guaranteed: match each size to its name.
+        let mut measured: Vec<(OsString, u64)> = read
             .entries
             .iter()
-            .map(|entry| entry.name.clone())
+            .map(|entry| (entry.name.clone(), entry.logical_size))
             .collect();
-        names.sort();
+        measured.sort();
         assert_eq!(
-            names,
-            vec![OsString::from("readable-a"), OsString::from("readable-b")]
+            measured,
+            vec![
+                (OsString::from("readable-a"), 3),
+                (OsString::from("readable-b"), 7),
+            ]
         );
-        assert_eq!(read.entries[0].logical_size, 3);
-        assert_eq!(read.entries[1].logical_size, 7);
         assert_eq!(read.unreadable_children, vec![directory.join("poison")]);
         assert!(!read.enumeration_incomplete);
     }

@@ -37,6 +37,7 @@ import { Sunburst, primarySegmentColor, sunburstEntryDuration, type SunburstEntr
 import { Treemap } from "./TreemapPanel"
 import { collapseTreemapChildren, layoutTreemap } from "./treemap"
 import { ViewMorph, type MorphTile } from "./ViewMorph"
+import { canvasFrameFor, frameRect } from "./morph-geometry"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
 import { PreviewDialog } from "./PreviewDialog"
@@ -436,21 +437,28 @@ export default function DiskUtilityPage() {
     if (!sb || !landscape) return []
     // The overlay's content box is the exact tile space the Treemap DOM lays
     // out in (its padding lives on the same element), so unit rects scale by
-    // it — canvas tiles land precisely under their DOM successors.
+    // it — then `frameRect` carries them from landscape CSS pixels into the
+    // canvas backing store, where the wedges already live, so a tile lands
+    // under its DOM successor at any device pixel ratio.
     const overlay = landscape.querySelector(".dl-treemap-overlay")
     const overlayStyle = overlay ? getComputedStyle(overlay) : undefined
     const padLeft = overlayStyle ? parseFloat(overlayStyle.paddingLeft) : 0
     const padTop = overlayStyle ? parseFloat(overlayStyle.paddingTop) : 0
     const box = landscape.getBoundingClientRect()
-    if (box.width <= 0 || box.height <= 0) return []
+    const canvas = canvasEl()
+    if (box.width <= 0 || box.height <= 0 || !canvas) return []
+    const frame = canvasFrameFor(box, canvas.getBoundingClientRect(), canvas.width, canvas.height)
     const contentW = Math.max(1, box.width - padLeft * 2)
     const contentH = Math.max(1, box.height - padTop * 2)
-    const toPixels = (rect: { x: number; y: number; w: number; h: number }) => ({
-      x: padLeft + rect.x * contentW,
-      y: padTop + rect.y * contentH,
-      w: rect.w * contentW,
-      h: rect.h * contentH,
-    })
+    const toPixels = (rect: { x: number; y: number; w: number; h: number }) =>
+      frameRect(frame, {
+        x: padLeft + rect.x * contentW,
+        y: padTop + rect.y * contentH,
+        w: rect.w * contentW,
+        h: rect.h * contentH,
+      })
+    // Match the drawn wedge, which insets each side by the separator pad.
+    const pad = sb.options.padAngle
     const rectByPath = new Map(
       layoutTreemap(collapseTreemapChildren(sortedChildren()), undefined, true).map((rect) => [rect.node.path, rect]),
     )
@@ -463,11 +471,11 @@ export default function DiskUtilityPage() {
         node: seg.node,
         colorIndex: rect.index,
         from: {
-          wedge: { start: seg.start, end: seg.end, inner: seg.inner, outer: seg.outer },
+          wedge: { start: seg.start + pad, end: seg.end - pad, inner: seg.inner, outer: seg.outer },
           rect: toPixels(rect),
         },
         to: {
-          wedge: { start: seg.start, end: seg.end, inner: seg.inner, outer: seg.outer },
+          wedge: { start: seg.start + pad, end: seg.end - pad, inner: seg.inner, outer: seg.outer },
           rect: toPixels(rect),
         },
       })

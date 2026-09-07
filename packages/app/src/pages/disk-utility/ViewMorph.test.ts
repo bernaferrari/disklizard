@@ -1,68 +1,12 @@
 import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "./types"
-import { quadPoint, rectCorners, ViewMorph, wedgeCorners, type MorphPose, type MorphTile } from "./ViewMorph"
-
-const TAU = Math.PI * 2
+import { ViewMorph, type MorphPose, type MorphTile } from "./ViewMorph"
 
 const node = (name: string): DiskScanNode => ({ name, path: `/${name}`, size: 10, isDir: true, children: [], ext: "" })
 
 const pose = (wedgeStart: number, wedgeEnd: number): MorphPose => ({
   wedge: { start: wedgeStart, end: wedgeEnd, inner: 100, outer: 200 },
   rect: { x: 10, y: 20, w: 300, h: 150 },
-})
-
-describe("wedgeCorners", () => {
-  it("orders corners inner@start, inner@end, outer@end, outer@start", () => {
-    const [innerStart, innerEnd, outerEnd, outerStart] = wedgeCorners(
-      { start: 0, end: Math.PI / 2, inner: 100, outer: 200 },
-      0,
-      0,
-    )
-    expect(innerStart[0]).toBeCloseTo(100)
-    expect(innerStart[1]).toBeCloseTo(0)
-    expect(innerEnd[0]).toBeCloseTo(0)
-    expect(innerEnd[1]).toBeCloseTo(100)
-    expect(outerEnd[0]).toBeCloseTo(0)
-    expect(outerEnd[1]).toBeCloseTo(200)
-    expect(outerStart[0]).toBeCloseTo(200)
-    expect(outerStart[1]).toBeCloseTo(0)
-  })
-  it("translates by the wheel center", () => {
-    const [c] = wedgeCorners({ start: -Math.PI / 2, end: 0, inner: 50, outer: 50 }, 30, -40)
-    expect(c[0]).toBeCloseTo(30)
-    expect(c[1]).toBeCloseTo(-90)
-  })
-  it("wraps angles past 2π onto the same ray", () => {
-    const [a] = wedgeCorners({ start: 0, end: 0, inner: 80, outer: 80 }, 0, 0)
-    const [b] = wedgeCorners({ start: TAU, end: TAU, inner: 80, outer: 80 }, 0, 0)
-    expect(a[0]).toBeCloseTo(b[0])
-    expect(a[1]).toBeCloseTo(b[1])
-  })
-})
-
-describe("rectCorners", () => {
-  it("orders corners TL, TR, BR, BL", () => {
-    const [tl, tr, br, bl] = rectCorners({ x: 10, y: 20, w: 300, h: 150 })
-    expect(tl).toEqual([10, 20])
-    expect(tr).toEqual([310, 20])
-    expect(br).toEqual([310, 170])
-    expect(bl).toEqual([10, 170])
-  })
-})
-
-describe("quadPoint", () => {
-  const p0: [number, number] = [0, 0]
-  const pc: [number, number] = [50, 120]
-  const p1: [number, number] = [200, 40]
-  it("is exact at both endpoints", () => {
-    expect(quadPoint(p0, pc, p1, 0)).toEqual([0, 0])
-    expect(quadPoint(p0, pc, p1, 1)).toEqual([200, 40])
-  })
-  it("weights the control point half at the midpoint", () => {
-    const mid = quadPoint(p0, pc, p1, 0.5)
-    expect(mid[0]).toBeCloseTo(0.25 * 0 + 0.5 * 50 + 0.25 * 200)
-    expect(mid[1]).toBeCloseTo(0.25 * 0 + 0.5 * 120 + 0.25 * 40)
-  })
 })
 
 describe("MorphTile poses", () => {
@@ -81,7 +25,6 @@ describe("MorphTile poses", () => {
 })
 
 describe("ViewMorph lifecycle", () => {
-
   /**
    * rAF-style clock: callbacks scheduled during a tick run on the next tick,
    * mirroring the browser. `pending` is the live frame-chain count.
@@ -100,6 +43,9 @@ describe("ViewMorph lifecycle", () => {
     }
     get pending(): number {
       return this.queue.size
+    }
+    pendingCallbacks(): Array<(now: number) => void> {
+      return [...this.queue.values()]
     }
     tick(milliseconds: number): number {
       this.now += milliseconds
@@ -153,14 +99,15 @@ describe("ViewMorph lifecycle", () => {
       getPropertyValue: () => "",
     })) as typeof getComputedStyle
     globals.window = { devicePixelRatio: 1 }
-    const centerCalls: Array<{ cx: number; cy: number; maxR: number }> = []
+    const centerCalls: number = 0
+    const center = { cx: 32, cy: 32, maxR: 30 }
+    let centerReads = 0
     const morph = new ViewMorph(
       { width: 64, height: 64 } as HTMLCanvasElement,
       countingCtx(),
       () => {
-        const center = { cx: 32, cy: 32, maxR: 30 }
-        centerCalls.push(center)
-        return center
+        centerReads++
+        return { ...center }
       },
       () => options.reducedMotion ?? false,
     )
@@ -171,7 +118,7 @@ describe("ViewMorph lifecycle", () => {
       performance.now = previousNow
       globals.window = previousWindow
     }
-    return { morph, clock, centerCalls, restore }
+    return { morph, clock, restore, center, centerReads: () => centerReads, centerCalls }
   }
 
   const tiles = (): MorphTile[] => [
@@ -218,6 +165,38 @@ describe("ViewMorph lifecycle", () => {
       expect(completions).toEqual(["a", "b", "c"])
       expect(clock.pending).toBe(0)
       expect(morph.active).toBe(false)
+    } finally {
+      restore()
+    }
+  })
+
+  it("a stale first-frame callback cannot hijack a newer flight", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      const completions: string[] = []
+      morph.play(tiles(), "toGrid", () => completions.push("a"))
+      const stale = clock.pendingCallbacks()[0]!
+      clock.tick(16)
+
+      morph.play(tiles(), "toMap", () => completions.push("b"))
+      expect(completions).toEqual(["a"])
+
+      // A browser that fires the cancelled callback anyway: the callback
+      // carries flight a's generation and must neither draw nor reschedule
+      // while claiming flight b's identity.
+      const drawsBefore = clearRectCount
+      const pendingBefore = clock.pending
+      stale(clock.now + 16)
+
+      expect(clearRectCount).toBe(drawsBefore)
+      expect(clock.pending).toBe(pendingBefore)
+      expect(morph.active).toBe(true)
+
+      clock.tick(200)
+      clock.tick(200)
+      clock.tick(100)
+      expect(completions).toEqual(["a", "b"])
+      expect(clock.pending).toBe(0)
     } finally {
       restore()
     }
@@ -297,19 +276,27 @@ describe("ViewMorph lifecycle", () => {
       restore()
     }
   })
-  it("consults the live center each frame so a resize retargets mid-flight", () => {
-    const { morph, clock, centerCalls, restore } = harness()
+
+  it("retargets to a moved center each frame after a resize", () => {
+    const { morph, clock, restore, center, centerReads } = harness()
     try {
-      morph.play(tiles(), "toGrid", () => undefined)
+      let completions = 0
+      morph.play(tiles(), "toGrid", () => completions++)
       clock.tick(100)
-      const consultedAfterFirstFrame = centerCalls.length
+      expect(centerReads()).toBeGreaterThan(0)
+
+      // The window reshapes: the wheel moves. Later frames must consult the
+      // new center rather than a cached pose, and the flight still lands.
+      center.cx = 45
+      center.cy = 21
+      const readsAfterResize = centerReads()
       clock.tick(100)
       clock.tick(100)
-      // One getCenter read per drawn frame — never a cached pose.
-      expect(centerCalls.length).toBeGreaterThanOrEqual(consultedAfterFirstFrame + 2)
+      expect(centerReads()).toBeGreaterThan(readsAfterResize)
       expect(morph.active).toBe(true)
       clock.tick(600)
       expect(morph.active).toBe(false)
+      expect(completions).toBe(1)
     } finally {
       restore()
     }

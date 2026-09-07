@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test"
+import corpus from "./classification-corpus.json"
 import {
   DEFAULT_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
   MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
   classifyDeveloperArtifact,
   normalizeDeveloperArtifactInventoryOptions,
 } from "./developer-artifacts"
-
 describe("developer artifact inventory rules", () => {
   test("keeps a conventional name at review until local evidence corroborates it", () => {
     // A basename match justifies discovery, not verified disposability.
@@ -67,7 +67,49 @@ describe("developer artifact inventory rules", () => {
       ecosystem: "rust",
       cleanup: "eligible",
     })
+    expect(classifyDeveloperArtifact("repository", ".m2", [])).toMatchObject({
+      ecosystem: "jvm",
+      confidence: "likely",
+      cleanup: "review",
+    })
     expect(classifyDeveloperArtifact("registry", "project", [])).toBeUndefined()
+  })
+
+  test("sibling project markers corroborate identity and a reinstall path", () => {
+    expect(
+      classifyDeveloperArtifact("node_modules", "web", [], ["readme.md", "package.json", "package-lock.json"]),
+    ).toMatchObject({
+      confidence: "verified",
+      cleanup: "eligible",
+      evidence: ["name:node_modules", "parent:package-lock.json", "parent:package.json"],
+    })
+    expect(classifyDeveloperArtifact("node_modules", "web", [], ["readme.md"])).toMatchObject({
+      confidence: "likely",
+      cleanup: "review",
+    })
+    expect(classifyDeveloperArtifact("__pycache__", "api", [], ["pyproject.toml"])).toMatchObject({
+      confidence: "verified",
+      cleanup: "eligible",
+    })
+  })
+
+  test("matches the shared classification corpus every implementation must agree on", () => {
+    // The same corpus drives the Rust classifier's conformance test; a case
+    // that passes here and fails there (or vice versa) is policy drift.
+    expect(corpus.cases.length).toBeGreaterThanOrEqual(20)
+    for (const fixture of corpus.cases) {
+      const actual = classifyDeveloperArtifact(
+        fixture.name,
+        fixture.parent,
+        fixture.signatures,
+        fixture.parentMarkers,
+      )
+      if (fixture.expected === null) {
+        expect(actual).toBeUndefined()
+        continue
+      }
+      expect(actual).toMatchObject(fixture.expected)
+    }
   })
 
   test("normalizes the opt-in bounded inventory request", () => {

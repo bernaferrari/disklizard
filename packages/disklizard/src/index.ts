@@ -34,7 +34,9 @@ export { buildCrumbs, findParent, findNode, sortedChildren, canDrill } from "./t
 export { canDeletePath, deletionBlockReason, type DiskPlatform } from "./safety"
 export {
   DEVELOPER_ARTIFACT_EVIDENCE_NAMES,
+  DEVELOPER_PROJECT_MARKER_NAMES,
   classifyDeveloperArtifact,
+  developerProjectMarkers,
   normalizeDeveloperArtifactInventoryOptions,
   type DeveloperArtifactClassification,
 } from "./developer-artifacts"

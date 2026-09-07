@@ -18,6 +18,7 @@ mod retention;
 use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
+    is_project_marker_name as is_developer_project_marker_name,
 };
 #[cfg(not(any(target_os = "macos", test)))]
 use clone_metadata::{
@@ -328,6 +329,8 @@ struct DeveloperArtifactObservation<'a> {
     size: u64,
     logical_size: u64,
     modified_at: Option<u64>,
+    /// Sibling project-marker names observed beside this directory.
+    sibling_markers: &'a [String],
     signatures: &'a [String],
     directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
 }
@@ -336,6 +339,9 @@ struct DirectoryWalk {
     directory: Directory,
     directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
     inventory_scope_allowed: bool,
+    /// Project-marker names among this directory's siblings, observed by the
+    /// parent walk that spawned it.
+    sibling_markers: Arc<Vec<String>>,
 }
 
 struct Directory {
@@ -553,6 +559,7 @@ impl Scanner {
                         directory,
                         directory_identity: root_identity,
                         inventory_scope_allowed,
+                        sibling_markers: Arc::new(Vec::new()),
                     },
                 );
             }
@@ -684,6 +691,23 @@ impl State {
         }
     }
 
+    /// Marker names among a directory's entries, for classification of that
+    /// directory's children: a manifest beside a conventional basename
+    /// corroborates identity and a reinstall path.
+    fn project_marker_signatures(&self, entries: &[Entry]) -> Vec<String> {
+        if self.developer_artifact_inventory.is_none() {
+            return Vec::new();
+        }
+        let mut markers: Vec<String> = entries
+            .iter()
+            .map(|entry| entry.name.to_string_lossy().to_lowercase())
+            .filter(|name| is_developer_project_marker_name(name))
+            .collect();
+        markers.sort();
+        markers.dedup();
+        markers
+    }
+
     fn artifact_direct_signatures(&self, path: &Path, entries: &[Entry]) -> Vec<String> {
         if self.developer_artifact_inventory.is_none() {
             return Vec::new();
@@ -714,6 +738,7 @@ impl State {
             observation.name,
             parent_name.as_deref(),
             observation.signatures,
+            observation.sibling_markers,
         ) else {
             return;
         };
@@ -811,6 +836,7 @@ impl State {
             directory,
             directory_identity,
             inventory_scope_allowed,
+            sibling_markers,
         } = input;
         if collapsed {
             let measured = self.size_only(
@@ -819,6 +845,7 @@ impl State {
                 true,
                 directory_identity,
                 inventory_scope_allowed,
+                sibling_markers.clone(),
             );
             if measured.has_shared_storage_risk {
                 self.mark_shared_storage_evidence_partial();
@@ -843,6 +870,7 @@ impl State {
                 false,
                 directory_identity,
                 inventory_scope_allowed,
+                sibling_markers.clone(),
             );
             if measured.has_shared_storage_risk {
                 self.mark_shared_storage_evidence_partial();
@@ -880,6 +908,7 @@ impl State {
 
         let excluded_names = self.excluded_children.get(path);
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
+        let child_markers = Arc::new(self.project_marker_signatures(&entries));
         let retention = Mutex::new(ChildRetention::new(self.request.max_children));
         entries
             .into_par_iter()
@@ -929,6 +958,7 @@ impl State {
                                     directory: child,
                                     directory_identity: child_identity,
                                     inventory_scope_allowed: child_inventory_scope_allowed,
+                                    sibling_markers: Arc::clone(&child_markers),
                                 },
                             )
                         }) {
@@ -974,6 +1004,7 @@ impl State {
                 size: node.size,
                 logical_size: node.logical_size.unwrap_or(node.size),
                 modified_at: node.modified_at,
+                sibling_markers: &sibling_markers,
                 signatures: &artifact_signatures,
                 directory_identity,
             });
@@ -981,6 +1012,7 @@ impl State {
         Ok(node)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn size_only(
         &self,
         path: &Path,
@@ -988,6 +1020,7 @@ impl State {
         capture_signatures: bool,
         directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
         inventory_scope_allowed: bool,
+        sibling_markers: Arc<Vec<String>>,
     ) -> Measurement {
         let entries = match directory.read_entries(path) {
             Ok(read) => {
@@ -1015,6 +1048,7 @@ impl State {
 
         let excluded_names = self.excluded_children.get(path);
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
+        let child_markers = Arc::new(self.project_marker_signatures(&entries));
         let measured = entries
             .into_par_iter()
             .map(|entry| {
@@ -1057,6 +1091,7 @@ impl State {
                                 false,
                                 child_identity,
                                 child_inventory_scope_allowed,
+                                Arc::clone(&child_markers),
                             )
                         })
                         .unwrap_or_else(|_| {
@@ -1101,6 +1136,7 @@ impl State {
                 size: result.size,
                 logical_size: result.logical_size,
                 modified_at: result.modified_at,
+                sibling_markers: &sibling_markers,
                 signatures: &artifact_signatures,
                 directory_identity,
             });
@@ -2774,6 +2810,73 @@ mod tests {
     }
 
     #[test]
+    fn sibling_project_markers_promote_a_conventional_artifact() {
+        let root = tempfile::tempdir().unwrap();
+        let web = root.path().join("web");
+        let stray = root.path().join("stray");
+        fs::create_dir_all(web.join("node_modules/pkg")).unwrap();
+        fs::create_dir_all(stray.join("node_modules")).unwrap();
+        File::create(web.join("package.json"))
+            .unwrap()
+            .write_all(&[0_u8; 1])
+            .unwrap();
+        File::create(web.join("package-lock.json"))
+            .unwrap()
+            .write_all(&[0_u8; 1])
+            .unwrap();
+        File::create(web.join("node_modules/pkg/index.js"))
+            .unwrap()
+            .write_all(&[0_u8; 5])
+            .unwrap();
+        File::create(stray.join("node_modules/index.js"))
+            .unwrap()
+            .write_all(&[0_u8; 3])
+            .unwrap();
+
+        let mut options = request(root.path(), SizeMode::Logical);
+        options.max_depth = 0;
+        options.developer_artifact_inventory = Some(DeveloperArtifactInventoryRequest::Options(
+            DeveloperArtifactInventoryOptions { max_items: Some(8) },
+        ));
+        let result = scan(options);
+        let inventory = result.developer_artifact_inventory.expect("root inventory");
+
+        let corroborated = inventory
+            .items
+            .iter()
+            .find(|item| item.path == web.join("node_modules").to_string_lossy())
+            .unwrap();
+        assert!(matches!(
+            corroborated.confidence,
+            DeveloperArtifactConfidence::Verified
+        ));
+        assert!(matches!(
+            corroborated.cleanup,
+            DeveloperArtifactCleanupReadiness::Eligible
+        ));
+        assert_eq!(
+            corroborated.evidence,
+            vec![
+                "name:node_modules".to_string(),
+                "parent:package-lock.json".to_string(),
+                "parent:package.json".to_string(),
+            ]
+        );
+        let uncorroborated = inventory
+            .items
+            .iter()
+            .find(|item| item.path == stray.join("node_modules").to_string_lossy())
+            .unwrap();
+        assert!(matches!(
+            uncorroborated.confidence,
+            DeveloperArtifactConfidence::Likely
+        ));
+        assert!(matches!(
+            uncorroborated.cleanup,
+            DeveloperArtifactCleanupReadiness::Review
+        ));
+    }
+    #[test]
     fn indexes_deep_developer_artifacts_outside_the_visual_tree() {
         let root = tempfile::tempdir().unwrap();
         let project = root.path().join("one/two/project");
@@ -2899,6 +3002,7 @@ mod tests {
                 size: 17,
                 logical_size: 17,
                 modified_at: None,
+                sibling_markers: &[],
                 signatures: &[],
                 directory_identity: None,
             });

@@ -65,8 +65,29 @@ test("keeps the smart cleanup policy controls visible without expanding a disclo
   await page.screenshot({ path: "../test-results/developer-policy-panel.png" })
 })
 
+test.describe("high-DPI morph alignment", () => {
+  test.use({ viewport: { width: 1100, height: 640 }, deviceScaleFactor: 2 })
+
+  test("the map⇄tiles morph lands on its DOM tiles at high device pixel ratio", async ({ page }) => {
+  await openStorageMap(page)
+
+  // Pointer intent keeps the morph path active (keyboard and reduced motion
+  // swap instantly). The fixture's dominant folder exercises a large wedge.
+  await page.getByRole("button", { name: /^Tiles/ }).click()
+  const canvas = page.locator('canvas[aria-label^="Storage map for Test volume"]')
+  await expect(canvas).toBeHidden()
+  const tile = page.locator("[data-disk-tile-path]").first()
+  await expect(tile).toBeVisible()
+  await expect(tile).toHaveAttribute("aria-pressed", "false")
+
+  // And back: tiles fly into the wheel on the same shared coordinate frame.
+  await page.getByRole("button", { name: /^Map / }).click()
+  await expect(canvas).toBeVisible()
+  await page.screenshot({ path: "../test-results/morph-dpr2-landed.png" })
+  })
+})
+
 test("supports keyboard review in a narrow reduced-motion layout", async ({ page }) => {
-  await page.setViewportSize({ width: 720, height: 820 })
   await page.emulateMedia({ reducedMotion: "reduce" })
   await openStorageMap(page)
 

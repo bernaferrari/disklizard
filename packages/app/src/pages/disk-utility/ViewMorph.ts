@@ -2,21 +2,36 @@
  * ViewMorph — the map⇄tiles transition.
  *
  * One persistent canvas carries both views: every primary sunburst wedge owns
- * a treemap tile twin, and switching modes flies each shape's four corners to
- * their counterpart along quadratic béziers. Control points sit on the wheel
- * rim at each corner's original angle, so segments peel off the disc instead
- * of cutting across it. DOM tiles mount only after the flight lands — canvas
- * and DOM share geometry and `primarySegmentColor(index)` fills, so the hand-
- * off is invisible.
+ * a treemap tile twin, and switching modes flies each boundary point to (or
+ * from) its tile pose on that canvas. Sector boundaries are tessellated so a
+ * half-disk wedge keeps its curved shape instead of collapsing onto a
+ * diagonal, and tile poses arrive already expressed in the canvas backing
+ * store through the shared `morph-geometry` contract.
+ *
+ * Lifecycle: `play` supersedes any in-flight transition (an empty tile set
+ * cancels first, then completes immediately), `cancel` stops and completes,
+ * `abort` stops without completing. Every stop path cancels the scheduled
+ * frame; a frame callback carries the generation of the flight that scheduled
+ * it, so a stale callback that somehow still runs can neither draw nor
+ * disturb the current flight's bookkeeping.
  */
 
 import type { DiskScanNode } from "./types"
 import { primarySegmentColor } from "./sunburst"
-
-/** A segment's wheel pose (polar, canvas pixels) and its tile pose (axis-aligned rect, canvas pixels). */
+import {
+  anchorIndices,
+  arcSegments,
+  matchingRectPolygon,
+  quadPoint,
+  sectorPolygon,
+  type Point,
+  type Rect,
+  type Wedge,
+} from "./morph-geometry"
 export type MorphPose = {
-  wedge: { start: number; end: number; inner: number; outer: number }
-  rect: { x: number; y: number; w: number; h: number }
+  wedge: Wedge
+  /** Canvas backing-store coordinates — apply `frameRect` before building a tile. */
+  rect: Rect
 }
 
 /** One flying shape; callers swap `from`/`to` for the reverse direction. */
@@ -30,10 +45,10 @@ export type MorphTile = {
 
 export type MorphDirection = "toGrid" | "toMap"
 
-type Corner = [number, number]
-
 const TO_GRID_MS = 480
 const TO_MAP_MS = 420
+/** Tessellation stays within this many backing-store pixels of the true arc. */
+const MAX_SAGITTA = 0.5
 
 function easeOutQuart(t: number) {
   return 1 - Math.pow(1 - t, 4)
@@ -43,93 +58,11 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 }
 
-/**
- * The four corners of an annular sector, tracing its boundary:
- * inner@start, inner@end, outer@end, outer@start.
- */
-export function wedgeCorners(wedge: MorphPose["wedge"], cx: number, cy: number): [Corner, Corner, Corner, Corner] {
-  return [
-    [cx + wedge.inner * Math.cos(wedge.start), cy + wedge.inner * Math.sin(wedge.start)],
-    [cx + wedge.inner * Math.cos(wedge.end), cy + wedge.inner * Math.sin(wedge.end)],
-    [cx + wedge.outer * Math.cos(wedge.end), cy + wedge.outer * Math.sin(wedge.end)],
-    [cx + wedge.outer * Math.cos(wedge.start), cy + wedge.outer * Math.sin(wedge.start)],
-  ]
-}
-
-/** The four corners of a rect: top-left, top-right, bottom-right, bottom-left. */
-export function rectCorners(rect: MorphPose["rect"]): [Corner, Corner, Corner, Corner] {
-  const { x, y, w, h } = rect
-  return [
-    [x, y],
-    [x + w, y],
-    [x + w, y + h],
-    [x, y + h],
-  ]
-}
-
-/** Point on the quadratic bézier through p0 → pc → p1 at parameter t. */
-export function quadPoint(p0: Corner, pc: Corner, p1: Corner, t: number): Corner {
-  const u = 1 - t
-  return [
-    u * u * p0[0] + 2 * u * t * pc[0] + t * t * p1[0],
-    u * u * p0[1] + 2 * u * t * pc[1] + t * t * p1[1],
-  ]
-}
-
-/** Project a point radially onto the wheel rim — the bézier control point. */
-function rimControl(corner: Corner, cx: number, cy: number, maxR: number): Corner {
-  const dx = corner[0] - cx
-  const dy = corner[1] - cy
-  const len = Math.hypot(dx, dy)
-  if (len < 1e-6) return [cx + maxR, cy]
-  return [cx + (dx / len) * maxR, cy + (dy / len) * maxR]
-}
-
-/** Trace a closed polygon, optionally rounding corners via arcTo. */
-function traceCorners(ctx: CanvasRenderingContext2D, pts: Corner[], radius: number) {
-  const n = pts.length
-  ctx.beginPath()
-  if (radius < 0.5) {
-    ctx.moveTo(pts[0][0], pts[0][1])
-    for (let i = 1; i < n; i++) ctx.lineTo(pts[i][0], pts[i][1])
-    ctx.closePath()
-    return
-  }
-  let firstEntry: Corner | null = null
-  for (let i = 0; i < n; i++) {
-    const prev = pts[(i + n - 1) % n]
-    const cur = pts[i]
-    const next = pts[(i + 1) % n]
-    const dPrev = Math.hypot(cur[0] - prev[0], cur[1] - prev[1])
-    const dNext = Math.hypot(next[0] - cur[0], next[1] - cur[1])
-    const r = Math.min(radius, dPrev / 2, dNext / 2)
-    const entry: Corner = [cur[0] + ((prev[0] - cur[0]) / dPrev) * r, cur[1] + ((prev[1] - cur[1]) / dPrev) * r]
-    const exit: Corner = [cur[0] + ((next[0] - cur[0]) / dNext) * r, cur[1] + ((next[1] - cur[1]) / dNext) * r]
-    if (i === 0) {
-      firstEntry = entry
-      ctx.moveTo(entry[0], entry[1])
-    } else {
-      ctx.lineTo(entry[0], entry[1])
-    }
-    ctx.arcTo(cur[0], cur[1], exit[0], exit[1], r)
-  }
-  if (firstEntry) ctx.lineTo(firstEntry[0], firstEntry[1])
-  ctx.closePath()
-}
-
-/**
- * Corner pairing between poses: wedge inner@start → TL, inner@end → TR,
- * outer@end → BR, outer@start → BL. Each corner flies its own bézier whose
- * control point sits on the wheel rim at that corner's original angle.
- */
-function sourceCorners(tile: MorphTile, dir: MorphDirection, cx: number, cy: number): Corner[] {
-  const pose = dir === "toGrid" ? tile.from : tile.to
-  return dir === "toGrid" ? wedgeCorners(pose.wedge, cx, cy) : rectCorners(pose.rect)
-}
-
-function destinationCorners(tile: MorphTile, dir: MorphDirection, cx: number, cy: number): Corner[] {
-  const pose = dir === "toGrid" ? tile.to : tile.from
-  return dir === "toGrid" ? rectCorners(pose.rect) : wedgeCorners(pose.wedge, cx, cy)
+/** Per-tile precomputed flight plan: destination rect boundary plus anchors. */
+type FlightPlan = {
+  pointCount: number
+  rectPolygon: Point[]
+  anchors: ReadonlySet<number>
 }
 
 export class ViewMorph {
@@ -137,14 +70,16 @@ export class ViewMorph {
   private dir: MorphDirection = "toGrid"
   private startTime = 0
   private duration = 1
-  private controls: Corner[][] = []
+  private plans: FlightPlan[] = []
+  private controls: Point[][] = []
   private raf: number | null = null
   private finished: (() => void) | null = null
   private _active = false
   /**
-   * Monotonic per-flight token. A frame callback whose generation no longer
-   * matches belongs to an interrupted flight and must neither draw nor
-   * reschedule, even if a new play() has already reactivated the instance.
+   * Monotonic per-flight token. `play` captures the incremented value in a
+   * local and closes over it, so a callback always carries the generation of
+   * the flight that scheduled it — never whatever `this.generation` holds
+   * when the callback happens to run.
    */
   private generation = 0
   /** Tile separator color, read once per flight from the live theme. */
@@ -194,13 +129,14 @@ export class ViewMorph {
     this.finished = done
     this.duration = this.reducedMotion() ? 1 : dir === "toGrid" ? TO_GRID_MS : TO_MAP_MS
     const { cx, cy, maxR } = this.getCenter()
-    this.controls = tiles.map((tile) =>
-      sourceCorners(tile, dir, cx, cy).map((corner) => rimControl(corner, cx, cy, maxR)),
+    this.plans = tiles.map((tile) => this.planFlight(tile))
+    this.controls = this.tiles.map((tile, index) =>
+      this.boundary(tile, index, cx, cy).map((point) => rimControl(point, cx, cy, maxR)),
     )
     this._active = true
-    this.generation++
+    const generation = ++this.generation
     this.startTime = performance.now()
-    this.raf = requestAnimationFrame((now) => this.frame(now, this.generation))
+    this.raf = requestAnimationFrame((now) => this.frame(now, generation))
   }
 
   /**
@@ -237,10 +173,10 @@ export class ViewMorph {
   }
 
   private frame(now: number, generation: number) {
-    this.raf = null
-    // cancel()/abort() drop the loop, and a stale scheduled frame from an
-    // interrupted flight must not revive under a newer play()'s state.
+    // Staleness first: an obsolete callback must not touch this.raf, which
+    // tracks the current flight's scheduled frame.
     if (!this._active || generation !== this.generation) return
+    this.raf = null
     const raw = this.duration > 0 ? Math.min(1, (now - this.startTime) / this.duration) : 1
     this.draw(raw)
     if (raw >= 1) {
@@ -248,6 +184,28 @@ export class ViewMorph {
       return
     }
     this.raf = requestAnimationFrame((next) => this.frame(next, generation))
+  }
+
+  /** The tessellation density and rect boundary for one tile's flight. */
+  private planFlight(tile: MorphTile): FlightPlan {
+    const wedge = this.dir === "toGrid" ? tile.from.wedge : tile.to.wedge
+    const rect = this.dir === "toGrid" ? tile.to.rect : tile.from.rect
+    const pointCount = 2 * (arcSegments(wedge.end - wedge.start, wedge.outer, MAX_SAGITTA) + 1)
+    return {
+      pointCount,
+      rectPolygon: matchingRectPolygon(rect, pointCount),
+      anchors: new Set(anchorIndices(pointCount)),
+    }
+  }
+
+  /** The boundary this tile flies from, retessellated against the live center. */
+  private boundary(tile: MorphTile, index: number, cx: number, cy: number): Point[] {
+    const plan = this.plans[index]
+    if (!plan) return []
+    if (this.dir === "toGrid") {
+      return sectorPolygon(tile.from.wedge, cx, cy, MAX_SAGITTA, plan.pointCount / 2 - 1)
+    }
+    return plan.rectPolygon
   }
 
   private draw(raw: number) {
@@ -269,13 +227,20 @@ export class ViewMorph {
 
     const roundRadius = raw > 0.6 ? ((raw - 0.6) / 0.4) * 4 * dpr : 0
     for (let i = 0; i < this.tiles.length; i++) {
-      const tile = this.tiles[i]
-      const from = sourceCorners(tile, this.dir, cx, cy)
-      const to = destinationCorners(tile, this.dir, cx, cy)
+      const source = this.boundary(this.tiles[i], i, cx, cy)
+      const destination = this.dir === "toGrid"
+        ? this.plans[i].rectPolygon
+        : sectorPolygon(
+            this.tiles[i].to.wedge,
+            cx,
+            cy,
+            MAX_SAGITTA,
+            this.plans[i].pointCount / 2 - 1,
+          )
       const ctrls = this.controls[i]
-      const pts: Corner[] = from.map((corner, j) => quadPoint(corner, ctrls[j], to[j], t))
-      traceCorners(ctx, pts, roundRadius)
-      ctx.fillStyle = primarySegmentColor(tile.colorIndex, 1, tile.node.isDir)
+      const pts: Point[] = source.map((point, j) => quadPoint(point, ctrls[j], destination[j], t))
+      tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
+      ctx.fillStyle = primarySegmentColor(this.tiles[i].colorIndex, 1, this.tiles[i].node.isDir)
       ctx.fill()
       ctx.strokeStyle = this.border
       ctx.lineWidth = 0.8 * dpr
@@ -284,3 +249,51 @@ export class ViewMorph {
   }
 }
 
+/** Project a point radially onto the wheel rim — the bézier control point. */
+function rimControl(point: Point, cx: number, cy: number, maxR: number): Point {
+  const dx = point[0] - cx
+  const dy = point[1] - cy
+  const length = Math.hypot(dx, dy) || 1
+  return [cx + (dx / length) * maxR, cy + (dy / length) * maxR]
+}
+
+/**
+ * Trace a closed polygon, rounding only the semantic corner anchors via
+ * arcTo. Tessellation points along the arcs stay sharp so the curved
+ * boundaries keep their shape.
+ */
+function tracePolygon(
+  ctx: CanvasRenderingContext2D,
+  pts: Point[],
+  anchors: ReadonlySet<number>,
+  radius: number,
+) {
+  if (pts.length < 3) return
+  ctx.beginPath()
+  ctx.moveTo(pts[0][0], pts[0][1])
+  for (let i = 1; i < pts.length; i++) {
+    if (!anchors.has(i) || radius <= 0) {
+      ctx.lineTo(pts[i][0], pts[i][1])
+      continue
+    }
+    const previous = pts[i - 1]
+    const corner = pts[i]
+    const next = pts[(i + 1) % pts.length]
+    const inDx = previous[0] - corner[0]
+    const inDy = previous[1] - corner[1]
+    const outDx = next[0] - corner[0]
+    const outDy = next[1] - corner[1]
+    const inLength = Math.hypot(inDx, inDy) || 1
+    const outLength = Math.hypot(outDx, outDy) || 1
+    const trim = Math.min(radius, inLength / 2, outLength / 2)
+    ctx.lineTo(corner[0] + (inDx / inLength) * trim, corner[1] + (inDy / inLength) * trim)
+    ctx.arcTo(
+      corner[0],
+      corner[1],
+      corner[0] + (outDx / outLength) * trim,
+      corner[1] + (outDy / outLength) * trim,
+      trim,
+    )
+  }
+  ctx.closePath()
+}

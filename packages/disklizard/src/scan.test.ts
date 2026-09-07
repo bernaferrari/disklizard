@@ -510,6 +510,40 @@ describe("disk scanner", () => {
     })
   })
 
+  it("promotes a conventional artifact to verified when sibling manifests corroborate it", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-markers-"))
+    roots.push(root)
+    const withManifest = join(root, "web")
+    const bare = join(root, "stray")
+    await Promise.all([
+      mkdir(join(withManifest, "node_modules", "pkg"), { recursive: true }),
+      mkdir(join(bare, "node_modules"), { recursive: true }),
+    ])
+    await Promise.all([
+      writeFile(join(withManifest, "package.json"), new Uint8Array(1)),
+      writeFile(join(withManifest, "package-lock.json"), new Uint8Array(1)),
+      writeFile(join(withManifest, "node_modules", "pkg", "index.js"), new Uint8Array(5)),
+      writeFile(join(bare, "node_modules", "index.js"), new Uint8Array(3)),
+    ])
+
+    const result = await scanPathSync(root, {
+      maxDepth: 0,
+      sizeMode: "logical",
+      developerArtifactInventory: { maxItems: 8 },
+    })
+    const items = result.developerArtifactInventory?.items ?? []
+    expect(items.find((item) => item.path === join(withManifest, "node_modules"))).toMatchObject({
+      confidence: "verified",
+      cleanup: "eligible",
+      evidence: ["name:node_modules", "parent:package-lock.json", "parent:package.json"],
+    })
+    expect(items.find((item) => item.path === join(bare, "node_modules"))).toMatchObject({
+      confidence: "likely",
+      cleanup: "review",
+      evidence: ["name:node_modules"],
+    })
+  })
+
   it("caps a deep developer artifact inventory while reporting omitted and skipped scope", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-cap-"))
     roots.push(root)
