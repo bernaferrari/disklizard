@@ -1,3 +1,4 @@
+import log from "electron-log/main.js"
 import { spawn } from "node:child_process"
 import { stat } from "node:fs/promises"
 import { join } from "node:path"
@@ -18,13 +19,7 @@ import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scan
 import type { ScanOptions, ScanProgress } from "./disk-scanner"
 import { DiskSnapshotManager } from "./disk-snapshot"
 import { getStore, removeStoreFileIfEmpty } from "./store"
-import {
-  getPinchZoomEnabled,
-  openExternalURL,
-  setPinchZoomEnabled,
-  setTitlebar,
-  updateTitlebar,
-} from "./windows"
+import { getPinchZoomEnabled, openExternalURL, setPinchZoomEnabled, setTitlebar, updateTitlebar } from "./windows"
 import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
 import { nativeT } from "./native-translations"
@@ -310,6 +305,12 @@ export function registerIpcHandlers(deps: Deps) {
       diskDeleteAuthorizations.removeOwner(owner)
       diskScans.get(owner)?.abort(new Error("Superseded by a new scan"))
       const controller = new AbortController()
+      const scanStartedAt = Date.now()
+      let lastProgressLog = 0
+      let nativeDoneAt: number | undefined
+      const scanWindow = BrowserWindow.fromWebContents(event.sender)
+      scanWindow?.setProgressBar(2, { mode: "indeterminate" })
+      log.info("disk scan started", { scanID })
       let latestProgress: ScanProgress | undefined
       diskScans.set(owner, controller)
       trackDiskSnapshotOwner(event.sender, owner)
@@ -335,6 +336,18 @@ export function registerIpcHandlers(deps: Deps) {
           excludePaths,
           onProgress: (progress) => {
             latestProgress = progress
+            if (progress.done) nativeDoneAt = Date.now()
+            if (progress.done || Date.now() - lastProgressLog >= 10000) {
+              lastProgressLog = Date.now()
+              log.info("disk scan progress", {
+                scanID,
+                elapsedMs: Date.now() - scanStartedAt,
+                files: progress.filesScanned,
+                directories: progress.dirsScanned,
+                bytes: progress.size,
+                nativeDone: !!progress.done,
+              })
+            }
             if (!event.sender.isDestroyed())
               event.sender.send("disklizard:scan-progress", { ...progress, scanId: scanID })
           },
@@ -371,6 +384,12 @@ export function registerIpcHandlers(deps: Deps) {
               source: result.source,
             })
           }
+          log.info("disk scan ready", {
+            scanID,
+            elapsedMs: Date.now() - scanStartedAt,
+            afterNativeMs: nativeDoneAt ? Date.now() - nativeDoneAt : undefined,
+            source: result.source,
+          })
           return result.root
         } catch (error) {
           if (controller.signal.aborted) {
@@ -382,6 +401,10 @@ export function registerIpcHandlers(deps: Deps) {
         }
       } finally {
         if (diskScans.get(owner) === controller) diskScans.delete(owner)
+        if (scanWindow && !scanWindow.isDestroyed()) {
+          const active = [...diskScans.keys()].some((key) => key.startsWith(`${senderID}:`))
+          scanWindow.setProgressBar(active ? 2 : -1, { mode: active ? "indeterminate" : "none" })
+        }
       }
     },
   )

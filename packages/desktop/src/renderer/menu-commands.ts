@@ -7,6 +7,7 @@ export type RendererMenuHandlers = {
   zoomOut: () => unknown
   exportLogs: () => unknown
   chooseFolder: () => unknown
+  rescan?: () => unknown
   runDesktopMenuAction: (id: string) => unknown
 }
 
@@ -24,6 +25,7 @@ export function rendererMenuHandlers(input: {
     zoomOut: input.zoomOut,
     exportLogs: input.exportLogs,
     chooseFolder: () => input.menu?.run(DISK_CHOOSE_FOLDER_COMMAND),
+    rescan: () => input.menu?.run("disk.rescan"),
     runDesktopMenuAction: input.runDesktopMenuAction,
   }
 }
@@ -37,6 +39,8 @@ export function handleRendererMenuCommand(id: string, handlers: RendererMenuHand
       return handlers.zoomIn()
     case "view.zoomOut":
       return handlers.zoomOut()
+    case "disk.rescan":
+      return handlers.rescan?.()
     case "logs.export":
       return handlers.exportLogs()
     case DISK_CHOOSE_FOLDER_COMMAND:

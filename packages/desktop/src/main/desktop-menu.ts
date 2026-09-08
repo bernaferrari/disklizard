@@ -106,6 +106,7 @@ export const DESKTOP_MENU: DesktopMenu[] = [
         command: "disk.chooseFolder",
         accelerator: { macos: "Cmd+O", windows: "Ctrl+O" },
       },
+      { type: "item", labelKey: "disk.common.rescan", command: "disk.rescan", accelerator: { macos: "Cmd+Shift+R", windows: "Ctrl+Shift+R" } },
       { type: "separator" },
       { type: "item", labelKey: "desktop.menu.closeWindow", action: "window.close", role: "close" },
     ],

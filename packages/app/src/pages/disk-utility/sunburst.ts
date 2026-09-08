@@ -98,10 +98,10 @@ function oklchCss(L: number, C: number, hDeg: number, alpha = 1): string {
 
 /** One chromatic family carried through depth; hierarchy comes from measured lightness. */
 function baseForDepth(depth: number): { L: number; C: number } {
-  if (depth === 0) return { L: 0.7, C: 0.095 }
-  if (depth === 1) return { L: 0.65, C: 0.08 }
-  if (depth === 2) return { L: 0.6, C: 0.065 }
-  return { L: 0.55, C: 0.06 }
+  if (depth === 0) return { L: 0.78, C: 0.15 }
+  if (depth === 1) return { L: 0.81, C: 0.13 }
+  if (depth === 2) return { L: 0.84, C: 0.11 }
+  return { L: 0.86, C: 0.095 }
 }
 
 // ── Easing & math ────────────────────────────────────────────────────────────
@@ -139,7 +139,7 @@ function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: 
         isDir: true,
         isOther: true,
         otherCount: children.length,
-        children: [],
+        children,
         ext: "",
       },
     ]
@@ -161,7 +161,7 @@ function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: 
       isDir: true,
       isOther: true,
       otherCount: remainder.length,
-      children: [],
+      children: remainder,
       ext: "",
     },
   ]
@@ -248,7 +248,7 @@ export function layoutSunburstSegments(node: SunNode, rings = 3, maxSegments = 7
   return result
 }
 
-const PRIMARY_HUES = [252, 318, 32, 205, 342, 66, 276, 15, 224, 292] as const
+const PRIMARY_HUES = [155, 205, 250, 290, 330, 25, 65, 95, 125, 180] as const
 
 /** A curated spectral sequence keeps large neighboring branches vivid and distinguishable. */
 export function primaryHueForIndex(i: number): number {
@@ -262,7 +262,7 @@ export function primaryHueForIndex(i: number): number {
  */
 export function primarySegmentColor(i: number, alpha = 1, isDir = true): string {
   const hue = primaryHueForIndex(i)
-  const [L, C] = isDir ? [0.7, 0.095] : [0.56, 0.05225]
+  const [L, C] = isDir ? [0.78, 0.15] : [0.56, 0.05225]
   return alpha >= 1 ? `oklch(${L} ${C} ${hue.toFixed(1)})` : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
@@ -450,10 +450,11 @@ export class Sunburst {
 
   navigateTo(node: SunNode, instant = false) {
     if (!node) return
+    const goingUp = !!node.children?.some((child) => child.path === this.viewNode?.path)
     this.viewNode = node
     this.hovered = null
     this.selectedPath = null
-    this._transitionTo(node, "drill", instant)
+    this._transitionTo(node, goingUp ? "up" : "drill", instant)
   }
 
   goUp(instant = false): SunNode | null {
@@ -740,7 +741,7 @@ export class Sunburst {
     const lift = s.hover * (isPrimary ? 6 : 3) * this.dpr
     const inner = safeCanvasRadius(s.inner - lift * 0.25)
     const outer = safeCanvasRadius(s.outer + lift)
-    const alpha = s.opacity * (dimOthers ? 0.58 : dimHi ? 0.68 : 1)
+    const alpha = s.opacity * (dimOthers ? 0.9 : dimHi ? 0.9 : 1)
 
     ctx.save()
     ctx.globalAlpha = alpha

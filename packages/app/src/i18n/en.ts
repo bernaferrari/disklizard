@@ -6,7 +6,7 @@ export const dict = {
   "disk.accessGuidance.windows": "Use an account with access to this drive, or scan a folder your account can read.",
   "disk.accessGuidance.linux": "Review folder and mount permissions, then scan again.",
   "disk.accessGuidance.default": "Review access to these folders, then scan again.",
-  "disk.accessGuidance.rescan": "Use Rescan in the top bar after changing access.",
+  "disk.accessGuidance.rescan": "Use File → Rescan after changing access.",
   "command.category.suggested": "Suggested",
   "command.category.view": "View",
   "command.category.project": "Project",

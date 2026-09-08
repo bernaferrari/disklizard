@@ -22,7 +22,6 @@ import {
   anchorIndices,
   arcSegments,
   matchingRectPolygon,
-  quadPoint,
   sectorPolygon,
   type Point,
   type Rect,
@@ -45,8 +44,8 @@ export type MorphTile = {
 
 export type MorphDirection = "toGrid" | "toMap"
 
-const TO_GRID_MS = 480
-const TO_MAP_MS = 420
+const TO_GRID_MS = 240
+const TO_MAP_MS = 240
 /** Tessellation stays within this many backing-store pixels of the true arc. */
 const MAX_SAGITTA = 0.5
 
@@ -72,6 +71,11 @@ export class ViewMorph {
   private duration = 1
   private plans: FlightPlan[] = []
   private controls: Point[][] = []
+  private sources: Point[][] = []
+  private destinations: Point[][] = []
+  private points: Point[][] = []
+  private colors: string[] = []
+  private geometryCenter = { cx: NaN, cy: NaN, maxR: NaN }
   private raf: number | null = null
   private finished: (() => void) | null = null
   private _active = false
@@ -130,9 +134,8 @@ export class ViewMorph {
     this.duration = this.reducedMotion() ? 1 : dir === "toGrid" ? TO_GRID_MS : TO_MAP_MS
     const { cx, cy, maxR } = this.getCenter()
     this.plans = tiles.map((tile) => this.planFlight(tile))
-    this.controls = this.tiles.map((tile, index) =>
-      this.boundary(tile, index, cx, cy).map((point) => rimControl(point, cx, cy, maxR)),
-    )
+    this.prepareGeometry(cx, cy, maxR)
+    this.colors = tiles.map((tile) => primarySegmentColor(tile.colorIndex, 1, tile.node.isDir))
     this._active = true
     const generation = ++this.generation
     this.startTime = performance.now()
@@ -208,10 +211,24 @@ export class ViewMorph {
     return plan.rectPolygon
   }
 
+  /** Cache curved boundaries and reuse point buffers; resize is the only invalidation. */
+  private prepareGeometry(cx: number, cy: number, maxR: number) {
+    this.geometryCenter = { cx, cy, maxR }
+    this.sources = this.tiles.map((tile, i) => this.boundary(tile, i, cx, cy))
+    this.destinations = this.tiles.map((tile, i) => this.dir === "toGrid"
+      ? this.plans[i].rectPolygon
+      : sectorPolygon(tile.to.wedge, cx, cy, MAX_SAGITTA, this.plans[i].pointCount / 2 - 1))
+    this.controls = this.sources.map((points) => points.map((point) => rimControl(point, cx, cy, maxR)))
+    this.points = this.sources.map((points) => points.map((): Point => [0, 0]))
+  }
+
   private draw(raw: number) {
     const ctx = this.drawCtx
     const t = this.dir === "toGrid" ? easeOutQuart(raw) : easeInOutCubic(raw)
     const { cx, cy, maxR } = this.getCenter()
+    if (cx !== this.geometryCenter.cx || cy !== this.geometryCenter.cy || maxR !== this.geometryCenter.maxR) {
+      this.prepareGeometry(cx, cy, maxR)
+    }
     const dpr = Math.min(2, window.devicePixelRatio || 1)
     ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
 
@@ -227,20 +244,17 @@ export class ViewMorph {
 
     const roundRadius = raw > 0.6 ? ((raw - 0.6) / 0.4) * 4 * dpr : 0
     for (let i = 0; i < this.tiles.length; i++) {
-      const source = this.boundary(this.tiles[i], i, cx, cy)
-      const destination = this.dir === "toGrid"
-        ? this.plans[i].rectPolygon
-        : sectorPolygon(
-            this.tiles[i].to.wedge,
-            cx,
-            cy,
-            MAX_SAGITTA,
-            this.plans[i].pointCount / 2 - 1,
-          )
+      const source = this.sources[i]
+      const destination = this.destinations[i]
       const ctrls = this.controls[i]
-      const pts: Point[] = source.map((point, j) => quadPoint(point, ctrls[j], destination[j], t))
+      const pts = this.points[i]
+      const a = (1 - t) * (1 - t), b = 2 * (1 - t) * t, c = t * t
+      for (let j = 0; j < pts.length; j++) {
+        pts[j][0] = a * source[j][0] + b * ctrls[j][0] + c * destination[j][0]
+        pts[j][1] = a * source[j][1] + b * ctrls[j][1] + c * destination[j][1]
+      }
       tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
-      ctx.fillStyle = primarySegmentColor(this.tiles[i].colorIndex, 1, this.tiles[i].node.isDir)
+      ctx.fillStyle = this.colors[i]
       ctx.fill()
       ctx.strokeStyle = this.border
       ctx.lineWidth = 0.8 * dpr

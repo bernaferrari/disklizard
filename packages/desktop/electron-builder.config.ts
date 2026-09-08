@@ -1,3 +1,4 @@
+import { compileMacosIcon } from "./scripts/compile-macos-icon"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -39,6 +40,14 @@ const APP_IDS = {
 } as const
 
 const getBase = (appId: string): Configuration => ({
+  afterPack: async (context) => {
+    if (context.electronPlatformName === "darwin") {
+      await compileMacosIcon(
+        path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`),
+        packageDir,
+      )
+    }
+  },
   artifactName: "disklizard-${os}-${arch}.${ext}",
   directories: {
     output: packagedSmoke ? "dist-smoke" : "dist",
@@ -68,6 +77,7 @@ const getBase = (appId: string): Configuration => ({
   ],
   mac: {
     category: "public.app-category.utilities",
+    extendInfo: { CFBundleIconName: "DiskLizard", CFBundleIconFile: "DiskLizard" },
     icon: `resources/icons/icon.icns`,
     hardenedRuntime: !packagedSmoke,
     gatekeeperAssess: false,

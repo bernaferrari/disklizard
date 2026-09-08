@@ -1,4 +1,3 @@
-import diskLizardIcon from "../../assets/disklizard-icon.png"
 /**
  * DiskLizard — standalone storage explorer.
  *
@@ -93,6 +92,7 @@ import {
   ReclaimDrawer,
   type DeletionProgress,
 } from "./DiskUtilityDialogs"
+import { BranchPreview } from "./BranchPreview"
 import { VirtualIndex } from "./DiskUtilityVirtualList"
 import { DiskScanHistory } from "./DiskScanHistory"
 import { createScanHistory, filterScanHistoryEntries } from "./scan-history"
@@ -722,18 +722,10 @@ export default function DiskUtilityPage() {
   const runningVolumeScans = createMemo(() => volumeJobs().filter((job) => job.status === "scanning").length)
   const volumeJobForDrive = (drive: DiskDriveInfo) =>
     volumeJobs().find((job) => diskPathEquals(job.sourcePath, drive.path, platform.os))
-  /** The node the sunburst center + list header should describe right now. */
-  const focusNode = createMemo<DiskScanNode | null>(() => {
-    const visual = visualHoverNode()
-    if (visual) return visual
-    const h = hoveredPath()
-    if (h) {
-      const hit = entries().find(({ node }) => node.path === h)?.node
-      if (hit) return hit
-    }
-    const s = selectedNode()
-    if (s) return s
-    return viewNode()
+  const [smallerGroup, setSmallerGroup] = createSignal<DiskScanNode | null>(null)
+  const hoverPreview = createMemo(() => {
+    const node = visualHoverNode() ?? smallerGroup()
+    return node && node.path !== viewNode()?.path ? node : null
   })
   const activeDialog = createMemo(() =>
     cleanupResetSurface.mounted()
@@ -758,7 +750,8 @@ export default function DiskUtilityPage() {
 
   onMount(() => {
     const unbindMenu = platform.menu?.register(DISK_CHOOSE_FOLDER_COMMAND, () => chooseAndScan())
-    onCleanup(() => unbindMenu?.())
+    const unbindRescan = platform.menu?.register("disk.rescan", () => { if (!scanning()) void rescanCurrent() })
+    onCleanup(() => { unbindMenu?.(); unbindRescan?.() })
     const api = disk()
     if (!api) return
     driveFactsUnsub = api.onDriveFacts((update) => {
@@ -773,6 +766,15 @@ export default function DiskUtilityPage() {
       )
     })
     void loadDrives()
+    const refreshVolumes = () => {
+      if (view() === "drives" && document.visibilityState === "visible") void loadDrives(true)
+    }
+    const refreshTimer = setInterval(refreshVolumes, 30000)
+    window.addEventListener("focus", refreshVolumes)
+    onCleanup(() => {
+      clearInterval(refreshTimer)
+      window.removeEventListener("focus", refreshVolumes)
+    })
     scanUpdateUnsub = api.onScanUpdate((update) => {
       if (scanHistory.record(update)) setHistoryEntries([...scanHistory.entries()])
       if (update.watchError && update.watchError !== lastWatchError) {
@@ -866,17 +868,12 @@ export default function DiskUtilityPage() {
       },
       onClick: (seg) => {
         setVisualHoverNode(seg.node)
-        if (isVisualAggregate(seg.node)) {
-          restoreKeyboardViewFocus("list")
-          return
-        }
-        selectPath(seg.path)
+        if (isVisualAggregate(seg.node)) setSmallerGroup(seg.node)
+        else if (seg.node.isDir) drill(seg.node)
+        else selectPath(seg.path)
       },
       onMetaClick: (seg) => {
         if (!seg.node.isOther) void reveal(seg.path)
-      },
-      onDoubleClick: (seg) => {
-        if (seg.node.isDir && !isVisualAggregate(seg.node)) drill(seg.node)
       },
       onCenterClick: () => goUp(),
     })
@@ -926,6 +923,7 @@ export default function DiskUtilityPage() {
 
   function showBrowseNode(node: DiskScanNode, instant = false) {
     clearSelectionAnnouncement()
+    setSmallerGroup(null)
     sunburst()?.navigateTo(node, instant)
     setViewNode(node)
     setIndexFilter({ lens: "all", developerCategory: "all" })
@@ -968,12 +966,14 @@ export default function DiskUtilityPage() {
     )
   }
 
-  async function loadDrives() {
+  let refreshingDrives = false
+  async function loadDrives(quiet = false) {
     const api = disk()
-    if (!api) return
-    setDrivesLoading(true)
+    if (!api || refreshingDrives) return
+    refreshingDrives = true
+    if (!quiet) setDrivesLoading(true)
     setDrivesError(undefined)
-    setStorageDiagnostics(undefined)
+    if (!quiet) setStorageDiagnostics(undefined)
     setStorageDiagnosticsError(false)
     try {
       const list = await withTimeout(api.getDrives(), 8000, language.t("disk.toast.listingDrives"))
@@ -989,10 +989,12 @@ export default function DiskUtilityPage() {
       void loadStorageDiagnostics()
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
+      if (quiet) return
       setDrivesError(message)
       setDrives([])
       showToast({ variant: "error", title: language.t("disk.toast.listFailed"), description: message })
     } finally {
+      refreshingDrives = false
       setDrivesLoading(false)
     }
   }
@@ -1952,6 +1954,11 @@ export default function DiskUtilityPage() {
   }
 
   function goUp(instant = false, restoreListFocus = false) {
+    if (smallerGroup()) {
+      setSmallerGroup(null)
+      setVisualHoverNode(null)
+      return
+    }
     if (scanning()) {
       cancelScan()
       return
@@ -3075,86 +3082,87 @@ export default function DiskUtilityPage() {
           aria-label={language.t("disk.top.backToVolumes")}
           onClick={() => backToDrives()}
         >
-          <img src={diskLizardIcon} class="size-7 object-contain" alt="" aria-hidden="true" />
           <span class="dl-brand-name text-14-semibold tracking-[-0.02em] text-text-strong">
             {language.t("disk.brand")}
           </span>
         </button>
 
-        <DropdownMenu placement="bottom-start" gutter={6}>
-          <DropdownMenu.Trigger
-            as={Button}
-            class="dl-touch-target"
-            variant="ghost"
-            size="small"
-            icon="dot-grid"
-            aria-label={language.t("disk.app.menu")}
-          />
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content>
-              <DropdownMenu.Item disabled>
-                <DropdownMenu.ItemLabel>
-                  {language.t("disk.app.about", { version: platform.version ?? "" })}
-                </DropdownMenu.ItemLabel>
-              </DropdownMenu.Item>
-              <Show when={view() === "scan" && !scanning()}>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item
-                  disabled={pinMutationPending()}
-                  onSelect={() => void togglePinnedLocation(scanSourcePath(), scanLabel())}
-                >
+        <Show when={platform.os !== "macos"}>
+          <DropdownMenu placement="bottom-start" gutter={6}>
+            <DropdownMenu.Trigger
+              as={Button}
+              class="dl-touch-target"
+              variant="ghost"
+              size="small"
+              icon="dot-grid"
+              aria-label={language.t("disk.app.menu")}
+            />
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content>
+                <DropdownMenu.Item disabled>
                   <DropdownMenu.ItemLabel>
-                    {currentScanPinned() ? language.t("disk.top.unsave") : language.t("disk.common.saveLocation")}
+                    {language.t("disk.app.about", { version: platform.version ?? "" })}
                   </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  disabled={deleting() || !cleanupProtectionsReady() || cleanupLockMutationPending()}
-                  onSelect={() => void toggleProtectedTree(scanSourcePath(), scanLabel())}
-                >
-                  <DropdownMenu.ItemLabel>
-                    {currentScanLocked() ? language.t("disk.top.unprotect") : language.t("disk.top.protect")}
-                  </DropdownMenu.ItemLabel>
-                </DropdownMenu.Item>
-              </Show>
-              <Show when={platform.updater && platform.updater.state().status !== "disabled"}>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item
-                  disabled={
-                    platform.updater?.state().status === "checking" ||
-                    platform.updater?.state().status === "downloading" ||
-                    platform.updater?.state().status === "installing"
-                  }
-                  onSelect={() => void handleUpdaterMenuAction()}
-                >
-                  <DropdownMenu.ItemLabel>
-                    {(() => {
-                      const state = platform.updater?.state()
-                      if (state?.status === "ready")
-                        return language.t("disk.app.installUpdate", { version: state.version })
-                      if (state?.status === "checking") return language.t("disk.app.updateChecking")
-                      if (state?.status === "downloading")
-                        return language.t("disk.app.updateDownloading", { version: state.version })
-                      if (state?.status === "installing")
-                        return language.t("disk.app.installUpdate", { version: state.version })
-                      return language.t("disk.app.checkUpdates")
-                    })()}
-                  </DropdownMenu.ItemLabel>
-                </DropdownMenu.Item>
-              </Show>
-              <Show when={platform.os !== "macos" && platform.exportDiagnostics}>
-                <DropdownMenu.Item onSelect={() => void exportDiagnostics()}>
-                  <DropdownMenu.ItemLabel>{language.t("disk.app.exportDiagnostics")}</DropdownMenu.ItemLabel>
-                </DropdownMenu.Item>
-              </Show>
-              <Show when={platform.os !== "macos" && platform.restart}>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item onSelect={() => void platform.restart?.()}>
-                  <DropdownMenu.ItemLabel>{language.t("disk.app.restart")}</DropdownMenu.ItemLabel>
-                </DropdownMenu.Item>
-              </Show>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu>
+                <Show when={view() === "scan" && !scanning()}>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item
+                    disabled={pinMutationPending()}
+                    onSelect={() => void togglePinnedLocation(scanSourcePath(), scanLabel())}
+                  >
+                    <DropdownMenu.ItemLabel>
+                      {currentScanPinned() ? language.t("disk.top.unsave") : language.t("disk.common.saveLocation")}
+                    </DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    disabled={deleting() || !cleanupProtectionsReady() || cleanupLockMutationPending()}
+                    onSelect={() => void toggleProtectedTree(scanSourcePath(), scanLabel())}
+                  >
+                    <DropdownMenu.ItemLabel>
+                      {currentScanLocked() ? language.t("disk.top.unprotect") : language.t("disk.top.protect")}
+                    </DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={platform.updater && platform.updater.state().status !== "disabled"}>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item
+                    disabled={
+                      platform.updater?.state().status === "checking" ||
+                      platform.updater?.state().status === "downloading" ||
+                      platform.updater?.state().status === "installing"
+                    }
+                    onSelect={() => void handleUpdaterMenuAction()}
+                  >
+                    <DropdownMenu.ItemLabel>
+                      {(() => {
+                        const state = platform.updater?.state()
+                        if (state?.status === "ready")
+                          return language.t("disk.app.installUpdate", { version: state.version })
+                        if (state?.status === "checking") return language.t("disk.app.updateChecking")
+                        if (state?.status === "downloading")
+                          return language.t("disk.app.updateDownloading", { version: state.version })
+                        if (state?.status === "installing")
+                          return language.t("disk.app.installUpdate", { version: state.version })
+                        return language.t("disk.app.checkUpdates")
+                      })()}
+                    </DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={platform.os !== "macos" && platform.exportDiagnostics}>
+                  <DropdownMenu.Item onSelect={() => void exportDiagnostics()}>
+                    <DropdownMenu.ItemLabel>{language.t("disk.app.exportDiagnostics")}</DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={platform.os !== "macos" && platform.restart}>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item onSelect={() => void platform.restart?.()}>
+                    <DropdownMenu.ItemLabel>{language.t("disk.app.restart")}</DropdownMenu.ItemLabel>
+                  </DropdownMenu.Item>
+                </Show>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu>
+        </Show>
 
         <Show when={view() === "scan" && crumbs().length > 0}>
           <span class="h-4 w-px bg-border-weaker-base" aria-hidden />
@@ -3183,8 +3191,8 @@ export default function DiskUtilityPage() {
               onClick={() => browseHistory.move("forward")}
             />
           </div>
-          <Button class="dl-touch-target" variant="ghost" size="small" icon="chevron-left" onClick={() => goUp()}>
-            {crumbs().length <= 1 ? language.t("disk.common.volumes") : language.t("disk.common.back")}
+          <Button class="dl-touch-target" variant="ghost" size="small" onClick={backToDrives}>
+            {language.t("disk.common.volumes")}
           </Button>
           <nav
             class="dl-breadcrumbs flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -3211,32 +3219,6 @@ export default function DiskUtilityPage() {
           </nav>
         </Show>
 
-        <div class="ml-auto flex shrink-0 items-center gap-1.5">
-          <Show when={view() === "scan" && !scanning()}>
-            <Button
-              class="dl-touch-target dl-rescan"
-              variant="ghost"
-              size="small"
-              icon="reset"
-              aria-label={language.t("disk.top.rescan")}
-              onClick={() => void rescanCurrent()}
-            >
-              <span class="dl-responsive-label">{language.t("disk.common.rescan")}</span>
-            </Button>
-          </Show>
-          <Show when={view() === "drives" && disk()}>
-            <Button
-              class="dl-touch-target"
-              variant="ghost"
-              size="small"
-              icon="reset"
-              onClick={() => void loadDrives()}
-              disabled={drivesLoading()}
-            >
-              {language.t("disk.common.refresh")}
-            </Button>
-          </Show>
-        </div>
       </header>
 
       <Show when={!cleanupProtectionsReady()}>
@@ -3507,23 +3489,7 @@ export default function DiskUtilityPage() {
                             {language.t("disk.map.instructions")}
                           </span>
                           <Show when={!morphing()}>
-                            <CenterOverlay
-                              node={focusNode()}
-                              parentSize={parentSize()}
-                              canOpen={
-                                !!focusNode() &&
-                                focusNode()!.path !== viewNode()?.path &&
-                                focusNode()!.isDir &&
-                                !isVisualAggregate(focusNode()) &&
-                                !isDeveloperInventoryNode(focusNode()!)
-                              }
-                              inventoryOnly={!!focusNode() && isDeveloperInventoryNode(focusNode()!)}
-                              onOpen={() => {
-                                const node = focusNode()
-                                if (node?.isDir && !isVisualAggregate(node) && !isDeveloperInventoryNode(node))
-                                  drill(node, true, true)
-                              }}
-                            />
+                            <CenterOverlay node={viewNode()} />
                           </Show>
                         </div>
                         {/* Treemap overlay: mounted in both map and grid, but only
@@ -3641,6 +3607,10 @@ export default function DiskUtilityPage() {
                         "flex-1": scanMode() === "list",
                       }}
                     >
+                      <Show when={hoverPreview()}>
+                        {(node) => <BranchPreview node={node()} onOpen={(child) => child.isDir ? drill(child) : selectPath(child.path)} />}
+                      </Show>
+                      <Show when={!hoverPreview()}>
                       <div class="dl-inspector-header shrink-0 border-b border-border-weaker-base px-6 pb-4 pt-5">
                         <div class="flex items-start justify-between gap-4">
                           <div class="min-w-0 flex-1">
@@ -3977,11 +3947,8 @@ export default function DiskUtilityPage() {
                                         void reveal(entry.node.path)
                                         return
                                       }
-                                      selectEntry(entry.node, i(), event.shiftKey)
-                                    }}
-                                    onDblClick={() => {
-                                      if (entry.node.isDir) drill(entry.node)
-                                      else if (!entry.node.isOther) void preview.show(entry.node)
+                                      if (entry.node.isDir && !event.shiftKey) drill(entry.node)
+                                      else selectEntry(entry.node, i(), event.shiftKey)
                                     }}
                                     onFocus={() => {
                                       setFocusIdx(i())
@@ -4110,6 +4077,7 @@ export default function DiskUtilityPage() {
                             }}
                           />
                         )}
+                      </Show>
                       </Show>
                     </aside>
                   </div>

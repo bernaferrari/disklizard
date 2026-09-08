@@ -269,6 +269,7 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.menu.toggleTerminal": "Toggle Terminal",
   "desktop.menu.toggleFileTree": "Toggle File Tree",
   "desktop.menu.reload": "Reload",
+  "disk.common.rescan": "Rescan",
   "desktop.menu.toggleDeveloperTools": "Toggle Developer Tools",
   "desktop.menu.actualSize": "Actual Size",
   "desktop.menu.zoomIn": "Zoom In",

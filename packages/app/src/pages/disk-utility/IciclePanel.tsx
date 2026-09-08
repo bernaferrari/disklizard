@@ -61,10 +61,8 @@ export function IciclePanel(props: {
               aria-pressed={props.selectedPath === cell.node.path}
               onClick={(event) => {
                 if (event.metaKey || event.ctrlKey) props.onReveal(cell.node)
+                else if (cell.node.isDir) props.onDrill(cell.node)
                 else props.onSelect(cell.node.path)
-              }}
-              onDblClick={() => {
-                if (cell.node.isDir && !cell.node.isOther) props.onDrill(cell.node)
               }}
               onKeyDown={(event) => {
                 if (event.key === " " && !cell.node.isOther && !cell.node.isHidden) {

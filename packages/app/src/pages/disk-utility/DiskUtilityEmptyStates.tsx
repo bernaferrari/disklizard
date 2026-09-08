@@ -2,7 +2,7 @@ import { Button } from "@opencode-ai/ui/button"
 import { Icon, type IconProps } from "@opencode-ai/ui/icon"
 import { Show, type JSX } from "solid-js"
 import type { DiskScanNode } from "./types"
-import { formatBytes, formatPct } from "./format"
+import { formatBytes } from "./format"
 import { diskLanguageText, useLanguage } from "./runtime"
 import { diskNodeDisplayName } from "./node-display"
 
@@ -147,46 +147,16 @@ export function centerOverlayBehavior(
   }
 }
 
-/** Center overlay for the sunburst — shows the focused node's identity + size. */
-export function CenterOverlay(props: {
-  node: DiskScanNode | null
-  parentSize: number
-  canOpen: boolean
-  inventoryOnly: boolean
-  onOpen: () => void
-}) {
-  const language = useLanguage()
-  const behavior = () => centerOverlayBehavior(props.node, props.canOpen, props.inventoryOnly)
+/** The open directory stays anchored while hover previews appear in the inspector. */
+export function CenterOverlay(props: { node: DiskScanNode | null }) {
   return (
     <div class="pointer-events-none absolute inset-0 grid place-items-center">
       <div class="dl-center-summary max-w-[29%] text-center">
         <Show when={props.node}>
-          <p class="truncate text-13-semibold tracking-[-0.01em] text-text-strong">
-            {diskNodeDisplayName(props.node!)}
-          </p>
-          <p class="dl-center-size mt-1.5 whitespace-nowrap text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong">
+          <p class="truncate text-12-regular text-text-weak">{diskNodeDisplayName(props.node!)}</p>
+          <p class="dl-center-size mt-2 whitespace-nowrap text-[clamp(22px,2.8vw,34px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
             {formatBytes(props.node!.size)}
           </p>
-          <Show when={props.parentSize && props.node!.size < props.parentSize && props.node!.path}>
-            <p class="dl-center-context mt-2 text-13-regular tabular-nums text-text-weaker">
-              {formatPct(props.node!.size, props.parentSize)} {language.t("disk.drive.ofLevel")}
-            </p>
-          </Show>
-          <Show when={behavior().canOpen}>
-            <button
-              type="button"
-              class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
-              onClick={props.onOpen}
-            >
-              {language.t(props.node!.isOther ? "disk.common.showMore" : "disk.common.exploreFolder")}
-              <Icon name="arrow-right" class="size-3" />
-            </button>
-          </Show>
-          <Show when={behavior().inventoryOnly}>
-            <p class="mx-auto mt-3 max-w-[28ch] text-13-regular leading-relaxed text-text-weaker">
-              {behavior().reviewOnlyCopy}
-            </p>
-          </Show>
         </Show>
       </div>
     </div>

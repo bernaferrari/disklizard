@@ -23,7 +23,7 @@ describe("drive overview hierarchy", () => {
   })
 
   it("does not render empty protected or saved management sections", () => {
-    expect(overview).toContain('<Show when={(props.cleanupLocks ?? []).length > 0}>')
+    expect(overview).not.toContain('<Show when={(props.cleanupLocks ?? []).length > 0}>')
     expect(overview).toContain('<Show when={props.pinnedLocations.length > 0}>')
     expect(overview).not.toContain('language.t("disk.drive.savedEmpty")')
   })

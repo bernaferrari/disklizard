@@ -95,3 +95,16 @@ describe("standalone File → Scan Folder menu command", () => {
     expect(started).toBe(0)
   })
 })
+
+ test("File Rescan reaches the active disk page", () => {
+  const menu = createDiskLizardMenu()
+  let rescans = 0
+  menu.register("disk.rescan", () => { rescans++ })
+  const file = DESKTOP_MENU.find((item) => item.id === "file")
+  expect(file?.items?.some((item) => item.type === "item" && item.command === "disk.rescan")).toBe(true)
+  handleRendererMenuCommand("disk.rescan", rendererMenuHandlers({
+    resetZoom: () => {}, zoomIn: () => {}, zoomOut: () => {}, exportLogs: () => {}, menu,
+    runDesktopMenuAction: () => { throw new Error("Rescan must reach the disk page") },
+  }))
+  expect(rescans).toBe(1)
+})

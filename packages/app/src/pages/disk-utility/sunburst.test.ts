@@ -47,7 +47,7 @@ function node(name: string, size: number, children: DiskScanNode[] = []): DiskSc
 
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
-    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([252, 318, 32, 205, 15, 252])
+    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([155, 205, 250, 290, 95, 155])
   })
   it("keeps consecutive hues distinct", () => {
     expect(primaryHueForIndex(0)).not.toBe(primaryHueForIndex(1))
@@ -168,6 +168,8 @@ describe("layoutSunburstSegments", () => {
 
     expect(MIN_VISIBLE_SEGMENT_ANGLE).toBeGreaterThan(0)
     expect(aggregate).toMatchObject({ node: { name: "", size: 10, isOther: true, otherCount: 10 } })
+    expect(aggregate!.node.children).toHaveLength(10)
+    expect(aggregate!.node.children.reduce((sum, child) => sum + child.size, 0)).toBe(aggregate!.node.size)
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(root.size)
     expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
   })

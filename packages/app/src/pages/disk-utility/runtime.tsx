@@ -82,7 +82,7 @@ export const DISK_ACCESS_GUIDANCE: Record<DiskAccessGuidanceKey, string> = {
   "disk.accessGuidance.windows": "Use an account with access to this drive, or scan a folder your account can read.",
   "disk.accessGuidance.linux": "Review folder and mount permissions, then scan again.",
   "disk.accessGuidance.default": "Review access to these folders, then scan again.",
-  "disk.accessGuidance.rescan": "Use Rescan in the top bar after changing access.",
+  "disk.accessGuidance.rescan": "Use File → Rescan after changing access.",
 }
 
 export const DISK_LANGUAGE_TEXT = {
@@ -198,7 +198,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.map.label": "Storage map for {label}. Select an item to inspect it; use the results list to browse every item.",
   "disk.map.role": "interactive storage map",
   "disk.map.instructions":
-    "Click once to select an item and double-click a folder to open it. Drag a folder to the review area to select it. Use the Up and Down arrow keys to select an item, Home, End, or Page Up and Page Down to move through the list, Enter or Right Arrow to open a folder, Space to preview it, C to add it to review, and Escape or Left Arrow to move up one level. The results list contains an accessible entry for every item in this map.",
+    "Click a directory to open it, or click the center to go up one level. Drag a folder to the review area to select it. Use the Up and Down arrow keys to select an item, Home, End, or Page Up and Page Down to move through the list, Enter or Right Arrow to open a folder, Space to preview it, C to add it to review, and Escape or Left Arrow to move up one level. The results list contains an accessible entry for every item in this map.",
   "disk.shortcuts.show": "Show keyboard shortcuts",
   "disk.shortcuts.heading": "Keyboard shortcuts",
   "disk.shortcuts.navigation": "↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump",

@@ -150,11 +150,8 @@ export function Treemap(props: {
                     props.onReveal?.(r.node)
                     return
                   }
-                  props.onSelect(r.node.path)
-                }}
-                onDblClick={() => {
-                  if (r.node.path.startsWith("disklizard:mosaic-more:")) openAggregate()
-                  else if (r.node.isDir) props.onDrill(r.node)
+                  if (r.node.isDir) props.onDrill(r.node)
+                  else props.onSelect(r.node.path)
                 }}
               >
                 {content()}

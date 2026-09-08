@@ -1,3 +1,4 @@
+import { Popover } from "@opencode-ai/ui/popover"
 import { Icon } from "@opencode-ai/ui/icon"
 import { createEffect, onCleanup, Show } from "solid-js"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
@@ -107,7 +108,7 @@ export function VolumeRow(props: {
   const readout = () => {
     if (failed()) return "—"
     if (complete()) return language.t("disk.drive.ready")
-    if (scanning()) return `${Math.round(props.job?.pct ?? 0)}%`
+    if (scanning()) return language.t("disk.scan.scanning")
     return hasTotal() ? formatBytes(props.drive.free) : "—"
   }
   const readoutFree = () => !props.job && hasTotal()
@@ -143,7 +144,7 @@ export function VolumeRow(props: {
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
-      class="dl-hover-drive dl-volume-row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:gap-5 sm:px-5"
+      class="dl-hover-drive dl-volume-row grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-3 px-4 sm:gap-5 sm:px-5"
       style={{
         "--dl-volume-ink": ink(),
         // Readout text rides on the same hue but leans on --text-strong so it
@@ -153,7 +154,53 @@ export function VolumeRow(props: {
     >
       <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
       <div class="min-w-0">
-        <p class="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
+        <div class="flex min-w-0 items-center gap-1.5">
+          <p class="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
+          <Show when={(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined}>
+            <Popover
+              placement="bottom-start"
+              portal={false}
+              title={language.t("disk.drive.details")}
+              class="w-[320px] max-w-[calc(100vw-32px)]"
+              style={{ "background-color": "var(--surface-raised-base)" }}
+              triggerAs="button"
+              triggerProps={{
+                type: "button",
+                "aria-label": language.t("disk.drive.details"),
+                class:
+                  "grid size-7 shrink-0 place-items-center rounded-md text-text-weaker outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak",
+              }}
+              trigger={
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 20 20"
+                  class="size-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                >
+                  <circle cx="10" cy="10" r="7" />
+                  <path d="M10 9v5" />
+                  <circle cx="10" cy="6.5" r=".6" fill="currentColor" stroke="none" />
+                </svg>
+              }
+            >
+              <Show when={props.drive.sharedFree !== undefined}>
+                <p class="mt-2 text-12-regular text-text-weak">
+                  {language.t("disk.drive.sharedContainerFree", { size: formatBytes(props.drive.sharedFree ?? 0) })}
+                </p>
+              </Show>
+              <ApfsSnapshotEvidenceList
+                embedded
+                class="mt-2 border-t border-border-weaker-base pt-3"
+                snapshotCount={props.drive.snapshotCount}
+                purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
+                timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
+                snapshots={props.drive.apfsSnapshots}
+              />
+            </Popover>
+          </Show>
+        </div>
         <p
           class="mt-0.5 truncate text-13-regular text-text-weaker"
           title={
@@ -165,26 +212,27 @@ export function VolumeRow(props: {
               : (props.job?.currentPath ?? props.drive.path)
           }
         >
-          {subtitle()}
+          {volumeSubtitle({ ...props.drive, sharedFree: undefined })}
         </p>
-        <div class="mt-3 flex max-w-[340px] items-center gap-3">
-          <div class="min-w-12 flex-1">
-            <div class="dl-volume-bar" aria-hidden="true">
-              <div
-                class="dl-volume-bar-fill"
-                data-settled={complete() ? "" : undefined}
-                style={{ width: `${Math.round(fill() * 1000) / 10}%` }}
-              />
-            </div>
+      </div>
+      <div class="flex w-[180px] flex-col gap-2 max-sm:w-[100px]" title={subtitle()}>
+        <div class="min-w-12 flex-1">
+          <div class="dl-volume-bar" aria-hidden="true">
+            <div
+              class="dl-volume-bar-fill"
+              data-settled={complete() ? "" : undefined}
+              data-scanning={scanning() ? "" : undefined}
+              style={{ width: scanning() ? "100%" : `${Math.round(fill() * 1000) / 10}%` }}
+            />
           </div>
-          <p
-            class="whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em]"
-            classList={{ "text-text-weak": !failed(), "text-text-strong": failed() }}
-          >
-            {readout()}
-            <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
-          </p>
         </div>
+        <p
+          class="whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em]"
+          classList={{ "text-text-weak": !failed(), "text-text-strong": failed() }}
+        >
+          {readout()}
+          <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
+        </p>
       </div>
       <div class="flex shrink-0 items-center gap-3 sm:gap-4">
         <button
@@ -213,66 +261,34 @@ export function VolumeRow(props: {
           {volumeActionLabel(props.job?.status)}
         </button>
       </div>
-      <Show when={(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined}>
-        <details class="dl-volume-snapshots group col-start-2 col-end-4">
-          <summary class="inline-flex min-h-8 cursor-pointer list-none items-center gap-1.5 rounded-md text-12-regular text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-            {language.t("disk.drive.details")}
-            <Icon name="chevron-down" class="size-3 group-open:rotate-180" />
-          </summary>
-          <Show when={props.drive.sharedFree !== undefined}>
-            <p class="mt-2 text-12-regular text-text-weak">
-              {language.t("disk.drive.sharedContainerFree", { size: formatBytes(props.drive.sharedFree ?? 0) })}
-            </p>
-          </Show>
-          <ApfsSnapshotEvidenceList
-            embedded
-            class="mt-2 border-t border-border-weaker-base pt-3"
-            snapshotCount={props.drive.snapshotCount}
-            purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
-            timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
-            snapshots={props.drive.apfsSnapshots}
-          />
-        </details>
-      </Show>
     </div>
   )
 }
 
 function VolumeGlyph(props: { type: DiskDriveInfo["type"]; startup: boolean }) {
-  if (props.type === "network") {
+  if (props.type === "network")
     return (
-      <span class="dl-volume-glyph grid size-9 place-items-center text-text-weak">
-        <Icon name="server" class="size-4" />
+      <span class="grid size-10 place-items-center text-text-weak">
+        <Icon name="server" class="size-6" />
       </span>
     )
-  }
   return (
-    <span class="dl-volume-glyph grid size-9 place-items-center text-text-weak" aria-hidden="true">
-      <svg viewBox="0 0 32 32" class="size-7">
+    <span class="grid size-10 place-items-center" aria-hidden="true">
+      <svg viewBox="0 0 32 40" class="h-10 w-8 text-text-weak" fill="none">
         <rect
-          x="5"
-          y="7"
-          width="22"
-          height="18"
-          rx="4.5"
-          fill="color-mix(in oklch, var(--text-strong) 10%, transparent)"
-          stroke="color-mix(in oklch, var(--text-strong) 28%, transparent)"
-          stroke-width="1.25"
+          x="4.5"
+          y="2.5"
+          width="23"
+          height="35"
+          rx="3.5"
+          fill="currentColor"
+          fill-opacity=".08"
+          stroke="currentColor"
+          stroke-width="1.5"
         />
-        <rect
-          x="9"
-          y="11"
-          width="8"
-          height="2"
-          rx="1"
-          fill="color-mix(in oklch, var(--text-strong) 28%, transparent)"
-        />
-        <circle
-          cx="22"
-          cy="16"
-          r="1.6"
-          fill={props.startup ? "var(--dl-volume-ink)" : "color-mix(in oklch, var(--text-strong) 28%, transparent)"}
-        />
+        <path d="M5 30h22" stroke="currentColor" stroke-opacity=".35" />
+        <path d="M8.5 34h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        <circle cx="23" cy="34" r=".9" fill="currentColor" />
       </svg>
     </span>
   )

@@ -161,7 +161,7 @@ describe("ViewMorph lifecycle", () => {
       clock.tick(100)
       expect(clock.tick(100)).toBe(1)
       expect(clock.tick(100)).toBe(1)
-      expect(clock.tick(200)).toBe(1)
+      expect(clock.tick(200)).toBe(0)
       expect(completions).toEqual(["a", "b", "c"])
       expect(clock.pending).toBe(0)
       expect(morph.active).toBe(false)
@@ -290,8 +290,8 @@ describe("ViewMorph lifecycle", () => {
       center.cx = 45
       center.cy = 21
       const readsAfterResize = centerReads()
-      clock.tick(100)
-      clock.tick(100)
+      clock.tick(40)
+      clock.tick(40)
       expect(centerReads()).toBeGreaterThan(readsAfterResize)
       expect(morph.active).toBe(true)
       clock.tick(600)

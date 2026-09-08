@@ -20,12 +20,12 @@ export const DISK_UTILITY_STYLES = `
   width: calc(100% - 24px);
   max-width: 1320px;
   margin-inline: auto;
-  border: 1px solid var(--border-weaker-base);
+  border: 0;
   background: var(--background-base);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.08);
+  box-shadow: none;
 }
 .dl-landscape { container-type: size; background: var(--background-base); padding-bottom: 64px; }
-.dl-map-stage { width: min(100cqw, calc(100cqh - 64px), 820px); height: min(100cqw, calc(100cqh - 64px), 820px); }
+.dl-map-stage { width: min(88cqw, calc(88cqh - 64px), 700px); height: min(88cqw, calc(88cqh - 64px), 700px); }
 .dl-inspector { container-type: inline-size; background: var(--surface-raised-base); }
 /* Filters can grow, but must never consume the results viewport. */
 .dl-inspector-header {
@@ -153,9 +153,8 @@ export const DISK_UTILITY_STYLES = `
 .dl-scan-beacon { animation: dl-scan-beacon 1.1s ease-in-out infinite; }
 .dl-volume-row {
   margin-bottom: 12px; padding: 18px; gap: 12px;
-  border: 1px solid var(--border-weaker-base); border-radius: 10px;
-  background: var(--surface-raised-base);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.025), 0 2px 6px rgb(0 0 0 / 0.06);
+  border: 0; border-radius: 0;
+  background: transparent; box-shadow: none;
 }
 .dl-volume-glyph {
   border-radius: 8px;
@@ -231,7 +230,7 @@ export const DISK_UTILITY_STYLES = `
   .dl-hover-action:hover { opacity: 1; }
   .dl-hover-action:not(.dl-accent-text):hover { color: var(--text-strong); }
   .dl-hover-row:hover { background: color-mix(in oklch, var(--surface-raised-base) 45%, transparent); }
-  .dl-hover-drive:hover { background: color-mix(in oklch, var(--surface-raised-strong) 28%, transparent); }
+
 }
 /* Neutral desktop surfaces shared by the inspector, controls, and review dock. */
 [data-color-scheme="dark"] .dl-shell {
@@ -366,4 +365,13 @@ export const DISK_UTILITY_STYLES = `
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
   .dl-layer-cell { transition: none; }
 }
+
+.dl-volume-bar-fill[data-scanning] { position: relative; overflow: hidden; background: transparent; }
+.dl-volume-bar-fill[data-scanning]::after {
+  content: ""; position: absolute; inset: 0; width: 45%; border-radius: inherit;
+  background: repeating-linear-gradient(115deg, var(--dl-volume-ink) 0 5px, color-mix(in oklch, var(--dl-volume-ink) 45%, white) 5px 8px);
+  animation: dl-scan-travel 1.8s ease-in-out infinite alternate;
+}
+@keyframes dl-scan-travel { from { transform: translateX(-20%); } to { transform: translateX(145%); } }
+@media (prefers-reduced-motion: reduce) { .dl-volume-bar-fill[data-scanning]::after { animation: none; width: 100%; } }
 `
