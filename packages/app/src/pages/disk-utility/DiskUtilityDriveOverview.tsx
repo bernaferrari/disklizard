@@ -7,7 +7,7 @@ import type { DiskCleanupLock, DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
 import { VolumeRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"
-import { StorageDiagnostics } from "./StorageDiagnostics"
+import { StorageDiagnostics, shouldShowStorageDiagnostics } from "./StorageDiagnostics"
 import { useLanguage } from "./runtime"
 
 export type OpenMapSummary = {
@@ -50,11 +50,20 @@ export function DriveOverview(props: {
           when={!props.loading && props.drives.length > 0}
           fallback={<DriveFallback loading={props.loading} error={props.error} onChoose={props.onChooseFolder} />}
         >
-          <div class="mx-auto w-full max-w-[880px]">
+          <div class="mx-auto w-full max-w-[760px] px-6 py-8 sm:py-10">
             <section aria-label={language.t("disk.drive.volumes")}>
-              <h3 class="px-4 pb-1 pt-5 text-13-semibold text-text-strong sm:px-5">
-                {language.t("disk.drive.volumes")}
-              </h3>
+              <div class="mb-5 flex items-center justify-between gap-4">
+                <h3 class="text-20-medium tracking-[-0.02em] text-text-strong">{language.t("disk.drive.volumes")}</h3>
+                <button
+                  type="button"
+                  class="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md px-2.5 text-13-medium text-text-weak outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
+                  title={language.t("disk.drop.restingHint")}
+                  onClick={props.onChooseFolder}
+                >
+                  <Icon name="folder" class="size-4" />
+                  {language.t("disk.drive.scanFolder")}
+                </button>
+              </div>
               <For each={props.drives}>
                 {(drive, index) => (
                   <VolumeRow
@@ -70,16 +79,16 @@ export function DriveOverview(props: {
               </For>
             </section>
 
-            <div class="px-4 sm:px-5">
+            <div class="mt-6">
               <Show when={props.openMaps.length > 0}>
-                <section class="border-t border-border-weaker-base py-5" aria-labelledby="disk-open-maps-heading">
-                  <div class="mb-3 flex items-baseline justify-between gap-4">
+                <section class="py-4" aria-labelledby="disk-open-maps-heading">
+                  <div class="mb-3 flex flex-col gap-1">
                     <h3 id="disk-open-maps-heading" class="text-13-semibold text-text-strong">
                       {language.t("disk.drive.openMaps")}
                     </h3>
                     <span class="text-13-regular text-text-weaker">{language.t("disk.drive.openMapsHint")}</span>
                   </div>
-                  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div class="grid grid-cols-1 gap-2">
                     <For each={props.openMaps}>
                       {(map) => (
                         <article class="flex min-h-16 min-w-0 items-center gap-3 rounded-xl bg-surface-raised-base px-3.5 py-2 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
@@ -121,42 +130,28 @@ export function DriveOverview(props: {
                 </section>
               </Show>
 
-              <StorageDiagnostics
-                diagnostics={props.diagnostics}
-                error={props.diagnosticsError}
-                onScan={props.onScanStorageLocation}
-                onOpenAccessSettings={props.onOpenAccessSettings}
-                onRetry={props.onRetryDiagnostics}
-              />
-
-              <Show when={(props.cleanupLocks ?? []).length > 0}>
-                <section class="border-t border-border-weaker-base py-5">
-                  <div class="mb-3 flex items-baseline justify-between gap-4">
-                    <h3 class="text-13-semibold text-text-strong">{language.t("disk.drive.protected")}</h3>
-                    <span class="text-13-regular text-text-weaker">{language.t("disk.drive.lockHint")}</span>
-                  </div>
-                  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-                    <For each={props.cleanupLocks ?? []}>
-                      {(location) => (
-                        <PinnedLocationCard
-                          location={location}
-                          onScan={() => props.onScanPinnedLocation(location)}
-                          onRemove={() => props.onUnlockCleanupLock?.(location)}
-                          removeLabel={language.t("disk.drive.allowCleanup", { name: location.label })}
-                        />
-                      )}
-                    </For>
-                  </div>
-                </section>
+              <Show when={shouldShowStorageDiagnostics(props.diagnostics, props.diagnosticsError)}>
+                <details class="group py-2">
+                  <summary class="cursor-pointer text-13-medium text-text-weak">
+                    {language.t("disk.storage.connected")}
+                  </summary>
+                  <StorageDiagnostics
+                    diagnostics={props.diagnostics}
+                    error={props.diagnosticsError}
+                    onScan={props.onScanStorageLocation}
+                    onOpenAccessSettings={props.onOpenAccessSettings}
+                    onRetry={props.onRetryDiagnostics}
+                  />
+                </details>
               </Show>
 
               <Show when={props.pinnedLocations.length > 0}>
-                <section class="border-t border-border-weaker-base py-5">
-                  <div class="mb-3 flex items-baseline justify-between gap-4">
+                <section class="py-4">
+                  <div class="mb-3 flex flex-col gap-1">
                     <h3 class="text-13-semibold text-text-strong">{language.t("disk.drive.saved")}</h3>
                     <span class="text-13-regular text-text-weaker">{language.t("disk.drive.deviceOnly")}</span>
                   </div>
-                  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div class="grid grid-cols-1 gap-2">
                     <For each={props.pinnedLocations}>
                       {(location) => (
                         <PinnedLocationCard
@@ -173,21 +168,6 @@ export function DriveOverview(props: {
           </div>
         </Show>
       </ScrollView>
-
-      <footer class="dl-volume-footer flex h-12 shrink-0 items-center px-3 sm:px-4">
-        <Button
-          class="dl-touch-target"
-          variant="secondary"
-          size="small"
-          icon="folder-add-left"
-          onClick={props.onChooseFolder}
-        >
-          {language.t("disk.drive.scanFolder")}
-        </Button>
-        <span class="ml-3 hidden text-12-regular text-text-weaker sm:inline">
-          {language.t("disk.drop.restingHint")}
-        </span>
-      </footer>
     </div>
   )
 }

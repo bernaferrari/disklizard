@@ -8,7 +8,7 @@
 import { For, createMemo, createSignal, onCleanup, onMount, Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
-import { collapseTreemapChildren, layoutTreemap } from "./treemap"
+import { layoutNestedTreemap } from "./nested-treemap"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
 import { diskLanguageText, useLanguage } from "./runtime"
 import { diskNodeDisplayName } from "./node-display"
@@ -28,8 +28,8 @@ export function Treemap(props: {
   onCollectDragEnd: () => void
 }) {
   const language = useLanguage()
-  const rects = createMemo(() => layoutTreemap(collapseTreemapChildren(props.children), undefined, true))
   const [bounds, setBounds] = createSignal({ width: 0, height: 0 })
+  const rects = createMemo(() => layoutNestedTreemap(props.children, bounds().width, bounds().height))
   let root!: HTMLDivElement
 
   onMount(() => {
@@ -50,24 +50,39 @@ export function Treemap(props: {
     >
       <For each={rects()}>
         {(r) => {
-          const interactive = () => r.w * bounds().width - 8 >= 44 && r.h * bounds().height - 8 >= 44
+          const openAggregate = (focus = false) => (r.parent ? props.onDrill(r.parent, focus) : props.onShowAll(focus))
+          const interactive = () => r.w >= 44 && r.h >= 32
           const style = () => ({
-            left: `calc(${r.x * 100}% + 4px)`,
-            top: `calc(${r.y * 100}% + 4px)`,
-            width: `calc(${r.w * 100}% - 8px)`,
-            height: `calc(${r.h * 100}% - 8px)`,
-            background: primarySegmentColor(r.index, 1, r.node.isDir),
-            color: primarySegmentForeground(r.node.isDir),
-            "box-shadow": props.hoveredPath === r.node.path ? "inset 0 0 0 2px currentColor" : undefined,
+            left: `${r.x}px`,
+            top: `${r.y}px`,
+            width: `${r.w}px`,
+            height: `${r.h}px`,
+            background: r.node.isOther
+              ? "var(--surface-raised-strong)"
+              : primarySegmentColor(r.index, 1, r.depth > 0 || r.node.isDir),
+            "background-image": r.depth
+              ? `linear-gradient(rgb(0 0 0 / ${r.depth * 0.09}), rgb(0 0 0 / ${r.depth * 0.09}))`
+              : undefined,
+            color: r.node.isOther ? "var(--text-strong)" : primarySegmentForeground(r.depth > 0 || r.node.isDir),
+            "box-shadow":
+              props.hoveredPath === r.node.path || props.selectedPath === r.node.path
+                ? "inset 0 0 0 2px currentColor"
+                : "inset 0 1px 0 rgb(255 255 255 / 0.12)",
           })
           const content = () => (
-            <Show when={r.w > 0.08 && r.h > 0.06}>
-              <span class="flex h-full flex-col justify-between p-3">
+            <Show when={r.w >= 60 && r.h >= 30}>
+              <span
+                class={
+                  r.expanded
+                    ? "flex h-[34px] items-center justify-between gap-2 px-2.5"
+                    : "flex h-full flex-col justify-between p-2.5"
+                }
+              >
                 <span class="block max-w-full truncate text-13-semibold tracking-[-0.01em]">
                   {diskNodeDisplayName(r.node)}
                 </span>
-                <Show when={r.w > 0.14 && r.h > 0.1}>
-                  <span class="inline-flex max-w-full self-start truncate text-13-regular tabular-nums">
+                <Show when={r.w >= 120 && (r.expanded || r.h >= 65)}>
+                  <span class="inline-flex max-w-full shrink-0 truncate text-12-regular tabular-nums">
                     {r.node.path.startsWith("disklizard:mosaic-more:") ? (
                       language.t("disk.treemap.openList")
                     ) : (
@@ -84,7 +99,7 @@ export function Treemap(props: {
               fallback={
                 <div
                   aria-hidden="true"
-                  class="pointer-events-none absolute overflow-hidden rounded-[3px] transition-[box-shadow] duration-150"
+                  class="pointer-events-none absolute overflow-hidden rounded-[7px] transition-[box-shadow] duration-150"
                   style={style()}
                 >
                   {content()}
@@ -102,8 +117,9 @@ export function Treemap(props: {
                         name: diskNodeDisplayName(r.node),
                       })
                 }
+                title={`${r.node.path} · ${formatBytes(r.node.size)}`}
                 data-disk-tile-path={r.node.path}
-                class="absolute cursor-pointer overflow-hidden rounded-[3px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-weak"
+                class="absolute cursor-pointer overflow-hidden rounded-[7px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-weak"
                 style={style()}
                 onPointerEnter={() => props.onHover(r.node)}
                 onPointerLeave={() => props.onHover(null)}
@@ -116,7 +132,7 @@ export function Treemap(props: {
                   // or preview, while pointer activation remains selection.
                   if (event.key === "Enter") {
                     event.preventDefault()
-                    if (r.node.path.startsWith("disklizard:mosaic-more:")) props.onShowAll(true)
+                    if (r.node.path.startsWith("disklizard:mosaic-more:")) openAggregate(true)
                     else if (r.node.isDir) props.onDrill(r.node, true)
                     return
                   }
@@ -127,7 +143,7 @@ export function Treemap(props: {
                 }}
                 onClick={(event) => {
                   if (r.node.path.startsWith("disklizard:mosaic-more:")) {
-                    props.onShowAll()
+                    openAggregate()
                     return
                   }
                   if (event.metaKey || event.ctrlKey) {
@@ -137,7 +153,7 @@ export function Treemap(props: {
                   props.onSelect(r.node.path)
                 }}
                 onDblClick={() => {
-                  if (r.node.path.startsWith("disklizard:mosaic-more:")) props.onShowAll()
+                  if (r.node.path.startsWith("disklizard:mosaic-more:")) openAggregate()
                   else if (r.node.isDir) props.onDrill(r.node)
                 }}
               >

@@ -1,3 +1,4 @@
+import diskLizardIcon from "../../assets/disklizard-icon.png"
 /**
  * DiskLizard — standalone storage explorer.
  *
@@ -10,6 +11,7 @@
  * transitions run directly on requestAnimationFrame.
  */
 
+import { DiskUtilitySearchTools } from "./DiskUtilitySearchTools"
 import { Button } from "@opencode-ai/ui/button"
 import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
 import { Icon } from "@opencode-ai/ui/icon"
@@ -78,10 +80,11 @@ import {
 } from "./developer-cleanup"
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { CenterOverlay, IndexEmpty, Placeholder } from "./DiskUtilityEmptyStates"
-import { DeveloperCategoryButton, IndexLensButton, SegmentedButton } from "./DiskUtilityControls"
+import { IndexLensButton, SegmentedButton } from "./DiskUtilityControls"
 import { DeveloperCleanupPolicy } from "./DeveloperCleanupPolicy"
 import { ReclaimBanner, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { DriveOverview } from "./DiskUtilityDriveOverview"
+import { IciclePanel } from "./IciclePanel"
 import { DetailBar } from "./DiskUtilityDetailBar"
 import {
   CleanupProtectionsResetDialog,
@@ -107,12 +110,7 @@ import {
 import { recentChangeNodes } from "./recent-changes"
 import { DISK_UTILITY_STYLES } from "./styles"
 import { chooseFolderAndScan, DISK_CHOOSE_FOLDER_COMMAND } from "./choose-folder"
-import {
-  diskEntrySortDirection,
-  diskEntrySortKey,
-  type DiskEntrySortDirection,
-  type DiskEntrySortKey,
-} from "./entry-view"
+import { type DiskEntrySortDirection, type DiskEntrySortKey } from "./entry-view"
 import { createScanInvestigation, type ScanInvestigationEntry, type ScanInvestigationLens } from "./scan-investigation"
 import { DISK_RECOGNITION_LANGUAGE_KEYS } from "./recognition-language"
 import { EMPTY_DISK_BROWSE_HISTORY, transitionDiskBrowseHistory } from "./browse-history"
@@ -161,7 +159,7 @@ import {
 } from "./navigation"
 
 type ViewMode = "drives" | "scan"
-type ScanMode = "map" | "list" | "grid"
+type ScanMode = "map" | "list" | "grid" | "icicle"
 type IndexLens = ScanInvestigationLens
 type DeveloperCategoryFilter = DeveloperCategory | "all"
 type Entry = ScanInvestigationEntry
@@ -869,7 +867,7 @@ export default function DiskUtilityPage() {
       onClick: (seg) => {
         setVisualHoverNode(seg.node)
         if (isVisualAggregate(seg.node)) {
-          chooseScanMode("list")
+          restoreKeyboardViewFocus("list")
           return
         }
         selectPath(seg.path)
@@ -1709,13 +1707,42 @@ export default function DiskUtilityPage() {
     }
   }
 
+  let viewTransition: ViewTransition | undefined
+  let viewTransitionVersion = 0
+  onCleanup(() => viewTransition?.skipTransition())
+
   function chooseScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer") {
+    const version = ++viewTransitionVersion
+    viewTransition?.skipTransition()
+    if (mode === scanMode()) return
+    const involvesLayers = mode === "icicle" || scanMode() === "icicle"
+    if (
+      involvesLayers &&
+      intent === "pointer" &&
+      document.startViewTransition &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      viewTransition = document.startViewTransition(() => {
+        if (version === viewTransitionVersion) applyScanMode(mode, intent)
+      })
+      void viewTransition.finished.catch(() => {})
+      return
+    }
+    applyScanMode(mode, intent)
+  }
+
+  function applyScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer") {
     if (mode === "map" && scanMode() !== "map") orbitEntryIntent = intent
     const previous = scanMode()
+    if (mode === "icicle" || previous === "icicle") {
+      morph?.abort()
+      setMorphing(false)
+      sunburst()?.setMorphing(false)
+    }
     setScanMode(mode)
     setVisualHoverNode(null)
     setHoveredPath(null)
-    if (mode === "grid" && previous !== "list") {
+    if (mode === "grid" && previous === "map") {
       runViewMorph("toGrid", mode, intent)
     } else if (mode === "map" && previous === "grid") {
       setGridInteractive(false)
@@ -1799,6 +1826,10 @@ export default function DiskUtilityPage() {
         }
         if (mode === "list") {
           focusListEntry(clampedListIndex(focusIdx(), entries().length))
+          return
+        }
+        if (mode === "icicle") {
+          document.querySelector<HTMLElement>("[data-disk-layer-path]")?.focus({ preventScroll: true })
           return
         }
         const desiredPath = selectedPath() ?? entries()[clampedListIndex(focusIdx(), entries().length)]?.node.path
@@ -2219,7 +2250,7 @@ export default function DiskUtilityPage() {
     }
     if (isPlainShortcut && event.key === "3") {
       event.preventDefault()
-      chooseScanMode("list", "keyboard")
+      chooseScanMode("icicle", "keyboard")
       return
     }
     if (isPlainShortcut && (event.key === "Escape" || event.key === "Backspace")) {
@@ -2994,7 +3025,7 @@ export default function DiskUtilityPage() {
       }
       if (isPlainShortcut && e.key === "3") {
         e.preventDefault()
-        chooseScanMode("list", "keyboard")
+        chooseScanMode("icicle", "keyboard")
       }
     }
     document.addEventListener("keydown", onKey)
@@ -3044,9 +3075,7 @@ export default function DiskUtilityPage() {
           aria-label={language.t("disk.top.backToVolumes")}
           onClick={() => backToDrives()}
         >
-          <span class="dl-mark dl-accent-text relative grid size-7 place-items-center rounded-full" aria-hidden="true">
-            <span class="size-2 rounded-full bg-current" />
-          </span>
+          <img src={diskLizardIcon} class="size-7 object-contain" alt="" aria-hidden="true" />
           <span class="dl-brand-name text-14-semibold tracking-[-0.02em] text-text-strong">
             {language.t("disk.brand")}
           </span>
@@ -3068,6 +3097,25 @@ export default function DiskUtilityPage() {
                   {language.t("disk.app.about", { version: platform.version ?? "" })}
                 </DropdownMenu.ItemLabel>
               </DropdownMenu.Item>
+              <Show when={view() === "scan" && !scanning()}>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item
+                  disabled={pinMutationPending()}
+                  onSelect={() => void togglePinnedLocation(scanSourcePath(), scanLabel())}
+                >
+                  <DropdownMenu.ItemLabel>
+                    {currentScanPinned() ? language.t("disk.top.unsave") : language.t("disk.common.saveLocation")}
+                  </DropdownMenu.ItemLabel>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  disabled={deleting() || !cleanupProtectionsReady() || cleanupLockMutationPending()}
+                  onSelect={() => void toggleProtectedTree(scanSourcePath(), scanLabel())}
+                >
+                  <DropdownMenu.ItemLabel>
+                    {currentScanLocked() ? language.t("disk.top.unprotect") : language.t("disk.top.protect")}
+                  </DropdownMenu.ItemLabel>
+                </DropdownMenu.Item>
+              </Show>
               <Show when={platform.updater && platform.updater.state().status !== "disabled"}>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item
@@ -3093,12 +3141,12 @@ export default function DiskUtilityPage() {
                   </DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
-              <Show when={platform.exportDiagnostics}>
+              <Show when={platform.os !== "macos" && platform.exportDiagnostics}>
                 <DropdownMenu.Item onSelect={() => void exportDiagnostics()}>
                   <DropdownMenu.ItemLabel>{language.t("disk.app.exportDiagnostics")}</DropdownMenu.ItemLabel>
                 </DropdownMenu.Item>
               </Show>
-              <Show when={platform.restart}>
+              <Show when={platform.os !== "macos" && platform.restart}>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onSelect={() => void platform.restart?.()}>
                   <DropdownMenu.ItemLabel>{language.t("disk.app.restart")}</DropdownMenu.ItemLabel>
@@ -3110,7 +3158,10 @@ export default function DiskUtilityPage() {
 
         <Show when={view() === "scan" && crumbs().length > 0}>
           <span class="h-4 w-px bg-border-weaker-base" aria-hidden />
-          <div class="flex shrink-0 items-center gap-0.5">
+          <div
+            class="dl-history-controls flex shrink-0 items-center gap-0.5"
+            classList={{ hidden: !browseHistory.canMove("back") && !browseHistory.canMove("forward") }}
+          >
             <Button
               class="dl-touch-target"
               variant="ghost"
@@ -3162,33 +3213,6 @@ export default function DiskUtilityPage() {
 
         <div class="ml-auto flex shrink-0 items-center gap-1.5">
           <Show when={view() === "scan" && !scanning()}>
-            <Button
-              class="dl-touch-target dl-pin-scan"
-              variant="ghost"
-              size="small"
-              icon={currentScanPinned() ? "circle-check" : "plus-small"}
-              aria-label={currentScanPinned() ? language.t("disk.top.unsave") : language.t("disk.top.save")}
-              disabled={pinMutationPending()}
-              onClick={() => void togglePinnedLocation(scanSourcePath(), scanLabel())}
-            >
-              <span class="dl-responsive-label">
-                {currentScanPinned() ? language.t("disk.common.saved") : language.t("disk.common.saveLocation")}
-              </span>
-            </Button>
-            <Button
-              class="dl-touch-target"
-              variant={currentScanLocked() ? "secondary" : "ghost"}
-              size="small"
-              icon="shield"
-              aria-pressed={currentScanLocked()}
-              aria-label={currentScanLocked() ? language.t("disk.top.unprotect") : language.t("disk.top.protect")}
-              disabled={deleting() || !cleanupProtectionsReady() || cleanupLockMutationPending()}
-              onClick={() => void toggleProtectedTree(scanSourcePath(), scanLabel())}
-            >
-              <span class="dl-responsive-label">
-                {currentScanLocked() ? language.t("disk.detail.protected") : language.t("disk.detail.protect")}
-              </span>
-            </Button>
             <Button
               class="dl-touch-target dl-rescan"
               variant="ghost"
@@ -3286,7 +3310,7 @@ export default function DiskUtilityPage() {
                 body={language.t("disk.top.disconnectedBody")}
                 actions={
                   <>
-                    <Show when={platform.restart}>
+                    <Show when={platform.os !== "macos" && platform.restart}>
                       <Button
                         class="dl-touch-target"
                         size="small"
@@ -3296,7 +3320,7 @@ export default function DiskUtilityPage() {
                         {language.t("disk.top.restart")}
                       </Button>
                     </Show>
-                    <Show when={platform.exportDiagnostics}>
+                    <Show when={platform.os !== "macos" && platform.exportDiagnostics}>
                       <Button
                         class="dl-touch-target"
                         size="small"
@@ -3418,9 +3442,34 @@ export default function DiskUtilityPage() {
                     </div>
                   </Show>
                   <div
-                    class="dl-workspace-frame mx-2 mb-2 mt-2 flex min-h-0 flex-1 overflow-hidden rounded-[16px]"
+                    class="dl-workspace-frame relative mx-3 mb-3 mt-2 flex min-h-0 flex-1 overflow-hidden rounded-[10px]"
                     classList={{ "dl-workspace-frame-list": scanMode() === "list" }}
                   >
+                    <div class="absolute bottom-3 left-3 z-20">
+                      <CollectionDropTarget
+                        setElement={(element) => (collectionDropElement = element)}
+                        node={collectionDragNode()}
+                        active={collectionDropActive()}
+                        count={effectiveCollection().length}
+                        bytes={collectionSize()}
+                        hasSharedPhysicalStorage={
+                          collectionHasSharedPhysicalStorage() ||
+                          (collectionDragNode() ? containsSharedPhysicalStorage(collectionDragNode()!) : false)
+                        }
+                        hasUnverifiedPhysicalStorage={physicalCloneAccountingUncertain()}
+                        requiresDeepInventoryRefresh={
+                          collectionNeedsDeepInventoryRefresh() ||
+                          (collectionDragNode() ? requiresDeepInventoryRefresh([collectionDragNode()!]) : false)
+                        }
+                        trashName={nativeTrashName(platform.os)}
+                        onReview={() => collectionSurface.open()}
+                        onClear={clearCollection}
+                        onDragEnter={collectionDragEnter}
+                        onDragOver={collectionDragOver}
+                        onDragLeave={collectionDragLeave}
+                        onDrop={collectDroppedNode}
+                      />
+                    </div>
                     <Show when={scanMode() !== "list"}>
                       <section
                         ref={(el: HTMLElement) => setLandscapeEl(el)}
@@ -3434,7 +3483,8 @@ export default function DiskUtilityPage() {
                           style={{
                             // Yield to the DOM tiles once grid has fully landed;
                             // stay visible while a morph is flying.
-                            visibility: scanMode() === "grid" && !morphing() ? "hidden" : "visible",
+                            visibility:
+                              scanMode() === "icicle" || (scanMode() === "grid" && !morphing()) ? "hidden" : "visible",
                           }}
                         >
                           <canvas
@@ -3462,6 +3512,7 @@ export default function DiskUtilityPage() {
                               parentSize={parentSize()}
                               canOpen={
                                 !!focusNode() &&
+                                focusNode()!.path !== viewNode()?.path &&
                                 focusNode()!.isDir &&
                                 !isVisualAggregate(focusNode()) &&
                                 !isDeveloperInventoryNode(focusNode()!)
@@ -3480,7 +3531,7 @@ export default function DiskUtilityPage() {
                             reduced and the swap was instant). */}
                         <Show when={gridVisible()}>
                           <div
-                            class="dl-treemap-overlay absolute inset-0 px-5 pb-5 pt-5 transition-opacity duration-150 lg:px-8 lg:pb-8 lg:pt-8"
+                            class="dl-treemap-overlay absolute inset-0 px-5 pb-20 pt-5 transition-opacity duration-150 lg:px-8 lg:pb-20 lg:pt-8"
                             classList={{ "pointer-events-none opacity-0": !gridInteractive() }}
                             inert={!gridInteractive() ? true : undefined}
                             aria-hidden={!gridInteractive() ? "true" : undefined}
@@ -3500,14 +3551,33 @@ export default function DiskUtilityPage() {
                                 else void preview.show(node)
                               }}
                               onDrill={(node, restoreListFocus) => drill(node, false, restoreListFocus)}
-                              onShowAll={(restoreListFocus) =>
-                                chooseScanMode("list", restoreListFocus ? "keyboard" : "pointer")
-                              }
+                              onShowAll={() => restoreKeyboardViewFocus("list")}
                               canCollect={canModifyNode}
                               onCollectDragStart={beginCollectionDrag}
                               onCollectDragEnd={endCollectionDrag}
                             />
                           </div>
+                        </Show>
+                        <Show when={scanMode() === "icicle" && viewNode()}>
+                          {(root) => (
+                            <div class="absolute inset-0 px-6 pt-6 pb-20">
+                              <IciclePanel
+                                root={root()}
+                                selectedPath={selectedPath()}
+                                onSelect={selectPath}
+                                onHover={(node) => hoverEntry(node?.path ?? selectedPath() ?? null)}
+                                onReveal={(node) => void reveal(node.path)}
+                                onPreview={(node) => {
+                                  if (preview.supportsSystemPreview()) void preview.openSystemPreview(node)
+                                  else void preview.show(node)
+                                }}
+                                onDrill={(node) => drill(node, false, true)}
+                                canCollect={canModifyNode}
+                                onDragStart={beginCollectionDrag}
+                                onDragEnd={endCollectionDrag}
+                              />
+                            </div>
+                          )}
                         </Show>
                         <div class="dl-view-switch absolute right-4 top-4 flex items-center gap-0.5 rounded-[11px] bg-background-base/92 p-1 shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_5px_18px_rgb(0_0_0/0.12)]">
                           <SegmentedButton
@@ -3525,10 +3595,10 @@ export default function DiskUtilityPage() {
                             shortcut="2"
                           />
                           <SegmentedButton
-                            active={scanMode() === "list"}
-                            onClick={() => chooseScanMode("list")}
+                            active={scanMode() === "icicle"}
+                            onClick={() => chooseScanMode("icicle")}
                             icon="bullet-list"
-                            label={language.t("disk.common.list")}
+                            label={language.t("disk.common.icicle")}
                             shortcut="3"
                           />
                           <details
@@ -3543,7 +3613,7 @@ export default function DiskUtilityPage() {
                             >
                               ?
                             </summary>
-                            <div class="absolute right-0 top-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-12-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
+                            <div class="absolute right-0 bottom-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 text-12-regular leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
                               <p class="text-12-semibold text-text-strong">{language.t("disk.shortcuts.heading")}</p>
                               <p class="mt-2">{language.t("disk.shortcuts.navigation")}</p>
                               <p class="mt-2">{language.t("disk.shortcuts.history")}</p>
@@ -3566,7 +3636,7 @@ export default function DiskUtilityPage() {
                     <aside
                       class="dl-inspector flex min-h-0 flex-col overflow-hidden bg-background-base"
                       classList={{
-                        "w-[clamp(360px,27vw,420px)] shrink-0 border-l border-border-weaker-base":
+                        "w-[clamp(360px,30vw,420px)] shrink-0 border-l border-border-weaker-base":
                           scanMode() !== "list",
                         "flex-1": scanMode() === "list",
                       }}
@@ -3574,7 +3644,7 @@ export default function DiskUtilityPage() {
                       <div class="dl-inspector-header shrink-0 border-b border-border-weaker-base px-6 pb-4 pt-5">
                         <div class="flex items-start justify-between gap-4">
                           <div class="min-w-0 flex-1">
-                            <p class="text-12-semibold uppercase tracking-[0.14em] text-text-weaker">
+                            <p class="sr-only">
                               {query().trim()
                                 ? language.t(
                                     indexFilter.lens === "changes" ? "disk.history.results" : "disk.search.results",
@@ -3591,17 +3661,26 @@ export default function DiskUtilityPage() {
                                         ? language.t("disk.changed.today")
                                         : language.t("disk.explore.folderContents")}
                             </p>
-                            <div class="mt-2 flex min-w-0 items-baseline justify-between gap-4">
-                              <h2 class="min-w-0 truncate text-18-medium tracking-[-0.035em] text-text-strong">
-                                {viewNode() ? diskNodeDisplayName(viewNode()!) : scanLabel()}
+                            <div class="dl-inspector-heading flex min-w-0 items-baseline justify-between gap-4">
+                              <h2 class="sr-only">
+                                {indexFilter.lens === "developer"
+                                  ? language.t("disk.explore.developerFiles")
+                                  : indexFilter.lens === "changes"
+                                    ? language.t("disk.history.heading")
+                                    : query().trim()
+                                      ? language.t("disk.search.results")
+                                      : language.t("disk.common.contents")}
                               </h2>
                               <Show when={!query().trim() && indexFilter.lens !== "changes"}>
-                                <span class="shrink-0 text-[24px] font-medium leading-none tracking-[-0.03em] tabular-nums text-text-strong">
+                                <span class="shrink-0 text-13-medium tabular-nums text-text-strong">
                                   {formatBytes(indexSize())}
                                 </span>
                               </Show>
                             </div>
-                            <p class="mt-1.5 text-12-regular tabular-nums text-text-weak">
+                            <p
+                              class="dl-inspector-summary text-12-regular tabular-nums text-text-weak"
+                              title={sizeBasisLabel()}
+                            >
                               {indexFilter.lens === "changes" ? (
                                 <>
                                   {language.t("disk.history.changeSummary", {
@@ -3610,12 +3689,7 @@ export default function DiskUtilityPage() {
                                   })}
                                 </>
                               ) : (
-                                <>
-                                  {language.t("disk.explore.summary", {
-                                    count: language.plural("disk.count.item", indexCount()),
-                                    basis: sizeBasisLabel(),
-                                  })}
-                                </>
+                                <>{language.plural("disk.count.item", indexCount())}</>
                               )}
                             </p>
                           </div>
@@ -3638,9 +3712,7 @@ export default function DiskUtilityPage() {
                           </Show>
                         </div>
                         <div class="dl-lens-section mt-4 border-b border-border-weaker-base pb-2">
-                          <p class="px-1 text-12-semibold uppercase tracking-[0.12em] text-text-weaker">
-                            {language.t("disk.explore.heading")}
-                          </p>
+                          <p class="sr-only">{language.t("disk.explore.heading")}</p>
                           <div
                             role="group"
                             aria-label={language.t("disk.explore.choose")}
@@ -3712,27 +3784,28 @@ export default function DiskUtilityPage() {
                           }
                         >
                           <Show when={developer().buckets.length > 0}>
-                            <div
-                              class="mt-2 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
-                              aria-label={language.t("disk.explore.developerCategories")}
-                            >
-                              <DeveloperCategoryButton
-                                active={indexFilter.developerCategory === "all"}
-                                label={language.t("disk.explore.allDeveloper")}
-                                bytes={developer().totalBytes}
-                                onClick={() => chooseDeveloperCategory("all")}
-                              />
-                              <For each={developer().buckets}>
-                                {(bucket) => (
-                                  <DeveloperCategoryButton
-                                    active={indexFilter.developerCategory === bucket.category}
-                                    label={language.t(DEVELOPER_CATEGORY_LABEL[bucket.category])}
-                                    bytes={bucket.bytes}
-                                    onClick={() => chooseDeveloperCategory(bucket.category)}
-                                  />
-                                )}
-                              </For>
-                            </div>
+                            <label class="mt-2 block">
+                              <span class="sr-only">{language.t("disk.explore.developerCategories")}</span>
+                              <select
+                                class="dl-sort-select dl-touch-target h-11 w-full rounded-lg px-3 text-13-regular text-text-strong outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+                                value={indexFilter.developerCategory}
+                                onChange={(event) =>
+                                  chooseDeveloperCategory(
+                                    developer().buckets.find((bucket) => bucket.category === event.currentTarget.value)
+                                      ?.category ?? "all",
+                                  )
+                                }
+                              >
+                                <option value="all">{language.t("disk.explore.allDeveloper")}</option>
+                                <For each={developer().buckets}>
+                                  {(bucket) => (
+                                    <option value={bucket.category}>
+                                      {language.t(DEVELOPER_CATEGORY_LABEL[bucket.category])}
+                                    </option>
+                                  )}
+                                </For>
+                              </select>
+                            </label>
                           </Show>
                           <DeveloperCleanupPolicy
                             preset={indexFilter.developerAge}
@@ -3751,21 +3824,24 @@ export default function DiskUtilityPage() {
                             onSelectEligible={selectEligibleDeveloperResults}
                           />
                         </Show>
-                        <Show when={physicalCloneAccountingWarning()}>
+                        <Show when={indexFilter.lens !== "all" && physicalCloneAccountingWarning()}>
                           {(warning) => (
-                            <div
-                              class="mt-3 flex gap-2 rounded-xl border border-border-warning-base/55 bg-surface-warning-weak/45 px-3 py-2.5"
-                              role="note"
+                            <details
+                              class="dl-physical-notice group mt-3 rounded-xl border border-border-warning-base/55 bg-surface-warning-weak/45"
                               aria-label={language.t("disk.explore.physicalLabel")}
                             >
-                              <Icon name="shield" class="mt-0.5 size-3.5 shrink-0 text-icon-warning-base" />
-                              <div>
-                                <p class="text-12-semibold text-text-strong">
+                              <summary class="dl-touch-target flex cursor-pointer list-none items-center gap-2 rounded-xl px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
+                                <Icon name="shield" class="size-3.5 shrink-0 text-icon-warning-base" />
+                                <span class="min-w-0 flex-1 text-12-semibold text-text-strong">
                                   {language.t("disk.explore.physicalPaused")}
-                                </p>
-                                <p class="mt-1 text-12-regular leading-relaxed text-text-weak">{warning()}</p>
-                              </div>
-                            </div>
+                                </span>
+                                <Icon
+                                  name="chevron-down"
+                                  class="size-3 shrink-0 text-icon-weak group-open:rotate-180"
+                                />
+                              </summary>
+                              <p class="px-3 pb-3 text-12-regular leading-relaxed text-text-weak">{warning()}</p>
+                            </details>
                           )}
                         </Show>
                         <Show when={treeRoot()?.scanIssues}>
@@ -3823,74 +3899,19 @@ export default function DiskUtilityPage() {
                             </details>
                           )}
                         </Show>
-                        <div class="dl-inspector-search dl-touch-target mt-3 flex h-11 items-center gap-2 rounded-[10px] bg-surface-raised-base/55 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] transition-shadow duration-150 focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
-                          <Icon name="magnifying-glass" class="size-3.5 shrink-0 text-icon-weak" />
-                          <label class="sr-only" for="disklizard-scan-search">
-                            {language.t(indexFilter.lens === "changes" ? "disk.history.search" : "disk.search.label")}
-                          </label>
-                          <input
-                            id="disklizard-scan-search"
-                            type="search"
-                            autocomplete="off"
-                            spellcheck={false}
-                            placeholder={language.t(
-                              indexFilter.lens === "changes" ? "disk.history.search" : "disk.search.placeholder",
-                            )}
-                            value={query()}
-                            onInput={(e) => updateQuery(e.currentTarget.value)}
-                            class="dl-search-input h-full min-w-0 flex-1 bg-transparent text-12-regular text-text-strong placeholder:text-text-weaker outline-none"
-                          />
-                          <Show when={query()}>
-                            <button
-                              type="button"
-                              class="dl-hover-button dl-touch-target grid size-10 place-items-center rounded-full text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
-                              onClick={() => updateQuery("")}
-                              aria-label={language.t("disk.search.clear")}
-                            >
-                              <Icon name="close-small" class="size-3" />
-                            </button>
-                          </Show>
-                        </div>
-                        <Show when={indexFilter.lens !== "changes"}>
-                          <div
-                            class="mt-2 flex min-h-11 items-center gap-2"
-                            role="group"
-                            aria-label={language.t("disk.sort.group")}
-                          >
-                            <span class="shrink-0 text-12-semibold text-text-weaker">
-                              {language.t("disk.sort.label")}
-                            </span>
-                            <label class="min-w-0 flex-1">
-                              <span class="sr-only">{language.t("disk.sort.key.label")}</span>
-                              <select
-                                class="dl-sort-select dl-touch-target h-11 w-full rounded-[10px] bg-surface-raised-base/55 px-3 text-12-semibold text-text-strong shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
-                                value={indexFilter.sortKey}
-                                onChange={(event) =>
-                                  updateSort(diskEntrySortKey(event.currentTarget.value), indexFilter.sortDirection)
-                                }
-                              >
-                                <option value="size">{language.t("disk.sort.key.size")}</option>
-                                <option value="name">{language.t("disk.sort.key.name")}</option>
-                                <option value="modified">{language.t("disk.sort.key.modified")}</option>
-                                <option value="type">{language.t("disk.sort.key.type")}</option>
-                              </select>
-                            </label>
-                            <label class="w-[136px] shrink-0">
-                              <span class="sr-only">{language.t("disk.sort.direction.label")}</span>
-                              <select
-                                class="dl-sort-select dl-touch-target h-11 w-full rounded-[10px] bg-surface-raised-base/55 px-3 text-12-semibold text-text-strong shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
-                                value={indexFilter.sortDirection}
-                                onChange={(event) =>
-                                  updateSort(indexFilter.sortKey, diskEntrySortDirection(event.currentTarget.value))
-                                }
-                              >
-                                <option value="descending">{language.t("disk.sort.direction.descending")}</option>
-                                <option value="ascending">{language.t("disk.sort.direction.ascending")}</option>
-                              </select>
-                            </label>
-                          </div>
-                        </Show>
                       </div>
+                      <DiskUtilitySearchTools
+                        query={query()}
+                        label={language.t(indexFilter.lens === "changes" ? "disk.history.search" : "disk.search.label")}
+                        placeholder={language.t(
+                          indexFilter.lens === "changes" ? "disk.history.search" : "disk.search.placeholder",
+                        )}
+                        sortKey={indexFilter.sortKey}
+                        sortDirection={indexFilter.sortDirection}
+                        showSort={indexFilter.lens !== "changes"}
+                        onQuery={updateQuery}
+                        onSort={updateSort}
+                      />
 
                       <Show
                         when={indexFilter.lens === "changes" || entries().length > 0}
@@ -3933,7 +3954,6 @@ export default function DiskUtilityPage() {
                             render={(entry, i) => {
                               const rec = () => investigation().recognitionFor(entry.node)
                               const developerContext = () => developerArtifactContext(entry.node, rec())
-                              const pct = () => (indexSize() ? (entry.displaySize / indexSize()) * 100 : 0)
                               const isActive = () =>
                                 selectedPath() === entry.node.path || (focusIdx() === i() && !selectedPath())
                               return (
@@ -3941,6 +3961,7 @@ export default function DiskUtilityPage() {
                                   class="dl-hover-row dl-index-row group relative flex h-full items-center border-b border-border-weaker-base/70 transition-colors duration-150"
                                   classList={{
                                     "bg-surface-raised-base/70 shadow-[inset_2px_0_0_var(--dl-accent)]": isActive(),
+                                    "dl-remainder-row": !!entry.node.isOther,
                                   }}
                                   onMouseEnter={() => hoverEntry(entry.node.path)}
                                   onMouseLeave={() => hoverEntry(selectedPath() ?? null)}
@@ -3970,39 +3991,30 @@ export default function DiskUtilityPage() {
                                     onDragStart={(event) => beginCollectionDrag(event, entry.node)}
                                     onDragEnd={endCollectionDrag}
                                   >
-                                    <span
-                                      class="size-2 shrink-0 rounded-full shadow-[0_0_0_1px_rgb(255_255_255/0.14)]"
-                                      style={{ background: primarySegmentColor(entry.colorIndex, 1, entry.node.isDir) }}
-                                      aria-hidden="true"
-                                    />
                                     <span class="min-w-0 flex-1">
-                                      <span class="flex min-w-0 items-center gap-1.5">
+                                      <span class="flex min-w-0 items-center gap-2.5">
+                                        <span
+                                          class="size-2 shrink-0 rounded-full"
+                                          style={{
+                                            background: entry.node.isOther
+                                              ? "var(--text-weaker)"
+                                              : primarySegmentColor(entry.colorIndex, 1, entry.node.isDir),
+                                          }}
+                                          aria-hidden="true"
+                                        />
                                         <span class="truncate text-13-semibold text-text-strong">
                                           {diskNodeDisplayName(entry.node)}
                                         </span>
                                         <Show when={indexFilter.lens !== "all" && rec().tag}>
                                           <span
-                                            class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-12-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
+                                            class={`dl-entry-tag shrink-0 rounded-md px-1.5 py-0.5 text-12-semibold ring-1 ring-inset ${SAFETY_ACCENT[rec().safety].pill}`}
                                           >
                                             {language.t(rec().tag!)}
                                           </span>
                                         </Show>
                                       </span>
-                                      <Show
-                                        when={indexFilter.lens !== "all"}
-                                        fallback={
-                                          <span class="mt-1 block h-[3px] min-w-0 overflow-hidden rounded-full bg-surface-raised-base">
-                                            <span
-                                              class="block h-full rounded-full"
-                                              style={{
-                                                width: `${Math.max(1, Math.min(100, pct()))}%`,
-                                                background: primarySegmentColor(entry.colorIndex, 1, entry.node.isDir),
-                                              }}
-                                            />
-                                          </span>
-                                        }
-                                      >
-                                        <span class="mt-1 flex min-w-0 items-center gap-2">
+                                      <Show when={indexFilter.lens !== "all" || !!query().trim()}>
+                                        <span class="ml-[18px] mt-1 flex min-w-0 items-center gap-2">
                                           <span
                                             class="flex min-w-0 flex-1 items-center gap-1.5 text-12-regular text-text-weak"
                                             title={
@@ -4012,15 +4024,30 @@ export default function DiskUtilityPage() {
                                             }
                                           >
                                             <Show when={indexFilter.lens === "developer"}>
-                                              <span class="shrink-0 text-text-weak">{developerContext().scope}</span>
+                                              <span class="min-w-0 truncate text-text-weak">
+                                                {developerContext().scope}
+                                              </span>
                                               <span aria-hidden="true">·</span>
                                               <span class="shrink-0 text-12-semibold text-text-strong">
                                                 {developerContext().disposition}
                                               </span>
-                                              <span aria-hidden="true">·</span>
+                                              <span class="dl-entry-path" aria-hidden="true">
+                                                ·
+                                              </span>
                                             </Show>
-                                            <span class="min-w-0 truncate font-mono">
-                                              {truncatePath(entry.node.path, 92)}
+                                            <span
+                                              class="dl-entry-path min-w-0 truncate"
+                                              classList={{ "dl-entry-path-visible": indexFilter.lens !== "developer" }}
+                                            >
+                                              {truncatePath(
+                                                treeRoot() && pathBelongsToScanRoot(entry.node.path, treeRoot()!.path)
+                                                  ? entry.node.path
+                                                      .slice(treeRoot()!.path.length)
+                                                      .replace(/^[\\/]+/, "")
+                                                      .replace(/(^|[\\/])[^\\/]+$/, "") || treeRoot()!.name
+                                                  : entry.node.path.replace(/[\\/][^\\/]+$/, ""),
+                                                92,
+                                              )}
                                               <Show when={entry.displaySize !== entry.node.size}>
                                                 {language.t("disk.explore.nestedCategories", {
                                                   size: shortBytes(entry.node.size),
@@ -4037,7 +4064,7 @@ export default function DiskUtilityPage() {
                                           >
                                             {(changedAt) => (
                                               <span
-                                                class="shrink-0 text-12-regular tabular-nums text-text-weak"
+                                                class="dl-entry-age shrink-0 text-12-regular tabular-nums text-text-weak"
                                                 classList={{
                                                   "dl-accent-text":
                                                     indexFilter.lens === "developer" && isDormant(changedAt()),
@@ -4087,22 +4114,21 @@ export default function DiskUtilityPage() {
                     </aside>
                   </div>
 
-                  <div class="dl-command-dock shrink-0 border-t border-border-weaker-base bg-background-base px-4 py-2">
+                  <div
+                    class="dl-command-dock relative shrink-0 border-t border-border-weaker-base bg-background-base px-4 py-2"
+                    classList={{
+                      "dl-command-dock-idle": !selectedNode(),
+                    }}
+                  >
                     <div class="dl-command-dock-inner mx-auto flex max-w-[1480px] items-center gap-3">
                       <div class="min-w-0 flex-1">
                         <Show
                           when={selectedNode()}
                           fallback={
-                            <div class="flex min-h-16 items-center gap-3 px-2">
-                              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-                                <Icon name="window-cursor" class="size-4" />
-                              </span>
+                            <div class="flex min-h-11 items-center gap-3 px-2">
                               <div class="min-w-0">
                                 <p class="text-12-semibold text-text-strong">
                                   {language.t("disk.explore.selectTitle")}
-                                </p>
-                                <p class="mt-0.5 truncate text-12-regular text-text-weak">
-                                  {language.t("disk.explore.selectBody")}
                                 </p>
                               </div>
                             </div>
@@ -4138,37 +4164,6 @@ export default function DiskUtilityPage() {
                             />
                           )}
                         </Show>
-                      </div>
-                      <div
-                        class="dl-cleanup-slot shrink-0"
-                        classList={{
-                          "w-[min(440px,34vw)]": effectiveCollection().length > 0 || !!collectionDragNode(),
-                          "w-[300px]": effectiveCollection().length === 0 && !collectionDragNode(),
-                        }}
-                      >
-                        <CollectionDropTarget
-                          setElement={(element) => (collectionDropElement = element)}
-                          node={collectionDragNode()}
-                          active={collectionDropActive()}
-                          count={effectiveCollection().length}
-                          bytes={collectionSize()}
-                          hasSharedPhysicalStorage={
-                            collectionHasSharedPhysicalStorage() ||
-                            (collectionDragNode() ? containsSharedPhysicalStorage(collectionDragNode()!) : false)
-                          }
-                          hasUnverifiedPhysicalStorage={physicalCloneAccountingUncertain()}
-                          requiresDeepInventoryRefresh={
-                            collectionNeedsDeepInventoryRefresh() ||
-                            (collectionDragNode() ? requiresDeepInventoryRefresh([collectionDragNode()!]) : false)
-                          }
-                          trashName={nativeTrashName(platform.os)}
-                          onReview={() => collectionSurface.open()}
-                          onClear={clearCollection}
-                          onDragEnter={collectionDragEnter}
-                          onDragOver={collectionDragOver}
-                          onDragLeave={collectionDragLeave}
-                          onDrop={collectDroppedNode}
-                        />
                       </div>
                     </div>
                   </div>

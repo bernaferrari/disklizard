@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process"
 import { constants } from "node:fs"
-import { access, readdir } from "node:fs/promises"
+import { access, readdir, realpath, stat } from "node:fs/promises"
 import { homedir } from "node:os"
 import { posix, win32 } from "node:path"
 import type { DriveInfo } from "./disk-scanner"
@@ -129,6 +129,7 @@ async function existingCloudLocations(
   environment: NodeJS.ProcessEnv,
   readDirectory: ReadDirectory,
   checkAccess: CheckAccess,
+  resolvePath: (path: string) => Promise<string>,
 ) {
   const path = pathForPlatform(platform)
   const candidates = cloudStorageCandidates(homePath, platform, environment)
@@ -136,11 +137,13 @@ async function existingCloudLocations(
     const cloudStorage = path.join(homePath, "Library", "CloudStorage")
     const children = await readDirectory(cloudStorage).catch(() => [])
     candidates.push(
-      ...children.map((name) => ({
-        path: path.join(cloudStorage, name),
-        name,
-        provider: cloudStorageProvider(name),
-      })),
+      ...children
+        .filter((name) => !name.startsWith(".") && !/^iCloudDrive-iCloudDrive \(\d{2}-\d{2}-\d{2} /.test(name))
+        .map((name) => ({
+          path: path.join(cloudStorage, name),
+          name,
+          provider: cloudStorageProvider(name),
+        })),
     )
   }
 
@@ -148,7 +151,11 @@ async function existingCloudLocations(
     candidates.map(async (candidate) => {
       try {
         await checkAccess(candidate.path)
-        return { ...candidate, kind: "cloud" as const }
+        return {
+          ...candidate,
+          path: await resolvePath(candidate.path).catch(() => candidate.path),
+          kind: "cloud" as const,
+        }
       } catch {
         return undefined
       }
@@ -183,7 +190,10 @@ function protectedDirectoryCapability(probes: DiskAccessProbe[]): WholeVolumeAcc
   }
 }
 
-async function macAccessDiagnostic(homePath: string, readProtectedDirectory: ReadDirectory): Promise<DiskAccessDiagnostic> {
+async function macAccessDiagnostic(
+  homePath: string,
+  readProtectedDirectory: ReadDirectory,
+): Promise<DiskAccessDiagnostic> {
   const path = pathForPlatform("darwin")
   const probes = await Promise.all(
     [
@@ -298,18 +308,25 @@ export async function getDiskStorageDiagnostics(options?: {
   drives?: readonly Pick<DriveInfo, "label" | "name" | "path" | "type">[]
   readDirectory?: ReadDirectory
   readProtectedDirectory?: ReadDirectory
+  resolvePath?: (path: string) => Promise<string>
   checkAccess?: CheckAccess
   runCommand?: RunCommand
 }): Promise<DiskStorageDiagnostics> {
   const platform = options?.platform ?? process.platform
   const homePath = options?.homePath ?? homedir()
-  const checkAccess = options?.checkAccess ?? ((targetPath) => access(targetPath, constants.R_OK))
+  const checkAccess =
+    options?.checkAccess ??
+    (async (targetPath: string) => {
+      if (!(await stat(targetPath)).isDirectory()) throw new Error("Not a storage directory")
+      await access(targetPath, constants.R_OK)
+    })
   const cloud = await existingCloudLocations(
     homePath,
     platform,
     options?.environment ?? process.env,
     options?.readDirectory ?? ((targetPath) => readdir(targetPath)),
     checkAccess,
+    options?.resolvePath ?? realpath,
   )
   const network = (options?.drives ?? [])
     .filter((drive) => drive.type === "network")

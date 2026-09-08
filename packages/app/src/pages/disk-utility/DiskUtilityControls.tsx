@@ -24,7 +24,28 @@ export function SegmentedButton(props: {
       aria-pressed={props.active}
       aria-keyshortcuts={props.shortcut}
     >
-      <Icon name={props.icon} class="dl-segmented-icon size-3" />
+      <svg
+        class="dl-segmented-icon size-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.4"
+        aria-hidden="true"
+      >
+        <Show
+          when={props.icon === "dot-grid"}
+          fallback={
+            props.icon === "file-tree" ? (
+              <path d="M3 3h14v14H3zM10 3v14M10 10h7" />
+            ) : (
+              <path d="M3 3h14v4H3zM3 10h8v3H3zM13 10h4v3h-4zM3 16h5M10 16h7" />
+            )
+          }
+        >
+          <circle cx="10" cy="10" r="7" />
+          <path d="M10 3v7l5 5M10 10H3" />
+        </Show>
+      </svg>
       <span>{props.label}</span>
       <Show when={props.shortcut}>
         <kbd class="dl-segmented-shortcut ml-0.5 text-13-regular opacity-45">{props.shortcut}</kbd>
@@ -50,7 +71,7 @@ export function IndexLensButton(props: {
         aria-pressed={props.active}
         aria-disabled={props.disabled ? "true" : undefined}
         aria-describedby={explanationID()}
-        class="dl-touch-target flex min-h-11 flex-col items-center justify-center gap-0.5 px-1 text-13-semibold leading-none outline-none transition-[color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.98]"
+        class="dl-lens-tab dl-touch-target flex min-h-11 flex-col items-center justify-center gap-0.5 px-1 text-13-semibold leading-none outline-none transition-[color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.98]"
         classList={{
           "text-text-strong shadow-[inset_0_-2px_0_var(--dl-accent)]": props.active,
           "dl-hover-text text-text-weak": !props.active,

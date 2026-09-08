@@ -171,8 +171,7 @@ describe("disk platform diagnostics", () => {
       homePath: "C:\\Users\\Ada",
       readDirectory: async () => [],
       checkAccess: async () => undefined,
-      runCommand: async () =>
-        '"Administrators","S-1-5-32-544"\n"Medium","S-1-16-8192"\n"High","S-1-16-12288"',
+      runCommand: async () => '"Administrators","S-1-5-32-544"\n"Medium","S-1-16-8192"\n"High","S-1-16-12288"',
     })
 
     expect(unavailable.access.wholeVolume).toMatchObject({ status: "inconclusive", mapCoverage: "unknown" })
@@ -192,4 +191,28 @@ describe("disk platform diagnostics", () => {
     expect(diskAccessSettingsUrl("win32")).toBe("ms-settings:privacy-broadfilesystemaccess")
     expect(diskAccessSettingsUrl("linux")).toBeUndefined()
   })
+})
+
+test("excludes Finder metadata and dated iCloud archives from cloud shortcuts", async () => {
+  const diagnostics = await getDiskStorageDiagnostics({
+    platform: "darwin",
+    homePath: "/Users/ada",
+    readDirectory: async () => [".DS_Store", "iCloudDrive-iCloudDrive (07-09-23 16:44)", "Dropbox"],
+    checkAccess: async () => {},
+    readProtectedDirectory: async () => [],
+  })
+  expect(diagnostics.locations.some((item) => item.name === ".DS_Store")).toBe(false)
+  expect(diagnostics.locations.filter((item) => item.provider === "icloud")).toHaveLength(1)
+})
+
+test("merges symlink aliases but keeps distinct cloud accounts", async () => {
+  const diagnostics = await getDiskStorageDiagnostics({
+    platform: "darwin",
+    homePath: "/Users/ada",
+    readDirectory: async () => ["Dropbox", "Dropbox-Work"],
+    checkAccess: async () => {},
+    readProtectedDirectory: async () => [],
+    resolvePath: async (path) => (path === "/Users/ada/Dropbox" ? "/Users/ada/Library/CloudStorage/Dropbox" : path),
+  })
+  expect(diagnostics.locations.filter((item) => item.provider === "dropbox")).toHaveLength(2)
 })

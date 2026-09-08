@@ -1,30 +1,13 @@
 import { Button } from "@opencode-ai/ui/button"
 import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon, type IconProps } from "@opencode-ai/ui/icon"
+import { Icon } from "@opencode-ai/ui/icon"
 import { Show } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { StorageAccountingFacts } from "./StorageAccounting"
-import { formatBytes, formatPct } from "./format"
-import { developerArtifactContext, fileKind, recognize } from "./recognize"
-import { SAFETY_ACCENT } from "./ui-tokens"
+import { formatBytes } from "./format"
+import { developerArtifactContext, recognize } from "./recognize"
 import { useLanguage } from "./runtime"
 import { diskNodeDisplayName } from "./node-display"
-
-const GLYPH_BY_KIND: Record<string, IconProps["name"]> = {
-  image: "photo",
-  video: "photo",
-  audio: "review",
-  archive: "archive",
-  document: "review",
-  data: "review",
-  code: "console",
-}
-
-/** Pick a glyph that reflects what a file is instead of a generic code-lines mark. */
-function nodeGlyph(node: DiskScanNode): IconProps["name"] {
-  if (node.isDir) return "folder"
-  return GLYPH_BY_KIND[fileKind(node.ext).kind] ?? "code-lines"
-}
 
 /** Detail / action bar pinned under the scan results. */
 export function DetailBar(props: {
@@ -48,45 +31,30 @@ export function DetailBar(props: {
   const rec = () => recognize(props.node)
   const developerContext = () => (rec().developer ? developerArtifactContext(props.node, rec()) : undefined)
   return (
-    <div class="flex min-h-16 min-w-0 flex-wrap items-center justify-between gap-3 px-2">
-      <div class="flex min-w-0 items-center gap-3">
-        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-          <Icon name={nodeGlyph(props.node)} class="size-4" />
-        </span>
-        <div class="min-w-0">
-          <div class="flex min-w-0 items-baseline gap-2">
-            <span class="truncate text-13-semibold tracking-[-0.015em] text-text-strong">
-              {diskNodeDisplayName(props.node)}
-            </span>
-            <span class="shrink-0 text-12-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</span>
-            <span class="shrink-0 text-13-regular tabular-nums text-text-weak">
-              {formatPct(props.node.size, props.parentSize)}
-            </span>
-            <Show when={rec().tag}>
-              <span
-                class={`hidden shrink-0 rounded-full px-1.5 py-0.5 text-13-semibold uppercase tracking-[0.08em] ring-1 ring-inset lg:inline ${SAFETY_ACCENT[rec().safety].pill}`}
-              >
-                {language.t(rec().tag!)}
-              </span>
-            </Show>
-          </div>
-          <p class="mt-1 max-w-[76ch] truncate text-13-regular text-text-weak" title={props.node.path}>
+    <div class="dl-detail-bar flex min-h-10 min-w-0 items-center justify-between gap-3 px-2">
+      <div class="flex min-w-0 flex-1 items-center gap-3">
+        <span class="truncate text-13-medium text-text-strong">{diskNodeDisplayName(props.node)}</span>
+        <span class="shrink-0 text-13-regular tabular-nums text-text-weak">{formatBytes(props.node.size)}</span>
+        <details class="dl-item-details group">
+          <summary class="flex min-h-8 cursor-pointer list-none items-center gap-1 rounded-md px-2 text-12-regular text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+            {language.t("disk.detail.info")}
+            <Icon name="chevron-down" class="size-3 group-open:rotate-180" />
+          </summary>
+          <div class="absolute bottom-full left-4 z-30 mb-2 w-[min(480px,calc(100vw-48px))] rounded-lg border border-border-weaker-base bg-surface-raised-base p-4 shadow-lg">
+            <p class="text-13-medium text-text-strong">{diskNodeDisplayName(props.node)}</p>
+            <p class="mt-2 break-all text-12-regular text-text-weak">{props.node.path}</p>
             <Show when={developerContext()}>
               {(context) => (
-                <>
-                  {context().scope} · <span class="text-13-semibold text-text-strong">{context().disposition}</span>
-                  <span aria-hidden="true"> · </span>
-                </>
+                <p class="mt-2 text-12-regular text-text-weak">
+                  {context().scope} · {context().disposition}
+                </p>
               )}
             </Show>
-            <Show when={!props.node.isOther} fallback={<span>{language.t("disk.node.aggregateDescription")}</span>}>
-              <span class="font-mono">{props.node.path}</span>
-            </Show>
-          </p>
-          <StorageAccountingFacts node={props.node} class="mt-1" />
-        </div>
+            <StorageAccountingFacts node={props.node} class="mt-3" />
+          </div>
+        </details>
       </div>
-      <div class="hidden shrink-0 items-center gap-1.5 md:flex">
+      <div class="dl-detail-actions-wide shrink-0 items-center gap-1.5">
         <Show when={!props.node.isOther}>
           <Show
             when={props.onQuickLook}
@@ -171,7 +139,7 @@ export function DetailBar(props: {
           </Button>
         </Show>
       </div>
-      <div class="flex shrink-0 items-center gap-1.5 md:hidden">
+      <div class="dl-detail-actions-compact flex shrink-0 items-center gap-1.5">
         <Show when={props.deletable}>
           <Button
             class="dl-touch-target"

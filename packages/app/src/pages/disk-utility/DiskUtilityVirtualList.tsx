@@ -5,7 +5,7 @@ import type { DiskScanNode } from "./types"
 import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
 import { useLanguage } from "./runtime"
 
-const INDEX_ROW_ESTIMATE = 58
+const INDEX_ROW_ESTIMATE = 48
 const DEFAULT_LIST_PAGE_SIZE = 10
 
 type IndexEntry = { node: DiskScanNode; colorIndex: number; displaySize: number }

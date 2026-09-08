@@ -98,9 +98,9 @@ function oklchCss(L: number, C: number, hDeg: number, alpha = 1): string {
 
 /** One chromatic family carried through depth; hierarchy comes from measured lightness. */
 function baseForDepth(depth: number): { L: number; C: number } {
-  if (depth === 0) return { L: 0.7, C: 0.15 }
-  if (depth === 1) return { L: 0.65, C: 0.125 }
-  if (depth === 2) return { L: 0.6, C: 0.078 }
+  if (depth === 0) return { L: 0.7, C: 0.095 }
+  if (depth === 1) return { L: 0.65, C: 0.08 }
+  if (depth === 2) return { L: 0.6, C: 0.065 }
   return { L: 0.55, C: 0.06 }
 }
 
@@ -125,8 +125,8 @@ function lerpAngle(a: number, b: number, t: number) {
   return a + d * t
 }
 
-/** A segment below this angle would be less than one visible device pixel in the normal map shell. */
-export const MIN_VISIBLE_SEGMENT_ANGLE = 0.0016
+/** Smaller arcs become hard to distinguish and target in a normal-size window. */
+export const MIN_VISIBLE_SEGMENT_ANGLE = 0.008
 
 function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: number): SunNode[] {
   const children = (node.children ?? []).filter((child) => child.size > 0)
@@ -200,7 +200,7 @@ function layoutTree(
       // A storage map should reveal hierarchy, not reproduce every inode as a
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
-      const perBranchLimit = parent.depth === 0 ? 120 : 40
+      const perBranchLimit = parent.depth === 0 ? 24 : 16
       const children = collapseVisualChildren(
         parent.node,
         Math.min(perBranchLimit, remainingBudget),
@@ -262,7 +262,7 @@ export function primaryHueForIndex(i: number): number {
  */
 export function primarySegmentColor(i: number, alpha = 1, isDir = true): string {
   const hue = primaryHueForIndex(i)
-  const [L, C] = isDir ? [0.7, 0.115] : [0.56, 0.063]
+  const [L, C] = isDir ? [0.7, 0.095] : [0.56, 0.05225]
   return alpha >= 1 ? `oklch(${L} ${C} ${hue.toFixed(1)})` : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
@@ -382,6 +382,9 @@ export class Sunburst {
     this.maxR = (this.canvas.width / 2) * 0.985
     this.innerHole = this.maxR * INNER_HOLE_RATIO
     this._applyRadiiToTargets()
+    // Resizing clears the backing store. Native live resize may pause RAF,
+    // so restore the current map before returning to the compositor.
+    this._draw()
   }
 
   private _onResize = () => {
@@ -701,37 +704,11 @@ export class Sunburst {
     const h = this.canvas.height
     ctx.clearRect(0, 0, w, h)
 
-    // Quiet outer boundary; the data carries the color.
-    ctx.beginPath()
-    ctx.arc(this.cx, this.cy, safeCanvasRadius(this.maxR), 0, Math.PI * 2)
-    ctx.strokeStyle = oklchCss(0.6, 0.01, 0, 0.12)
-    ctx.lineWidth = 1 * this.dpr
-    ctx.stroke()
-
     // Draw deeper rings first so primary hover lift sits on top.
     for (const s of this.segments) {
       if (s.opacity < 0.008) continue
       this._drawSegment(s)
     }
-
-    // A whisper of lens depth: the disc reads as glass over the data, not flat paint.
-    const surface = this.theme.surface
-    ctx.beginPath()
-    ctx.arc(this.cx, this.cy, safeCanvasRadius(this.innerHole - 1), 0, Math.PI * 2)
-    ctx.fillStyle = surface
-    ctx.fill()
-
-    const glass = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, safeCanvasRadius(this.innerHole))
-    glass.addColorStop(0, surface)
-    glass.addColorStop(1, oklchCss(0.5, 0.02, 252, 0.06))
-    ctx.fillStyle = glass
-    ctx.fill()
-
-    ctx.beginPath()
-    ctx.arc(this.cx, this.cy, safeCanvasRadius(this.innerHole - 1), 0, Math.PI * 2)
-    ctx.strokeStyle = this.theme.border
-    ctx.lineWidth = 1 * this.dpr
-    ctx.stroke()
 
     // Enter pulse ring
     if (this.entering && this.pulseT < 1) {
@@ -755,7 +732,7 @@ export class Sunburst {
     const isPrimary = s.depth === 0
     const isHi = s.hover > 0.02
     const L = (s.node.isDir ? base.L : base.L - 0.07) + (isHi ? 0.04 : 0)
-    const C = (s.node.isDir ? base.C : base.C * 0.55) + (isHi ? 0.018 : 0)
+    const C = s.node.isOther ? 0.012 : (s.node.isDir ? base.C : base.C * 0.55) + (isHi ? 0.01 : 0)
     const isSel = this.selectedPath === s.path
     const dimOthers = this.hovered && this.hovered.path !== s.path && !this.highlightPath
     const dimHi = this.highlightPath && this.highlightPath !== s.path

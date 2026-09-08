@@ -137,7 +137,7 @@ export function VolumeRow(props: {
         bytes: shortBytes(props.job.bytes),
       })
     }
-    return volumeSubtitle(props.drive)
+    return volumeSubtitle({ ...props.drive, sharedFree: undefined })
   }
 
   return (
@@ -153,7 +153,7 @@ export function VolumeRow(props: {
     >
       <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
       <div class="min-w-0">
-        <p class="truncate text-14-medium tracking-[-0.015em] text-text-strong">{props.drive.name}</p>
+        <p class="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
         <p
           class="mt-0.5 truncate text-13-regular text-text-weaker"
           title={
@@ -167,24 +167,26 @@ export function VolumeRow(props: {
         >
           {subtitle()}
         </p>
+        <div class="mt-3 flex max-w-[340px] items-center gap-3">
+          <div class="min-w-12 flex-1">
+            <div class="dl-volume-bar" aria-hidden="true">
+              <div
+                class="dl-volume-bar-fill"
+                data-settled={complete() ? "" : undefined}
+                style={{ width: `${Math.round(fill() * 1000) / 10}%` }}
+              />
+            </div>
+          </div>
+          <p
+            class="whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em]"
+            classList={{ "text-text-weak": !failed(), "text-text-strong": failed() }}
+          >
+            {readout()}
+            <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
+          </p>
+        </div>
       </div>
       <div class="flex shrink-0 items-center gap-3 sm:gap-4">
-        <div class="hidden w-[148px] sm:block">
-          <div class="dl-volume-bar" aria-hidden="true">
-            <div
-              class="dl-volume-bar-fill"
-              data-settled={complete() ? "" : undefined}
-              style={{ width: `${Math.round(fill() * 1000) / 10}%` }}
-            />
-          </div>
-        </div>
-        <p
-          class="w-[4.75rem] text-right text-14-medium tabular-nums tracking-[-0.02em]"
-          style={{ color: "var(--dl-volume-readout, var(--dl-volume-ink))" }}
-        >
-          {readout()}
-          <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
-        </p>
         <button
           type="button"
           data-disk-primary-action={props.primary ? "" : undefined}
@@ -211,14 +213,26 @@ export function VolumeRow(props: {
           {volumeActionLabel(props.job?.status)}
         </button>
       </div>
-      <Show when={(props.drive.snapshotCount ?? 0) > 0}>
-        <ApfsSnapshotEvidenceList
-          class="col-start-2 col-end-4 pb-3"
-          snapshotCount={props.drive.snapshotCount}
-          purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
-          timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
-          snapshots={props.drive.apfsSnapshots}
-        />
+      <Show when={(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined}>
+        <details class="dl-volume-snapshots group col-start-2 col-end-4">
+          <summary class="inline-flex min-h-8 cursor-pointer list-none items-center gap-1.5 rounded-md text-12-regular text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+            {language.t("disk.drive.details")}
+            <Icon name="chevron-down" class="size-3 group-open:rotate-180" />
+          </summary>
+          <Show when={props.drive.sharedFree !== undefined}>
+            <p class="mt-2 text-12-regular text-text-weak">
+              {language.t("disk.drive.sharedContainerFree", { size: formatBytes(props.drive.sharedFree ?? 0) })}
+            </p>
+          </Show>
+          <ApfsSnapshotEvidenceList
+            embedded
+            class="mt-2 border-t border-border-weaker-base pt-3"
+            snapshotCount={props.drive.snapshotCount}
+            purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
+            timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
+            snapshots={props.drive.apfsSnapshots}
+          />
+        </details>
       </Show>
     </div>
   )

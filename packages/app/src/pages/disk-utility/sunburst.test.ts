@@ -1,6 +1,7 @@
 import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "./types"
 import {
+  Sunburst,
   layoutSunburstSegments,
   MIN_VISIBLE_SEGMENT_ANGLE,
   primaryHueForIndex,
@@ -64,7 +65,7 @@ describe("primarySegmentColor", () => {
     expect(primarySegmentColor(0, 0.5)).toContain("/ 0.5")
   })
   it("keeps files visually secondary to folder branches", () => {
-    expect(primarySegmentColor(2, 1, false)).toBe(`oklch(0.56 0.063 ${primaryHueForIndex(2).toFixed(1)})`)
+    expect(primarySegmentColor(2, 1, false)).toBe(`oklch(0.56 0.05225 ${primaryHueForIndex(2).toFixed(1)})`)
   })
   it("keeps every tile label above normal-text AA contrast", () => {
     for (let index = 0; index < 10; index++) {
@@ -119,7 +120,7 @@ describe("sunburstEntryDuration", () => {
 })
 
 describe("layoutSunburstSegments", () => {
-  it("keeps every primary segment while bounding deep paint work", () => {
+  it("preserves every byte while grouping dense branches into readable segments", () => {
     const children = Array.from({ length: 48 }, (_, outer) =>
       node(
         `outer-${outer}`,
@@ -129,8 +130,11 @@ describe("layoutSunburstSegments", () => {
     )
     const segments = layoutSunburstSegments(node("root", 48 * 48, children), 3, 720)
 
-    expect(segments).toHaveLength(720)
-    expect(segments.filter((segment) => segment.depth === 0)).toHaveLength(48)
+    expect(segments.length).toBeLessThanOrEqual(720)
+    const primary = segments.filter((segment) => segment.depth === 0)
+    expect(primary).toHaveLength(24)
+    expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(48 * 48)
+    expect(primary.at(-1)?.node.otherCount).toBe(25)
   })
 
   it("preserves the angular position of items after sub-pixel siblings", () => {
@@ -147,8 +151,8 @@ describe("layoutSunburstSegments", () => {
     const segments = layoutSunburstSegments(node("root", 500_500, children), 3, 720)
     const primary = segments.filter((segment) => segment.depth === 0)
 
-    expect(primary).toHaveLength(120)
-    expect(primary.at(-1)?.node).toMatchObject({ name: "", isOther: true, otherCount: 881 })
+    expect(primary).toHaveLength(24)
+    expect(primary.at(-1)?.node).toMatchObject({ name: "", isOther: true, otherCount: 977 })
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(500_500)
     expect(primary.at(-1)?.end).toBeCloseTo(Math.PI * 1.5, 8)
   })
@@ -187,5 +191,44 @@ describe("layoutSunburstSegments", () => {
     expect(segments.length).toBeLessThanOrEqual(360)
     expect(primary.reduce((sum, segment) => sum + segment.node.size, 0)).toBe(root.size)
     expect(primary.every((segment) => segment.end > segment.start)).toBe(true)
+  })
+})
+
+describe("sunburst resize", () => {
+  it("keeps the map painted while native resize pauses animation frames", () => {
+    const map = Object.create(Sunburst.prototype) as Sunburst
+    let painted = true
+    let width = 400
+    let height = 400
+    map.canvas = {
+      get width() {
+        return width
+      },
+      set width(value) {
+        width = value
+        painted = false
+      },
+      get height() {
+        return height
+      },
+      set height(value) {
+        height = value
+        painted = false
+      },
+      getBoundingClientRect: () => ({ width: 500, height: 500 }),
+    } as HTMLCanvasElement
+    map.ctx = {
+      clearRect: () => {
+        painted = false
+      },
+    } as unknown as CanvasRenderingContext2D
+    map.options = { rings: 3, ringGap: 0.004 } as Sunburst["options"]
+    map.segments = [{ depth: 0, opacity: 1 }] as Sunburst["segments"]
+    map.animT = 1
+    map._drawSegment = () => {
+      painted = true
+    }
+    map._resize()
+    expect(painted).toBe(true)
   })
 })

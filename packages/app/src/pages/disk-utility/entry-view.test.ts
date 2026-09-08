@@ -97,3 +97,17 @@ describe("storage entry sorting", () => {
     ).toEqual(["src", "alpha.log", "unknown.md", "zeta.ts"])
   })
 })
+
+it("keeps combined remainders after real entries in every sort order", () => {
+  const remainder = {
+    node: { ...node("smaller items", "/other", 16000), isOther: true },
+    displaySize: 16000,
+    sourceIndex: 0,
+  }
+  const folder = { node: node("sdk", "/sdk", 9900), displaySize: 9900, sourceIndex: 1 }
+  for (const key of ["size", "name", "modified", "type"] as const) {
+    for (const direction of ["ascending", "descending"] as const) {
+      expect(sortDiskEntries([remainder, folder], key, direction).at(-1)).toBe(remainder)
+    }
+  }
+})

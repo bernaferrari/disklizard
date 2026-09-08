@@ -116,6 +116,9 @@ export function sortDiskEntries<T extends SortableDiskEntry>(
 ): T[] {
   const factor = direction === "ascending" ? 1 : -1
   return entries.toSorted((left, right) => {
+    // A combined remainder is a summary, not an individual ranked entry.
+    const remainderOrder = Number(!!left.node.isOther) - Number(!!right.node.isOther)
+    if (remainderOrder) return remainderOrder
     const comparison =
       key === "size"
         ? left.displaySize - right.displaySize

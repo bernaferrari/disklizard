@@ -242,7 +242,7 @@ export function CollectionDialog(props: {
       role="presentation"
     >
       <div
-        class="dl-dialog-panel flex max-h-[min(680px,calc(100dvh-32px))] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
+        class="dl-dialog-panel dl-collection-dialog flex max-h-[min(680px,calc(100dvh-32px))] w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)]"
         ref={focusDialog}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
@@ -252,14 +252,11 @@ export function CollectionDialog(props: {
         aria-labelledby="collection-title"
       >
         <div class="flex items-start gap-3 border-b border-border-weaker-base p-5">
-          <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)]">
-            <Icon name="checklist" class="size-4" />
-          </span>
           <div class="min-w-0 flex-1">
-            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+            <h2 id="collection-title" class="text-20-medium tracking-[-0.02em] text-text-strong">
               {language.t("disk.dialog.collection.heading")}
-            </p>
-            <h2 id="collection-title" class="mt-1 text-20-medium tracking-[-0.03em] text-text-strong">
+            </h2>
+            <p class="mt-2 text-13-regular text-text-weak">
               {(() => {
                 const summary = language.t("disk.dialog.collection.summary", {
                   count: language.plural("disk.count.item", props.items.length),
@@ -269,10 +266,8 @@ export function CollectionDialog(props: {
                   ? language.t("disk.dialog.collection.selectedSizes", { summary })
                   : summary
               })()}
-            </h2>
-            <p class="mt-2 text-13-regular leading-relaxed text-text-weak">
-              {language.t("disk.dialog.collection.body")}
             </p>
+            <p class="sr-only">{language.t("disk.dialog.collection.body")}</p>
             <Show when={props.requiresDeepInventoryRefresh}>
               <p class="mt-2 rounded-lg bg-surface-warning-weak/45 px-2.5 py-2 text-13-regular leading-relaxed text-[color-mix(in_oklch,#9a6700_55%,var(--text-strong))]">
                 {language.t("disk.dialog.collection.deepWarning", { trash: props.trashName })}
@@ -321,9 +316,7 @@ export function CollectionDialog(props: {
                   <span class="flex min-w-0 items-center gap-1.5">
                     <span class="truncate text-12-semibold text-text-strong">{item.name}</span>
                     <Show when={recognition.tag}>
-                      <span class="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-weaker">
-                        {language.t(recognition.tag!)}
-                      </span>
+                      <span class="sr-only">{language.t(recognition.tag!)}</span>
                     </Show>
                   </span>
                   <span class="mt-0.5 block truncate text-13-regular text-text-weaker">

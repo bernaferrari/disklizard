@@ -1,4 +1,3 @@
-import { Button } from "@opencode-ai/ui/button"
 import { Icon } from "@opencode-ai/ui/icon"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
@@ -48,60 +47,31 @@ export function CollectionDropTarget(props: {
   }
 
   return (
-    <section
+    <button
+      type="button"
       ref={(element) => props.setElement?.(element)}
-      class="dl-cleanup-dock flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3.5 py-2"
-      classList={{
-        "dl-cleanup-dock-active": props.active,
-        "dl-cleanup-dock-filled": hasItems() && !props.node,
-        "dl-cleanup-dock-empty": !hasItems() && !props.node,
+      class="dl-trash-target relative grid size-12 place-items-center rounded-xl border border-border-weaker-base bg-surface-raised-base text-text-weak shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+      classList={{ "dl-trash-target-active": props.active }}
+      onClick={() => {
+        if (hasItems()) props.onReview()
       }}
       onDragEnter={props.onDragEnter}
       onDragOver={props.onDragOver}
       onDragLeave={props.onDragLeave}
       onDrop={props.onDrop}
-      aria-label={language.t("disk.collection.label")}
+      aria-label={
+        hasItems()
+          ? `${language.t("disk.collection.reviewSelected")} · ${title()}`
+          : language.t("disk.collection.instructions")
+      }
+      title={hasItems() ? detail() : language.t("disk.collection.instructions")}
     >
-      <span
-        class="dl-cleanup-dock-icon relative grid size-10 shrink-0 place-items-center rounded-full"
-        aria-hidden="true"
-      >
-        <Icon name={props.active ? "arrow-down-to-line" : hasItems() ? "checklist" : "trash"} class="size-[18px]" />
-        {hasItems() && !props.node ? (
-          <span class="absolute -right-1 -top-1 grid min-h-6 min-w-6 place-items-center rounded-full bg-text-strong px-1 text-13-semibold tabular-nums text-background-base">
-            {props.count > 99 ? "99+" : props.count}
-          </span>
-        ) : null}
-      </span>
-
-      <span class="min-w-0 flex-1">
-        <span class="block truncate text-13-semibold tracking-[-0.01em] text-text-strong">{title()}</span>
-        <span class="mt-0.5 block truncate text-12-regular tabular-nums text-text-weak" title={detail()}>
-          {detail()}
+      <Icon name="trash" class="size-5" />
+      {hasItems() ? (
+        <span class="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-text-strong px-1 text-12-medium tabular-nums text-background-base">
+          {props.count > 99 ? "99+" : props.count}
         </span>
-      </span>
-
-      {hasItems() && !props.node ? (
-        <span class="flex shrink-0 items-center gap-1">
-          <Button
-            class="dl-touch-target"
-            size="small"
-            variant="ghost"
-            onClick={props.onClear}
-            aria-label={language.t("disk.collection.clear")}
-          >
-            {language.t("disk.collection.clear")}
-          </Button>
-          <Button class="dl-touch-target" size="small" variant="primary" icon="arrow-right" onClick={props.onReview}>
-            {language.t("disk.collection.reviewSelected")}
-          </Button>
-        </span>
-      ) : (
-        <kbd class="dl-shortcut-key shrink-0" aria-label={language.t("disk.collection.shortcutC")}>
-          {language.t("disk.shortcut.keyC")}
-        </kbd>
-      )}
-
+      ) : null}
       <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {props.active
           ? title()
@@ -109,6 +79,6 @@ export function CollectionDropTarget(props: {
             ? language.plural("disk.count.itemSelected", props.count)
             : language.t("disk.collection.noneStatus")}
       </span>
-    </section>
+    </button>
   )
 }

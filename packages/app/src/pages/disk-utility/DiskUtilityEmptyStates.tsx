@@ -167,7 +167,7 @@ export function CenterOverlay(props: {
           <p class="dl-center-size mt-1.5 whitespace-nowrap text-[clamp(22px,2.8vw,38px)] font-medium leading-none tracking-[-0.05em] tabular-nums text-text-strong">
             {formatBytes(props.node!.size)}
           </p>
-          <Show when={props.parentSize && props.node!.path}>
+          <Show when={props.parentSize && props.node!.size < props.parentSize && props.node!.path}>
             <p class="dl-center-context mt-2 text-13-regular tabular-nums text-text-weaker">
               {formatPct(props.node!.size, props.parentSize)} {language.t("disk.drive.ofLevel")}
             </p>
@@ -175,7 +175,7 @@ export function CenterOverlay(props: {
           <Show when={behavior().canOpen}>
             <button
               type="button"
-              class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
+              class="dl-center-open dl-touch-target pointer-events-auto mt-3 inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-md bg-background-base/88 px-3 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.15),0_3px_10px_rgb(0_0_0/0.1)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]"
               onClick={props.onOpen}
             >
               {language.t(props.node!.isOther ? "disk.common.showMore" : "disk.common.exploreFolder")}
