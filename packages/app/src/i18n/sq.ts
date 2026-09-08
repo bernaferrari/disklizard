@@ -639,6 +639,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Shiko lejet e dosjeve dhe të pikave të montimit, pastaj skano përsëri.",
   "disk.accessGuidance.default": "Shiko qasjen te këto dosje, pastaj skano përsëri.",
   "disk.accessGuidance.rescan": "Pasi të ndryshosh qasjen, përdor Rescan në shiritin e sipërm.",
+  "disk.common.rescan": "Skano përsëri",
   "error.page.title": "Diçka shkoi keq",
   "error.page.description": "Ndodhi një gabim gjatë ngarkimit të aplikacionit.",
   "error.page.description.localServerStartup": "Ndodhi një gabim gjatë nisjes së serverit lokal.",

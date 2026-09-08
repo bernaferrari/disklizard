@@ -7,6 +7,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Kontroller mappe- og monteringsrettigheter, og skann på nytt.",
   "disk.accessGuidance.default": "Kontroller tilgangen til disse mappene, og skann på nytt.",
   "disk.accessGuidance.rescan": "Bruk Skann på nytt i toppfeltet etter at du har endret tilgangen.",
+  "disk.common.rescan": "Skann på nytt",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Arkiv",
   "desktop.menu.edit": "Rediger",

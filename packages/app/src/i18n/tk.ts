@@ -638,6 +638,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Papka we birikdiriliş rugsatlaryny gözden geçirip, soň täzeden barlaň.",
   "disk.accessGuidance.default": "Şu papkalara girimi gözden geçirip, soň täzeden barlaň.",
   "disk.accessGuidance.rescan": "Girimi üýtgedenden soň ýokarky paneldäki Rescan-i ulanyň.",
+  "disk.common.rescan": "Täzeden skanirlaň",
   "error.page.title": "Bir zat nädogry boldy",
   "error.page.description": "Programmany ýükläniňizde säwlik ýüze çykdy.",
   "error.page.description.localServerStartup": "Serli serweri işe girizeniňizde säwlik ýüze çykdy.",

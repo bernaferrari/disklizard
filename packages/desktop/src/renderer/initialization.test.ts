@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { createDiskSettings } from "@disklizard/app/runtime"
-import { createRoot } from "solid-js"
 import { createDesktopStorage, createDiskLizardPlatform, desktopOS } from "./platform"
 
 const renderer = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "index.tsx"), "utf8")
@@ -70,10 +69,7 @@ describe("desktop renderer initialization", () => {
     expect(platform).not.toHaveProperty("draftStore")
     expect(platform).not.toHaveProperty("getDefaultServer")
     expect(["macos", "windows", "linux", undefined]).toContain(desktopOS())
-    fullscreenListener?.(true)
-    expect(platform.windowFullscreen?.()).toBe(true)
-    platform.dispose?.()
-    expect(fullscreenUnsubscribed).toBe(true)
+    expect(platform.windowFullscreen).toBe(false)
   })
 
   test("keeps the cleanup gate closed when the desktop storage bridge rejects a read", async () => {
@@ -94,13 +90,12 @@ describe("desktop renderer initialization", () => {
     await expect(storage.getItem("cleanup-locks")).rejects.toThrow("settings unreadable")
     await expect(storage.getItem("pinned-locations")).resolves.toBeNull()
 
-    await createRoot(async (dispose) => {
+    {
       const settings = createDiskSettings(storage, { os: "linux" })
       await settings.ready
       expect(settings.general.cleanupLocksStatus()).toBe("error")
       expect(settings.general.diskCleanupLocks()).toEqual([])
       expect(settings.general.persistenceError()).toBe("settings unreadable")
-      dispose()
-    })
+    }
   })
 })

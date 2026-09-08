@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ตรวจสอบสิทธิ์ของโฟลเดอร์และจุดเมาต์ แล้วสแกนอีกครั้ง",
   "disk.accessGuidance.default": "ตรวจสอบการเข้าถึงโฟลเดอร์เหล่านี้ แล้วสแกนอีกครั้ง",
   "disk.accessGuidance.rescan": "หลังเปลี่ยนสิทธิ์การเข้าถึง ให้ใช้ปุ่ม Rescan ในแถบด้านบน.",
+  "disk.common.rescan": "สแกนใหม่",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ไฟล์",
   "desktop.menu.edit": "แก้ไข",

@@ -673,3 +673,20 @@ describe("native and TypeScript scanner parity", () => {
     })
   })
 })
+
+test("preserves bounded native work percentages independently of bytes", () => {
+  const message = (percent: number) =>
+    JSON.stringify({
+      type: "progress",
+      progress: {
+        filesScanned: 1,
+        dirsScanned: 1,
+        currentPath: "/scan-root",
+        size: 1e15,
+        percent,
+      },
+    })
+  expect(parseNativeMessage(message(25))).toMatchObject({ progress: { percent: 25 } })
+  expect(parseNativeMessage(message(101))).toBeUndefined()
+  expect(parseNativeMessage(message(-1))).toBeUndefined()
+})

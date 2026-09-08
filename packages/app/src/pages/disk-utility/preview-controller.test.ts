@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test"
-import { createRoot } from "solid-js"
 import { createDiskPreviewController } from "./preview-controller"
 import type { DiskFilePreview, DiskScanNode } from "./types"
 
@@ -27,24 +26,20 @@ function setup(options: {
   onOperationError?: (operation: "open" | "system-preview", message: string) => void
 }) {
   const selected: string[] = []
-  let dispose!: () => void
-  const controller = createRoot((rootDispose) => {
-    dispose = rootDispose
-    return createDiskPreviewController({
-      api: () => ({
-        previewPath: options.previewPath,
-        systemPreviewPath: options.systemPreviewPath ?? (async () => undefined),
-        openPath: options.openPath ?? (async () => undefined),
-      }),
-      entries: () => options.entries,
-      isPathCurrent: (path) => options.entries.some((entry) => entry.path === path),
-      os: "macos",
-      select: (path) => selected.push(path),
-      onOperationError: options.onOperationError,
-      surfaceOptions: { reducedMotion: () => true },
-    })
+  const controller = createDiskPreviewController({
+    api: () => ({
+      previewPath: options.previewPath,
+      systemPreviewPath: options.systemPreviewPath ?? (async () => undefined),
+      openPath: options.openPath ?? (async () => undefined),
+    }),
+    entries: () => options.entries,
+    isPathCurrent: (path) => options.entries.some((entry) => entry.path === path),
+    os: "macos",
+    select: (path) => selected.push(path),
+    onOperationError: options.onOperationError,
+    surfaceOptions: { reducedMotion: () => true },
   })
-  return { controller, selected, dispose }
+  return { controller, selected, dispose: () => controller.dispose() }
 }
 
 describe("disk preview controller", () => {

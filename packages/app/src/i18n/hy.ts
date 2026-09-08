@@ -637,6 +637,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Ստուգեք պանակների և միացման կետերի թույլտվությունները, ապա սկանավորեք նորից։",
   "disk.accessGuidance.default": "Ստուգեք այս պանակների հասանելիությունը, ապա սկանավորեք նորից։",
   "disk.accessGuidance.rescan": "Մուտքը փոխելուց հետո օգտագործեք Վերասկանավորումը վերևի տողում։",
+  "disk.common.rescan": "Վերասկանավորել",
   "toast.update.action.notYet": "դեռ ոչ",
   "toast.update.installFailed.title": "Չհաջողվեց տեղադրել թարմացումը",
   "toast.update.installFailed.retry": "Կրկնել",

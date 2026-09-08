@@ -28,6 +28,7 @@ const desktop = [
   "Terminál ki- és bekapcsolása",
   "Fájlfastruktúra ki- és bekapcsolása",
   "Újratöltés",
+  "Újraellenőrzés",
   "Fejlesztői eszközök ki- és bekapcsolása",
   "Valódi méret",
   "Nagyítás",

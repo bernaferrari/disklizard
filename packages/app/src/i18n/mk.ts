@@ -636,6 +636,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Проверете ги дозволите за папки и точки на монтирање, а потоа скенирајте повторно.",
   "disk.accessGuidance.default": "Проверете го пристапот до овие папки, а потоа скенирајте повторно.",
   "disk.accessGuidance.rescan": "Откако ќе го промените пристапот, користете Rescan од горната лента.",
+  "disk.common.rescan": "Повторно скенирај",
   "toast.update.action.notYet": "Сè уште не",
   "toast.update.installFailed.title": "Не можеше да се инсталира ажурирањето",
   "toast.update.installFailed.retry": "Обиди се повторно",

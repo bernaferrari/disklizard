@@ -645,6 +645,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ਫੋਲਡਰ ਅਤੇ ਮਾਊਂਟ ਇਜਾਜ਼ਤਾਂ ਵੇਖੋ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
   "disk.accessGuidance.default": "ਇਹਨਾਂ ਫੋਲਡਰਾਂ ਤੱਕ ਪਹੁੰਚ ਵੇਖੋ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
   "disk.accessGuidance.rescan": "ਪਹੁੰਚ ਬਦਲਣ ਤੋਂ ਬਾਅਦ ਉੱਪਰਲੀ ਪੱਟੀ ਵਿੱਚ Rescan ਦੀ ਵਰਤੋਂ ਕਰੋ।",
+  "disk.common.rescan": "ਮੁੜ ਸਕੈਨ ਕਰੋ",
   "toast.update.installFailed.title": "ਅੱਪਡੇਟ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋ ਸਕਿਆ",
   "toast.update.installFailed.retry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
   "error.page.title": "کجھ غلط ہو گیا",

@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Перевірте права доступу до папки та точки монтування, а потім виконайте сканування ще раз.",
   "disk.accessGuidance.default": "Перевірте доступ до цих папок, а потім виконайте сканування ще раз.",
   "disk.accessGuidance.rescan": "Після зміни доступу скористайтеся «Повторним скануванням» у верхній панелі.",
+  "disk.common.rescan": "Пересканувати",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Файл",
   "desktop.menu.edit": "Редагування",

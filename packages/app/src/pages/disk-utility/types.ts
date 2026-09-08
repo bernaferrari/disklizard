@@ -9,7 +9,7 @@ import type {
   DeveloperArtifactInventoryOptions,
   DriveFacts,
   SharedStorageEvidence,
-} from "@disklizard/core"
+} from "@/core"
 
 /** Desktop disk utility (DiskLizard) — IPC from Electron main */
 export type DiskDriveInfo = {
@@ -123,6 +123,9 @@ export type DiskScanNode = {
 }
 
 export type DiskScanProgress = {
+  /** Estimated completed work, independent of allocated bytes. */
+  percent?: number
+  phase?: "scan" | "reconcile" | "save" | "complete"
   scanId: string
   filesScanned: number
   dirsScanned?: number

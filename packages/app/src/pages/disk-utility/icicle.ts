@@ -21,7 +21,7 @@ export function layoutIcicle(root: DiskScanNode, levels = 4): IcicleCell[] {
       const span = (width * node.size) / total
       const color = depth === 0 ? i : colorIndex
       if (span > 0 && cells.length < 800) cells.push({ node, x: offset, width: span, depth, colorIndex: color })
-      if (node.children?.length)
+      if (!node.isOther && node.children?.length)
         queue.push({ parent: node, x: offset, width: span, depth: depth + 1, colorIndex: color })
       offset += span
     }

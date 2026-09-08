@@ -1,5 +1,4 @@
 import type { DiskScanNode } from "./types"
-import { createSignal, onCleanup } from "solid-js"
 import {
   computeDeveloperSummaryWithInventory,
   computeDeveloperSummaryWithInventoryAsync,
@@ -385,41 +384,62 @@ export type DebouncedSearchQuery = {
   input(value: string): void
   debounced(): string
   pending(): boolean
+  /** Listener notification for external-store rendering (useSyncExternalStore). */
+  subscribe(listener: () => void): () => void
+  /** Clear the pending timer; call when the owner goes away. */
+  dispose(): void
 }
 
 export function createDebouncedSearchQuery(delayMs = 180): DebouncedSearchQuery {
-  const [debounced, setDebounced] = createSignal("")
-  const [pending, setPending] = createSignal(false)
+  let debounced = ""
+  let pending = false
   let timer: ReturnType<typeof setTimeout> | undefined
+  const listeners = new Set<() => void>()
+
+  const write = (nextDebounced: string, nextPending: boolean) => {
+    if (debounced === nextDebounced && pending === nextPending) return
+    debounced = nextDebounced
+    pending = nextPending
+    for (const listener of [...listeners]) listener()
+  }
+
+  const settle = (value: string) => {
+    timer = undefined
+    write(value, false)
+  }
 
   const input = (value: string) => {
-    if (value === debounced()) {
+    if (value === debounced) {
       clearTimeout(timer)
       timer = undefined
-      setPending(false)
+      write(debounced, false)
       return
     }
     if (value === "") {
       // Clearing is cheap and expected to be instant.
       clearTimeout(timer)
       timer = undefined
-      setDebounced("")
-      setPending(false)
+      write("", false)
       return
     }
-    if (timer === undefined) setPending(true)
+    if (timer === undefined) write(debounced, true)
     clearTimeout(timer)
-    timer = setTimeout(() => {
-      timer = undefined
-      setDebounced(value)
-      setPending(false)
-    }, delayMs)
+    timer = setTimeout(() => settle(value), delayMs)
   }
 
-  onCleanup(() => {
-    clearTimeout(timer)
-    timer = undefined
-  })
-
-  return { input, debounced, pending }
+  return {
+    input,
+    debounced: () => debounced,
+    pending: () => pending,
+    subscribe(listener: () => void) {
+      listeners.add(listener)
+      return () => {
+        listeners.delete(listener)
+      }
+    },
+    dispose() {
+      clearTimeout(timer)
+      timer = undefined
+    },
+  }
 }

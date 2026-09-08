@@ -157,6 +157,17 @@ export function registerIpcHandlers(deps: Deps) {
     })
   const updaterSubscriptions = createUpdaterSubscriptions()
   const diskScans = new Map<string, AbortController>()
+  const dockProgress = new Map<AbortController, number>()
+  let dockBadge = ""
+  const updateDockBadge = () => {
+    if (process.platform !== "darwin") return
+    const active = [...dockProgress.entries()].filter(([scan]) => !scan.signal.aborted)
+    const percent = active.at(-1)?.[1]
+    const badge = percent === undefined ? "" : `${Math.floor(percent)}%`
+    if (badge === dockBadge) return
+    dockBadge = badge
+    app.dock?.setBadge(badge)
+  }
   const diskSnapshotCache = join(app.getPath("userData"), "disklizard", "snapshots")
   const diskSnapshots = new DiskSnapshotManager({
     cacheDir: diskSnapshotCache,
@@ -309,7 +320,13 @@ export function registerIpcHandlers(deps: Deps) {
       let lastProgressLog = 0
       let nativeDoneAt: number | undefined
       const scanWindow = BrowserWindow.fromWebContents(event.sender)
-      scanWindow?.setProgressBar(2, { mode: "indeterminate" })
+      if (process.platform === "darwin") {
+        scanWindow?.setProgressBar(-1)
+        dockProgress.set(controller, 0)
+        updateDockBadge()
+      } else {
+        scanWindow?.setProgressBar(2, { mode: "indeterminate" })
+      }
       log.info("disk scan started", { scanID })
       let latestProgress: ScanProgress | undefined
       diskScans.set(owner, controller)
@@ -336,6 +353,14 @@ export function registerIpcHandlers(deps: Deps) {
           excludePaths,
           onProgress: (progress) => {
             latestProgress = progress
+            if (progress.percent !== undefined && Number.isFinite(progress.percent)) {
+              if (process.platform === "darwin") {
+                dockProgress.set(controller, Math.max(0, Math.min(100, progress.percent)))
+                updateDockBadge()
+              } else if (scanWindow && !scanWindow.isDestroyed()) {
+                scanWindow.setProgressBar(progress.percent / 100)
+              }
+            }
             if (progress.done) nativeDoneAt = Date.now()
             if (progress.done || Date.now() - lastProgressLog >= 10000) {
               lastProgressLog = Date.now()
@@ -346,6 +371,8 @@ export function registerIpcHandlers(deps: Deps) {
                 directories: progress.dirsScanned,
                 bytes: progress.size,
                 nativeDone: !!progress.done,
+                phase: progress.phase,
+                percent: progress.percent,
               })
             }
             if (!event.sender.isDestroyed())
@@ -381,6 +408,8 @@ export function registerIpcHandlers(deps: Deps) {
               currentPath: targetPath,
               size: result.root.size,
               done: true,
+              percent: 100,
+              phase: "complete",
               source: result.source,
             })
           }
@@ -401,7 +430,9 @@ export function registerIpcHandlers(deps: Deps) {
         }
       } finally {
         if (diskScans.get(owner) === controller) diskScans.delete(owner)
-        if (scanWindow && !scanWindow.isDestroyed()) {
+        dockProgress.delete(controller)
+        updateDockBadge()
+        if (process.platform !== "darwin" && scanWindow && !scanWindow.isDestroyed()) {
           const active = [...diskScans.keys()].some((key) => key.startsWith(`${senderID}:`))
           scanWindow.setProgressBar(active ? 2 : -1, { mode: active ? "indeterminate" : "none" })
         }

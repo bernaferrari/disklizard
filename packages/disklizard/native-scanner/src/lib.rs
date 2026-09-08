@@ -15,6 +15,7 @@ mod config;
 mod filesystem;
 mod protocol;
 mod retention;
+mod work_progress;
 use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
@@ -110,6 +111,7 @@ struct State {
     files: AtomicUsize,
     dirs: AtomicUsize,
     bytes: AtomicU64,
+    work_completed: Arc<AtomicU64>,
     discoveries: AtomicUsize,
     file_discoveries: AtomicUsize,
     started_at: Instant,
@@ -496,6 +498,7 @@ impl Scanner {
             files: AtomicUsize::new(0),
             dirs: AtomicUsize::new(0),
             bytes: AtomicU64::new(0),
+            work_completed: Arc::new(AtomicU64::new(0)),
             discoveries: AtomicUsize::new(0),
             file_discoveries: AtomicUsize::new(0),
             started_at: Instant::now(),
@@ -555,6 +558,7 @@ impl Scanner {
                     name,
                     0,
                     false,
+                    work_progress::Work::root(self.state.work_completed.clone()),
                     DirectoryWalk {
                         directory,
                         directory_identity: root_identity,
@@ -830,6 +834,7 @@ impl State {
         name: String,
         depth: usize,
         collapsed: bool,
+        work: work_progress::Work,
         input: DirectoryWalk,
     ) -> io::Result<CompactNode> {
         let DirectoryWalk {
@@ -846,6 +851,7 @@ impl State {
                 directory_identity,
                 inventory_scope_allowed,
                 sibling_markers.clone(),
+                work,
             );
             if measured.has_shared_storage_risk {
                 self.mark_shared_storage_evidence_partial();
@@ -871,6 +877,7 @@ impl State {
                 directory_identity,
                 inventory_scope_allowed,
                 sibling_markers.clone(),
+                work,
             );
             if measured.has_shared_storage_risk {
                 self.mark_shared_storage_evidence_partial();
@@ -910,9 +917,26 @@ impl State {
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
         let child_markers = Arc::new(self.project_marker_signatures(&entries));
         let retention = Mutex::new(ChildRetention::new(self.request.max_children));
+        // Skipped entries have no traversal budget. Where directories exist,
+        // direct files must not finish a large share before those subtrees run.
+        let eligible = |entry: &Entry| {
+            matches!(entry.kind, EntryKind::Directory | EntryKind::File)
+                && !excluded_names.is_some_and(|names| names.contains(&entry.name))
+        };
+        let has_directories = entries.iter().any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
+        let weights: Vec<u64> = entries.iter().map(|entry| {
+            u64::from(eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory))
+        }).collect();
+        let work_items = if weights.iter().any(|weight| *weight > 0) {
+            work.split_weights(&weights)
+        } else {
+            // Still visit these entries to retain diagnostics, with no early credit.
+            work.split_weights(&vec![1; entries.len()])
+        };
         entries
             .into_par_iter()
-            .filter_map(|entry| {
+            .zip(work_items.into_par_iter())
+            .filter_map(|(entry, work)| {
                 let child_path = path.join(&entry.name);
                 if entry.kind == EntryKind::Symlink {
                     self.record_skipped_symlink(&child_path);
@@ -954,6 +978,7 @@ impl State {
                                 entry_name,
                                 depth + 1,
                                 collapsed,
+                                work,
                                 DirectoryWalk {
                                     directory: child,
                                     directory_identity: child_identity,
@@ -1021,6 +1046,7 @@ impl State {
         directory_identity: Option<DeveloperArtifactDirectoryIdentity>,
         inventory_scope_allowed: bool,
         sibling_markers: Arc<Vec<String>>,
+        work: work_progress::Work,
     ) -> Measurement {
         let entries = match directory.read_entries(path) {
             Ok(read) => {
@@ -1049,9 +1075,26 @@ impl State {
         let excluded_names = self.excluded_children.get(path);
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
         let child_markers = Arc::new(self.project_marker_signatures(&entries));
+        // Skipped entries have no traversal budget. Where directories exist,
+        // direct files must not finish a large share before those subtrees run.
+        let eligible = |entry: &Entry| {
+            matches!(entry.kind, EntryKind::Directory | EntryKind::File)
+                && !excluded_names.is_some_and(|names| names.contains(&entry.name))
+        };
+        let has_directories = entries.iter().any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
+        let weights: Vec<u64> = entries.iter().map(|entry| {
+            u64::from(eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory))
+        }).collect();
+        let work_items = if weights.iter().any(|weight| *weight > 0) {
+            work.split_weights(&weights)
+        } else {
+            // Still visit these entries to retain diagnostics, with no early credit.
+            work.split_weights(&vec![1; entries.len()])
+        };
         let measured = entries
             .into_par_iter()
-            .map(|entry| {
+            .zip(work_items.into_par_iter())
+            .map(|(entry, work)| {
                 let child_path = path.join(&entry.name);
                 if entry.kind == EntryKind::Symlink {
                     self.record_skipped_symlink(&child_path);
@@ -1092,6 +1135,7 @@ impl State {
                                 child_identity,
                                 child_inventory_scope_allowed,
                                 Arc::clone(&child_markers),
+                                work,
                             )
                         })
                         .unwrap_or_else(|_| {
@@ -1383,6 +1427,11 @@ impl State {
                 current_path: path.to_string_lossy().into_owned(),
                 size: self.bytes.load(Ordering::Relaxed),
                 discovery,
+                percent: if done {
+                    100.0
+                } else {
+                    work_progress::Work::percent(&self.work_completed)
+                },
                 done,
             },
         };

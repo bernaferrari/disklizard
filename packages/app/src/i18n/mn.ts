@@ -641,6 +641,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Хавтас болон mount зөвшөөрлийг шалгаад дахин шалгана уу.",
   "disk.accessGuidance.default": "Эдгээр хавтас руу хандах эрхийг шалгаад дахин шалгана уу.",
   "disk.accessGuidance.rescan": "Хандалтыг өөрчилсний дараа дээд самбар дахь Rescan-ийг ашиглана уу.",
+  "disk.common.rescan": "Дахин шинжлэх",
   "error.page.title": "Ямар нэг алдаа гарлаа",
   "error.page.description": "Програмыг ачаалах явцад алдаа гарлаа.",
   "error.page.description.localServerStartup": "Дотоод серверийг эхлүүлэх явцад алдаа гарлаа.",

@@ -638,6 +638,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Revisa els permisos de carpetes i muntatges i torna a escanejar.",
   "disk.accessGuidance.default": "Revisa l'accés a aquestes carpetes i torna a escanejar.",
   "disk.accessGuidance.rescan": "Després de canviar l'accés, utilitza Torna a escanejar a la barra superior.",
+  "disk.common.rescan": "Tornar a analitzar",
   "toast.update.installFailed.title": "No s'ha pogut instal·lar l'actualització",
   "toast.update.installFailed.retry": "Torna-ho a provar",
   "error.page.title": "Alguna cosa va fallar",

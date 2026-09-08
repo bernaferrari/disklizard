@@ -640,6 +640,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Kontrollera behörigheterna för mappar och monteringar och skanna igen.",
   "disk.accessGuidance.default": "Kontrollera åtkomsten till de här mapparna och skanna igen.",
   "disk.accessGuidance.rescan": "Använd Skanna igen i fältet högst upp när du har ändrat åtkomst.",
+  "disk.common.rescan": "Skanna igen",
   "toast.update.installFailed.title": "Det gick inte att installera uppdateringen",
   "toast.update.installFailed.retry": "Försök igen",
   "error.page.title": "Något gick fel",

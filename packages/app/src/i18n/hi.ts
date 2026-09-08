@@ -644,6 +644,7 @@ export const dict = {
   "disk.accessGuidance.linux": "फ़ोल्डर और माउंट अनुमतियाँ जाँचें, फिर दोबारा स्कैन करें।",
   "disk.accessGuidance.default": "इन फ़ोल्डरों तक पहुँच जाँचें, फिर दोबारा स्कैन करें।",
   "disk.accessGuidance.rescan": "पहुँच बदलने के बाद ऊपरी पट्टी में Rescan का उपयोग करें।",
+  "disk.common.rescan": "फिर से स्कैन करें",
   "toast.update.installFailed.title": "अपडेट इंस्टॉल नहीं हो सका",
   "toast.update.installFailed.retry": "पुनः प्रयास",
   "error.page.title": "कुछ गलत हो गया",

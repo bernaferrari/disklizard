@@ -1,4 +1,4 @@
-import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@disklizard/core"
+import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@/core"
 import type { DiskScanNode } from "./types"
 
 /**

@@ -1,5 +1,5 @@
 import type { DiskCleanupLock, DiskDriveInfo, DiskPinnedLocation, DiskScanNode } from "./types"
-import { canDeletePath } from "@disklizard/core/safety"
+import { canDeletePath } from "@/core/safety"
 import { isPathCleanupLocked } from "./cleanup-lock"
 import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 import { diskLanguageText } from "./runtime"

@@ -632,6 +632,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ពិនិត្យសិទ្ធិថត និងចំណុចម៉ោន បន្ទាប់មកស្កេនម្តងទៀត។",
   "disk.accessGuidance.default": "ពិនិត្យសិទ្ធិចូលទៅកាន់ថតទាំងនេះ បន្ទាប់មកស្កេនម្តងទៀត។",
   "disk.accessGuidance.rescan": "បន្ទាប់ពីផ្លាស់ប្តូរសិទ្ធិ សូមប្រើ Rescan នៅរបារខាងលើ។",
+  "disk.common.rescan": "ស្កេនឡើងវិញ",
   "toast.update.action.notYet": "មិនទាន់",
   "toast.update.installFailed.title": "មិនអាចដំឡើងបច្ចុប្បន្នភាពបានទេ",
   "toast.update.installFailed.retry": "ព្យាយាមម្តងទៀត",

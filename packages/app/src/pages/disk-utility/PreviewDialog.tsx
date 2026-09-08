@@ -1,14 +1,13 @@
-import { Button } from "@opencode-ai/ui/button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { For, Show, onCleanup, onMount } from "solid-js"
+import { Button } from "@/components/dl/button"
+import { Icon } from "@/components/dl/icon"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { useRef } from "react"
 import type { DiskFilePreview, DiskScanNode } from "./types"
 import { formatBytes, formatLastChanged } from "./format"
 import type { SurfacePhase } from "./motion"
+import { FadeSettle, Spin } from "./motion-ui"
 import { StorageAccountingFacts } from "./StorageAccounting"
 import { diskLanguageText, useLanguage } from "./runtime"
-
-const focusable =
-  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), iframe:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
 
 function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported" }>) {
   if (preview.reason === "too-large") {
@@ -30,7 +29,8 @@ function unsupportedCopy(preview: Extract<DiskFilePreview, { kind: "unsupported"
 }
 
 export function PreviewDialog(props: {
-  phase: SurfacePhase
+  open: boolean
+  /** Bridge while index.tsx migrates `phase` → boolean `open` (drop once landed). */
   node: DiskScanNode
   preview?: DiskFilePreview
   loading: boolean
@@ -47,88 +47,122 @@ export function PreviewDialog(props: {
   onOpen: () => void
 }) {
   const language = useLanguage()
-  let panel!: HTMLDivElement
-  let restoreFocus: HTMLElement | undefined
-  const largestChildren = () =>
-    [...props.node.children]
-      .filter((child) => !child.isOther)
-      .toSorted((a, b) => b.size - a.size)
-      .slice(0, 5)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+  const open = props.open ?? false
+  const largest = [...props.node.children]
+    .filter((child) => !child.isOther)
+    .toSorted((a, b) => b.size - a.size)
+    .slice(0, 5)
+  const loadedPreview = !props.loading && !props.error && !props.node.isDir ? props.preview : undefined
 
-  onMount(() => {
-    const active = document.activeElement
-    restoreFocus = active instanceof HTMLElement ? active : undefined
-    queueMicrotask(() => panel.focus({ preventScroll: true }))
-  })
-  onCleanup(() => restoreFocus?.isConnected && restoreFocus.focus({ preventScroll: true }))
-
-  const trapFocus = (event: KeyboardEvent) => {
-    if (event.target === panel && event.key === "ArrowLeft" && props.onPrevious) {
-      event.preventDefault()
-      props.onPrevious()
-      return
+  const renderLoadedPreview = (preview: DiskFilePreview) => {
+    if (preview.kind === "image") {
+      return (
+        <div className="grid size-full place-items-center overflow-auto bg-surface-raised-strong p-5 sm:p-8">
+          <FadeSettle
+            className="max-h-full max-w-full rounded-xl object-contain shadow-[0_0_0_1px_rgb(127_127_127/0.16),0_18px_50px_rgb(0_0_0/0.18)]"
+            src={preview.dataUrl}
+            alt={language.t("disk.preview.imageLabel", { name: props.node.name })}
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+      )
     }
-    if (event.target === panel && event.key === "ArrowRight" && props.onNext) {
-      event.preventDefault()
-      props.onNext()
-      return
+    if (preview.kind === "text") {
+      return (
+        <div className="flex size-full min-h-0 flex-col">
+          <div className="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-13-regular text-text-weaker">
+            <span>
+              {language.t("disk.preview.lines", { count: preview.text.split("\n").length.toLocaleString() })}
+            </span>
+            {preview.truncated ? (
+              <span className="rounded-full bg-surface-raised-base px-2 py-1 text-13-semibold text-text-weak">
+                {language.t("disk.preview.truncated")}
+              </span>
+            ) : null}
+          </div>
+          <pre
+            className="min-h-0 flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.65] text-text-base outline-none selection:bg-[oklch(0.72_0.12_176/0.24)] sm:p-5"
+            tabIndex={0}
+            aria-label={language.t("disk.preview.textLabel", { name: props.node.name })}
+          >
+            {preview.text}
+          </pre>
+        </div>
+      )
     }
-    if (event.key !== "Tab") return
-    const items = [...panel.querySelectorAll<HTMLElement>(focusable)]
-    if (!items.length) {
-      event.preventDefault()
-      panel.focus()
-      return
+    if (preview.kind === "pdf") {
+      return (
+        <iframe
+          className="size-full border-0 bg-surface-raised-strong outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+          src={preview.dataUrl}
+          title={language.t("disk.preview.pdfLabel", { name: props.node.name })}
+          tabIndex={0}
+        />
+      )
     }
-    const first = items[0]
-    const last = items.at(-1)!
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault()
-      last.focus()
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault()
-      first.focus()
-    }
+    const copy = unsupportedCopy(preview)
+    return (
+      <div className="grid size-full place-items-center p-8 text-center">
+        <div className="max-w-sm">
+          <span className="mx-auto grid size-12 place-items-center rounded-full bg-surface-raised-base text-text-weak">
+            <Icon name="open-file" className="size-4.5" />
+          </span>
+          <h3 className="mt-4 text-14-semibold text-text-strong">{copy.title}</h3>
+          <p className="mt-2 text-13-regular leading-relaxed text-text-weak">{copy.detail}</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div
-      class="dl-dialog-surface dl-modal-scrim fixed inset-0 z-50 grid place-items-center p-3 backdrop-blur-md sm:p-6"
-      data-state={props.phase}
-      onClick={props.onClose}
-      role="presentation"
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) props.onClose()
+      }}
     >
-      <div
-        ref={panel}
-        class="dl-dialog-panel flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_28px_90px_rgb(0_0_0/0.28)] sm:h-[min(760px,calc(100dvh-48px))]"
-        tabIndex={-1}
-        onClick={(event) => event.stopPropagation()}
-        onKeyDown={trapFocus}
-        role="dialog"
-        aria-modal="true"
+      <DialogContent
         aria-labelledby="preview-title"
         aria-describedby="preview-description"
+        showCloseButton={false}
+        ref={panelRef}
+        initialFocus={() => panelRef.current}
+        onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return
+          if (event.key === "ArrowLeft" && props.onPrevious) {
+            event.preventDefault()
+            props.onPrevious()
+            return
+          }
+          if (event.key === "ArrowRight" && props.onNext) {
+            event.preventDefault()
+            props.onNext()
+          }
+        }}
+        className="flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-surface-raised-strong gap-0 p-0 ring-0 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_28px_90px_rgb(0_0_0/0.28)] sm:h-[min(760px,calc(100dvh-48px))] sm:max-w-5xl"
       >
-        <header class="flex shrink-0 items-start gap-3 border-b border-border-weaker-base px-4 py-3.5 sm:px-5">
-          <span class="dl-accent-text grid size-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.72_0.12_176/0.14)]">
+        <header className="flex shrink-0 items-start gap-3 border-b border-border-weaker-base px-4 py-3.5 sm:px-5">
+          <span className="text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))] grid size-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.72_0.12_176/0.14)]">
             <Icon
               name={props.node.isDir ? "folder" : props.preview?.kind === "image" ? "photo" : "open-file"}
-              class="size-4"
+              className="size-4"
             />
           </span>
-          <div class="min-w-0 flex-1">
-            <p class="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
+          <div className="min-w-0 flex-1">
+            <p className="text-13-semibold uppercase tracking-[0.14em] text-text-weaker">
               {language.t("disk.preview.heading")}
             </p>
-            <h2 id="preview-title" class="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
+            <h2 id="preview-title" className="mt-0.5 truncate text-16-semibold tracking-[-0.02em] text-text-strong">
               {props.node.name}
             </h2>
-            <p id="preview-description" class="mt-0.5 truncate text-13-mono text-text-weaker">
+            <p id="preview-description" className="mt-0.5 truncate text-13-mono text-text-weaker">
               {props.node.path}
             </p>
           </div>
           <Button
-            class="dl-touch-target"
+            className="min-h-11 min-w-11"
             size="small"
             variant="ghost"
             icon="close"
@@ -137,156 +171,90 @@ export function PreviewDialog(props: {
           />
         </header>
 
-        <main class="relative min-h-0 flex-1 overflow-hidden bg-background-base/55">
-          <Show when={props.loading}>
-            <div class="grid size-full place-items-center" role="status" aria-live="polite">
-              <div class="flex flex-col items-center gap-3 text-text-weak">
-                <span class="dl-spin size-5 rounded-full border border-border-weaker-base border-t-current" />
-                <p class="text-13-regular">{language.t("disk.preview.loading")}</p>
+        <main className="relative min-h-0 flex-1 overflow-hidden bg-background-base/55">
+          {props.loading ? (
+            <div className="grid size-full place-items-center" role="status" aria-live="polite">
+              <div className="flex flex-col items-center gap-3 text-text-weak">
+                <Spin className="size-5 rounded-full border border-border-weaker-base border-t-current" />
+                <p className="text-13-regular">{language.t("disk.preview.loading")}</p>
               </div>
             </div>
-          </Show>
+          ) : null}
 
-          <Show when={!props.loading && props.error}>
-            {(message) => (
-              <div class="grid size-full place-items-center p-8 text-center" role="alert">
-                <div class="max-w-sm">
-                  <span class="dl-critical-text mx-auto grid size-12 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.1)]">
-                    <Icon name="warning" class="size-4.5" />
-                  </span>
-                  <h3 class="mt-4 text-14-semibold text-text-strong">{language.t("disk.preview.readError")}</h3>
-                  <p class="mt-2 text-13-regular leading-relaxed text-text-weak">{message()}</p>
-                </div>
+          {!props.loading && props.error ? (
+            <div className="grid size-full place-items-center p-8 text-center" role="alert">
+              <div className="max-w-sm">
+                <span className="text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))] mx-auto grid size-12 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.1)]">
+                  <Icon name="warning" className="size-4.5" />
+                </span>
+                <h3 className="mt-4 text-14-semibold text-text-strong">{language.t("disk.preview.readError")}</h3>
+                <p className="mt-2 text-13-regular leading-relaxed text-text-weak">{props.error}</p>
               </div>
-            )}
-          </Show>
+            </div>
+          ) : null}
 
-          <Show when={!props.loading && !props.error && props.node.isDir}>
-            <div class="flex size-full min-h-0 flex-col overflow-auto p-5 sm:p-8">
-              <div class="mx-auto w-full max-w-2xl">
-                <div class="flex items-start gap-4 rounded-2xl bg-surface-raised-base/70 p-5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
-                  <span class="dl-accent-text grid size-11 shrink-0 place-items-center rounded-xl bg-background-base/70">
-                    <Icon name="folder" class="size-5" />
+          {!props.loading && !props.error && props.node.isDir ? (
+            <div className="flex size-full min-h-0 flex-col overflow-auto p-5 sm:p-8">
+              <div className="mx-auto w-full max-w-2xl">
+                <div className="flex items-start gap-4 rounded-2xl bg-surface-raised-base/70 p-5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
+                  <span className="text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))] grid size-11 shrink-0 place-items-center rounded-xl bg-background-base/70">
+                    <Icon name="folder" className="size-5" />
                   </span>
-                  <div class="min-w-0">
-                    <h3 class="text-14-semibold text-text-strong">{language.t("disk.preview.folderSummary")}</h3>
-                    <p class="mt-1 text-13-regular leading-relaxed text-text-weak">
+                  <div className="min-w-0">
+                    <h3 className="text-14-semibold text-text-strong">{language.t("disk.preview.folderSummary")}</h3>
+                    <p className="mt-1 text-13-regular leading-relaxed text-text-weak">
                       {language.t("disk.preview.folderCount", {
                         count: props.node.children.length.toLocaleString(),
                         items: language.plural("disk.count.itemNoun", props.node.children.length),
                         size: formatBytes(props.node.size),
                       })}
                     </p>
-                    <p class="mt-2 text-13-regular leading-relaxed text-text-weaker">
+                    <p className="mt-2 text-13-regular leading-relaxed text-text-weaker">
                       {language.t("disk.preview.folderBody")}
                     </p>
                   </div>
                 </div>
 
-                <Show when={largestChildren().length}>
-                  <section class="mt-6" aria-labelledby="preview-largest-items">
-                    <div class="flex items-center justify-between gap-4">
+                {largest.length ? (
+                  <section className="mt-6" aria-labelledby="preview-largest-items">
+                    <div className="flex items-center justify-between gap-4">
                       <h3
                         id="preview-largest-items"
-                        class="text-13-semibold uppercase tracking-[0.13em] text-text-weaker"
+                        className="text-13-semibold uppercase tracking-[0.13em] text-text-weaker"
                       >
                         {language.t("disk.preview.largest")}
                       </h3>
-                      <span class="text-13-regular tabular-nums text-text-weaker">
+                      <span className="text-13-regular tabular-nums text-text-weaker">
                         {language.t("disk.preview.total", { count: formatBytes(props.node.size) })}
                       </span>
                     </div>
-                    <ul class="mt-2 divide-y divide-border-weaker-base rounded-xl bg-surface-raised-base/45 px-4 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
-                      <For each={largestChildren()}>
-                        {(child) => (
-                          <li class="flex min-w-0 items-center gap-3 py-3">
-                            <Icon
-                              name={child.isDir ? "folder" : "open-file"}
-                              class="size-3.5 shrink-0 text-icon-weak"
-                            />
-                            <span class="min-w-0 flex-1 truncate text-13-semibold text-text-strong">{child.name}</span>
-                            <span class="shrink-0 text-13-semibold tabular-nums text-text-weak">
-                              {formatBytes(child.size)}
-                            </span>
-                          </li>
-                        )}
-                      </For>
+                    <ul className="mt-2 divide-y divide-border-weaker-base rounded-xl bg-surface-raised-base/45 px-4 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
+                      {largest.map((child) => (
+                        <li key={child.path} className="flex min-w-0 items-center gap-3 py-3">
+                          <Icon
+                            name={child.isDir ? "folder" : "open-file"}
+                            className="size-3.5 shrink-0 text-icon-weak"
+                          />
+                          <span className="min-w-0 flex-1 truncate text-13-semibold text-text-strong">{child.name}</span>
+                          <span className="shrink-0 text-13-semibold tabular-nums text-text-weak">
+                            {formatBytes(child.size)}
+                          </span>
+                        </li>
+                      ))}
                     </ul>
                   </section>
-                </Show>
+                ) : null}
               </div>
             </div>
-          </Show>
+          ) : null}
 
-          <Show when={!props.loading && !props.error && !props.node.isDir && props.preview}>
-            {(loaded) => {
-              const preview = loaded()
-              if (preview.kind === "image") {
-                return (
-                  <div class="dl-preview-image-stage grid size-full place-items-center overflow-auto p-5 sm:p-8">
-                    <img
-                      class="max-h-full max-w-full rounded-xl object-contain shadow-[0_0_0_1px_rgb(127_127_127/0.16),0_18px_50px_rgb(0_0_0/0.18)]"
-                      src={preview.dataUrl}
-                      alt={language.t("disk.preview.imageLabel", { name: props.node.name })}
-                      decoding="async"
-                      draggable={false}
-                    />
-                  </div>
-                )
-              }
-              if (preview.kind === "text") {
-                return (
-                  <div class="flex size-full min-h-0 flex-col">
-                    <div class="flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-13-regular text-text-weaker">
-                      <span>
-                        {language.t("disk.preview.lines", { count: preview.text.split("\n").length.toLocaleString() })}
-                      </span>
-                      <Show when={preview.truncated}>
-                        <span class="rounded-full bg-surface-raised-base px-2 py-1 text-13-semibold text-text-weak">
-                          {language.t("disk.preview.truncated")}
-                        </span>
-                      </Show>
-                    </div>
-                    <pre
-                      class="min-h-0 flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.65] text-text-base outline-none selection:bg-[oklch(0.72_0.12_176/0.24)] sm:p-5"
-                      tabIndex={0}
-                      aria-label={language.t("disk.preview.textLabel", { name: props.node.name })}
-                    >
-                      {preview.text}
-                    </pre>
-                  </div>
-                )
-              }
-              if (preview.kind === "pdf") {
-                return (
-                  <iframe
-                    class="size-full border-0 bg-surface-raised-strong outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
-                    src={preview.dataUrl}
-                    title={language.t("disk.preview.pdfLabel", { name: props.node.name })}
-                    tabIndex={0}
-                  />
-                )
-              }
-              const copy = unsupportedCopy(preview)
-              return (
-                <div class="grid size-full place-items-center p-8 text-center">
-                  <div class="max-w-sm">
-                    <span class="mx-auto grid size-12 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-                      <Icon name="open-file" class="size-4.5" />
-                    </span>
-                    <h3 class="mt-4 text-14-semibold text-text-strong">{copy.title}</h3>
-                    <p class="mt-2 text-13-regular leading-relaxed text-text-weak">{copy.detail}</p>
-                  </div>
-                </div>
-              )
-            }}
-          </Show>
+          {loadedPreview ? renderLoadedPreview(loadedPreview) : null}
         </main>
 
-        <footer class="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
-          <div class="flex shrink-0 items-center gap-1" role="group" aria-label={language.t("disk.preview.navigation")}>
+        <footer className="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
+          <div className="flex shrink-0 items-center gap-1" role="group" aria-label={language.t("disk.preview.navigation")}>
             <Button
-              class="dl-touch-target"
+              className="min-h-11 min-w-11"
               size="small"
               variant="ghost"
               icon="chevron-left"
@@ -294,13 +262,13 @@ export function PreviewDialog(props: {
               onClick={props.onPrevious}
               aria-label={language.t("disk.preview.previous")}
             />
-            <span class="min-w-12 text-center text-13-regular tabular-nums text-text-weaker">
-              <Show when={!props.node.isDir} fallback={language.t("disk.preview.folder")}>
-                {language.t("disk.preview.position", { current: props.position, total: props.total })}
-              </Show>
+            <span className="min-w-12 text-center text-13-regular tabular-nums text-text-weaker">
+              {!props.node.isDir
+                ? language.t("disk.preview.position", { current: props.position, total: props.total })
+                : language.t("disk.preview.folder")}
             </span>
             <Button
-              class="dl-touch-target"
+              className="min-h-11 min-w-11"
               size="small"
               variant="ghost"
               icon="chevron-right"
@@ -309,17 +277,17 @@ export function PreviewDialog(props: {
               aria-label={language.t("disk.preview.next")}
             />
           </div>
-          <div class="min-w-0 flex-1">
-            <p class="text-13-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</p>
-            <p class="mt-0.5 text-13-regular text-text-weaker">
-              <Show when={props.node.modifiedAt} fallback={language.t("disk.preview.local")}>
-                {(changed) => language.t("disk.preview.changedLocal", { changed: formatLastChanged(changed()) })}
-              </Show>
+          <div className="min-w-0 flex-1">
+            <p className="text-13-semibold tabular-nums text-text-strong">{formatBytes(props.node.size)}</p>
+            <p className="mt-0.5 text-13-regular text-text-weaker">
+              {props.node.modifiedAt
+                ? language.t("disk.preview.changedLocal", { changed: formatLastChanged(props.node.modifiedAt) })
+                : language.t("disk.preview.local")}
             </p>
-            <StorageAccountingFacts node={props.node} class="mt-1" />
+            <StorageAccountingFacts node={props.node} className="mt-1" />
           </div>
           <Button
-            class="dl-touch-target"
+            className="min-h-11 min-w-11"
             size="small"
             variant="secondary"
             icon="square-arrow-top-right"
@@ -327,16 +295,16 @@ export function PreviewDialog(props: {
           >
             {props.revealLabel}
           </Button>
-          <Show when={props.onSystemPreview && props.systemPreviewLabel}>
-            <Button class="dl-touch-target" size="small" variant="secondary" icon="eye" onClick={props.onSystemPreview}>
+          {props.onSystemPreview && props.systemPreviewLabel ? (
+            <Button className="min-h-11 min-w-11" size="small" variant="secondary" icon="eye" onClick={props.onSystemPreview}>
               {props.systemPreviewLabel}
             </Button>
-          </Show>
-          <Button class="dl-touch-target" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
+          ) : null}
+          <Button className="min-h-11 min-w-11" size="small" variant="primary" icon="open-file" onClick={props.onOpen}>
             {language.t(props.node.isDir ? "disk.preview.openMap" : "disk.preview.openDefault")}
           </Button>
         </footer>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -638,6 +638,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Прегледајте дозволе фасцикли и тачака монтирања, а затим скенирајте поново.",
   "disk.accessGuidance.default": "Прегледајте приступ овим фасциклама, а затим скенирајте поново.",
   "disk.accessGuidance.rescan": "Након промене приступа користите Rescan у горњој траци.",
+  "disk.common.rescan": "Поново скенирај",
   "error.page.title": "Нешто је пошло наопако",
   "error.page.description": "Дошло је до грешке при учитавању апликације.",
   "error.page.description.localServerStartup": "Дошло је до грешке при покретању локалног сервера.",

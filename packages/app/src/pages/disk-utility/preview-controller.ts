@@ -1,5 +1,4 @@
-import { createEffect, createMemo, createSignal, onCleanup } from "solid-js"
-import { createSurfacePresence, type SurfacePhase } from "./motion"
+import { createSurfacePresence, type SurfacePhase, type SurfacePresenceOptions } from "./motion"
 import { diskPathEquals } from "./storage"
 import type { DiskFilePreview, DiskScanNode, DiskUtilityAPI } from "./types"
 
@@ -26,8 +25,6 @@ type DiskPreviewState = {
   error?: string
 }
 
-type PreviewSurfaceOptions = Parameters<typeof createSurfacePresence>[0]
-
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
 }
@@ -37,6 +34,14 @@ function errorMessage(error: unknown) {
  * stale-result rejection, animated close/reset, and navigation through the
  * current visible file set. The page only renders `view()` and dispatches
  * these commands.
+ *
+ * Framework-free subscribe/snapshot store: `view()` returns one cached object
+ * per (state, phase, position) combination, so React consumers can render it
+ * via `useSyncExternalStore(controller.subscribe, controller.view)`. Options
+ * are captured once — read fresh page state from refs inside the callbacks.
+ * Unlike the reactive original, removal of the target by a newer scan
+ * generation is not tracked automatically: call `reconcile()` whenever the
+ * inputs `isPathCurrent` depends on change, and `dispose()` on unmount.
  */
 export function createDiskPreviewController(options: {
   api: () => Pick<DiskUtilityAPI, "previewPath" | "systemPreviewPath" | "openPath"> | undefined
@@ -47,39 +52,50 @@ export function createDiskPreviewController(options: {
   select(path: string): void
   onOperationError?: (operation: DiskPreviewOperation, message: string) => void
   /** Internal scheduling seam used by motion tests and non-browser adapters. */
-  surfaceOptions?: PreviewSurfaceOptions
+  surfaceOptions?: SurfacePresenceOptions
 }) {
-  const surface = createSurfacePresence(options.surfaceOptions)
+  const listeners = new Set<() => void>()
+  const emit = () => {
+    for (const listener of [...listeners]) listener()
+  }
+  const surface = createSurfacePresence(options.surfaceOptions ?? {}, emit)
   // Preview nodes and payloads are immutable scan/IPC values. One shallow
-  // state signal preserves their identity; a deep store would reconcile plain
-  // objects in place and could retain fields from a previous preview kind.
-  const [state, setState] = createSignal<DiskPreviewState>({ target: null, loading: false })
+  // state object preserves their identity; a deep reactive store would
+  // reconcile plain objects in place and could retain fields from a previous
+  // preview kind.
+  let state: DiskPreviewState = { target: null, loading: false }
+  const setState = (next: DiskPreviewState | ((current: DiskPreviewState) => DiskPreviewState)) => {
+    state = typeof next === "function" ? next(state) : next
+    emit()
+  }
   let requestGeneration = 0
 
-  const previewableEntries = createMemo(() =>
-    options.entries().filter((node) => !node.isDir && !node.isOther && !node.isHidden),
-  )
+  // Visible-file set memoized on the source entries identity, mirroring the
+  // reactive memo the original had: one filtered array (and therefore one
+  // stable view object) per entries generation, so useSyncExternalStore
+  // snapshots never churn between notifications.
+  let previewableMemo: { source: readonly DiskScanNode[]; filtered: readonly DiskScanNode[] } | undefined
+  const previewableEntries = () => {
+    const source = options.entries()
+    if (previewableMemo && previewableMemo.source === source) return previewableMemo.filtered
+    const filtered = source.filter((node) => !node.isDir && !node.isOther && !node.isHidden)
+    previewableMemo = { source, filtered }
+    return filtered
+  }
 
   const calculatePosition = (current: DiskPreviewState, entries: readonly DiskScanNode[]) => {
     if (!current.target) return -1
     return entries.findIndex((node) => diskPathEquals(node.path, current.target!.path, options.os))
   }
 
-  const positionMemo = createMemo(() => {
-    const current = state()
-    const entries = previewableEntries()
-    return { current, entries, value: calculatePosition(current, entries) }
-  })
+  // Position is memoized per (state, visible entries) pair so repeated view()
+  // reads — including useSyncExternalStore snapshots — reuse one object.
+  let positionMemo: { current: DiskPreviewState; entries: readonly DiskScanNode[]; value: number } | undefined
   const positionSnapshot = () => {
-    const current = state()
     const entries = previewableEntries()
-    const memoized = positionMemo()
-    // Bun's `solid` test condition uses the SSR adapter, whose memos are
-    // intentionally one-shot. This fallback keeps that adapter truthful while
-    // browser builds take the memoized O(1) path.
-    return memoized.current === current && memoized.entries === entries
-      ? memoized
-      : { current, entries, value: calculatePosition(current, entries) }
+    if (positionMemo && positionMemo.current === state && positionMemo.entries === entries) return positionMemo
+    positionMemo = { current: state, entries, value: calculatePosition(state, entries) }
+    return positionMemo
   }
 
   const buildView = (current: DiskPreviewState, phase: SurfacePhase, position: number, total: number) =>
@@ -96,25 +112,22 @@ export function createDiskPreviewController(options: {
       canMoveNext: position >= 0 && position + 1 < total,
     }) satisfies DiskPreviewView
 
-  const viewMemo = createMemo(() => {
-    const current = state()
-    const phase = surface.phase()
-    const position = positionSnapshot()
-    return {
-      current,
-      phase,
-      position,
-      value: buildView(current, phase, position.value, position.entries.length),
-    }
-  })
+  let viewMemo: {
+    current: DiskPreviewState
+    phase: SurfacePhase
+    position: { current: DiskPreviewState; entries: readonly DiskScanNode[]; value: number }
+    value: DiskPreviewView
+  } | undefined
   const view = () => {
-    const current = state()
+    const current = state
     const phase = surface.phase()
     const position = positionSnapshot()
-    const memoized = viewMemo()
-    return memoized.current === current && memoized.phase === phase && memoized.position === position
-      ? memoized.value
-      : buildView(current, phase, position.value, position.entries.length)
+    if (viewMemo && viewMemo.current === current && viewMemo.phase === phase && viewMemo.position === position) {
+      return viewMemo.value
+    }
+    const value = buildView(current, phase, position.value, position.entries.length)
+    viewMemo = { current, phase, position, value }
+    return value
   }
 
   const reset = () => {
@@ -122,17 +135,12 @@ export function createDiskPreviewController(options: {
   }
 
   function reconcile() {
-    const target = state().target
+    const target = state.target
     if (!target || options.isPathCurrent(target.path)) return true
     requestGeneration += 1
     surface.closeThen(reset)
     return false
   }
-
-  // Watcher replacements can remove a target while its dialog is open. Close
-  // immediately instead of rendering "0 of N" or leaving actions attached to
-  // a path that no longer belongs to the current scan generation.
-  createEffect(reconcile)
 
   async function show(node: DiskScanNode) {
     const api = options.api()
@@ -198,9 +206,10 @@ export function createDiskPreviewController(options: {
     }
   }
 
-  onCleanup(() => {
+  function dispose() {
     requestGeneration += 1
-  })
+    surface.dispose()
+  }
 
   return {
     view,
@@ -211,5 +220,12 @@ export function createDiskPreviewController(options: {
     openInDefaultApp,
     openSystemPreview,
     supportsSystemPreview: () => options.os === "macos" && !!options.api()?.systemPreviewPath,
+    subscribe(listener: () => void) {
+      listeners.add(listener)
+      return () => {
+        listeners.delete(listener)
+      }
+    },
+    dispose,
   }
 }

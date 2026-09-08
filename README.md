@@ -10,7 +10,7 @@
 
 DiskLizard turns a drive or folder into an interactive storage map. It shows where space is going, identifies developer artifacts such as dependencies and build output, and gives you a deliberate path from inspection to cleanup.
 
-The desktop app uses Electron and Solid. A native Rust scanner performs the first traversal, while persistent snapshots and filesystem events keep completed maps current without starting over after every change.
+The desktop app uses Electron and React. A native Rust scanner performs the first traversal, while persistent snapshots and filesystem events keep completed maps current without starting over after every change.
 
 > [!NOTE]
 > DiskLizard is under active development. The scanner, desktop experience, and safety model are functional, but packaged releases are not yet published from this repository.

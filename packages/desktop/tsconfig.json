@@ -6,8 +6,7 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
     "strict": true,
@@ -15,8 +14,23 @@
     "noEmit": true,
     "emitDeclarationOnly": false,
     "outDir": "node_modules/.ts-dist",
-    "types": ["vite/client", "node", "electron"]
+    "types": [
+      "vite/client",
+      "node",
+      "electron"
+    ],
+    "paths": {
+      "@/*": [
+        "../app/src/*"
+      ]
+    },
+    "allowImportingTsExtensions": true
   },
-  "include": ["src", "package.json"],
-  "exclude": ["src/**/*.test.ts"]
+  "include": [
+    "src",
+    "package.json"
+  ],
+  "exclude": [
+    "src/**/*.test.ts"
+  ]
 }

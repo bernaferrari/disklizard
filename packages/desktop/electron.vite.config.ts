@@ -1,7 +1,7 @@
-import { diskLizardPublicDir } from "@disklizard/app/vite"
+import { fileURLToPath } from "node:url"
 import { defineConfig } from "electron-vite"
 import tailwindcss from "@tailwindcss/vite"
-import solidPlugin from "vite-plugin-solid"
+import react from "@vitejs/plugin-react"
 import { resolveDesktopChannel, resolvePublicReleaseRepository } from "./src/main/product-identity"
 
 const packagedSmoke = process.env.DISKLIZARD_PACKAGED_SMOKE === "1"
@@ -54,8 +54,9 @@ const require = __cjs_mod__.createRequire(import.meta.url);
     },
   },
   renderer: {
-    plugins: [tailwindcss(), solidPlugin()],
-    publicDir: diskLizardPublicDir,
+    plugins: [tailwindcss(), react()],
+    publicDir: fileURLToPath(new URL("../app/public", import.meta.url)),
+    resolve: { alias: { "@": fileURLToPath(new URL("../app/src", import.meta.url)) } },
     root: "src/renderer",
     build: {
       sourcemap: true,

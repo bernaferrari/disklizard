@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Sprawdź uprawnienia folderu i punktu montowania, a następnie przeskanuj ponownie.",
   "disk.accessGuidance.default": "Sprawdź dostęp do tych folderów, a następnie przeskanuj ponownie.",
   "disk.accessGuidance.rescan": "Po zmianie dostępu użyj opcji Skanuj ponownie na górnym pasku.",
+  "disk.common.rescan": "Skanuj ponownie",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Plik",
   "desktop.menu.edit": "Edycja",

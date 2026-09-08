@@ -28,6 +28,7 @@ const desktop = [
   "Víxla skjáhermi",
   "Víxla skráartré",
   "Endurhlaða",
+  "Skanna aftur",
   "Víxla forritaraverkfærum",
   "Raunstærð",
   "Auka aðdrátt",

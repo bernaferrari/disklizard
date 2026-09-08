@@ -645,6 +645,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Kiểm tra quyền của thư mục và điểm gắn kết, sau đó quét lại.",
   "disk.accessGuidance.default": "Kiểm tra quyền truy cập các thư mục này, sau đó quét lại.",
   "disk.accessGuidance.rescan": "Sau khi thay đổi quyền truy cập, hãy dùng Quét lại trên thanh phía trên.",
+  "disk.common.rescan": "Quét lại",
   "toast.update.installFailed.title": "Không thể cài đặt bản cập nhật",
   "toast.update.installFailed.retry": "Thử lại",
   "error.page.title": "Đã xảy ra lỗi",

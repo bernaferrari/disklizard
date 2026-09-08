@@ -641,6 +641,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ފޯލްޑަރު އަދި މައުންޓްގެ ޕަރމިޝަން ތަކެއް ބަލާ، ފަހުން އަލުން ސްކެން ކުރޭ.",
   "disk.accessGuidance.default": "މި ފޯލްޑަރުތަކަށް އެކްސެސް ބަލާ، ފަހުން އަލުން ސްކެން ކުރޭ.",
   "disk.accessGuidance.rescan": "އެކްސެސް ބަދަލުކުރުމުގެ ފަހުން މަތީ ބަރުގައިތިބި Rescan ބޭނުން ކުރޭ.",
+  "disk.common.rescan": "އަލުން ސްކޭން ކުރޭ",
   "toast.update.action.notYet": "އަދި ނޫން",
   "toast.update.installFailed.title": "އަޕްޑޭޓް އިންސްޓޯލް ކުރެވިސް ނުވި",
   "toast.update.installFailed.retry": "އަލުން މަސައްކަތް ކުރޭ",

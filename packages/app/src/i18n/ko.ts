@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "폴더 및 마운트 권한을 확인한 후 다시 스캔하세요.",
   "disk.accessGuidance.default": "이 폴더들에 대한 접근을 확인한 후 다시 스캔하세요.",
   "disk.accessGuidance.rescan": "접근 권한을 변경한 후 상단 바의 다시 스캔을 사용하세요.",
+  "disk.common.rescan": "다시 스캔",
   "command.category.suggested": "추천",
   "command.category.view": "보기",
   "command.category.project": "프로젝트",

@@ -636,6 +636,7 @@ export const dict: Record<string, string> = {
   "disk.accessGuidance.linux": "ෆෝල්ඩර සහ mount අවසරයන් සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
   "disk.accessGuidance.default": "මෙම ෆෝල්ඩර වෙත ප්‍රවේශය සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
   "disk.accessGuidance.rescan": "ප්‍රවේශය වෙනස් කිරීමෙන් පසු ඉහළ තීරුවේ Rescan භාවිත කරන්න.",
+  "disk.common.rescan": "නැවත ස්කෑන් කරන්න",
   "error.page.title": "යමක් වැරදී ඇත",
   "error.page.description": "යෙදුම පූරණය කිරීමේදී දෝෂයක් ඇති විය.",
   "error.page.description.localServerStartup": "දේශීය සේවාදායකය ආරම්භ කිරීමේදී දෝෂයක් ඇති විය.",

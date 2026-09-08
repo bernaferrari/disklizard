@@ -34,7 +34,7 @@ export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320
         isDir: true,
         isOther: true,
         otherCount: visible.length,
-        children: [],
+        children: visible,
         ext: "",
       },
     ]
@@ -50,7 +50,7 @@ export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320
       isDir: true,
       isOther: true,
       otherCount: remainder.length,
-      children: [],
+      children: remainder,
       ext: "",
     },
   ]

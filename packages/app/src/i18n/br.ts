@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Verifique as permissões da pasta e da montagem e digitalize novamente.",
   "disk.accessGuidance.default": "Verifique o acesso a estas pastas e digitalize novamente.",
   "disk.accessGuidance.rescan": "Use Repetir verificação na barra superior após alterar o acesso.",
+  "disk.common.rescan": "Adskannañ",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Arquivo",
   "desktop.menu.edit": "Editar",

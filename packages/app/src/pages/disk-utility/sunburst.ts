@@ -1,3 +1,4 @@
+import { STORAGE_HUES, storageTone } from "./visual-palette"
 /**
  * DiskLizard Sunburst — the visual centerpiece.
  *
@@ -7,7 +8,6 @@
  * inside flex panels; a single rAF loop drives the hover springs + animations.
  */
 
-import { batch } from "solid-js"
 import type { DiskScanNode } from "./types"
 import { surfaceRing } from "./ui-tokens"
 
@@ -94,14 +94,6 @@ function oklchCss(L: number, C: number, hDeg: number, alpha = 1): string {
   return alpha >= 1
     ? `oklch(${L.toFixed(3)} ${C.toFixed(3)} ${h.toFixed(1)})`
     : `oklch(${L.toFixed(3)} ${C.toFixed(3)} ${h.toFixed(1)} / ${alpha})`
-}
-
-/** One chromatic family carried through depth; hierarchy comes from measured lightness. */
-function baseForDepth(depth: number): { L: number; C: number } {
-  if (depth === 0) return { L: 0.78, C: 0.15 }
-  if (depth === 1) return { L: 0.81, C: 0.13 }
-  if (depth === 2) return { L: 0.84, C: 0.11 }
-  return { L: 0.86, C: 0.095 }
 }
 
 // ── Easing & math ────────────────────────────────────────────────────────────
@@ -200,7 +192,7 @@ function layoutTree(
       // A storage map should reveal hierarchy, not reproduce every inode as a
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
-      const perBranchLimit = parent.depth === 0 ? 24 : 16
+      const perBranchLimit = parent.depth === 0 ? 24 : parent.depth === 1 ? 12 : 8
       const children = collapseVisualChildren(
         parent.node,
         Math.min(perBranchLimit, remainingBudget),
@@ -242,13 +234,13 @@ function layoutTree(
   }
 }
 
-export function layoutSunburstSegments(node: SunNode, rings = 3, maxSegments = 720): LayoutSeg[] {
+export function layoutSunburstSegments(node: SunNode, rings = 6, maxSegments = 720): LayoutSeg[] {
   const result: LayoutSeg[] = []
   layoutTree(node, -Math.PI / 2, Math.PI * 1.5, result, rings, maxSegments)
   return result
 }
 
-const PRIMARY_HUES = [155, 205, 250, 290, 330, 25, 65, 95, 125, 180] as const
+const PRIMARY_HUES = STORAGE_HUES
 
 /** A curated spectral sequence keeps large neighboring branches vivid and distinguishable. */
 export function primaryHueForIndex(i: number): number {
@@ -260,14 +252,14 @@ export function primaryHueForIndex(i: number): number {
  * desaturated tint of their branch hue so the map keeps its chroma while
  * hierarchy still reads before decoration.
  */
-export function primarySegmentColor(i: number, alpha = 1, isDir = true): string {
+export function primarySegmentColor(i: number, alpha = 1, isDir = true, depth = 0): string {
   const hue = primaryHueForIndex(i)
-  const [L, C] = isDir ? [0.78, 0.15] : [0.56, 0.05225]
+  const { L, C } = storageTone(hue, depth, isDir)
   return alpha >= 1 ? `oklch(${L} ${C} ${hue.toFixed(1)})` : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
 export function primarySegmentForeground(isDir = true): string {
-  return isDir ? "oklch(0.18 0.015 255)" : "oklch(1 0 0)"
+  return "oklch(0.18 0.015 255)"
 }
 
 // ── The engine ───────────────────────────────────────────────────────────────
@@ -327,7 +319,7 @@ export class Sunburst {
     this.motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     this.reducedMotion = this.motionQuery.matches
     this.options = {
-      rings: 4,
+      rings: 6,
       maxSegments: 560,
       padAngle: 0.0016,
       ringGap: 0.004,
@@ -373,13 +365,12 @@ export class Sunburst {
   _resize() {
     const rect = this.canvas.getBoundingClientRect()
     this.rect = rect
-    const size = Math.max(1, Math.min(rect.width, rect.height))
     this.dpr = Math.min(2, window.devicePixelRatio || 1)
-    this.canvas.width = Math.max(1, Math.round(size * this.dpr))
-    this.canvas.height = Math.max(1, Math.round(size * this.dpr))
+    this.canvas.width = Math.max(1, Math.round(rect.width * this.dpr))
+    this.canvas.height = Math.max(1, Math.round(rect.height * this.dpr))
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
-    this.maxR = (this.canvas.width / 2) * 0.985
+    this.maxR = (Math.min(this.canvas.width, this.canvas.height) / 2) * 0.94
     this.innerHole = this.maxR * INNER_HOLE_RATIO
     this._applyRadiiToTargets()
     // Resizing clears the backing store. Native live resize may pause RAF,
@@ -411,12 +402,12 @@ export class Sunburst {
     const rings = this.options.rings
     const gap = this.options.ringGap * this.maxR
     const usable = this.maxR - this.innerHole - gap * (rings - 1)
-    const ringW = usable / rings
+    // Taper the outer detail rings while preserving the full radial extent.
+    const weights = Array.from({ length: rings }, (_, i) => Math.pow(0.86, i))
+    const unit = usable / weights.reduce((sum, weight) => sum + weight, 0)
     const d = Math.min(depth, rings - 1)
-    return {
-      inner: this.innerHole + d * (ringW + gap),
-      outer: this.innerHole + d * (ringW + gap) + ringW,
-    }
+    const inner = this.innerHole + unit * weights.slice(0, d).reduce((sum, weight) => sum + weight, 0) + d * gap
+    return { inner, outer: inner + weights[d] * unit }
   }
 
   _applyRadiiToTargets() {
@@ -729,11 +720,11 @@ export class Sunburst {
     const end = s.end - pad
     if (end - start < 0.0008) return
 
-    const base = baseForDepth(s.depth)
+    const base = storageTone(s.hue, s.depth, s.node.isDir)
     const isPrimary = s.depth === 0
     const isHi = s.hover > 0.02
-    const L = (s.node.isDir ? base.L : base.L - 0.07) + (isHi ? 0.04 : 0)
-    const C = s.node.isOther ? 0.012 : (s.node.isDir ? base.C : base.C * 0.55) + (isHi ? 0.01 : 0)
+    const L = base.L + (isHi ? 0.025 : 0)
+    const C = s.node.isOther ? 0.012 : base.C
     const isSel = this.selectedPath === s.path
     const dimOthers = this.hovered && this.hovered.path !== s.path && !this.highlightPath
     const dimHi = this.highlightPath && this.highlightPath !== s.path
@@ -831,11 +822,11 @@ export class Sunburst {
     if (!hit || hit.type === "center") {
       this.hovered = null
       cursor = hit?.type === "center" && this._canGoUp() ? "pointer" : "default"
-      if (prev) batch(() => this.options.onHover?.(null))
+      if (prev) this.options.onHover?.(null)
     } else {
       this.hovered = hit.segment
       cursor = this.options.canDrag?.(hit.segment.node) ? "grab" : hit.segment.node.isDir ? "pointer" : "default"
-      if (prev?.path !== hit.segment.path) batch(() => this.options.onHover?.(hit.segment))
+      if (prev?.path !== hit.segment.path) this.options.onHover?.(hit.segment)
     }
     // One style write + one frame request per move instead of scattered writes.
     this.canvas.style.cursor = cursor
@@ -894,6 +885,10 @@ export class Sunburst {
   }
 
   /** Depth-0 wedges visible enough to morph into treemap tiles. */
+  morphSegments(): Segment[] {
+    return this.segments.filter((s) => s.toOpacity > 0.3).slice(0, 360)
+  }
+
   primarySegments(): Segment[] {
     return this.segments.filter((s) => s.depth === 0 && s.toOpacity > 0.3)
   }

@@ -1254,3 +1254,28 @@ describe("disk scan snapshots", () => {
     expect(updated.root.logicalSize).toBe(32)
   })
 })
+
+test("traversal completion does not report whole-scan completion", async () => {
+  const root = await temp()
+  const progress: Array<{ percent?: number; done?: boolean }> = []
+  const manager = new DiskSnapshotManager({
+    cacheDir: await temp(),
+    scan: async (target, options) => {
+      options.onProgress?.({ filesScanned: 1, dirsScanned: 1, currentPath: target, size: 1e15, percent: 25 })
+      options.onProgress?.({
+        filesScanned: 2,
+        dirsScanned: 2,
+        currentPath: target,
+        size: 1e15,
+        percent: 100,
+        done: true,
+      })
+      expect(progress.at(-1)?.done).not.toBe(true)
+      expect(progress.at(-1)?.percent).toBeLessThan(100)
+      return scanFixture(target)
+    },
+  })
+  await manager.scan("progress-test", root, { onProgress: (p) => progress.push(p) }, () => {}, true)
+  expect(progress.some((p) => p.percent !== undefined && p.percent > 0 && p.percent < 30)).toBe(true)
+  await manager.stop("progress-test")
+})

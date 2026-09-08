@@ -1,9 +1,10 @@
-import { createSignal } from "solid-js"
 
 type WindowFullscreenAPI = Pick<Window["api"], "getWindowFullscreen" | "onWindowFullscreenChanged">
 
 export function createWindowFullscreen(api: WindowFullscreenAPI) {
-  const [value, setValue] = createSignal(false)
+  let currentValue = false
+const value = () => currentValue
+const setValue = (next: typeof currentValue) => { currentValue = next }
   let disposed = false
   const unsubscribe = api.onWindowFullscreenChanged((fullscreen) => {
     if (!disposed) setValue(fullscreen)

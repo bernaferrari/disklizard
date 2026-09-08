@@ -630,6 +630,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Vaadake üle kaustade ja haakepunktide õigused ning skannige uuesti.",
   "disk.accessGuidance.default": "Vaadake üle juurdepääs nendele kaustadele ja skannige uuesti.",
   "disk.accessGuidance.rescan": "Pärast juurdepääsu muutmist kasutage ülemisel ribal käsku Rescan.",
+  "disk.common.rescan": "Skaneeri uuesti",
   "toast.update.action.notYet": "Veel mitte",
   "toast.update.installFailed.title": "Värskenduse installimine nurjus",
   "toast.update.installFailed.retry": "Proovi uuesti",

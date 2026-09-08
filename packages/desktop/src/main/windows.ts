@@ -1,9 +1,6 @@
 import windowState from "electron-window-state"
-import { resolveThemeVariant } from "@opencode-ai/ui/theme/resolve"
-import type { DesktopTheme } from "@opencode-ai/ui/theme/types"
-import oc2ThemeJson from "../../../ui/src/theme/themes/oc-2.json"
 import { randomUUID } from "node:crypto"
-import { rmSync } from "node:fs"
+import { existsSync, rmSync } from "node:fs"
 import { app, BrowserWindow, dialog, net, nativeImage, nativeTheme, protocol, shell } from "electron"
 import { dirname, isAbsolute, join, relative, resolve } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
@@ -27,10 +24,9 @@ const rendererHost = "renderer"
 const clipboardWritePermission = "clipboard-sanitized-write"
 const notificationPermission = "notifications"
 const rendererPermissions = new Set([clipboardWritePermission, notificationPermission])
-const oc2Theme = oc2ThemeJson as DesktopTheme
 const oc2Background = {
-  light: resolveThemeVariant(oc2Theme.light, false)["background-base"],
-  dark: resolveThemeVariant(oc2Theme.dark, true)["background-base"],
+  light: "#fafafa",
+  dark: "#16161e",
 }
 const contentSecurityPolicyHeader = "Content-Security-Policy"
 
@@ -160,10 +156,20 @@ export function restoreMainWindows() {
   return [createMainWindow(registry.restoreSingle(randomUUID))]
 }
 
-export function setDockIcon() {
-  if (process.platform !== "darwin") return
-  const icon = nativeImage.createFromPath(join(iconsDir(), "dock.png"))
+function updateDevelopmentDockIcon() {
+  const appearance = nativeTheme.shouldUseDarkColors ? "dark" : "light"
+  const themedPath = join(iconsDir(), `dock-${appearance}.png`)
+  const icon = nativeImage.createFromPath(existsSync(themedPath) ? themedPath : join(iconsDir(), "dock.png"))
   if (!icon.isEmpty()) app.dock?.setIcon(icon)
+}
+
+export function setDockIcon() {
+  // Packaged apps use the Icon Composer catalog so macOS can select its native
+  // light, dark, or tinted appearance. A runtime PNG would override that catalog.
+  if (process.platform !== "darwin" || app.isPackaged) return
+  updateDevelopmentDockIcon()
+  nativeTheme.removeListener("updated", updateDevelopmentDockIcon)
+  nativeTheme.on("updated", updateDevelopmentDockIcon)
 }
 
 function createMainWindow(id: string) {

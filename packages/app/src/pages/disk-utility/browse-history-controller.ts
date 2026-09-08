@@ -1,4 +1,3 @@
-import { createSignal } from "solid-js"
 import {
   EMPTY_DISK_BROWSE_HISTORY,
   resolveDiskBrowseHistoryMove,
@@ -12,6 +11,11 @@ import type { DiskScanNode } from "./types"
  * Owns browse-history state and resolves every destination back into the
  * latest immutable scan tree before it can be shown. The page only supplies
  * path identity, current-tree lookup, and the callback that displays a move.
+ *
+ * Framework-free subscribe/snapshot store: `history()` returns one cached
+ * snapshot object per transition, so React consumers can render it through
+ * `useSyncExternalStore(controller.subscribe, controller.history)`. Options
+ * are captured once — read fresh page state from refs inside the callbacks.
  */
 export function createDiskBrowseHistoryController(options: {
   equals(left: string, right: string): boolean
@@ -19,10 +23,12 @@ export function createDiskBrowseHistoryController(options: {
   onMove(node: DiskScanNode): void
   blocked?: () => boolean
 }) {
-  const [history, setHistory] = createSignal<DiskBrowseHistory>(EMPTY_DISK_BROWSE_HISTORY)
+  const listeners = new Set<() => void>()
+  let history: DiskBrowseHistory = EMPTY_DISK_BROWSE_HISTORY
 
   function replace(next: DiskBrowseHistory) {
-    setHistory({ past: [...next.past], current: next.current, future: [...next.future] })
+    history = { past: [...next.past], current: next.current, future: [...next.future] }
+    for (const listener of [...listeners]) listener()
   }
 
   function reset(path?: string) {
@@ -32,13 +38,13 @@ export function createDiskBrowseHistoryController(options: {
   }
 
   function visit(path: string) {
-    const current = history()
+    const current = history
     const next = transitionDiskBrowseHistory(current, { type: "visit", path }, { equals: options.equals })
     if (next !== current) replace(next)
   }
 
   function resolvedMove(direction: DiskBrowseDirection) {
-    const current = history()
+    const current = history
     return {
       current,
       next: resolveDiskBrowseHistoryMove(current, direction, (path) => !!options.resolve(path)),
@@ -59,5 +65,18 @@ export function createDiskBrowseHistoryController(options: {
     if (node) options.onMove(node)
   }
 
-  return { history, replace, reset, visit, canMove, move }
+  return {
+    history: () => history,
+    replace,
+    reset,
+    visit,
+    canMove,
+    move,
+    subscribe(listener: () => void) {
+      listeners.add(listener)
+      return () => {
+        listeners.delete(listener)
+      }
+    },
+  }
 }

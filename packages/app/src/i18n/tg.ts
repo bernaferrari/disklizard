@@ -640,6 +640,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Иҷозатҳои папка ва нуқтаҳои васлшударо аз назар гузаронед, сипас аз нав санҷед.",
   "disk.accessGuidance.default": "Дастрасӣ ба ин папкаҳоро аз назар гузаронед, сипас аз нав санҷед.",
   "disk.accessGuidance.rescan": "Баъд аз тағйири дастрасӣ аз Rescan дар навори болоӣ истифода баред.",
+  "disk.common.rescan": "Дубора скан кунед",
   "error.page.title": "Чизе хато рафт",
   "error.page.description": "Ҳангоми боркунии барнома хатогӣ рӯй дод.",
   "error.page.description.localServerStartup": "Ҳангоми оғоз кардани сервери маҳаллӣ хатогӣ рӯй дод.",

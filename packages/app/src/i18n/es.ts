@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Revisa los permisos de la carpeta y del punto de montaje y vuelve a escanear.",
   "disk.accessGuidance.default": "Revisa el acceso a estas carpetas y vuelve a escanear.",
   "disk.accessGuidance.rescan": "Usa Volver a escanear en la barra superior después de cambiar el acceso.",
+  "disk.common.rescan": "Volver a analizar",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Archivo",
   "desktop.menu.edit": "Editar",

@@ -40,6 +40,7 @@ try {
         dirsScanned: progress.dirsScanned,
         currentPath: progress.currentPath,
         size: progress.size,
+        percent: progress.percent,
         discovery: progress.discovery satisfies ScanDiscovery | undefined,
       })
     },

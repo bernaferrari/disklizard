@@ -1,6 +1,8 @@
-import { Popover } from "@opencode-ai/ui/popover"
-import { Icon } from "@opencode-ai/ui/icon"
-import { createEffect, onCleanup, Show } from "solid-js"
+import { Popover } from "@/components/dl/popover"
+import { Icon } from "@/components/dl/icon"
+import { Button } from "@/components/ui/button"
+import { HardDrive, Network } from "lucide-react"
+import { useEffect, useRef, type CSSProperties } from "react"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { formatBytes, formatCount, shortBytes } from "./format"
 import { animateCount } from "./motion"
@@ -88,96 +90,99 @@ export function VolumeRow(props: {
   onOpen: (job: VolumeScanJob) => void
 }) {
   const language = useLanguage()
-  const hasTotal = () => props.drive.total > 0
-  const used = () => volumeUsedRatio(props.drive.used, props.drive.total)
-  const scanning = () => props.job?.status === "scanning"
-  const complete = () => props.job?.status === "complete"
-  const failed = () => props.job?.status === "failed"
-  const ink = () => {
-    if (failed()) return "oklch(0.68 0.17 28)"
-    if (complete()) return "oklch(0.72 0.15 148)"
-    if (scanning()) return "oklch(0.74 0.13 176)"
-    return hasTotal() ? usageStroke(props.drive.used, props.drive.total) : "oklch(0.62 0.01 0)"
-  }
-  const fill = () => {
-    if (complete()) return 1
-    if (scanning()) return Math.max(0.02, Math.min(1, (props.job?.pct ?? 0) / 100))
-    if (failed()) return used()
-    return used()
-  }
-  const readout = () => {
-    if (failed()) return "—"
-    if (complete()) return language.t("disk.drive.ready")
-    if (scanning()) return language.t("disk.scan.scanning")
-    return hasTotal() ? formatBytes(props.drive.free) : "—"
-  }
-  const readoutFree = () => !props.job && hasTotal()
-  const completedPerformance = () => {
+  const hasTotal = props.drive.total > 0
+  const used = volumeUsedRatio(props.drive.used, props.drive.total)
+  const scanning = props.job?.status === "scanning"
+  const complete = props.job?.status === "complete"
+  const failed = props.job?.status === "failed"
+  const ink = failed
+    ? "oklch(0.68 0.17 28)"
+    : complete
+      ? "oklch(0.72 0.15 148)"
+      : scanning
+        ? "oklch(0.74 0.13 176)"
+        : hasTotal
+          ? usageStroke(props.drive.used, props.drive.total)
+          : "oklch(0.62 0.01 0)"
+  const fill = complete ? 1 : scanning ? Math.max(0, Math.min(1, (props.job?.pct ?? 0) / 100)) : used
+  const readout = failed
+    ? "—"
+    : complete
+      ? language.t("disk.drive.ready")
+      : scanning
+        ? `${Math.floor(props.job?.pct ?? 0)}%`
+        : hasTotal
+          ? formatBytes(props.drive.free)
+          : "—"
+  const readoutFree = !props.job && hasTotal
+  const completedPerformance = (() => {
     const job = props.job
     if (!job?.completedAt || job.source !== "scan") return
     return scanPerformance(job.files, job.bytes, job.startedAt, job.completedAt)
-  }
+  })()
   const activate = () => {
-    if (scanning() && props.job) {
+    if (scanning && props.job) {
       props.onCancel(props.job.id)
       return
     }
-    if (complete() && props.job) {
+    if (complete && props.job) {
       props.onOpen(props.job)
       return
     }
     if (props.canStart) props.onScan()
   }
-  const disabled = () => !scanning() && !complete() && !failed() && !props.canStart
-  const subtitle = () => {
-    if (props.job?.status === "failed") return props.job.error || language.t("disk.drive.stopped")
-    if (props.job?.status === "complete") return volumeCompletionLabel(props.job.source, completedPerformance())
-    if (props.job?.status === "scanning") {
-      return language.t("disk.drive.scanningSummary", {
-        files: formatCount(props.job.files),
-        bytes: shortBytes(props.job.bytes),
-      })
-    }
-    return volumeSubtitle({ ...props.drive, sharedFree: undefined })
-  }
+  const disabled = !scanning && !complete && !failed && !props.canStart
+  const subtitle =
+    props.job?.status === "failed"
+      ? props.job.error || language.t("disk.drive.stopped")
+      : props.job?.status === "complete"
+        ? volumeCompletionLabel(props.job.source, completedPerformance)
+        : props.job?.status === "scanning"
+          ? language.t("disk.drive.scanningSummary", {
+              files: formatCount(props.job.files),
+              bytes: shortBytes(props.job.bytes),
+            })
+          : volumeSubtitle({ ...props.drive, sharedFree: undefined })
 
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
-      class="dl-hover-drive dl-volume-row grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-3 px-4 sm:gap-5 sm:px-5"
-      style={{
-        "--dl-volume-ink": ink(),
-        // Readout text rides on the same hue but leans on --text-strong so it
-        // clears 4.5:1 in both themes; the bar fill keeps the vivid ink.
-        "--dl-volume-readout": `color-mix(in oklch, ${ink()} 45%, var(--text-strong))`,
-      }}
+      className="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-5 gap-y-3 rounded-xl bg-surface-raised-base px-5 py-5 max-sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+      style={
+        {
+          "--dl-volume-ink": ink,
+          // Readout text rides on the same hue but leans on --text-strong so it
+          // clears 4.5:1 in both themes; the bar fill keeps the vivid ink.
+          "--dl-volume-readout": `color-mix(in oklch, ${ink} 45%, var(--text-strong))`,
+        } as CSSProperties
+      }
     >
       <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
-      <div class="min-w-0">
-        <div class="flex min-w-0 items-center gap-1.5">
-          <p class="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
-          <Show when={(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined}>
+      <div className="min-w-0">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <p className="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
+          {(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined ? (
             <Popover
               placement="bottom-start"
               portal={false}
               title={language.t("disk.drive.details")}
-              class="w-[320px] max-w-[calc(100vw-32px)]"
-              style={{ "background-color": "var(--surface-raised-base)" }}
+              className="w-[320px] max-w-[calc(100vw-32px)]"
+              style={{ backgroundColor: "var(--surface-raised-base)" }}
               triggerAs="button"
               triggerProps={{
                 type: "button",
                 "aria-label": language.t("disk.drive.details"),
-                class:
+                className:
                   "grid size-7 shrink-0 place-items-center rounded-md text-text-weaker outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak",
               }}
               trigger={
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 20 20"
-                  class="size-3.5"
+                  className="size-3.5"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.4"
+                  strokeWidth="1.4"
                 >
                   <circle cx="10" cy="10" r="7" />
                   <path d="M10 9v5" />
@@ -185,29 +190,31 @@ export function VolumeRow(props: {
                 </svg>
               }
             >
-              <Show when={props.drive.sharedFree !== undefined}>
-                <p class="mt-2 text-12-regular text-text-weak">
-                  {language.t("disk.drive.sharedContainerFree", { size: formatBytes(props.drive.sharedFree ?? 0) })}
+              {props.drive.sharedFree !== undefined ? (
+                <p className="mt-2 text-12-regular text-text-weak">
+                  {language.t("disk.drive.sharedContainerFree", {
+                    size: formatBytes(props.drive.sharedFree ?? 0),
+                  })}
                 </p>
-              </Show>
+              ) : null}
               <ApfsSnapshotEvidenceList
                 embedded
-                class="mt-2 border-t border-border-weaker-base pt-3"
+                className="mt-2 border-t border-border-weaker-base pt-3"
                 snapshotCount={props.drive.snapshotCount}
                 purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
                 timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
                 snapshots={props.drive.apfsSnapshots}
               />
             </Popover>
-          </Show>
+          ) : null}
         </div>
         <p
-          class="mt-0.5 truncate text-13-regular text-text-weaker"
+          className="mt-0.5 truncate text-13-regular text-text-weaker"
           title={
-            props.job?.status === "complete" && completedPerformance()
+            props.job?.status === "complete" && completedPerformance
               ? language.t("disk.drive.completedTitle", {
-                  duration: formatScanDuration(completedPerformance()!.elapsedMs),
-                  rate: formatScanRate(completedPerformance()!.filesPerSecond, "files"),
+                  duration: formatScanDuration(completedPerformance.elapsedMs),
+                  rate: formatScanRate(completedPerformance.filesPerSecond, "files"),
                 })
               : (props.job?.currentPath ?? props.drive.path)
           }
@@ -215,41 +222,48 @@ export function VolumeRow(props: {
           {volumeSubtitle({ ...props.drive, sharedFree: undefined })}
         </p>
       </div>
-      <div class="flex w-[180px] flex-col gap-2 max-sm:w-[100px]" title={subtitle()}>
-        <div class="min-w-12 flex-1">
-          <div class="dl-volume-bar" aria-hidden="true">
+      <div className="flex w-44 flex-col gap-2.5 max-sm:col-start-2 max-sm:row-start-2 max-sm:w-full" title={subtitle}>
+        <div className="min-w-12 flex-1">
+          <div
+            className="h-[5px] rounded-full bg-[color-mix(in_oklch,var(--text-strong)_10%,transparent)]"
+            role={scanning ? "progressbar" : undefined}
+            aria-label={scanning ? props.drive.name : undefined}
+            aria-valuemin={scanning ? 0 : undefined}
+            aria-valuemax={scanning ? 100 : undefined}
+            aria-valuenow={scanning ? Math.floor(props.job?.pct ?? 0) : undefined}
+          >
             <div
-              class="dl-volume-bar-fill"
-              data-settled={complete() ? "" : undefined}
-              data-scanning={scanning() ? "" : undefined}
-              style={{ width: scanning() ? "100%" : `${Math.round(fill() * 1000) / 10}%` }}
+              className="dl-volume-bar-fill h-full rounded-[inherit] bg-(--dl-volume-ink) transition-[width,background-color] duration-200"
+              data-settled={complete ? "" : undefined}
+              data-scanning={scanning ? "" : undefined}
+              style={{ width: `${Math.round(fill * 1000) / 10}%` }}
             />
           </div>
         </div>
         <p
-          class="whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em]"
-          classList={{ "text-text-weak": !failed(), "text-text-strong": failed() }}
+          className={`whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em] ${
+            failed ? "text-text-strong" : "text-text-weak"
+          }`}
         >
-          {readout()}
-          <Show when={readoutFree()}>{` ${language.t("disk.drive.freeSuffix")}`}</Show>
+          {readout}
+          {readoutFree ? ` ${language.t("disk.drive.freeSuffix")}` : undefined}
         </p>
       </div>
-      <div class="flex shrink-0 items-center gap-3 sm:gap-4">
-        <button
+      <div className="flex shrink-0 items-center max-sm:col-start-3 max-sm:row-span-2 max-sm:row-start-1">
+        <Button
           type="button"
           data-disk-primary-action={props.primary ? "" : undefined}
-          classList={{
-            "dl-volume-view outline-none focus-visible:ring-2 focus-visible:ring-text-weak": true,
-            "dl-volume-view-primary": props.primary && !scanning(),
-          }}
-          disabled={disabled()}
-          title={disabled() ? language.t("disk.drive.scanLimit") : undefined}
+          size="default"
+          variant={props.primary && !scanning ? "default" : "secondary"}
+          className="h-9 min-w-20 rounded-lg px-4"
+          disabled={disabled}
+          title={disabled ? language.t("disk.drive.scanLimit") : undefined}
           aria-label={
-            scanning()
+            scanning
               ? language.t("disk.drive.cancelLabel", { name: props.drive.name })
-              : complete()
+              : complete
                 ? language.t("disk.drive.viewLabel", { name: props.drive.name })
-                : hasTotal()
+                : hasTotal
                   ? language.t("disk.drive.scanFreeLabel", {
                       name: props.drive.name,
                       free: formatBytes(props.drive.free),
@@ -259,37 +273,17 @@ export function VolumeRow(props: {
           onClick={activate}
         >
           {volumeActionLabel(props.job?.status)}
-        </button>
+        </Button>
       </div>
     </div>
   )
 }
 
 function VolumeGlyph(props: { type: DiskDriveInfo["type"]; startup: boolean }) {
-  if (props.type === "network")
-    return (
-      <span class="grid size-10 place-items-center text-text-weak">
-        <Icon name="server" class="size-6" />
-      </span>
-    )
+  const Glyph = props.type === "network" ? Network : HardDrive
   return (
-    <span class="grid size-10 place-items-center" aria-hidden="true">
-      <svg viewBox="0 0 32 40" class="h-10 w-8 text-text-weak" fill="none">
-        <rect
-          x="4.5"
-          y="2.5"
-          width="23"
-          height="35"
-          rx="3.5"
-          fill="currentColor"
-          fill-opacity=".08"
-          stroke="currentColor"
-          stroke-width="1.5"
-        />
-        <path d="M5 30h22" stroke="currentColor" stroke-opacity=".35" />
-        <path d="M8.5 34h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        <circle cx="23" cy="34" r=".9" fill="currentColor" />
-      </svg>
+    <span className="grid h-14 w-12 place-items-center rounded-xl bg-background-base/60 text-text-weak" aria-hidden="true">
+      <Glyph className="size-7" strokeWidth={1.4} />
     </span>
   )
 }
@@ -310,45 +304,47 @@ export function volumeCompletionLabel(source: VolumeScanJob["source"], performan
 /** Recommendations live with the inspector controls instead of obscuring the map. */
 export function ReclaimBanner(props: { bytes: number; count: number; onReview: () => void }) {
   const language = useLanguage()
-  let valueElement!: HTMLSpanElement
-  let displayed = 0
+  const valueRef = useRef<HTMLSpanElement | null>(null)
+  const displayedRef = useRef(0)
 
-  createEffect(() => {
+  useEffect(() => {
     const total = props.bytes
+    const valueElement = valueRef.current
+    if (!valueElement) return
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      displayed = total
+      displayedRef.current = total
       valueElement.textContent = formatBytes(total)
       return
     }
-    const cancel = animateCount(displayed, total, 240, (value) => {
-      displayed = value
+    const cancel = animateCount(displayedRef.current, total, 240, (value) => {
+      displayedRef.current = value
       valueElement.textContent = formatBytes(value)
     })
-    onCleanup(cancel)
-  })
+    return cancel
+  }, [props.bytes])
 
   return (
     <button
       type="button"
-      class="dl-hover-row dl-touch-target mt-2 flex min-h-12 w-full items-center gap-2.5 border-b border-border-weaker-base px-1 py-2 text-left outline-none transition-[color,background-color,transform] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.99]"
+      className="mt-2 flex min-h-11 min-w-11 w-full items-center gap-2.5 border-b border-border-weaker-base px-1 py-2 text-left outline-none transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_oklch,var(--surface-raised-base)_45%,transparent)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak active:scale-[0.99]"
       onClick={props.onReview}
       aria-label={language.t("disk.drive.reviewLabel", {
         bytes: formatBytes(props.bytes),
         count: formatCount(props.count),
       })}
     >
-      <span class="dl-accent-text grid size-7 shrink-0 place-items-center">
-        <Icon name="models" class="size-3.5" />
+      <span className="grid size-7 shrink-0 place-items-center text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))]">
+        <Icon name="models" className="size-3.5" />
       </span>
-      <span class="min-w-0 flex-1">
-        <span class="block text-13-semibold text-text-strong">{language.t("disk.common.recommendations")}</span>
-        <span class="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak">
-          <span ref={valueElement}>{formatBytes(0)}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-13-semibold text-text-strong">{language.t("disk.common.recommendations")}</span>
+        <span className="mt-0.5 block truncate text-13-regular tabular-nums text-text-weak">
+          <span ref={valueRef}>{formatBytes(0)}</span>
           {` · ${language.plural("disk.drive.itemCount", props.count, { formattedCount: formatCount(props.count) })}`}
         </span>{" "}
       </span>
-      <span class="flex shrink-0 items-center gap-1.5 text-13-semibold text-text-strong">
-        {language.t("disk.common.review")} <Icon name="chevron-right" class="size-3" />
+      <span className="flex shrink-0 items-center gap-1.5 text-13-semibold text-text-strong">
+        {language.t("disk.common.review")} <Icon name="chevron-right" className="size-3" />
       </span>
     </button>
   )

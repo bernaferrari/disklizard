@@ -642,6 +642,7 @@ export const dict: Record<string, string> = {
   "disk.accessGuidance.linux": "ཡིག་སྣོད་དང་ mount གི་ཆོག་མཆན་ཚུ་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
   "disk.accessGuidance.default": "ཡིག་སྣོད་འདི་ཚུ་ལུ་འཛུལ་སྤྱོད་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
   "disk.accessGuidance.rescan": "འཛུལ་སྤྱོད་བསྒྱུར་བཅོས་འབད་ཚུལས་ཚར་ གོང་གི་ཕྲེང་ནང་ Rescan ལག་ལེན་འཐབ།",
+  "disk.common.rescan": "ཡང་བསྐྱར་ཞིབ་དཔྱད།",
   "toast.update.action.notYet": "ད༌ལྟོ༌མེན༌པའི",
   "toast.update.installFailed.title": "གསར་བསྒྱུར་གཞི་བཙུགས་འབད་མ་ཚུགས།",
   "toast.update.installFailed.retry": "ཡང་སྐྱར་འབད་བཅུམ།",

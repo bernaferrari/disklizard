@@ -636,6 +636,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Skontrolujte oprávnenia priečinkov a pripojených jednotiek a potom skenujte znova.",
   "disk.accessGuidance.default": "Skontrolujte prístup k týmto priečinkom a potom skenujte znova.",
   "disk.accessGuidance.rescan": "Po zmene prístupu použite položku Rescan v hornom paneli.",
+  "disk.common.rescan": "Skenovať znova",
   "error.page.title": "Niečo sa pokazilo",
   "error.page.description": "Pri načítavaní aplikácie došlo k chybe.",
   "error.page.description.localServerStartup": "Pri spúšťaní lokálneho servera došlo k chybe.",

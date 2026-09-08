@@ -1,5 +1,4 @@
-import { onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * Animate a number from `from` to `to` over `ms`, calling `onUpdate` each frame
@@ -20,6 +19,13 @@ export function animateCount(from: number, to: number, ms: number, onUpdate: (v:
 
 export type SurfacePhase = "closed" | "opening" | "open" | "closing"
 
+export type SurfacePresenceOptions = {
+  exitMs?: number
+  reducedMotion?: () => boolean
+  requestFrame?: (callback: FrameRequestCallback) => number
+  cancelFrame?: (handle: number) => void
+}
+
 const SURFACE_EXIT_MS = 160
 
 /**
@@ -27,72 +33,115 @@ const SURFACE_EXIT_MS = 160
  * next frame gives CSS transitions a real start pose; reopening during exit
  * retargets from the live pose instead of replaying a keyframe.
  */
-export function createSurfacePresence(
-  options: {
-    exitMs?: number
-    reducedMotion?: () => boolean
-    requestFrame?: (callback: FrameRequestCallback) => number
-    cancelFrame?: (handle: number) => void
-  } = {},
-) {
-  const [state, setState] = createStore({ phase: "closed" as SurfacePhase })
+function createSurfacePresenceStore(
+  getOptions: () => SurfacePresenceOptions,
+  onPhase: (phase: SurfacePhase) => void,
+): SurfacePresence {
+  let phase: SurfacePhase = "closed"
   let frame: number | undefined
   let timer: ReturnType<typeof setTimeout> | undefined
   let afterClose: (() => void) | undefined
 
+  const writePhase = (next: SurfacePhase) => {
+    phase = next
+    onPhase(next)
+  }
+
   const clearSchedule = () => {
-    if (frame !== undefined) (options.cancelFrame ?? cancelAnimationFrame)(frame)
-    if (timer !== undefined) clearTimeout(timer)
-    frame = undefined
+    if (frame !== undefined) {
+      ;(getOptions().cancelFrame ?? cancelAnimationFrame)(frame)
+      frame = undefined
+    }
+    clearTimeout(timer)
     timer = undefined
   }
 
   const finishClose = () => {
     timer = undefined
-    setState("phase", "closed")
+    writePhase("closed")
     const callback = afterClose
     afterClose = undefined
     callback?.()
   }
 
-  const reducedMotion = () => options.reducedMotion?.() ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-  onCleanup(clearSchedule)
+  const reducedMotion = () =>
+    getOptions().reducedMotion?.() ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
   const close = (callback?: () => void) => {
-    if (state.phase === "closed") {
+    if (phase === "closed") {
       callback?.()
       return
     }
-    if (state.phase === "closing") return
+    if (phase === "closing") return
     clearSchedule()
     afterClose = callback
     if (reducedMotion()) {
       finishClose()
       return
     }
-    setState("phase", "closing")
-    timer = setTimeout(finishClose, options.exitMs ?? SURFACE_EXIT_MS)
+    writePhase("closing")
+    timer = setTimeout(finishClose, getOptions().exitMs ?? SURFACE_EXIT_MS)
   }
 
   return {
-    phase: () => state.phase,
-    mounted: () => state.phase !== "closed",
+    phase: () => phase,
+    mounted: () => phase !== "closed",
     open() {
-      if (state.phase === "open" || state.phase === "opening") return
+      if (phase === "open" || phase === "opening") return
       clearSchedule()
       afterClose = undefined
-      if (state.phase === "closing" || reducedMotion()) {
-        setState("phase", "open")
+      if (phase === "closing" || reducedMotion()) {
+        writePhase("open")
         return
       }
-      setState("phase", "opening")
-      frame = (options.requestFrame ?? requestAnimationFrame)(() => {
+      writePhase("opening")
+      frame = (getOptions().requestFrame ?? requestAnimationFrame)(() => {
         frame = undefined
-        setState("phase", "open")
+        writePhase("open")
       })
     },
     close: () => close(),
     closeThen: close,
+    /** Clear any pending exit frame/timer; call when the owner goes away. */
+    dispose: clearSchedule,
+  }
+}
+
+/** Accessor surface of one presence machine; stable function identities. */
+export interface SurfacePresence {
+  phase(): SurfacePhase
+  mounted(): boolean
+  open(): void
+  close(): void
+  closeThen(callback?: () => void): void
+  /** Clear any pending exit frame/timer; call when the owner goes away. */
+  dispose(): void
+}
+
+/**
+ * Framework-free surface machine with the v1 accessor surface. Pass an
+ * `onPhase` observer to mirror transitions into external state.
+ */
+export function createSurfacePresence(options: SurfacePresenceOptions = {}, onPhase: () => void = () => {}) {
+  return createSurfacePresenceStore(() => options, onPhase)
+}
+
+/**
+ * React hook over the same machine: `phase` is plain state and the pending
+ * exit frame/timer is cleared when the owning component unmounts. Options are
+ * read lazily at each action, so fresh option objects are safe to pass inline.
+ */
+export function useSurfacePresence(options: SurfacePresenceOptions = {}) {
+  const [phase, setPhase] = useState<SurfacePhase>("closed")
+  const optionsRef = useRef(options)
+  optionsRef.current = options
+  const [surface] = useState(() => createSurfacePresenceStore(() => optionsRef.current, setPhase))
+  useEffect(() => surface.dispose, [surface])
+  return {
+    phase,
+    mounted: phase !== "closed",
+    open: surface.open,
+    close: surface.close,
+    closeThen: surface.closeThen,
   }
 }

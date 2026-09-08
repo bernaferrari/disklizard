@@ -639,6 +639,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Проверете разрешенията за папки и монтирани устройства, след което сканирайте отново.",
   "disk.accessGuidance.default": "Проверете достъпа до тези папки, след което сканирайте отново.",
   "disk.accessGuidance.rescan": "След промяна на достъпа използвайте „Повторно сканиране“ в горната лента.",
+  "disk.common.rescan": "Ново сканиране",
   "toast.update.installFailed.title": "Актуализацията не можа да бъде инсталирана",
   "toast.update.installFailed.retry": "Опитайте отново",
   "error.page.title": "Нещо се обърка",

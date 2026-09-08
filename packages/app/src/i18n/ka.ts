@@ -633,6 +633,7 @@ export const dict = {
   "disk.accessGuidance.linux": "გადახედეთ საქაღალდეებისა და მიმაგრების წვდომის უფლებებს და ხელახლა სკანირება მოახდინეთ.",
   "disk.accessGuidance.default": "გადახედეთ ამ საქაღალდეებზე წვდომას და ხელახლა სკანირება მოახდინეთ.",
   "disk.accessGuidance.rescan": "წვდომის შეცვლის შემდეგ გამოიყენეთ Rescan ზედა პანელში.",
+  "disk.common.rescan": "თავიდან სკანირება",
   "toast.update.action.notYet": "ჯერ არა",
   "toast.update.installFailed.title": "განახლების დაყენება ვერ მოხერხდა",
   "toast.update.installFailed.retry": "ხელახლა ცდა",

@@ -25,6 +25,7 @@ mock.module("electron", () => ({
     fromWebContents: (sender: FakeSender) => ({
       isDestroyed: () => false,
       webContents: sender,
+      setProgressBar: () => undefined,
     }),
     getAllWindows: () => [],
   },

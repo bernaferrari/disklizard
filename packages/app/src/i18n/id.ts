@@ -691,6 +691,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Periksa izin folder dan mount, lalu pindai lagi.",
   "disk.accessGuidance.default": "Periksa akses ke folder-folder ini, lalu pindai lagi.",
   "disk.accessGuidance.rescan": "Gunakan Pindai Ulang di bilah atas setelah mengubah akses.",
+  "disk.common.rescan": "Pindai ulang",
   "toast.update.installFailed.title": "Tidak dapat menginstal pembaruan",
   "toast.update.installFailed.retry": "Coba lagi",
 

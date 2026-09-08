@@ -1,6 +1,6 @@
-import { ScrollView } from "@opencode-ai/ui/scroll-view"
-import { createVirtualizer } from "@tanstack/solid-virtual"
-import { createEffect, createSignal, For, onCleanup, Show, type JSX } from "solid-js"
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
+import { ScrollArea as ScrollView } from "@/components/ui/scroll-area"
+import { useVirtualizer } from "@tanstack/react-virtual"
 import type { DiskScanNode } from "./types"
 import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
 import { useLanguage } from "./runtime"
@@ -17,15 +17,16 @@ export function VirtualIndex(props: {
   onMoveFocus: (delta: number, extendRange?: boolean) => number
   onPageFocus: (direction: -1 | 1, pageSize: number, extendRange?: boolean) => number
   onMoveFocusToBoundary: (boundary: "first" | "last", extendRange?: boolean) => number
-  render: (entry: IndexEntry, index: () => number) => JSX.Element
+  render: (entry: IndexEntry, index: () => number) => ReactNode
 }) {
   const language = useLanguage()
-  const [viewport, setViewport] = createSignal<HTMLDivElement>()
-  const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
-    get count() {
-      return props.entries.length
-    },
-    getScrollElement: () => viewport() ?? null,
+  // State (not ref): the ScrollView shim hands over the viewport in a passive effect, after
+  // react-virtual's layout-effect subscription saw null; storing the element re-renders so
+  // the virtualizer re-subscribes — matching v1's synchronous signal binding.
+  const [viewport, setViewport] = useState<HTMLDivElement | null>(null)
+  const virtualizer = useVirtualizer<HTMLDivElement, HTMLLIElement>({
+    count: props.entries.length,
+    getScrollElement: () => viewport,
     estimateSize: () => INDEX_ROW_ESTIMATE,
     overscan: 10,
     getItemKey: (index) => props.entries[index]?.node.path ?? index,
@@ -34,18 +35,20 @@ export function VirtualIndex(props: {
   const pageSize = () =>
     Math.max(
       1,
-      Math.floor((viewport()?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / INDEX_ROW_ESTIMATE),
+      Math.floor((viewport?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / INDEX_ROW_ESTIMATE),
     )
-  props.bindScrollToIndex(scrollToIndex)
-  props.bindPageSize(pageSize)
-  onCleanup(() => {
-    props.bindScrollToIndex(undefined)
-    props.bindPageSize(undefined)
-  })
+  useEffect(() => {
+    props.bindScrollToIndex(scrollToIndex)
+    props.bindPageSize(pageSize)
+    return () => {
+      props.bindScrollToIndex(undefined)
+      props.bindPageSize(undefined)
+    }
+  }, [props.bindScrollToIndex, props.bindPageSize, viewport])
 
   return (
     <ScrollView
-      class="min-h-0 flex-1"
+      className="min-h-0 flex-1"
       viewportRef={setViewport}
       onKeyDown={(event) => {
         if (event.defaultPrevented) return
@@ -77,27 +80,23 @@ export function VirtualIndex(props: {
     >
       <ul
         id="disklizard-storage-list"
-        class="relative mx-2 my-2"
+        className="relative mx-2 my-2"
         style={{ height: `${virtualizer.getTotalSize()}px` }}
         aria-label={language.t("disk.virtual.entries")}
       >
-        <For each={virtualizer.getVirtualItems()}>
-          {(item) => {
-            const entry = () => props.entries[item.index]
-            return (
-              <Show when={entry()}>
-                {(value) => (
-                  <li
-                    class="absolute left-0 top-0 w-full"
-                    style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
-                  >
-                    {props.render(value(), () => item.index)}
-                  </li>
-                )}
-              </Show>
-            )
-          }}
-        </For>
+        {virtualizer.getVirtualItems().map((item) => {
+          const entry = props.entries[item.index]
+          if (!entry) return null
+          return (
+            <li
+              key={item.key}
+              className="absolute left-0 top-0 w-full"
+              style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
+            >
+              {props.render(entry, () => item.index)}
+            </li>
+          )
+        })}
       </ul>
     </ScrollView>
   )
@@ -109,17 +108,18 @@ export function VirtualRows<T>(props: {
   estimateSize: (item: T) => number
   itemKey: (item: T, index: number) => string | number
   isFocusable?: (item: T, index: number) => boolean
-  render: (item: T, index: () => number) => JSX.Element
+  render: (item: T, index: () => number) => ReactNode
 }) {
-  const [viewport, setViewport] = createSignal<HTMLDivElement>()
-  const [activeIndex, setActiveIndex] = createSignal(-1)
-  let list: HTMLUListElement | undefined
+  const [activeIndex, setActiveIndex] = useState(-1)
+  // The ScrollView shim delivers the viewport from a passive effect, after react-virtual's
+  // layout-effect subscription ran with null — hold the element in state so its arrival
+  // re-renders and the virtualizer re-subscribes (v1 wired the signal synchronously).
+  const [viewport, setViewport] = useState<HTMLDivElement | null>(null)
+  const list = useRef<HTMLUListElement | null>(null)
   const padding = 8
-  const virtualizer = createVirtualizer<HTMLDivElement, HTMLLIElement>({
-    get count() {
-      return props.items.length
-    },
-    getScrollElement: () => viewport() ?? null,
+  const virtualizer = useVirtualizer<HTMLDivElement, HTMLLIElement>({
+    count: props.items.length,
+    getScrollElement: () => viewport,
     estimateSize: (index) => props.estimateSize(props.items[index]),
     overscan: 8,
     getItemKey: (index) => props.itemKey(props.items[index], index),
@@ -138,15 +138,15 @@ export function VirtualRows<T>(props: {
       isFocusable,
     })
   const pageSize = () => {
-    const item = props.items[activeIndex()] ?? props.items[firstFocusable()]
+    const item = props.items[activeIndex] ?? props.items[firstFocusable()]
     const estimate = item ? props.estimateSize(item) : INDEX_ROW_ESTIMATE
-    return Math.max(1, Math.floor((viewport()?.clientHeight ?? estimate * DEFAULT_LIST_PAGE_SIZE) / estimate))
+    return Math.max(1, Math.floor((viewport?.clientHeight ?? estimate * DEFAULT_LIST_PAGE_SIZE) / estimate))
   }
   const focusRow = (index: number, attempt = 0) => {
     setActiveIndex(index)
     virtualizer.scrollToIndex(index, { align: "auto" })
     requestAnimationFrame(() => {
-      const row = list?.querySelector<HTMLElement>(`[data-disk-review-index="${index}"]`)
+      const row = list.current?.querySelector<HTMLElement>(`[data-disk-review-index="${index}"]`)
       if (row) {
         row.focus({ preventScroll: true })
         return
@@ -159,7 +159,7 @@ export function VirtualRows<T>(props: {
       return
     }
     const target = reviewNavigationTarget({
-      currentIndex: activeIndex(),
+      currentIndex: activeIndex,
       key: event.key,
       length: props.items.length,
       pageSize: pageSize(),
@@ -170,54 +170,54 @@ export function VirtualRows<T>(props: {
     event.stopImmediatePropagation()
     focusRow(target)
   }
-  let removeViewportKeydown: (() => void) | undefined
-  const bindViewport = (element: HTMLDivElement) => {
-    removeViewportKeydown?.()
-    setViewport(element)
-    element.addEventListener("keydown", onReviewNavigation, true)
-    removeViewportKeydown = () => element.removeEventListener("keydown", onReviewNavigation, true)
-  }
-  onCleanup(() => removeViewportKeydown?.())
+  // The native capture listener below must outlive renders; route it through a ref so it
+  // always dispatches to the freshest closure (live props + activeIndex state).
+  const onReviewNavigationRef = useRef(onReviewNavigation)
+  onReviewNavigationRef.current = onReviewNavigation
+  const removeViewportKeydown = useRef<(() => void) | undefined>(undefined)
+  const bindViewport = useCallback((element: HTMLDivElement | null) => {
+    removeViewportKeydown.current?.()
+    removeViewportKeydown.current = undefined
+    setViewport(element ?? null)
+    if (!element) return
+    const listener = (event: KeyboardEvent) => onReviewNavigationRef.current(event)
+    element.addEventListener("keydown", listener, true)
+    removeViewportKeydown.current = () => element.removeEventListener("keydown", listener, true)
+  }, [])
+  useEffect(() => () => removeViewportKeydown.current?.(), [])
 
-  createEffect(() => {
-    const current = activeIndex()
-    if (current < 0 || !isFocusable(current)) setActiveIndex(firstFocusable())
-  })
+  useEffect(() => {
+    if (activeIndex < 0 || !isFocusable(activeIndex)) setActiveIndex(firstFocusable())
+  }, [activeIndex, props.items, props.isFocusable])
 
   return (
-    <ScrollView class="min-h-0 flex-1" viewportRef={bindViewport}>
+    <ScrollView className="min-h-0 flex-1" viewportRef={bindViewport}>
       <ul
-        ref={(element) => {
-          list = element
-        }}
-        class="relative"
+        ref={list}
+        className="relative"
         style={{ height: `${virtualizer.getTotalSize() + padding * 2}px` }}
         aria-label={props.ariaLabel}
       >
-        <For each={virtualizer.getVirtualItems()}>
-          {(row) => {
-            const item = () => props.items[row.index]
-            return (
-              <Show when={item()}>
-                {(value) => (
-                  <li
-                    class="absolute left-0 top-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
-                    style={{ height: `${row.size}px`, transform: `translateY(${row.start + padding}px)` }}
-                    data-disk-review-index={row.index}
-                    tabIndex={isFocusable(row.index) ? (row.index === activeIndex() ? 0 : -1) : undefined}
-                    aria-posinset={row.index + 1}
-                    aria-setsize={props.items.length}
-                    onFocusIn={() => {
-                      if (isFocusable(row.index)) setActiveIndex(row.index)
-                    }}
-                  >
-                    {props.render(value(), () => row.index)}
-                  </li>
-                )}
-              </Show>
-            )
-          }}
-        </For>
+        {virtualizer.getVirtualItems().map((row) => {
+          const item = props.items[row.index]
+          if (!item) return null
+          return (
+            <li
+              key={row.key}
+              className="absolute left-0 top-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
+              style={{ height: `${row.size}px`, transform: `translateY(${row.start + padding}px)` }}
+              data-disk-review-index={row.index}
+              tabIndex={isFocusable(row.index) ? (row.index === activeIndex ? 0 : -1) : undefined}
+              aria-posinset={row.index + 1}
+              aria-setsize={props.items.length}
+              onFocus={() => {
+                if (isFocusable(row.index)) setActiveIndex(row.index)
+              }}
+            >
+              {props.render(item, () => row.index)}
+            </li>
+          )
+        })}
       </ul>
     </ScrollView>
   )

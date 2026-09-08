@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "types": ["vite/client", "node", "bun"]
-  },
-  "include": ["./**/*.ts", "./**/*.tsx", "../performance/benchmark.ts"],
-  "exclude": ["dist", "../test-results"]
-}

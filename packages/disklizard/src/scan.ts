@@ -26,6 +26,7 @@ import {
 } from "./developer-artifacts"
 import { ChildRetention, apparentBytes, compareNodesBySize } from "./scan-retention"
 import { ScanScheduler } from "./scan-scheduler"
+import { traversalWorkWeights } from "./work-progress"
 import { getDriveDiscovery, type DriveDiscovery } from "./drive-discovery"
 
 export type { DiskNode, DriveInfo, ScanDiscovery, ScanOptions, ScanProgress }
@@ -144,6 +145,7 @@ type WalkState = {
   rootPath: string
   /** Shared counter for in-flight progress size estimate */
   scannedBytes: number
+  workProgress: number
   signal?: AbortSignal
   sizeMode: "physical" | "logical"
   claimedHardLinks: Set<string>
@@ -454,12 +456,7 @@ async function recordDeveloperArtifact(
 ) {
   const inventory = st.artifactInventory
   if (!inventory) return
-  const classification = classifyDeveloperArtifact(
-    name,
-    basename(dirname(dirPath)),
-    signatures,
-    siblingMarkers,
-  )
+  const classification = classifyDeveloperArtifact(name, basename(dirname(dirPath)), signatures, siblingMarkers)
   if (!classification) return
   const directoryIdentity = await artifactDirectoryIdentity(st, dirPath)
   retainDeveloperArtifact(inventory, {
@@ -526,6 +523,7 @@ function emitProgress(st: WalkState, currentPath: string, force = false) {
     dirsScanned: st.dirsScanned,
     currentPath,
     size: st.scannedBytes,
+    percent: st.workProgress * 100,
   })
 }
 
@@ -545,6 +543,7 @@ function emitDiscovery(st: WalkState, node: DiskNode) {
     dirsScanned: st.dirsScanned,
     currentPath: node.path,
     size: st.scannedBytes,
+    percent: st.workProgress * 100,
     discovery: {
       name: node.name,
       path: node.path,
@@ -802,6 +801,9 @@ async function sizeOnly(
   captureSignatures = false,
   inventoryScopeAllowed = false,
   siblingMarkers: readonly string[] = [],
+  reportWork: (fraction: number) => void = (fraction) => {
+    st.workProgress = fraction
+  },
 ): Promise<{
   size: number
   logicalSize?: number
@@ -829,72 +831,99 @@ async function sizeOnly(
   // Sibling project markers for records made inside child directories.
   const childMarkers = st.artifactInventory ? developerProjectMarkers(entries.map((ent) => ent.name)) : []
 
+  const weights = traversalWorkWeights(entries, (entry) => {
+    if (entry.isSymbolicLink() || isExcluded(st, joinPath(dirPath, entry.name))) return "skip"
+    return entry.isDirectory() ? "directory" : "file"
+  })
+  const workByEntry = new Map(entries.map((entry, index) => [entry, weights[index]!]))
+  let completedWork = 0
+  if (!entries.length) reportWork(1)
   await st.pool.forEach(entries, async (ent) => {
-    checkAborted(st)
-    const name = ent.name
-    const normalizedName = name.toLowerCase()
+    let childWork = 0
+    const advanceWork = (fraction: number) => {
+      const next = Math.max(childWork, Math.min(1, fraction))
+      completedWork += (next - childWork) * workByEntry.get(ent)!
+      childWork = next
+      reportWork(Math.min(1, completedWork))
+    }
+    try {
+      checkAborted(st)
+      const name = ent.name
+      const normalizedName = name.toLowerCase()
 
-    const childPath = joinPath(dirPath, name)
-    // Prefer Dirent type checks — no extra syscall. Symlinks are deliberately
-    // not followed; inventory status makes that omitted scope explicit.
-    if (ent.isSymbolicLink()) {
-      recordSkippedSymlink(st, childPath)
-      return
-    }
-    if (isExcluded(st, childPath)) {
-      recordExcludedPath(st, childPath)
-      return
-    }
-    if (captureSignatures && st.signatureNames.has(normalizedName)) signatures.push(normalizedName)
-    if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
-      artifactSignatures.push(normalizedName)
-    }
-    if (ent.isDirectory()) {
-      const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-      const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed, childMarkers)
-      total += measured.size
-      totalLogicalSize += apparentBytes(measured)
-      modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-    } else if (ent.isFile()) {
-      try {
-        const s = await st.pool.run(() => stat(childPath))
-        const measured = measureFile(st, s)
+      const childPath = joinPath(dirPath, name)
+      // Prefer Dirent type checks — no extra syscall. Symlinks are deliberately
+      // not followed; inventory status makes that omitted scope explicit.
+      if (ent.isSymbolicLink()) {
+        recordSkippedSymlink(st, childPath)
+        return
+      }
+      if (isExcluded(st, childPath)) {
+        recordExcludedPath(st, childPath)
+        return
+      }
+      if (captureSignatures && st.signatureNames.has(normalizedName)) signatures.push(normalizedName)
+      if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
+        artifactSignatures.push(normalizedName)
+      }
+      if (ent.isDirectory()) {
+        const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
+        const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed, childMarkers, advanceWork)
         total += measured.size
         totalLogicalSize += apparentBytes(measured)
         modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-        st.filesScanned++
-        st.scannedBytes += measured.size
-      } catch {
-        checkAborted(st)
-        recordUnreadable(st, childPath)
-      }
-    } else if (ent.isFIFO?.() || ent.isSocket?.() || ent.isCharacterDevice?.() || ent.isBlockDevice?.()) {
-      // skip specials
-    } else {
-      // Unknown type (some FS): one stat to classify
-      try {
-        const s = await st.pool.run(() => stat(childPath))
-        if (s.isDirectory()) {
-          const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-          const measured = await sizeOnly(childPath, st, depth + 1, false, childScopeAllowed, childMarkers)
-          total += measured.size
-          totalLogicalSize += apparentBytes(measured)
-          modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
-        } else if (s.isFile()) {
+      } else if (ent.isFile()) {
+        try {
+          const s = await st.pool.run(() => stat(childPath))
           const measured = measureFile(st, s)
           total += measured.size
           totalLogicalSize += apparentBytes(measured)
           modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
           st.filesScanned++
           st.scannedBytes += measured.size
+        } catch {
+          checkAborted(st)
+          recordUnreadable(st, childPath)
         }
-      } catch {
-        checkAborted(st)
-        recordUnreadable(st, childPath)
+      } else if (ent.isFIFO?.() || ent.isSocket?.() || ent.isCharacterDevice?.() || ent.isBlockDevice?.()) {
+        // skip specials
+      } else {
+        // Unknown type (some FS): one stat to classify
+        try {
+          const s = await st.pool.run(() => stat(childPath))
+          if (s.isDirectory()) {
+            const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
+            const measured = await sizeOnly(
+              childPath,
+              st,
+              depth + 1,
+              false,
+              childScopeAllowed,
+              childMarkers,
+              advanceWork,
+            )
+            total += measured.size
+            totalLogicalSize += apparentBytes(measured)
+            modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
+          } else if (s.isFile()) {
+            const measured = measureFile(st, s)
+            total += measured.size
+            totalLogicalSize += apparentBytes(measured)
+            modifiedAt = Math.max(modifiedAt, measured.modifiedAt ?? 0)
+            st.filesScanned++
+            st.scannedBytes += measured.size
+          }
+        } catch {
+          checkAborted(st)
+          recordUnreadable(st, childPath)
+        }
       }
+    } finally {
+      advanceWork(1)
     }
   })
   checkAborted(st)
+  reportWork(1)
   emitProgress(st, dirPath)
   const result = {
     size: total,
@@ -916,8 +945,11 @@ async function walkCollapsedDir(
   depth: number,
   inventoryScopeAllowed = false,
   siblingMarkers: readonly string[] = [],
+  reportWork: (fraction: number) => void = (fraction) => {
+    st.workProgress = fraction
+  },
 ): Promise<DiskNode> {
-  const measured = await sizeOnly(dirPath, st, depth, true, inventoryScopeAllowed, siblingMarkers)
+  const measured = await sizeOnly(dirPath, st, depth, true, inventoryScopeAllowed, siblingMarkers, reportWork)
   return {
     name,
     path: dirPath,
@@ -935,6 +967,9 @@ async function walkDir(
   depth: number,
   inventoryScopeAllowed = false,
   siblingMarkers: readonly string[] = [],
+  reportWork: (fraction: number) => void = (fraction) => {
+    st.workProgress = fraction
+  },
 ): Promise<DiskNode> {
   checkAborted(st)
   const node: DiskNode = {
@@ -948,7 +983,7 @@ async function walkDir(
 
   // Past viz depth: size-only, no tree — deadly fast for deep junk
   if (depth > st.maxDepth) {
-    const measured = await sizeOnly(dirPath, st, depth, false, inventoryScopeAllowed, siblingMarkers)
+    const measured = await sizeOnly(dirPath, st, depth, false, inventoryScopeAllowed, siblingMarkers, reportWork)
     node.size = measured.size
     node.logicalSize = measured.logicalSize
     node.modifiedAt = measured.modifiedAt
@@ -972,111 +1007,138 @@ async function walkDir(
   const childMarkers = st.artifactInventory ? developerProjectMarkers(entries.map((ent) => ent.name)) : []
   const retainedChildren = new ChildRetention(dirPath, st.maxChildren, st.preserveNames)
 
+  const weights = traversalWorkWeights(entries, (entry) => {
+    if (entry.isSymbolicLink() || isExcluded(st, joinPath(dirPath, entry.name))) return "skip"
+    return entry.isDirectory() ? "directory" : "file"
+  })
+  const workByEntry = new Map(entries.map((entry, index) => [entry, weights[index]!]))
+  let completedWork = 0
+  if (!entries.length) reportWork(1)
   await st.pool.forEach(entries, async (ent) => {
-    checkAborted(st)
-    const entName = ent.name
-    const childPath = joinPath(dirPath, entName)
-    if (ent.isSymbolicLink()) {
-      recordSkippedSymlink(st, childPath)
-      return
+    let childWork = 0
+    const advanceWork = (fraction: number) => {
+      const next = Math.max(childWork, Math.min(1, fraction))
+      completedWork += (next - childWork) * workByEntry.get(ent)!
+      childWork = next
+      reportWork(Math.min(1, completedWork))
     }
-    if (isExcluded(st, childPath)) {
-      recordExcludedPath(st, childPath)
-      return
-    }
-    const normalizedName = entName.toLowerCase()
-    if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
-      artifactSignatures.push(normalizedName)
-    }
+    try {
+      checkAborted(st)
+      const entName = ent.name
+      const childPath = joinPath(dirPath, entName)
+      if (ent.isSymbolicLink()) {
+        recordSkippedSymlink(st, childPath)
+        return
+      }
+      if (isExcluded(st, childPath)) {
+        recordExcludedPath(st, childPath)
+        return
+      }
+      const normalizedName = entName.toLowerCase()
+      if (st.artifactInventory && DEVELOPER_ARTIFACT_EVIDENCE_NAMES.has(normalizedName)) {
+        artifactSignatures.push(normalizedName)
+      }
 
-    if (ent.isDirectory()) {
-      retainedChildren.add(
-        await trackRootDiscovery(
-          st,
-          depth,
-          (async () => {
-            const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-            return st.collapseNames.has(entName.toLowerCase())
-              ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
-              : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
-          })(),
-        ),
-      )
-    } else if (ent.isFile()) {
-      // Fast ext extract without path.extname alloc when possible
-      retainedChildren.add(
-        await trackRootDiscovery(
-          st,
-          depth,
-          st.pool
-            .run(() => stat(childPath))
-            .then(
-              (s) => {
-                const measured = measureFile(st, s, childPath)
-                st.filesScanned++
-                st.scannedBytes += measured.size
-                const dot = entName.lastIndexOf(".")
-                const ext = dot > 0 && dot < entName.length - 1 ? entName.slice(dot + 1).toLowerCase() : ""
-                const fileNode: DiskNode = {
-                  name: entName,
-                  path: childPath,
-                  ...measured,
-                  isDir: false,
-                  children: EMPTY_CHILDREN,
-                  ext,
-                }
-                return fileNode
-              },
-              () => {
-                recordUnreadable(st, childPath)
-                return null
-              },
-            ),
-        ),
-      )
-    } else {
-      // Rare: need stat to classify
-      retainedChildren.add(
-        await trackRootDiscovery(
-          st,
-          depth,
-          st.pool
-            .run(() => stat(childPath))
-            .then(
-              async (s) => {
-                if (s.isDirectory()) {
-                  const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
-                  return st.collapseNames.has(entName.toLowerCase())
-                    ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
-                    : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers)
-                }
-                if (s.isFile()) {
+      if (ent.isDirectory()) {
+        retainedChildren.add(
+          await trackRootDiscovery(
+            st,
+            depth,
+            (async () => {
+              const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
+              return st.collapseNames.has(entName.toLowerCase())
+                ? walkCollapsedDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers, advanceWork)
+                : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers, advanceWork)
+            })(),
+          ),
+        )
+      } else if (ent.isFile()) {
+        // Fast ext extract without path.extname alloc when possible
+        retainedChildren.add(
+          await trackRootDiscovery(
+            st,
+            depth,
+            st.pool
+              .run(() => stat(childPath))
+              .then(
+                (s) => {
                   const measured = measureFile(st, s, childPath)
                   st.filesScanned++
                   st.scannedBytes += measured.size
+                  const dot = entName.lastIndexOf(".")
+                  const ext = dot > 0 && dot < entName.length - 1 ? entName.slice(dot + 1).toLowerCase() : ""
                   const fileNode: DiskNode = {
                     name: entName,
                     path: childPath,
                     ...measured,
                     isDir: false,
                     children: EMPTY_CHILDREN,
-                    ext: "",
+                    ext,
                   }
                   return fileNode
-                }
-                return null
-              },
-              () => {
-                recordUnreadable(st, childPath)
-                return null
-              },
-            ),
-        ),
-      )
+                },
+                () => {
+                  recordUnreadable(st, childPath)
+                  return null
+                },
+              ),
+          ),
+        )
+      } else {
+        // Rare: need stat to classify
+        retainedChildren.add(
+          await trackRootDiscovery(
+            st,
+            depth,
+            st.pool
+              .run(() => stat(childPath))
+              .then(
+                async (s) => {
+                  if (s.isDirectory()) {
+                    const childScopeAllowed = await childInventoryScope(st, inventoryScopeAllowed, childPath)
+                    return st.collapseNames.has(entName.toLowerCase())
+                      ? walkCollapsedDir(
+                          childPath,
+                          entName,
+                          st,
+                          depth + 1,
+                          childScopeAllowed,
+                          childMarkers,
+                          advanceWork,
+                        )
+                      : walkDir(childPath, entName, st, depth + 1, childScopeAllowed, childMarkers, advanceWork)
+                  }
+                  if (s.isFile()) {
+                    const measured = measureFile(st, s, childPath)
+                    st.filesScanned++
+                    st.scannedBytes += measured.size
+                    const fileNode: DiskNode = {
+                      name: entName,
+                      path: childPath,
+                      ...measured,
+                      isDir: false,
+                      children: EMPTY_CHILDREN,
+                      ext: "",
+                    }
+                    return fileNode
+                  }
+                  return null
+                },
+                () => {
+                  recordUnreadable(st, childPath)
+                  return null
+                },
+              ),
+          ),
+        )
+      }
+    } finally {
+      advanceWork(1)
     }
   })
   checkAborted(st)
 
+  reportWork(1)
   Object.assign(node, retainedChildren.finish())
   if (inventoryScopeAllowed) {
     await recordDeveloperArtifact(st, dirPath, name, node, [...new Set(artifactSignatures)].sort(), siblingMarkers)
@@ -1119,6 +1181,7 @@ export async function scanPathSync(targetPath: string, options: ScanOptions = {}
     onProgress,
     rootPath: targetPath,
     scannedBytes: 0,
+    workProgress: 0,
     signal,
     sizeMode,
     claimedHardLinks: new Set(),
@@ -1190,6 +1253,7 @@ export async function scanPathSync(targetPath: string, options: ScanOptions = {}
     dirsScanned: st.dirsScanned,
     currentPath: targetPath,
     size: root.size,
+    percent: 100,
     done: true,
   })
 
@@ -1271,6 +1335,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
         dirsScanned?: number
         currentPath?: string
         size?: number
+        percent?: number
         discovery?: ScanDiscovery
         message?: string
       }) => {
@@ -1281,6 +1346,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
             dirsScanned: msg.dirsScanned ?? 0,
             currentPath: msg.currentPath ?? targetPath,
             size: msg.size ?? 0,
+            percent: msg.percent,
             discovery: msg.discovery,
           })
         } else if (msg.type === "done" && msg.root) {
@@ -1289,6 +1355,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
             dirsScanned: msg.dirsScanned ?? 0,
             currentPath: targetPath,
             size: msg.root.size,
+            percent: 100,
             done: true,
           })
           finish({ root: msg.root })

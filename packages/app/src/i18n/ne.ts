@@ -638,6 +638,7 @@ export const dict: Record<string, string> = {
   "disk.accessGuidance.linux": "फोल्डर र माउन्ट अनुमतिहरू समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
   "disk.accessGuidance.default": "यी फोल्डरहरूमा पहुँच समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
   "disk.accessGuidance.rescan": "पहुँच परिवर्तन गरेपछि माथिल्लो पट्टीको Rescan प्रयोग गर्नुहोस्।",
+  "disk.common.rescan": "फेरि स्क्यान गर्नुहोस्",
   "error.page.title": "केही गडबड भयो",
   "error.page.description": "एप्लिकेसन लोड गर्दा त्रुटि भयो।",
   "error.page.description.localServerStartup": "स्थानीय सर्भर सुरु गर्दा त्रुटि भयो।",

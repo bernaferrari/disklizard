@@ -429,8 +429,23 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
   // candidates, and the cache validator will require a fresh root scan before
   // an inventory-enabled snapshot can be restored again.
   const { developerArtifactInventory: _developerArtifactInventory, ...localOptions } = options
-  const scanDeltaTarget = (targetPath: string) =>
-    scan(targetPath, comparable(targetPath) === rootPath ? options : localOptions)
+  let completedTargets = 0
+  const scanDeltaTarget = async (targetPath: string) => {
+    const wholeRoot = comparable(targetPath) === rootPath
+    // Keep a share for a possible whole-root accounting refresh after a delta.
+    const start = completedTargets / (changedPaths.length + 1)
+    const end = wholeRoot ? 1 : (completedTargets + 1) / (changedPaths.length + 1)
+    const targetOptions = wholeRoot ? options : localOptions
+    const result = await scan(targetPath, {
+      ...targetOptions,
+      onProgress: (progress) => {
+        const fraction = Math.max(0, Math.min(100, progress.percent ?? 0)) / 100
+        options.onProgress?.({ ...progress, percent: (start + (end - start) * fraction) * 100 })
+      },
+    })
+    completedTargets++
+    return result
+  }
   const invalidateDeveloperArtifactInventory = (node: DiskNode) => {
     if (!node.developerArtifactInventory) return node
     const { developerArtifactInventory: _inventory, ...next } = node
@@ -822,6 +837,26 @@ export class DiskSnapshotManager {
   ): Promise<DiskSnapshotResult> {
     await this.stop(owner)
     options.signal?.throwIfAborted()
+    const report = options.onProgress
+    let phase: "scan" | "reconcile" | "save" = "scan"
+    let percent = 0
+    let latest = { filesScanned: 0, dirsScanned: 0, currentPath: rootPath, size: 0 }
+    const stage = (next: typeof phase, floor: number) => {
+      phase = next
+      percent = Math.max(percent, floor)
+      report?.({ ...latest, percent, phase, done: false })
+    }
+    options = {
+      ...options,
+      onProgress: (progress) => {
+        latest = progress
+        const fraction = Math.max(0, Math.min(100, progress.percent ?? 0)) / 100
+        const estimate = phase === "scan" ? fraction * 85 : phase === "reconcile" ? 85 + fraction * 10 : 98
+        percent = Math.max(percent, estimate)
+        report?.({ ...progress, percent, phase, done: false })
+      },
+    }
+    stage("scan", 0)
     const normalizedRoot = await realpath(rootPath).catch(() => comparable(rootPath))
     const active: ActiveScan = {
       owner,
@@ -882,18 +917,22 @@ export class DiskSnapshotManager {
         active.pending.clear()
         if (!events.length) {
           active.root = cached.root
+          stage("save", 98)
           await this.persist(normalizedRoot, options, cached.root, candidate.path).catch(() => undefined)
           if (active.pending.size) this.queue(active, null, [])
           return { root: cached.root, source: "snapshot", changedPaths: [] }
         }
+        stage("reconcile", 85)
         const delta = await applyDiskDelta(cached.root, events, this.scanTree, options)
         active.root = delta.root
+        stage("save", 98)
         await this.persist(normalizedRoot, options, delta.root, candidate.path).catch(() => undefined)
         if (active.pending.size) this.queue(active, null, [])
         return { ...delta, source: "delta" }
       }
 
       let root = await this.scanTree(normalizedRoot, options)
+      stage("reconcile", 85)
       let changedPaths: string[] = []
       if (candidate && watcher) {
         const events = [
@@ -906,6 +945,7 @@ export class DiskSnapshotManager {
           root = delta.root
           changedPaths = delta.changedPaths
         }
+        stage("save", 98)
         await this.persist(normalizedRoot, options, root, candidate.path).catch(() => undefined)
       }
       active.root = root

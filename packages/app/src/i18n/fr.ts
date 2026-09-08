@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Vérifiez les permissions du dossier et du point de montage, puis analysez à nouveau.",
   "disk.accessGuidance.default": "Vérifiez l'accès à ces dossiers, puis analysez à nouveau.",
   "disk.accessGuidance.rescan": "Utilisez Réanalyser dans la barre supérieure après avoir modifié les accès.",
+  "disk.common.rescan": "Réanalyser",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Fichier",
   "desktop.menu.edit": "Édition",

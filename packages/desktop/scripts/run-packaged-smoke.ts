@@ -516,7 +516,7 @@ async function moveFixtureToTrash(
       ),
     )
     .toBe(true)
-  const mapButton = page.getByRole("button", { name: /^Map(?:\s+1)?$/ })
+  const mapButton = page.getByRole("tab", { name: /^Map(?:\s+1)?$/ })
   await expect(mapButton).toBeEnabled({ timeout: 90_000 })
   await mapButton.click()
   const map = page.getByRole("region", {

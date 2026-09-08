@@ -1,7 +1,6 @@
-import { Button } from "@opencode-ai/ui/button"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
-import { For, Show } from "solid-js"
+import { Button } from "@/components/dl/button"
+import { DropdownMenu } from "@/components/dl/dropdown-menu"
+import { Icon } from "@/components/dl/icon"
 import {
   diskEntrySortDirection,
   diskEntrySortKey,
@@ -23,40 +22,40 @@ export function DiskUtilitySearchTools(props: {
 }) {
   const language = useLanguage()
   return (
-    <div class="dl-inspector-tools flex shrink-0 items-center gap-2 border-b border-border-weaker-base px-4 py-2">
-      <div class="dl-inspector-search flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg px-3 focus-within:ring-2 focus-within:ring-text-weak">
-        <Icon name="magnifying-glass" class="size-4 shrink-0 text-icon-weak" />
-        <label class="sr-only" for="disklizard-scan-search">
+    <div className="flex shrink-0 items-center gap-2 border-b border-border-weaker-base px-4 py-2">
+      <div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-[7px] bg-background-base px-3 shadow-[inset_0_0_0_1px_var(--border-weaker-base)] focus-within:ring-2 focus-within:ring-text-weak">
+        <Icon name="magnifying-glass" className="size-4 shrink-0 text-icon-weak" />
+        <label className="sr-only" htmlFor="disklizard-scan-search">
           {props.label}
         </label>
         <input
           id="disklizard-scan-search"
           type="search"
-          autocomplete="off"
-          spellcheck={false}
+          autoComplete="off"
+          spellCheck={false}
           placeholder={props.placeholder}
           value={props.query}
-          onInput={(event) => props.onQuery(event.currentTarget.value)}
-          class="dl-search-input h-full min-w-0 flex-1 bg-transparent text-13-regular text-text-strong placeholder:text-text-weaker outline-none"
+          onChange={(event) => props.onQuery(event.currentTarget.value)}
+          className="dl-search-input h-full min-w-0 flex-1 bg-transparent text-13-regular text-text-strong placeholder:text-text-weaker outline-none"
         />
-        <Show when={props.query}>
+        {props.query ? (
           <button
             type="button"
-            class="dl-touch-target grid shrink-0 place-items-center rounded-md text-text-weak focus-visible:ring-2 focus-visible:ring-text-weak"
+            className="min-h-11 min-w-11 grid shrink-0 place-items-center rounded-md text-text-weak focus-visible:ring-2 focus-visible:ring-text-weak"
             aria-label={language.t("disk.search.clear")}
             onClick={() => props.onQuery("")}
           >
-            <Icon name="close-small" class="size-4" />
+            <Icon name="close-small" className="size-4" />
           </button>
-        </Show>
+        ) : null}
       </div>
-      <Show when={props.showSort}>
+      {props.showSort ? (
         <DropdownMenu placement="bottom-end" gutter={6}>
           <DropdownMenu.Trigger
             as={Button}
             variant="ghost"
             size="small"
-            class="dl-touch-target"
+            className="min-h-11 min-w-11"
             icon="sliders"
             aria-label={language.t("disk.sort.group")}
             title={`${language.t(`disk.sort.key.${props.sortKey}`)} · ${language.t(`disk.sort.direction.${props.sortDirection}`)}`}
@@ -69,16 +68,14 @@ export function DiskUtilitySearchTools(props: {
                   value={props.sortKey}
                   onChange={(key) => props.onSort(diskEntrySortKey(String(key)), props.sortDirection)}
                 >
-                  <For each={["size", "name", "modified", "type"] as const}>
-                    {(key) => (
-                      <DropdownMenu.RadioItem value={key}>
-                        <DropdownMenu.ItemLabel>{language.t(`disk.sort.key.${key}`)}</DropdownMenu.ItemLabel>
-                        <DropdownMenu.ItemIndicator>
-                          <Icon name="check" />
-                        </DropdownMenu.ItemIndicator>
-                      </DropdownMenu.RadioItem>
-                    )}
-                  </For>
+                  {(["size", "name", "modified", "type"] as const).map((key) => (
+                    <DropdownMenu.RadioItem key={key} value={key}>
+                      <DropdownMenu.ItemLabel>{language.t(`disk.sort.key.${key}`)}</DropdownMenu.ItemLabel>
+                      <DropdownMenu.ItemIndicator>
+                        <Icon name="check" />
+                      </DropdownMenu.ItemIndicator>
+                    </DropdownMenu.RadioItem>
+                  ))}
                 </DropdownMenu.RadioGroup>
               </DropdownMenu.Group>
               <DropdownMenu.Separator />
@@ -87,21 +84,19 @@ export function DiskUtilitySearchTools(props: {
                 value={props.sortDirection}
                 onChange={(direction) => props.onSort(props.sortKey, diskEntrySortDirection(String(direction)))}
               >
-                <For each={["descending", "ascending"] as const}>
-                  {(direction) => (
-                    <DropdownMenu.RadioItem value={direction}>
-                      <DropdownMenu.ItemLabel>{language.t(`disk.sort.direction.${direction}`)}</DropdownMenu.ItemLabel>
-                      <DropdownMenu.ItemIndicator>
-                        <Icon name="check" />
-                      </DropdownMenu.ItemIndicator>
-                    </DropdownMenu.RadioItem>
-                  )}
-                </For>
+                {(["descending", "ascending"] as const).map((direction) => (
+                  <DropdownMenu.RadioItem key={direction} value={direction}>
+                    <DropdownMenu.ItemLabel>{language.t(`disk.sort.direction.${direction}`)}</DropdownMenu.ItemLabel>
+                    <DropdownMenu.ItemIndicator>
+                      <Icon name="check" />
+                    </DropdownMenu.ItemIndicator>
+                  </DropdownMenu.RadioItem>
+                ))}
               </DropdownMenu.RadioGroup>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu>
-      </Show>
+      ) : null}
     </div>
   )
 }

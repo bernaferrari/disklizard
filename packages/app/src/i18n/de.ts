@@ -8,6 +8,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Überprüfen Sie die Ordner- und Mount-Berechtigungen und scannen Sie erneut.",
   "disk.accessGuidance.default": "Überprüfen Sie den Zugriff auf diese Ordner und scannen Sie erneut.",
   "disk.accessGuidance.rescan": "Verwenden Sie nach dem Ändern des Zugriffs „Neu scannen“ in der oberen Leiste.",
+  "disk.common.rescan": "Neu scannen",
   "command.category.suggested": "Vorgeschlagen",
   "command.category.view": "Ansicht",
   "command.category.project": "Projekt",

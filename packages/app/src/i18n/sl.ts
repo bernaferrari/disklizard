@@ -638,6 +638,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Preverite dovoljenja map in priklopov ter nato skenirajte znova.",
   "disk.accessGuidance.default": "Preverite dostop do teh map in nato skenirajte znova.",
   "disk.accessGuidance.rescan": "Po spremembi dostopa uporabite Rescan v zgornji vrstici.",
+  "disk.common.rescan": "Ponovno preišči",
   "error.page.title": "Nekaj je šlo narobe",
   "error.page.description": "Med nalaganjem aplikacije je prišlo do napake.",
   "error.page.description.localServerStartup": "Med zagonom lokalnega strežnika je prišlo do napake.",

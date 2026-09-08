@@ -69,11 +69,11 @@ describe("DiskLizard standalone desktop runtime", () => {
     const platform = readFileSync(join(dir, "../renderer/platform.ts"), "utf8")
     expect(renderer).toContain("DiskUtilityPage")
     expect(renderer).toContain("DiskLizardRuntime")
-    expect(renderer).toContain("DiskLizardTheme")
+    expect(renderer).toContain("NativeTheme")
     expect(renderer).toContain("handleRendererMenuCommand")
     expect(renderer).toContain("rendererMenuHandlers")
     expect(renderer).not.toMatch(/AppInterface|ServerConnection|useWslServers|createDraftStore|DesktopFirstLaunchOnboarding/)
-    expect(renderer).not.toMatch(/ThemeProvider|useTheme/)
+    expect(renderer).toContain("react-dom/client")
     expect(platform).not.toMatch(/ServerConnection|wslServers|draftStore|getDefaultServer|killSidecar/)
   })
 

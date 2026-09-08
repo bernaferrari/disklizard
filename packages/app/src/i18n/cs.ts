@@ -635,6 +635,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Zkontrolujte oprávnění složek a připojených úložišť a poté skenujte znovu.",
   "disk.accessGuidance.default": "Zkontrolujte přístup k těmto složkám a poté skenujte znovu.",
   "disk.accessGuidance.rescan": "Po změně přístupu použijte tlačítko Znovu skenovat v horní liště.",
+  "disk.common.rescan": "Skenovat znovu",
   "toast.update.installFailed.title": "Aktualizaci se nepodařilo nainstalovat",
   "toast.update.installFailed.retry": "Zkusit znovu",
   "error.page.title": "Něco se pokazilo",

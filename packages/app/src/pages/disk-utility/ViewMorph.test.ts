@@ -63,6 +63,7 @@ describe("ViewMorph lifecycle", () => {
 
   let drawsThisFrame = 0
   let clearRectCount = 0
+  let drawnPoints: number[][] = []
 
   function countingCtx(): CanvasRenderingContext2D {
     return new Proxy({} as CanvasRenderingContext2D, {
@@ -73,6 +74,7 @@ describe("ViewMorph lifecycle", () => {
             drawsThisFrame++
           }
         }
+        if (property === "moveTo" || property === "lineTo") return (x: number, y: number) => drawnPoints.push([x, y])
         const value = Reflect.get(target, property, receiver)
         // The morph only calls ctx methods; stub every read as a no-op
         // function so property sets and calls both succeed.
@@ -97,7 +99,7 @@ describe("ViewMorph lifecycle", () => {
     globalThis.cancelAnimationFrame = clock.cancel as typeof cancelAnimationFrame
     globalThis.getComputedStyle = (() => ({
       getPropertyValue: () => "",
-    })) as typeof getComputedStyle
+    })) as unknown as typeof getComputedStyle
     globals.window = { devicePixelRatio: 1 }
     const centerCalls: number = 0
     const center = { cx: 32, cy: 32, maxR: 30 }
@@ -137,6 +139,23 @@ describe("ViewMorph lifecycle", () => {
       to: pose(3, 0.5),
     },
   ]
+
+  it("rectangle layouts start at their real source instead of becoming arcs", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      const tile = tiles()[0]
+      tile.from = { ...tile.from, shape: "rect", rect: { x: 2, y: 3, w: 12, h: 8 } }
+      tile.to = { ...tile.to, shape: "rect", rect: { x: 20, y: 25, w: 30, h: 15 } }
+      morph.play([tile], "toGrid", () => {})
+      drawnPoints = []
+      clock.tick(0)
+      expect(drawnPoints.length).toBeGreaterThan(0)
+      expect(drawnPoints.every(([x, y]) => x >= 2 && x <= 14 && y >= 3 && y <= 11)).toBe(true)
+      clock.tick(240)
+      expect(morph.active).toBe(false)
+      expect(clock.pending).toBe(0)
+    } finally { restore() }
+  })
 
   it("restarts keep exactly one frame chain and fire each continuation once", () => {
     const { morph, clock, restore } = harness()

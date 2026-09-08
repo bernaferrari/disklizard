@@ -1,5 +1,3 @@
-import * as i18n from "@solid-primitives/i18n"
-import { dict as uiEn } from "@opencode-ai/ui/i18n/en"
 import { dict as en } from "./en"
 import type { DesktopNativeLocale } from "./desktop-native"
 
@@ -10,10 +8,10 @@ export {
   type DiskLizardReleaseLocale,
 } from "./desktop-native"
 
-type RawDictionary = typeof en & typeof uiEn
-export type LocaleDictionary = i18n.Flatten<RawDictionary>
+/** Catalogs are flat dotted-key dictionaries; the release catalog is English. */
+export type LocaleDictionary = typeof en
 
-export const BASE_LOCALE_DICTIONARY = i18n.flatten({ ...en, ...uiEn })
+export const BASE_LOCALE_DICTIONARY: LocaleDictionary = en
 
 // Release callers may pass a persisted/source locale. Until another locale is
 // complete, both the synchronous peek and asynchronous loader fail closed to

@@ -8,6 +8,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Klasör ve bağlama izinlerini gözden geçirin, ardından yeniden tarayın.",
   "disk.accessGuidance.default": "Bu klasörlere erişimi gözden geçirin, ardından yeniden tarayın.",
   "disk.accessGuidance.rescan": "Erişimi değiştirdikten sonra üst çubuktaki Yeniden tara seçeneğini kullanın.",
+  "disk.common.rescan": "Yeniden tara",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Dosya",
   "desktop.menu.edit": "Düzen",

@@ -1,7 +1,6 @@
-import { Button } from "@opencode-ai/ui/button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { ScrollView } from "@opencode-ai/ui/scroll-view"
-import { For, Show } from "solid-js"
+import { Button } from "@/components/dl/button"
+import { Icon } from "@/components/dl/icon"
+import { ScrollView } from "@/components/dl/scroll-view"
 import type { DiskDriveInfo, DiskStorageDiagnostics as StorageDiagnosticsValue, DiskStorageLocation } from "./types"
 import type { DiskCleanupLock, DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
@@ -44,97 +43,91 @@ export function DriveOverview(props: {
 }) {
   const language = useLanguage()
   return (
-    <div class="flex h-full min-h-0 flex-col">
-      <ScrollView class="min-h-0 flex-1">
-        <Show
-          when={!props.loading && props.drives.length > 0}
-          fallback={<DriveFallback loading={props.loading} error={props.error} onChoose={props.onChooseFolder} />}
-        >
-          <div class="mx-auto w-full max-w-[760px] px-6 py-8 sm:py-10">
+    <div className="flex h-full min-h-0 flex-col">
+      <ScrollView className="min-h-0 flex-1">
+        {!props.loading && props.drives.length > 0 ? (
+          <div className="mx-auto w-full max-w-[760px] px-6 py-8 sm:py-10">
             <section aria-label={language.t("disk.drive.volumes")}>
-              <div class="mb-5 flex items-center justify-between gap-4">
-                <h3 class="text-20-medium tracking-[-0.02em] text-text-strong">{language.t("disk.drive.volumes")}</h3>
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <h3 className="text-20-medium tracking-[-0.02em] text-text-strong">{language.t("disk.drive.volumes")}</h3>
                 <button
                   type="button"
-                  class="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md px-2.5 text-13-medium text-text-weak outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
+                  className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md px-2.5 text-13-medium text-text-weak outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
                   title={language.t("disk.drop.restingHint")}
                   onClick={props.onChooseFolder}
                 >
-                  <Icon name="folder" class="size-4" />
+                  <Icon name="folder" className="size-4" />
                   {language.t("disk.drive.scanFolder")}
                 </button>
               </div>
-              <For each={props.drives}>
-                {(drive, index) => (
-                  <VolumeRow
-                    drive={drive}
-                    job={props.jobForDrive(drive)}
-                    primary={index() === 0}
-                    canStart={props.runningScans < props.maxParallelScans}
-                    onScan={() => props.onScanDrive(drive)}
-                    onCancel={props.onCancelDrive}
-                    onOpen={props.onOpenDrive}
-                  />
-                )}
-              </For>
+              {props.drives.map((drive, index) => (
+                <VolumeRow
+                  key={drive.path}
+                  drive={drive}
+                  job={props.jobForDrive(drive)}
+                  primary={index === 0}
+                  canStart={props.runningScans < props.maxParallelScans}
+                  onScan={() => props.onScanDrive(drive)}
+                  onCancel={props.onCancelDrive}
+                  onOpen={props.onOpenDrive}
+                />
+              ))}
             </section>
 
-            <div class="mt-6">
-              <Show when={props.openMaps.length > 0}>
-                <section class="py-4" aria-labelledby="disk-open-maps-heading">
-                  <div class="mb-3 flex flex-col gap-1">
-                    <h3 id="disk-open-maps-heading" class="text-13-semibold text-text-strong">
+            <div className="mt-6">
+              {props.openMaps.length > 0 ? (
+                <section className="py-4" aria-labelledby="disk-open-maps-heading">
+                  <div className="mb-3 flex flex-col gap-1">
+                    <h3 id="disk-open-maps-heading" className="text-13-semibold text-text-strong">
                       {language.t("disk.drive.openMaps")}
                     </h3>
-                    <span class="text-13-regular text-text-weaker">{language.t("disk.drive.openMapsHint")}</span>
+                    <span className="text-13-regular text-text-weaker">{language.t("disk.drive.openMapsHint")}</span>
                   </div>
-                  <div class="grid grid-cols-1 gap-2">
-                    <For each={props.openMaps}>
-                      {(map) => (
-                        <article class="flex min-h-16 min-w-0 items-center gap-3 rounded-xl bg-surface-raised-base px-3.5 py-2 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
-                          <span
-                            class="grid size-9 shrink-0 place-items-center rounded-full bg-background-base text-text-weak"
-                            aria-hidden="true"
+                  <div className="grid grid-cols-1 gap-2">
+                    {props.openMaps.map((map) => (
+                      <article
+                        key={map.id}
+                        className="flex min-h-16 min-w-0 items-center gap-3 rounded-xl bg-surface-raised-base px-3.5 py-2 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
+                      >
+                        <span
+                          className="grid size-9 shrink-0 place-items-center rounded-full bg-background-base text-text-weak"
+                          aria-hidden="true"
+                        >
+                          <Icon name="folder" className="size-4" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-13-semibold text-text-strong">{map.label}</span>
+                          <span className="mt-0.5 block truncate text-12-regular text-text-weaker" title={map.sourcePath}>
+                            {map.sourcePath}
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-1">
+                          <Button
+                            className="min-h-11 min-w-11"
+                            variant="secondary"
+                            size="small"
+                            onClick={() => props.onOpenMap(map)}
                           >
-                            <Icon name="folder" class="size-4" />
-                          </span>
-                          <span class="min-w-0 flex-1">
-                            <span class="block truncate text-13-semibold text-text-strong">{map.label}</span>
-                            <span class="mt-0.5 block truncate text-12-regular text-text-weaker" title={map.sourcePath}>
-                              {map.sourcePath}
-                            </span>
-                          </span>
-                          <span class="flex shrink-0 items-center gap-1">
-                            <Button
-                              class="dl-touch-target"
-                              variant="secondary"
-                              size="small"
-                              onClick={() => props.onOpenMap(map)}
-                            >
-                              {language.t("disk.common.open")}
-                            </Button>
-                            <Button
-                              class="dl-touch-target"
-                              variant="ghost"
-                              size="small"
-                              icon="close-small"
-                              aria-label={language.t("disk.drive.closeMap", { name: map.label })}
-                              title={language.t("disk.drive.closeMap", { name: map.label })}
-                              onClick={() => props.onCloseMap(map)}
-                            />
-                          </span>
-                        </article>
-                      )}
-                    </For>
+                            {language.t("disk.common.open")}
+                          </Button>
+                          <Button
+                            className="min-h-11 min-w-11"
+                            variant="ghost"
+                            size="small"
+                            icon="close-small"
+                            aria-label={language.t("disk.drive.closeMap", { name: map.label })}
+                            title={language.t("disk.drive.closeMap", { name: map.label })}
+                            onClick={() => props.onCloseMap(map)}
+                          />
+                        </span>
+                      </article>
+                    ))}
                   </div>
                 </section>
-              </Show>
+              ) : null}
 
-              <Show when={shouldShowStorageDiagnostics(props.diagnostics, props.diagnosticsError)}>
-                <details class="group py-2">
-                  <summary class="cursor-pointer text-13-medium text-text-weak">
-                    {language.t("disk.storage.connected")}
-                  </summary>
+              {shouldShowStorageDiagnostics(props.diagnostics, props.diagnosticsError) ? (
+                <>
                   <StorageDiagnostics
                     diagnostics={props.diagnostics}
                     error={props.diagnosticsError}
@@ -142,31 +135,32 @@ export function DriveOverview(props: {
                     onOpenAccessSettings={props.onOpenAccessSettings}
                     onRetry={props.onRetryDiagnostics}
                   />
-                </details>
-              </Show>
+                </>
+              ) : null}
 
-              <Show when={props.pinnedLocations.length > 0}>
-                <section class="py-4">
-                  <div class="mb-3 flex flex-col gap-1">
-                    <h3 class="text-13-semibold text-text-strong">{language.t("disk.drive.saved")}</h3>
-                    <span class="text-13-regular text-text-weaker">{language.t("disk.drive.deviceOnly")}</span>
+              {props.pinnedLocations.length > 0 ? (
+                <section className="py-4">
+                  <div className="mb-3 flex flex-col gap-1">
+                    <h3 className="text-13-semibold text-text-strong">{language.t("disk.drive.saved")}</h3>
+                    <span className="text-13-regular text-text-weaker">{language.t("disk.drive.deviceOnly")}</span>
                   </div>
-                  <div class="grid grid-cols-1 gap-2">
-                    <For each={props.pinnedLocations}>
-                      {(location) => (
-                        <PinnedLocationCard
-                          location={location}
-                          onScan={() => props.onScanPinnedLocation(location)}
-                          onRemove={() => props.onRemovePinnedLocation(location)}
-                        />
-                      )}
-                    </For>
+                  <div className="grid grid-cols-1 gap-2">
+                    {props.pinnedLocations.map((location) => (
+                      <PinnedLocationCard
+                        key={location.path}
+                        location={location}
+                        onScan={() => props.onScanPinnedLocation(location)}
+                        onRemove={() => props.onRemovePinnedLocation(location)}
+                      />
+                    ))}
                   </div>
                 </section>
-              </Show>
+              ) : null}
             </div>
           </div>
-        </Show>
+        ) : (
+          <DriveFallback loading={props.loading} error={props.error} onChoose={props.onChooseFolder} />
+        )}
       </ScrollView>
     </div>
   )

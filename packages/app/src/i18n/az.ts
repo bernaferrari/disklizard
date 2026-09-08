@@ -642,6 +642,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Qovluq və mount icazələrini yoxlayın, sonra yenidən skan edin.",
   "disk.accessGuidance.default": "Bu qovluqlara çıxışı yoxlayın, sonra yenidən skan edin.",
   "disk.accessGuidance.rescan": "Girişi dəyişdikdən sonra yuxarı paneldəki Yenidən skan funksiyasından istifadə edin.",
+  "disk.common.rescan": "Yenidən skan et",
   "toast.update.installFailed.title": "Yeniləməni quraştırmaq mümkün olmadı",
   "toast.update.installFailed.retry": "Yenidən cəhd et",
   "error.page.title": "Xəta baş verdi",

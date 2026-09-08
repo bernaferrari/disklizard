@@ -822,6 +822,7 @@ function normalizeNativeScanProgress(value: unknown, expectedRootPath?: string):
     !isNonNegativeSafeInteger(value.dirsScanned) ||
     typeof value.currentPath !== "string" ||
     !isNonNegativeNumber(value.size) ||
+    (value.percent !== undefined && (!isNonNegativeNumber(value.percent) || value.percent > 100)) ||
     (value.done !== undefined && typeof value.done !== "boolean")
   ) {
     return undefined
@@ -855,6 +856,7 @@ function normalizeNativeScanProgress(value: unknown, expectedRootPath?: string):
   }
 
   return {
+    ...(typeof value.percent === "number" ? { percent: value.percent } : {}),
     filesScanned: value.filesScanned,
     dirsScanned: value.dirsScanned,
     currentPath,

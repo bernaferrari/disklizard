@@ -637,6 +637,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Ελέγξτε τα δικαιώματα των φακέλων και των σημείων προσάρτησης και σαρώστε ξανά.",
   "disk.accessGuidance.default": "Ελέγξτε την πρόσβαση σε αυτούς τους φακέλους και σαρώστε ξανά.",
   "disk.accessGuidance.rescan": "Μετά την αλλαγή της πρόσβασης χρησιμοποιήστε την Επανασάρωση στην πάνω μπάρα.",
+  "disk.common.rescan": "Επανασάρωση",
   "toast.update.action.notYet": "Όχι ακόμη",
   "toast.update.installFailed.title": "Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης",
   "toast.update.installFailed.retry": "Επανάληψη",

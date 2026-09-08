@@ -68,13 +68,13 @@ const steps = [
     name: "storage interface",
     cwd: appCwd,
     tests: storageTests,
-    args: ["test", "--conditions=solid", "--preload", "./happydom.ts", ...storageTests],
+    args: ["test", "--preload", "./happydom.ts", ...storageTests],
   },
   {
     name: "standalone localization",
     cwd: appCwd,
     tests: localizationTests,
-    args: ["test", "--conditions=solid", "--preload", "./happydom.ts", ...localizationTests],
+    args: ["test", "--preload", "./happydom.ts", ...localizationTests],
   },
 ]
 

@@ -75,3 +75,16 @@ describe("layoutTreemap", () => {
     expect(rects.find((rect) => rect.node.isOther)?.index).toBe(99)
   })
 })
+
+
+describe("smaller-item inspection", () => {
+  it("retains grouped children for browsing without another scan", () => {
+    const children = [mk("large", 100), mk("small", 20), mk("tiny", 10)]
+    const grouped = collapseTreemapChildren(children, 2)
+    expect(grouped).toHaveLength(2)
+    expect(grouped[1].isOther).toBe(true)
+    expect(grouped[1].children).toEqual(children.slice(1))
+    expect(grouped[1].size).toBe(30)
+    expect(collapseTreemapChildren(children, 1)[0].children).toEqual(children)
+  })
+})

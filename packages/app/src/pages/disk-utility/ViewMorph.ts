@@ -28,6 +28,7 @@ import {
   type Wedge,
 } from "./morph-geometry"
 export type MorphPose = {
+  shape?: "arc" | "rect"
   wedge: Wedge
   /** Canvas backing-store coordinates — apply `frameRect` before building a tile. */
   rect: Rect
@@ -205,7 +206,8 @@ export class ViewMorph {
   private boundary(tile: MorphTile, index: number, cx: number, cy: number): Point[] {
     const plan = this.plans[index]
     if (!plan) return []
-    if (this.dir === "toGrid") {
+    if (tile.from.shape === "rect") return matchingRectPolygon(tile.from.rect, plan.pointCount)
+    if (tile.from.shape === "arc" || this.dir === "toGrid") {
       return sectorPolygon(tile.from.wedge, cx, cy, MAX_SAGITTA, plan.pointCount / 2 - 1)
     }
     return plan.rectPolygon
@@ -215,7 +217,7 @@ export class ViewMorph {
   private prepareGeometry(cx: number, cy: number, maxR: number) {
     this.geometryCenter = { cx, cy, maxR }
     this.sources = this.tiles.map((tile, i) => this.boundary(tile, i, cx, cy))
-    this.destinations = this.tiles.map((tile, i) => this.dir === "toGrid"
+    this.destinations = this.tiles.map((tile, i) => tile.to.shape === "rect" || (tile.to.shape !== "arc" && this.dir === "toGrid")
       ? this.plans[i].rectPolygon
       : sectorPolygon(tile.to.wedge, cx, cy, MAX_SAGITTA, this.plans[i].pointCount / 2 - 1))
     this.controls = this.sources.map((points) => points.map((point) => rimControl(point, cx, cy, maxR)))

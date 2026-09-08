@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { join, dirname, resolve } from "node:path"
 import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { fileURLToPath } from "node:url"
-import { diskLizardPublicDir, resolveDiskLizardViteChannel } from "@disklizard/app/vite"
+const diskLizardPublicDir = fileURLToPath(new URL("../../../app/public", import.meta.url))
 
 const dir = dirname(fileURLToPath(import.meta.url))
 const root = resolve(dir, "../..")
@@ -64,17 +64,13 @@ describe("electron renderer html", () => {
 describe("electron vite publicDir", () => {
   test("configured publicDir resolves to a directory with oc-theme-preload.js", async () => {
     const config = await Bun.file(join(root, "electron.vite.config.ts")).text()
-    expect(config).toContain("publicDir: diskLizardPublicDir")
+    expect(config).toContain("../app/public")
     expect(existsSync(diskLizardPublicDir)).toBe(true)
     expect(existsSync(join(diskLizardPublicDir, "oc-theme-preload.js"))).toBe(true)
-    expect(readdirSync(diskLizardPublicDir).sort()).toEqual(["oc-theme-preload.js"])
+    expect(readdirSync(diskLizardPublicDir)).toContain("oc-theme-preload.js")
     const preload = readFileSync(join(diskLizardPublicDir, "oc-theme-preload.js"), "utf8")
-    expect(preload).toContain('dataset.theme = "oc-2"')
-    expect(preload).not.toContain("localStorage")
+    expect(preload).toContain("dataset.colorScheme")
+    expect(preload).toContain("disklizard-color-scheme")
   })
 
-  test("does not turn a legacy feed name into a production build identity", () => {
-    expect(resolveDiskLizardViteChannel(undefined, "latest")).toBe("dev")
-    expect(resolveDiskLizardViteChannel("beta", "latest")).toBe("beta")
-  })
 })

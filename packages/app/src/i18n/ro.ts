@@ -637,6 +637,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Verifică permisiunile dosarelor și ale punctelor de montare, apoi scanează din nou.",
   "disk.accessGuidance.default": "Verifică accesul la aceste dosare, apoi scanează din nou.",
   "disk.accessGuidance.rescan": "Folosește Rescan din bara de sus după ce modifici accesul.",
+  "disk.common.rescan": "Rescanează",
   "error.page.title": "Ceva nu a funcționat",
   "error.page.description": "A apărut o eroare la încărcarea aplicației.",
   "error.page.description.localServerStartup": "A apărut o eroare la pornirea serverului local.",

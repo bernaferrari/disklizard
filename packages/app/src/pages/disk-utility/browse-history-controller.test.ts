@@ -7,10 +7,8 @@ function node(path: string): DiskScanNode {
     name: path.split("/").at(-1) || "/",
     path,
     size: 1,
-    allocated: 1,
-    files: 1,
-    dirs: 0,
     isDir: true,
+    ext: "",
     children: [],
   }
 }

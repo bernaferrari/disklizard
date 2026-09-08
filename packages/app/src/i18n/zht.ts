@@ -672,6 +672,7 @@ export const dict = {
   "disk.accessGuidance.linux": "檢查資料夾與掛載權限，然後重新掃描。",
   "disk.accessGuidance.default": "檢查這些資料夾的存取權限，然後重新掃描。",
   "disk.accessGuidance.rescan": "變更存取權後，請使用頂端列的「重新掃描」。",
+  "disk.common.rescan": "重新掃描",
   "toast.update.installFailed.title": "無法安裝更新",
   "toast.update.installFailed.retry": "重試",
 

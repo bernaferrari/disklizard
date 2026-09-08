@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "راجع أذونات المجلد والتحميل (mount)، ثم امسح ضوئيًا من جديد.",
   "disk.accessGuidance.default": "راجع صلاحية الوصول إلى هذه المجلدات، ثم امسح ضوئيًا من جديد.",
   "disk.accessGuidance.rescan": "استخدم خيار Rescan في الشريط العلوي بعد تغيير الصلاحيات.",
+  "disk.common.rescan": "إعادة الفحص",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ملف",
   "desktop.menu.edit": "تحرير",

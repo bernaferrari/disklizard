@@ -625,6 +625,7 @@ export const dict = {
   "disk.accessGuidance.linux": "የአቃፊ እና የmount ፈቃዶችን ይመርምሩ፣ ከዚያ እንደገና ይቃኙ።",
   "disk.accessGuidance.default": "ወደነዚህ አቃፊዎች ያለውን መዳረሻ ይመርምሩ፣ ከዚያ እንደገና ይቃኙ።",
   "disk.accessGuidance.rescan": "መዳረሻን ካስተካከሉ በኋላ በላዩ ላይ ያለውን እንደገና መቃኘት ይጠቀሙ።",
+  "disk.common.rescan": "እንደገና ይቃኝ",
   "toast.update.installFailed.title": "ዝማኔውን ማካተት አልተቻለም",
   "toast.update.installFailed.retry": "እንደገና ሞክር",
   "error.page.title": "የሆነ ችግር ተፈጥሯል",

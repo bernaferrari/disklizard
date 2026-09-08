@@ -28,6 +28,7 @@ const desktop = [
   "Prikaži ili sakrij terminal",
   "Prikaži ili sakrij stablo datoteka",
   "Ponovno učitaj",
+  "Ponovno skeniraj",
   "Prikaži ili sakrij razvojne alate",
   "Stvarna veličina",
   "Povećaj",

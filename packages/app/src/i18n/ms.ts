@@ -637,6 +637,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Semak kebenaran folder dan pemasangan (mount), kemudian imbas semula.",
   "disk.accessGuidance.default": "Semak akses kepada folder-folda ini, kemudian imbas semula.",
   "disk.accessGuidance.rescan": "Gunakan Rescan di bar atas selepas mengubah akses.",
+  "disk.common.rescan": "Imbas semula",
   "error.page.title": "Sesuatu telah berlaku",
   "error.page.description": "Ralat berlaku semasa memuatkan aplikasi.",
   "error.page.description.localServerStartup": "Ralat berlaku semasa memulakan pelayan setempat.",

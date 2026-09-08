@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Provjerite dozvole foldera i mount tačke, a zatim ponovo skenirajte.",
   "disk.accessGuidance.default": "Provjerite pristup ovim folderima, a zatim ponovo skenirajte.",
   "disk.accessGuidance.rescan": "Nakon promjene pristupa koristite Rescan u gornjoj traci.",
+  "disk.common.rescan": "Ponovo skeniraj",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Datoteka",
   "desktop.menu.edit": "Uredi",

@@ -640,6 +640,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Papka va montaj nuqtalari ruxsatlarini ko'rib chiqib, so'ngra qayta skanerlang.",
   "disk.accessGuidance.default": "Ushbu papkalarga kirishni ko'rib chiqib, so'ngra qayta skanerlang.",
   "disk.accessGuidance.rescan": "Kirishni o'zgartirgandan so'ng yuqori paneldagi Rescan'dan foydalaning.",
+  "disk.common.rescan": "Qayta skanerlash",
   "error.page.title": "Nimadir xato ketdi",
   "error.page.description": "Ilovani yuklashda xatolik yuz berdi.",
   "error.page.description.localServerStartup": "Mahalliy serverni ishga tushirishda xatolik yuz berdi.",

@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Kontrollér mappe- og monteringsrettigheder, og scan igen.",
   "disk.accessGuidance.default": "Kontrollér adgangen til disse mapper, og scan igen.",
   "disk.accessGuidance.rescan": "Brug Scan igen i den øverste bjælke, efter du har ændret adgangen.",
+  "disk.common.rescan": "Skan igen",
   "command.category.suggested": "Foreslået",
   "command.category.view": "Vis",
   "command.category.project": "Projekt",

@@ -3,10 +3,7 @@ import {
   type DiskLizardPlatform,
   type DiskLizardUpdaterState,
 } from "@disklizard/app/runtime"
-import type { AsyncStorage } from "@solid-primitives/storage"
-import { createSignal } from "solid-js"
 import pkg from "../../package.json"
-import { createWindowFullscreen } from "./window-fullscreen"
 
 export function desktopOS(): DiskLizardPlatform["os"] {
   const ua = navigator.userAgent
@@ -17,7 +14,7 @@ export function desktopOS(): DiskLizardPlatform["os"] {
 }
 
 export function createDesktopStorage() {
-  const api: AsyncStorage = {
+  const api = {
     getItem: (key: string) => window.api.storeGet(key),
     setItem: (key: string, value: string) => window.api.storeSet(key, value),
     removeItem: (key: string) => window.api.storeDelete(key),
@@ -25,7 +22,7 @@ export function createDesktopStorage() {
     key: async (index: number) => (await window.api.storeKeys())[index],
     getLength: () => window.api.storeLength(),
     get length() {
-      return api.getLength()
+      return window.api.storeLength()
     },
   }
   return () => api
@@ -33,7 +30,6 @@ export function createDesktopStorage() {
 
 export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterState): DiskLizardPlatform {
   const os = desktopOS()
-  const fullscreen = createWindowFullscreen(window.api)
   return {
     platform: "desktop",
     os,
@@ -61,7 +57,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
     getPathForFile: (file) => window.api.getPathForFile(file),
     storage: createDesktopStorage(),
     updater: {
-      state: updaterState,
+      state: updaterState(),
       check: () => window.api.updater.check(),
       install: () => window.api.updater.install(),
     },
@@ -70,8 +66,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
     },
     exportDiagnostics: () => window.api.exportDebugLogs(),
     openExternal: (url) => window.api.openExternal(url),
-    windowFullscreen: fullscreen.value,
-    dispose: fullscreen.dispose,
+    windowFullscreen: false,
   }
 }
 

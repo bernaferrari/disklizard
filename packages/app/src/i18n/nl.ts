@@ -642,6 +642,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Controleer de map- en koppelingsmachtigingen en scan opnieuw.",
   "disk.accessGuidance.default": "Controleer de toegang tot deze mappen en scan opnieuw.",
   "disk.accessGuidance.rescan": "Gebruik Opnieuw scannen in de balk bovenaan nadat je de toegang hebt gewijzigd.",
+  "disk.common.rescan": "Opnieuw scannen",
   "toast.update.installFailed.title": "Kan de update niet installeren",
   "toast.update.installFailed.retry": "Opnieuw proberen",
   "error.page.title": "Er is iets misgegaan",

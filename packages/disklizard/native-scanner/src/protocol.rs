@@ -267,6 +267,7 @@ pub struct ScanIssueSummary {
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Progress {
+    pub percent: f64,
     pub files_scanned: usize,
     pub dirs_scanned: usize,
     pub current_path: String,

@@ -96,6 +96,9 @@ export type DiskLizardStopWatchingOptions = {
 }
 
 export type DiskLizardScanProgress = {
+  /** Estimated completed work, independent of allocated bytes. */
+  percent?: number
+  phase?: "scan" | "reconcile" | "save" | "complete"
   scanId: string
   filesScanned: number
   dirsScanned?: number

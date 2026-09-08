@@ -630,6 +630,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ກວດເບິ່ງສິດຂອງໂຟນເດີ ແລະ ຈຸດເຊື່ອມຕໍ່ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
   "disk.accessGuidance.default": "ກວດເບິ່ງການເຂົ້າເຖິງໂຟນເດີເຫຼົ່ານີ້ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
   "disk.accessGuidance.rescan": "ຫຼັງຈາກປ່ຽນການເຂົ້າເຖິງ ໃຫ້ໃຊ້ Rescan ໃນແຖບເທິງ.",
+  "disk.common.rescan": "ສະແກນຄືນໃໝ່",
   "toast.update.action.notYet": "ຍັງບໍ່ທັນ",
   "toast.update.installFailed.title": "ບໍ່ສາມາດຕິດຕັ້ງການອັບເດດໄດ້",
   "toast.update.installFailed.retry": "ລອງໃໝ່",

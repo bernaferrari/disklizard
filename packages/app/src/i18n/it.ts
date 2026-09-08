@@ -547,6 +547,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Controlla i permessi delle cartelle e dei mount, poi ripeti la scansione.",
   "disk.accessGuidance.default": "Controlla l'accesso a queste cartelle, poi ripeti la scansione.",
   "disk.accessGuidance.rescan": "Dopo aver modificato l'accesso, usa Ripeti scansione nella barra superiore.",
+  "disk.common.rescan": "Nuova scansione",
   "toast.update.installFailed.title": "Impossibile installare l'aggiornamento",
   "toast.update.installFailed.retry": "Riprova",
   "error.page.title": "Qualcosa è andato storto",

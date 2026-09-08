@@ -8,6 +8,7 @@ export const dict = {
   "disk.accessGuidance.linux": "请检查文件夹和挂载权限，然后重新扫描。",
   "disk.accessGuidance.default": "请检查对这些文件夹的访问权限，然后重新扫描。",
   "disk.accessGuidance.rescan": "更改访问权限后，请使用顶栏中的“重新扫描”。",
+  "disk.common.rescan": "重新扫描",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "文件",
   "desktop.menu.edit": "编辑",

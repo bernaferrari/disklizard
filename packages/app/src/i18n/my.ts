@@ -643,6 +643,7 @@ export const dict = {
   "disk.accessGuidance.linux": "ဖိုင်တွဲနှင့် mount ခွင့်ပြုချက်များကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
   "disk.accessGuidance.default": "ဤဖိုင်တွဲများသို့ ဝင်ရောက်ခွင့်ကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
   "disk.accessGuidance.rescan": "ဝင်ရောက်ခွင့် ပြောင်းလဲပြီးနောက် အပေါ်ဘာရှိ Rescan ကို အသုံးပြုပါ။",
+  "disk.common.rescan": "ပြန်စကင်",
   "error.page.title": "တစ်ခုခု မှားသွားသည်။",
   "error.page.description": "အပလီကေးရှင်းကို တင်နေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပေါ်ခဲ့သည်။",
   "error.page.description.localServerStartup": "ဒေသတွင်းဆာဗာကို စတင်စဉ်တွင် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",

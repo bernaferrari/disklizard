@@ -634,6 +634,7 @@ export const dict: Record<string, string> = {
   "disk.accessGuidance.linux": "ফোল্ডার ও মাউন্ট অনুমতিগুলো দেখুন, তারপর আবার স্ক্যান করুন।",
   "disk.accessGuidance.default": "এই ফোল্ডারগুলোতে অ্যাক্সেস দেখুন, তারপর আবার স্ক্যান করুন।",
   "disk.accessGuidance.rescan": "অ্যাক্সেস পরিবর্তনের পর উপরের বারে Rescan ব্যবহার করুন।",
+  "disk.common.rescan": "পুনরায় স্ক্যান করুন",
   "toast.update.installFailed.title": "আপডেটটি ইনস্টল করা যায়নি",
   "toast.update.installFailed.retry": "আবার চেষ্টা করুন",
   "error.page.title": "কিছু ভুল হয়েছে",

@@ -13,7 +13,7 @@ import {
   sunburstTransitionDuration,
 } from "./sunburst"
 
-function oklchToLinearSrgb(css: string): [number, number, number] {
+function oklchToLinearSrgb(css: string, clip = true): [number, number, number] {
   const channels = css.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)/)
   if (!channels) throw new Error(`Expected an opaque OKLCH color, received ${css}`)
   const lightness = Number(channels[1])
@@ -24,7 +24,7 @@ function oklchToLinearSrgb(css: string): [number, number, number] {
   const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
   const m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
   const s = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3
-  const clamp = (channel: number) => Math.max(0, Math.min(1, channel))
+  const clamp = (channel: number) => clip ? Math.max(0, Math.min(1, channel)) : channel
   return [
     clamp(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
     clamp(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
@@ -47,7 +47,7 @@ function node(name: string, size: number, children: DiskScanNode[] = []): DiskSc
 
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
-    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([155, 205, 250, 290, 95, 155])
+    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([40, 15, 155, 220, 185, 40])
   })
   it("keeps consecutive hues distinct", () => {
     expect(primaryHueForIndex(0)).not.toBe(primaryHueForIndex(1))
@@ -61,15 +61,31 @@ describe("primarySegmentColor", () => {
     expect(css.startsWith("oklch(")).toBe(true)
     expect(css).toContain(primaryHueForIndex(2).toFixed(1))
   })
+  it("keeps every directory and file depth inside sRGB, including hover", () => {
+    for (let index = 0; index < 10; index++) {
+      for (let depth = 0; depth < 6; depth++) {
+        for (const directory of [true, false]) {
+          const css = primarySegmentColor(index, 1, directory, depth)
+          const hover = css.replace(/oklch\(([\d.]+)/, (_, lightness) => `oklch(${Number(lightness) + 0.025}`)
+          for (const color of [css, hover]) for (const channel of oklchToLinearSrgb(color, false)) {
+            expect(channel).toBeGreaterThanOrEqual(0)
+            expect(channel).toBeLessThanOrEqual(1)
+          }
+        }
+      }
+    }
+  })
   it("includes alpha when passed", () => {
     expect(primarySegmentColor(0, 0.5)).toContain("/ 0.5")
   })
   it("keeps files visually secondary to folder branches", () => {
-    expect(primarySegmentColor(2, 1, false)).toBe(`oklch(0.56 0.05225 ${primaryHueForIndex(2).toFixed(1)})`)
+    expect(primarySegmentColor(2, 1, false)).not.toBe(primarySegmentColor(2))
   })
   it("keeps every tile label above normal-text AA contrast", () => {
     for (let index = 0; index < 10; index++) {
-      expect(contrastRatio(primarySegmentForeground(true), primarySegmentColor(index))).toBeGreaterThanOrEqual(4.5)
+      for (let depth = 0; depth < 6; depth++) {
+        for (const directory of [true, false]) expect(contrastRatio(primarySegmentForeground(directory), primarySegmentColor(index, 1, directory, depth))).toBeGreaterThanOrEqual(4.5)
+      }
     }
     expect(contrastRatio(primarySegmentForeground(false), primarySegmentColor(0, 1, false))).toBeGreaterThanOrEqual(4.5)
   })
@@ -120,6 +136,13 @@ describe("sunburstEntryDuration", () => {
 })
 
 describe("layoutSunburstSegments", () => {
+  it("shows six levels by default without descending beyond the visible rings", () => {
+    let branch = node("leaf", 100)
+    for (let depth = 7; depth >= 0; depth--) branch = node(`level-${depth}`, 100, [branch])
+    const segments = layoutSunburstSegments(branch)
+    expect(segments.map((segment) => segment.depth)).toEqual([0, 1, 2, 3, 4, 5])
+    expect(segments.every((segment) => segment.end - segment.start > 6)).toBe(true)
+  })
   it("preserves every byte while grouping dense branches into readable segments", () => {
     const children = Array.from({ length: 48 }, (_, outer) =>
       node(
@@ -217,7 +240,7 @@ describe("sunburst resize", () => {
         height = value
         painted = false
       },
-      getBoundingClientRect: () => ({ width: 500, height: 500 }),
+      getBoundingClientRect: () => ({ width: 800, height: 500 }),
     } as HTMLCanvasElement
     map.ctx = {
       clearRect: () => {
@@ -232,5 +255,23 @@ describe("sunburst resize", () => {
     }
     map._resize()
     expect(painted).toBe(true)
+    expect(map.canvas.width / map.canvas.height).toBeCloseTo(800 / 500)
+    expect(map.cx).toBe(map.canvas.width / 2)
+    expect(map.cy).toBe(map.canvas.height / 2)
+    expect(map.maxR).toBeCloseTo(map.canvas.height * 0.47)
+  })
+
+  it("tapers detail rings without gaps or overflow beyond the map extent", () => {
+    const map = Object.create(Sunburst.prototype) as Sunburst
+    map.options = { rings: 6, ringGap: 0.004 } as Sunburst["options"]
+    map.maxR = 300
+    map.innerHole = 87
+    const rings = Array.from({ length: 6 }, (_, depth) => map._radiiForDepth(depth))
+    expect(rings[0].inner).toBe(map.innerHole)
+    expect(rings[5].outer).toBeCloseTo(map.maxR)
+    for (let depth = 1; depth < rings.length; depth++) {
+      expect(rings[depth].inner - rings[depth - 1].outer).toBeCloseTo(1.2)
+      expect(rings[depth].outer - rings[depth].inner).toBeLessThan(rings[depth - 1].outer - rings[depth - 1].inner)
+    }
   })
 })

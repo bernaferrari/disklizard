@@ -633,6 +633,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Pārbaudiet mapju un montāžas punktu atļaujas un veiciet jaunu skenēšanu.",
   "disk.accessGuidance.default": "Pārbaudiet piekļuvi šīm mapēm un veiciet jaunu skenēšanu.",
   "disk.accessGuidance.rescan": "Pēc piekļuves maiņas augšējā joslā izmantojiet Rescan.",
+  "disk.common.rescan": "Skenēt atkārtoti",
   "toast.update.action.notYet": "Vēlāk",
   "toast.update.installFailed.title": "Neizdevās instalēt atjauninājumu",
   "toast.update.installFailed.retry": "Mēģināt vēlreiz",

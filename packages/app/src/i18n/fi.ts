@@ -528,6 +528,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Tarkista kansioiden ja liitoskohtien käyttöoikeudet ja skannaa uudelleen.",
   "disk.accessGuidance.default": "Tarkista pääsy näihin kansioihin ja skannaa uudelleen.",
   "disk.accessGuidance.rescan": "Kun olet muuttanut käyttöoikeuksia, käytä yläpalkissa olevaa Skannaa uudelleen -toimintoa.",
+  "disk.common.rescan": "Skannaa uudelleen",
   "toast.update.installFailed.title": "Päivitystä ei voitu asentaa",
   "toast.update.installFailed.retry": "Yritä uudelleen",
   "error.page.title": "Jotain meni pieleen",

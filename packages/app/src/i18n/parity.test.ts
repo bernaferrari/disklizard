@@ -82,18 +82,6 @@ const domains = [
     target: (locale: string) => `./${locale}.ts`,
     locales: appLocales,
   },
-  {
-    name: "ui",
-    source: "../../../ui/src/i18n/en.ts",
-    target: (locale: string) => `../../../ui/src/i18n/${locale}.ts`,
-    locales: appLocales,
-  },
-  {
-    name: "desktop",
-    source: "../../../desktop/src/renderer/i18n/en.ts",
-    target: (locale: string) => `../../../desktop/src/renderer/i18n/${locale}.ts`,
-    locales: desktopLocales,
-  },
 ] as const
 
 describe("i18n parity", () => {
@@ -153,25 +141,11 @@ describe("i18n parity", () => {
     }
   })
 
-  test("changed-file summary keys preserve rendered English copy and localize complete phrases", async () => {
-    const source = await dictionary("../../../ui/src/i18n/en.ts")
-    expect(source["ui.sessionTurn.diffs.changed.one"].replace("{{count}}", "1")).toBe("1 Changed file")
-    expect(source["ui.sessionTurn.diffs.changed.other"].replace("{{count}}", "2")).toBe("2 Changed files")
-    expect(source["ui.sessionTurn.diffs.changed"]).toBeUndefined()
-
-    for (const locale of appLocales) {
-      const target = await dictionary(`../../../ui/src/i18n/${locale}.ts`)
-      for (const key of ["ui.sessionTurn.diffs.changed.one", "ui.sessionTurn.diffs.changed.other"]) {
-        expect(target[key].trim()).not.toBe("")
-        expect(placeholders(target[key])).toEqual(["count"])
-      }
-    }
-  })
 })
 
 describe("i18n plural parity", () => {
   test("locale-specific categories exist and preserve count placeholders", async () => {
-    for (const domain of domains.slice(0, 2)) {
+    for (const domain of domains) {
       const source = await dictionary(domain.source)
       const families = pluralFamilies(source)
       for (const locale of domain.locales) {

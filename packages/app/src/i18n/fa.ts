@@ -633,6 +633,7 @@ export const dict = {
   "disk.accessGuidance.linux": "مجوزهای پوشه‌ها و نقاط اتصال را بررسی کنید، سپس دوباره اسکن کنید.",
   "disk.accessGuidance.default": "دسترسی به این پوشه‌ها را بررسی کنید، سپس دوباره اسکن کنید.",
   "disk.accessGuidance.rescan": "پس از تغییر دسترسی، از گزینه Rescan در نوار بالا استفاده کنید.",
+  "disk.common.rescan": "اسکن مجدد",
   "toast.update.action.notYet": "هنوز نه",
   "toast.update.installFailed.title": "نصب به‌روزرسانی ممکن نشد",
   "toast.update.installFailed.retry": "تلاش دوباره",

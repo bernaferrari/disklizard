@@ -1,38 +1,12 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "strict": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "types": ["vite/client", "node", "bun"],
     "paths": {
       "@/*": ["./src/*"]
     }
-  },
-  "include": [
-    "src/disklizard.ts",
-    "src/disklizard-i18n.ts",
-    "src/pages/disk-utility/**/*.ts",
-    "src/pages/disk-utility/**/*.tsx",
-    "src/i18n/**/*.ts",
-    "package.json"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "e2e",
-    "src/pages/disk-utility/web-route.tsx",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx"
-  ]
+  }
 }

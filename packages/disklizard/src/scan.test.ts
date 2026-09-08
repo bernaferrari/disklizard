@@ -883,13 +883,15 @@ describe("disk scanner", () => {
 
   it("emits a final progress snapshot", async () => {
     const root = await fixture()
-    const progress: Array<{ filesScanned: number; size: number; done?: boolean }> = []
+    const progress: Array<{ filesScanned: number; size: number; done?: boolean; percent?: number }> = []
     const result = await scanPath(root, {
       useWorker: true,
       onProgress: (event) => progress.push(event),
     })
 
-    expect(progress.at(-1)).toMatchObject({ filesScanned: 4, size: result.size, done: true })
+    expect(progress.at(-1)).toMatchObject({ filesScanned: 4, size: result.size, done: true, percent: 100 })
+    const percentages = progress.map((p) => p.percent ?? 0)
+    expect(percentages).toEqual([...percentages].sort((a, b) => a - b))
   })
 
   it("streams compact completed root branches without changing the final tree", async () => {

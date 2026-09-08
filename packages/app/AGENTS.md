@@ -9,15 +9,10 @@
 
 ## Local Dev
 
-- `opencode dev web` proxies `https://app.opencode.ai`, so local UI/CSS changes will not show there.
-- For local UI changes, run the backend and app dev servers separately.
-- Backend (from `packages/opencode`): `bun run --conditions=browser ./src/index.ts serve --port 4096`
-- App (from `packages/app`): `bun dev -- --port 4444`
-- Open `http://localhost:4444` to verify UI changes (it targets the backend at `http://localhost:4096`).
-
-## SolidJS
-
-- Always prefer `createStore` over multiple `createSignal` calls
+- The main renderer uses React 19, Base UI/shadcn, and Tailwind v4. Do not restore the retired Solid UI workspace.
+- From the repository root, `bun run dev:desktop` starts the native Electron app. `bun run --cwd packages/app dev` runs the browser fixture only.
+- Validate renderer changes with `bun run --cwd packages/app typecheck` and `bun run --cwd packages/app test`.
+- Keep native filesystem access behind the desktop preload bridge. Browser fixture data must not enter the desktop bootstrap.
 
 ## Localization
 

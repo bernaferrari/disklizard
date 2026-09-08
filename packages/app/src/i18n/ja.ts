@@ -4,6 +4,7 @@ export const dict = {
   "disk.accessGuidance.linux": "フォルダーとマウントの権限を確認してから、再スキャンしてください。",
   "disk.accessGuidance.default": "これらのフォルダーへのアクセスを確認してから、再スキャンしてください。",
   "disk.accessGuidance.rescan": "アクセスを変更したら、上部バーの再スキャンを使用してください。",
+  "disk.common.rescan": "再スキャン",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ファイル",
   "desktop.menu.edit": "編集",

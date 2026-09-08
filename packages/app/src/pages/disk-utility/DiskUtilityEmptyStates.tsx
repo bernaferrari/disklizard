@@ -1,6 +1,6 @@
-import { Button } from "@opencode-ai/ui/button"
-import { Icon, type IconProps } from "@opencode-ai/ui/icon"
-import { Show, type JSX } from "solid-js"
+import { Button } from "@/components/dl/button"
+import { Icon, type IconName } from "@/components/dl/icon"
+import type { ReactNode } from "react"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { diskLanguageText, useLanguage } from "./runtime"
@@ -9,41 +9,40 @@ import { diskNodeDisplayName } from "./node-display"
 export function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {
   const language = useLanguage()
   return (
-    <div class="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
-      <Show
-        when={!props.loading}
-        fallback={
-          <div class="dl-volume-row flex items-center gap-4">
-            <span class="dl-volume-glyph size-9 animate-pulse" />
-            <span class="min-w-0 flex-1">
-              <span class="block h-3.5 w-36 rounded-sm bg-surface-raised-base" />
-              <span class="mt-2 block h-3 w-52 rounded-sm bg-surface-raised-base/70" />
-            </span>
-            <span class="hidden h-1.5 w-[148px] rounded-full bg-surface-raised-base sm:block" />
-            <span class="text-13-regular text-text-weaker">{language.t("disk.drive.reading")}</span>
-          </div>
-        }
-      >
-        <span class="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-          <Icon name="folder" class="size-4" />
-        </span>
-        <h2 class="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">
-          {props.error ? language.t("disk.drive.readFailed") : language.t("disk.drive.none")}
-        </h2>
-        <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
-          {props.error ?? language.t("disk.drive.pickFolder")}
-        </p>
-        <Button
-          data-disk-primary-action
-          class="dl-touch-target mt-4"
-          variant="secondary"
-          size="small"
-          icon="folder-add-left"
-          onClick={props.onChoose}
-        >
-          {language.t("disk.drive.scanFolder")}
-        </Button>
-      </Show>
+    <div className="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
+      {props.loading ? (
+        <div className="mb-3 flex items-center gap-3 rounded-[10px] border-0 bg-surface-raised-base p-[18px] shadow-none">
+          <span className="size-9 animate-pulse rounded-lg bg-[color-mix(in_oklch,var(--surface-raised-strong)_70%,var(--background-base))] shadow-[0_0_0_1px_color-mix(in_oklch,var(--text-strong)_10%,transparent)]" />
+          <span className="min-w-0 flex-1">
+            <span className="block h-3.5 w-36 rounded-sm bg-surface-raised-base" />
+            <span className="mt-2 block h-3 w-52 rounded-sm bg-surface-raised-base/70" />
+          </span>
+          <span className="hidden h-1.5 w-[148px] rounded-full bg-surface-raised-base sm:block" />
+          <span className="text-13-regular text-text-weaker">{language.t("disk.drive.reading")}</span>
+        </div>
+      ) : (
+        <>
+          <span className="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
+            <Icon name="folder" className="size-4" />
+          </span>
+          <h2 className="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">
+            {props.error ? language.t("disk.drive.readFailed") : language.t("disk.drive.none")}
+          </h2>
+          <p className="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
+            {props.error ?? language.t("disk.drive.pickFolder")}
+          </p>
+          <Button
+            data-disk-primary-action
+            className="min-h-11 min-w-11 mt-4"
+            variant="secondary"
+            size="small"
+            icon="folder-add-left"
+            onClick={props.onChoose}
+          >
+            {language.t("disk.drive.scanFolder")}
+          </Button>
+        </>
+      )}
     </div>
   )
 }
@@ -88,36 +87,34 @@ export function indexEmptyCopy(kind: IndexEmptyKind) {
 
 export function IndexEmpty(props: { kind: IndexEmptyKind; onReset: () => void }) {
   const language = useLanguage()
-  const copy = () => indexEmptyCopy(props.kind)
-  const filtered = () => props.kind !== "folder"
+  const copy = indexEmptyCopy(props.kind)
+  const filtered = props.kind !== "folder"
   return (
-    <div class="flex min-h-full flex-col items-center justify-center px-8 py-8 text-center">
-      <span class="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-        <Icon name={copy().icon} class="size-4" />
+    <div className="flex min-h-full flex-col items-center justify-center px-8 py-8 text-center">
+      <span className="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
+        <Icon name={copy.icon} className="size-4" />
       </span>
-      <h3 class="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">{copy().title}</h3>
-      <p class="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">{copy().body}</p>
-      <Show when={filtered()}>
-        <Button class="dl-touch-target mt-4" size="small" variant="secondary" onClick={props.onReset}>
+      <h3 className="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">{copy.title}</h3>
+      <p className="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">{copy.body}</p>
+      {filtered ? (
+        <Button className="min-h-11 min-w-11 mt-4" size="small" variant="secondary" onClick={props.onReset}>
           {language.t("disk.common.contents")}
         </Button>
-      </Show>
+      ) : null}
     </div>
   )
 }
 
-export function Placeholder(props: { icon: IconProps["name"]; title: string; body: string; actions?: JSX.Element }) {
+export function Placeholder(props: { icon: IconName; title: string; body: string; actions?: ReactNode }) {
   return (
-    <div class="flex h-full items-center justify-center px-6">
-      <div class="max-w-md text-center">
-        <div class="mx-auto mb-5 grid size-12 place-items-center rounded-full bg-surface-raised-base shadow-[0_0_0_1px_rgb(127_127_127/0.1),0_8px_24px_rgb(0_0_0/0.06)]">
-          <Icon name={props.icon} class="size-5 text-text-weak" />
+    <div className="flex h-full items-center justify-center px-6">
+      <div className="max-w-md text-center">
+        <div className="mx-auto mb-5 grid size-12 place-items-center rounded-full bg-surface-raised-base shadow-[0_0_0_1px_rgb(127_127_127/0.1),0_8px_24px_rgb(0_0_0/0.06)]">
+          <Icon name={props.icon} className="size-5 text-text-weak" />
         </div>
-        <h2 class="text-14-medium tracking-[-0.015em] text-text-strong">{props.title}</h2>
-        <p class="mt-1 text-13-regular leading-relaxed text-text-weak">{props.body}</p>
-        <Show when={props.actions}>
-          <div class="mt-4 flex flex-wrap justify-center gap-2">{props.actions}</div>
-        </Show>
+        <h2 className="text-14-medium tracking-[-0.015em] text-text-strong">{props.title}</h2>
+        <p className="mt-1 text-13-regular leading-relaxed text-text-weak">{props.body}</p>
+        {props.actions ? <div className="mt-4 flex flex-wrap justify-center gap-2">{props.actions}</div> : null}
       </div>
     </div>
   )
@@ -149,15 +146,18 @@ export function centerOverlayBehavior(
 
 /** The open directory stays anchored while hover previews appear in the inspector. */
 export function CenterOverlay(props: { node: DiskScanNode | null }) {
+  const [amount, unit] = props.node ? formatBytes(props.node.size).split(" ") : []
   return (
-    <div class="pointer-events-none absolute inset-0 grid place-items-center">
-      <div class="dl-center-summary max-w-[29%] text-center">
-        <Show when={props.node}>
-          <p class="truncate text-12-regular text-text-weak">{diskNodeDisplayName(props.node!)}</p>
-          <p class="dl-center-size mt-2 whitespace-nowrap text-[clamp(22px,2.8vw,34px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
-            {formatBytes(props.node!.size)}
-          </p>
-        </Show>
+    <div className="pointer-events-none absolute inset-0 grid place-items-center">
+      <div className="@max-[399px]:max-w-[46%] max-w-[29%] text-center">
+        {props.node ? (
+          <>
+            <p className="whitespace-nowrap text-[clamp(20px,4cqw,32px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
+              {amount}
+              <span className="mt-1.5 block text-13-regular tracking-normal text-text-weak">{unit}</span>
+            </p>
+          </>
+        ) : null}
       </div>
     </div>
   )

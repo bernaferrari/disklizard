@@ -633,6 +633,7 @@ export const dict = {
   "disk.accessGuidance.linux": "Kanna mapa- og monteringarliggivi, og skanna aftur.",
   "disk.accessGuidance.default": "Kanna atgongd til hesar mappurnar, og skanna aftur.",
   "disk.accessGuidance.rescan": "Brúka Rescan í ovara balkinum eftir broyting av atgongd.",
+  "disk.common.rescan": "Skanna aftur",
   "toast.update.action.notYet": "Ikki enn",
   "toast.update.installFailed.title": "Kundi ikki installera dagføringina",
   "toast.update.installFailed.retry": "Royn aftur",

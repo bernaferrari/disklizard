@@ -1,6 +1,6 @@
-import { Button } from "@opencode-ai/ui/button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { For, Show } from "solid-js"
+import { Button } from "@/components/dl/button"
+import { Collapsible } from "@base-ui/react/collapsible"
+import { ChevronDown, Cloud, Network, ShieldCheck, CircleAlert } from "lucide-react"
 import type { DiskStorageDiagnostics, DiskStorageLocation } from "./types"
 import { diskLanguageText, useLanguage } from "./runtime"
 
@@ -44,99 +44,67 @@ export function StorageDiagnostics(props: {
   onRetry?: () => void
 }) {
   const language = useLanguage()
-  const locations = () => props.diagnostics?.locations ?? []
-  const accessGuidance = () => (props.diagnostics ? storageAccessGuidance(props.diagnostics) : undefined)
+  const locations = props.diagnostics?.locations ?? []
+  const accessGuidance = props.diagnostics ? storageAccessGuidance(props.diagnostics) : undefined
   if (!shouldShowStorageDiagnostics(props.diagnostics, props.error)) return null
 
   return (
-    <section class="border-t border-border-weaker-base py-6" aria-labelledby="disklizard-connected-storage">
-      <div class="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-        <h3 id="disklizard-connected-storage" class="text-13-semibold text-text-strong">
-          {language.t("disk.storage.connected")}
-        </h3>
-        <span class="text-13-regular text-text-weaker">{language.t("disk.storage.mountedMac")}</span>
-      </div>
-
-      <Show when={props.error}>
-        <div
-          class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl border border-border-warning-base/50 bg-surface-warning-weak/42 px-4 py-3"
-          role="status"
-        >
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-background-base/60 text-icon-warning-base">
-            <Icon name="warning" class="size-4" />
-          </span>
-          <div class="min-w-[min(100%,24rem)] flex-1">
-            <p class="text-13-semibold text-text-strong">{language.t("disk.storage.diagnosticsErrorTitle")}</p>
-            <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
-              {language.t("disk.storage.diagnosticsErrorBody")}
-            </p>
-          </div>
-          <Show when={props.onRetry}>
-            <Button class="dl-touch-target" size="small" variant="secondary" onClick={props.onRetry}>
-              {language.t("disk.storage.retryDiagnostics")}
-            </Button>
-          </Show>
-        </div>
-      </Show>
-
-      <Show when={!props.error && accessGuidance()}>
-        {(guidance) => (
-          <div class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl border border-border-warning-base/50 bg-surface-warning-weak/42 px-4 py-3">
-            <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-background-base/60 text-icon-warning-base">
-              <Icon name="shield" class="size-4" />
-            </span>
-            <div class="min-w-[min(100%,24rem)] flex-1">
-              <p class="text-13-semibold text-text-strong">{guidance().title}</p>
-              <p class="mt-0.5 max-w-[58ch] text-13-regular leading-relaxed text-text-weak">{guidance().body}</p>
-            </div>
-            <Show when={props.onOpenAccessSettings}>
-              <Button
-                class="dl-touch-target"
-                size="small"
-                variant="secondary"
-                icon="square-arrow-top-right"
-                onClick={props.onOpenAccessSettings}
-              >
-                {language.t("disk.explore.openPrivacy")}
-              </Button>
-            </Show>
+    <Collapsible.Root className="py-2">
+      <Collapsible.Trigger className="group flex min-h-10 w-full items-center gap-2 rounded-md text-left text-13-medium text-text-weak outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring">
+        <ChevronDown aria-hidden className="size-3.5 -rotate-90 transition-transform duration-150 group-aria-expanded:rotate-0 motion-reduce:transition-none" />
+        <span>{language.t("disk.storage.connected")}</span>
+        {locations.length > 0 && <span className="ml-1 text-text-weaker tabular-nums">{locations.length}</span>}
+      </Collapsible.Trigger>
+      <Collapsible.Panel className="pt-2">
+        {locations.length > 0 && (
+          <ul className="overflow-hidden rounded-xl bg-surface-raised-base divide-y divide-border-weaker-base">
+            {locations.map((location) => {
+              const provider = storageProviderLabel(location.provider)
+              const StorageIcon = location.provider === "network" ? Network : Cloud
+              const duplicate = locations.some((other) => other.path !== location.path && other.name === location.name)
+              return (
+                <li key={location.path} className="flex min-h-16 items-center gap-4 px-5 py-3">
+                  <StorageIcon aria-hidden className="size-6 shrink-0 text-text-weak" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1" title={location.path}>
+                    <p className="truncate text-13-medium text-text-strong">{location.name}</p>
+                    {duplicate ? (
+                      <p className="mt-0.5 truncate text-12-regular text-text-weaker">{location.path}</p>
+                    ) : provider.toLowerCase() !== location.name.toLowerCase() ? (
+                      <p className="mt-0.5 truncate text-12-regular text-text-weaker">{provider}</p>
+                    ) : null}
+                  </div>
+                  <Button size="small" variant="secondary" onClick={() => props.onScan(location)}
+                    aria-label={language.t("disk.storage.scanLocation", { name: location.name, provider })}>
+                    {language.t("disk.common.scan")}
+                  </Button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+        {(props.error || accessGuidance) && (
+          <div className="mt-3 flex items-start gap-2.5 px-1 py-2 text-text-weaker" role="status">
+            {props.error ? <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" /> : <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0" />}
+            <details className="min-w-0 flex-1 text-12-regular">
+              <summary className="w-fit cursor-pointer rounded-sm leading-5 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring">
+                {props.error ? language.t("disk.storage.diagnosticsErrorTitle") : accessGuidance?.title}
+              </summary>
+              <p className="mt-2 max-w-[65ch] leading-relaxed">
+                {props.error ? language.t("disk.storage.diagnosticsErrorBody") : accessGuidance?.body}
+              </p>
+              {props.error && props.onRetry ? (
+                <Button className="mt-2" size="small" variant="ghost" onClick={props.onRetry}>
+                  {language.t("disk.storage.retryDiagnostics")}
+                </Button>
+              ) : !props.error && props.onOpenAccessSettings ? (
+                <Button className="mt-2" size="small" variant="ghost" onClick={props.onOpenAccessSettings}>
+                  {language.t("disk.explore.openPrivacy")}
+                </Button>
+              ) : null}
+            </details>
           </div>
         )}
-      </Show>
-
-      <Show when={locations().length > 0}>
-        <div class="grid gap-3 md:grid-cols-2">
-          <For each={locations()}>
-            {(location) => (
-              <button
-                type="button"
-                class="dl-hover-card dl-touch-target group flex min-h-[88px] min-w-0 items-center gap-3 rounded-2xl bg-surface-raised-strong px-4 py-3 text-left shadow-[0_0_0_1px_rgb(127_127_127/0.11),0_8px_28px_-22px_rgb(0_0_0/0.22)] outline-none transition-[background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.99]"
-                onClick={() => props.onScan(location)}
-                aria-label={language.t("disk.storage.scanLocation", {
-                  name: location.name,
-                  provider: storageProviderLabel(location.provider),
-                })}
-              >
-                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-raised-base text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
-                  <Icon name="server" class="size-4" />
-                </span>
-                <span class="min-w-0 flex-1">
-                  <span class="flex min-w-0 items-center gap-2">
-                    <span class="dl-hover-card-label truncate text-13-semibold text-text-strong">{location.name}</span>
-                    <span class="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-13-semibold text-text-weaker">
-                      {storageProviderLabel(location.provider)}
-                    </span>
-                  </span>
-                  <span class="mt-1 block truncate text-13-mono text-text-weaker" title={location.path}>
-                    {location.path}
-                  </span>
-                </span>
-                <span class="shrink-0 text-13-semibold text-text-weak">{language.t("disk.common.scan")}</span>
-              </button>
-            )}
-          </For>
-        </div>
-      </Show>
-    </section>
+      </Collapsible.Panel>
+    </Collapsible.Root>
   )
 }

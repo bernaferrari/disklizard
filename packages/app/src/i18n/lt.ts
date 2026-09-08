@@ -28,6 +28,7 @@ const desktop = [
   "Rodyti arba slėpti terminalą",
   "Rodyti arba slėpti failų medį",
   "Įkelti iš naujo",
+  "Skenuoti iš naujo",
   "Rodyti arba slėpti programavimo priemones",
   "Tikras dydis",
   "Padidinti",
