@@ -40,6 +40,9 @@ export function nativeScannerPath() {
   const packaged = path.join(resourcesPath ?? "", "native", binary)
   if (resourcesPath && existsSync(packaged)) return packaged
   const candidates = [
+    // electron-vite emits this module into desktop/out/main. The app changes
+    // cwd to the home directory, so dev sidecar lookup must be bundle-relative.
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../native", binary),
     path.resolve(process.cwd(), "native", binary),
     path.resolve(process.cwd(), "packages/desktop/native", binary),
     path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../native-scanner/target/release", binary),

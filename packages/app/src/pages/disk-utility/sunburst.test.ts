@@ -47,7 +47,7 @@ function node(name: string, size: number, children: DiskScanNode[] = []): DiskSc
 
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
-    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([40, 15, 155, 220, 185, 40])
+    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([185, 230, 275, 325, 150, 185])
   })
   it("keeps consecutive hues distinct", () => {
     expect(primaryHueForIndex(0)).not.toBe(primaryHueForIndex(1))
@@ -273,5 +273,58 @@ describe("sunburst resize", () => {
       expect(rings[depth].inner - rings[depth - 1].outer).toBeCloseTo(1.2)
       expect(rings[depth].outer - rings[depth].inner).toBeLessThan(rings[depth - 1].outer - rings[depth - 1].inner)
     }
+  })
+})
+
+describe("sunburst navigation continuity", () => {
+  function engine(root: DiskScanNode) {
+    const map = Object.create(Sunburst.prototype) as Sunburst
+    Object.assign(map, { root, viewNode: root, segments: [], innerHole: 87, maxR: 300,
+      reducedMotion: false, lastFrame: 0, requestFrame: () => {},
+      options: {rings: 6, maxSegments: 560, ringGap: 0.004, animMs: 240, enterAnimMs: 560} })
+    map.setData(root, null, true)
+    map._tick(map.animStart + 2)
+    return map
+  }
+  const branch = () => node("branch", 10, [node("inside", 10, [node("deep", 10)])])
+  it("never inverts expanding arcs across the angular seam", () => {
+    const selected = branch()
+    const map = engine(node("root", 100, [node("large", 90), selected]))
+    map.navigateTo(selected)
+    const start = map.animStart
+    const initialSpan = map.segments.find(s=>s.path === "/inside")!
+    const before = initialSpan.end - initialSpan.start
+    map._tick(start + 120)
+    expect(initialSpan.end - initialSpan.start).toBeGreaterThan(before)
+    for (let ms = 1; ms <= 240; ms += 8) {
+      map._tick(start + ms)
+      for (const segment of map.segments) {
+        expect(segment.end).toBeGreaterThanOrEqual(segment.start)
+        expect(segment.end - segment.start).toBeLessThanOrEqual(Math.PI * 2 + 1e-8)
+      }
+    }
+  })
+  it("moves surrounding wedges to the focus boundaries instead of the center", () => {
+    const selected = branch()
+    const map = engine(node("root", 100, [node("large", 90), selected]))
+    map.navigateTo(selected)
+    const exiting = map.segments.find(s => s.path === "/large")!
+    expect(exiting.toInner).toBe(exiting.fromInner)
+    expect(exiting.toOuter).toBe(exiting.fromOuter)
+    expect(exiting.toStart).toBe(exiting.toEnd)
+  })
+  it("retargets from the visible pose when another folder is opened mid-flight", () => {
+    const selected = branch()
+    const map = engine(node("root", 100, [node("large", 90), selected]))
+    map.navigateTo(selected)
+    map._tick(map.animStart + 90)
+    const visible = {...map.segments.find(s=>s.path==="/deep")!}
+    map.navigateTo(selected.children[0])
+    const next = map.segments.find(s=>s.path==="/deep")!
+    expect(next.fromStart).toBe(visible.start)
+    expect(next.fromEnd).toBe(visible.end)
+    expect(next.fromInner).toBe(visible.inner)
+    expect(next.fromOpacity).toBe(visible.opacity)
+    expect(next.fromTone).toEqual(visible.tone)
   })
 })

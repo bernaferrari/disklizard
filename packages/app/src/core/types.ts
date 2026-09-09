@@ -298,6 +298,7 @@ export type DriveInfo = {
   /** Filesystem reported by the operating system, when available. */
   filesystem?: string
   /** APFS containers share this free capacity across their volumes. */
+  available?: number
   sharedFree?: number
   /** Snapshot counts are informational; macOS does not expose reliable per-snapshot byte totals. */
   snapshotCount?: number
@@ -312,6 +313,7 @@ export type DriveFacts = Pick<
   DriveInfo,
   | "filesystem"
   | "sharedFree"
+  | "available"
   | "snapshotCount"
   | "purgeableSnapshotCount"
   | "timeMachineSnapshotCount"

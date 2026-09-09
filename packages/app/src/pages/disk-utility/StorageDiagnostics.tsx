@@ -1,3 +1,4 @@
+import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/dl/button"
 import { Collapsible } from "@base-ui/react/collapsible"
 import { ChevronDown, Cloud, Network, ShieldCheck, CircleAlert } from "lucide-react"
@@ -37,6 +38,7 @@ export function storageAccessGuidance(diagnostics: DiskStorageDiagnostics) {
 }
 
 export function StorageDiagnostics(props: {
+  inline?: boolean
   diagnostics?: DiskStorageDiagnostics
   error?: boolean
   onScan: (location: DiskStorageLocation) => void
@@ -49,22 +51,22 @@ export function StorageDiagnostics(props: {
   if (!shouldShowStorageDiagnostics(props.diagnostics, props.error)) return null
 
   return (
-    <Collapsible.Root className="py-2">
-      <Collapsible.Trigger className="group flex min-h-10 w-full items-center gap-2 rounded-md text-left text-13-medium text-text-weak outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring">
+    <Collapsible.Root className={props.inline ? "contents" : "py-2"}>
+      <Collapsible.Trigger className={`group flex min-h-9 items-center gap-2 rounded-md border border-border-weaker-base bg-surface-raised-base px-3 text-xs text-text-weak outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring ${props.inline ? "justify-self-end" : "w-full text-left"}`}>
         <ChevronDown aria-hidden className="size-3.5 -rotate-90 transition-transform duration-150 group-aria-expanded:rotate-0 motion-reduce:transition-none" />
         <span>{language.t("disk.storage.connected")}</span>
         {locations.length > 0 && <span className="ml-1 text-text-weaker tabular-nums">{locations.length}</span>}
       </Collapsible.Trigger>
-      <Collapsible.Panel className="pt-2">
+      <Collapsible.Panel className={props.inline ? "col-span-2 pt-2" : "pt-2"}>
         {locations.length > 0 && (
-          <ul className="overflow-hidden rounded-xl bg-surface-raised-base divide-y divide-border-weaker-base">
+          <ul className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
             {locations.map((location) => {
               const provider = storageProviderLabel(location.provider)
               const StorageIcon = location.provider === "network" ? Network : Cloud
               const duplicate = locations.some((other) => other.path !== location.path && other.name === location.name)
               return (
-                <li key={location.path} className="flex min-h-16 items-center gap-4 px-5 py-3">
-                  <StorageIcon aria-hidden className="size-6 shrink-0 text-text-weak" strokeWidth={1.5} />
+                <li key={location.path} className="flex min-h-16 items-center gap-3 rounded-lg border border-border-weak-base bg-background-base px-3 py-3">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-surface-raised-strong text-text-strong"><StorageIcon aria-hidden className="size-5" strokeWidth={1.5} /></span>
                   <div className="min-w-0 flex-1" title={location.path}>
                     <p className="truncate text-13-medium text-text-strong">{location.name}</p>
                     {duplicate ? (
@@ -73,7 +75,7 @@ export function StorageDiagnostics(props: {
                       <p className="mt-0.5 truncate text-12-regular text-text-weaker">{provider}</p>
                     ) : null}
                   </div>
-                  <Button size="small" variant="secondary" onClick={() => props.onScan(location)}
+                  <Button className="shrink-0 border border-border-weaker-base" size="small" variant="secondary" onClick={() => props.onScan(location)}
                     aria-label={language.t("disk.storage.scanLocation", { name: location.name, provider })}>
                     {language.t("disk.common.scan")}
                   </Button>
@@ -83,25 +85,22 @@ export function StorageDiagnostics(props: {
           </ul>
         )}
         {(props.error || accessGuidance) && (
-          <div className="mt-3 flex items-start gap-2.5 px-1 py-2 text-text-weaker" role="status">
-            {props.error ? <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" /> : <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0" />}
-            <details className="min-w-0 flex-1 text-12-regular">
-              <summary className="w-fit cursor-pointer rounded-sm leading-5 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring">
-                {props.error ? language.t("disk.storage.diagnosticsErrorTitle") : accessGuidance?.title}
-              </summary>
-              <p className="mt-2 max-w-[65ch] leading-relaxed">
-                {props.error ? language.t("disk.storage.diagnosticsErrorBody") : accessGuidance?.body}
-              </p>
-              {props.error && props.onRetry ? (
-                <Button className="mt-2" size="small" variant="ghost" onClick={props.onRetry}>
-                  {language.t("disk.storage.retryDiagnostics")}
-                </Button>
-              ) : !props.error && props.onOpenAccessSettings ? (
-                <Button className="mt-2" size="small" variant="ghost" onClick={props.onOpenAccessSettings}>
-                  {language.t("disk.explore.openPrivacy")}
-                </Button>
-              ) : null}
-            </details>
+          <div className="mt-2 flex justify-end">
+            <Popover>
+              <PopoverTrigger className="flex min-h-9 items-center gap-1.5 rounded-md px-2 text-xs text-text-weak hover:bg-surface-raised-base focus-visible:outline-2 focus-visible:outline-text-weak">
+                {props.error ? <CircleAlert aria-hidden className="size-3.5" /> : <ShieldCheck aria-hidden className="size-3.5" />}
+                {language.t("disk.storage.accessDetails")}
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-[min(340px,calc(100vw-32px))] rounded-xl bg-surface-raised-base p-4 text-text-strong">
+                <PopoverTitle className="text-sm font-medium">{props.error ? language.t("disk.storage.diagnosticsErrorTitle") : accessGuidance?.title}</PopoverTitle>
+                <p className="mt-2 text-xs leading-relaxed text-text-weak">{props.error ? language.t("disk.storage.diagnosticsErrorBody") : accessGuidance?.body}</p>
+                {props.error && props.onRetry ? (
+                  <Button className="mt-3" size="small" variant="secondary" onClick={props.onRetry}>{language.t("disk.storage.retryDiagnostics")}</Button>
+                ) : !props.error && props.onOpenAccessSettings ? (
+                  <Button className="mt-3" size="small" variant="secondary" onClick={props.onOpenAccessSettings}>{language.t("disk.explore.openPrivacy")}</Button>
+                ) : null}
+              </PopoverContent>
+            </Popover>
           </div>
         )}
       </Collapsible.Panel>

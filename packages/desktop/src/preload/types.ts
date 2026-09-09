@@ -34,6 +34,7 @@ export type DiskLizardDrive = {
   used: number
   type: "local" | "removable" | "network"
   filesystem?: string
+  available?: number
   sharedFree?: number
   snapshotCount?: number
   purgeableSnapshotCount?: number
@@ -81,6 +82,7 @@ export type DiskLizardDeveloperArtifactDeletePrecondition = {
 
 export type DiskLizardDeleteOptions = {
   authorization: string
+  historyMetadata?: { estimatedBytes?: number; kind?: "file" | "directory" }
   precondition?: DiskLizardDeveloperArtifactDeletePrecondition
 }
 

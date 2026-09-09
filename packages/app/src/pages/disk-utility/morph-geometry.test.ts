@@ -10,6 +10,7 @@ import {
   rectCorners,
   sectorPolygon,
   wedgeCorners,
+  unwrapSector,
   type Point,
 } from "./morph-geometry"
 
@@ -185,5 +186,26 @@ describe("matching rect polygons", () => {
     expect(rect[9]).toEqual([0, 50])
     expect(rect[2][0]).toBeCloseTo(50)
     expect(rect[7][0]).toBeCloseTo(50)
+  })
+})
+
+describe("unwrapping ribbons", () => {
+  it("preserves the arc at departure and lands exactly inside its rectangle", () => {
+    const wedge = { start: -1.4, end: 1.2, inner: 80, outer: 150 }
+    const rect = { x: 10, y: 20, w: 200, h: 60 }
+    const original = sectorPolygon(wedge, 200, 200)
+    const points = original.map(() => [0, 0] as [number, number])
+    unwrapSector(points, wedge, rect, 200, 200, 0)
+    points.forEach((point, i) => {
+      expect(point[0]).toBeCloseTo(original[i][0], 6)
+      expect(point[1]).toBeCloseTo(original[i][1], 6)
+    })
+    for (const progress of [0.25, 0.5, 0.75]) {
+      unwrapSector(points, wedge, rect, 200, 200, progress)
+      expect(polygonArea(points)).toBeGreaterThan(6000)
+    }
+    unwrapSector(points, wedge, rect, 200, 200, 1)
+    expect(polygonArea(points)).toBeCloseTo(rect.w * rect.h, 5)
+    expect(points.every(([x, y]) => x >= 9.999 && x <= 210.001 && y >= 19.999 && y <= 80.001)).toBe(true)
   })
 })

@@ -111,3 +111,15 @@ it("keeps combined remainders after real entries in every sort order", () => {
     }
   }
 })
+
+it("sorts developer categories without mixing build output and toolchains", () => {
+  const entries = [
+    { node: node("CoreSimulator", "/Library/CoreSimulator", 50), displaySize: 50, sourceIndex: 0, category: "toolchains" },
+    { node: node("target", "/a/target", 10), displaySize: 10, sourceIndex: 1, category: "build-output" },
+    { node: node("target", "/b/target", 20), displaySize: 20, sourceIndex: 2, category: "build-output" },
+  ]
+  expect(diskEntrySortKey("category")).toBe("category")
+  expect(sortDiskEntries(entries, "category", "ascending").map(entry => entry.node.path)).toEqual([
+    "/b/target", "/a/target", "/Library/CoreSimulator",
+  ])
+})

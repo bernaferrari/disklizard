@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import {
+  volumeAvailableBytes,
   isStartupVolume,
   volumeActionLabel,
   volumeCompletionLabel,
@@ -76,4 +77,14 @@ describe("volume completion copy", () => {
       "Map ready",
     )
   })
+})
+
+// Overview availability must include the OS reclaimable estimate without changing scan accounting.
+it("uses macOS availability for the overview and preserves physical free bytes", () => {
+  const drive = { total: 994, free: 14, available: 60 }
+  expect(volumeAvailableBytes(drive)).toBe(60)
+  expect(drive.free).toBe(14)
+  expect(volumeAvailableBytes({ total: 994, free: 14 })).toBe(14)
+  expect(volumeAvailableBytes({ ...drive, available: -1 })).toBe(14)
+  expect(volumeAvailableBytes({ ...drive, available: 2000 })).toBe(994)
 })

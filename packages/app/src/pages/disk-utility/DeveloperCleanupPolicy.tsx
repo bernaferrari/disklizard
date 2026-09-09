@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils"
+import { useState } from "react"
+import { DropdownMenu } from "@/components/dl/dropdown-menu"
 import { Button } from "@/components/dl/button"
 import { Icon } from "@/components/dl/icon"
 import type { DeveloperArtifactInventory } from "@/core"
@@ -93,6 +94,7 @@ export function developerInventoryIssueRows(inventory: DeveloperArtifactInventor
 }
 
 export function DeveloperCleanupPolicy(props: {
+  expanded?: boolean
   preset: DeveloperCleanupAgePreset
   customDays: string
   age: DeveloperCleanupAge
@@ -130,218 +132,78 @@ export function DeveloperCleanupPolicy(props: {
     })
   })()
 
-  return (
-    <details
-      className="group mt-3 rounded-lg border border-border-weaker-base bg-transparent px-2.5 py-2"
-      aria-labelledby="developer-cleanup-policy-title"
-    >
-      <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-        <span
-          className="grid size-7 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.13_252/0.12)] text-text-weak"
-          aria-hidden="true"
-        >
-          <Icon name="shield" className="size-3.5" />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span id="developer-cleanup-policy-title" className="block text-13-semibold text-text-strong">
-            {language.t("disk.developer.policy.heading")}
-          </span>
-          <span
-            id="developer-cleanup-policy-status"
-            className="mt-0.5 block truncate text-13-regular text-text-weak"
-            aria-live="polite"
-          >
-            {status}
-          </span>
-        </span>
-        <Icon name="chevron-down" className="size-3 shrink-0 text-icon-weak group-open:rotate-180" />
+  const content = <div className="space-y-4">
+    <PolicyChoice label={language.t("disk.developer.policy.minimum")} value={props.preset}
+      options={DEVELOPER_CLEANUP_AGE_PRESETS.map(value => ({value, label: language.t(AGE_LABELS[value])}))}
+      onChange={props.onPresetChange} />
+    {props.preset === "custom" && <label className="flex items-center justify-between gap-4 text-xs text-text-weak">
+      {language.t("disk.developer.policy.customLabel")}
+      <input className="h-10 w-24 rounded-md border border-border-weaker-base bg-background-base px-3 text-right tabular-nums text-text-strong outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+        type="number" min="1" max="3650" step="1" value={props.customDays} aria-invalid={!props.age.valid}
+        onChange={event => props.onCustomDaysChange(event.currentTarget.value)} />
+    </label>}
+    {props.ecosystems.length > 0 && <PolicyChoice label={language.t("disk.developer.policy.toolchain")}
+      value={props.ecosystem} options={[{value: "all" as const, label: language.t("disk.common.allEcosystems")},
+        ...props.ecosystems.map(value => ({value, label: artifactEcosystemLabel(value)}))]}
+      onChange={props.onEcosystemChange} />}
+
+    <div className="border-t border-border-weaker-base pt-3">
+      <p className="mb-3 text-xs leading-relaxed text-text-weak" role="status">{status}</p>
+      <Button className="h-10 w-full" size="small" variant="secondary"
+        disabled={props.unavailable || !props.age.valid || props.eligibleCount === 0}
+        onClick={props.onSelectEligible}>{language.t("disk.developer.policy.select")}</Button>
+    </div>
+
+    <details className="group border-t border-border-weaker-base pt-1">
+      <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between text-xs text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+        {language.t("disk.developer.policy.explanation")}<Icon name="chevron-down" className="size-3 group-open:rotate-180" />
       </summary>
-
-      <div>
-        <fieldset className="mt-3" aria-describedby="developer-cleanup-policy-status">
-          <legend className="sr-only">{language.t("disk.developer.policy.minimum")}</legend>
-          <div
-            className="flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
-            role="group"
-            aria-label={language.t("disk.developer.policy.minimum")}
-          >
-            {DEVELOPER_CLEANUP_AGE_PRESETS.map((preset) => (
-              <button
-                type="button"
-                key={preset}
-                className={cn(
-                  "min-h-11 min-w-11 shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
-                  props.preset === preset
-                    ? "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]"
-                    : "hover:text-text-strong bg-background-base/45 text-text-weak",
-                )}
-                aria-pressed={props.preset === preset}
-                onClick={() => props.onPresetChange(preset)}
-              >
-                {language.t(AGE_LABELS[preset])}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        {props.ecosystems.length > 0 ? (
-          <fieldset className="mt-3" aria-describedby="developer-cleanup-policy-status">
-            <legend className="text-13-semibold text-text-weak">{language.t("disk.developer.policy.toolchain")}</legend>
-            <div
-              className="mt-1.5 flex max-w-full gap-1.5 overflow-x-auto pb-0.5"
-              role="group"
-              aria-label={language.t("disk.developer.policy.toolchainLabel")}
-            >
-              <button
-                type="button"
-                className={cn(
-                  "min-h-11 min-w-11 shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
-                  props.ecosystem === "all"
-                    ? "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]"
-                    : "hover:text-text-strong bg-background-base/45 text-text-weak",
-                )}
-                aria-pressed={props.ecosystem === "all"}
-                onClick={() => props.onEcosystemChange("all")}
-              >
-                {language.t("disk.common.allEcosystems")}
-              </button>
-              {props.ecosystems.map((ecosystem) => (
-                <button
-                  type="button"
-                  key={ecosystem}
-                  className={cn(
-                    "min-h-11 min-w-11 shrink-0 rounded-full px-3 py-2 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
-                    props.ecosystem === ecosystem
-                      ? "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]"
-                      : "hover:text-text-strong bg-background-base/45 text-text-weak",
-                  )}
-                  aria-pressed={props.ecosystem === ecosystem}
-                  onClick={() => props.onEcosystemChange(ecosystem)}
-                >
-                  {artifactEcosystemLabel(ecosystem)}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-        ) : null}
-
-        {props.preset === "custom" ? (
-          <label className="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] bg-background-base/65 px-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.14)] focus-within:shadow-[inset_0_0_0_1px_rgb(127_127_127/0.34),0_0_0_3px_rgb(127_127_127/0.08)]">
-            <span className="shrink-0 text-13-semibold text-text-weak">
-              {language.t("disk.developer.policy.customPrefix")}
-            </span>
-            <input
-              className="dl-smart-age-input min-w-0 flex-1 bg-transparent text-right text-12-regular tabular-nums text-text-strong outline-none"
-              type="number"
-              min="1"
-              max="3650"
-              step="1"
-              value={props.customDays}
-              aria-invalid={!props.age.valid}
-              aria-label={language.t("disk.developer.policy.customLabel")}
-              inputMode="numeric"
-              onChange={(event) => props.onCustomDaysChange(event.currentTarget.value)}
-            />
-            <span className="shrink-0 text-13-regular text-text-weak">{language.t("disk.common.days")}</span>
-          </label>
-        ) : null}
-
-        {inventory ? (
-          <div
-            className="mt-3 rounded-[10px] bg-background-base/45 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
-            role="status"
-            aria-live="polite"
-            aria-label={language.t("disk.developer.policy.inventoryLabel", { coverage: inventoryCoverage ?? "" })}
-          >
-            <div className="flex min-w-0 items-start gap-2">
-              <Icon
-                name={inventory.status.state === "complete" ? "circle-check" : "warning"}
-                className="mt-0.5 size-3.5 shrink-0 text-text-weak"
-                aria-hidden="true"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-13-semibold text-text-strong">
-                  {language.t("disk.developer.policy.inventoryHeading", {
-                    state:
-                      inventory.status.state === "complete"
-                        ? language.t("disk.common.complete")
-                        : language.t("disk.common.partial"),
-                  })}
-                </p>
-                <p className="mt-0.5 text-13-regular leading-relaxed text-text-weak">{inventoryCoverage}</p>
-              </div>
-            </div>
-            {inventory.status.state === "partial" ? (
-              <details className="group mt-2">
-                <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-                  <span className="flex-1">{language.t("disk.developer.policy.coverageDetails")}</span>
-                  <Icon name="chevron-down" className="size-3 transition-transform duration-150 group-open:rotate-180" />
-                </summary>
-                <div className="border-t border-border-weaker-base/60 pb-1 pt-2">
-                  {inventory.status.truncated ? (
-                    <p className="text-13-regular leading-relaxed text-text-weak">
-                      {language.t("disk.developer.policy.cap", {
-                        count: inventory.status.maxItems.toLocaleString(),
-                      })}
-                    </p>
-                  ) : null}
-                  {inventoryIssueRows.map((issue) => (
-                    <div className="mt-2" key={issue.label}>
-                      <p className="text-13-semibold text-text-weak">
-                        {issue.label} · {issue.count.toLocaleString()}
-                      </p>
-                      {issue.paths.length > 0 ? (
-                        <ul
-                          className="mt-1 space-y-0.5"
-                          aria-label={language.t("disk.developer.policy.samplePaths", { label: issue.label })}
-                        >
-                          {issue.paths.slice(0, 3).map((path) => (
-                            <li className="truncate text-13-mono text-text-weaker" title={path} key={path}>
-                              {path}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </details>
-            ) : null}
-          </div>
-        ) : null}
-      </div>
-
-      <details className="group mt-3">
-        <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-1.5 rounded-md px-1 text-13-semibold text-text-weak outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
-          <span className="flex-1">{language.t("disk.developer.policy.explanation")}</span>
-          <Icon name="chevron-down" className="size-3 transition-transform duration-150 group-open:rotate-180" />
-        </summary>
-        <div className="pt-1">
-          <p className="max-w-[58ch] text-13-regular leading-relaxed text-text-weak">
-            {language.t("disk.developer.policy.body")}
-          </p>
-        </div>
-      </details>
-
-      <div className="mt-3 flex justify-end">
-        <Button
-          className="min-h-11 min-w-11 shrink-0"
-          size="small"
-          variant="secondary"
-          icon="checklist"
-          disabled={props.unavailable || !props.age.valid || props.eligibleCount === 0}
-          title={
-            props.unavailable
-              ? language.t("disk.developer.policy.requiresVerified")
-              : !props.age.valid
-                ? developerCleanupAgeLabel(props.age)
-                : undefined
-          }
-          onClick={props.onSelectEligible}
-        >
-          {language.t("disk.developer.policy.select")}
-        </Button>
+      <div className="space-y-2 pb-2 text-xs leading-relaxed text-text-weak">
+        <p>{language.t("disk.developer.policy.body")}</p>
+        <p>{language.t("disk.developer.sizeExplanation")}</p>
+        <p>{language.t("disk.developer.meanings")}</p>
       </div>
     </details>
-  )
+    {inventory && <details className="group">
+      <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between text-xs text-text-weak outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+        {language.t("disk.developer.policy.coverageDetails")}<Icon name="chevron-down" className="size-3 group-open:rotate-180" />
+      </summary>
+      <div className="space-y-3 pb-2 text-xs leading-relaxed text-text-weak">
+        <p>{inventoryCoverage}</p>
+        {inventoryIssueRows.filter(issue => issue.count > 0).map(issue => <div key={issue.label}>
+          <p className="font-medium">{issue.label} · {issue.count.toLocaleString()}</p>
+          <ul className="mt-1 space-y-1">{issue.paths.slice(0, 3).map(path => <li key={path} className="truncate text-text-weaker" title={path}>{path}</li>)}</ul>
+        </div>)}
+      </div>
+    </details>}
+  </div>
+  if (props.expanded) return content
+  return <details className="group">
+    <summary className="flex min-h-11 cursor-pointer items-center text-xs text-text-weak">{language.t("disk.developer.policy.heading")}</summary>
+    {content}
+  </details>
+}
+
+function PolicyChoice<T extends string>(props: {label: string; value: T; options: {value: T; label: string}[]; onChange: (value: T) => void}) {
+  const [open, setOpen] = useState(false)
+  return <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] items-center gap-3">
+    <span className="text-xs text-text-weak">{props.label}</span>
+    <DropdownMenu open={open} onOpenChange={setOpen} placement="bottom-end" gutter={4}>
+      <DropdownMenu.Trigger as={Button} variant="secondary" size="small" aria-label={props.label} className="h-10 min-w-0 justify-between gap-2 rounded-md px-3">
+        <span className="truncate">{props.options.find(option => option.value === props.value)?.label}</span>
+        <Icon name="chevron-down" className="size-3 shrink-0" />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal><DropdownMenu.Content>
+        <DropdownMenu.RadioGroup value={props.value} onChange={value => {
+          const option = props.options.find(option => option.value === value)
+          if (option) { props.onChange(option.value); setOpen(false) }
+        }}>
+          {props.options.map(option => <DropdownMenu.RadioItem key={option.value} value={option.value}>
+            <DropdownMenu.ItemLabel>{option.label}</DropdownMenu.ItemLabel>
+            <DropdownMenu.ItemIndicator><Icon name="check" /></DropdownMenu.ItemIndicator>
+          </DropdownMenu.RadioItem>)}
+        </DropdownMenu.RadioGroup>
+      </DropdownMenu.Content></DropdownMenu.Portal>
+    </DropdownMenu>
+  </div>
 }

@@ -1,5 +1,5 @@
 /** Shared storage colors. Hue expresses identity, never cleanup safety. */
-export const STORAGE_HUES = [40, 15, 155, 220, 285, 335, 85, 185, 255, 120] as const
+export const STORAGE_HUES = [185, 230, 275, 325, 25, 65, 100, 150, 210, 300] as const
 
 function inSrgb(lightness: number, chroma: number, hue: number) {
   const a = chroma * Math.cos(hue * Math.PI / 180)
@@ -15,18 +15,18 @@ function inSrgb(lightness: number, chroma: number, hue: number) {
 // Compute once, not in animation frames. Each hue uses the same share of its
 // own displayable chroma, including headroom for the hover lightness lift.
 const tones = STORAGE_HUES.map(hue => Array.from({length: 6}, (_, depth) => {
-  const L = 0.79 + depth * 0.014
+  const L = 0.76 + depth * 0.01
   let low = 0, high = 0.3
   for (let step = 0; step < 20; step++) {
     const mid = (low + high) / 2
-    if (inSrgb(L + 0.025, mid, hue)) low = mid
+    if (inSrgb(L, mid, hue) && inSrgb(L + 0.025, mid, hue)) low = mid
     else high = mid
   }
-  return { L, C: Math.floor(low * 0.88 * 1000) / 1000 }
+  return { L, C: Math.floor(low * 0.94 * 1000) / 1000 }
 }))
 
 export function storageTone(hue: number, depth = 0, directory = true) {
   const index = STORAGE_HUES.indexOf(hue as typeof STORAGE_HUES[number])
   const tone = tones[Math.max(0, index)][Math.max(0, Math.min(5, Math.floor(depth)))]
-  return directory ? tone : { L: tone.L, C: tone.C * 0.55 }
+  return directory ? tone : { L: tone.L, C: tone.C * 0.78 }
 }

@@ -77,3 +77,31 @@ No traversal data, permissions, clone accounting or developer inventory was
 removed to obtain the corrected progress. This is not evidence of performance
 parity with another application. A controlled end-to-end comparison must use
 the same readable scope and comparable cache conditions.
+
+## September 9: desktop bundle bypassed the Rust fix
+
+The running development Electron process had cwd set to home. Main startup
+deliberately changes cwd. The resolver covered source layout, repository cwd
+and packaged resources, but not desktop/out/main. Its final candidate resolved
+to desktop/desktop/native, causing a silent TypeScript fallback. Earlier direct
+native probes did not exercise this launch path.
+
+Added the bundle-relative ../../native candidate and unconditional diagnostic
+logging for fallback. The regression bundles the real resolver into a temporary
+desktop layout and launches it from another cwd. Before the fix it returned a
+nonexistent cwd-relative path; afterward it finds the sidecar. An isolated
+Electron-runtime smoke ran the bundled adapter from home without an override
+and confirmed backend=native.
+
+A cancelled 1.5-second TypeScript startup probe reported 26.77%, 33.06%, 36.16%,
+36.33% and 38.03% in its first five updates. Rust reported 0.000008%, 0.000390%,
+0.000913%, 0.08895% and 0.20085%.
+
+The existing benchmark on repository node_modules, physical accounting:
+Rust 1,823.5 ms; forced TypeScript 4,432.2 ms. Both reported 192,908 files,
+28,600 directories and 3,819,806,720 bytes. This single local comparison shows
+the cost of the wrong backend, not whole-disk or DaisyDisk performance.
+
+Validation: 28 desktop native/resolution tests, desktop and core typechecks,
+and electron-vite build pass. The running app was not restarted; the resolver
+change requires a new main process.

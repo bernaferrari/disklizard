@@ -6,6 +6,8 @@ import { promisify } from "node:util"
 import type { ApfsSnapshotEvidence, DriveFacts, DriveInfo } from "./types"
 
 const execFileAsync = promisify(execFile)
+import { nativeScannerPath } from "./native"
+
 const OS = platform()
 const IS_WIN = OS === "win32"
 const MAC_DRIVE_FACT_CACHE_MS = 15_000
@@ -198,6 +200,10 @@ async function collectMacDriveFacts(drive: Pick<DriveInfo, "path">): Promise<Mac
       timeout: 3_000,
     })
     const facts: MacDriveFacts = parseMacDriveInfoPlist(stdout)
+    try {
+      const capacity = await execFileAsync(nativeScannerPath(), ["--available-capacity", drive.path], { timeout: 1500, maxBuffer: 4096 })
+      Object.assign(facts, parseMacAvailableCapacity(capacity.stdout))
+    } catch { /* Older or unavailable sidecars retain raw free-space reporting. */ }
     if (facts.filesystem === "apfs") {
       try {
         const snapshots = await execFileAsync("diskutil", ["apfs", "listSnapshots", "-plist", drive.path], {
@@ -549,4 +555,12 @@ export function parseDfOutput(stdout: string, os: NodeJS.Platform): DriveInfo[] 
     })
   }
   return drives.sort((a, b) => (a.path === "/" ? -1 : b.path === "/" ? 1 : a.name.localeCompare(b.name)))
+}
+
+/** Unknown/invalid OS estimates must never replace physical free space with zero. */
+export function parseMacAvailableCapacity(stdout: string): Pick<DriveInfo, "available"> {
+  try {
+    const value = JSON.parse(stdout)?.available
+    return Number.isSafeInteger(value) && value >= 0 ? { available: value } : {}
+  } catch { return {} }
 }

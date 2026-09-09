@@ -1,10 +1,10 @@
 import type { DiskScanNode } from "./types"
 
-export type DiskEntrySortKey = "size" | "name" | "modified" | "type"
+export type DiskEntrySortKey = "size" | "name" | "modified" | "type" | "category"
 export type DiskEntrySortDirection = "ascending" | "descending"
 
 export function diskEntrySortKey(value: string): DiskEntrySortKey {
-  return value === "name" || value === "modified" || value === "type" ? value : "size"
+  return value === "name" || value === "modified" || value === "type" || value === "category" ? value : "size"
 }
 
 export function diskEntrySortDirection(value: string): DiskEntrySortDirection {
@@ -19,6 +19,7 @@ export type IndexedDiskEntry = {
 }
 
 export type SortableDiskEntry = {
+  category?: string
   node: DiskScanNode
   displaySize: number
   sourceIndex: number
@@ -120,9 +121,11 @@ export function sortDiskEntries<T extends SortableDiskEntry>(
     const remainderOrder = Number(!!left.node.isOther) - Number(!!right.node.isOther)
     if (remainderOrder) return remainderOrder
     const comparison =
-      key === "size"
-        ? left.displaySize - right.displaySize
-        : key === "name"
+      key === "category"
+        ? compareText(left.category ?? "", right.category ?? "") || right.displaySize - left.displaySize
+        : key === "size"
+          ? left.displaySize - right.displaySize
+          : key === "name"
           ? compareText(left.node.name, right.node.name)
           : key === "modified"
             ? compareDefinedNumbers(left.node.modifiedAt, right.node.modifiedAt)

@@ -285,7 +285,7 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     }
     const filter = input.filter
     if (filter) result = result.filter((entry) => matchesScanInvestigationFilter(entry.node, filter))
-    return sortDiskEntries(result, input.sortKey, input.sortDirection)
+    return sortDiskEntries(input.sortKey === "category" ? result.map(entry => ({ ...entry, category: recognizeNode(entry.node).developer ?? "" })) : result, input.sortKey, input.sortDirection)
   }
 
   const selectLens = (input: ScanInvestigationEntriesOptions, query: string) =>

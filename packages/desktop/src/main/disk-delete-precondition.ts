@@ -28,6 +28,7 @@ export type DeveloperArtifactDeletePrecondition = {
 
 export type DiskDeleteOptions = {
   authorization: string
+  historyMetadata?: { estimatedBytes?: number; kind?: "file" | "directory" }
   precondition?: DeveloperArtifactDeletePrecondition
 }
 

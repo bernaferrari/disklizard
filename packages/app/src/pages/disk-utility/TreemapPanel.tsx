@@ -57,34 +57,34 @@ export function Treemap(props: {
     >
       {rects.map((r) => {
         const openAggregate = () => props.onShowAll(r.node)
-        const interactive = r.w >= 44 && r.h >= 32
         const style = {
           left: `${r.x}px`,
           top: `${r.y}px`,
           width: `${r.w}px`,
           height: `${r.h}px`,
-          background: r.node.isOther
-            ? "var(--surface-raised-strong)"
-            : primarySegmentColor(r.index, 1, r.node.isDir, r.depth),
-          color: r.node.isOther ? "var(--text-strong)" : primarySegmentForeground(r.depth > 0 || r.node.isDir),
+          backgroundColor: primarySegmentColor(r.index, 1, r.node.isDir, r.depth),
+          backgroundImage: r.node.isOther
+            ? "repeating-linear-gradient(135deg, transparent 0 5px, oklch(1 0 0 / 0.16) 5px 7px)"
+            : undefined,
+          color: primarySegmentForeground(r.depth > 0 || r.node.isDir),
           boxShadow:
             props.hoveredPath === r.node.path || props.selectedPath === r.node.path
               ? "inset 0 0 0 2px currentColor"
               : "inset 0 1px 0 rgb(255 255 255 / 0.12)",
         }
         const content =
-          r.w >= 60 && r.h >= 30 ? (
+          r.w >= 76 && r.h >= 44 ? (
             <span
               className={
                 r.expanded
-                  ? "flex h-[34px] items-center justify-between gap-2 px-2.5"
+                  ? "absolute inset-x-0 top-0 flex h-[34px] items-center justify-between gap-2 px-2.5"
                   : "flex h-full flex-col justify-between p-2.5"
               }
             >
-              <span className="block max-w-full truncate text-13-semibold tracking-[-0.01em]">
+              <span className="block min-w-0 max-w-full truncate text-13-semibold tracking-[-0.01em]">
                 {diskNodeDisplayName(r.node)}
               </span>
-              {r.w >= 120 && (r.expanded || r.h >= 65) ? (
+              {r.w >= (r.expanded ? 220 : 120) && (r.expanded || r.h >= 76) ? (
                 <span className="inline-flex max-w-full shrink-0 truncate text-12-regular tabular-nums">
                   {r.node.isOther ? (
                     formatBytes(r.node.size)
@@ -95,7 +95,7 @@ export function Treemap(props: {
               ) : null}
             </span>
           ) : null
-        return interactive ? (
+        return (
           <button
             type="button"
             key={r.node.path}
@@ -108,7 +108,6 @@ export function Treemap(props: {
                     name: diskNodeDisplayName(r.node),
                   })
             }
-            title={`${r.node.path} · ${formatBytes(r.node.size)}`}
             data-disk-tile-path={r.node.path}
             className="absolute cursor-pointer overflow-hidden rounded-[7px] text-left outline-none transition-[box-shadow] duration-150 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-weak"
             style={style}
@@ -119,8 +118,7 @@ export function Treemap(props: {
             onDragStart={(event) => props.onCollectDragStart(event.nativeEvent, r.node)}
             onDragEnd={props.onCollectDragEnd}
             onKeyDown={(event) => {
-              // Align Tiles with the map and list: keyboard actions open
-              // or preview, while pointer activation remains selection.
+              // Aggregates open their retained children in the sidebar.
               if (event.key === "Enter") {
                 event.preventDefault()
                 if (r.node.isOther) openAggregate()
@@ -147,19 +145,11 @@ export function Treemap(props: {
           >
             {content}
           </button>
-        ) : (
-          <div
-            key={r.node.path}
-            aria-hidden="true"
-            className="pointer-events-none absolute overflow-hidden rounded-[7px] transition-[box-shadow] duration-150"
-            style={style}
-          >
-            {content}
-          </div>
+
         )
       })}
       {props.hoveredPath ? (
-        <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-background-base/84 px-3 py-1.5 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_8px_24px_rgb(0_0_0/0.1)] backdrop-blur-xl">
+        <div className="pointer-events-none absolute bottom-4 left-4 right-4 w-fit max-w-[calc(100%-2rem)] truncate rounded-lg bg-background-base px-3 py-1.5 text-13-semibold text-text-strong shadow-[0_0_0_1px_rgb(127_127_127/0.12),0_8px_24px_rgb(0_0_0/0.1)] backdrop-blur-xl">
           {(() => {
             const node = rects.find((r) => r.node.path === props.hoveredPath)?.node
             return node

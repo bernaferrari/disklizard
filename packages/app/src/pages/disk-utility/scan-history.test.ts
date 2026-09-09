@@ -150,3 +150,19 @@ describe("scan history", () => {
     expect(filterScanHistoryEntries(entries, undefined)).toEqual([])
   })
 })
+
+test("whole-volume notifications identify changed descendants without double-counting parents", () => {
+  const before = root([file("/scan/a", 10), file("/scan/b", 20)])
+  const after = root([file("/scan/a", 14), file("/scan/b", 17)])
+  const result = summarizeScanChanges(before, after, ["/scan"])
+  expect(result.changes.map(change => change.path)).toEqual(["/scan/a", "/scan/b"])
+  expect(result.totalDeltaBytes).toBe(1)
+})
+
+test("keeps a truthful volume fallback when retained children cannot explain the delta", () => {
+  const before = root([file("/scan/a", 10)])
+  const after = { ...root([file("/scan/a", 14)]), size: 30 }
+  const result = summarizeScanChanges(before, after, ["/scan"])
+  expect(result.changes.map(change => change.path)).toEqual(["/scan"])
+  expect(result.totalDeltaBytes).toBe(20)
+})

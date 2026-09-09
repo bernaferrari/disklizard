@@ -185,3 +185,31 @@ export function polygonArea(polygon: readonly Point[]): number {
   }
   return Math.abs(doubled) / 2
 }
+
+/** Unbend an annular ribbon without folding its opposing edges through each
+ * other. Reuses the caller's point buffer; thickness stays positive throughout. */
+export function unwrapSector(points: Point[], wedge: Wedge, rect: Rect, cx: number, cy: number, t: number) {
+  const middle = (wedge.start + wedge.end) / 2
+  const radius = (wedge.inner + wedge.outer) / 2
+  const span = wedge.end - wedge.start
+  const bend = span * (1 - t)
+  const length = radius * span * (1 - t) + rect.w * t
+  const thickness = (wedge.outer - wedge.inner) * (1 - t) + rect.h * t
+  const turn = Math.atan2(Math.sin(-Math.PI / 2 - middle), Math.cos(-Math.PI / 2 - middle))
+  const orientation = middle + turn * t
+  const cos = Math.cos(orientation), sin = Math.sin(orientation)
+  const centerX = (cx + Math.cos(middle) * radius) * (1 - t) + (rect.x + rect.w / 2) * t
+  const centerY = (cy + Math.sin(middle) * radius) * (1 - t) + (rect.y + rect.h / 2) * t
+  const perEdge = points.length / 2
+  for (let i = 0; i < points.length; i++) {
+    const inner = i < perEdge
+    const u = inner ? i / (perEdge - 1) : (points.length - 1 - i) / (perEdge - 1)
+    const angle = (u - 0.5) * bend
+    const offset = (inner ? -1 : 1) * thickness / 2
+    const r = bend > 0.00001 ? length / bend : 0
+    const x = r ? (r + offset) * Math.sin(angle) : (u - 0.5) * length
+    const y = r ? -2 * r * Math.sin(angle / 2) ** 2 + offset * Math.cos(angle) : offset
+    points[i][0] = centerX - sin * x + cos * y
+    points[i][1] = centerY + cos * x + sin * y
+  }
+}

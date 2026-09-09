@@ -1,8 +1,8 @@
 import { Popover } from "@/components/dl/popover"
 import { Icon } from "@/components/dl/icon"
 import { Button } from "@/components/ui/button"
-import { HardDrive, Network } from "lucide-react"
-import { useEffect, useRef, type CSSProperties } from "react"
+import { Network } from "lucide-react"
+import { useEffect, useRef, useId, type CSSProperties } from "react"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { formatBytes, formatCount, shortBytes } from "./format"
 import { animateCount } from "./motion"
@@ -79,6 +79,12 @@ export function volumeSubtitle(drive: DiskDriveInfo): string {
   return parts.join(" ")
 }
 
+/** Available capacity is a display estimate; physical free/used remain scan facts. */
+export function volumeAvailableBytes(drive: { total: number; free: number; available?: number }) {
+  const estimate = drive.available
+  return Math.min(drive.total, Math.max(drive.free, Number.isFinite(estimate) && estimate! >= 0 ? estimate! : drive.free))
+}
+
 /** A volume remains actionable while other volumes scan in parallel. */
 export function VolumeRow(props: {
   drive: DiskDriveInfo
@@ -91,7 +97,9 @@ export function VolumeRow(props: {
 }) {
   const language = useLanguage()
   const hasTotal = props.drive.total > 0
-  const used = volumeUsedRatio(props.drive.used, props.drive.total)
+  const available = volumeAvailableBytes(props.drive)
+  const displayUsed = Math.max(0, props.drive.total - available)
+  const used = volumeUsedRatio(displayUsed, props.drive.total)
   const scanning = props.job?.status === "scanning"
   const complete = props.job?.status === "complete"
   const failed = props.job?.status === "failed"
@@ -102,7 +110,7 @@ export function VolumeRow(props: {
       : scanning
         ? "oklch(0.74 0.13 176)"
         : hasTotal
-          ? usageStroke(props.drive.used, props.drive.total)
+          ? usageStroke(displayUsed, props.drive.total)
           : "oklch(0.62 0.01 0)"
   const fill = complete ? 1 : scanning ? Math.max(0, Math.min(1, (props.job?.pct ?? 0) / 100)) : used
   const readout = failed
@@ -112,7 +120,7 @@ export function VolumeRow(props: {
       : scanning
         ? `${Math.floor(props.job?.pct ?? 0)}%`
         : hasTotal
-          ? formatBytes(props.drive.free)
+          ? formatBytes(available)
           : "—"
   const readoutFree = !props.job && hasTotal
   const completedPerformance = (() => {
@@ -147,7 +155,7 @@ export function VolumeRow(props: {
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
-      className="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-5 gap-y-3 rounded-xl bg-surface-raised-base px-5 py-5 max-sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+      className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-2 border-b border-border-weaker-base/50 last:border-b-0 px-5 py-3 max-sm:grid-cols-[auto_minmax(0,1fr)_auto]"
       style={
         {
           "--dl-volume-ink": ink,
@@ -160,8 +168,8 @@ export function VolumeRow(props: {
       <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
       <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-1.5">
-          <p className="truncate text-16-medium tracking-[-0.02em] text-text-strong">{props.drive.name}</p>
-          {(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined ? (
+          <p className="truncate text-[15px] font-medium tracking-[-0.01em] text-text-strong">{props.drive.name}</p>
+          {(props.drive.snapshotCount ?? 0) > 0 || props.drive.sharedFree !== undefined || props.drive.available !== undefined ? (
             <Popover
               placement="bottom-start"
               portal={false}
@@ -190,6 +198,11 @@ export function VolumeRow(props: {
                 </svg>
               }
             >
+              {props.drive.available !== undefined && (
+                <p className="mt-2 text-12-regular text-text-weak">
+                  {language.t("disk.drive.availableDetails", { free: formatBytes(props.drive.free), reclaimable: formatBytes(Math.max(0, available - props.drive.free)) })}
+                </p>
+              )}
               {props.drive.sharedFree !== undefined ? (
                 <p className="mt-2 text-12-regular text-text-weak">
                   {language.t("disk.drive.sharedContainerFree", {
@@ -209,7 +222,7 @@ export function VolumeRow(props: {
           ) : null}
         </div>
         <p
-          className="mt-0.5 truncate text-13-regular text-text-weaker"
+          className="mt-0.5 truncate text-12-regular leading-5 text-text-weaker"
           title={
             props.job?.status === "complete" && completedPerformance
               ? language.t("disk.drive.completedTitle", {
@@ -222,8 +235,8 @@ export function VolumeRow(props: {
           {volumeSubtitle({ ...props.drive, sharedFree: undefined })}
         </p>
       </div>
-      <div className="flex w-44 flex-col gap-2.5 max-sm:col-start-2 max-sm:row-start-2 max-sm:w-full" title={subtitle}>
-        <div className="min-w-12 flex-1">
+      <div className="flex h-10 w-48 flex-col justify-center gap-1.5 max-sm:col-start-2 max-sm:row-start-2 max-sm:w-full" title={subtitle}>
+        <div className="min-w-12 shrink-0">
           <div
             className="h-[5px] rounded-full bg-[color-mix(in_oklch,var(--text-strong)_10%,transparent)]"
             role={scanning ? "progressbar" : undefined}
@@ -241,12 +254,12 @@ export function VolumeRow(props: {
           </div>
         </div>
         <p
-          className={`whitespace-nowrap text-right text-12-regular tabular-nums tracking-[-0.02em] ${
+          className={`whitespace-nowrap text-right text-12-regular leading-5 tabular-nums ${
             failed ? "text-text-strong" : "text-text-weak"
           }`}
         >
           {readout}
-          {readoutFree ? ` ${language.t("disk.drive.freeSuffix")}` : undefined}
+          {readoutFree ? ` ${language.t(props.drive.available !== undefined ? "disk.drive.availableSuffix" : "disk.drive.freeSuffix")}` : undefined}
         </p>
       </div>
       <div className="flex shrink-0 items-center max-sm:col-start-3 max-sm:row-span-2 max-sm:row-start-1">
@@ -255,7 +268,7 @@ export function VolumeRow(props: {
           data-disk-primary-action={props.primary ? "" : undefined}
           size="default"
           variant={props.primary && !scanning ? "default" : "secondary"}
-          className="h-9 min-w-20 rounded-lg px-4"
+          className="h-8 min-w-[80px] rounded-md px-4 text-[13px] font-medium"
           disabled={disabled}
           title={disabled ? language.t("disk.drive.scanLimit") : undefined}
           aria-label={
@@ -266,7 +279,7 @@ export function VolumeRow(props: {
                 : hasTotal
                   ? language.t("disk.drive.scanFreeLabel", {
                       name: props.drive.name,
-                      free: formatBytes(props.drive.free),
+                      free: formatBytes(available),
                     })
                   : language.t("disk.drive.scanLabel", { name: props.drive.name })
           }
@@ -280,12 +293,19 @@ export function VolumeRow(props: {
 }
 
 function VolumeGlyph(props: { type: DiskDriveInfo["type"]; startup: boolean }) {
-  const Glyph = props.type === "network" ? Network : HardDrive
-  return (
-    <span className="grid h-14 w-12 place-items-center rounded-xl bg-background-base/60 text-text-weak" aria-hidden="true">
-      <Glyph className="size-7" strokeWidth={1.4} />
-    </span>
-  )
+  const gradient = useId()
+  return <span className="grid h-12 w-9 shrink-0 place-items-center" aria-hidden="true">
+    {props.type === "network" ? <Network className="size-7 text-text-weak" strokeWidth={1.4} /> :
+      <svg width="28" height="38" viewBox="0 0 28 38" fill="none">
+        <defs><linearGradient id={gradient} x1="3" y1="2" x2="25" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#e2e5ea" /><stop offset="0.5" stopColor="#a5aab3" /><stop offset="1" stopColor="#747b87" />
+        </linearGradient></defs>
+        <rect x="3" y="2" width="22" height="33" rx="3" fill={`url(#${gradient})`} stroke="#ffffff" strokeOpacity="0.25" />
+        <rect x="5" y="4" width="18" height="27" rx="1.5" stroke="#ffffff" strokeOpacity="0.2" />
+        <path d="M8 32.5h7" stroke="#343944" strokeOpacity="0.7" strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx="20" cy="32.5" r="0.8" fill="#e1e8ed" />
+      </svg>}
+  </span>
 }
 
 /** Never turn a cached-map restore or a delta refresh into an invented speed claim. */

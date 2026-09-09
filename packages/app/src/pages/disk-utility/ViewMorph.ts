@@ -23,6 +23,7 @@ import {
   arcSegments,
   matchingRectPolygon,
   sectorPolygon,
+  unwrapSector,
   type Point,
   type Rect,
   type Wedge,
@@ -38,6 +39,7 @@ export type MorphPose = {
 export type MorphTile = {
   path: string
   node: DiskScanNode
+  depth?: number
   colorIndex: number
   from: MorphPose
   to: MorphPose
@@ -49,10 +51,6 @@ const TO_GRID_MS = 240
 const TO_MAP_MS = 240
 /** Tessellation stays within this many backing-store pixels of the true arc. */
 const MAX_SAGITTA = 0.5
-
-function easeOutQuart(t: number) {
-  return 1 - Math.pow(1 - t, 4)
-}
 
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
@@ -71,7 +69,6 @@ export class ViewMorph {
   private startTime = 0
   private duration = 1
   private plans: FlightPlan[] = []
-  private controls: Point[][] = []
   private sources: Point[][] = []
   private destinations: Point[][] = []
   private points: Point[][] = []
@@ -136,7 +133,7 @@ export class ViewMorph {
     const { cx, cy, maxR } = this.getCenter()
     this.plans = tiles.map((tile) => this.planFlight(tile))
     this.prepareGeometry(cx, cy, maxR)
-    this.colors = tiles.map((tile) => primarySegmentColor(tile.colorIndex, 1, tile.node.isDir))
+    this.colors = tiles.map((tile) => tile.node.isOther ? getComputedStyle(this.canvasEl).getPropertyValue("--surface-raised-strong").trim() : primarySegmentColor(tile.colorIndex, 1, tile.node.isDir, tile.depth ?? 0))
     this._active = true
     const generation = ++this.generation
     this.startTime = performance.now()
@@ -220,13 +217,12 @@ export class ViewMorph {
     this.destinations = this.tiles.map((tile, i) => tile.to.shape === "rect" || (tile.to.shape !== "arc" && this.dir === "toGrid")
       ? this.plans[i].rectPolygon
       : sectorPolygon(tile.to.wedge, cx, cy, MAX_SAGITTA, this.plans[i].pointCount / 2 - 1))
-    this.controls = this.sources.map((points) => points.map((point) => rimControl(point, cx, cy, maxR)))
     this.points = this.sources.map((points) => points.map((): Point => [0, 0]))
   }
 
   private draw(raw: number) {
     const ctx = this.drawCtx
-    const t = this.dir === "toGrid" ? easeOutQuart(raw) : easeInOutCubic(raw)
+    const t = easeInOutCubic(raw)
     const { cx, cy, maxR } = this.getCenter()
     if (cx !== this.geometryCenter.cx || cy !== this.geometryCenter.cy || maxR !== this.geometryCenter.maxR) {
       this.prepareGeometry(cx, cy, maxR)
@@ -234,26 +230,22 @@ export class ViewMorph {
     const dpr = Math.min(2, window.devicePixelRatio || 1)
     ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
 
-    // The wheel rim dissolves (toGrid) or gathers (toMap) while shapes fly.
-    const rimAlpha = this.dir === "toGrid" ? 0.35 * (1 - t) : 0.35 * t
-    if (rimAlpha > 0.004) {
-      ctx.beginPath()
-      ctx.arc(cx, cy, maxR, 0, Math.PI * 2)
-      ctx.strokeStyle = `oklch(0.6 0.01 0 / ${rimAlpha.toFixed(3)})`
-      ctx.lineWidth = 1 * dpr
-      ctx.stroke()
-    }
-
     const roundRadius = raw > 0.6 ? ((raw - 0.6) / 0.4) * 4 * dpr : 0
     for (let i = 0; i < this.tiles.length; i++) {
       const source = this.sources[i]
       const destination = this.destinations[i]
-      const ctrls = this.controls[i]
       const pts = this.points[i]
-      const a = (1 - t) * (1 - t), b = 2 * (1 - t) * t, c = t * t
-      for (let j = 0; j < pts.length; j++) {
-        pts[j][0] = a * source[j][0] + b * ctrls[j][0] + c * destination[j][0]
-        pts[j][1] = a * source[j][1] + b * ctrls[j][1] + c * destination[j][1]
+      const tile = this.tiles[i]
+      const fromArc = tile.from.shape === "arc" || (tile.from.shape === undefined && this.dir === "toGrid")
+      const toArc = tile.to.shape === "arc" || (tile.to.shape === undefined && this.dir === "toMap")
+      if (fromArc !== toArc) {
+        unwrapSector(pts, fromArc ? tile.from.wedge : tile.to.wedge,
+          fromArc ? tile.to.rect : tile.from.rect, cx, cy, fromArc ? t : 1 - t)
+      } else {
+        for (let j = 0; j < pts.length; j++) {
+          pts[j][0] = source[j][0] + (destination[j][0] - source[j][0]) * t
+          pts[j][1] = source[j][1] + (destination[j][1] - source[j][1]) * t
+        }
       }
       tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
       ctx.fillStyle = this.colors[i]
@@ -263,14 +255,6 @@ export class ViewMorph {
       ctx.stroke()
     }
   }
-}
-
-/** Project a point radially onto the wheel rim — the bézier control point. */
-function rimControl(point: Point, cx: number, cy: number, maxR: number): Point {
-  const dx = point[0] - cx
-  const dy = point[1] - cy
-  const length = Math.hypot(dx, dy) || 1
-  return [cx + (dx / length) * maxR, cy + (dy / length) * maxR]
 }
 
 /**

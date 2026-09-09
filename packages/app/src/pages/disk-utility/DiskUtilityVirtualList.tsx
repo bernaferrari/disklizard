@@ -11,6 +11,8 @@ const DEFAULT_LIST_PAGE_SIZE = 10
 type IndexEntry = { node: DiskScanNode; colorIndex: number; displaySize: number }
 
 export function VirtualIndex(props: {
+  groupLabel?: (entry: IndexEntry, index: number) => string | undefined
+  rowHeight?: number
   entries: IndexEntry[]
   bindScrollToIndex: (fn: ((index: number) => void) | undefined) => void
   bindPageSize: (fn: (() => number) | undefined) => void
@@ -27,15 +29,16 @@ export function VirtualIndex(props: {
   const virtualizer = useVirtualizer<HTMLDivElement, HTMLLIElement>({
     count: props.entries.length,
     getScrollElement: () => viewport,
-    estimateSize: () => INDEX_ROW_ESTIMATE,
+    estimateSize: (index) => (props.rowHeight ?? INDEX_ROW_ESTIMATE) + (props.groupLabel?.(props.entries[index]!, index) ? 28 : 0),
     overscan: 10,
     getItemKey: (index) => props.entries[index]?.node.path ?? index,
   })
+  useEffect(() => { virtualizer.measure() }, [props.rowHeight, props.groupLabel])
   const scrollToIndex = (index: number) => virtualizer.scrollToIndex(index, { align: "auto" })
   const pageSize = () =>
     Math.max(
       1,
-      Math.floor((viewport?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / INDEX_ROW_ESTIMATE),
+      Math.floor((viewport?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / (props.rowHeight ?? INDEX_ROW_ESTIMATE)),
     )
   useEffect(() => {
     props.bindScrollToIndex(scrollToIndex)
@@ -93,7 +96,8 @@ export function VirtualIndex(props: {
               className="absolute left-0 top-0 w-full"
               style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
             >
-              {props.render(entry, () => item.index)}
+              {props.groupLabel?.(entry, item.index) && <div className="flex h-7 items-center px-3 text-xs font-medium text-text-weak">{props.groupLabel(entry, item.index)}</div>}
+              <div style={{ height: props.rowHeight ?? INDEX_ROW_ESTIMATE }}>{props.render(entry, () => item.index)}</div>
             </li>
           )
         })}

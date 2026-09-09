@@ -11,6 +11,7 @@ import { normalizeScanOptions } from "../../../disklizard/src/scan"
 import type { TitlebarTheme } from "../preload/types"
 import { runDesktopMenuAction } from "./desktop-menu-actions"
 import { diskAccessSettingsUrl, getDiskStorageDiagnostics } from "./disk-platform"
+import { DiskDeletionHistory, trashWithHistory } from "./disk-deletion-history"
 import { DiskDeleteAuthorizationManager } from "./disk-delete-authorization"
 import { runGuardedDiskDelete, type DiskDeleteOptions } from "./disk-delete-precondition"
 import { quickLookCommand, readDiskPreview } from "./disk-preview"
@@ -23,6 +24,19 @@ import { getPinchZoomEnabled, openExternalURL, setPinchZoomEnabled, setTitlebar,
 import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
 import { nativeT } from "./native-translations"
+
+let deletionHistory: DiskDeletionHistory | undefined
+function getDeletionHistory() {
+  if (!deletionHistory) {
+    deletionHistory = new DiskDeletionHistory(join(app.getPath("userData"), "deletion-history.jsonl"))
+    const prune = () => void deletionHistory!.prune().catch((error) => log.warn("Could not prune deletion history", error))
+    prune()
+    const timer = setInterval(prune, 24 * 60 * 60 * 1000)
+    timer.unref()
+    app.once("will-quit", () => clearInterval(timer))
+  }
+  return deletionHistory
+}
 
 const DISKLIZARD_RENDERER_STORE = "disklizard.dat"
 const DISKLIZARD_STORAGE_KEYS = new Set(["pinned-locations", "cleanup-locks"])
@@ -145,6 +159,7 @@ export function assertTrustedRenderer(event: Pick<IpcMainInvokeEvent, "sender" |
 }
 
 export function registerIpcHandlers(deps: Deps) {
+  getDeletionHistory()
   const handle = (channel: string, listener: Parameters<typeof ipcMain.handle>[1]) =>
     ipcMain.handle(channel, (event, ...args) => {
       assertTrustedRenderer(event)
@@ -482,7 +497,8 @@ export function registerIpcHandlers(deps: Deps) {
       )
       await runGuardedDiskDelete(targetPath, options?.precondition, assertSafeDeletionPath, async (path) => {
         await validateAuthorization()
-        await shell.trashItem(path)
+        await trashWithHistory(path, options?.historyMetadata, (target) => shell.trashItem(target), getDeletionHistory(),
+          (error) => log.warn("Could not save deletion history", error))
       })
       return { ok: true }
     },

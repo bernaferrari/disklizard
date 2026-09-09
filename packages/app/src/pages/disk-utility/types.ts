@@ -23,6 +23,7 @@ export type DiskDriveInfo = {
   /** Filesystem reported by the operating system, when available. */
   filesystem?: string
   /** APFS containers share this free capacity across their volumes. */
+  available?: number
   sharedFree?: number
   /** APFS snapshots observed on this mounted volume. Their byte size is not reported reliably by macOS. */
   snapshotCount?: number
@@ -42,6 +43,7 @@ export type DiskDeveloperArtifactDeletePrecondition = {
 
 export type DiskDeleteOptions = {
   authorization: string
+  historyMetadata?: { estimatedBytes?: number; kind?: "file" | "directory" }
   precondition?: DiskDeveloperArtifactDeletePrecondition
 }
 

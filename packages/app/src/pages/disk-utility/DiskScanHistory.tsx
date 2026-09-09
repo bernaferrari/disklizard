@@ -1,129 +1,79 @@
 import { Button } from "@/components/dl/button"
-import { Icon } from "@/components/dl/icon"
-import { cn } from "@/lib/utils"
+import { ArrowUpRight, ArrowDownRight, Folder, File, Activity, RotateCcw } from "lucide-react"
 import { useMemo } from "react"
-import { formatBytes, truncatePath } from "./format"
+import { formatBytes } from "./format"
 import { useLanguage } from "./runtime"
-import type { ScanHistoryChange, ScanHistoryEntry } from "./scan-history"
+import type { ScanHistoryEntry } from "./scan-history"
+import { consolidateHistoryChanges } from "./history-presentation"
 import { VirtualRows } from "./DiskUtilityVirtualList"
 
-type HistoryRow =
-  | { type: "event"; key: string; entry: ScanHistoryEntry }
-  | { type: "change"; key: string; change: ScanHistoryChange }
-
 function signedBytes(bytes: number) {
-  if (bytes === 0) return formatBytes(0)
-  return `${bytes > 0 ? "+" : "−"}${formatBytes(Math.abs(bytes))}`
+  return `${bytes > 0 ? "+" : bytes < 0 ? "−" : ""}${formatBytes(Math.abs(bytes))}`
 }
 
 export function DiskScanHistory(props: {
   entries: readonly ScanHistoryEntry[]
   filtered: boolean
   onClear: () => void
+  onReveal?: (path: string) => void
 }) {
   const language = useLanguage()
-  const rows = useMemo<HistoryRow[]>(
-    () =>
-      props.entries.flatMap((entry) => [
-        { type: "event" as const, key: `event:${entry.id}`, entry },
-        ...entry.changes.map((change) => ({
-          type: "change" as const,
-          key: `change:${entry.id}:${change.path}`,
-          change,
-        })),
-      ]),
-    [props.entries],
-  )
-
-  return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      {rows.length > 0 ? (
-        <>
-          <div className="flex min-h-11 shrink-0 items-center justify-between gap-3 border-b border-border-weaker-base px-4">
-            <p className="text-12-regular text-text-weak">
-              {language.t("disk.history.eventSummary", {
-                events: language.plural("disk.count.event", props.entries.length),
-                changes: language.plural(
-                  "disk.count.change",
-                  props.entries.reduce((total, entry) => total + entry.changes.length, 0),
-                ),
-              })}
-            </p>
-            <Button className="min-h-11 min-w-11" size="small" variant="ghost" onClick={props.onClear}>
-              {language.t("disk.history.clear")}
-            </Button>
+  const rows = useMemo(() => consolidateHistoryChanges(props.entries), [props.entries])
+  const growth = props.entries.reduce((sum, entry) => sum + entry.changes.reduce((total, change) => total + Math.max(0, change.deltaBytes), 0), 0)
+  const shrink = props.entries.reduce((sum, entry) => sum + entry.changes.reduce((total, change) => total + Math.max(0, -change.deltaBytes), 0), 0)
+  const aggregateOnly = rows.length > 0 && rows.every(row => row.aggregate)
+  const latest = rows[0]?.recordedAt
+  return <div className="flex min-h-0 flex-1 flex-col">
+    {rows.length ? <>
+      <div className="shrink-0 px-5 py-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs text-text-weak">{language.t("disk.history.period")}</p>
+            <p className="mt-2 text-3xl font-medium tracking-tight tabular-nums text-text-strong">{signedBytes(props.entries.reduce((sum, entry) => sum + entry.totalDeltaBytes, 0))}</p>
           </div>
-          <VirtualRows
-            items={rows}
-            ariaLabel={language.t("disk.history.list")}
-            estimateSize={(row) => (row.type === "event" ? 48 : 68)}
-            itemKey={(row) => row.key}
-            isFocusable={(row) => row.type === "change"}
-            render={(row) =>
-              row.type === "event" ? (
-                <div className="flex h-full items-end gap-3 px-4 pb-2 text-12-regular text-text-weaker">
-                  <time dateTime={new Date(row.entry.recordedAt).toISOString()}>
-                    {new Date(row.entry.recordedAt).toLocaleString()}
-                  </time>
-                  <span
-                    className={cn(
-                      "ml-auto tabular-nums",
-                      row.entry.totalDeltaBytes !== 0 &&
-                        "text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))]",
-                    )}
-                  >
-                    {language.t("disk.history.netValue", { value: signedBytes(row.entry.totalDeltaBytes) })}
-                  </span>
-                </div>
-              ) : (
-                <div className="mx-3 flex h-full items-center gap-3 border-b border-border-weaker-base px-2 py-2">
-                  <span
-                    className="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak"
-                    aria-hidden="true"
-                  >
-                    <Icon name={row.change.isDir ? "folder" : "code-lines"} className="size-3.5" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className="truncate text-12-semibold text-text-strong">{row.change.name}</span>
-                      <span className="shrink-0 rounded-full bg-surface-raised-base px-1.5 py-0.5 text-12-semibold text-text-weak">
-                        {language.t(`disk.history.kind.${row.change.kind}`)}
-                      </span>
-                    </span>
-                    <span
-                      className="mt-1 block truncate font-mono text-12-regular text-text-weaker"
-                      title={row.change.path}
-                    >
-                      {truncatePath(row.change.path, 92)}
-                    </span>
-                  </span>
-                  <span className="shrink-0 text-right text-12-regular tabular-nums text-text-weak">
-                    <span className="block text-12-semibold text-text-strong">{signedBytes(row.change.deltaBytes)}</span>
-                    <span className="mt-0.5 block">
-                      {formatBytes(row.change.beforeBytes)} <span aria-hidden="true">→</span>{" "}
-                      {formatBytes(row.change.afterBytes)}
-                    </span>
-                  </span>
-                </div>
-              )
-            }
-          />
-        </>
-      ) : (
-        <div className="grid min-h-0 flex-1 place-items-center px-6 py-10 text-center" role="status">
-          <div className="max-w-xs">
-            <span className="mx-auto grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
-              <Icon name="arrow-undo-down" className="size-4" />
-            </span>
-            <p className="mt-4 text-14-semibold text-text-strong">
-              {props.filtered ? language.t("disk.history.empty.filtered") : language.t("disk.history.empty.title")}
-            </p>
-            <p className="mt-1.5 text-13-regular leading-relaxed text-text-weak">
-              {language.t("disk.history.empty.body")}
-            </p>
-          </div>
+          <Button size="small" variant="ghost" onClick={props.onClear} aria-label={language.t("disk.history.clear")} title={language.t("disk.history.clear")}><RotateCcw className="size-3.5 text-text-weaker" /></Button>
         </div>
-      )}
-    </div>
-  )
+        {aggregateOnly ? <div className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-text-weak">
+          <Activity className="mt-0.5 size-3.5 shrink-0 text-text-weaker" />
+          <div><p>{language.t("disk.history.aggregate")}</p>
+            <time className="mt-1 block text-[11px] text-text-weaker" dateTime={new Date(latest!).toISOString()}>{new Date(latest!).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</time>
+          </div>
+        </div> : growth > 0 && shrink > 0 ? <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-text-weak">
+          <span className="flex items-center gap-1.5"><ArrowUpRight className="size-3.5 text-orange-300" />{formatBytes(growth)} {language.t("disk.history.growth")}</span>
+          <span className="flex items-center gap-1.5"><ArrowDownRight className="size-3.5 text-emerald-400" />{formatBytes(shrink)} {language.t("disk.history.shrink")}</span>
+        </div> : null}
+      </div>
+      {!aggregateOnly && <div className="px-5 pb-2 text-[11px] text-text-weaker">{language.plural("disk.count.item", rows.length)}</div>}
+      {!aggregateOnly &&
+      <VirtualRows items={rows} ariaLabel={language.t("disk.history.list")} estimateSize={() => 76}
+        itemKey={row => row.path} isFocusable={() => false} render={row => {
+          const name = row.aggregate ? language.t("disk.history.volume") : row.name
+          const Glyph = row.aggregate ? Activity : row.isDir ? Folder : File
+          const content = <>
+            <Glyph className="mt-0.5 size-4 shrink-0 text-text-weaker" />
+            <span className="min-w-0 flex-1">
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="truncate text-13-medium text-text-strong">{name}</span>
+                <span className={`shrink-0 text-13-semibold tabular-nums ${row.deltaBytes > 0 ? "text-orange-300" : row.deltaBytes < 0 ? "text-emerald-400" : "text-text-weak"}`}>{signedBytes(row.deltaBytes)}</span>
+              </span>
+              <span className="mt-1 block truncate text-xs text-text-weak" title={row.path}>{row.aggregate ? language.t("disk.history.aggregate") : row.path.replace(/[\\/][^\\/]+$/, "") || row.path}</span>
+              <span className="mt-1 flex items-center justify-between gap-3 text-[11px] text-text-weaker">
+                <span>{language.t(`disk.history.kind.${row.kind}`)}</span>
+                <time dateTime={new Date(row.recordedAt).toISOString()} title={new Date(row.recordedAt).toLocaleString()}>{new Date(row.recordedAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</time>
+              </span>
+            </span>
+          </>
+          const className = "flex h-full w-full items-start gap-3 rounded-lg px-3 py-2 text-left"
+          return row.kind !== "removed" && !row.aggregate && props.onReveal
+            ? <button className={`${className} hover:bg-surface-raised-base focus-visible:outline-2 focus-visible:outline-text-weak`} onClick={() => props.onReveal?.(row.path)} aria-label={language.t("disk.history.reveal", {name})}>{content}</button>
+            : <div className={className}>{content}</div>
+        }} />}
+    </> : <div className="grid min-h-0 flex-1 place-items-center px-6 py-10 text-center" role="status">
+      <div className="max-w-xs">
+        <Activity className="mx-auto size-6 text-text-weaker" />
+        <p className="mt-4 text-14-semibold text-text-strong">{language.t(props.filtered ? "disk.history.empty.filtered" : "disk.history.empty.title")}</p>
+        <p className="mt-2 text-xs leading-relaxed text-text-weak">{language.t("disk.history.empty.body")}</p>
+      </div>
+    </div>}
+  </div>
 }

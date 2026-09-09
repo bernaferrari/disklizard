@@ -46,9 +46,9 @@ export async function scanPathWithBackend(targetPath: string, options: ScanOptio
       // Packaged release smoke must prove that the shipped native sidecar is
       // executable. Falling back here would turn that proof into a false pass.
       if (requireNative) throw error
-      if (process.env.DISKLIZARD_SCAN_DEBUG) {
-        console.warn("[disklizard] native scanner failed, TypeScript worker fallback", error)
-      }
+      // A fallback changes both scan speed and progress estimation. Always
+      // record it so a broken sidecar cannot masquerade as a Rust regression.
+      console.warn("[disklizard] native scanner failed, TypeScript worker fallback", error)
     }
   }
   return { root: await scanPathTypeScript(targetPath, options), backend: "typescript-fallback" }

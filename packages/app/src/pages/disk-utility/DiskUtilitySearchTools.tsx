@@ -11,6 +11,9 @@ import { useLanguage } from "./runtime"
 
 /** Search stays reachable while the inspector's optional filters scroll. */
 export function DiskUtilitySearchTools(props: {
+  developer?: boolean
+  grouped?: boolean
+  onGroup?: (value: boolean) => void
   query: string
   label: string
   placeholder: string
@@ -22,7 +25,7 @@ export function DiskUtilitySearchTools(props: {
 }) {
   const language = useLanguage()
   return (
-    <div className="flex shrink-0 items-center gap-2 border-b border-border-weaker-base px-4 py-2">
+    <div className="flex shrink-0 items-center gap-2 px-4 pb-3 pt-1">
       <div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-[7px] bg-background-base px-3 shadow-[inset_0_0_0_1px_var(--border-weaker-base)] focus-within:ring-2 focus-within:ring-text-weak">
         <Icon name="magnifying-glass" className="size-4 shrink-0 text-icon-weak" />
         <label className="sr-only" htmlFor="disklizard-scan-search">
@@ -41,7 +44,7 @@ export function DiskUtilitySearchTools(props: {
         {props.query ? (
           <button
             type="button"
-            className="min-h-11 min-w-11 grid shrink-0 place-items-center rounded-md text-text-weak focus-visible:ring-2 focus-visible:ring-text-weak"
+            className="min-h-9 min-w-9 grid shrink-0 place-items-center rounded-md text-text-weak focus-visible:ring-2 focus-visible:ring-text-weak"
             aria-label={language.t("disk.search.clear")}
             onClick={() => props.onQuery("")}
           >
@@ -55,7 +58,7 @@ export function DiskUtilitySearchTools(props: {
             as={Button}
             variant="ghost"
             size="small"
-            className="min-h-11 min-w-11"
+            className="min-h-9 min-w-9"
             icon="sliders"
             aria-label={language.t("disk.sort.group")}
             title={`${language.t(`disk.sort.key.${props.sortKey}`)} · ${language.t(`disk.sort.direction.${props.sortDirection}`)}`}
@@ -68,7 +71,7 @@ export function DiskUtilitySearchTools(props: {
                   value={props.sortKey}
                   onChange={(key) => props.onSort(diskEntrySortKey(String(key)), props.sortDirection)}
                 >
-                  {(["size", "name", "modified", "type"] as const).map((key) => (
+                  {(["size", "name", "modified", "type", ...(props.developer ? ["category" as const] : [])] as const).map((key) => (
                     <DropdownMenu.RadioItem key={key} value={key}>
                       <DropdownMenu.ItemLabel>{language.t(`disk.sort.key.${key}`)}</DropdownMenu.ItemLabel>
                       <DropdownMenu.ItemIndicator>
@@ -78,6 +81,10 @@ export function DiskUtilitySearchTools(props: {
                   ))}
                 </DropdownMenu.RadioGroup>
               </DropdownMenu.Group>
+              {props.developer && <DropdownMenu.Item onSelect={() => props.onGroup?.(!props.grouped)}>
+                <DropdownMenu.ItemLabel>{language.t("disk.developer.group")}</DropdownMenu.ItemLabel>
+                {props.grouped && <Icon name="check" />}
+              </DropdownMenu.Item>}
               <DropdownMenu.Separator />
               <DropdownMenu.RadioGroup
                 aria-label={language.t("disk.sort.direction.label")}

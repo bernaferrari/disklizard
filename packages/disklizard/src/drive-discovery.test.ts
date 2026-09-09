@@ -271,3 +271,11 @@ tmpfs 1024 1 1023 1% /run/credentials
     expect(parseLinuxMountInfo(`${output}\nmalformed row`).complete).toBe(false)
   })
 })
+
+import { parseMacAvailableCapacity } from "./drive-discovery"
+it("preserves the native available-space estimate and ignores missing/invalid measurements", () => {
+  expect(parseMacAvailableCapacity('{"available":66812952640}')).toEqual({ available: 66812952640 })
+  for (const value of ['{"available":null}', '{"available":-1}', '{"available":"60"}', '{}', 'bad']) {
+    expect(parseMacAvailableCapacity(value)).toEqual({})
+  }
+})

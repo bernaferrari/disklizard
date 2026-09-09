@@ -64,6 +64,9 @@ fn read_entries_with(
         };
         match inspect(&entry) {
             Ok(parsed) => read.entries.push(parsed),
+            // A live cache can disappear between readdir and lstat. There is
+            // no remaining file to measure; this is not an access failure.
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
             Err(_) => read.unreadable_children.push(path.join(entry.file_name())),
         }
     }
@@ -151,7 +154,7 @@ mod tests {
 
         let read = read_entries_with(fs::read_dir(&directory).unwrap(), &directory, |entry| {
             if entry.file_name() == "poison" {
-                Err(io::Error::new(io::ErrorKind::NotFound, "vanished"))
+                Err(io::Error::new(io::ErrorKind::PermissionDenied, "denied"))
             } else {
                 inspect_entry(entry)
             }
@@ -172,6 +175,19 @@ mod tests {
             ]
         );
         assert_eq!(read.unreadable_children, vec![directory.join("poison")]);
+        assert!(!read.enumeration_incomplete);
+    }
+
+    #[test]
+    fn vanished_child_is_not_a_permission_warning() {
+        let root = tempfile::tempdir().unwrap();
+        write(&root.path().join("vanishing-cache"), 5);
+        let read = read_entries_with(fs::read_dir(root.path()).unwrap(), root.path(), |entry| {
+            fs::remove_file(entry.path())?;
+            inspect_entry(entry)
+        });
+        assert!(read.entries.is_empty());
+        assert!(read.unreadable_children.is_empty());
         assert!(!read.enumeration_incomplete);
     }
 

@@ -25,15 +25,15 @@ export const DISK_UTILITY_STYLES = `
 
 /* Neutral desktop surfaces shared by the inspector, controls, and review dock. */
 :root[data-color-scheme="dark"] {
-  --dl-chrome: oklch(0.175 0.016 285);
-  --background-base: oklch(0.205 0.018 285);
-  --surface-raised-base: oklch(0.235 0.022 285);
-  --surface-raised-strong: oklch(0.29 0.022 285);
+  --dl-chrome: oklch(0.22 0.006 260);
+  --background-base: oklch(0.245 0.006 260);
+  --surface-raised-base: oklch(0.265 0.007 260);
+  --surface-raised-strong: oklch(0.315 0.009 260);
   --surface-base-hover: oklch(0.27 0.01 285);
   --surface-base-active: oklch(0.3 0.01 285);
   --button-secondary-base: oklch(0.27 0.01 285);
   --button-secondary-hover: oklch(0.31 0.01 285);
-  --border-weaker-base: oklch(0.31 0.018 285);
+  --border-weaker-base: oklch(0.32 0.007 260);
   --border-weak-base: oklch(0.35 0.008 285);
   --text-strong: oklch(0.94 0.005 285);
   --text-base: oklch(0.87 0.006 285);
@@ -90,9 +90,9 @@ export const DISK_UTILITY_STYLES = `
 /* Storage list rows bump the primary label to the denser UI size. */
 .dl-index-row .text-13-semibold { font-size: 14px; font-weight: 500; }
 
-/* Narrow chrome: hide brand/breadcrumbs, tighten the tiles overlay. */
+/* Narrow chrome: hide breadcrumbs, tighten the tiles overlay. */
 @media (max-width: 760px) {
-  .dl-brand-name, .dl-breadcrumbs { display: none; }
+  .dl-breadcrumbs { display: none; }
   .dl-treemap-overlay { padding-top: 16px; }
 }
 

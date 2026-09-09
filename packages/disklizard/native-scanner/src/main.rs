@@ -13,7 +13,15 @@ fn send(message: &ServerMessage) -> io::Result<()> {
     output.flush()
 }
 
+mod capacity;
+
 fn main() {
+    let mut args = std::env::args().skip(1);
+    if args.next().as_deref() == Some("--available-capacity") {
+        let bytes = args.next().and_then(|path| capacity::available(&path));
+        println!("{}", serde_json::json!({ "available": bytes }));
+        return;
+    }
     let request = io::stdin()
         .lock()
         .lines()

@@ -1,6 +1,6 @@
-import { ArrowLeft } from "lucide-react"
+import { ArrowUp } from "lucide-react"
 import { useDirectoryMotion } from "./use-directory-motion"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { DiskScanNode } from "./types"
 import { layoutIcicle } from "./icicle"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
@@ -9,7 +9,7 @@ import { formatBytes } from "./format"
 import { useLanguage } from "./runtime"
 
 export function IciclePanel(props: {
-  flame?: boolean
+  parentName?: string
   onUp: () => void
   root: DiskScanNode
   selectedPath?: string
@@ -23,38 +23,45 @@ export function IciclePanel(props: {
   onDragEnd: () => void
 }) {
   const language = useLanguage()
-  const [zoom, setZoom] = useState(1)
-  const cells = useMemo(() => layoutIcicle(props.root, props.flame ? 32 : 4), [props.root, props.flame])
+  const [width, setWidth] = useState(900)
+  const cells = useMemo(() => layoutIcicle(props.root, 5, width), [props.root, width])
   const motionRef = useDirectoryMotion(props.root.path, cells)
+  useEffect(() => {
+    const element = motionRef.current
+    if (!element) return
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) setWidth(entry.contentRect.width)
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
   const rows = Math.max(1, ...cells.map((cell) => cell.depth + 1))
   return (
     <div
-      className={`flex h-full min-h-0 flex-col gap-4 ${props.flame ? "justify-start" : "justify-center"}`}
+      className="relative flex h-full min-h-0 flex-col justify-center gap-5"
       role="group"
-      aria-label={language.t(props.flame ? "disk.flame.label" : "disk.icicle.label")}
+      aria-label={language.t("disk.icicle.label")}
     >
       <div className="flex items-baseline justify-between gap-3 text-13-medium text-text-strong">
-        <button type="button" onClick={props.onUp} className="flex min-h-10 min-w-0 items-center gap-2 rounded-md px-2 hover:bg-surface-raised-strong focus-visible:outline" aria-label={language.t("disk.common.back")}><ArrowLeft className="size-4 shrink-0" /><span className="truncate">{diskNodeDisplayName(props.root)}</span></button>
+        <div className="min-w-0">
+          {props.parentName && <button type="button" onClick={props.onUp} className="mb-1 flex min-h-9 max-w-full items-center gap-2 rounded-md px-2 text-xs text-text-weak hover:bg-surface-raised-strong focus-visible:outline" aria-label={language.t("disk.navigation.parent", {name: props.parentName})}><ArrowUp className="size-3.5 shrink-0"/><span className="truncate">{props.parentName}</span></button>}
+          <span className="block truncate px-2">{diskNodeDisplayName(props.root)}</span>
+        </div>
         <span className="shrink-0 tabular-nums">{formatBytes(props.root.size)}</span>
       </div>
-      {props.flame && <label className="flex items-center gap-3 text-12-regular text-text-weak">
-        {language.t("disk.flame.zoom")}
-        <input type="range" min="1" max="8" step="0.5" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} className="w-32 accent-current" />
-        <span className="tabular-nums">{zoom}×</span>
-      </label>}
-      <div className={props.flame ? "min-h-0 flex-1 overflow-auto" : "contents"}>
-      <div ref={motionRef} className={props.flame ? "relative" : "relative"} style={props.flame ? {width: `${zoom * 100}%`, height: rows * 30} : {height: Math.min(rows, 4) * 72}}>
+      <div className="min-h-0 overflow-y-auto">
+      <div ref={motionRef} className="relative" style={{height: rows * 84}}>
         {cells.map((cell) => (
           <button
             type="button"
             key={cell.node.path}
             data-disk-layer-path={cell.node.path}
-            className="@container absolute overflow-hidden rounded-[5px] text-left outline-none transition-[filter] duration-100 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)] hover:z-10 hover:brightness-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-strong"
+            className="@container absolute overflow-hidden rounded-lg text-left outline-none transition-[filter] duration-100 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)] hover:z-10 hover:brightness-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-strong"
             style={{
               left: `${cell.x * 100}%`,
-              width: `max(1px, calc(${cell.width * 100}% - 2px))`,
-              top: props.flame ? cell.depth * 30 : cell.depth * 72,
-              height: props.flame ? 27 : 69,
+              width: `max(1px, calc(${cell.width * 100}% - 4px))`,
+              top: cell.depth * 84,
+              height: 76,
               background: cell.node.isOther
                 ? "var(--surface-raised-strong)"
                 : primarySegmentColor(cell.colorIndex, 1, cell.node.isDir, cell.depth),
@@ -92,15 +99,15 @@ export function IciclePanel(props: {
             onDragStart={(event) => props.onDragStart(event.nativeEvent, cell.node)}
             onDragEnd={props.onDragEnd}
           >
-            <span className="@max-[55px]:hidden block truncate px-2 text-12-medium">{diskNodeDisplayName(cell.node)}</span>
-            <span className={`${props.flame ? "hidden" : ""} @max-[90px]:hidden mt-1 block truncate px-2 text-12-regular tabular-nums`}>
+            <span className="@max-[45px]:hidden block truncate px-3 text-13-semibold">{diskNodeDisplayName(cell.node)}</span>
+            <span className="@max-[75px]:hidden mt-1.5 block truncate px-3 text-12-regular tabular-nums opacity-75">
               {formatBytes(cell.node.size)}
             </span>
           </button>
         ))}
       </div>
       </div>
-      <p className="text-12-regular text-text-weak">{language.t(props.flame ? "disk.flame.hint" : "disk.icicle.hint")}</p>
+      <p className="text-12-regular text-text-weak">{language.t("disk.icicle.hint")}</p>
     </div>
   )
 }

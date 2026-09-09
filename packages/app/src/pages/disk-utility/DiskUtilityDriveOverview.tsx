@@ -6,7 +6,7 @@ import type { DiskCleanupLock, DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
 import { VolumeRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"
-import { StorageDiagnostics, shouldShowStorageDiagnostics } from "./StorageDiagnostics"
+import { StorageDiagnostics } from "./StorageDiagnostics"
 import { useLanguage } from "./runtime"
 
 export type OpenMapSummary = {
@@ -46,20 +46,10 @@ export function DriveOverview(props: {
     <div className="flex h-full min-h-0 flex-col">
       <ScrollView className="min-h-0 flex-1">
         {!props.loading && props.drives.length > 0 ? (
-          <div className="mx-auto w-full max-w-[760px] px-6 py-8 sm:py-10">
+          <div className="mx-auto w-full max-w-[920px] px-6 py-6">
             <section aria-label={language.t("disk.drive.volumes")}>
-              <div className="mb-5 flex items-center justify-between gap-4">
-                <h3 className="text-20-medium tracking-[-0.02em] text-text-strong">{language.t("disk.drive.volumes")}</h3>
-                <button
-                  type="button"
-                  className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md px-2.5 text-13-medium text-text-weak outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
-                  title={language.t("disk.drop.restingHint")}
-                  onClick={props.onChooseFolder}
-                >
-                  <Icon name="folder" className="size-4" />
-                  {language.t("disk.drive.scanFolder")}
-                </button>
-              </div>
+              <h3 className="sr-only">{language.t("disk.drive.volumes")}</h3>
+              <div className="overflow-hidden rounded-xl bg-surface-raised-base ring-1 ring-border-weaker-base/50">
               {props.drives.map((drive, index) => (
                 <VolumeRow
                   key={drive.path}
@@ -72,6 +62,15 @@ export function DriveOverview(props: {
                   onOpen={props.onOpenDrive}
                 />
               ))}
+                <div className="grid grid-cols-2 items-center gap-x-4 border-t border-border-weaker-base/60 bg-background-base/25 px-4 py-2">
+                  <button type="button" className="inline-flex min-h-9 w-fit items-center gap-2 rounded-md px-2 text-xs text-text-weak outline-none hover:bg-surface-raised-strong hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
+                    title={language.t("disk.drop.restingHint")} onClick={props.onChooseFolder}>
+                    <Icon name="folder" className="size-4" />{language.t("disk.drive.scanFolder")}
+                  </button>
+                  <StorageDiagnostics inline diagnostics={props.diagnostics} error={props.diagnosticsError} onScan={props.onScanStorageLocation}
+                    onOpenAccessSettings={props.onOpenAccessSettings} onRetry={props.onRetryDiagnostics} />
+                </div>
+              </div>
             </section>
 
             <div className="mt-6">
@@ -126,17 +125,6 @@ export function DriveOverview(props: {
                 </section>
               ) : null}
 
-              {shouldShowStorageDiagnostics(props.diagnostics, props.diagnosticsError) ? (
-                <>
-                  <StorageDiagnostics
-                    diagnostics={props.diagnostics}
-                    error={props.diagnosticsError}
-                    onScan={props.onScanStorageLocation}
-                    onOpenAccessSettings={props.onOpenAccessSettings}
-                    onRetry={props.onRetryDiagnostics}
-                  />
-                </>
-              ) : null}
 
               {props.pinnedLocations.length > 0 ? (
                 <section className="py-4">

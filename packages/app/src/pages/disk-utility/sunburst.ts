@@ -33,6 +33,9 @@ export type Segment = {
   opacity: number
   hover: number
   targetHover: number
+  tone?: { L: number; C: number; h: number }
+  fromTone?: { L: number; C: number; h: number }
+  toTone?: { L: number; C: number; h: number }
   // animation from/to
   fromStart: number
   fromEnd: number
@@ -110,11 +113,12 @@ function lerp(a: number, b: number, t: number) {
 export function safeCanvasRadius(value: number) {
   return Number.isFinite(value) ? Math.max(0, value) : 0
 }
-function lerpAngle(a: number, b: number, t: number) {
-  let d = b - a
-  while (d > Math.PI) d -= Math.PI * 2
-  while (d < -Math.PI) d += Math.PI * 2
-  return a + d * t
+// Arc edges share an unwrapped angular domain. Wrapping each edge independently
+// makes wide wedges shrink through zero and then snap to a full circle.
+const START_ANGLE = -Math.PI / 2
+const FULL_CIRCLE = Math.PI * 2
+function projectAngle(angle: number, start: number, end: number) {
+  return START_ANGLE + Math.max(0, Math.min(1, (angle - start) / Math.max(0.0001, end - start))) * FULL_CIRCLE
 }
 
 /** Smaller arcs become hard to distinguish and target in a normal-size window. */
@@ -342,7 +346,7 @@ export class Sunburst {
     })
     this.themeObserver.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class", "data-theme", "style"],
+      attributeFilter: ["class", "data-theme", "data-color-scheme", "style"],
     })
 
     this._refreshTheme()
@@ -441,21 +445,25 @@ export class Sunburst {
 
   navigateTo(node: SunNode, instant = false) {
     if (!node) return
-    const goingUp = !!node.children?.some((child) => child.path === this.viewNode?.path)
+    const previousPath = this.viewNode?.path
+    const parentPrefix = node.path.replaceAll("\\", "/").replace(/\/+$/, "") + "/"
+    const goingUp = !!node.children?.some(child => child.path === previousPath) ||
+      !!previousPath?.replaceAll("\\", "/").startsWith(parentPrefix)
     this.viewNode = node
     this.hovered = null
     this.selectedPath = null
-    this._transitionTo(node, goingUp ? "up" : "drill", instant)
+    this._transitionTo(node, goingUp ? "up" : "drill", instant, previousPath)
   }
 
   goUp(instant = false): SunNode | null {
     if (!this.viewNode || !this.root) return null
     const parent = this._findParent(this.root, this.viewNode.path)
     if (!parent) return null
+    const previousPath = this.viewNode.path
     this.viewNode = parent
     this.hovered = null
     this.selectedPath = null
-    this._transitionTo(parent, "up", instant)
+    this._transitionTo(parent, "up", instant, previousPath)
     return parent
   }
 
@@ -483,20 +491,23 @@ export class Sunburst {
   }
 
   /**
-   * Seamless transition: match segments by path id across levels. Unmatched old
-   * segments collapse inward; new ones expand from the center wedge.
+   * Preserve the visible pose by path, opening the clicked angular domain.
+   * Unmatched detail enters at the rim; siblings close toward the domain edges.
    */
-  _transitionTo(node: SunNode, mode: SunburstTransitionMode, instant = false) {
+  _transitionTo(node: SunNode, mode: SunburstTransitionMode, instant = false, previousPath?: string) {
     const layout = layoutSunburstSegments(node, this.options.rings, this.options.maxSegments)
 
-    const prevById = new Map(this.segments.filter((s) => s.depth === 0 || s.toOpacity > 0).map((s) => [s.id, s]))
+    const focus = mode === "drill" ? this.segments.find(s => s.path === node.path && s.toOpacity > 0) : undefined
+    const destination = mode === "up" ? layout.find(s => s.path === previousPath) : undefined
+    // Include still-visible exits when interrupted; keep their actual painted pose.
+    const prevById = new Map(this.segments.filter(s => s.opacity > 0.008 || s.toOpacity > 0).map(s => [s.id, s]))
     const next: Segment[] = []
 
     for (const L of layout) {
       const r = this._radiiForDepth(L.depth)
       const prev = prevById.get(L.id)
       const isPrimary = L.depth === 0
-      const targetOp = isPrimary ? 1 : Math.max(0.7, 0.92 - L.depth * 0.07)
+      const targetOp = isPrimary ? 1 : Math.max(0.9, 0.98 - L.depth * 0.016)
 
       let fromStart: number
       let fromEnd: number
@@ -511,12 +522,13 @@ export class Sunburst {
         fromOuter = prev.outer
         fromOp = prev.opacity
         prevById.delete(L.id)
-      } else if (mode === "drill") {
-        const mid = (L.start + L.end) / 2
-        fromStart = mid
-        fromEnd = mid
-        fromInner = this.innerHole * 0.85
-        fromOuter = this.innerHole * 0.85
+      } else if (mode === "drill" && focus) {
+        // Newly revealed detail grows out of the clicked branch's outer edge.
+        const span = focus.end - focus.start
+        fromStart = focus.start + (L.start - START_ANGLE) / FULL_CIRCLE * span
+        fromEnd = focus.start + (L.end - START_ANGLE) / FULL_CIRCLE * span
+        fromInner = this.maxR
+        fromOuter = this.maxR
         fromOp = 0
       } else if (mode === "up") {
         fromStart = L.start
@@ -533,7 +545,13 @@ export class Sunburst {
         fromOp = 0
       }
 
+      const base = storageTone(L.hue, L.depth, L.node.isDir)
+      const toTone = { ...base, C: L.node.isOther ? 0.012 : base.C, h: L.hue }
+      const fromTone = prev?.tone ?? focus?.tone ?? toTone
       next.push({
+        tone: { ...fromTone },
+        fromTone: { ...fromTone },
+        toTone,
         id: L.id,
         node: L.node,
         depth: L.depth,
@@ -561,21 +579,30 @@ export class Sunburst {
       })
     }
 
-    // Orphan previous segments collapse toward center (drill) or outer (up).
-    for (const [, prev] of prevById) {
+    // Close outgoing siblings around the focus, keeping their radial structure.
+    const exits = [...prevById.values()].sort((a, b) => b.opacity - a.opacity).slice(0, this.options.maxSegments)
+    for (const prev of exits) {
       if (prev.depth > 0 && prev.toOpacity < 0.3) continue
       const mid = (prev.start + prev.end) / 2
+      const focusedParent = focus?.path === prev.path
+      const toStart = focus ? projectAngle(prev.start, focus.start, focus.end)
+        : destination ? destination.start + (prev.start - START_ANGLE) / FULL_CIRCLE * (destination.end - destination.start) : mid
+      const toEnd = focus ? projectAngle(prev.end, focus.start, focus.end)
+        : destination ? destination.start + (prev.end - START_ANGLE) / FULL_CIRCLE * (destination.end - destination.start) : mid
       next.push({
         ...prev,
+        fromTone: prev.tone ? { ...prev.tone } : undefined,
+        toTone: prev.tone ? { ...prev.tone } : undefined,
         fromStart: prev.start,
         fromEnd: prev.end,
         fromInner: prev.inner,
         fromOuter: prev.outer,
         fromOpacity: prev.opacity,
-        toStart: mid,
-        toEnd: mid,
-        toInner: mode === "up" ? this.maxR : this.innerHole * 0.5,
-        toOuter: mode === "up" ? this.maxR : this.innerHole * 0.5,
+        delay: 0,
+        toStart,
+        toEnd,
+        toInner: focusedParent ? 0 : destination ? this.maxR : prev.inner,
+        toOuter: focusedParent ? this.innerHole * 0.92 : destination ? this.maxR : prev.outer,
         toOpacity: 0,
         start: prev.start,
         end: prev.end,
@@ -619,18 +646,25 @@ export class Sunburst {
           s.opacity = 0
           continue
         }
-        const e = easeOutExpo(t)
-        s.start = lerpAngle(s.fromStart, s.toStart, e)
-        s.end = lerpAngle(s.fromEnd, s.toEnd, e)
+        const e = this.enterMode ? easeOutExpo(t) : easeOutCubic(t)
+        s.start = lerp(s.fromStart, s.toStart, e)
+        s.end = lerp(s.fromEnd, s.toEnd, e)
         s.inner = lerp(s.fromInner, s.toInner, e)
         s.outer = lerp(s.fromOuter, s.toOuter, e)
         s.opacity = lerp(s.fromOpacity, s.toOpacity, e)
+        if (s.tone && s.fromTone && s.toTone) {
+          s.tone.L = lerp(s.fromTone.L, s.toTone.L, e)
+          s.tone.C = lerp(s.fromTone.C, s.toTone.C, e)
+          const hueDelta = ((s.toTone.h - s.fromTone.h + 540) % 360) - 180
+          s.tone.h = s.fromTone.h + hueDelta * e
+        }
       }
       if (this.animT >= 1) {
         this.animating = false
         this.enterMode = false
         this.segments = this.segments.filter((s) => s.toOpacity > 0.01)
         for (const s of this.segments) {
+          if (s.toTone) s.tone = { ...s.toTone }
           s.start = s.toStart
           s.end = s.toEnd
           s.inner = s.toInner
@@ -720,7 +754,7 @@ export class Sunburst {
     const end = s.end - pad
     if (end - start < 0.0008) return
 
-    const base = storageTone(s.hue, s.depth, s.node.isDir)
+    const base = s.tone ?? storageTone(s.hue, s.depth, s.node.isDir)
     const isPrimary = s.depth === 0
     const isHi = s.hover > 0.02
     const L = base.L + (isHi ? 0.025 : 0)
@@ -741,12 +775,12 @@ export class Sunburst {
     ctx.arc(this.cx, this.cy, outer, start, end)
     ctx.arc(this.cx, this.cy, inner, end, start, true)
     ctx.closePath()
-    ctx.fillStyle = oklchCss(L, C, s.hue)
+    ctx.fillStyle = oklchCss(L, C, s.tone?.h ?? s.hue)
     ctx.fill()
 
     // A true separator, not a glow: storage branches stay readable at high density.
-    ctx.strokeStyle = this.theme.background
-    ctx.lineWidth = 0.8 * this.dpr
+    ctx.strokeStyle = this.theme.border
+    ctx.lineWidth = 0.55 * this.dpr
     ctx.stroke()
 
     if (isPrimary) {
@@ -800,7 +834,7 @@ export class Sunburst {
 
     const angle = Math.atan2(dy, dx)
     for (const s of this.segments) {
-      if (s.opacity <= 0.25 || dist < s.inner - 3 * this.dpr || dist > s.outer + 4 * this.dpr) continue
+      if (s.toOpacity === 0 || s.opacity <= 0.25 || dist < s.inner - 3 * this.dpr || dist > s.outer + 4 * this.dpr) continue
       let a = angle
       let start = s.start
       let end = s.end
@@ -893,7 +927,7 @@ export class Sunburst {
     return this.segments.filter((s) => s.depth === 0 && s.toOpacity > 0.3)
   }
 
-  /** While active the sunburst clears itself and ignores pointers; ViewMorph draws instead. */
+  /** Freeze the last frame while ViewMorph prepares its destination layout. */
   setMorphing(active: boolean) {
     this.morphing = active
     if (active) {
@@ -901,7 +935,6 @@ export class Sunburst {
       if (this.raf) cancelAnimationFrame(this.raf)
       this.running = false
       this.raf = null
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       return
     }
     this.requestFrame()
