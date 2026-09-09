@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test"
-import { mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, utimes, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, stat, utimes, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import type ParcelWatcher from "@parcel/watcher"
@@ -705,20 +705,91 @@ describe("disk scan snapshots", () => {
     const file = path.join(root, "file.bin")
     await writeFile(file, new Uint8Array(4))
     const watcher = fakeWatcher()
+    const scanned: string[] = []
     const manager = new DiskSnapshotManager({
       cacheDir,
-      scan: (target) => scanFixture(target),
+      scan: (target) => { scanned.push(target); return scanFixture(target) },
       watcher: watcher.api,
       platform: "darwin",
       debounceMs: 1,
     })
     const updates: DiskNode[] = []
     await manager.scan(1, root, {}, (update) => updates.push(update.root))
+    const journalReads = watcher.checkpointReads().length
     await writeFile(file, new Uint8Array(18))
     watcher.emit([{ path: file, type: "update" }])
     await eventually(() => updates.at(-1)?.size === 18)
     expect(updates.at(-1)?.size).toBe(18)
+    expect(scanned).toEqual([root, file])
+    expect(watcher.checkpointReads()).toHaveLength(journalReads)
     await manager.stopAll()
+  })
+
+  test("updates an open scan through native filesystem events without a manual rescan", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "file.bin")
+    const moved = path.join(root, "renamed.bin")
+    await writeFile(file, new Uint8Array(4))
+    const scanned: string[] = []
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      scan: async (target) => {
+        scanned.push(target)
+        return scanFixture(target)
+      },
+      debounceMs: 20,
+    })
+    const updates: DiskSnapshotUpdate[] = []
+    try {
+      await manager.scan("native-live", root, { sizeMode: "logical" }, (update) => updates.push(update))
+      scanned.length = 0
+      await writeFile(file, new Uint8Array(18))
+      await eventually(() => updates.at(-1)?.root.size === 18, 5000)
+      expect(scanned.length).toBeGreaterThan(0)
+      await rename(file, moved)
+      await eventually(() => updates.at(-1)?.root.children.some((node) => node.path === moved) === true, 5000)
+      await rm(moved)
+      await eventually(() => updates.at(-1)?.root.size === 0, 5000)
+      const settled = scanned.length
+      await Bun.sleep(200)
+      expect(scanned).toHaveLength(settled)
+    } finally {
+      await manager.stopAll()
+    }
+  }, 20000)
+
+  test("settles after an irrelevant watcher event without replaying the saved journal", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const watcher = fakeWatcher()
+    let checkpoints = 0
+    const api = {
+      ...watcher.api,
+      async writeSnapshot(dir: string, snapshot: string) {
+        checkpoints++
+        return watcher.api.writeSnapshot(dir, snapshot)
+      },
+    }
+    const updates: DiskSnapshotUpdate[] = []
+    const manager = new DiskSnapshotManager({
+      cacheDir, scan: scanFixture, watcher: api, platform: "darwin", debounceMs: 1,
+    })
+    try {
+      await manager.scan("idle", root, {}, (update) => updates.push(update))
+      const initialCheckpoints = checkpoints
+      const initialReads = watcher.checkpointReads().length
+      watcher.emit([{ path: path.join(cacheDir, "outside.bin"), type: "update" }])
+      await Bun.sleep(100)
+      expect(updates).toHaveLength(0)
+      expect(checkpoints - initialCheckpoints).toBeLessThanOrEqual(1)
+      expect(watcher.checkpointReads()).toHaveLength(initialReads)
+      const settled = checkpoints
+      await Bun.sleep(50)
+      expect(checkpoints).toBe(settled)
+    } finally {
+      await manager.stopAll()
+    }
   })
 
   test("retains failed watcher events and recovers with a full root scan", async () => {

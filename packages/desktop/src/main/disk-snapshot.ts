@@ -731,23 +731,17 @@ export class DiskSnapshotManager {
     active.refreshing = true
     const controller = new AbortController()
     active.refreshAbort = controller
-    let loaded: LoadedSnapshot | undefined
     let candidate: CheckpointLease | undefined
     let capturedPending: Array<[string, WatchEvent]> = []
     try {
       const watcher = await this.watcher()
       if (!watcher) throw new Error("Filesystem watcher is unavailable")
-      loaded = await this.load(active.rootPath, active.options)
+      // The subscription stays active from before the initial scan until stop.
+      // Journal replay is for reopening a saved scan, not each live update:
+      // replaying it here reloads the whole tree and repeats old no-op events.
       candidate = await this.checkpoint(active.rootPath, active.options, watcher)
-      const historical = loaded
-        ? await watcher.getEventsSince(
-            active.rootPath,
-            loaded.checkpoint.path,
-            watcherOptions(active.options, this.platform),
-          )
-        : []
       capturedPending = [...active.pending.entries()]
-      const events = [...historical, ...capturedPending.map(([, event]) => event)]
+      const events = capturedPending.map(([, event]) => event)
       if (!events.length) return
       const delta = await applyDiskDelta(active.root, events, this.scanTree, {
         ...active.options,
@@ -758,7 +752,13 @@ export class DiskSnapshotManager {
       // Skip the whole-tree broadcast when the delta scan produced no tree
       // change: parked tabs and history would otherwise re-clone an identical
       // multi-megabyte structure on every debounced watcher tick.
-      if (delta.root === active.root && delta.changedPaths.length === 0) return
+      if (delta.root === active.root && delta.changedPaths.length === 0) {
+        active.refreshFailures = 0
+        for (const [eventPath, event] of capturedPending) {
+          if (active.pending.get(eventPath) === event) active.pending.delete(eventPath)
+        }
+        return
+      }
       const treeChanged = delta.root !== active.root || delta.changedPaths.length > 0
       if (treeChanged) active.revision++
       active.root = delta.root
@@ -820,7 +820,6 @@ export class DiskSnapshotManager {
         }
       }
     } finally {
-      loaded?.checkpoint.release()
       candidate?.release()
       if (active.refreshAbort === controller) active.refreshAbort = undefined
       active.refreshing = false

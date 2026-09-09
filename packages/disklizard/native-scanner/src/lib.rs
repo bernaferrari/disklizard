@@ -16,6 +16,7 @@ mod filesystem;
 mod protocol;
 mod retention;
 mod work_progress;
+mod volume_progress;
 use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
@@ -112,6 +113,7 @@ struct State {
     dirs: AtomicUsize,
     bytes: AtomicU64,
     work_completed: Arc<AtomicU64>,
+    expected_objects: Option<u64>,
     discoveries: AtomicUsize,
     file_discoveries: AtomicUsize,
     started_at: Instant,
@@ -499,6 +501,7 @@ impl Scanner {
             dirs: AtomicUsize::new(0),
             bytes: AtomicU64::new(0),
             work_completed: Arc::new(AtomicU64::new(0)),
+            expected_objects: volume_progress::expected_objects(&request.target_path),
             discoveries: AtomicUsize::new(0),
             file_discoveries: AtomicUsize::new(0),
             started_at: Instant::now(),
@@ -1429,6 +1432,11 @@ impl State {
                 discovery,
                 percent: if done {
                     100.0
+                } else if let Some(expected) = self.expected_objects {
+                    volume_progress::percent(
+                        (self.files.load(Ordering::Relaxed) + self.dirs.load(Ordering::Relaxed)) as u64,
+                        expected,
+                    )
                 } else {
                     work_progress::Work::percent(&self.work_completed)
                 },
