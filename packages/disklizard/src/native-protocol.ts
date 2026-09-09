@@ -1,4 +1,4 @@
-import { lstat } from "node:fs/promises"
+import { lstat } from "./physical-fs"
 import path from "node:path"
 import { MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS } from "./developer-artifacts"
 import type { DeveloperArtifactInventory, DiskNode, ScanProgress } from "./types"

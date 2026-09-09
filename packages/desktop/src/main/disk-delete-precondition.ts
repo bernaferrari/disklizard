@@ -1,4 +1,4 @@
-import { lstat, readdir } from "node:fs/promises"
+import { lstat, readdir } from "../../../disklizard/src/physical-fs"
 import type { Dirent } from "node:fs"
 import { basename, dirname } from "node:path"
 import {

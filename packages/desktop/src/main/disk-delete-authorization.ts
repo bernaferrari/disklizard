@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { lstat } from "node:fs/promises"
+import { lstat } from "../../../disklizard/src/physical-fs"
 import type { DiskNode } from "./disk-scanner"
 import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 

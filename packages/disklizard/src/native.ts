@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs"
+import { existsSync } from "./physical-fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { Worker } from "node:worker_threads"

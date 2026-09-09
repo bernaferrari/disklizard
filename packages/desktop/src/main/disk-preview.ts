@@ -1,4 +1,4 @@
-import { open, stat } from "node:fs/promises"
+import { open, stat } from "../../../disklizard/src/physical-fs"
 import { basename, extname } from "node:path"
 
 export const MAX_IMAGE_PREVIEW_BYTES = 5 * 1024 * 1024

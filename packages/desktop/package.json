@@ -32,7 +32,8 @@
     "smoke:packaged": "tsx ./scripts/run-packaged-smoke.ts",
     "benchmark:disk": "bun ./scripts/benchmark-disk-scan.ts",
     "benchmark:snapshots": "bun ./scripts/benchmark-disk-snapshots.ts",
-    "test:disklizard": "bun ../../scripts/test-disklizard.ts"
+    "test:disklizard": "bun ../../scripts/test-disklizard.ts",
+    "smoke:physical-fs": "bun ./scripts/check-physical-filesystem.ts"
   },
   "main": "./out/main/index.js",
   "dependencies": {

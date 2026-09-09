@@ -3,7 +3,7 @@
  * High-concurrency traversal; worker offload optional.
  */
 
-import { readdir, stat, rm, lstat, realpath } from "node:fs/promises"
+import { readdir, stat, rm, lstat, realpath } from "./physical-fs"
 import { basename, dirname, sep } from "node:path"
 import { homedir, platform, cpus } from "node:os"
 import type { Dirent, Stats } from "node:fs"

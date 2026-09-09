@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process"
-import { constants as fsConstants } from "node:fs"
-import { access, readFile } from "node:fs/promises"
+import { constants as fsConstants } from "./physical-fs"
+import { access, readFile } from "./physical-fs"
 import { homedir, platform } from "node:os"
 import { promisify } from "node:util"
 import type { ApfsSnapshotEvidence, DriveFacts, DriveInfo } from "./types"

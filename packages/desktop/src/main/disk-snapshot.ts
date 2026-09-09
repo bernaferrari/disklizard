@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto"
-import { lstat, mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises"
+import { lstat, mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "../../../disklizard/src/physical-fs"
 import path from "node:path"
 import type ParcelWatcher from "@parcel/watcher"
 import { normalizeDeveloperArtifactInventoryOptions } from "../../../disklizard/src/developer-artifacts"

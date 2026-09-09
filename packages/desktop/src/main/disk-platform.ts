@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process"
-import { constants } from "node:fs"
-import { access, readdir, realpath, stat } from "node:fs/promises"
+import { constants } from "../../../disklizard/src/physical-fs"
+import { access, readdir, realpath, stat } from "../../../disklizard/src/physical-fs"
 import { homedir } from "node:os"
 import { posix, win32 } from "node:path"
 import type { DriveInfo } from "./disk-scanner"

@@ -1,5 +1,5 @@
-import { createReadStream } from "node:fs"
-import { open } from "node:fs/promises"
+import { createReadStream } from "../../../disklizard/src/physical-fs"
+import { open } from "../../../disklizard/src/physical-fs"
 import path from "node:path"
 import { StringDecoder } from "node:string_decoder"
 import {
