@@ -1,5 +1,5 @@
 /** Shared storage colors. Hue expresses identity, never cleanup safety. */
-export const STORAGE_HUES = [185, 230, 275, 325, 25, 65, 100, 150, 210, 300] as const
+export const STORAGE_HUES = [85, 145, 220, 310, 25, 95, 265, 180, 340, 115] as const
 
 function inSrgb(lightness: number, chroma: number, hue: number) {
   const a = chroma * Math.cos(hue * Math.PI / 180)
@@ -15,7 +15,7 @@ function inSrgb(lightness: number, chroma: number, hue: number) {
 // Compute once, not in animation frames. Each hue uses the same share of its
 // own displayable chroma, including headroom for the hover lightness lift.
 const tones = STORAGE_HUES.map(hue => Array.from({length: 6}, (_, depth) => {
-  const L = 0.76 + depth * 0.01
+  const L = 0.82 + depth * 0.012
   let low = 0, high = 0.3
   for (let step = 0; step < 20; step++) {
     const mid = (low + high) / 2
@@ -28,5 +28,19 @@ const tones = STORAGE_HUES.map(hue => Array.from({length: 6}, (_, depth) => {
 export function storageTone(hue: number, depth = 0, directory = true) {
   const index = STORAGE_HUES.indexOf(hue as typeof STORAGE_HUES[number])
   const tone = tones[Math.max(0, index)][Math.max(0, Math.min(5, Math.floor(depth)))]
-  return directory ? tone : { L: tone.L, C: tone.C * 0.78 }
+  return directory ? tone : { L: tone.L, C: tone.C * 0.94 }
+}
+
+// Tile headers and their children need clear steps, unlike continuous map rings.
+const tileTones = STORAGE_HUES.map(hue => [0.76, 0.845, 0.93].map(L => {
+  let low = 0, high = 0.3
+  for (let i = 0; i < 20; i++) {
+    const mid = (low + high) / 2
+    if (inSrgb(L, mid, hue)) low = mid
+    else high = mid
+  }
+  return `oklch(${L} ${Math.floor(low * 0.94 * 1000) / 1000} ${hue})`
+}))
+export function storageTileColor(index: number, depth: number) {
+  return tileTones[((index % tileTones.length) + tileTones.length) % tileTones.length][Math.max(0, Math.min(2, depth))]
 }

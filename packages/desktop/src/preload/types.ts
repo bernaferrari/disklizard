@@ -133,6 +133,9 @@ export type DiskLizardFilePreview =
   | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
 
 export type DiskLizardAPI = {
+  getVolumeInfo?: (path: string) => Promise<{ icon?: string; canEject: boolean } | null>
+  revealVolume?: (path: string) => Promise<boolean>
+  ejectVolume?: (path: string) => Promise<boolean>
   getDrives: () => Promise<DiskLizardDrive[]>
   onDriveFacts: (cb: (update: DiskLizardDriveFactsUpdate) => void) => () => void
   getStorageDiagnostics: () => Promise<DiskStorageDiagnostics>

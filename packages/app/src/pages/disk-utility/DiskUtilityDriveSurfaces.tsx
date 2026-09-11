@@ -1,14 +1,16 @@
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { ChevronDown, Eject, FolderOpen } from "lucide-react"
 import { Popover } from "@/components/dl/popover"
 import { Icon } from "@/components/dl/icon"
 import { Button } from "@/components/ui/button"
 import { Network } from "lucide-react"
-import { useEffect, useRef, useId, type CSSProperties } from "react"
+import { useEffect, useRef, useId, useState, type CSSProperties } from "react"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { formatBytes, formatCount, shortBytes } from "./format"
 import { animateCount } from "./motion"
 import { formatScanDuration, formatScanRate, scanPerformance, type ScanPerformance } from "./scan-metrics"
 import { usageStroke } from "./ui-tokens"
-import { diskLanguageText, useLanguage } from "./runtime"
+import { diskLanguageText, useLanguage, usePlatform } from "./runtime"
 import { ApfsSnapshotEvidenceList } from "./ApfsSnapshotEvidence"
 
 export type VolumeScanJob = {
@@ -96,6 +98,27 @@ export function VolumeRow(props: {
   onOpen: (job: VolumeScanJob) => void
 }) {
   const language = useLanguage()
+  const api = usePlatform().diskUtility
+  const [volumeInfo, setVolumeInfo] = useState<{ icon?: string; canEject: boolean } | null>(null)
+  const [ejecting, setEjecting] = useState(false)
+  const [ejected, setEjected] = useState(false)
+  const [actionError, setActionError] = useState(false)
+  useEffect(() => {
+    let current = true
+    void api?.getVolumeInfo?.(props.drive.path).then(info => { if (current) setVolumeInfo(info) }).catch(() => undefined)
+    return () => { current = false }
+  }, [api, props.drive.path])
+  const eject = async () => {
+    if (!api?.ejectVolume) return
+    setEjecting(true)
+    setActionError(false)
+    try {
+      const success = await api.ejectVolume(props.drive.path)
+      setEjected(success)
+      setActionError(!success)
+    } catch { setActionError(true) }
+    finally { setEjecting(false) }
+  }
   const hasTotal = props.drive.total > 0
   const available = volumeAvailableBytes(props.drive)
   const displayUsed = Math.max(0, props.drive.total - available)
@@ -152,6 +175,7 @@ export function VolumeRow(props: {
             })
           : volumeSubtitle({ ...props.drive, sharedFree: undefined })
 
+  if (ejected) return null
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
@@ -165,7 +189,7 @@ export function VolumeRow(props: {
         } as CSSProperties
       }
     >
-      <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />
+      {volumeInfo?.icon ? <img src={volumeInfo.icon} alt="" className="size-9 object-contain" /> : <VolumeGlyph type={props.drive.type} startup={isStartupVolume(props.drive.path)} />}
       <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-1.5">
           <p className="truncate text-[15px] font-medium tracking-[-0.01em] text-text-strong">{props.drive.name}</p>
@@ -287,7 +311,16 @@ export function VolumeRow(props: {
         >
           {volumeActionLabel(props.job?.status)}
         </Button>
+        {api?.revealVolume && <DropdownMenu>
+          <DropdownMenuTrigger aria-label={language.t("disk.volume.actions")} className="ml-1 grid size-8 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong"><ChevronDown className="size-3.5" /></DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => { void api.revealVolume!(props.drive.path).then(ok => setActionError(!ok)).catch(() => setActionError(true)) }}><FolderOpen className="size-4" />{language.t("disk.volume.finder")}</DropdownMenuItem>
+            {volumeInfo?.canEject && <><DropdownMenuSeparator/><DropdownMenuItem disabled={scanning || ejecting} onClick={() => void eject()}><Eject className="size-4" />{language.t("disk.volume.eject", {name: props.drive.name})}</DropdownMenuItem></>}
+          </DropdownMenuContent>
+        </DropdownMenu>}
+
       </div>
+      {actionError && <p role="alert" className="col-span-full text-xs text-text-weak">{language.t("disk.volume.ejectFailed")}</p>}
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import { withoutCollected } from "./collection-map"
+import { createBranchIdentity } from "./tile-identity"
 import { STORAGE_HUES, storageTone } from "./visual-palette"
 /**
  * DiskLizard Sunburst — the visual centerpiece.
@@ -276,6 +278,8 @@ export class Sunburst {
   > &
     SunburstOptions
 
+  excludedPaths = new Set<string>()
+  centerHovered = false
   root: SunNode | null = null
   viewNode: SunNode | null = null
   segments: Segment[] = []
@@ -374,7 +378,7 @@ export class Sunburst {
     this.canvas.height = Math.max(1, Math.round(rect.height * this.dpr))
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
-    this.maxR = (Math.min(this.canvas.width, this.canvas.height) / 2) * 0.94
+    this.maxR = (Math.min(this.canvas.width, this.canvas.height) / 2) * 0.80
     this.innerHole = this.maxR * INNER_HOLE_RATIO
     this._applyRadiiToTargets()
     // Resizing clears the backing store. Native live resize may pause RAF,
@@ -426,6 +430,12 @@ export class Sunburst {
         s.fromOuter = r.outer
       }
     }
+  }
+
+  setExcludedPaths(paths: ReadonlySet<string>) {
+    if (this.excludedPaths?.size === paths.size && [...paths].every(path => this.excludedPaths.has(path))) return
+    this.excludedPaths = new Set(paths)
+    if (this.viewNode) this._transitionTo(this.viewNode, "update")
   }
 
   setData(rootNode: SunNode, viewNode: SunNode | null = null, instant = false) {
@@ -495,7 +505,12 @@ export class Sunburst {
    * Unmatched detail enters at the rim; siblings close toward the domain edges.
    */
   _transitionTo(node: SunNode, mode: SunburstTransitionMode, instant = false, previousPath?: string) {
-    const layout = layoutSunburstSegments(node, this.options.rings, this.options.maxSegments)
+    const identity = createBranchIdentity(this.root)
+    const layout = layoutSunburstSegments(withoutCollected(node, this.excludedPaths ?? new Set()), this.options.rings, this.options.maxSegments)
+    for (const segment of layout) {
+      const branch = identity(segment.path)
+      if (branch) segment.hue = primaryHueForIndex(branch.index)
+    }
 
     const focus = mode === "drill" ? this.segments.find(s => s.path === node.path && s.toOpacity > 0) : undefined
     const destination = mode === "up" ? layout.find(s => s.path === previousPath) : undefined
@@ -545,7 +560,7 @@ export class Sunburst {
         fromOp = 0
       }
 
-      const base = storageTone(L.hue, L.depth, L.node.isDir)
+      const base = storageTone(L.hue, identity(L.path)?.depth ?? L.depth, L.node.isDir)
       const toTone = { ...base, C: L.node.isOther ? 0.012 : base.C, h: L.hue }
       const fromTone = prev?.tone ?? focus?.tone ?? toTone
       next.push({
@@ -729,6 +744,12 @@ export class Sunburst {
     const w = this.canvas.width
     const h = this.canvas.height
     ctx.clearRect(0, 0, w, h)
+    if (this.centerHovered) {
+      ctx.beginPath()
+      ctx.arc(this.cx, this.cy, safeCanvasRadius(this.innerHole * 0.94), 0, Math.PI * 2)
+      ctx.fillStyle = "rgba(127,127,127,0.14)"
+      ctx.fill()
+    }
 
     // Draw deeper rings first so primary hover lift sits on top.
     for (const s of this.segments) {
@@ -852,6 +873,7 @@ export class Sunburst {
     this.lastMoveY = e.clientY
     const hit = this._hitTest(e.clientX, e.clientY)
     const prev = this.hovered
+    this.centerHovered = hit?.type === "center" && this._canGoUp()
     let cursor: string
     if (!hit || hit.type === "center") {
       this.hovered = null
@@ -868,6 +890,7 @@ export class Sunburst {
   }
 
   private _onMouseLeave = () => {
+    this.centerHovered = false
     this.hovered = null
     this.canvas.style.cursor = "default"
     this.options.onHover?.(null)
@@ -937,6 +960,7 @@ export class Sunburst {
       this.raf = null
       return
     }
+    this._draw()
     this.requestFrame()
   }
 }

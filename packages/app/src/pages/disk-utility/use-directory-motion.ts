@@ -10,14 +10,13 @@ export function useDirectoryMotion(path: string, layout: unknown) {
     const root = ref.current
     if (!root) return
     const old = previous.current
-    if (old?.path === path && animations.current.some((animation) => animation.playState === "running")) return
     animations.current.forEach((animation) => animation.cancel())
     animations.current = []
     const elements = [...root.querySelectorAll<HTMLElement>("[data-disk-tile-path], [data-disk-layer-path]")]
     const boxes = new Map(elements.map((element) => [element.dataset.diskTilePath ?? element.dataset.diskLayerPath!, element.getBoundingClientRect()]))
     const bounds = root.getBoundingClientRect()
     previous.current = { path, boxes, bounds }
-    if (!old || old.path === path) return
+    if (!old) return
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !root.animate) return
     let count = 0
     for (const element of elements) {
@@ -45,7 +44,7 @@ export function useDirectoryMotion(path: string, layout: unknown) {
       ], { duration: 300, easing: "cubic-bezier(0.22, 1, 0.36, 1)" })
       animations.current.push(animation)
     }
-    if (!count) animations.current.push(root.animate([
+    if (!count && old.path !== path) animations.current.push(root.animate([
       { transform: `scale(${old.path.startsWith(path + "/") ? 1.06 : 0.96})`, opacity: 0.3 },
       { transform: "none", opacity: 1 },
     ], { duration: 220, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }))

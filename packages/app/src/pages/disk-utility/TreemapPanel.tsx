@@ -1,4 +1,5 @@
-import { useDirectoryMotion } from "./use-directory-motion"
+import { storageTileColor } from "./visual-palette"
+import { useTileCamera } from "./use-tile-camera"
 /**
  * Treemap view — "dive into the squares." Squarified rects colored by the
  * shared primarySegmentColor(index), synced bidirectionally with the list.
@@ -6,18 +7,20 @@ import { useDirectoryMotion } from "./use-directory-motion"
  * container without measuring or SVG type friction.
  */
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { layoutNestedTreemap } from "./nested-treemap"
-import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
+import { primarySegmentForeground } from "./sunburst"
 import { diskLanguageText, useLanguage } from "./runtime"
 import { diskNodeDisplayName } from "./node-display"
 
 export function Treemap(props: {
   rootPath: string
+  colorForPath: (path: string) => string | undefined
   children: DiskScanNode[]
   hoveredPath: string | null
+  draggingNode?: DiskScanNode | null
   selectedPath?: string
   onHover: (node: DiskScanNode | null) => void
   onSelect: (path: string) => void
@@ -35,7 +38,15 @@ export function Treemap(props: {
     () => layoutNestedTreemap(props.children, bounds.width, bounds.height),
     [props.children, bounds.width, bounds.height],
   )
-  const rootRef = useDirectoryMotion(props.rootPath, rects)
+  // Keep the native drag source mounted while the rest of the view reflows.
+  const previousLayout = useRef(rects)
+  const source = useRef<(typeof rects)[number] | undefined>(undefined)
+  if (props.draggingNode) source.current = previousLayout.current.find(item => item.node.path === props.draggingNode?.path) ?? source.current
+  else source.current = undefined
+  previousLayout.current = rects
+  const retained = source.current && !rects.some(item => item.node.path === source.current!.node.path) ? source.current : undefined
+  const rendered = retained ? [...rects, retained] : rects
+  const rootRef = useTileCamera(props.rootPath, rects)
 
   useEffect(() => {
     const element = rootRef.current
@@ -52,17 +63,20 @@ export function Treemap(props: {
     <div
       ref={rootRef}
       className="relative size-full overflow-hidden rounded-2xl bg-background-base p-0.5 shadow-[0_0_0_1px_rgb(127_127_127/0.1)]"
+      style={{ backgroundColor: props.colorForPath(props.rootPath) }}
       role="group"
       aria-label={language.t("disk.treemap.label")}
     >
-      {rects.map((r) => {
+      {rendered.map((r) => {
         const openAggregate = () => props.onShowAll(r.node)
         const style = {
           left: `${r.x}px`,
           top: `${r.y}px`,
           width: `${r.w}px`,
           height: `${r.h}px`,
-          backgroundColor: primarySegmentColor(r.index, 1, r.node.isDir, r.depth),
+          opacity: retained === r ? 0 : 1,
+          pointerEvents: retained === r ? "none" as const : undefined,
+          backgroundColor: props.colorForPath(r.node.path) ?? props.colorForPath(props.rootPath) ?? storageTileColor(r.index, r.depth),
           backgroundImage: r.node.isOther
             ? "repeating-linear-gradient(135deg, transparent 0 5px, oklch(1 0 0 / 0.16) 5px 7px)"
             : undefined,
@@ -70,7 +84,7 @@ export function Treemap(props: {
           boxShadow:
             props.hoveredPath === r.node.path || props.selectedPath === r.node.path
               ? "inset 0 0 0 2px currentColor"
-              : "inset 0 1px 0 rgb(255 255 255 / 0.12)",
+              : "inset 0 0 0 1px oklch(0.2 0.02 250 / 0.18)",
         }
         const content =
           r.w >= 76 && r.h >= 44 ? (

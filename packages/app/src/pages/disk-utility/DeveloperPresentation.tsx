@@ -64,19 +64,16 @@ export function developerEntryIdentity(node: DiskScanNode) {
 
 export function DeveloperEntryContent(props: { node: DiskScanNode; bytes: number; scope: string; disposition: string; color: string }) {
   const identity = developerEntryIdentity(props.node)
-  return <span className="flex min-w-0 flex-1 items-center gap-3" title={props.node.path}>
-    <span className="grid size-6 shrink-0 place-items-center" style={{color: props.color}}>
-      <FolderCode className="size-4" />
-    </span>
+  return <span className="flex min-w-0 flex-1 items-center gap-3" title={`${props.node.path}
+${props.disposition}`}>
+    <span aria-hidden className="h-7 w-[3px] shrink-0 rounded-full" style={{background: props.color}} />
     <span className="min-w-0 flex-1">
-      <span className="flex items-baseline gap-3">
-        <span className="min-w-0 flex-1 truncate text-13-semibold text-text-strong">{identity.title}</span>
-        <span className="shrink-0 text-12-semibold tabular-nums text-text-strong">{formatBytes(props.bytes)}</span>
-      </span>
-      <span className="mt-1 flex items-baseline gap-2 text-12-regular text-text-weak">
-        <span className="min-w-0 flex-1 truncate">{identity.title !== identity.artifact ? identity.artifact : props.scope}</span>
-        <span className="shrink-0 text-[11px] text-text-weak">{props.disposition}</span>
+      <span className="block truncate text-13-medium text-text-strong">{identity.title}</span>
+      <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-[11px] text-text-weak">
+        <span className="truncate">{identity.title !== identity.artifact ? identity.artifact : props.scope}</span>
       </span>
     </span>
+    <span className="w-[5rem] shrink-0 text-right text-13-medium tabular-nums text-text-strong">{formatBytes(props.bytes)}</span>
+    <span className="sr-only">{props.disposition}</span>
   </span>
 }

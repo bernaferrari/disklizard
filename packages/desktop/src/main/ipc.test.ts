@@ -210,6 +210,13 @@ const revealPath = handlers.get("disklizard:reveal-path")!
 afterAll(() => mock.restore())
 
 describe("disk snapshot IPC lifecycle", () => {
+  test("volume actions reject paths outside the mounted volume inventory", async () => {
+    const sender = new FakeSender(909)
+    for (const channel of ["disklizard:eject-volume", "disklizard:reveal-volume"]) {
+      expect(await handlers.get(channel)!(event(sender), "/not-a-mounted-volume")).toBe(false)
+    }
+    expect(await handlers.get("disklizard:volume-info")!(event(sender), "/not-a-mounted-volume")).toBeNull()
+  })
   test("rejects privileged IPC from a subframe", () => {
     const sender = new FakeSender(40)
     const getDrives = handlers.get("disklizard:get-drives")!

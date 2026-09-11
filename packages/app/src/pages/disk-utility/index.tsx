@@ -1,3 +1,10 @@
+import { withoutCollected } from "./collection-map"
+import { VolumeCapacitySummary } from "./VolumeCapacitySummary"
+import { showCollectionDragPreview, moveCollectionDragPreview, hideCollectionDragPreview } from "./collection-drag-preview"
+import { createBranchIdentity, createTileIdentity } from "./tile-identity"
+import { LocationNavigation } from "./LocationNavigation"
+import { flushSync } from "react-dom"
+import { useHoverPreview } from "./use-hover-preview"
 import { ParentFrame } from "./ParentFrame"
 import { planOtherExpansion } from "./other-expansion"
 import { createGroupNavigation } from "./group-navigation"
@@ -493,6 +500,12 @@ export default function DiskUtilityPage() {
   const groupNavigation = useMemo(() => createGroupNavigation(), [])
   const crumbs = useMemo(() => groupNavigation.crumbs(treeRoot, viewNode), [treeRoot, viewNode, groupNavigation])
   const parentView = crumbs.at(-2)?.node
+  const branchIdentity = useMemo(() => createBranchIdentity(treeRoot), [treeRoot])
+  const branchColor = (node: DiskScanNode) => {
+    const identity = branchIdentity(node.path)
+    return identity ? primarySegmentColor(identity.index, 1, node.isDir, identity.depth) : undefined
+  }
+  const tileColor = useMemo(() => createTileIdentity(treeRoot), [treeRoot])
   const usesPhysicalByteAccounting = isPhysicalByteAccounting(platform.os, scanDrive)
   /** A fallback or incomplete map must never turn unknown shared storage into a reclaim promise. */
   const physicalCloneAccountingUncertain = useMemo(
@@ -681,6 +694,12 @@ export default function DiskUtilityPage() {
       ),
     [collection],
   )
+  const mapExcludedPaths = useMemo(() => new Set([
+    ...effectiveCollection.map(node => node.path),
+    ...(collectionDragNode ? [collectionDragNode.path] : []),
+  ]), [effectiveCollection, collectionDragNode])
+  const visibleMapNode = useMemo(() => viewNode ? withoutCollected(viewNode, mapExcludedPaths) : null, [viewNode, mapExcludedPaths])
+  useEffect(() => { sunburstRef.current?.setExcludedPaths(mapExcludedPaths) }, [mapExcludedPaths, canvasEl])
   /**
    * Bulk selection is narrower than the Developer lens: only known
    * regenerable/cache artifacts with per-item checks are eligible. File-size
@@ -721,10 +740,8 @@ export default function DiskUtilityPage() {
   function volumeJobForDrive(drive: DiskDriveInfo) {
     return volumeJobs.find((job) => diskPathEquals(job.sourcePath, drive.path, platform.os))
   }
-  const hoverPreview = useMemo(() => {
-    const node = visualHoverNode
-    return node && node.path !== viewNode?.path ? node : null
-  }, [visualHoverNode, viewNode])
+  const { node: settledPreview, dismiss: dismissHoverPreview } = useHoverPreview(visualHoverNode, viewNode)
+  const hoverPreview = settledPreview?.path !== viewNode?.path ? settledPreview : null
 
   // (Mount subscriptions, keyboard shortcuts, and the JSX read everything
   // through this render-fresh snapshot so late callbacks never go stale.)
@@ -1379,6 +1396,10 @@ export default function DiskUtilityPage() {
   }
 
   function expandOtherNode(node: DiskScanNode, restoreListFocus = false) {
+    if (node.isHidden) {
+      showToast({ title: language.t("disk.node.hiddenSpace"), description: language.t("disk.capacity.hiddenExplanation") })
+      return
+    }
     if (!treeRoot || !viewNode) return
     const incomplete = node.children.reduce((sum, child) => sum + child.size, 0) < node.size ||
       (node.otherCount ?? node.children.length) > node.children.length
@@ -1548,8 +1569,10 @@ export default function DiskUtilityPage() {
   }
 
   const viewTransitionVersionRef = useRef(0)
+  const queuedModeRef = useRef<ScanMode | null>(null)
 
   function chooseScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer", focusContent = true) {
+    if (morphing) { queuedModeRef.current = mode; return }
     if (mode === scanMode) return
     const version = ++viewTransitionVersionRef.current
     const sb = sunburstRef.current
@@ -1567,7 +1590,7 @@ export default function DiskUtilityPage() {
       const sy = canvas.height / Math.max(1, bounds.height)
       return new Map([...landscape.querySelectorAll<HTMLElement>("[data-disk-tile-path], [data-disk-layer-path]")].map((el) => {
         const r = el.getBoundingClientRect()
-        return [el.dataset.diskTilePath ?? el.dataset.diskLayerPath!, {x: (r.left - bounds.left) * sx, y: (r.top - bounds.top) * sy, w: r.width * sx, h: r.height * sy}]
+        return [el.dataset.diskTilePath ?? el.dataset.diskLayerPath!, {x: (r.left - bounds.left) * sx, y: (r.top - bounds.top) * sy, w: r.width * sx, h: r.height * sy, color: getComputedStyle(el).backgroundColor}]
       }))
     }
     const source = readRects()
@@ -1598,24 +1621,54 @@ export default function DiskUtilityPage() {
       for (const seg of segments) {
         const fromRect = source.get(seg.path)
         const toRect = target.get(seg.path)
-        if ((previous !== "map" && !fromRect) || (mode !== "map" && !toRect)) continue
+        // Preserve disappearing rings and entering details throughout the flight.
+        const absentSource = previous !== "map" && !fromRect
+        const absentTarget = mode !== "map" && !toRect
         const rect = toRect ?? fromRect ?? { x: 0, y: 0, w: 0, h: 0 }
         const wedge = {start: seg.start + sb.options.padAngle, end: seg.end - sb.options.padAngle, inner: seg.inner, outer: seg.outer}
         tiles.push({path: seg.path, node: seg.node, depth: seg.depth, colorIndex: Array.from({length: 10}, (_, i) => i).find((i) => primaryHueForIndex(i) === seg.hue) ?? 0,
+          fromColor: previous === "map" ? (branchColor(seg.node) ?? primarySegmentColor(0, 1, seg.node.isDir)) : fromRect?.color,
+          toColor: mode === "map" ? (branchColor(seg.node) ?? primarySegmentColor(0, 1, seg.node.isDir)) : toRect?.color,
+          fromOpacity: absentSource ? 0 : 1, toOpacity: absentTarget ? 0 : 1,
           from: {shape: previous === "map" ? "arc" : "rect", wedge, rect: fromRect ?? rect},
           to: {shape: mode === "map" ? "arc" : "rect", wedge, rect: toRect ?? rect}})
       }
+      const known = new Set(tiles.map(tile => tile.path))
+      for (const [path, rect] of target) {
+        if (mode === "map" || known.has(path) || !viewNode) continue
+        const from = source.get(path)
+        const wedge = { start: -Math.PI/2, end: -Math.PI/2 + 0.01, inner: 0, outer: 1 }
+        tiles.push({ path, node: viewNode, colorIndex: 0, fromColor: from?.color ?? rect.color, toColor: rect.color,
+          fromOpacity: from ? 1 : 0,
+          from: { shape: "rect", wedge, rect: from ?? { ...rect, x: rect.x + rect.w/2, y: rect.y + rect.h/2, w: 0, h: 0 } },
+          to: { shape: "rect", wedge, rect } })
+      }
+      const included = new Set(tiles.map(tile => tile.path))
+      for (const [path, rect] of source) {
+        if (previous === "map" || included.has(path) || !viewNode) continue
+        const wedge = { start: 0, end: 0.01, inner: 0, outer: 1 }
+        tiles.push({ path, node: viewNode, colorIndex: 0, fromColor: rect.color, toColor: rect.color, toOpacity: 0,
+          from: { shape: "rect", wedge, rect }, to: { shape: "rect", wedge, rect } })
+      }
       ensureMorph(canvas).play(tiles, mode === "map" ? "toMap" : "toGrid", () => {
         if (version !== viewTransitionVersionRef.current) return
+        // Commit the destination before releasing canvas ownership: otherwise
+        // a map redraw can briefly cover the arriving tiles or layers.
+        flushSync(() => {
+          setMorphing(false)
+          setGridVisible(mode === "grid")
+          setGridInteractive(mode === "grid")
+        })
         sb.setMorphing(false)
-        setMorphing(false)
-        setGridVisible(mode === "grid")
-        setGridInteractive(mode === "grid")
+        const queued = queuedModeRef.current
+        queuedModeRef.current = null
+        if (queued && queued !== mode) requestAnimationFrame(() => live.current.chooseScanMode(queued))
       })
     }))
   }
 
   function applyScanMode(mode: ScanMode, intent: Exclude<SunburstEntryIntent, "scan-complete"> = "pointer", focusContent = true) {
+    queuedModeRef.current = null
     morphRef.current?.abort()
     sunburstRef.current?.setMorphing(false)
     setMorphing(false)
@@ -2414,6 +2467,10 @@ export default function DiskUtilityPage() {
     if (!uniqueDeletionRoots(next, platform.os).length) collectionSurface.close()
   }
 
+  function canDragNode(node: DiskScanNode) {
+    return !node.isHidden && !node.isOther
+  }
+
   function canModifyNode(node: DiskScanNode) {
     if (!cleanupProtectionsReady()) return false
     if (!canActOnNode(node, platform.os, cleanupLocks)) return false
@@ -2457,8 +2514,23 @@ export default function DiskUtilityPage() {
     setRangeAnchorIndex(undefined)
   }
 
+  function showDragToken(node: DiskScanNode, x: number, y: number) {
+    const segment = sunburstRef.current?.segments.find(segment => segment.path === node.path)
+    const color = scanMode === "grid" ? tileColor(node.path) : segment?.tone ? `oklch(${segment.tone.L} ${segment.tone.C} ${segment.hue})` : undefined
+    showCollectionDragPreview(collectionDragPreviewRef.current!, node.name, shortBytes(node.size), color ?? tileColor(node.path) ?? primarySegmentColor(0, 1, true))
+    moveCollectionDragPreview(collectionDragPreviewRef.current!, x, y)
+  }
+  useEffect(() => {
+    const move = (event: DragEvent) => {
+      if (collectionDragPreviewRef.current?.children.length && (event.clientX || event.clientY))
+        moveCollectionDragPreview(collectionDragPreviewRef.current, event.clientX, event.clientY)
+    }
+    document.addEventListener("dragover", move)
+    return () => document.removeEventListener("dragover", move)
+  }, [])
+
   function beginCollectionDrag(event: DragEvent, node: DiskScanNode | null) {
-    if (!node || !canModifyNode(node) || !event.dataTransfer) {
+    if (!node || !canDragNode(node) || !event.dataTransfer) {
       event.preventDefault()
       return
     }
@@ -2467,11 +2539,17 @@ export default function DiskUtilityPage() {
     event.dataTransfer.effectAllowed = "copy"
     event.dataTransfer.setData("application/x-disklizard-path", node.path)
     event.dataTransfer.setData("text/plain", node.path)
-    collectionDragPreviewRef.current!.textContent = `${node.name} · ${shortBytes(node.size)}`
-    event.dataTransfer.setDragImage(collectionDragPreviewRef.current!, 18, 18)
+    showDragToken(node, event.clientX, event.clientY)
+    // The browser snapshot cannot animate. Hide it and move our shared token
+    // with document dragover, just as the map's pointer drag does.
+    const blank = document.createElement("canvas")
+    blank.width = blank.height = 1
+    collectionDragPreviewRef.current!.append(blank)
+    event.dataTransfer.setDragImage(blank, 0, 0)
   }
 
   function endCollectionDrag() {
+    if (collectionDragPreviewRef.current) hideCollectionDragPreview(collectionDragPreviewRef.current)
     setCollectionDragNode(null)
     setCollectionDropActive(false)
   }
@@ -2479,7 +2557,7 @@ export default function DiskUtilityPage() {
   function beginMapDrag(event: CanvasPointerEvent) {
     if (event.button !== 0 || morphing) return
     const node = sunburstRef.current?.nodeAtPoint(event.clientX, event.clientY)
-    if (!node || !canModifyNode(node)) {
+    if (!node || !canDragNode(node)) {
       mapDragRef.current = undefined
       return
     }
@@ -2503,14 +2581,12 @@ export default function DiskUtilityPage() {
       sunburstRef.current?.suppressNextClick()
       event.currentTarget.style.cursor = "grabbing"
       setCollectionDragNode(drag.node)
-      collectionDragPreviewRef.current!.textContent = `${drag.node.name} · ${shortBytes(drag.node.size)}`
-      collectionDragPreviewRef.current!.style.left = "0"
-      collectionDragPreviewRef.current!.style.top = "0"
+      showDragToken(drag.node, event.clientX, event.clientY)
     }
-    collectionDragPreviewRef.current!.style.transform = `translate3d(${event.clientX + 16}px, ${event.clientY + 16}px, 0)`
+    moveCollectionDragPreview(collectionDragPreviewRef.current!, event.clientX, event.clientY)
     const rect = collectionDropElementRef.current?.getBoundingClientRect()
     setCollectionDropActive(
-      !!rect &&
+      canModifyNode(drag.node) && !!rect &&
         event.clientX >= rect.left &&
         event.clientX <= rect.right &&
         event.clientY >= rect.top &&
@@ -2538,14 +2614,14 @@ export default function DiskUtilityPage() {
   }
 
   function collectionDragEnter(event: DragEvent) {
-    if (!collectionDragNode) return
+    if (!collectionDragNode || !canModifyNode(collectionDragNode)) return
     event.preventDefault()
     event.stopPropagation()
     setCollectionDropActive(true)
   }
 
   function collectionDragOver(event: DragEvent) {
-    if (!collectionDragNode) return
+    if (!collectionDragNode || !canModifyNode(collectionDragNode)) return
     event.preventDefault()
     event.stopPropagation()
     if (event.dataTransfer) event.dataTransfer.dropEffect = "copy"
@@ -2971,7 +3047,7 @@ export default function DiskUtilityPage() {
       padAngle: 0.0016,
       ringGap: 0.004,
       enterAnimMs: sunburstEntryDuration(orbitEntryIntentRef.current),
-      canDrag: (node) => live.current.canModifyNode(node),
+      canDrag: (node) => live.current.canDragNode(node),
       onHover: (seg) => {
         setVisualHoverNode(seg?.node ?? null)
         setHoveredPath(seg?.path ?? null)
@@ -2988,6 +3064,7 @@ export default function DiskUtilityPage() {
     })
     const root = live.current.treeRoot
     if (root) sb.setData(root, live.current.viewNode, orbitEntryIntentRef.current === "keyboard")
+    sb.setExcludedPaths(mapExcludedPaths)
     orbitEntryIntentRef.current = "scan-complete"
     sunburstRef.current = sb
     return () => {
@@ -3222,6 +3299,7 @@ export default function DiskUtilityPage() {
     selectEligibleDeveloperResults,
     removeCollected,
     canModifyNode,
+    canDragNode,
     isCollected,
     clearCollection,
     beginCollectionDrag,
@@ -3302,7 +3380,7 @@ export default function DiskUtilityPage() {
         ref={(el) => {
           collectionDragPreviewRef.current = el
         }}
-        className="fixed -left-[9999px] -top-[9999px] z-[80] pointer-events-none max-w-[280px] truncate rounded-xl px-3 py-2 text-text-strong bg-background-base shadow-[0_0_0_1px_rgb(127_127_127/0.16),0_12px_30px_rgb(0_0_0/0.2)] font-sans text-xs font-semibold leading-[1.2] tabular-nums"
+        className="fixed -left-[9999px] -top-[9999px] z-[80] pointer-events-none flex w-[76px] flex-col items-center font-sans text-xs font-semibold leading-[1.2] tabular-nums"
         aria-hidden="true"
       />
 
@@ -3324,7 +3402,7 @@ export default function DiskUtilityPage() {
       ) : null}
 
       <header
-        className="dl-topbar relative z-20 flex h-14 shrink-0 items-center gap-4 px-5 backdrop-blur-xl"
+        className="dl-topbar relative z-20 flex h-12 shrink-0 items-center gap-2 px-4"
         data-tauri-drag-region
         inert={activeDialog ? true : undefined}
         aria-hidden={activeDialog ? "true" : undefined}
@@ -3412,56 +3490,17 @@ export default function DiskUtilityPage() {
           </DropdownMenu>
         ) : null}
 
-        {view === "scan" && crumbs.length > 0 ? (
-          <>
-            <div className="dl-history-controls flex shrink-0 items-center gap-0.5">
-              <Button
-                className="min-h-11 min-w-11"
-                variant="ghost"
-                size="small"
-                icon="chevron-left"
-                data-disk-history-back
-                aria-label={language.t("disk.top.previousLocation")}
-                disabled={!browseHistory.canMove("back")}
-                onClick={() => browseHistory.move("back")}
-              />
-              <Button
-                className="min-h-11 min-w-11"
-                variant="ghost"
-                size="small"
-                icon="chevron-right"
-                data-disk-history-forward
-                aria-label={language.t("disk.top.nextLocation")}
-                disabled={!browseHistory.canMove("forward")}
-                onClick={() => browseHistory.move("forward")}
-              />
-            </div>
-            <Button data-disk-navigation-home className="min-h-11 min-w-11" variant="ghost" size="small" onClick={() => backToDrives(true)}>
-              {language.t("disk.common.volumes")}
-            </Button>
-            <nav
-              className="dl-breadcrumbs flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              aria-label={language.t("disk.top.currentLocation")}
-            >
-              {crumbs.map((crumb, i) => (
-                <Fragment key={crumb.node?.path ?? `crumb-${i}`}>
-                  {i > 0 ? <Icon name="chevron-right" className="size-3 shrink-0 text-text-weaker" /> : null}
-                  <button
-                    type="button"
-                    className={cn(
-                      "hover:bg-surface-raised-base hover:text-text-strong min-h-11 min-w-11 max-w-[190px] shrink-0 truncate rounded-md px-2 text-12-regular text-text-weak outline-none transition-[color,background-color] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak",
-                      i === crumbs.length - 1 && "text-text-strong",
-                    )}
-                    aria-current={i === crumbs.length - 1 ? "page" : undefined}
-                    onClick={() => goToCrumb(crumb)}
-                  >
-                    {crumb.name}
-                  </button>
-                </Fragment>
-              ))}
-            </nav>
-          </>
-        ) : null}
+        {view === "scan" && crumbs.length > 0 && (
+          <LocationNavigation
+            locations={crumbs.map((crumb, index) => ({ name: crumb.name, key: crumb.node?.path ?? String(index) }))}
+            canBack={browseHistory.canMove("back")}
+            canForward={browseHistory.canMove("forward")}
+            onBack={() => browseHistory.move("back")}
+            onForward={() => browseHistory.move("forward")}
+            onHome={() => backToDrives(true)}
+            onLocation={index => goToCrumb(crumbs[index])}
+          />
+        )}
       </header>
 
       {!cleanupProtectionsReady() ? (
@@ -3624,6 +3663,7 @@ export default function DiskUtilityPage() {
                             collectionDropElementRef.current = element ?? undefined
                           }}
                           node={collectionDragNode}
+                          acceptsNode={!collectionDragNode || canModifyNode(collectionDragNode)}
                           active={collectionDropActive}
                           count={effectiveCollection.length}
                           bytes={collectionSize}
@@ -3685,7 +3725,7 @@ export default function DiskUtilityPage() {
                             <span id="disklizard-orbit-help" className="sr-only">
                               {language.t("disk.map.instructions")}
                             </span>
-                            {!morphing ? <CenterOverlay node={viewNode} /> : null}
+                            {!morphing ? <CenterOverlay node={visibleMapNode} /> : null}
                           </div>
                           {/* Treemap overlay: mounted in both map and grid, but only
                               visible/interactive once the morph has landed (or motion is
@@ -3693,21 +3733,23 @@ export default function DiskUtilityPage() {
                           {gridVisible ? (
                             <div
                               className={cn(
-                                "dl-treemap-overlay absolute inset-0 px-5 pb-20 pt-5 lg:px-8 lg:pb-20 lg:pt-8",
+                                "dl-treemap-overlay absolute inset-0 px-8 pb-24 pt-8 lg:px-12 lg:pb-24 lg:pt-12",
                                 !gridInteractive && "pointer-events-none opacity-0",
                               )}
                               inert={!gridInteractive ? true : undefined}
                               aria-hidden={!gridInteractive ? "true" : undefined}
                             >
-                              {parentView && <ParentFrame name={parentView._label || diskNodeDisplayName(parentView)} onUp={goUpFromMapCenter} showLabel />}
+                              {parentView && <ParentFrame name={parentView._label || diskNodeDisplayName(parentView)} onUp={goUpFromMapCenter} color={tileColor(viewNode?.path ?? "")} showLabel />}
                               <Treemap
                                 rootPath={viewNode?.path ?? ""}
-                                children={sortedChildren}
+                                colorForPath={tileColor}
+                                children={visibleMapNode?.children ?? sortedChildren}
+                                draggingNode={collectionDragNode}
                                 hoveredPath={hoveredPath}
                                 selectedPath={selectedPath}
                                 onHover={(node) => {
                                   hoverEntry(node?.path ?? selectedPath ?? null)
-                                  if (isVisualAggregate(node)) setVisualHoverNode(node)
+                                  setVisualHoverNode(node)
                                 }}
                                 onSelect={selectPath}
                                 onReveal={(node) => void reveal(node.path)}
@@ -3717,7 +3759,7 @@ export default function DiskUtilityPage() {
                                 }}
                                 onDrill={(node, restoreListFocus) => drill(node, false, restoreListFocus)}
                                 onShowAll={(node) => expandOtherNode(node)}
-                                canCollect={canModifyNode}
+                                canCollect={canDragNode}
                                 onCollectDragStart={beginCollectionDrag}
                                 onCollectDragEnd={endCollectionDrag}
                               />
@@ -3727,7 +3769,9 @@ export default function DiskUtilityPage() {
                             <div className="absolute inset-0 px-6 pt-6 pb-20" style={{opacity: morphing ? 0 : 1, pointerEvents: morphing ? "none" : undefined}}>
                               {parentView && <ParentFrame name={parentView._label || diskNodeDisplayName(parentView)} onUp={goUpFromMapCenter} />}
                               <IciclePanel
-                                root={viewNode}
+                                root={visibleMapNode ?? viewNode}
+                                draggingNode={collectionDragNode}
+                                colorForNode={branchColor}
                                 parentName={parentView ? parentView._label || diskNodeDisplayName(parentView) : undefined}
                                 onUp={goUpFromMapCenter}
                                 selectedPath={selectedPath}
@@ -3739,7 +3783,7 @@ export default function DiskUtilityPage() {
                                   else void preview.show(node)
                                 }}
                                 onDrill={(node) => drill(node)}
-                                canCollect={canModifyNode}
+                                canCollect={canDragNode}
                                 onDragStart={beginCollectionDrag}
                                 onDragEnd={endCollectionDrag}
                               />
@@ -3874,14 +3918,20 @@ export default function DiskUtilityPage() {
                         className={cn(
                           "flex min-h-0 flex-col overflow-hidden w-full border-0 bg-background-base [container-type:inline-size] max-[840px]:w-full max-[840px]:border-t max-[840px]:border-border-weaker-base",
                           scanMode !== "list" &&
-                            "w-[clamp(360px,30vw,420px)] shrink-0 border-l border-border-weaker-base max-[840px]:border-l-0",
+                            "w-[clamp(300px,28vw,380px)] shrink-0 border-l border-border-weaker-base max-[840px]:border-l-0",
                           scanMode === "list" && "flex-1 pb-16",
                         )}
                       >
                         {hoverPreview ? (
                           <BranchPreview
                             node={hoverPreview}
+                            canDrag={canDragNode}
+                            onDragStart={beginCollectionDrag}
+                            onDragEnd={endCollectionDrag}
+                            onDismiss={dismissHoverPreview}
                             colorForNode={(node) => {
+                              if (scanMode === "grid" && tileColor(node.path)) return tileColor(node.path)!
+                              if (branchColor(node)) return branchColor(node)!
                               if (node.isOther) return "var(--text-weak)"
                               const segments = sunburstRef.current?.segments ?? []
                               const segment = segments.find((s) => s.path === node.path) ?? segments.find((s) => s.path === hoverPreview.path)
@@ -4051,7 +4101,7 @@ export default function DiskUtilityPage() {
                         ) : (
                           <VirtualIndex
                             groupLabel={developerGroupLabel}
-                            rowHeight={indexFilter.lens === "developer" ? 60 : 48}
+                            rowHeight={indexFilter.lens === "developer" ? 56 : indexFilter.lens !== "all" || query.trim() ? 48 : 34}
                             entries={entries}
                             bindScrollToIndex={(fn) => {
                               scrollIndexIntoViewRef.current = fn
@@ -4081,8 +4131,8 @@ export default function DiskUtilityPage() {
                                     type="button"
                                     data-disk-index={i()}
                                     aria-current={isActive() ? "true" : undefined}
-                                    draggable={canModifyNode(entry.node)}
-                                    className="flex h-full min-h-11 min-w-0 flex-1 items-center gap-2.5 py-2 pl-3 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color-mix(in_oklch,var(--dl-accent)_60%,transparent)]"
+                                    draggable={canDragNode(entry.node)}
+                                    className="flex h-full min-h-0 min-w-0 flex-1 items-center gap-2.5 py-1 pl-3 pr-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color-mix(in_oklch,var(--dl-accent)_60%,transparent)]"
                                     onClick={(event) => {
                                       if (event.metaKey || event.ctrlKey) {
                                         void reveal(entry.node.path)
@@ -4102,16 +4152,16 @@ export default function DiskUtilityPage() {
                                     {indexFilter.lens === "developer" ? (
                                       <DeveloperEntryContent node={entry.node} bytes={entry.displaySize}
                                         scope={developerContext().scope} disposition={developerContext().disposition}
-                                        color={primarySegmentColor(entry.colorIndex, 1, entry.node.isDir)} />
+                                        color={(scanMode === "grid" ? tileColor(entry.node.path) : branchColor(entry.node)) ?? primarySegmentColor(entry.colorIndex, 1, entry.node.isDir)} />
                                     ) : (<>
                                     <span className="min-w-0 flex-1">
                                       <span className="flex min-w-0 items-center gap-2.5">
                                         <span
                                           className="size-2 shrink-0 rounded-full"
                                           style={{
-                                            background: entry.node.isOther
+                                            background: (scanMode === "grid" ? tileColor(entry.node.path) : branchColor(entry.node)) ?? (entry.node.isOther
                                               ? "var(--text-weaker)"
-                                              : primarySegmentColor(entry.colorIndex, 1, entry.node.isDir),
+                                              : primarySegmentColor(entry.colorIndex, 1, entry.node.isDir)),
                                           }}
                                           aria-hidden="true"
                                         />
@@ -4180,7 +4230,7 @@ export default function DiskUtilityPage() {
                                     <button
                                       type="button"
                                       className={cn(
-                                        "absolute right-0 top-1/2 -translate-y-1/2 grid size-11 shrink-0 place-items-center rounded-lg text-text-weak opacity-0 group-hover:opacity-100 focus-visible:opacity-100 aria-pressed:opacity-100 [@media(hover:none)]:opacity-100 hover:bg-surface-raised-base hover:opacity-100 outline-none transition-[color,opacity,background-color,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
+                                        "absolute right-1 top-1/2 -translate-y-1/2 grid size-8 shrink-0 place-items-center rounded-lg text-text-weak opacity-0 group-hover:opacity-100 focus-visible:opacity-100 aria-pressed:opacity-100 [@media(hover:none)]:opacity-100 hover:bg-surface-raised-base hover:opacity-100 outline-none transition-[color,opacity,background-color,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
                                         isCollected(entry.node.path)
                                           ? "text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))] opacity-100"
                                           : "hover:text-text-strong",
@@ -4227,6 +4277,7 @@ export default function DiskUtilityPage() {
                       )}
                           </>
                         ) : null}
+                      {scanDrive && treeRoot && viewNode && diskPathEquals(viewNode.path, scanDrive.path, platform.os) && indexFilter.lens === "all" && !query.trim() && !hoverPreview ? <VolumeCapacitySummary drive={scanDrive} root={treeRoot} /> : null}
                       </aside>
                   </div>
 

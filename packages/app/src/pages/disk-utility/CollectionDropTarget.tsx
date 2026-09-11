@@ -11,6 +11,7 @@ import { useLanguage } from "./runtime"
 export function CollectionDropTarget(props: {
   node: DiskScanNode | null
   active: boolean
+  acceptsNode: boolean
   count: number
   bytes: number
   hasSharedPhysicalStorage: boolean
@@ -30,6 +31,7 @@ export function CollectionDropTarget(props: {
   const allocationMayRemain =
     props.requiresDeepInventoryRefresh || props.hasSharedPhysicalStorage || props.hasUnverifiedPhysicalStorage
   const title = (() => {
+    if (props.node && !props.acceptsNode) return language.t("disk.collection.unavailable")
     if (props.active && props.node) return language.t("disk.collection.release", { name: props.node.name })
     if (props.node) return language.t("disk.collection.drag", { name: props.node.name })
     if (hasItems) return language.plural("disk.count.itemSelected", props.count)
@@ -54,8 +56,9 @@ export function CollectionDropTarget(props: {
         if (element) props.setElement?.(element)
       }}
       className={cn(
-        "relative grid size-12 place-items-center rounded-xl border border-border-weaker-base bg-surface-raised-base text-text-weak shadow-sm outline-none transition-[background-color,transform] duration-100 hover:bg-surface-raised-strong hover:text-text-strong hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-text-weak",
-        props.active && "bg-surface-raised-strong text-text-strong outline-2 outline-text-weak",
+        "relative grid size-12 place-items-center rounded-full border border-border-weaker-base bg-surface-raised-base text-text-weak shadow-sm outline-none transition-[background-color,transform] duration-150 motion-reduce:transition-none hover:bg-surface-raised-strong hover:text-text-strong hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-text-weak",
+        props.node && "ring-4 ring-text-weak/15",
+        props.active && "scale-110 bg-surface-raised-strong text-text-strong ring-4 ring-text-weak/40",
       )}
       onClick={() => {
         if (hasItems) props.onReview()
@@ -72,6 +75,7 @@ export function CollectionDropTarget(props: {
       title={hasItems ? detail : language.t("disk.collection.instructions")}
     >
       <Icon name="trash" className="size-5" />
+      {props.node && <span aria-hidden="true" className="pointer-events-none absolute bottom-full left-0 mb-3 max-w-[240px] truncate rounded-lg bg-surface-raised-strong px-3 py-2 text-xs font-medium text-text-strong shadow-md">{title}</span>}
       {hasItems ? (
         <span className="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-text-strong px-1 text-12-medium tabular-nums text-background-base">
           {props.count > 99 ? "99+" : props.count}

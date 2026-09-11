@@ -1,5 +1,5 @@
 import log from "electron-log/main.js"
-import { spawn } from "node:child_process"
+import { execFile, spawn } from "node:child_process"
 import { stat } from "node:fs/promises"
 import { join } from "node:path"
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
@@ -280,6 +280,24 @@ export function registerIpcHandlers(deps: Deps) {
     updaterSubscriptions.clear()
     clearDiskSnapshotOwners()
     void diskSnapshots.stopAll()
+  })
+
+  handle("disklizard:volume-info", async (_event, target: unknown) => {
+    const drive = (await getDrives()).find(drive => drive.path === target)
+    if (!drive) return null
+    const icon = await app.getFileIcon(drive.path, { size: "large" }).catch(() => undefined)
+    return { icon: icon?.toDataURL(), canEject: process.platform === "darwin" && drive.type === "removable" && drive.path.startsWith("/Volumes/") }
+  })
+  handle("disklizard:reveal-volume", async (_event, target: unknown) => {
+    const drive = (await getDrives()).find(drive => drive.path === target)
+    return drive ? !(await shell.openPath(drive.path)) : false
+  })
+  handle("disklizard:eject-volume", async (_event, target: unknown) => {
+    const drive = (await getDrives()).find(drive => drive.path === target)
+    if (process.platform !== "darwin" || !drive || drive.type !== "removable" || !drive.path.startsWith("/Volumes/")) return false
+    return new Promise<boolean>(resolve => {
+      execFile("/usr/sbin/diskutil", ["eject", drive.path], { timeout: 15000, maxBuffer: 65536 }, error => resolve(!error))
+    })
   })
 
   handle("disklizard:get-drives", async (event: IpcMainInvokeEvent) => {

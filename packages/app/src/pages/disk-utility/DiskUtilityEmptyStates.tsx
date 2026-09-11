@@ -152,9 +152,9 @@ export function CenterOverlay(props: { node: DiskScanNode | null }) {
       <div className="@max-[399px]:max-w-[46%] max-w-[29%] text-center">
         {props.node ? (
           <>
-            <p className="whitespace-nowrap text-[clamp(20px,4cqw,32px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
+            <p className="whitespace-nowrap text-[clamp(24px,4.6cqw,38px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
               {amount}
-              <span className="mt-1.5 block text-13-regular tracking-normal text-text-weak">{unit}</span>
+              <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">{unit}</span>
             </p>
           </>
         ) : null}

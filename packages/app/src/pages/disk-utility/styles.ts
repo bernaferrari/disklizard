@@ -90,10 +90,10 @@ export const DISK_UTILITY_STYLES = `
 /* Storage list rows bump the primary label to the denser UI size. */
 .dl-index-row .text-13-semibold { font-size: 14px; font-weight: 500; }
 
-/* Narrow chrome: hide breadcrumbs, tighten the tiles overlay. */
+/* Preserve the current location even on narrow windows. */
 @media (max-width: 760px) {
-  .dl-breadcrumbs { display: none; }
-  .dl-treemap-overlay { padding-top: 16px; }
+  .dl-breadcrumbs { min-width: 70px; }
+  .dl-treemap-overlay { padding-top: 48px; }
 }
 
 /* Idle command dock collapses its cleanup affordances. */

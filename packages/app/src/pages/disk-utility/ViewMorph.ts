@@ -41,6 +41,10 @@ export type MorphTile = {
   node: DiskScanNode
   depth?: number
   colorIndex: number
+  fromColor?: string
+  toColor?: string
+  fromOpacity?: number
+  toOpacity?: number
   from: MorphPose
   to: MorphPose
 }
@@ -137,6 +141,7 @@ export class ViewMorph {
     this._active = true
     const generation = ++this.generation
     this.startTime = performance.now()
+    this.draw(0)
     this.raf = requestAnimationFrame((now) => this.frame(now, generation))
   }
 
@@ -167,7 +172,7 @@ export class ViewMorph {
     }
     if (!this._active) return
     this._active = false
-    this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
+    if (!runCompletion) this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
     const cb = runCompletion ? this.finished : null
     this.finished = null
     cb?.()
@@ -248,11 +253,15 @@ export class ViewMorph {
         }
       }
       tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
-      ctx.fillStyle = this.colors[i]
+      ctx.globalAlpha = (tile.fromOpacity ?? 1) + ((tile.toOpacity ?? 1) - (tile.fromOpacity ?? 1)) * t
+      const fromColor = tile.fromColor ?? this.colors[i]
+      const toColor = tile.toColor ?? this.colors[i]
+      ctx.fillStyle = fromColor === toColor ? fromColor : `color-mix(in oklab, ${fromColor} ${(1-t)*100}%, ${toColor})`
       ctx.fill()
       ctx.strokeStyle = this.border
       ctx.lineWidth = 0.8 * dpr
       ctx.stroke()
+      ctx.globalAlpha = 1
     }
   }
 }

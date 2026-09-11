@@ -1,3 +1,4 @@
+import { storageTileColor } from "./visual-palette"
 import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "./types"
 import {
@@ -47,7 +48,7 @@ function node(name: string, size: number, children: DiskScanNode[] = []): DiskSc
 
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
-    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([185, 230, 275, 325, 150, 185])
+    expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([85, 145, 220, 310, 180, 85])
   })
   it("keeps consecutive hues distinct", () => {
     expect(primaryHueForIndex(0)).not.toBe(primaryHueForIndex(1))
@@ -81,6 +82,14 @@ describe("primarySegmentColor", () => {
   it("keeps files visually secondary to folder branches", () => {
     expect(primarySegmentColor(2, 1, false)).not.toBe(primarySegmentColor(2))
   })
+  it("gives nested tiles distinct tones with readable labels", () => {
+    for (let index = 0; index < 10; index++) {
+      const colors = [0, 1, 2].map(depth => storageTileColor(index, depth))
+      expect(new Set(colors).size).toBe(3)
+      for (const color of colors) expect(contrastRatio(primarySegmentForeground(), color)).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
   it("keeps every tile label above normal-text AA contrast", () => {
     for (let index = 0; index < 10; index++) {
       for (let depth = 0; depth < 6; depth++) {
@@ -258,7 +267,7 @@ describe("sunburst resize", () => {
     expect(map.canvas.width / map.canvas.height).toBeCloseTo(800 / 500)
     expect(map.cx).toBe(map.canvas.width / 2)
     expect(map.cy).toBe(map.canvas.height / 2)
-    expect(map.maxR).toBeCloseTo(map.canvas.height * 0.47)
+    expect(map.maxR).toBeCloseTo(map.canvas.height * 0.40)
   })
 
   it("tapers detail rings without gaps or overflow beyond the map extent", () => {
@@ -286,6 +295,17 @@ describe("sunburst navigation continuity", () => {
     map._tick(map.animStart + 2)
     return map
   }
+  it("preserves a descendant's hue and tone when its parent becomes the viewport", () => {
+    const child = { ...node("child", 10), path: "/branch/child" }
+    const selected = node("branch", 10, [child])
+    const root = node("root", 100, [node("large", 90), selected])
+    const map = engine(root)
+    const before = { ...map.segments.find(segment => segment.path === child.path)!.toTone! }
+    map.navigateTo(selected)
+    expect(map.segments.find(segment => segment.path === child.path)!.toTone).toEqual(before)
+    map.navigateTo(root)
+    expect(map.segments.find(segment => segment.path === child.path)!.toTone).toEqual(before)
+  })
   const branch = () => node("branch", 10, [node("inside", 10, [node("deep", 10)])])
   it("never inverts expanding arcs across the angular seam", () => {
     const selected = branch()

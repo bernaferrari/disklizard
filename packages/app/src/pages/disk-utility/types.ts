@@ -160,6 +160,9 @@ export type DiskFilePreview =
   | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
 
 export type DiskUtilityAPI = {
+  getVolumeInfo?(path: string): Promise<{ icon?: string; canEject: boolean } | null>
+  revealVolume?(path: string): Promise<boolean>
+  ejectVolume?(path: string): Promise<boolean>
   getDrives(): Promise<DiskDriveInfo[]>
   onDriveFacts(cb: (update: DiskDriveFactsUpdate) => void): () => void
   getStorageDiagnostics(): Promise<DiskStorageDiagnostics>

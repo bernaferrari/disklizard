@@ -1,6 +1,6 @@
 import { ArrowUp } from "lucide-react"
 import { useDirectoryMotion } from "./use-directory-motion"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { DiskScanNode } from "./types"
 import { layoutIcicle } from "./icicle"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
@@ -12,6 +12,8 @@ export function IciclePanel(props: {
   parentName?: string
   onUp: () => void
   root: DiskScanNode
+  colorForNode: (node: DiskScanNode) => string | undefined
+  draggingNode?: DiskScanNode | null
   selectedPath?: string
   onSelect: (path: string) => void
   onHover: (node: DiskScanNode | null) => void
@@ -25,6 +27,14 @@ export function IciclePanel(props: {
   const language = useLanguage()
   const [width, setWidth] = useState(900)
   const cells = useMemo(() => layoutIcicle(props.root, 5, width), [props.root, width])
+  // Keep the native drag source mounted while the rest of the view reflows.
+  const previousLayout = useRef(cells)
+  const source = useRef<(typeof cells)[number] | undefined>(undefined)
+  if (props.draggingNode) source.current = previousLayout.current.find(item => item.node.path === props.draggingNode?.path) ?? source.current
+  else source.current = undefined
+  previousLayout.current = cells
+  const retained = source.current && !cells.some(item => item.node.path === source.current!.node.path) ? source.current : undefined
+  const rendered = retained ? [...cells, retained] : cells
   const motionRef = useDirectoryMotion(props.root.path, cells)
   useEffect(() => {
     const element = motionRef.current
@@ -50,8 +60,8 @@ export function IciclePanel(props: {
         <span className="shrink-0 tabular-nums">{formatBytes(props.root.size)}</span>
       </div>
       <div className="min-h-0 overflow-y-auto">
-      <div ref={motionRef} className="relative" style={{height: rows * 84}}>
-        {cells.map((cell) => (
+      <div ref={motionRef} className="relative" style={{height: rows * 68}}>
+        {rendered.map((cell) => (
           <button
             type="button"
             key={cell.node.path}
@@ -60,14 +70,13 @@ export function IciclePanel(props: {
             style={{
               left: `${cell.x * 100}%`,
               width: `max(1px, calc(${cell.width * 100}% - 4px))`,
-              top: cell.depth * 84,
-              height: 76,
-              background: cell.node.isOther
-                ? "var(--surface-raised-strong)"
-                : primarySegmentColor(cell.colorIndex, 1, cell.node.isDir, cell.depth),
-              color: cell.node.isOther
-                ? "var(--text-strong)"
-                : primarySegmentForeground(cell.depth > 0 || cell.node.isDir),
+              top: cell.depth * 68,
+              height: 60,
+              opacity: retained === cell ? 0 : 1,
+              pointerEvents: retained === cell ? "none" : undefined,
+              backgroundColor: props.colorForNode(cell.node) ?? primarySegmentColor(cell.colorIndex, 1, cell.node.isDir, cell.depth),
+              backgroundImage: cell.node.isOther ? "repeating-linear-gradient(135deg, transparent 0 5px, oklch(0.2 0.02 250 / 0.14) 5px 7px)" : undefined,
+              color: primarySegmentForeground(),
               boxShadow:
                 props.selectedPath === cell.node.path
                   ? "inset 0 0 0 2px var(--text-strong)"

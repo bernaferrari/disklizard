@@ -221,6 +221,19 @@ describe("ViewMorph lifecycle", () => {
     }
   })
 
+  it("hands off the final painted frame without clearing it", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      let completed = false
+      morph.play(tiles(), "toGrid", () => { completed = true })
+      const before = clearRectCount
+      clock.tick(300)
+      expect(completed).toBe(true)
+      // One clear to draw the last pose; no second clear on handoff.
+      expect(clearRectCount - before).toBe(1)
+    } finally { restore() }
+  })
+
   it("cancel drops the scheduled frame, completes once, and stops drawing", () => {
     const { morph, clock, restore } = harness()
     try {

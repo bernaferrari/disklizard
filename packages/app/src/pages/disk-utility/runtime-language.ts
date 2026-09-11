@@ -10,6 +10,16 @@ export const DISK_ACCESS_GUIDANCE: Record<DiskAccessGuidanceKey, string> = {
 
 export const DISK_LANGUAGE_TEXT = {
   ...DISK_RECOGNITION_LANGUAGE_TEXT,
+  "disk.volume.actions": "Volume actions",
+  "disk.volume.finder": "Show in Finder",
+  "disk.volume.eject": "Eject {name}",
+  "disk.volume.ejectFailed": "The volume action couldn’t be completed. If ejecting, close files or apps using this volume and try again.",
+  "disk.collection.unavailable": "This item is protected from cleanup",
+  "disk.capacity.free": "Free space",
+  "disk.capacity.available": "Free + reclaimable",
+  "disk.capacity.details": "About these totals",
+  "disk.capacity.hiddenExplanation": "Hidden space is storage macOS reports as used that this scan could not assign to files. It can include inaccessible folders, snapshots, and filesystem data. It cannot be opened or collected as a folder.",
+  "disk.capacity.allocationExplanation": "File sizes and volume usage measure different things. Shared file storage can make scan totals larger than used space. Hidden space is shown only when used space exceeds the scan total; an absent hidden-space entry does not mean every location was readable.",
   ...DISK_ACCESS_GUIDANCE,
   "disk.navigation.parent": "Back to {name}",
   "disk.storage.accessDetails": "Access details",

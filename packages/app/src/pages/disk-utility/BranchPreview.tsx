@@ -1,3 +1,4 @@
+import { X } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useLanguage } from "./runtime"
 import { useEffect, useMemo, useState } from "react"
@@ -7,7 +8,7 @@ import { diskNodeDisplayName } from "./node-display"
 import { formatBytes } from "./format"
 
 /** Hover and smaller-item groups share a bounded, scrollable directory preview. */
-export function BranchPreview(props: { node: DiskScanNode; onOpen: (node: DiskScanNode) => void; colorForNode: (node: DiskScanNode) => string }) {
+export function BranchPreview(props: { canDrag: (node: DiskScanNode) => boolean; onDragStart: (event: DragEvent, node: DiskScanNode) => void; onDragEnd: () => void; onDismiss?: () => void; node: DiskScanNode; onOpen: (node: DiskScanNode) => void; colorForNode: (node: DiskScanNode) => string }) {
   const language = useLanguage()
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null)
   useEffect(() => { if (viewport) viewport.scrollTop = 0 }, [viewport, props.node.path])
@@ -19,15 +20,16 @@ export function BranchPreview(props: { node: DiskScanNode; onOpen: (node: DiskSc
   const rows = useVirtualizer<HTMLDivElement, HTMLButtonElement>({
     count: children.length,
     getScrollElement: () => viewport,
-    estimateSize: () => 40,
+    estimateSize: () => 30,
     overscan: 5,
     getItemKey: (index) => children[index].path,
   })
   return (
     <div className="flex min-h-0 flex-1 flex-col pt-5">
-      <div className="mb-3 flex items-baseline justify-between gap-4 px-5 text-15-medium text-text-strong">
+      <div className="mb-3 flex items-baseline justify-between gap-4 px-5 text-13-medium text-text-strong">
         <span className="truncate" title={props.node.path}>{diskNodeDisplayName(props.node)}</span>
-        <span className="shrink-0 tabular-nums">{formatBytes(props.node.size)}</span>
+        <span className="ml-auto shrink-0 tabular-nums">{formatBytes(props.node.size)}</span>
+        {props.onDismiss && <button type="button" onClick={props.onDismiss} aria-label={language.t("disk.preview.close")} className="grid size-7 shrink-0 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong focus-visible:outline-2"><X className="size-3.5" /></button>}
       </div>
       {props.node.isOther && !children.length ? <p className="px-5 text-13-regular leading-relaxed text-text-weak">{language.t("disk.smaller.summary")}</p> : null}
       <ScrollArea viewportRef={setViewport} className="min-h-0 flex-1" viewportClassName="px-3 pb-3">
@@ -37,8 +39,11 @@ export function BranchPreview(props: { node: DiskScanNode; onOpen: (node: DiskSc
             return (
               <button
                 key={row.key}
+                draggable={props.canDrag(child)}
+                onDragStart={event => props.onDragStart(event.nativeEvent, child)}
+                onDragEnd={props.onDragEnd}
                 type="button"
-                className="absolute top-0 left-0 flex h-10 w-full items-center gap-3 rounded-md px-2 text-left text-13-regular text-text-strong hover:bg-surface-raised-strong focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-text-weak"
+                className="absolute top-0 left-0 flex h-[30px] w-full items-center gap-3 rounded-md px-2 text-left text-13-regular text-text-strong hover:bg-surface-raised-strong focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-text-weak"
                 title={child.path}
                 aria-posinset={row.index + 1}
                 aria-setsize={children.length}
