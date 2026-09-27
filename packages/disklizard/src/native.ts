@@ -70,10 +70,17 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
   const requestedRoot = normalizeNativeScanRoot(targetPath)
   if (!requestedRoot) throw new Error("Invalid native scan target path")
   const expectedInventory = normalizeDeveloperArtifactInventoryOptions(normalizedOptions.developerArtifactInventory)
+  // Bulk directory reads on macOS reach their useful I/O parallelism before
+  // the general scanner default on machines with many cores. Keep explicit
+  // caller settings intact, including higher values for unusual volumes.
+  const concurrency =
+    process.platform === "darwin" && options.concurrency === undefined
+      ? Math.min(normalizedOptions.concurrency ?? 6, 6)
+      : normalizedOptions.concurrency
   const request: NativeRequest = {
     targetPath: requestedRoot,
     maxDepth: normalizedOptions.maxDepth ?? 10,
-    concurrency: normalizedOptions.concurrency,
+    concurrency,
     maxChildren: normalizedOptions.maxChildren ?? 48,
     preserveNames: normalizedOptions.preserveNames ?? [],
     collapseNames: normalizedOptions.collapseNames ?? [],

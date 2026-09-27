@@ -15,8 +15,8 @@ mod config;
 mod filesystem;
 mod protocol;
 mod retention;
-mod work_progress;
 mod volume_progress;
+mod work_progress;
 use classification::{
     classify as classify_developer_artifact,
     is_evidence_name as is_developer_artifact_evidence_name,
@@ -919,106 +919,125 @@ impl State {
         let excluded_names = self.excluded_children.get(path);
         let artifact_signatures = self.artifact_direct_signatures(path, &entries);
         let child_markers = Arc::new(self.project_marker_signatures(&entries));
-        let retention = Mutex::new(ChildRetention::new(self.request.max_children));
         // Skipped entries have no traversal budget. Where directories exist,
         // direct files must not finish a large share before those subtrees run.
         let eligible = |entry: &Entry| {
             matches!(entry.kind, EntryKind::Directory | EntryKind::File)
                 && !excluded_names.is_some_and(|names| names.contains(&entry.name))
         };
-        let has_directories = entries.iter().any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
-        let weights: Vec<u64> = entries.iter().map(|entry| {
-            u64::from(eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory))
-        }).collect();
+        let has_directories = entries
+            .iter()
+            .any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
+        let weights: Vec<u64> = entries
+            .iter()
+            .map(|entry| {
+                u64::from(
+                    eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory),
+                )
+            })
+            .collect();
         let work_items = if weights.iter().any(|weight| *weight > 0) {
             work.split_weights(&weights)
         } else {
             // Still visit these entries to retain diagnostics, with no early credit.
             work.split_weights(&vec![1; entries.len()])
         };
-        entries
-            .into_par_iter()
-            .zip(work_items.into_par_iter())
-            .filter_map(|(entry, work)| {
+        let process_entry = |(entry, work): (Entry, work_progress::Work)| {
+            if entry.kind == EntryKind::Symlink {
+                self.record_skipped_symlink(&path.join(&entry.name));
+                return None;
+            }
+            if entry.kind == EntryKind::Other {
+                return None;
+            }
+            if excluded_names.is_some_and(|names| names.contains(&entry.name)) {
+                self.mark_shared_storage_evidence_partial();
+                self.record_excluded_path(&path.join(&entry.name));
+                return None;
+            }
+            if entry.kind == EntryKind::Directory {
                 let child_path = path.join(&entry.name);
-                if entry.kind == EntryKind::Symlink {
-                    self.record_skipped_symlink(&child_path);
-                    return None;
-                }
-                if entry.kind == EntryKind::Other {
-                    return None;
-                }
-                if excluded_names.is_some_and(|names| names.contains(&entry.name)) {
-                    self.mark_shared_storage_evidence_partial();
-                    self.record_excluded_path(&child_path);
-                    return None;
-                }
-                if entry.kind == EntryKind::Directory {
-                    let visual_child_allowed = self.claim_directory(&entry, &child_path);
-                    let child_inventory_scope_allowed = if inventory_scope_allowed {
-                        if visual_child_allowed {
-                            self.claim_inventory_directory(&entry, &child_path)
-                        } else {
-                            // The visual guard already records this alias or
-                            // mount boundary for inventory status. Never let
-                            // inventory scope alter map traversal.
-                            false
-                        }
+                let visual_child_allowed = self.claim_directory(&entry, &child_path);
+                let child_inventory_scope_allowed = if inventory_scope_allowed {
+                    if visual_child_allowed {
+                        self.claim_inventory_directory(&entry, &child_path)
                     } else {
+                        // The visual guard already records this alias or
+                        // mount boundary for inventory status. Never let
+                        // inventory scope alter map traversal.
                         false
-                    };
-                    if !visual_child_allowed {
-                        return None;
-                    }
-                    let entry_name = entry.name.to_string_lossy().into_owned();
-                    let child_identity = developer_artifact_directory_identity(&entry);
-                    let collapsed = self.collapse_names.contains(&entry_name.to_lowercase());
-                    match directory
-                        .open_child(&entry.name, &child_path)
-                        .and_then(|child| {
-                            self.walk_dir(
-                                &child_path,
-                                entry_name,
-                                depth + 1,
-                                collapsed,
-                                work,
-                                DirectoryWalk {
-                                    directory: child,
-                                    directory_identity: child_identity,
-                                    inventory_scope_allowed: child_inventory_scope_allowed,
-                                    sibling_markers: Arc::clone(&child_markers),
-                                },
-                            )
-                        }) {
-                        Ok(node) => {
-                            if depth == 0 {
-                                self.emit_discovery(&node, &child_path);
-                            }
-                            Some(node)
-                        }
-                        Err(_) => {
-                            self.record_unreadable(&child_path);
-                            None
-                        }
                     }
                 } else {
-                    let node = self.file_node(entry);
-                    if depth == 0 {
-                        self.emit_discovery(&node, &path.join(&node.name));
-                    }
-                    Some(node)
+                    false
+                };
+                if !visual_child_allowed {
+                    return None;
                 }
-            })
-            .for_each(|node| {
-                retention
-                    .lock()
-                    .expect("child retention lock poisoned")
-                    .push(node, &self.preserve_names);
-            });
-
-        let retention = retention
-            .into_inner()
-            .expect("child retention lock poisoned");
+                let entry_name = entry.name.to_string_lossy().into_owned();
+                let child_identity = developer_artifact_directory_identity(&entry);
+                let collapsed = self.collapse_names.contains(&entry_name.to_lowercase());
+                match directory
+                    .open_child(&entry.name, &child_path)
+                    .and_then(|child| {
+                        self.walk_dir(
+                            &child_path,
+                            entry_name,
+                            depth + 1,
+                            collapsed,
+                            work,
+                            DirectoryWalk {
+                                directory: child,
+                                directory_identity: child_identity,
+                                inventory_scope_allowed: child_inventory_scope_allowed,
+                                sibling_markers: Arc::clone(&child_markers),
+                            },
+                        )
+                    }) {
+                    Ok(node) => {
+                        if depth == 0 {
+                            self.emit_discovery(&node, &child_path);
+                        }
+                        Some(node)
+                    }
+                    Err(_) => {
+                        self.record_unreadable(&child_path);
+                        None
+                    }
+                }
+            } else {
+                let node = self.file_node(entry);
+                if depth == 0 {
+                    self.emit_discovery(&node, &path.join(&node.name));
+                }
+                Some(node)
+            }
+        };
+        let retention = if has_directories {
+            let retention = Mutex::new(ChildRetention::new(self.request.max_children));
+            entries
+                .into_par_iter()
+                .zip(work_items.into_par_iter())
+                .filter_map(process_entry)
+                .for_each(|node| {
+                    retention
+                        .lock()
+                        .expect("child retention lock poisoned")
+                        .push(node, &self.preserve_names);
+                });
+            retention
+                .into_inner()
+                .expect("child retention lock poisoned")
+        } else {
+            // A flat directory has no recursive work to overlap. Serial
+            // retention avoids Rayon tasks and a mutex for every file.
+            let mut retention = ChildRetention::new(self.request.max_children);
+            for item in entries.into_iter().zip(work_items) {
+                if let Some(node) = process_entry(item) {
+                    retention.push(node, &self.preserve_names);
+                }
+            }
+            retention
+        };
         let retained = retention.finish(name);
         if retained.evidence_became_partial {
             self.mark_shared_storage_evidence_partial();
@@ -1084,88 +1103,104 @@ impl State {
             matches!(entry.kind, EntryKind::Directory | EntryKind::File)
                 && !excluded_names.is_some_and(|names| names.contains(&entry.name))
         };
-        let has_directories = entries.iter().any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
-        let weights: Vec<u64> = entries.iter().map(|entry| {
-            u64::from(eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory))
-        }).collect();
+        let has_directories = entries
+            .iter()
+            .any(|entry| eligible(entry) && entry.kind == EntryKind::Directory);
+        let weights: Vec<u64> = entries
+            .iter()
+            .map(|entry| {
+                u64::from(
+                    eligible(entry) && (!has_directories || entry.kind == EntryKind::Directory),
+                )
+            })
+            .collect();
         let work_items = if weights.iter().any(|weight| *weight > 0) {
             work.split_weights(&weights)
         } else {
             // Still visit these entries to retain diagnostics, with no early credit.
             work.split_weights(&vec![1; entries.len()])
         };
-        let measured = entries
-            .into_par_iter()
-            .zip(work_items.into_par_iter())
-            .map(|(entry, work)| {
+        let measure_entry = |(entry, work): (Entry, work_progress::Work)| {
+            if entry.kind == EntryKind::Symlink {
+                self.record_skipped_symlink(&path.join(&entry.name));
+                return Measurement::default();
+            }
+            if entry.kind == EntryKind::Other {
+                return Measurement::default();
+            }
+            if excluded_names.is_some_and(|names| names.contains(&entry.name)) {
+                self.mark_shared_storage_evidence_partial();
+                self.record_excluded_path(&path.join(&entry.name));
+                return Measurement::default();
+            }
+            if entry.kind == EntryKind::Directory {
                 let child_path = path.join(&entry.name);
-                if entry.kind == EntryKind::Symlink {
-                    self.record_skipped_symlink(&child_path);
-                    return Measurement::default();
-                }
-                if entry.kind == EntryKind::Other {
-                    return Measurement::default();
-                }
-                if excluded_names.is_some_and(|names| names.contains(&entry.name)) {
-                    self.mark_shared_storage_evidence_partial();
-                    self.record_excluded_path(&child_path);
-                    return Measurement::default();
-                }
-                if entry.kind == EntryKind::Directory {
-                    let visual_child_allowed = self.claim_directory(&entry, &child_path);
-                    let child_inventory_scope_allowed = if inventory_scope_allowed {
-                        if visual_child_allowed {
-                            self.claim_inventory_directory(&entry, &child_path)
-                        } else {
-                            // `claim_directory` already reported the visual
-                            // boundary; avoid double-counting it here.
-                            false
-                        }
+                let visual_child_allowed = self.claim_directory(&entry, &child_path);
+                let child_inventory_scope_allowed = if inventory_scope_allowed {
+                    if visual_child_allowed {
+                        self.claim_inventory_directory(&entry, &child_path)
                     } else {
+                        // `claim_directory` already reported the visual
+                        // boundary; avoid double-counting it here.
                         false
-                    };
-                    if !visual_child_allowed {
-                        return Measurement::default();
                     }
-                    let child_identity = developer_artifact_directory_identity(&entry);
-                    return directory
-                        .open_child(&entry.name, &child_path)
-                        .map(|child| {
-                            self.size_only(
-                                &child_path,
-                                child,
-                                false,
-                                child_identity,
-                                child_inventory_scope_allowed,
-                                Arc::clone(&child_markers),
-                                work,
-                            )
-                        })
-                        .unwrap_or_else(|_| {
-                            self.record_unreadable(&child_path);
-                            Measurement::default()
-                        });
+                } else {
+                    false
+                };
+                if !visual_child_allowed {
+                    return Measurement::default();
                 }
-                let has_shared_storage_risk = entry.may_share_physical_storage();
-                let measured = self.measure_file(&entry);
-                self.files.fetch_add(1, Ordering::Relaxed);
-                self.bytes.fetch_add(measured.0, Ordering::Relaxed);
-                Measurement {
-                    size: measured.0,
-                    logical_size: measured.1.unwrap_or(measured.0),
-                    has_shared_storage_risk,
-                    modified_at: entry.modified_at,
-                    signatures: None,
-                }
-            })
-            .reduce(Measurement::default, |left, right| Measurement {
-                size: left.size.saturating_add(right.size),
-                logical_size: left.logical_size.saturating_add(right.logical_size),
-                has_shared_storage_risk: left.has_shared_storage_risk
-                    || right.has_shared_storage_risk,
-                modified_at: latest(left.modified_at, right.modified_at),
+                let child_identity = developer_artifact_directory_identity(&entry);
+                return directory
+                    .open_child(&entry.name, &child_path)
+                    .map(|child| {
+                        self.size_only(
+                            &child_path,
+                            child,
+                            false,
+                            child_identity,
+                            child_inventory_scope_allowed,
+                            Arc::clone(&child_markers),
+                            work,
+                        )
+                    })
+                    .unwrap_or_else(|_| {
+                        self.record_unreadable(&child_path);
+                        Measurement::default()
+                    });
+            }
+            let has_shared_storage_risk = entry.may_share_physical_storage();
+            let measured = self.measure_file(&entry);
+            self.files.fetch_add(1, Ordering::Relaxed);
+            self.bytes.fetch_add(measured.0, Ordering::Relaxed);
+            Measurement {
+                size: measured.0,
+                logical_size: measured.1.unwrap_or(measured.0),
+                has_shared_storage_risk,
+                modified_at: entry.modified_at,
                 signatures: None,
-            });
+            }
+        };
+        let combine = |left: Measurement, right: Measurement| Measurement {
+            size: left.size.saturating_add(right.size),
+            logical_size: left.logical_size.saturating_add(right.logical_size),
+            has_shared_storage_risk: left.has_shared_storage_risk || right.has_shared_storage_risk,
+            modified_at: latest(left.modified_at, right.modified_at),
+            signatures: None,
+        };
+        let measured = if has_directories {
+            entries
+                .into_par_iter()
+                .zip(work_items.into_par_iter())
+                .map(measure_entry)
+                .reduce(Measurement::default, combine)
+        } else {
+            entries
+                .into_iter()
+                .zip(work_items)
+                .map(measure_entry)
+                .fold(Measurement::default(), combine)
+        };
         self.emit_progress(path, None, false, false);
 
         let result = Measurement {
@@ -1434,7 +1469,8 @@ impl State {
                     100.0
                 } else if let Some(expected) = self.expected_objects {
                     volume_progress::percent(
-                        (self.files.load(Ordering::Relaxed) + self.dirs.load(Ordering::Relaxed)) as u64,
+                        (self.files.load(Ordering::Relaxed) + self.dirs.load(Ordering::Relaxed))
+                            as u64,
                         expected,
                     )
                 } else {
