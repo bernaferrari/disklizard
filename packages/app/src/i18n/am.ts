@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCodeምናሌ",
   "desktop.updater.dialog.checkFailed.message": "የዝማኔ ማረጋገጫ አልተሳካም።",
   "desktop.updater.dialog.checkFailed.title": "ስህተት ማዘመን",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "ወቅታዊ ነዎት።",
   "desktop.updater.dialog.upToDate.title": "ምንም ማሻሻያ የለም",
-  "desktop.updater.dialog.ready.message": "ዝማኔ {{version}} ወርዷል። አሁን እንደገና ይጀመር?",
+  "desktop.updater.dialog.ready.message":
+    "ዝማኔ {{version}} ወርዷል። አሁን እንደገና ይጀመር?",
   "desktop.updater.dialog.ready.title": "አዘምን ዝግጁ",
   "desktop.updater.dialog.restart": "ዳግም አስጀምር",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +64,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode መጫን አልቻለም",
   "desktop.recovery.terminated": "OpenCode መስኮት በድንገት ተቋርጧል",
   "desktop.recovery.unresponsive": "OpenCode ምላሽ እየሰጠ አይደለም",
-  "desktop.recovery.unresponsive.detail": "መተግበሪያውን እንደገና ማስጀመር፣ መዝገቦችን መክፈት ወይም መጠበቅ ትችላለህ።",
-  "desktop.recovery.loadFailed.detail": "መስኮት፡ {{window}}\nURL፡ {{url}}\nስህተት፡ {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "መስኮት፡ {{window}}\nምክንያት፡ {{reason}}\nኮድ፡ {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "መተግበሪያውን እንደገና ማስጀመር፣ መዝገቦችን መክፈት ወይም መጠበቅ ትችላለህ።",
+  "desktop.recovery.loadFailed.detail":
+    "መስኮት፡ {{window}}\nURL፡ {{url}}\nስህተት፡ {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "መስኮት፡ {{window}}\nምክንያት፡ {{reason}}\nኮድ፡ {{code}}",
   "desktop.recovery.unknown": "<unknown>",
   "desktop.dialog.chooseFolder": "አቃፊ ምረጥ",
   "desktop.dialog.chooseFile": "ፋይል ምረጥ",
@@ -86,11 +91,14 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "OpenCode ዝማኔ አልቋል ግን {{distro}} አሁንም ሪፖርት ያደርጋል {{installed}}; የሚጠበቀው {{expected}}",
   "desktop.wsl.error.noVersion": "ምንም ስሪት የለም",
-  "desktop.wsl.error.serverExited": "WSL አገልጋይ ከተጀመረ በኋላ ወጥቷል (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL አገልጋይ ከተጀመረ በኋላ ወጥቷል (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL አገልጋይ ጤናማ ከመሆኑ በፊት ወጥቷል (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar for {{distro}} የጤና ፍተሻ ጊዜው አልፎበታል ከ{{timeout}}ሚሴ በኋላ",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} ጊዜው አልፎበታል ከ{{timeout}}ሚሴ በኋላ",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar for {{distro}} የጤና ፍተሻ ጊዜው አልፎበታል ከ{{timeout}}ሚሴ በኋላ",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} ጊዜው አልፎበታል ከ{{timeout}}ሚሴ በኋላ",
   "desktop.wsl.error.failedPort": "ወደብ ማግኘት አልተሳካም",
   "desktop.picker.error.notSelected": "ፋይሉ በመራጭው አልተመረጠም",
   "desktop.picker.error.sizeLimit": "የተመረጡት ዓባሪዎች ከ{{limit}}ሜባ ገደቡ በላይ",
@@ -168,7 +176,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "በራስ-ተቀበል ፈቃዶች",
   "command.permissions.autoaccept.disable": "በራስ-መቀበል ፍቃዶችን አቁም",
   "command.workspace.toggle": "Workspace ቀይር",
-  "command.workspace.toggle.description": "በጎን አሞሌው ውስጥ ብዙ workspace-ዎችን አንቃ ወይም አሰናክል",
+  "command.workspace.toggle.description":
+    "በጎን አሞሌው ውስጥ ብዙ workspace-ዎችን አንቃ ወይም አሰናክል",
   "command.session.undo": "ቀልብስ",
   "command.session.undo.description": "የመጨረሻውን መልእክት ቀልብስ",
   "command.session.redo": "ድገም",
@@ -194,7 +203,8 @@ export const dict = {
   "dialog.provider.group.other": "ሌላ",
   "dialog.provider.custom.label": "ብጁ OpenAIተኳሃኝ አቅራቢ",
   "dialog.provider.tag.recommended": "የሚመከር",
-  "dialog.provider.opencode.note": "Claude፣ GPT፣ Gemini እና ሌሎችንም ጨምሮ የተስተካከሉ ሞዴሎች",
+  "dialog.provider.opencode.note":
+    "Claude፣ GPT፣ Gemini እና ሌሎችንም ጨምሮ የተስተካከሉ ሞዴሎች",
   "dialog.provider.opencode.tagline": "ታማኝ የተመቻቹ ሞዴሎች",
   "dialog.provider.opencodeGo.tagline": "ዝቅተኛ ወጪ ለሁሉም ሰው",
   "dialog.provider.anthropic.note": "የቀጥታ የClaude ሞዴሎች፣ ፕሮ እና ማክስን ጨምሮ",
@@ -227,8 +237,10 @@ export const dict = {
   "provider.connect.apiKey.label": "{{provider}} API ቁልፍ",
   "provider.connect.apiKey.placeholder": "API ቁልፍ",
   "provider.connect.apiKey.required": "API ቁልፍ ያስፈልጋል",
-  "provider.connect.opencodeZen.line1": "OpenCode ዜን ለኮድ ወኪሎች የተመቻቹ አስተማማኝ ሞዴሎች ስብስብ መዳረሻ ይሰጥዎታል።",
-  "provider.connect.opencodeZen.line2": "በአንድ የAPI ቁልፍ እንደ Claude፣ GPT፣ Gemini፣ GLM እና ሌሎችም ያሉ ሞዴሎችን መድረስ ይችላሉ።",
+  "provider.connect.opencodeZen.line1":
+    "OpenCode ዜን ለኮድ ወኪሎች የተመቻቹ አስተማማኝ ሞዴሎች ስብስብ መዳረሻ ይሰጥዎታል።",
+  "provider.connect.opencodeZen.line2":
+    "በአንድ የAPI ቁልፍ እንደ Claude፣ GPT፣ Gemini፣ GLM እና ሌሎችም ያሉ ሞዴሎችን መድረስ ይችላሉ።",
   "provider.connect.opencodeZen.visit.prefix": "ጎብኝ ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " የእርስዎን API ቁልፍ ለመሰብሰብ።",
@@ -242,10 +254,12 @@ export const dict = {
   "provider.connect.oauth.code.invalid": "ልክ ያልሆነ የፈቀዳ ኮድ",
   "provider.connect.oauth.auto.visit.prefix": "ጎብኝ ",
   "provider.connect.oauth.auto.visit.link": "ይህ ሊንክ",
-  "provider.connect.oauth.auto.visit.suffix": " እና መለያዎን ለማገናኘት ከታች ያለውን ኮድ ያስገቡ እና {{provider}} ሞዴሎችን በOpenCode ይጠቀሙ።",
+  "provider.connect.oauth.auto.visit.suffix":
+    " እና መለያዎን ለማገናኘት ከታች ያለውን ኮድ ያስገቡ እና {{provider}} ሞዴሎችን በOpenCode ይጠቀሙ።",
   "provider.connect.oauth.auto.confirmationCode": "የማረጋገጫ ኮድ",
   "provider.connect.toast.connected.title": "{{provider}}ተገናኝቷል",
-  "provider.connect.toast.connected.description": "{{provider}} ሞዴሎች አሁን ለመጠቀም ይገኛሉ።",
+  "provider.connect.toast.connected.description":
+    "{{provider}} ሞዴሎች አሁን ለመጠቀም ይገኛሉ።",
   "provider.custom.title": "ብጁ አቅራቢ",
   "provider.custom.unavailable": "ብጁ አቅራቢዎች በዚህ አገልጋይ ላይ አይገኙም",
   "provider.custom.description.prefix": "OpenAI-ተኳሃኝ አቅራቢን ያዋቅሩ። ይመልከቱ ",
@@ -253,14 +267,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "የአቅራቢ መታወቂያ",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "ዝቅተኛ ፊደሎች፣ ቁጥሮች፣ ሰረዞች፣ ወይም ከስር ያሉ ምልክቶች",
+  "provider.custom.field.providerID.description":
+    "ዝቅተኛ ፊደሎች፣ ቁጥሮች፣ ሰረዞች፣ ወይም ከስር ያሉ ምልክቶች",
   "provider.custom.field.name.label": "የማሳያ ስም",
   "provider.custom.field.name.placeholder": "የእኔ AI አቅራቢ",
   "provider.custom.field.baseURL.label": "መሰረት URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API ቁልፍ",
   "provider.custom.field.apiKey.placeholder": "API ቁልፍ",
-  "provider.custom.field.apiKey.description": "አማራጭ. በራስጌዎች በኩል ማተምን የሚያስተዳድሩ ከሆነ ባዶ ይተዉት።",
+  "provider.custom.field.apiKey.description":
+    "አማራጭ. በራስጌዎች በኩል ማተምን የሚያስተዳድሩ ከሆነ ባዶ ይተዉት።",
   "provider.custom.models.label": "ሞዴሎች",
   "provider.custom.models.id.label": "መታወቂያ",
   "provider.custom.models.id.placeholder": "model-id",
@@ -276,7 +292,8 @@ export const dict = {
   "provider.custom.headers.remove": "ራስጌ አስወግድ",
   "provider.custom.headers.add": "ራስጌ አክል",
   "provider.custom.error.providerID.required": "የአቅራቢ መታወቂያ ያስፈልጋል",
-  "provider.custom.error.providerID.format": "ትንሽ ሆሄያትን፣ ቁጥሮችን፣ ሰረዞችን ወይም የስር ምልክቶችን ተጠቀም",
+  "provider.custom.error.providerID.format":
+    "ትንሽ ሆሄያትን፣ ቁጥሮችን፣ ሰረዞችን ወይም የስር ምልክቶችን ተጠቀም",
   "provider.custom.error.providerID.exists": "ያ የአቅራቢ መታወቂያ አስቀድሞ አለ",
   "provider.custom.error.name.required": "የማሳያ ስም ያስፈልጋል",
   "provider.custom.error.baseURL.required": "መሠረት URL ያስፈልጋል",
@@ -284,7 +301,8 @@ export const dict = {
   "provider.custom.error.required": "የሚያስፈልግ",
   "provider.custom.error.duplicate": "የተባዛ",
   "provider.disconnect.toast.disconnected.title": "{{provider}} ተቋርጧል",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} ሞዴሎች ከአሁን በኋላ አይገኙም።",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} ሞዴሎች ከአሁን በኋላ አይገኙም።",
   "model.tag.free": "ነጻ",
   "model.tag.latest": "የቅርብ",
   "model.provider.anthropic": "Anthropic",
@@ -378,10 +396,12 @@ export const dict = {
   "prompt.action.send": "ላክ",
   "prompt.action.stop": "አቁም",
   "prompt.toast.pasteUnsupported.title": "የማይደገፍ ዓባሪ",
-  "prompt.toast.pasteUnsupported.description": "ምስሎች፣ ፒዲኤፎች ወይም የጽሑፍ ፋይሎች ብቻ እዚህ ጋር ሊጣመሩ ይችላሉ።",
+  "prompt.toast.pasteUnsupported.description":
+    "ምስሎች፣ ፒዲኤፎች ወይም የጽሑፍ ፋይሎች ብቻ እዚህ ጋር ሊጣመሩ ይችላሉ።",
   "prompt.toast.attachmentDuplicate.title": "ይህ ፋይል አስቀድሞ ተሰቅሏል",
   "prompt.toast.modelAgentRequired.title": "ወኪል እና ሞዴል ይምረጡ",
-  "prompt.toast.modelAgentRequired.description": "ፕሮምፕት ከመላክዎ በፊት ወኪል እና ሞዴል ይምረጡ።",
+  "prompt.toast.modelAgentRequired.description":
+    "ፕሮምፕት ከመላክዎ በፊት ወኪል እና ሞዴል ይምረጡ።",
   "prompt.toast.worktreeCreateFailed.title": "Git worktree መፍጠር አልተሳካም",
   "prompt.toast.sessionCreateFailed.title": "ክፍለ ጊዜ መፍጠር አልተሳካም",
   "prompt.toast.shellSendFailed.title": "የሼል ትዕዛዝ መላክ አልተሳካም",
@@ -410,7 +430,8 @@ export const dict = {
   "app.server.retrying": "በራስ ሰር እንደገና በመሞከር ላይ...",
   "app.server.otherServers": "ሌሎች አገልጋዮች",
   "dialog.server.title": "አገልጋዮች",
-  "dialog.server.description": "ይህ መተግበሪያ ከየትኛው OpenCode አገልጋይ ጋር እንደሚገናኝ ይቀይሩ።",
+  "dialog.server.description":
+    "ይህ መተግበሪያ ከየትኛው OpenCode አገልጋይ ጋር እንደሚገናኝ ይቀይሩ።",
   "dialog.server.search.placeholder": "የፍለጋ አገልጋዮች",
   "dialog.server.empty": "ገና ምንም አገልጋይ የለም",
   "dialog.server.add.title": "አገልጋይ አክል",
@@ -427,7 +448,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "የይለፍ ቃል",
   "dialog.server.edit.title": "አገልጋይ አርትዕ",
   "dialog.server.default.title": "ነባሪ አገልጋይ",
-  "dialog.server.default.description": "አካባቢያዊ አገልጋይን ከመጀመር ይልቅ ከዚህ አገልጋይ ጋር ይገናኙ። እንደገና መጀመር ያስፈልገዋል።",
+  "dialog.server.default.description":
+    "አካባቢያዊ አገልጋይን ከመጀመር ይልቅ ከዚህ አገልጋይ ጋር ይገናኙ። እንደገና መጀመር ያስፈልገዋል።",
   "dialog.server.default.none": "ምንም አገልጋይ አልተመረጠም",
   "dialog.server.default.set": "የአሁኑን አገልጋይ እንደ ነባሪ አዘጋጅ",
   "dialog.server.default.clear": "ግልጽ",
@@ -482,11 +504,14 @@ export const dict = {
   "wsl.onboarding.needAnotherDistro": "ሌላ አስተላላፊ ይፈልጋሉ?",
   "wsl.onboarding.needAnotherDistroHint": "Linux ስርጭት ከWSL ካታሎግ ጫን",
   "wsl.onboarding.wslNotInstalled.title": "WSLአልተጫነም",
-  "wsl.onboarding.wslNotInstalled.description": "WSL (Windowsንዑስ ስርዓት ለLinux) OpenCode WSL አገልጋይ ከመጨመራቸው በፊት ያስፈልጋል",
+  "wsl.onboarding.wslNotInstalled.description":
+    "WSL (Windowsንዑስ ስርዓት ለLinux) OpenCode WSL አገልጋይ ከመጨመራቸው በፊት ያስፈልጋል",
   "wsl.onboarding.wslUnavailable.title": "WSL አይገኝም",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode በዚህ ማሽን ላይ WSLን ማረጋገጥ አልቻለም።",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode በዚህ ማሽን ላይ WSLን ማረጋገጥ አልቻለም።",
   "wsl.onboarding.installWsl": "ጫን WSL",
-  "wsl.onboarding.windowsRestartRequired": "WSLን መጫኑን ለመጨረስ Windows እንደገና ያስጀምሩ እና ከዚያ እንደገና ይክፈቱ OpenCode።",
+  "wsl.onboarding.windowsRestartRequired":
+    "WSLን መጫኑን ለመጨረስ Windows እንደገና ያስጀምሩ እና ከዚያ እንደገና ይክፈቱ OpenCode።",
   "wsl.onboarding.next": "ቀጣይ",
   "wsl.onboarding.refresh": "አድስ",
   "wsl.onboarding.allDistrosAdded": "ሁሉም የተጫኑ ዳይስትሮዎች ቀድሞ ተጨምረዋል።",
@@ -513,8 +538,10 @@ export const dict = {
   "help.tabs.introduction": "OpenCode ዴስክቶፕ አሁን በትሮች ዙሪያ ነው የተሰራው።",
   "help.tabs.sessions":
     "አዲስ ክፍለ ጊዜ በትሩ ውስጥ ጀምር፣ወይም ከማንኛቸውም ፕሮጄክቶችህ ነባር ክፍለ ጊዜ ክፈት። አዲስ ነገር ሲጀምሩ አዲስ ትር ይክፈቱ፣ እና ሲጨርሱ ይዝጉት።",
-  "help.tabs.organize": "ትንሽ ትሮችን መክፈት ንቁ ክፍለ ጊዜዎችን ማደራጀት ቀላል ያደርገዋል። ትሮችን በአካባቢያቸው ለማቆየት ካሰቡ የማይረሳ ነገርን እንደገና ይሰይሙ።",
-  "help.tabs.home": "ሁሉንም ክፍለ ጊዜዎችዎን እና ፕሮጀክቶችዎን በአዲሱ የመነሻ ማያ ገጽ ላይ ያገኛሉ። ክፍለ ጊዜ መምረጥ በትር ውስጥ ይከፍታል።",
+  "help.tabs.organize":
+    "ትንሽ ትሮችን መክፈት ንቁ ክፍለ ጊዜዎችን ማደራጀት ቀላል ያደርገዋል። ትሮችን በአካባቢያቸው ለማቆየት ካሰቡ የማይረሳ ነገርን እንደገና ይሰይሙ።",
+  "help.tabs.home":
+    "ሁሉንም ክፍለ ጊዜዎችዎን እና ፕሮጀክቶችዎን በአዲሱ የመነሻ ማያ ገጽ ላይ ያገኛሉ። ክፍለ ጊዜ መምረጥ በትር ውስጥ ይከፍታል።",
   "help.tabs.persistence": "መተግበሪያውን እንደገና ሲከፍቱት ትሮችዎ አሁንም ክፍት ናቸው።",
   "help.tabs.worktrees":
     "አዲሱ ንድፍ እስካሁን Git Worktreesን አይደግፍም፣ በቅርቡ ይመጣል። ስለዚህ የቀደመውን አቀማመጥ በመጠቀም መቀጠል ከፈለግክ በቅንብሮች ውስጥ በአቀማመጦች መካከል መቀያየር ትችላለህ። አዲሱ አቀማመጥ በጥቂት ሳምንታት ውስጥ ዘላቂ እንደሚሆን ብቻ ያስታውሱ።",
@@ -528,14 +555,16 @@ export const dict = {
   "dialog.project.edit.color": "ቀለም",
   "dialog.project.edit.color.select": "{{color}} ቀለም ይምረጡ",
   "dialog.project.edit.worktree.startup": "የworkspace ማስጀመሪያ ስክሪፕት",
-  "dialog.project.edit.worktree.startup.description": "አዲስ workspace (Git worktree) ከፈጠረ በኋላ ይሰራል",
+  "dialog.project.edit.worktree.startup.description":
+    "አዲስ workspace (Git worktree) ከፈጠረ በኋላ ይሰራል",
   "dialog.project.edit.worktree.startup.placeholder": "ለምሳሌ፡. ጥቅል",
   "dialog.releaseNotes.action.getStarted": "ጀምር",
   "dialog.releaseNotes.action.next": "ቀጣይ",
   "dialog.releaseNotes.action.hideFuture": "እነዚህን ወደፊት አታሳይ",
   "dialog.releaseNotes.media.alt": "የልቀት ቅድመ እይታ",
   "context.breakdown.title": "የአውድ ዝርዝር መግለጫ",
-  "context.breakdown.note": 'የግቤት ቶከኖች ግምታዊ ብልሽት። "ሌላ" የመሳሪያ ትርጓሜዎችን እና ከላይ ያለውን ያካትታል።',
+  "context.breakdown.note":
+    'የግቤት ቶከኖች ግምታዊ ብልሽት። "ሌላ" የመሳሪያ ትርጓሜዎችን እና ከላይ ያለውን ያካትታል።',
   "context.breakdown.system": "ስርዓት",
   "context.breakdown.user": "ተጠቃሚ",
   "context.breakdown.assistant": "ረዳት",
@@ -588,9 +617,11 @@ export const dict = {
   "toast.theme.title": "ገጽታ ተቀይሯል",
   "toast.scheme.title": "የቀለም ንድፍ",
   "toast.workspace.enabled.title": "Workspace-ዎች ነቅተዋል",
-  "toast.workspace.enabled.description": "በርካታ Git worktree-ዎች በጎን አሞሌ ላይ አሁን ይታያሉ",
+  "toast.workspace.enabled.description":
+    "በርካታ Git worktree-ዎች በጎን አሞሌ ላይ አሁን ይታያሉ",
   "toast.workspace.disabled.title": "Workspace-ዎች ተሰናክለዋል",
-  "toast.workspace.disabled.description": "በጎን አሞሌው ላይ ዋናው Git worktree ብቻ ነው የሚታየው",
+  "toast.workspace.disabled.description":
+    "በጎን አሞሌው ላይ ዋናው Git worktree ብቻ ነው የሚታየው",
   "toast.permissions.autoaccept.on.title": "በራስ-ተቀባይ ፍቃዶች",
   "toast.permissions.autoaccept.on.description": "የፈቃድ ጥያቄዎች በራስ-ሰር ይጸድቃሉ",
   "toast.permissions.autoaccept.off.title": "በራስ-መቀበል ፍቃዶችን አቁሟል",
@@ -600,7 +631,8 @@ export const dict = {
   "toast.file.loadFailed.title": "ፋይሉን መጫን አልተቻለም",
   "toast.file.listFailed.title": "ፋይሎችን መዘርዘር አልተሳካም",
   "toast.context.noLineSelection.title": "የመስመር ምርጫ የለም",
-  "toast.context.noLineSelection.description": "በመጀመሪያ በፋይል ትር ውስጥ የመስመር ክልልን ይምረጡ።",
+  "toast.context.noLineSelection.description":
+    "በመጀመሪያ በፋይል ትር ውስጥ የመስመር ክልልን ይምረጡ።",
   "toast.session.share.copyFailed.title": "URLን ወደ ቅንጥብ ሰሌዳ መቅዳት አልተሳካም",
   "toast.session.share.success.title": "ክፍል የተጋራ",
   "toast.session.share.success.description": "አጋራ URL ወደ ቅንጥብ ሰሌዳ ተቀድቷል!",
@@ -613,15 +645,18 @@ export const dict = {
   "toast.session.export.success.title": "ክፍለ ጊዜ ወደ ውጭ የተላከ",
   "toast.session.export.success.description": "የተቀመጠው ክፍለ ጊዜ ወደ {{filename}}",
   "toast.session.export.failed.title": "ክፍለ-ጊዜን ወደ ውጭ መላክ አልተሳካም",
-  "toast.session.export.failed.description": "ክፍለ-ጊዜውን ወደ ውጭ በመላክ ላይ ስህተት ተፈጥሯል",
+  "toast.session.export.failed.description":
+    "ክፍለ-ጊዜውን ወደ ውጭ በመላክ ላይ ስህተት ተፈጥሯል",
   "toast.session.listFailed.title": "ለ{{project}}] ክፍለ-ጊዜዎችን መጫን አልተሳካም",
   "toast.project.reloadFailed.title": "{{project}}ን እንደገና መጫን አልተሳካም",
   "toast.update.title": "ዝማኔ አለ",
   "toast.update.description": "አዲሱ የOpenCode ({{version}}) ስሪት አሁን ለመጫን አለ።",
   "toast.update.action.installRestart": "ጫን እና እንደገና አስጀምር",
   "toast.update.action.notYet": "ገና",
-  "disk.accessGuidance.macos": "በSystem Settings ውስጥ ለDiskLizard ሙሉ የዲስክ መዳረሻ ይስጡ፣ ከዚያ እንደገና ይቃኙ።",
-  "disk.accessGuidance.windows": "ወደዚህ ዲስክ መዳረሻ ያለው መለያ ይጠቀሙ፣ ወይም መለያዎ ሊያነበብው የሚችል አቃፊ ይቃኙ።",
+  "disk.accessGuidance.macos":
+    "በSystem Settings ውስጥ ለDiskLizard ሙሉ የዲስክ መዳረሻ ይስጡ፣ ከዚያ እንደገና ይቃኙ።",
+  "disk.accessGuidance.windows":
+    "ወደዚህ ዲስክ መዳረሻ ያለው መለያ ይጠቀሙ፣ ወይም መለያዎ ሊያነበብው የሚችል አቃፊ ይቃኙ።",
   "disk.accessGuidance.linux": "የአቃፊ እና የmount ፈቃዶችን ይመርምሩ፣ ከዚያ እንደገና ይቃኙ።",
   "disk.accessGuidance.default": "ወደነዚህ አቃፊዎች ያለውን መዳረሻ ይመርምሩ፣ ከዚያ እንደገና ይቃኙ።",
   "disk.accessGuidance.rescan": "መዳረሻን ካስተካከሉ በኋላ በላዩ ላይ ያለውን እንደገና መቃኘት ይጠቀሙ።",
@@ -630,7 +665,8 @@ export const dict = {
   "toast.update.installFailed.retry": "እንደገና ሞክር",
   "error.page.title": "የሆነ ችግር ተፈጥሯል",
   "error.page.description": "መተግበሪያውን በመጫን ላይ ሳለ ስህተት ተፈጥሯል።",
-  "error.page.description.localServerStartup": "የአገር ውስጥ አገልጋይ ሲጀመር ስህተት ተፈጥሯል።",
+  "error.page.description.localServerStartup":
+    "የአገር ውስጥ አገልጋይ ሲጀመር ስህተት ተፈጥሯል።",
   "error.page.details.label": "የስህተት ዝርዝሮች",
   "error.page.action.restart": "ዳግም አስጀምር",
   "error.page.action.report": "ስህተት ሪፖርት አድርግ",
@@ -643,13 +679,17 @@ export const dict = {
   "error.page.report.prefix": "እባክዎ ይህንን ስህተት ለOpenCode ቡድን ያሳውቁ",
   "error.page.report.discord": "በDiscord",
   "error.page.version": "ስሪት፡ {{version}}",
-  "error.dev.rootNotFound": "ሥርወ አካል አልተገኘም። ወደ የእርስዎ index.html ማከልን ረስተዋል? ወይም የመታወቂያ ባህሪው የተሳሳተ ፊደል ተጽፎ ሊሆን ይችላል?",
-  "error.serverSync.connectFailed": "ከአገልጋይ ጋር መገናኘት አልተቻለም። `{{url}}` ላይ የሚሰራ አገልጋይ አለ?",
+  "error.dev.rootNotFound":
+    "ሥርወ አካል አልተገኘም። ወደ የእርስዎ index.html ማከልን ረስተዋል? ወይም የመታወቂያ ባህሪው የተሳሳተ ፊደል ተጽፎ ሊሆን ይችላል?",
+  "error.serverSync.connectFailed":
+    "ከአገልጋይ ጋር መገናኘት አልተቻለም። `{{url}}` ላይ የሚሰራ አገልጋይ አለ?",
   "error.serverSDK.noServerAvailable": "ምንም አገልጋይ የለም",
   "error.serverSDK.serverNotAvailable": "አገልጋይ አይገኝም",
   "error.childStore.persistedCacheCreateFailed": "ቋሚ መሸጎጫ መፍጠር አልተሳካም",
-  "error.childStore.persistedProjectMetadataCreateFailed": "የቀጠለ የፕሮጀክት ዲበ ውሂብ መፍጠር አልተሳካም",
-  "error.childStore.persistedProjectIconCreateFailed": "የቀጠለ የፕሮጀክት አዶ መፍጠር አልተሳካም",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "የቀጠለ የፕሮጀክት ዲበ ውሂብ መፍጠር አልተሳካም",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "የቀጠለ የፕሮጀክት አዶ መፍጠር አልተሳካም",
   "error.childStore.storeCreateFailed": "መደብር መፍጠር አልተሳካም",
   "directory.error.invalidUrl": "ልክ ያልሆነ ማውጫ በURL ውስጥ።",
   "error.chain.unknown": "ያልታወቀ ስህተት",
@@ -662,20 +702,28 @@ export const dict = {
   "error.chain.didYouMean": "{{suggestions}}] ማለትዎ ነው",
   "error.chain.modelNotFound": "ሞዴል አልተገኘም፦ {{provider}}/{{model}}",
   "error.chain.checkConfig": "የእርስዎን ውቅር (opencode.json) አቅራቢ/የሞዴል ስሞችን ያረጋግጡ",
-  "error.chain.mcpFailed": 'MCP አገልጋይ "{{name}}" አልተሳካም። ማስታወሻ፣ OpenCode እስካሁን MCP ማረጋገጫን አይደግፍም።',
-  "error.chain.providerAuthFailed": "የአቅራቢውን ማረጋገጥ አልተሳካም ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'አቅራቢውን "{{provider}}" ማስጀመር አልተሳካም። ምስክርነቶችን እና ውቅረትን ያረጋግጡ።',
+  "error.chain.mcpFailed":
+    'MCP አገልጋይ "{{name}}" አልተሳካም። ማስታወሻ፣ OpenCode እስካሁን MCP ማረጋገጫን አይደግፍም።',
+  "error.chain.providerAuthFailed":
+    "የአቅራቢውን ማረጋገጥ አልተሳካም ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'አቅራቢውን "{{provider}}" ማስጀመር አልተሳካም። ምስክርነቶችን እና ውቅረትን ያረጋግጡ።',
   "error.chain.configJsonInvalid": "ማዋቀር በ{{path}} ላይ የሚሰራ አይደለም JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "ማዋቀር በ{{path}} ላይ የሚሰራ አይደለም JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "ማዋቀር በ{{path}} ላይ የሚሰራ አይደለም JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'ማውጫ "{{dir}}" በ{{path}} ውስጥ የሚሰራ አይደለም። ማውጫውን ወደ «{{suggestion}}» እንደገና ይሰይሙት ወይም ያስወግዱት። ይህ የተለመደ የትየባ ነው።',
-  "error.chain.configFrontmatterError": "የፊት ጉዳይን በ{{path}} ውስጥ መተንተን አልተሳካም፦\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "የፊት ጉዳይን በ{{path}} ውስጥ መተንተን አልተሳካም፦\n{{message}}",
   "error.chain.configInvalid": "ማዋቀር ፋይል በ{{path}} ልክ ያልሆነ ነው",
-  "error.chain.configInvalidWithMessage": "የማዋቀር ፋይል በ{{path}} ልክ ያልሆነ ነው፡ {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "የማዋቀር ፋይል በ{{path}} ልክ ያልሆነ ነው፡ {{message}}",
   "notification.permission.title": "ፈቃድ ያስፈልጋል",
-  "notification.permission.description": "{{sessionTitle}} በ{{projectName}} ውስጥ ፈቃድ ያስፈልገዋል",
+  "notification.permission.description":
+    "{{sessionTitle}} በ{{projectName}} ውስጥ ፈቃድ ያስፈልገዋል",
   "notification.question.title": "ጥያቄ",
-  "notification.question.description": "{{sessionTitle}} በ{{projectName}} ውስጥ ጥያቄ አለው",
+  "notification.question.description":
+    "{{sessionTitle}} በ{{projectName}} ውስጥ ጥያቄ አለው",
   "notification.action.goToSession": "ወደ ክፍለ-ጊዜ ሂድ",
   "notification.session.responseReady.title": "ምላሽ ዝግጁ",
   "notification.session.error.title": "የክፍለ ጊዜ ስህተት",
@@ -698,14 +746,16 @@ export const dict = {
   "home.sessions.group.today": "ዛሬ",
   "home.sessions.group.yesterday": "ትላንት",
   "home.sessions.group.older": "የቆየ",
-  "home.providerTip": "Claude፣ GPT፣ Gemini፣ ወዘተ] ጨምሮ ሌሎች ሞዴሎችን ለመጠቀም ከ75+ አቅራቢዎች ጋር ይገናኙ",
+  "home.providerTip":
+    "Claude፣ GPT፣ Gemini፣ ወዘተ] ጨምሮ ሌሎች ሞዴሎችን ለመጠቀም ከ75+ አቅራቢዎች ጋር ይገናኙ",
   "session.tab.session": "ክፍለ ጊዜ",
   "session.tab.review": "ግምገማ",
   "session.tab.context": "አውድ",
   "session.tab.unknown": "ያልታወቀ ክፍለ ጊዜ",
   "session.panel.reviewAndFiles": "ግምገማ እና ፋይሎች",
   "session.error.notFound": "ይህ ክፍለ ጊዜ ሊገኝ አይችልም",
-  "session.error.notFound.description": "ይህ ትር የሚያመለክተው በዚህ አገልጋይ ላይ ወደሌለው ክፍለ ጊዜ ነው።",
+  "session.error.notFound.description":
+    "ይህ ትር የሚያመለክተው በዚህ አገልጋይ ላይ ወደሌለው ክፍለ ጊዜ ነው።",
   "session.error.notFound.closeTab": "ትርን ዝጋ",
   "session.error.serverConnection": "ከዚህ አገልጋይ ጋር መገናኘት አልተቻለም",
   "session.review.filesChanged": "የተቀየሩ ፋይሎች {{count}}",
@@ -715,10 +765,12 @@ export const dict = {
   "session.review.empty": "በዚህ ክፍለ ጊዜ ምንም ለውጦች የሉም",
   "session.review.noVcs": "ምንም Git የስሪት ቁጥጥር ስርዓት አልተገኘም፣ ለውጦች አይታዩም",
   "session.review.noVcs.createGit.title": "Git ማከማቻ ፍጠር",
-  "session.review.noVcs.createGit.description": "በዚህ ፕሮጀክት ላይ ለውጦችን ይከታተሉ፣ ይገምግሙ እና ይቀልብሱ",
+  "session.review.noVcs.createGit.description":
+    "በዚህ ፕሮጀክት ላይ ለውጦችን ይከታተሉ፣ ይገምግሙ እና ይቀልብሱ",
   "session.review.noVcs.createGit.actionLoading": "Git ማከማቻ በመፍጠር ላይ...",
   "session.review.noVcs.createGit.action": "Git ማከማቻ ፍጠር",
-  "session.review.noSnapshot": "የቅጽበታዊ ገጽ እይታን መከታተል በውቅረት ውስጥ ተሰናክሏል፣ስለዚህ የክፍለ-ጊዜ ለውጦች አይገኙም",
+  "session.review.noSnapshot":
+    "የቅጽበታዊ ገጽ እይታን መከታተል በውቅረት ውስጥ ተሰናክሏል፣ስለዚህ የክፍለ-ጊዜ ለውጦች አይገኙም",
   "session.review.noChanges": "ምንም ለውጦች የሉም",
   "session.review.noUncommittedChanges": "ገና ምንም ያልተደረጉ ለውጦች የሉም",
   "session.review.noBranchChanges": "ገና ምንም ቅርንጫፍ ምንም ለውጥ የለም",
@@ -799,8 +851,10 @@ export const dict = {
   "status.popover.tab.plugins": "ፕለጊኖች",
   "status.popover.action.manageServers": "አገልጋዮችን አስተዳድር",
   "session.share.popover.title": "በድር ላይ አትም",
-  "session.share.popover.description.shared": "ይህ ክፍለ ጊዜ በድር ላይ ይፋዊ ነው። አገናኙ ላለው ለማንኛውም ሰው ተደራሽ ነው።",
-  "session.share.popover.description.unshared": "ክፍለጊዜውን በይፋ በድሩ ላይ አጋራ። አገናኙ ላለው ለማንኛውም ሰው ተደራሽ ይሆናል።",
+  "session.share.popover.description.shared":
+    "ይህ ክፍለ ጊዜ በድር ላይ ይፋዊ ነው። አገናኙ ላለው ለማንኛውም ሰው ተደራሽ ነው።",
+  "session.share.popover.description.unshared":
+    "ክፍለጊዜውን በይፋ በድሩ ላይ አጋራ። አገናኙ ላለው ለማንኛውም ሰው ተደራሽ ይሆናል።",
   "session.share.action.share": "አጋራ",
   "session.share.action.publish": "አትም",
   "session.share.action.publishing": "በህትመት ላይ...",
@@ -817,9 +871,12 @@ export const dict = {
   "terminal.title.numbered": "ተርሚናል {{number}}",
   "terminal.close": "ተርሚናል ዝጋ",
   "terminal.connectionLost.title": "ግንኙነቱ ተቋርጧል",
-  "terminal.connectionLost.abnormalClose": "WebSocket ባልተለመደ ሁኔታ ተዘግቷል፡ {{code}}",
-  "terminal.connectionLost.description": "የተርሚናል ግንኙነቱ ተቋርጧል። ይህ አገልጋዩ እንደገና ሲጀምር ሊከሰት ይችላል።",
-  "terminal.connectTicket.csrfError": "PTY ትኬት ማገናኘት በመነሻ ወይም በCSRF ቼኮች ውድቅ ተደርጓል። አገልጋዩን ይመልከቱ CORS ውቅር",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket ባልተለመደ ሁኔታ ተዘግቷል፡ {{code}}",
+  "terminal.connectionLost.description":
+    "የተርሚናል ግንኙነቱ ተቋርጧል። ይህ አገልጋዩ እንደገና ሲጀምር ሊከሰት ይችላል።",
+  "terminal.connectTicket.csrfError":
+    "PTY ትኬት ማገናኘት በመነሻ ወይም በCSRF ቼኮች ውድቅ ተደርጓል። አገልጋዩን ይመልከቱ CORS ውቅር",
   "terminal.connectTicket.statusError": "PTY የግንኙነት ቲኬት ከ{{status}}] ጋር አልተሳካም",
   "titlebar.update": "አዘምን",
   "titlebar.updateVersion": "አዘምን {{version}}",
@@ -864,8 +921,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Workspace-ዎችን አንቃ",
   "sidebar.workspaces.disable": "Workspace-ዎችን አሰናክል",
   "sidebar.gettingStarted.title": "መጀመር",
-  "sidebar.gettingStarted.line1": "OpenCode ነፃ ሞዴሎችን ያካትታል ስለዚህ ወዲያውኑ መጀመር ይችላሉ።",
-  "sidebar.gettingStarted.line2": "ሞዴሎችን ለመጠቀም ማንኛውንም አቅራቢ ያገናኙ፣ Inc. Claude፣ GPT፣ Gemini ወዘተ.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ነፃ ሞዴሎችን ያካትታል ስለዚህ ወዲያውኑ መጀመር ይችላሉ።",
+  "sidebar.gettingStarted.line2":
+    "ሞዴሎችን ለመጠቀም ማንኛውንም አቅራቢ ያገናኙ፣ Inc. Claude፣ GPT፣ Gemini ወዘተ.",
   "sidebar.project.recentSessions": "የቅርብ ጊዜ ክፍለ ጊዜዎች",
   "sidebar.project.viewAllSessions": "ሁሉንም ክፍለ ጊዜዎች ይመልከቱ",
   "sidebar.project.clearNotifications": "ማሳወቂያዎችን አጽዳ",
@@ -874,7 +933,8 @@ export const dict = {
   "debugBar.ariaLabel": "የልማት አፈጻጸም ምርመራዎች",
   "debugBar.na": "n/a",
   "debugBar.nav.label": "NAV",
-  "debugBar.nav.tip": "የክፍለ ጊዜ ገጽን የነካው የመጨረሻው የተጠናቀቀ የመንገድ ሽግግር፣ ከራውተር ጅምር እስከ ከተረጋጋ በኋላ የመጀመሪያው ስዕል ድረስ የሚለካ።",
+  "debugBar.nav.tip":
+    "የክፍለ ጊዜ ገጽን የነካው የመጨረሻው የተጠናቀቀ የመንገድ ሽግግር፣ ከራውተር ጅምር እስከ ከተረጋጋ በኋላ የመጀመሪያው ስዕል ድረስ የሚለካ።",
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "ባለፉት 5 ሰከንዶች ውስጥ የሚሽከረከሩ ክፈፎች በሰከንድ።",
   "debugBar.frame.label": "ፍሬም",
@@ -882,11 +942,13 @@ export const dict = {
   "debugBar.jank.label": "መንቀጥቀጥ",
   "debugBar.jank.tip": "ባለፉት 5 ሰከንዶች ውስጥ ከ32ሚሴ በላይ ክፈፎች።",
   "debugBar.long.label": "ረጅም",
-  "debugBar.long.tip": "የታገደው ጊዜ እና የረዥም ጊዜ ብዛት በመጨረሻዎቹ 5 ሰከንዶች ውስጥ። ከፍተኛው ተግባር፡ {{max}}",
+  "debugBar.long.tip":
+    "የታገደው ጊዜ እና የረዥም ጊዜ ብዛት በመጨረሻዎቹ 5 ሰከንዶች ውስጥ። ከፍተኛው ተግባር፡ {{max}}",
   "debugBar.delay.label": "መዘግየት",
   "debugBar.delay.tip": "በመጨረሻዎቹ 5 ሰከንዶች ውስጥ በጣም መጥፎው የታየ የግቤት መዘግየት።",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "በመጨረሻዎቹ 5 ሰከንዶች ውስጥ ግምታዊ የግንኙነቶች ቆይታ። ይህ INP የሚመስል ነው፣ ይፋዊው የድር ቪታሎች INP አይደለም።",
+  "debugBar.inp.tip":
+    "በመጨረሻዎቹ 5 ሰከንዶች ውስጥ ግምታዊ የግንኙነቶች ቆይታ። ይህ INP የሚመስል ነው፣ ይፋዊው የድር ቪታሎች INP አይደለም።",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "ለአሁኑ መተግበሪያ የህይወት ዘመን ድምር አቀማመጥ ለውጥ።",
   "debugBar.mem.label": "MEM",
@@ -907,7 +969,8 @@ export const dict = {
   "settings.tab.shortcuts": "አቋራጮች",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ውህደት",
-  "settings.desktop.wsl.description": "የOpenCode አገልጋዩን በWSL ውስጥ በWindows ላይ ያሂዱ።",
+  "settings.desktop.wsl.description":
+    "የOpenCode አገልጋዩን በWSL ውስጥ በWindows ላይ ያሂዱ።",
   "settings.general.section.appearance": "መልክ",
   "settings.general.section.advanced": "የላቀ",
   "settings.general.section.notifications": "የስርዓት ማሳወቂያዎች",
@@ -918,60 +981,83 @@ export const dict = {
   "settings.general.row.language.title": "ቋንቋ",
   "settings.general.row.language.description": "የማሳያ ቋንቋውን ለOpenCode",
   "settings.general.row.shell.title": "ተርሚናል ሼል",
-  "settings.general.row.shell.description": "ሼል በተርሚናል እና ወኪል መሳሪያዎች ጥቅም ላይ የዋለ",
+  "settings.general.row.shell.description":
+    "ሼል በተርሚናል እና ወኪል መሳሪያዎች ጥቅም ላይ የዋለ",
   "settings.general.row.shell.autoDefault": "ራስ-ሰር (ነባሪ)",
   "settings.general.row.shell.terminalOnly": "ተርሚናል ብቻ",
   "settings.general.row.appearance.title": "መልክ",
-  "settings.general.row.appearance.description": "OpenCodeበመሣሪያዎ ላይ እንዴት እንደሚታይ ብጁ ያድርጉ",
+  "settings.general.row.appearance.description":
+    "OpenCodeበመሣሪያዎ ላይ እንዴት እንደሚታይ ብጁ ያድርጉ",
   "settings.general.row.colorScheme.title": "የቀለም ንድፍ",
-  "settings.general.row.colorScheme.description": "OpenCode ስርዓቱን፣ ብርሃንን ወይም ጨለማውን ገጽታ የሚከተል እንደሆነ ምረጥ",
+  "settings.general.row.colorScheme.description":
+    "OpenCode ስርዓቱን፣ ብርሃንን ወይም ጨለማውን ገጽታ የሚከተል እንደሆነ ምረጥ",
   "settings.general.row.theme.title": "ገጽታ",
   "settings.general.row.theme.description": "OpenCode ገጽታ እንዴት እንደሆነ አብጅ።",
   "settings.general.row.font.title": "የኮድ ቅርጸ ቁምፊ",
-  "settings.general.row.font.description": "በኮድ ብሎኮች ውስጥ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
+  "settings.general.row.font.description":
+    "በኮድ ብሎኮች ውስጥ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
   "settings.general.row.terminalFont.title": "ተርሚናል ፊደል",
-  "settings.general.row.terminalFont.description": "በተርሚናል ውስጥ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
+  "settings.general.row.terminalFont.description":
+    "በተርሚናል ውስጥ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
   "settings.general.row.uiFont.title": "የUI ቅርጸ ቁምፊ",
-  "settings.general.row.uiFont.description": "በመገናኛው ሁሉ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
+  "settings.general.row.uiFont.description":
+    "በመገናኛው ሁሉ ጥቅም ላይ የዋለውን ቅርጸ-ቁምፊ አብጅ",
   "settings.general.row.followup.title": "መከታተያ ባህሪ",
-  "settings.general.row.followup.description": "ክትትል የሚጠይቅ ከሆነ ወዲያውኑ ይመራ እንደሆነ ይምረጡ ወይም በሰልፍ ይጠብቁ",
+  "settings.general.row.followup.description":
+    "ክትትል የሚጠይቅ ከሆነ ወዲያውኑ ይመራ እንደሆነ ይምረጡ ወይም በሰልፍ ይጠብቁ",
   "settings.general.row.followup.option.queue": "ወረፋ",
   "settings.general.row.followup.option.steer": "መሪ",
   "settings.general.row.showFileTree.title": "ፋይል ዛፍ",
   "settings.general.row.showFileTree.description": "የፋይል ዛፍ ፓነልን በክፍሎች ውስጥ አሳይ",
   "settings.general.row.showNavigation.title": "የአሰሳ መቆጣጠሪያዎች",
-  "settings.general.row.showNavigation.description": "በዴስክቶፕ የርዕስ አሞሌ ላይ የኋላ እና ወደፊት ቁልፎችን አሳይ",
+  "settings.general.row.showNavigation.description":
+    "በዴስክቶፕ የርዕስ አሞሌ ላይ የኋላ እና ወደፊት ቁልፎችን አሳይ",
   "settings.general.row.showSearch.title": "የትእዛዝ ቤተ-ስዕል",
-  "settings.general.row.showSearch.description": "በርዕስ አሞሌው ላይ የፍለጋ እና የትእዛዝ ቤተ-ስዕል ቁልፍ አሳይ",
+  "settings.general.row.showSearch.description":
+    "በርዕስ አሞሌው ላይ የፍለጋ እና የትእዛዝ ቤተ-ስዕል ቁልፍ አሳይ",
   "settings.general.row.showTerminal.title": "ተርሚናል",
-  "settings.general.row.showTerminal.description": "የተርሚናል አዝራሩን በዴስክቶፕ ርዕስ አሞሌ ላይ አሳይ",
+  "settings.general.row.showTerminal.description":
+    "የተርሚናል አዝራሩን በዴስክቶፕ ርዕስ አሞሌ ላይ አሳይ",
   "settings.general.row.showStatus.title": "የአገልጋይ ሁኔታ",
-  "settings.general.row.showStatus.description": "የአገልጋዩን ሁኔታ ቁልፍ በርዕስ አሞሌው ላይ አሳይ",
+  "settings.general.row.showStatus.description":
+    "የአገልጋዩን ሁኔታ ቁልፍ በርዕስ አሞሌው ላይ አሳይ",
   "settings.general.row.mobileTitlebarBottom.title": "የታችኛው ዳሰሳ",
-  "settings.general.row.mobileTitlebarBottom.description": "የርዕስ አሞሌውን እና የክፍለ ጊዜ ትሮችን በማያ ገጹ ግርጌ በሞባይል ላይ ያስቀምጡ",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "የርዕስ አሞሌውን እና የክፍለ ጊዜ ትሮችን በማያ ገጹ ግርጌ በሞባይል ላይ ያስቀምጡ",
   "settings.general.row.showCustomAgents.title": "ወኪሉን አሳይ",
-  "settings.general.row.showCustomAgents.description": "በአቀናባሪው ውስጥ ባሉ ወኪሎች መካከል ይቀያይሩ። ሲደበቅ፣ ለግንባታ ወኪል ነባሪዎች ይሆናሉ።",
+  "settings.general.row.showCustomAgents.description":
+    "በአቀናባሪው ውስጥ ባሉ ወኪሎች መካከል ይቀያይሩ። ሲደበቅ፣ ለግንባታ ወኪል ነባሪዎች ይሆናሉ።",
   "settings.general.row.reasoningSummaries.title": "የምክንያት ማጠቃለያዎችን አሳይ",
-  "settings.general.row.reasoningSummaries.description": "የሞዴል ማመዛዘኛ ማጠቃለያዎችን በጊዜ መስመር አሳይ",
+  "settings.general.row.reasoningSummaries.description":
+    "የሞዴል ማመዛዘኛ ማጠቃለያዎችን በጊዜ መስመር አሳይ",
   "settings.general.row.shellToolPartsExpanded.title": "የሼል መሣሪያ ክፍሎችን ዘርጋ",
-  "settings.general.row.shellToolPartsExpanded.description": "የሼል መሣሪያ ክፍሎችን በጊዜ መስመር በነባሪነት ያሳዩ",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "የሼል መሣሪያ ክፍሎችን በጊዜ መስመር በነባሪነት ያሳዩ",
   "settings.general.row.editToolPartsExpanded.title": "የመሳሪያ ክፍሎችን ዘርጋ",
-  "settings.general.row.editToolPartsExpanded.description": "በጊዜ መስመር በነባሪነት የተዘረጉትን የመሳሪያ ክፍሎችን አርትዕ፣ ጻፍ እና ጠጋኝ አሳይ",
+  "settings.general.row.editToolPartsExpanded.description":
+    "በጊዜ መስመር በነባሪነት የተዘረጉትን የመሳሪያ ክፍሎችን አርትዕ፣ ጻፍ እና ጠጋኝ አሳይ",
   "settings.general.row.newInterface.title": "አዲስ አቀማመጥ",
   "settings.general.row.newInterface.badge": "አዲስ",
-  "settings.general.row.newInterface.description": "አዲሱን ትሮች እና የቤት አቀማመጥ ይጠቀሙ። ለተወሰነ ጊዜ በአቀማመጦች መካከል ይቀያይሩ።",
+  "settings.general.row.newInterface.description":
+    "አዲሱን ትሮች እና የቤት አቀማመጥ ይጠቀሙ። ለተወሰነ ጊዜ በአቀማመጦች መካከል ይቀያይሩ።",
   "settings.general.row.newInterfaceNotice.title": "አሁን አዲስ አቀማመጥ እየተጠቀሙ ነው",
-  "settings.general.row.newInterfaceNotice.description": "የቀድሞው አቀማመጥ ከአሁን በኋላ አይገኝም",
+  "settings.general.row.newInterfaceNotice.description":
+    "የቀድሞው አቀማመጥ ከአሁን በኋላ አይገኝም",
   "settings.general.row.newInterfaceNotice.dismiss": "አሰናብት",
   "settings.general.row.pinchZoom.title": "ለማጉላት ቆንጥጦ",
-  "settings.general.row.pinchZoom.description": "ትራክፓድ መቆንጠጥ እና የCtrl-ማሸብለል ምልክቶችን እንዲያሳድጉ ፍቀድ",
+  "settings.general.row.pinchZoom.description":
+    "ትራክፓድ መቆንጠጥ እና የCtrl-ማሸብለል ምልክቶችን እንዲያሳድጉ ፍቀድ",
   "settings.general.row.wayland.title": "ቤተኛ Wayland",
-  "settings.general.row.wayland.description": "X11መመለስን በWayland አሰናክል። እንደገና መጀመር ያስፈልገዋል።",
-  "settings.general.row.wayland.tooltip": "በLinux ላይ በተደባለቀ የማደስ-ተመን ማሳያዎች፣ ቤተኛ Wayland የበለጠ የተረጋጋ ሊሆን ይችላል።",
+  "settings.general.row.wayland.description":
+    "X11መመለስን በWayland አሰናክል። እንደገና መጀመር ያስፈልገዋል።",
+  "settings.general.row.wayland.tooltip":
+    "በLinux ላይ በተደባለቀ የማደስ-ተመን ማሳያዎች፣ ቤተኛ Wayland የበለጠ የተረጋጋ ሊሆን ይችላል።",
   "settings.general.row.releaseNotes.title": "የልቀት ማስታወሻዎች",
-  "settings.general.row.releaseNotes.description": "ከዝማኔዎች በኋላ ምን አዲስ ብቅ-ባዮችን አሳይ",
+  "settings.general.row.releaseNotes.description":
+    "ከዝማኔዎች በኋላ ምን አዲስ ብቅ-ባዮችን አሳይ",
   "settings.updates.row.startup.title": "በጅማሬ ላይ ዝማኔዎችን ይመልከቱ",
-  "settings.updates.row.startup.description": "OpenCode ሲጀመር ዝማኔዎችን በራስ-ሰር ያረጋግጡ",
+  "settings.updates.row.startup.description":
+    "OpenCode ሲጀመር ዝማኔዎችን በራስ-ሰር ያረጋግጡ",
   "settings.updates.row.check.title": "ዝማኔዎችን ይመልከቱ",
   "settings.updates.row.check.description": "ዝማኔዎችን ለማግኘት በእጅ ያረጋግጡ እና ካለ ይጫኑ",
   "settings.updates.action.checkNow": "አሁን ያረጋግጡ",
@@ -979,7 +1065,8 @@ export const dict = {
   "settings.updates.action.downloading": "በማውረድ ላይ...",
   "settings.updates.action.installing": "በመጫን ላይ...",
   "settings.updates.toast.latest.title": "ዘመኑን ጠብቀዋል",
-  "settings.updates.toast.latest.description": "የቅርብ ጊዜውን የOpenCode እትም እያሄዱ ነው።",
+  "settings.updates.toast.latest.description":
+    "የቅርብ ጊዜውን የOpenCode እትም እያሄዱ ነው።",
   "sound.option.none": "ምንም",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1027,23 +1114,30 @@ export const dict = {
   "sound.option.yup05": "Yup 05",
   "sound.option.yup06": "Yup 06",
   "settings.general.notifications.agent.title": "ወኪል",
-  "settings.general.notifications.agent.description": "ወኪሉ ሲጠናቀቅ ወይም ትኩረት ሲፈልግ የስርዓት ማሳወቂያን አሳይ",
+  "settings.general.notifications.agent.description":
+    "ወኪሉ ሲጠናቀቅ ወይም ትኩረት ሲፈልግ የስርዓት ማሳወቂያን አሳይ",
   "settings.general.notifications.permissions.title": "ፍቃዶች",
-  "settings.general.notifications.permissions.description": "ፍቃድ በሚያስፈልግበት ጊዜ የስርዓት ማሳወቂያን አሳይ",
+  "settings.general.notifications.permissions.description":
+    "ፍቃድ በሚያስፈልግበት ጊዜ የስርዓት ማሳወቂያን አሳይ",
   "settings.general.notifications.errors.title": "ስህተት",
-  "settings.general.notifications.errors.description": "ስህተት ሲከሰት የስርዓት ማሳወቂያን አሳይ",
+  "settings.general.notifications.errors.description":
+    "ስህተት ሲከሰት የስርዓት ማሳወቂያን አሳይ",
   "settings.general.sounds.agent.title": "ወኪል",
-  "settings.general.sounds.agent.description": "ወኪሉ ሲጠናቀቅ ወይም ትኩረት ሲፈልግ ድምጽ ያጫውቱ",
+  "settings.general.sounds.agent.description":
+    "ወኪሉ ሲጠናቀቅ ወይም ትኩረት ሲፈልግ ድምጽ ያጫውቱ",
   "settings.general.sounds.permissions.title": "ፍቃዶች",
-  "settings.general.sounds.permissions.description": "ፍቃድ በሚያስፈልግበት ጊዜ ድምጽ ያጫውቱ",
+  "settings.general.sounds.permissions.description":
+    "ፍቃድ በሚያስፈልግበት ጊዜ ድምጽ ያጫውቱ",
   "settings.general.sounds.errors.title": "ስህተት",
   "settings.general.sounds.errors.description": "ስህተት ሲከሰት ድምጽ ያጫውቱ",
   "settings.shortcuts.title": "የቁልፍ ሰሌዳ አቋራጮች",
   "settings.shortcuts.reset.button": "ወደ ነባሪዎች ዳግም አስጀምር",
   "settings.shortcuts.reset.toast.title": "የአቋራጮች ዳግም ማስጀመር",
-  "settings.shortcuts.reset.toast.description": "የቁልፍ ሰሌዳ አቋራጮች ወደ ነባሪዎች ተቀይረዋል።",
+  "settings.shortcuts.reset.toast.description":
+    "የቁልፍ ሰሌዳ አቋራጮች ወደ ነባሪዎች ተቀይረዋል።",
   "settings.shortcuts.conflict.title": "አቋራጭ አስቀድሞ ጥቅም ላይ ውሏል",
-  "settings.shortcuts.conflict.description": "{{keybind}} አስቀድሞ ለ{{titles}} ተመድቧል።",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} አስቀድሞ ለ{{titles}} ተመድቧል።",
   "settings.shortcuts.unassigned": "ያልተመደበ",
   "settings.shortcuts.pressKeys": "ቁልፎችን ይጫኑ",
   "settings.shortcuts.search.placeholder": "አቋራጮችን ይፈልጉ",
@@ -1058,7 +1152,8 @@ export const dict = {
   "settings.providers.description": "የአቅራቢዎች መቼቶች እዚህ ሊዋቀሩ ይችላሉ።",
   "settings.providers.section.connected": "የተገናኙ አቅራቢዎች",
   "settings.providers.connected.empty": "ምንም የተገናኙ አቅራቢዎች የሉም",
-  "settings.providers.connected.environmentDescription": "ከአካባቢዎ ተለዋዋጮች ጋር የተገናኘ",
+  "settings.providers.connected.environmentDescription":
+    "ከአካባቢዎ ተለዋዋጮች ጋር የተገናኘ",
   "settings.providers.section.popular": "ታዋቂ አቅራቢዎች",
   "settings.providers.custom.description": "OpenAI-ተኳሃኝ አቅራቢን በመሠረት URL ያክሉ።",
   "settings.providers.tag.environment": "አካባቢ",
@@ -1074,7 +1169,8 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCPቅንብሮች እዚህ ይዋቀራሉ።",
   "settings.permissions.title": "ፍቃዶች",
-  "settings.permissions.description": "አገልጋዩ በነባሪነት ምን ዓይነት መሳሪያዎችን መጠቀም እንደሚችል ይቆጣጠሩ።",
+  "settings.permissions.description":
+    "አገልጋዩ በነባሪነት ምን ዓይነት መሳሪያዎችን መጠቀም እንደሚችል ይቆጣጠሩ።",
   "settings.permissions.section.tools": "መሳሪያዎች",
   "settings.permissions.toast.updateFailed.title": "ፍቃዶችን ማዘመን አልተሳካም",
   "settings.permissions.action.allow": "ፍቀድ",
@@ -1083,11 +1179,13 @@ export const dict = {
   "settings.permissions.tool.read.title": "አንብብ",
   "settings.permissions.tool.read.description": "ፋይል ማንበብ (ከፋይል ዱካ ጋር ይዛመዳል)",
   "settings.permissions.tool.edit.title": "አርትዕ",
-  "settings.permissions.tool.edit.description": "አርትዖቶችን፣ ጽሁፎችን እና መጠገኛዎችን ጨምሮ ፋይሎችን ይቀይሩ",
+  "settings.permissions.tool.edit.description":
+    "አርትዖቶችን፣ ጽሁፎችን እና መጠገኛዎችን ጨምሮ ፋይሎችን ይቀይሩ",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "የግሎብ ቅጦችን በመጠቀም ፋይሎችን አዛምድ",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "መደበኛ መግለጫዎችን በመጠቀም የፋይል ይዘቶችን ይፈልጉ",
+  "settings.permissions.tool.grep.description":
+    "መደበኛ መግለጫዎችን በመጠቀም የፋይል ይዘቶችን ይፈልጉ",
   "settings.permissions.tool.list.title": "ዝርዝር",
   "settings.permissions.tool.list.description": "ፋይሎችን በማውጫ ውስጥ ይዘርዝሩ",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1105,9 +1203,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "ድር ፍለጋ",
   "settings.permissions.tool.websearch.description": "ድሩን ይፈልጉ",
   "settings.permissions.tool.external_directory.title": "የውጭ ማውጫ",
-  "settings.permissions.tool.external_directory.description": "ፋይሎችን ከፕሮጀክት ማውጫ ውጭ ይድረሱ",
+  "settings.permissions.tool.external_directory.description":
+    "ፋይሎችን ከፕሮጀክት ማውጫ ውጭ ይድረሱ",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "ተመሳሳይ ግብዓት ያላቸው ተደጋጋሚ የመሳሪያ ጥሪዎችን አግኝ",
+  "settings.permissions.tool.doom_loop.description":
+    "ተመሳሳይ ግብዓት ያላቸው ተደጋጋሚ የመሳሪያ ጥሪዎችን አግኝ",
   "session.delete.failed.title": "ክፍለ-ጊዜን መሰረዝ አልተሳካም",
   "session.delete.title": "ክፍለ ጊዜን ሰርዝ",
   "session.delete.confirm": 'ክፍለ-ጊዜውን ይሰርዙ"{{name}}?',

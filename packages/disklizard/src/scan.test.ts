@@ -544,6 +544,54 @@ describe("disk scanner", () => {
     })
   })
 
+  it("separates two same-name projects, a monorepo package, and ambiguous output", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-project-layouts-"))
+    roots.push(root)
+    const rust = join(root, "Work", "payments")
+    const java = join(root, "Archive", "payments")
+    const web = join(root, "Work", "monorepo", "apps", "web")
+    const ambiguous = join(root, "Work", "notes")
+    await Promise.all([
+      mkdir(join(rust, "target", "debug"), { recursive: true }),
+      mkdir(join(java, "target", "classes"), { recursive: true }),
+      mkdir(join(web, "node_modules", "package"), { recursive: true }),
+      mkdir(join(ambiguous, "target"), { recursive: true }),
+    ])
+    await Promise.all([
+      writeFile(join(rust, "Cargo.toml"), new Uint8Array(1)),
+      writeFile(join(rust, "target", "debug", "app"), new Uint8Array(3)),
+      writeFile(join(java, "pom.xml"), new Uint8Array(1)),
+      writeFile(join(java, "target", "classes", "App.class"), new Uint8Array(4)),
+      writeFile(join(web, "package.json"), new Uint8Array(1)),
+      writeFile(join(web, "node_modules", "package", "index.js"), new Uint8Array(5)),
+      writeFile(join(ambiguous, "target", "notes.txt"), new Uint8Array(6)),
+    ])
+
+    const result = await scanPathSync(root, {
+      maxDepth: 0,
+      sizeMode: "logical",
+      developerArtifactInventory: { maxItems: 16 },
+    })
+    const items = result.developerArtifactInventory?.items ?? []
+    const at = (path: string) => items.find((item) => item.path === path)
+    expect(at(join(rust, "target"))).toMatchObject({
+      ecosystem: "rust", confidence: "verified", cleanup: "eligible",
+      evidence: ["name:target", "contains:debug", "parent:cargo.toml"],
+    })
+    expect(at(join(java, "target"))).toMatchObject({
+      ecosystem: "jvm", confidence: "verified", cleanup: "eligible",
+      evidence: ["name:target", "contains:classes", "parent:pom.xml"],
+    })
+    expect(at(join(web, "node_modules"))).toMatchObject({
+      ecosystem: "node", confidence: "verified", cleanup: "eligible",
+      evidence: ["name:node_modules", "parent:package.json"],
+    })
+    expect(at(join(ambiguous, "target"))).toMatchObject({
+      ecosystem: "generic", confidence: "ambiguous", cleanup: "review",
+    })
+    expect(new Set(items.map((item) => item.path)).size).toBe(items.length)
+  })
+
   it("caps a deep developer artifact inventory while reporting omitted and skipped scope", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-artifact-cap-"))
     roots.push(root)

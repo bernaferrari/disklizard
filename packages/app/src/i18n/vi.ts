@@ -26,7 +26,8 @@ export const dict = {
   "desktop.menu.toggleTerminal": "Bật/tắt terminal",
   "desktop.menu.toggleFileTree": "Bật/tắt cây tệp",
   "desktop.menu.reload": "Tải lại",
-  "desktop.menu.toggleDeveloperTools": "Bật/tắt công cụ dành cho nhà phát triển",
+  "desktop.menu.toggleDeveloperTools":
+    "Bật/tắt công cụ dành cho nhà phát triển",
   "desktop.menu.actualSize": "Kích thước thực",
   "desktop.menu.zoomIn": "Phóng to",
   "desktop.menu.zoomOut": "Thu nhỏ",
@@ -45,13 +46,17 @@ export const dict = {
   "desktop.menu.reportBug": "Báo cáo lỗi",
   "desktop.menu.ariaLabel": "Menu OpenCode",
 
-  "desktop.updater.dialog.checkFailed.message": "Không kiểm tra được bản cập nhật.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Không kiểm tra được bản cập nhật.",
   "desktop.updater.dialog.checkFailed.title": "Lỗi cập nhật",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
-  "desktop.updater.dialog.upToDate.message": "Bạn đang dùng phiên bản mới nhất.",
+  "desktop.updater.dialog.upToDate.message":
+    "Bạn đang dùng phiên bản mới nhất.",
   "desktop.updater.dialog.upToDate.title": "Không có bản cập nhật",
-  "desktop.updater.dialog.ready.message": "Đã tải xuống bản cập nhật {{version}}. Khởi động lại ngay?",
+  "desktop.updater.dialog.ready.message":
+    "Đã tải xuống bản cập nhật {{version}}. Khởi động lại ngay?",
   "desktop.updater.dialog.ready.title": "Bản cập nhật đã sẵn sàng",
   "desktop.updater.dialog.restart": "Khởi động lại",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,9 +69,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "Không tải được OpenCode",
   "desktop.recovery.terminated": "Cửa sổ OpenCode đã bị đóng đột ngột",
   "desktop.recovery.unresponsive": "OpenCode không phản hồi",
-  "desktop.recovery.unresponsive.detail": "Bạn có thể khởi chạy lại ứng dụng, mở nhật ký hoặc tiếp tục chờ.",
-  "desktop.recovery.loadFailed.detail": "Cửa sổ: {{window}}\nURL: {{url}}\nLỗi: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Cửa sổ: {{window}}\nLý do: {{reason}}\nMã: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Bạn có thể khởi chạy lại ứng dụng, mở nhật ký hoặc tiếp tục chờ.",
+  "desktop.recovery.loadFailed.detail":
+    "Cửa sổ: {{window}}\nURL: {{url}}\nLỗi: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Cửa sổ: {{window}}\nLý do: {{reason}}\nMã: {{code}}",
   "desktop.recovery.unknown": "<không xác định>",
 
   "desktop.dialog.chooseFolder": "Chọn thư mục",
@@ -77,29 +85,40 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL chỉ khả dụng trên Windows",
   "desktop.wsl.error.unavailable": "WSL không khả dụng",
-  "desktop.wsl.error.listInstalled": "Không liệt kê được các bản phân phối WSL đã cài đặt",
-  "desktop.wsl.error.listOnline": "Không liệt kê được các bản phân phối WSL trực tuyến",
-  "desktop.wsl.error.executeDistro": "Không thể thực thi lệnh trong bản phân phối",
+  "desktop.wsl.error.listInstalled":
+    "Không liệt kê được các bản phân phối WSL đã cài đặt",
+  "desktop.wsl.error.listOnline":
+    "Không liệt kê được các bản phân phối WSL trực tuyến",
+  "desktop.wsl.error.executeDistro":
+    "Không thể thực thi lệnh trong bản phân phối",
   "desktop.wsl.error.installWsl": "Không cài đặt được WSL",
-  "desktop.wsl.error.installDistro": "Không cài đặt được bản phân phối: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Không cài đặt được bản phân phối: {{distro}}",
   "desktop.wsl.error.installOpencode": "Không cài đặt được OpenCode",
   "desktop.wsl.error.alreadyAdded": "{{distro}} đã được thêm",
-  "desktop.wsl.error.opencodeMissing": "opencode chưa được cài đặt trong bản phân phối này",
-  "desktop.wsl.error.opencodeCannotRun": "opencode đã được cài đặt nhưng không thể chạy",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode chưa được cài đặt trong {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode chưa được cài đặt trong bản phân phối này",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode đã được cài đặt nhưng không thể chạy",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode chưa được cài đặt trong {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Đã cập nhật OpenCode nhưng {{distro}} vẫn báo phiên bản {{installed}}; phiên bản dự kiến là {{expected}}",
   "desktop.wsl.error.noVersion": "không có phiên bản",
-  "desktop.wsl.error.serverExited": "Máy chủ WSL đã thoát sau khi khởi động (mã={{code}} tín hiệu={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Máy chủ WSL đã thoát sau khi khởi động (mã={{code}} tín hiệu={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Máy chủ WSL đã thoát trước khi sẵn sàng (mã={{code}} tín hiệu={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Sidecar kiểm tra tình trạng của {{distro}} đã hết thời gian chờ sau {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} đã hết thời gian chờ sau {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} đã hết thời gian chờ sau {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Không lấy được cổng",
 
-  "desktop.picker.error.notSelected": "Không có tệp nào được chọn trong bộ chọn tệp",
-  "desktop.picker.error.sizeLimit": "Các tệp đính kèm đã chọn vượt quá giới hạn {{limit}} MB",
+  "desktop.picker.error.notSelected":
+    "Không có tệp nào được chọn trong bộ chọn tệp",
+  "desktop.picker.error.sizeLimit":
+    "Các tệp đính kèm đã chọn vượt quá giới hạn {{limit}} MB",
 
   "command.category.suggested": "Đề xuất",
   "command.category.view": "Xem",
@@ -147,7 +166,8 @@ export const dict = {
   "command.tab.close": "Đóng tab",
   "command.tab.reopenClosed": "Mở lại tab đã đóng",
   "command.context.addSelection": "Thêm lựa chọn vào ngữ cảnh",
-  "command.context.addSelection.description": "Thêm các dòng đã chọn từ tệp hiện tại",
+  "command.context.addSelection.description":
+    "Thêm các dòng đã chọn từ tệp hiện tại",
   "command.input.focus": "Tập trung vào ô nhập",
   "command.terminal.toggle": "Bật/tắt terminal",
   "command.fileTree.toggle": "Bật/tắt cây tệp",
@@ -155,11 +175,13 @@ export const dict = {
   "command.terminal.new": "Terminal mới",
   "command.terminal.new.description": "Tạo một tab terminal mới",
   "command.steps.toggle": "Bật/tắt các bước",
-  "command.steps.toggle.description": "Hiển thị hoặc ẩn các bước cho tin nhắn hiện tại",
+  "command.steps.toggle.description":
+    "Hiển thị hoặc ẩn các bước cho tin nhắn hiện tại",
   "command.message.previous": "Tin nhắn trước đó",
   "command.message.previous.description": "Đi tới tin nhắn người dùng trước đó",
   "command.message.next": "Tin nhắn tiếp theo",
-  "command.message.next.description": "Chuyển tới tin nhắn người dùng tiếp theo",
+  "command.message.next.description":
+    "Chuyển tới tin nhắn người dùng tiếp theo",
   "command.model.choose": "Chọn mô hình",
   "command.model.choose.description": "Chọn một mô hình khác",
   "command.mcp.toggle": "Bật/tắt MCP",
@@ -175,21 +197,26 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Tự động chấp nhận quyền",
   "command.permissions.autoaccept.disable": "Dừng tự động chấp nhận quyền",
   "command.workspace.toggle": "Bật/tắt không gian làm việc",
-  "command.workspace.toggle.description": "Bật hoặc tắt nhiều không gian làm việc trong thanh bên",
+  "command.workspace.toggle.description":
+    "Bật hoặc tắt nhiều không gian làm việc trong thanh bên",
   "command.session.undo": "Hoàn tác",
   "command.session.undo.description": "Hoàn tác tin nhắn cuối cùng",
   "command.session.redo": "Làm lại",
-  "command.session.redo.description": "Làm lại tin nhắn đã hoàn tác gần đây nhất",
+  "command.session.redo.description":
+    "Làm lại tin nhắn đã hoàn tác gần đây nhất",
   "command.session.compact": "Nén phiên",
-  "command.session.compact.description": "Tóm tắt phiên để giảm kích thước ngữ cảnh",
+  "command.session.compact.description":
+    "Tóm tắt phiên để giảm kích thước ngữ cảnh",
   "command.session.fork": "Tách nhánh từ tin nhắn",
   "command.session.fork.description": "Tạo phiên mới từ tin nhắn trước đó",
   "command.session.share": "Chia sẻ phiên",
-  "command.session.share.description": "Chia sẻ phiên này và sao chép URL vào bảng tạm",
+  "command.session.share.description":
+    "Chia sẻ phiên này và sao chép URL vào bảng tạm",
   "command.session.unshare": "Ngừng chia sẻ phiên",
   "command.session.unshare.description": "Dừng chia sẻ phiên này",
   "command.session.export": "Xuất phiên",
-  "command.session.export.description": "Xuất toàn bộ bản ghi phiên dưới dạng JSON",
+  "command.session.export.description":
+    "Xuất toàn bộ bản ghi phiên dưới dạng JSON",
 
   "palette.search.placeholder": "Tìm kiếm tệp, lệnh và phiên",
   "palette.search.placeholder.home": "Tìm kiếm lệnh và phiên",
@@ -202,28 +229,39 @@ export const dict = {
   "dialog.provider.group.other": "Khác",
   "dialog.provider.custom.label": "Nhà cung cấp tương thích OpenAI tùy chỉnh",
   "dialog.provider.tag.recommended": "Đề xuất",
-  "dialog.provider.opencode.note": "Các mô hình được tuyển chọn, gồm Claude, GPT, Gemini và nhiều mô hình khác",
+  "dialog.provider.opencode.note":
+    "Các mô hình được tuyển chọn, gồm Claude, GPT, Gemini và nhiều mô hình khác",
   "dialog.provider.opencode.tagline": "Các mô hình tối ưu hóa đáng tin cậy",
   "dialog.provider.opencodeGo.tagline": "Đăng ký chi phí thấp cho mọi người",
-  "dialog.provider.anthropic.note": "Truy cập trực tiếp các mô hình Claude, bao gồm Pro và Max",
-  "dialog.provider.copilot.note": "Các mô hình AI hỗ trợ lập trình qua GitHub Copilot",
-  "dialog.provider.openai.note": "Các mô hình GPT nhanh và mạnh mẽ cho tác vụ AI đa dụng",
-  "dialog.provider.google.note": "Các mô hình Gemini cho phản hồi nhanh, có cấu trúc",
-  "dialog.provider.openrouter.note": "Truy cập tất cả các mô hình được hỗ trợ từ một nhà cung cấp",
-  "dialog.provider.vercel.note": "Truy cập thống nhất vào các mô hình AI với tính năng định tuyến thông minh",
+  "dialog.provider.anthropic.note":
+    "Truy cập trực tiếp các mô hình Claude, bao gồm Pro và Max",
+  "dialog.provider.copilot.note":
+    "Các mô hình AI hỗ trợ lập trình qua GitHub Copilot",
+  "dialog.provider.openai.note":
+    "Các mô hình GPT nhanh và mạnh mẽ cho tác vụ AI đa dụng",
+  "dialog.provider.google.note":
+    "Các mô hình Gemini cho phản hồi nhanh, có cấu trúc",
+  "dialog.provider.openrouter.note":
+    "Truy cập tất cả các mô hình được hỗ trợ từ một nhà cung cấp",
+  "dialog.provider.vercel.note":
+    "Truy cập thống nhất vào các mô hình AI với tính năng định tuyến thông minh",
   "dialog.model.select.title": "Chọn mô hình",
   "dialog.model.search.placeholder": "Tìm kiếm mô hình",
   "dialog.model.empty": "Không có kết quả mô hình",
   "dialog.model.manage": "Quản lý mô hình",
-  "dialog.model.manage.description": "Tùy chỉnh mô hình nào xuất hiện trong bộ chọn mô hình.",
+  "dialog.model.manage.description":
+    "Tùy chỉnh mô hình nào xuất hiện trong bộ chọn mô hình.",
   "dialog.model.manage.provider.toggle": "Bật/tắt tất cả mô hình {{provider}}",
-  "dialog.model.unpaid.freeModels.title": "Các mô hình miễn phí do OpenCode cung cấp",
-  "dialog.model.unpaid.addMore.title": "Thêm nhiều mô hình từ các nhà cung cấp phổ biến",
+  "dialog.model.unpaid.freeModels.title":
+    "Các mô hình miễn phí do OpenCode cung cấp",
+  "dialog.model.unpaid.addMore.title":
+    "Thêm nhiều mô hình từ các nhà cung cấp phổ biến",
   "dialog.model.unpaid.viewMoreProviders": "Xem hơn 70 nhà cung cấp khác",
   "dialog.provider.viewAll": "Hiển thị thêm nhà cung cấp",
   "provider.connect.title": "Kết nối {{provider}}",
   "provider.connect.title.anthropicProMax": "Đăng nhập bằng Claude Pro/Max",
-  "provider.connect.selectMethod": "Chọn phương thức đăng nhập cho {{provider}}.",
+  "provider.connect.selectMethod":
+    "Chọn phương thức đăng nhập cho {{provider}}.",
   "provider.connect.method.apiKey": "Khóa API",
   "provider.connect.method.browser": "Trình duyệt",
   "provider.connect.method.headless": "Không có giao diện người dùng",
@@ -256,22 +294,27 @@ export const dict = {
     " và nhập mã bên dưới để kết nối tài khoản của bạn và sử dụng các mô hình {{provider}} trong OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Mã xác nhận",
   "provider.connect.toast.connected.title": "{{provider}} đã kết nối",
-  "provider.connect.toast.connected.description": "Các mô hình {{provider}} hiện đã sẵn sàng để sử dụng.",
+  "provider.connect.toast.connected.description":
+    "Các mô hình {{provider}} hiện đã sẵn sàng để sử dụng.",
   "provider.custom.title": "Nhà cung cấp tùy chỉnh",
-  "provider.custom.unavailable": "Nhà cung cấp tùy chỉnh không khả dụng trên máy chủ này",
-  "provider.custom.description.prefix": "Định cấu hình nhà cung cấp tương thích OpenAI. Xem ",
+  "provider.custom.unavailable":
+    "Nhà cung cấp tùy chỉnh không khả dụng trên máy chủ này",
+  "provider.custom.description.prefix":
+    "Định cấu hình nhà cung cấp tương thích OpenAI. Xem ",
   "provider.custom.description.link": "tài liệu cấu hình nhà cung cấp",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID nhà cung cấp",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Chữ thường, số, dấu gạch nối hoặc dấu gạch dưới",
+  "provider.custom.field.providerID.description":
+    "Chữ thường, số, dấu gạch nối hoặc dấu gạch dưới",
   "provider.custom.field.name.label": "Tên hiển thị",
   "provider.custom.field.name.placeholder": "Nhà cung cấp AI của tôi",
   "provider.custom.field.baseURL.label": "URL cơ sở",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "Khóa API",
   "provider.custom.field.apiKey.placeholder": "khóa API",
-  "provider.custom.field.apiKey.description": "Không bắt buộc. Để trống nếu bạn quản lý xác thực thông qua tiêu đề.",
+  "provider.custom.field.apiKey.description":
+    "Không bắt buộc. Để trống nếu bạn quản lý xác thực thông qua tiêu đề.",
   "provider.custom.models.label": "Mô hình",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -286,16 +329,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "giá trị",
   "provider.custom.headers.remove": "Xóa header",
   "provider.custom.headers.add": "Thêm header",
-  "provider.custom.error.providerID.required": "Bắt buộc phải có ID nhà cung cấp",
-  "provider.custom.error.providerID.format": "Sử dụng chữ cái viết thường, số, dấu gạch nối hoặc dấu gạch dưới",
+  "provider.custom.error.providerID.required":
+    "Bắt buộc phải có ID nhà cung cấp",
+  "provider.custom.error.providerID.format":
+    "Sử dụng chữ cái viết thường, số, dấu gạch nối hoặc dấu gạch dưới",
   "provider.custom.error.providerID.exists": "ID nhà cung cấp này đã tồn tại",
   "provider.custom.error.name.required": "Tên hiển thị là bắt buộc",
   "provider.custom.error.baseURL.required": "Bắt buộc phải có URL cơ sở",
-  "provider.custom.error.baseURL.format": "Phải bắt đầu bằng http:// hoặc https://",
+  "provider.custom.error.baseURL.format":
+    "Phải bắt đầu bằng http:// hoặc https://",
   "provider.custom.error.required": "Bắt buộc",
   "provider.custom.error.duplicate": "Trùng lặp",
-  "provider.disconnect.toast.disconnected.title": "{{provider}} bị ngắt kết nối",
-  "provider.disconnect.toast.disconnected.description": "Các mô hình {{provider}} không còn khả dụng.",
+  "provider.disconnect.toast.disconnected.title":
+    "{{provider}} bị ngắt kết nối",
+  "provider.disconnect.toast.disconnected.description":
+    "Các mô hình {{provider}} không còn khả dụng.",
   "model.tag.free": "Miễn phí",
   "model.tag.latest": "Mới nhất",
   "model.provider.anthropic": "Anthropic",
@@ -341,7 +389,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Lời nhắc",
   "prompt.mode.shell.exit": "esc để thoát",
-  "session.child.promptDisabled": "Không thể gửi lời nhắc trong phiên tác nhân phụ.",
+  "session.child.promptDisabled":
+    "Không thể gửi lời nhắc trong phiên tác nhân phụ.",
   "session.child.backToParent": "Quay lại phiên chính.",
   "prompt.example.1": "Sửa TODO trong cơ sở mã",
   "prompt.example.2": "Ngăn xếp công nghệ của dự án này là gì?",
@@ -389,10 +438,12 @@ export const dict = {
   "prompt.action.send": "Gửi",
   "prompt.action.stop": "Dừng",
   "prompt.toast.pasteUnsupported.title": "Tệp đính kèm không được hỗ trợ",
-  "prompt.toast.pasteUnsupported.description": "Chỉ có thể đính kèm hình ảnh, tệp PDF hoặc tệp văn bản ở đây.",
+  "prompt.toast.pasteUnsupported.description":
+    "Chỉ có thể đính kèm hình ảnh, tệp PDF hoặc tệp văn bản ở đây.",
   "prompt.toast.attachmentDuplicate.title": "Tệp này đã được tải lên",
   "prompt.toast.modelAgentRequired.title": "Chọn tác nhân và mô hình",
-  "prompt.toast.modelAgentRequired.description": "Chọn một tác nhân và mô hình trước khi gửi lời nhắc.",
+  "prompt.toast.modelAgentRequired.description":
+    "Chọn một tác nhân và mô hình trước khi gửi lời nhắc.",
   "prompt.toast.worktreeCreateFailed.title": "Không tạo được worktree",
   "prompt.toast.sessionCreateFailed.title": "Không tạo được phiên",
   "prompt.toast.shellSendFailed.title": "Không gửi được lệnh shell",
@@ -421,7 +472,8 @@ export const dict = {
   "app.server.retrying": "Đang tự động thử lại...",
   "app.server.otherServers": "Máy chủ khác",
   "dialog.server.title": "Máy chủ",
-  "dialog.server.description": "Chuyển máy chủ OpenCode mà ứng dụng này kết nối tới.",
+  "dialog.server.description":
+    "Chuyển máy chủ OpenCode mà ứng dụng này kết nối tới.",
   "dialog.server.search.placeholder": "Tìm kiếm máy chủ",
   "dialog.server.empty": "Chưa có máy chủ",
   "dialog.server.add.title": "Thêm máy chủ",
@@ -459,7 +511,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Chọn bản phân phối",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Đang kiểm tra WSL...",
-  "wsl.onboarding.restartRequired": "Windows cần khởi động lại để hoàn tất cài đặt WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows cần khởi động lại để hoàn tất cài đặt WSL.",
   "wsl.onboarding.ready": "WSL đã sẵn sàng.",
   "wsl.onboarding.required": "WSL là bắt buộc để tiếp tục.",
   "wsl.onboarding.checkingDistros": "Đang kiểm tra các bản phân phối...",
@@ -468,13 +521,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Liệt kê các bản phân phối...",
   "wsl.onboarding.distroReady": "{{distro}} đã sẵn sàng.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} chưa được cài đặt.",
-  "wsl.onboarding.openDistroOnce": "Mở {{distro}} một lần để hoàn tất thiết lập.",
+  "wsl.onboarding.openDistroOnce":
+    "Mở {{distro}} một lần để hoàn tất thiết lập.",
   "wsl.onboarding.finishingDistro": "Đang hoàn tất thiết lập cho {{distro}}.",
-  "wsl.onboarding.pickDistro": "Chọn một bản phân phối hoặc cài đặt một bản dưới đây.",
+  "wsl.onboarding.pickDistro":
+    "Chọn một bản phân phối hoặc cài đặt một bản dưới đây.",
   "wsl.onboarding.checkingOpencode": "Đang kiểm tra OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "Đang kiểm tra OpenCode trong {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "Đang kiểm tra OpenCode trong {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Đang cập nhật OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "Đang cập nhật OpenCode trong {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Đang cập nhật OpenCode trong {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Cập nhật OpenCode trong {{distro}}.",
   "wsl.onboarding.updateOpencode": "Cập nhật OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode đã sẵn sàng trong {{distro}}.",
@@ -490,19 +547,24 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Đang kiểm tra...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode chưa được cài đặt",
   "wsl.onboarding.distroStatus.missingTools": "Thiếu bash, curl",
-  "wsl.onboarding.distroStatus.unsupported": "Không được hỗ trợ · Sử dụng WSL 2",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Không được hỗ trợ · Sử dụng WSL 2",
   "wsl.onboarding.needAnotherDistro": "Cần một bản phân phối khác?",
-  "wsl.onboarding.needAnotherDistroHint": "Cài đặt bản phân phối Linux từ danh mục WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Cài đặt bản phân phối Linux từ danh mục WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL chưa được cài đặt",
   "wsl.onboarding.wslNotInstalled.description":
     "Cần có WSL (Hệ thống con Windows dành cho Linux) trước khi OpenCode có thể thêm máy chủ WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL không có sẵn",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode không thể xác minh WSL trên máy này.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode không thể xác minh WSL trên máy này.",
   "wsl.onboarding.installWsl": "Cài đặt WSL",
-  "wsl.onboarding.windowsRestartRequired": "Khởi động lại Windows để hoàn tất cài đặt WSL, sau đó mở lại OpenCode.",
+  "wsl.onboarding.windowsRestartRequired":
+    "Khởi động lại Windows để hoàn tất cài đặt WSL, sau đó mở lại OpenCode.",
   "wsl.onboarding.next": "Tiếp theo",
   "wsl.onboarding.refresh": "Làm mới",
-  "wsl.onboarding.allDistrosAdded": "Tất cả các bản phân phối đã cài đặt đều đã được thêm vào.",
+  "wsl.onboarding.allDistrosAdded":
+    "Tất cả các bản phân phối đã cài đặt đều đã được thêm vào.",
   "wsl.onboarding.noDistros": "Chưa phát hiện thấy bản phân phối nào.",
   "wsl.onboarding.install": "Cài đặt",
   "wsl.onboarding.installing": "Đang cài đặt...",
@@ -516,14 +578,18 @@ export const dict = {
   "wsl.onboarding.version": "Phiên bản: {{version}}",
   "wsl.onboarding.unknown": "không rõ",
   "wsl.onboarding.desktopVersion": "Desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Phiên bản đã cài đặt không khớp với phiên bản ứng dụng desktop.",
+  "wsl.onboarding.versionMismatch":
+    "Phiên bản đã cài đặt không khớp với phiên bản ứng dụng desktop.",
   "wsl.onboarding.adding": "Đang thêm...",
-  "help.tabs.toast.ariaLabel": "Giới thiệu về tab. Sắp xếp công việc và các phiên đang hoạt động bằng tab",
+  "help.tabs.toast.ariaLabel":
+    "Giới thiệu về tab. Sắp xếp công việc và các phiên đang hoạt động bằng tab",
   "help.tabs.toast.dismiss": "Bỏ qua thông tin về tab",
   "help.tabs.title": "Giới thiệu về tab",
-  "help.tabs.description": "Sắp xếp công việc và các phiên đang hoạt động bằng tab",
+  "help.tabs.description":
+    "Sắp xếp công việc và các phiên đang hoạt động bằng tab",
   "help.tabs.date": "14 tháng 7",
-  "help.tabs.introduction": "OpenCode Desktop nay được xây dựng xoay quanh các tab.",
+  "help.tabs.introduction":
+    "OpenCode Desktop nay được xây dựng xoay quanh các tab.",
   "help.tabs.sessions":
     "Bắt đầu phiên mới trong một tab hoặc mở phiên hiện có từ bất kỳ dự án nào của bạn. Hãy mở tab mới khi bắt đầu công việc mới và đóng tab khi hoàn tất.",
   "help.tabs.organize":
@@ -542,8 +608,10 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Khuyến nghị: 128x128px",
   "dialog.project.edit.color": "Màu sắc",
   "dialog.project.edit.color.select": "Chọn màu {{color}}",
-  "dialog.project.edit.worktree.startup": "Tập lệnh khởi động không gian làm việc",
-  "dialog.project.edit.worktree.startup.description": "Chạy sau khi tạo không gian làm việc mới (worktree).",
+  "dialog.project.edit.worktree.startup":
+    "Tập lệnh khởi động không gian làm việc",
+  "dialog.project.edit.worktree.startup.description":
+    "Chạy sau khi tạo không gian làm việc mới (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "ví dụ: bun install",
   "dialog.releaseNotes.action.getStarted": "Bắt đầu",
   "dialog.releaseNotes.action.next": "Tiếp theo",
@@ -607,28 +675,37 @@ export const dict = {
   "toast.theme.title": "Đã chuyển chủ đề",
   "toast.scheme.title": "Cách phối màu",
   "toast.workspace.enabled.title": "Đã bật không gian làm việc",
-  "toast.workspace.enabled.description": "Nhiều worktree hiện được hiển thị trên thanh bên",
+  "toast.workspace.enabled.description":
+    "Nhiều worktree hiện được hiển thị trên thanh bên",
   "toast.workspace.disabled.title": "Đã tắt không gian làm việc",
-  "toast.workspace.disabled.description": "Chỉ worktree chính được hiển thị trong thanh bên",
+  "toast.workspace.disabled.description":
+    "Chỉ worktree chính được hiển thị trong thanh bên",
   "toast.permissions.autoaccept.on.title": "Tự động chấp nhận quyền",
-  "toast.permissions.autoaccept.on.description": "Yêu cầu quyền sẽ được tự động phê duyệt",
+  "toast.permissions.autoaccept.on.description":
+    "Yêu cầu quyền sẽ được tự động phê duyệt",
   "toast.permissions.autoaccept.off.title": "Đã dừng quyền tự động chấp nhận",
-  "toast.permissions.autoaccept.off.description": "Yêu cầu quyền sẽ cần được phê duyệt",
+  "toast.permissions.autoaccept.off.description":
+    "Yêu cầu quyền sẽ cần được phê duyệt",
   "toast.model.none.title": "Không có mô hình nào được chọn",
   "toast.model.none.description": "Kết nối nhà cung cấp để tóm tắt phiên này",
   "toast.file.loadFailed.title": "Không tải được tệp",
   "toast.file.listFailed.title": "Không thể liệt kê các tệp",
   "toast.context.noLineSelection.title": "Không có lựa chọn dòng",
-  "toast.context.noLineSelection.description": "Trước tiên, hãy chọn một phạm vi dòng trong tab tệp.",
-  "toast.session.share.copyFailed.title": "Không sao chép được URL vào bảng tạm",
+  "toast.context.noLineSelection.description":
+    "Trước tiên, hãy chọn một phạm vi dòng trong tab tệp.",
+  "toast.session.share.copyFailed.title":
+    "Không sao chép được URL vào bảng tạm",
   "toast.session.share.success.title": "Đã chia sẻ phiên",
-  "toast.session.share.success.description": "Đã sao chép URL chia sẻ vào bảng tạm!",
+  "toast.session.share.success.description":
+    "Đã sao chép URL chia sẻ vào bảng tạm!",
   "toast.session.share.failed.title": "Không thể chia sẻ phiên",
   "toast.session.share.failed.description": "Đã xảy ra lỗi khi chia sẻ phiên",
   "toast.session.unshare.success.title": "Đã ngừng chia sẻ phiên",
-  "toast.session.unshare.success.description": "Đã hủy chia sẻ phiên thành công!",
+  "toast.session.unshare.success.description":
+    "Đã hủy chia sẻ phiên thành công!",
   "toast.session.unshare.failed.title": "Không hủy chia sẻ được phiên",
-  "toast.session.unshare.failed.description": "Đã xảy ra lỗi khi hủy chia sẻ phiên",
+  "toast.session.unshare.failed.description":
+    "Đã xảy ra lỗi khi hủy chia sẻ phiên",
   "toast.session.export.success.title": "Đã xuất phiên",
   "toast.session.export.success.description": "Đã lưu phiên vào {{filename}}",
   "toast.session.export.failed.title": "Không thể xuất phiên",
@@ -637,20 +714,27 @@ export const dict = {
   "toast.session.listFailed.title": "Không thể tải phiên cho {{project}}",
   "toast.project.reloadFailed.title": "Không thể tải lại {{project}}",
   "toast.update.title": "Đã có bản cập nhật",
-  "toast.update.description": "Hiện đã có phiên bản mới của OpenCode ({{version}}) để cài đặt.",
+  "toast.update.description":
+    "Hiện đã có phiên bản mới của OpenCode ({{version}}) để cài đặt.",
   "toast.update.action.installRestart": "Cài đặt và khởi động lại",
   "toast.update.action.notYet": "Chưa",
-  "disk.accessGuidance.macos": "Cấp Quyền truy cập đĩa đầy đủ cho DiskLizard trong Cài đặt hệ thống, sau đó quét lại.",
-  "disk.accessGuidance.windows": "Dùng tài khoản có quyền truy cập ổ đĩa này, hoặc quét một thư mục mà tài khoản của bạn có thể đọc.",
-  "disk.accessGuidance.linux": "Kiểm tra quyền của thư mục và điểm gắn kết, sau đó quét lại.",
-  "disk.accessGuidance.default": "Kiểm tra quyền truy cập các thư mục này, sau đó quét lại.",
-  "disk.accessGuidance.rescan": "Sau khi thay đổi quyền truy cập, hãy dùng Quét lại trên thanh phía trên.",
+  "disk.accessGuidance.macos":
+    "Cấp Quyền truy cập đĩa đầy đủ cho DiskLizard trong Cài đặt hệ thống, sau đó quét lại.",
+  "disk.accessGuidance.windows":
+    "Dùng tài khoản có quyền truy cập ổ đĩa này, hoặc quét một thư mục mà tài khoản của bạn có thể đọc.",
+  "disk.accessGuidance.linux":
+    "Kiểm tra quyền của thư mục và điểm gắn kết, sau đó quét lại.",
+  "disk.accessGuidance.default":
+    "Kiểm tra quyền truy cập các thư mục này, sau đó quét lại.",
+  "disk.accessGuidance.rescan":
+    "Sau khi thay đổi quyền truy cập, hãy dùng Quét lại trên thanh phía trên.",
   "disk.common.rescan": "Quét lại",
   "toast.update.installFailed.title": "Không thể cài đặt bản cập nhật",
   "toast.update.installFailed.retry": "Thử lại",
   "error.page.title": "Đã xảy ra lỗi",
   "error.page.description": "Đã xảy ra lỗi khi tải ứng dụng.",
-  "error.page.description.localServerStartup": "Đã xảy ra lỗi khi khởi động máy chủ cục bộ.",
+  "error.page.description.localServerStartup":
+    "Đã xảy ra lỗi khi khởi động máy chủ cục bộ.",
   "error.page.details.label": "Chi tiết lỗi",
   "error.page.action.restart": "Khởi động lại",
   "error.page.action.report": "Báo cáo lỗi",
@@ -665,12 +749,16 @@ export const dict = {
   "error.page.version": "Phiên bản: {{version}}",
   "error.dev.rootNotFound":
     "Không tìm thấy phần tử gốc. Bạn đã quên thêm nó vào index.html của mình? Hoặc có thể thuộc tính id bị sai chính tả?",
-  "error.serverSync.connectFailed": "Không thể kết nối với máy chủ. Có máy chủ nào đang chạy ở `{{url}}` không?",
+  "error.serverSync.connectFailed":
+    "Không thể kết nối với máy chủ. Có máy chủ nào đang chạy ở `{{url}}` không?",
   "error.serverSDK.noServerAvailable": "Không có máy chủ nào",
   "error.serverSDK.serverNotAvailable": "Máy chủ không có sẵn",
-  "error.childStore.persistedCacheCreateFailed": "Không tạo được bộ nhớ đệm bền vững",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Không thể tạo siêu dữ liệu dự án bền vững",
-  "error.childStore.persistedProjectIconCreateFailed": "Không thể tạo biểu tượng dự án bền vững",
+  "error.childStore.persistedCacheCreateFailed":
+    "Không tạo được bộ nhớ đệm bền vững",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Không thể tạo siêu dữ liệu dự án bền vững",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Không thể tạo biểu tượng dự án bền vững",
   "error.childStore.storeCreateFailed": "Không tạo được kho lưu trữ",
   "directory.error.invalidUrl": "Thư mục không hợp lệ trong URL.",
   "error.chain.unknown": "Lỗi không xác định",
@@ -682,22 +770,31 @@ export const dict = {
   "error.chain.responseBody": "Nội dung phản hồi:\n{{body}}",
   "error.chain.didYouMean": "Có phải ý bạn là: {{suggestions}}",
   "error.chain.modelNotFound": "Không tìm thấy mô hình: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Kiểm tra tên nhà cung cấp/mô hình cấu hình (opencode.json) của bạn",
-  "error.chain.mcpFailed": 'Máy chủ MCP "{{name}}" gặp lỗi. Lưu ý: OpenCode chưa hỗ trợ xác thực MCP.',
-  "error.chain.providerAuthFailed": "Không xác thực được nhà cung cấp ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Kiểm tra tên nhà cung cấp/mô hình cấu hình (opencode.json) của bạn",
+  "error.chain.mcpFailed":
+    'Máy chủ MCP "{{name}}" gặp lỗi. Lưu ý: OpenCode chưa hỗ trợ xác thực MCP.',
+  "error.chain.providerAuthFailed":
+    "Không xác thực được nhà cung cấp ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Không khởi tạo được nhà cung cấp "{{provider}}". Kiểm tra thông tin xác thực và cấu hình.',
-  "error.chain.configJsonInvalid": "Tệp cấu hình tại {{path}} không phải là JSON(C) hợp lệ",
-  "error.chain.configJsonInvalidWithMessage": "Tệp cấu hình tại {{path}} không phải là JSON(C) hợp lệ: {{message}}",
+  "error.chain.configJsonInvalid":
+    "Tệp cấu hình tại {{path}} không phải là JSON(C) hợp lệ",
+  "error.chain.configJsonInvalidWithMessage":
+    "Tệp cấu hình tại {{path}} không phải là JSON(C) hợp lệ: {{message}}",
   "error.chain.configDirectoryTypo":
     'Thư mục "{{dir}}" trong {{path}} không hợp lệ. Đổi tên thư mục thành "{{suggestion}}" hoặc xóa nó. Đây là một lỗi đánh máy phổ biến.',
-  "error.chain.configFrontmatterError": "Không thể phân tích cú pháp frontmatter trong {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Không thể phân tích cú pháp frontmatter trong {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Tệp cấu hình tại {{path}} không hợp lệ",
-  "error.chain.configInvalidWithMessage": "Tệp cấu hình tại {{path}} không hợp lệ: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Tệp cấu hình tại {{path}} không hợp lệ: {{message}}",
   "notification.permission.title": "Cần có sự cho phép",
-  "notification.permission.description": "{{sessionTitle}} trong {{projectName}} cần có sự cho phép",
+  "notification.permission.description":
+    "{{sessionTitle}} trong {{projectName}} cần có sự cho phép",
   "notification.question.title": "Câu hỏi",
-  "notification.question.description": "{{sessionTitle}} trong {{projectName}} có câu hỏi",
+  "notification.question.description":
+    "{{sessionTitle}} trong {{projectName}} có câu hỏi",
   "notification.action.goToSession": "Đi đến phiên",
   "notification.session.responseReady.title": "Đã sẵn sàng phản hồi",
   "notification.session.error.title": "Lỗi phiên",
@@ -720,14 +817,16 @@ export const dict = {
   "home.sessions.group.today": "Hôm nay",
   "home.sessions.group.yesterday": "Hôm qua",
   "home.sessions.group.older": "Cũ hơn",
-  "home.providerTip": "Kết nối với hơn 75 nhà cung cấp để sử dụng các mô hình khác, bao gồm Claude, GPT, Gemini, v.v.",
+  "home.providerTip":
+    "Kết nối với hơn 75 nhà cung cấp để sử dụng các mô hình khác, bao gồm Claude, GPT, Gemini, v.v.",
   "session.tab.session": "Phiên",
   "session.tab.review": "Xem lại",
   "session.tab.context": "Ngữ cảnh",
   "session.tab.unknown": "Phiên không xác định",
   "session.panel.reviewAndFiles": "Xem lại và tệp",
   "session.error.notFound": "Không thể tìm thấy phiên này",
-  "session.error.notFound.description": "Tab này trỏ đến một phiên không còn tồn tại trên máy chủ này.",
+  "session.error.notFound.description":
+    "Tab này trỏ đến một phiên không còn tồn tại trên máy chủ này.",
   "session.error.notFound.closeTab": "Đóng tab",
   "session.error.serverConnection": "Không thể kết nối với máy chủ này",
   "session.review.filesChanged": "Số tệp đã thay đổi: {{count}}",
@@ -735,9 +834,11 @@ export const dict = {
   "session.review.change.other": "Thay đổi",
   "session.review.loadingChanges": "Đang tải các thay đổi...",
   "session.review.empty": "Chưa có thay đổi nào trong phiên này",
-  "session.review.noVcs": "Không phát hiện hệ thống quản lý phiên bản Git nên không thể hiển thị thay đổi",
+  "session.review.noVcs":
+    "Không phát hiện hệ thống quản lý phiên bản Git nên không thể hiển thị thay đổi",
   "session.review.noVcs.createGit.title": "Tạo kho lưu trữ Git",
-  "session.review.noVcs.createGit.description": "Theo dõi, xem xét và hoàn tác các thay đổi trong dự án này",
+  "session.review.noVcs.createGit.description":
+    "Theo dõi, xem xét và hoàn tác các thay đổi trong dự án này",
   "session.review.noVcs.createGit.actionLoading": "Đang tạo kho lưu trữ Git...",
   "session.review.noVcs.createGit.action": "Tạo kho lưu trữ Git",
   "session.review.noSnapshot":
@@ -758,7 +859,8 @@ export const dict = {
   "session.todo.title": "việc cần làm",
   "session.todo.collapse": "Thu gọn",
   "session.todo.expand": "Mở rộng",
-  "session.todo.progress": "{{done}} trong số {{total}} việc cần làm đã hoàn thành",
+  "session.todo.progress":
+    "{{done}} trong số {{total}} việc cần làm đã hoàn thành",
   "session.question.progress": "{{current}} trong số {{total}} câu hỏi",
   "session.question.minimize": "Giảm thiểu câu hỏi",
   "session.question.restore": "Khôi phục câu hỏi",
@@ -842,12 +944,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Đóng terminal",
   "terminal.connectionLost.title": "Mất kết nối",
-  "terminal.connectionLost.abnormalClose": "WebSocket đóng bất thường: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket đóng bất thường: {{code}}",
   "terminal.connectionLost.description":
     "Kết nối terminal bị gián đoạn. Điều này có thể xảy ra khi máy chủ khởi động lại.",
   "terminal.connectTicket.csrfError":
     "Vé kết nối PTY bị từ chối do kiểm tra nguồn gốc hoặc CSRF. Hãy kiểm tra cấu hình CORS của máy chủ.",
-  "terminal.connectTicket.statusError": "Vé kết nối PTY thất bại với trạng thái {{status}}",
+  "terminal.connectTicket.statusError":
+    "Vé kết nối PTY thất bại với trạng thái {{status}}",
   "titlebar.update": "Cập nhật",
   "titlebar.updateVersion": "Cập nhật {{version}}",
   "common.closeTab": "Đóng tab",
@@ -891,7 +995,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Bật không gian làm việc",
   "sidebar.workspaces.disable": "Tắt không gian làm việc",
   "sidebar.gettingStarted.title": "Bắt đầu",
-  "sidebar.gettingStarted.line1": "OpenCode bao gồm các mô hình miễn phí để bạn có thể bắt đầu ngay lập tức.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode bao gồm các mô hình miễn phí để bạn có thể bắt đầu ngay lập tức.",
   "sidebar.gettingStarted.line2":
     "Kết nối với bất kỳ nhà cung cấp nào để sử dụng các mô hình như Claude, GPT, Gemini, v.v.",
   "sidebar.project.recentSessions": "Phiên gần đây",
@@ -907,27 +1012,34 @@ export const dict = {
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "Số khung hình mỗi giây trong 5 giây qua.",
   "debugBar.frame.label": "FRAME",
-  "debugBar.frame.tip": "Thời gian tạo khung hình tệ nhất trong 5 giây vừa qua.",
+  "debugBar.frame.tip":
+    "Thời gian tạo khung hình tệ nhất trong 5 giây vừa qua.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Số khung hình mất hơn 32ms trong 5 giây qua.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Thời gian bị chặn và số lượng nhiệm vụ dài trong 5 giây qua. Nhiệm vụ tối đa: {{max}}.",
+  "debugBar.long.tip":
+    "Thời gian bị chặn và số lượng nhiệm vụ dài trong 5 giây qua. Nhiệm vụ tối đa: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Độ trễ đầu vào được quan sát tồi tệ nhất trong 5 giây qua.",
+  "debugBar.delay.tip":
+    "Độ trễ đầu vào được quan sát tồi tệ nhất trong 5 giây qua.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Thời lượng tương tác gần đúng trong 5 giây qua. Đây giống như INP, không phải là Web Vitals chính thức INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Sự thay đổi bố cục tích lũy cho thời gian tồn tại của ứng dụng hiện tại.",
+  "debugBar.cls.tip":
+    "Sự thay đổi bố cục tích lũy cho thời gian tồn tại của ứng dụng hiện tại.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Bộ nhớ heap JS đã dùng so với giới hạn heap. Chỉ hỗ trợ Chromium.",
-  "debugBar.mem.tip": "Đã sử dụng JS heap so với giới hạn heap. {{used}} của {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Bộ nhớ heap JS đã dùng so với giới hạn heap. Chỉ hỗ trợ Chromium.",
+  "debugBar.mem.tip":
+    "Đã sử dụng JS heap so với giới hạn heap. {{used}} của {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Buộc áp dụng kiểu tiêu điểm cho mọi phần tử tương tác",
   "debugBar.focus.on": "BẬT",
   "debugBar.focus.off": "TẮT",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Buộc đặt hướng bố cục cho toàn bộ ứng dụng mà không thay đổi ngôn ngữ đã chọn",
+  "debugBar.direction.tip":
+    "Buộc đặt hướng bố cục cho toàn bộ ứng dụng mà không thay đổi ngôn ngữ đã chọn",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -937,7 +1049,8 @@ export const dict = {
   "settings.tab.shortcuts": "Phím tắt",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL tích hợp",
-  "settings.desktop.wsl.description": "Chạy máy chủ OpenCode bên trong WSL trên Windows.",
+  "settings.desktop.wsl.description":
+    "Chạy máy chủ OpenCode bên trong WSL trên Windows.",
   "settings.general.section.appearance": "Giao diện",
   "settings.general.section.advanced": "Nâng cao",
   "settings.general.section.notifications": "Thông báo hệ thống",
@@ -946,39 +1059,50 @@ export const dict = {
   "settings.general.section.feed": "Nguồn cấp",
   "settings.general.section.display": "Hiển thị",
   "settings.general.row.language.title": "Ngôn ngữ",
-  "settings.general.row.language.description": "Thay đổi ngôn ngữ hiển thị cho OpenCode",
+  "settings.general.row.language.description":
+    "Thay đổi ngôn ngữ hiển thị cho OpenCode",
   "settings.general.row.shell.title": "Shell terminal",
-  "settings.general.row.shell.description": "Shell được terminal và các công cụ của tác nhân sử dụng",
+  "settings.general.row.shell.description":
+    "Shell được terminal và các công cụ của tác nhân sử dụng",
   "settings.general.row.shell.autoDefault": "Tự động (Mặc định)",
   "settings.general.row.shell.terminalOnly": "chỉ terminal",
   "settings.general.row.appearance.title": "Giao diện",
-  "settings.general.row.appearance.description": "Tùy chỉnh giao diện của OpenCode trên thiết bị",
+  "settings.general.row.appearance.description":
+    "Tùy chỉnh giao diện của OpenCode trên thiết bị",
   "settings.general.row.colorScheme.title": "Cách phối màu",
-  "settings.general.row.colorScheme.description": "Chọn xem OpenCode tuân theo hệ thống, chủ đề sáng hay tối",
+  "settings.general.row.colorScheme.description":
+    "Chọn xem OpenCode tuân theo hệ thống, chủ đề sáng hay tối",
   "settings.general.row.theme.title": "Chủ đề",
   "settings.general.row.theme.description": "Tùy chỉnh chủ đề của OpenCode.",
   "settings.general.row.font.title": "Phông chữ mã",
-  "settings.general.row.font.description": "Tùy chỉnh phông chữ được sử dụng trong khối mã",
+  "settings.general.row.font.description":
+    "Tùy chỉnh phông chữ được sử dụng trong khối mã",
   "settings.general.row.terminalFont.title": "Phông chữ terminal",
-  "settings.general.row.terminalFont.description": "Tùy chỉnh phông chữ được sử dụng trong terminal",
+  "settings.general.row.terminalFont.description":
+    "Tùy chỉnh phông chữ được sử dụng trong terminal",
   "settings.general.row.uiFont.title": "Phông chữ giao diện",
-  "settings.general.row.uiFont.description": "Tùy chỉnh phông chữ dùng trong toàn bộ giao diện",
+  "settings.general.row.uiFont.description":
+    "Tùy chỉnh phông chữ dùng trong toàn bộ giao diện",
   "settings.general.row.followup.title": "Cách xử lý lời nhắc tiếp theo",
   "settings.general.row.followup.description":
     "Chọn để lời nhắc tiếp theo điều hướng phiên ngay lập tức hoặc chờ trong hàng đợi",
   "settings.general.row.followup.option.queue": "Xếp hàng",
   "settings.general.row.followup.option.steer": "Điều hướng",
   "settings.general.row.showFileTree.title": "Cây tệp",
-  "settings.general.row.showFileTree.description": "Hiển thị bảng cây tệp trong phiên",
+  "settings.general.row.showFileTree.description":
+    "Hiển thị bảng cây tệp trong phiên",
   "settings.general.row.showNavigation.title": "Điều khiển điều hướng",
   "settings.general.row.showNavigation.description":
     "Hiển thị các nút quay lại và tiến lên trên thanh tiêu đề của màn hình",
   "settings.general.row.showSearch.title": "Bảng lệnh",
-  "settings.general.row.showSearch.description": "Hiển thị nút bảng tìm kiếm và lệnh trong thanh tiêu đề",
+  "settings.general.row.showSearch.description":
+    "Hiển thị nút bảng tìm kiếm và lệnh trong thanh tiêu đề",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Hiển thị nút terminal trên thanh tiêu đề của ứng dụng desktop",
+  "settings.general.row.showTerminal.description":
+    "Hiển thị nút terminal trên thanh tiêu đề của ứng dụng desktop",
   "settings.general.row.showStatus.title": "Trạng thái máy chủ",
-  "settings.general.row.showStatus.description": "Hiển thị nút trạng thái máy chủ trên thanh tiêu đề",
+  "settings.general.row.showStatus.description":
+    "Hiển thị nút trạng thái máy chủ trên thanh tiêu đề",
   "settings.general.row.mobileTitlebarBottom.title": "Điều hướng dưới cùng",
   "settings.general.row.mobileTitlebarBottom.description":
     "Đặt thanh tiêu đề và tab phiên ở cuối màn hình trên thiết bị di động",
@@ -986,38 +1110,49 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "Chuyển đổi giữa các tác nhân trong trình soạn thảo. Khi ẩn, tác nhân mặc định là Build.",
   "settings.general.row.reasoningSummaries.title": "Hiển thị tóm tắt lý luận",
-  "settings.general.row.reasoningSummaries.description": "Hiển thị tóm tắt lý luận mô hình trong dòng thời gian",
-  "settings.general.row.shellToolPartsExpanded.title": "Mở rộng các phần của công cụ shell",
+  "settings.general.row.reasoningSummaries.description":
+    "Hiển thị tóm tắt lý luận mô hình trong dòng thời gian",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Mở rộng các phần của công cụ shell",
   "settings.general.row.shellToolPartsExpanded.description":
     "Hiển thị các phần công cụ shell được mở rộng theo mặc định trong dòng thời gian",
-  "settings.general.row.editToolPartsExpanded.title": "Mở rộng các phần công cụ chỉnh sửa",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Mở rộng các phần công cụ chỉnh sửa",
   "settings.general.row.editToolPartsExpanded.description":
     "Hiển thị các phần công cụ chỉnh sửa, viết và vá lỗi được mở rộng theo mặc định trong dòng thời gian",
   "settings.general.row.newInterface.title": "Bố cục mới",
   "settings.general.row.newInterface.badge": "Mới",
   "settings.general.row.newInterface.description":
     "Sử dụng các tab mới và bố cục trang chủ. Chuyển đổi giữa các bố cục trong một thời gian giới hạn.",
-  "settings.general.row.newInterfaceNotice.title": "Bạn hiện đang sử dụng bố cục mới",
-  "settings.general.row.newInterfaceNotice.description": "Bố cục trước đó không còn khả dụng",
+  "settings.general.row.newInterfaceNotice.title":
+    "Bạn hiện đang sử dụng bố cục mới",
+  "settings.general.row.newInterfaceNotice.description":
+    "Bố cục trước đó không còn khả dụng",
   "settings.general.row.newInterfaceNotice.dismiss": "Bỏ qua",
   "settings.general.row.pinchZoom.title": "Chụm để thu phóng",
-  "settings.general.row.pinchZoom.description": "Cho phép chụm bàn di chuột và cử chỉ cuộn Ctrl để thu phóng",
+  "settings.general.row.pinchZoom.description":
+    "Cho phép chụm bàn di chuột và cử chỉ cuộn Ctrl để thu phóng",
   "settings.general.row.wayland.title": "Sử dụng Wayland gốc",
-  "settings.general.row.wayland.description": "Tắt tính năng dự phòng X11 trên Wayland. Yêu cầu khởi động lại.",
+  "settings.general.row.wayland.description":
+    "Tắt tính năng dự phòng X11 trên Wayland. Yêu cầu khởi động lại.",
   "settings.general.row.wayland.tooltip":
     "Trên Linux với màn hình có tốc độ làm mới hỗn hợp, Wayland gốc có thể ổn định hơn.",
   "settings.general.row.releaseNotes.title": "Ghi chú phát hành",
-  "settings.general.row.releaseNotes.description": "Hiển thị cửa sổ bật lên Có gì mới sau khi cập nhật",
+  "settings.general.row.releaseNotes.description":
+    "Hiển thị cửa sổ bật lên Có gì mới sau khi cập nhật",
   "settings.updates.row.startup.title": "Kiểm tra cập nhật khi khởi động",
-  "settings.updates.row.startup.description": "Tự động kiểm tra các bản cập nhật khi OpenCode khởi chạy",
+  "settings.updates.row.startup.description":
+    "Tự động kiểm tra các bản cập nhật khi OpenCode khởi chạy",
   "settings.updates.row.check.title": "Kiểm tra các bản cập nhật",
-  "settings.updates.row.check.description": "Kiểm tra thủ công các bản cập nhật và cài đặt nếu có",
+  "settings.updates.row.check.description":
+    "Kiểm tra thủ công các bản cập nhật và cài đặt nếu có",
   "settings.updates.action.checkNow": "Kiểm tra ngay",
   "settings.updates.action.checking": "Đang kiểm tra...",
   "settings.updates.action.downloading": "Đang tải xuống...",
   "settings.updates.action.installing": "Đang cài đặt...",
   "settings.updates.toast.latest.title": "Đã cập nhật",
-  "settings.updates.toast.latest.description": "Bạn đang chạy phiên bản mới nhất của OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Bạn đang chạy phiên bản mới nhất của OpenCode.",
   "sound.option.none": "Không có",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1068,21 +1203,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Hiển thị thông báo hệ thống khi tác nhân hoàn thành hoặc cần chú ý",
   "settings.general.notifications.permissions.title": "Quyền",
-  "settings.general.notifications.permissions.description": "Hiển thị thông báo hệ thống khi cần có sự cho phép",
+  "settings.general.notifications.permissions.description":
+    "Hiển thị thông báo hệ thống khi cần có sự cho phép",
   "settings.general.notifications.errors.title": "Lỗi",
-  "settings.general.notifications.errors.description": "Hiển thị thông báo hệ thống khi xảy ra lỗi",
+  "settings.general.notifications.errors.description":
+    "Hiển thị thông báo hệ thống khi xảy ra lỗi",
   "settings.general.sounds.agent.title": "Tác nhân",
-  "settings.general.sounds.agent.description": "Phát âm thanh khi tác nhân hoàn thành hoặc cần chú ý",
+  "settings.general.sounds.agent.description":
+    "Phát âm thanh khi tác nhân hoàn thành hoặc cần chú ý",
   "settings.general.sounds.permissions.title": "Quyền",
-  "settings.general.sounds.permissions.description": "Phát âm thanh khi cần có sự cho phép",
+  "settings.general.sounds.permissions.description":
+    "Phát âm thanh khi cần có sự cho phép",
   "settings.general.sounds.errors.title": "Lỗi",
   "settings.general.sounds.errors.description": "Phát âm thanh khi xảy ra lỗi",
   "settings.shortcuts.title": "Phím tắt",
   "settings.shortcuts.reset.button": "Đặt lại về mặc định",
   "settings.shortcuts.reset.toast.title": "Đặt lại phím tắt",
-  "settings.shortcuts.reset.toast.description": "Phím tắt đã được đặt lại về mặc định.",
+  "settings.shortcuts.reset.toast.description":
+    "Phím tắt đã được đặt lại về mặc định.",
   "settings.shortcuts.conflict.title": "Phím tắt đã được sử dụng",
-  "settings.shortcuts.conflict.description": "{{keybind}} đã được gán cho {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} đã được gán cho {{titles}}.",
   "settings.shortcuts.unassigned": "Chưa được chỉ định",
   "settings.shortcuts.pressKeys": "Nhấn phím",
   "settings.shortcuts.search.placeholder": "Tìm kiếm phím tắt",
@@ -1094,12 +1235,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Lời nhắc",
   "settings.providers.title": "Nhà cung cấp",
-  "settings.providers.description": "Cài đặt nhà cung cấp sẽ được cấu hình ở đây.",
+  "settings.providers.description":
+    "Cài đặt nhà cung cấp sẽ được cấu hình ở đây.",
   "settings.providers.section.connected": "Nhà cung cấp được kết nối",
   "settings.providers.connected.empty": "Không có nhà cung cấp được kết nối",
-  "settings.providers.connected.environmentDescription": "Đã kết nối từ các biến môi trường của bạn",
+  "settings.providers.connected.environmentDescription":
+    "Đã kết nối từ các biến môi trường của bạn",
   "settings.providers.section.popular": "Nhà cung cấp phổ biến",
-  "settings.providers.custom.description": "Thêm nhà cung cấp tương thích OpenAI bằng URL cơ sở.",
+  "settings.providers.custom.description":
+    "Thêm nhà cung cấp tương thích OpenAI bằng URL cơ sở.",
   "settings.providers.tag.environment": "Môi trường",
   "settings.providers.tag.config": "Cấu hình",
   "settings.providers.tag.custom": "Tùy chỉnh",
@@ -1113,22 +1257,27 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Có thể cấu hình cài đặt MCP tại đây.",
   "settings.permissions.title": "Quyền",
-  "settings.permissions.description": "Kiểm soát những công cụ mà máy chủ có thể sử dụng theo mặc định.",
+  "settings.permissions.description":
+    "Kiểm soát những công cụ mà máy chủ có thể sử dụng theo mặc định.",
   "settings.permissions.section.tools": "Công cụ",
   "settings.permissions.toast.updateFailed.title": "Không cập nhật được quyền",
   "settings.permissions.action.allow": "Cho phép",
   "settings.permissions.action.ask": "Hỏi",
   "settings.permissions.action.deny": "Từ chối",
   "settings.permissions.tool.read.title": "Đọc",
-  "settings.permissions.tool.read.description": "Đọc một tệp (khớp với đường dẫn tệp)",
+  "settings.permissions.tool.read.description":
+    "Đọc một tệp (khớp với đường dẫn tệp)",
   "settings.permissions.tool.edit.title": "Chỉnh sửa",
-  "settings.permissions.tool.edit.description": "Sửa đổi tệp, bao gồm chỉnh sửa, ghi và vá lỗi",
+  "settings.permissions.tool.edit.description":
+    "Sửa đổi tệp, bao gồm chỉnh sửa, ghi và vá lỗi",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "Khớp tệp bằng mẫu glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Tìm kiếm nội dung tệp bằng cách sử dụng biểu thức thông thường",
+  "settings.permissions.tool.grep.description":
+    "Tìm kiếm nội dung tệp bằng cách sử dụng biểu thức thông thường",
   "settings.permissions.tool.list.title": "Danh sách",
-  "settings.permissions.tool.list.description": "Liệt kê các tệp trong một thư mục",
+  "settings.permissions.tool.list.description":
+    "Liệt kê các tệp trong một thư mục",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Chạy lệnh shell",
   "settings.permissions.tool.task.title": "Nhiệm vụ",
@@ -1138,13 +1287,15 @@ export const dict = {
   "settings.permissions.tool.lsp.title": "LSP",
   "settings.permissions.tool.lsp.description": "Chạy truy vấn máy chủ ngôn ngữ",
   "settings.permissions.tool.todowrite.title": "Ghi việc cần làm",
-  "settings.permissions.tool.todowrite.description": "Cập nhật danh sách việc cần làm",
+  "settings.permissions.tool.todowrite.description":
+    "Cập nhật danh sách việc cần làm",
   "settings.permissions.tool.webfetch.title": "Tìm nạp web",
   "settings.permissions.tool.webfetch.description": "Tìm nạp nội dung từ URL",
   "settings.permissions.tool.websearch.title": "Tìm kiếm trên web",
   "settings.permissions.tool.websearch.description": "Tìm kiếm trên web",
   "settings.permissions.tool.external_directory.title": "Thư mục bên ngoài",
-  "settings.permissions.tool.external_directory.description": "Truy cập các tệp bên ngoài thư mục dự án",
+  "settings.permissions.tool.external_directory.description":
+    "Truy cập các tệp bên ngoài thư mục dự án",
   "settings.permissions.tool.doom_loop.title": "Vòng lặp vô hạn",
   "settings.permissions.tool.doom_loop.description":
     "Phát hiện các lệnh gọi công cụ lặp lại với đầu vào giống hệt nhau",
@@ -1161,20 +1312,25 @@ export const dict = {
   "workspace.resetting.description": "Việc này có thể mất một phút.",
   "workspace.reset.failed.title": "Không thể đặt lại không gian làm việc",
   "workspace.reset.success.title": "Đặt lại không gian làm việc",
-  "workspace.reset.success.description": "Không gian làm việc bây giờ khớp với nhánh mặc định.",
+  "workspace.reset.success.description":
+    "Không gian làm việc bây giờ khớp với nhánh mặc định.",
   "workspace.error.stillPreparing": "Không gian làm việc vẫn đang chuẩn bị",
-  "workspace.status.checking": "Đang kiểm tra các thay đổi chưa được hợp nhất...",
+  "workspace.status.checking":
+    "Đang kiểm tra các thay đổi chưa được hợp nhất...",
   "workspace.status.error": "Không thể xác minh trạng thái git.",
   "workspace.status.clean": "Không phát hiện thấy thay đổi chưa hợp nhất nào.",
-  "workspace.status.dirty": "Đã phát hiện thấy các thay đổi chưa được hợp nhất trong không gian làm việc này.",
+  "workspace.status.dirty":
+    "Đã phát hiện thấy các thay đổi chưa được hợp nhất trong không gian làm việc này.",
   "workspace.delete.title": "Xóa không gian làm việc",
   "workspace.delete.confirm": 'Xóa không gian làm việc "{{name}}"?',
   "workspace.delete.button": "Xóa không gian làm việc",
   "workspace.reset.title": "Đặt lại không gian làm việc",
   "workspace.reset.confirm": 'Đặt lại không gian làm việc "{{name}}"?',
   "workspace.reset.button": "Đặt lại không gian làm việc",
-  "workspace.reset.archived.none": "Không có phiên hoạt động nào sẽ được lưu trữ.",
+  "workspace.reset.archived.none":
+    "Không có phiên hoạt động nào sẽ được lưu trữ.",
   "workspace.reset.archived.one": "1 phiên sẽ được lưu trữ.",
   "workspace.reset.archived.many": "{{count}} phiên sẽ được lưu trữ.",
-  "workspace.reset.note": "Điều này sẽ thiết lập lại không gian làm việc để phù hợp với nhánh mặc định.",
+  "workspace.reset.note":
+    "Điều này sẽ thiết lập lại không gian làm việc để phù hợp với nhánh mặc định.",
 }

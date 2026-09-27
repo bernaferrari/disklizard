@@ -7,21 +7,39 @@ import { diskLanguageText } from "./runtime"
  * files can be read without changing their mtime, so the latter would be an
  * unsafe promise.
  */
-export const DEVELOPER_CLEANUP_AGE_PRESETS = ["all", "30", "60", "90", "180", "custom"] as const
+export const DEVELOPER_CLEANUP_AGE_PRESETS = [
+  "all",
+  "30",
+  "60",
+  "90",
+  "180",
+  "custom",
+] as const
 
-export type DeveloperCleanupAgePreset = (typeof DEVELOPER_CLEANUP_AGE_PRESETS)[number]
+export type DeveloperCleanupAgePreset =
+  (typeof DEVELOPER_CLEANUP_AGE_PRESETS)[number]
 
-export type DeveloperCleanupAge = { valid: true; days?: number } | { valid: false; days?: never }
+export type DeveloperCleanupAge =
+  | { valid: true; days?: number }
+  | { valid: false; days?: never }
 
 const MAX_CUSTOM_AGE_DAYS = 3650
 
 /** Resolve the UI value without treating an invalid custom value as "all". */
-export function resolveDeveloperCleanupAge(preset: DeveloperCleanupAgePreset, customDays: string): DeveloperCleanupAge {
+export function resolveDeveloperCleanupAge(
+  preset: DeveloperCleanupAgePreset,
+  customDays: string
+): DeveloperCleanupAge {
   if (preset === "all") return { valid: true }
   if (preset !== "custom") return { valid: true, days: Number(preset) }
 
   const parsed = Number(customDays)
-  if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > MAX_CUSTOM_AGE_DAYS) return { valid: false }
+  if (
+    !Number.isSafeInteger(parsed) ||
+    parsed < 1 ||
+    parsed > MAX_CUSTOM_AGE_DAYS
+  )
+    return { valid: false }
   return { valid: true, days: parsed }
 }
 
@@ -32,7 +50,7 @@ export function resolveDeveloperCleanupAge(preset: DeveloperCleanupAgePreset, cu
 export function matchesDeveloperCleanupAge(
   modifiedAt: number | undefined,
   age: DeveloperCleanupAge,
-  now = Date.now(),
+  now = Date.now()
 ): boolean {
   if (!age.valid) return false
   if (age.days === undefined) return true
@@ -43,9 +61,11 @@ export function matchesDeveloperCleanupAge(
 export function filterDeveloperItemsByAge(
   items: readonly DeveloperItem[],
   age: DeveloperCleanupAge,
-  now = Date.now(),
+  now = Date.now()
 ): DeveloperItem[] {
-  return items.filter(({ node }) => matchesDeveloperCleanupAge(node.modifiedAt, age, now))
+  return items.filter(({ node }) =>
+    matchesDeveloperCleanupAge(node.modifiedAt, age, now)
+  )
 }
 
 export function developerCleanupAgeLabel(age: DeveloperCleanupAge): string {

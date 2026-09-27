@@ -20,17 +20,32 @@ export type ScanHistoryEntry = {
   totalDeltaBytes: number
 }
 
-export function filterScanHistoryEntries(entries: readonly ScanHistoryEntry[], scanId: string | undefined, query = "") {
+export function filterScanHistoryEntries(
+  entries: readonly ScanHistoryEntry[],
+  scanId: string | undefined,
+  query = ""
+) {
   if (!scanId) return []
   const normalizedQuery = query.trim().toLocaleLowerCase()
   return entries.flatMap((entry): ScanHistoryEntry[] => {
     if (entry.scanId !== scanId) return []
     if (!normalizedQuery) return [entry]
     const changes = entry.changes.filter((change) =>
-      `${change.name}\n${change.path}\n${change.kind}`.toLocaleLowerCase().includes(normalizedQuery),
+      `${change.name}\n${change.path}\n${change.kind}`
+        .toLocaleLowerCase()
+        .includes(normalizedQuery)
     )
     if (changes.length === 0) return []
-    return [{ ...entry, changes, totalDeltaBytes: changes.reduce((total, change) => total + change.deltaBytes, 0) }]
+    return [
+      {
+        ...entry,
+        changes,
+        totalDeltaBytes: changes.reduce(
+          (total, change) => total + change.deltaBytes,
+          0
+        ),
+      },
+    ]
   })
 }
 
@@ -47,7 +62,10 @@ function normalizePath(path: string, os?: ScanHistoryOptions["os"]) {
 }
 
 function isWithinPath(path: string, parent: string) {
-  return path === parent || (parent === "/" ? path.startsWith("/") : path.startsWith(`${parent}/`))
+  return (
+    path === parent ||
+    (parent === "/" ? path.startsWith("/") : path.startsWith(`${parent}/`))
+  )
 }
 
 /**
@@ -55,24 +73,34 @@ function isWithinPath(path: string, parent: string) {
  * the same transaction. Keep only the shallowest roots so byte deltas are not
  * counted twice.
  */
-export function disjointChangedPaths(paths: readonly string[], os?: ScanHistoryOptions["os"]) {
+export function disjointChangedPaths(
+  paths: readonly string[],
+  os?: ScanHistoryOptions["os"]
+) {
   const unique = new Map<string, string>()
   for (const path of paths) {
     const normalized = normalizePath(path, os)
     if (!unique.has(normalized)) unique.set(normalized, path)
   }
   const ordered = [...unique].sort(
-    ([left], [right]) => left.split("/").length - right.split("/").length || left.localeCompare(right),
+    ([left], [right]) =>
+      left.split("/").length - right.split("/").length ||
+      left.localeCompare(right)
   )
   const accepted: Array<[string, string]> = []
   for (const candidate of ordered) {
-    if (accepted.some(([parent]) => isWithinPath(candidate[0], parent))) continue
+    if (accepted.some(([parent]) => isWithinPath(candidate[0], parent)))
+      continue
     accepted.push(candidate)
   }
   return accepted.map(([, original]) => original)
 }
 
-function nodesAtPaths(root: DiskScanNode, paths: readonly string[], os?: ScanHistoryOptions["os"]) {
+function nodesAtPaths(
+  root: DiskScanNode,
+  paths: readonly string[],
+  os?: ScanHistoryOptions["os"]
+) {
   const targets = new Set(paths.map((path) => normalizePath(path, os)))
   const found = new Map<string, DiskScanNode>()
   const stack = [root]
@@ -89,7 +117,7 @@ export function summarizeScanChanges(
   previous: DiskScanNode,
   next: DiskScanNode,
   changedPaths: readonly string[],
-  options: Pick<ScanHistoryOptions, "os" | "maxChangesPerEntry"> = {},
+  options: Pick<ScanHistoryOptions, "os" | "maxChangesPerEntry"> = {}
 ) {
   const disjoint = disjointChangedPaths(changedPaths, options.os)
   const before = nodesAtPaths(previous, disjoint, options.os)
@@ -115,36 +143,80 @@ export function summarizeScanChanges(
   })
   // A watcher may invalidate the whole volume. Resolve that notification to
   // changed retained branches, but keep the aggregate if coverage is lossy.
-  if (disjoint.length === 1 && normalizePath(disjoint[0], options.os) === normalizePath(next.path, options.os)) {
+  if (
+    disjoint.length === 1 &&
+    normalizePath(disjoint[0], options.os) ===
+      normalizePath(next.path, options.os)
+  ) {
     let budget = 20_000
-    const descend = (oldNode: DiskScanNode | undefined, newNode: DiskScanNode | undefined): ScanHistoryChange[] => {
+    const descend = (
+      oldNode: DiskScanNode | undefined,
+      newNode: DiskScanNode | undefined
+    ): ScanHistoryChange[] => {
       const node = newNode ?? oldNode!
       const delta = (newNode?.size ?? 0) - (oldNode?.size ?? 0)
-      if (oldNode && newNode && --budget > 0 && oldNode.children.length && newNode.children.length) {
-        const oldChildren = new Map(oldNode.children.map(child => [normalizePath(child.path, options.os), child]))
-        const newChildren = new Map(newNode.children.map(child => [normalizePath(child.path, options.os), child]))
+      if (
+        oldNode &&
+        newNode &&
+        --budget > 0 &&
+        oldNode.children.length &&
+        newNode.children.length
+      ) {
+        const oldChildren = new Map(
+          oldNode.children.map((child) => [
+            normalizePath(child.path, options.os),
+            child,
+          ])
+        )
+        const newChildren = new Map(
+          newNode.children.map((child) => [
+            normalizePath(child.path, options.os),
+            child,
+          ])
+        )
         const details: ScanHistoryChange[] = []
-        for (const key of new Set([...oldChildren.keys(), ...newChildren.keys()])) {
-          const beforeChild = oldChildren.get(key), afterChild = newChildren.get(key)
+        for (const key of new Set([
+          ...oldChildren.keys(),
+          ...newChildren.keys(),
+        ])) {
+          const beforeChild = oldChildren.get(key),
+            afterChild = newChildren.get(key)
           if (beforeChild === afterChild) continue
           details.push(...descend(beforeChild, afterChild))
           if (budget <= 0) break
         }
-        if (budget > 0 && details.reduce((sum, change) => sum + change.deltaBytes, 0) === delta) return details
+        if (
+          budget > 0 &&
+          details.reduce((sum, change) => sum + change.deltaBytes, 0) === delta
+        )
+          return details
       }
       if (oldNode && newNode && delta === 0) return []
-      return [{ path: node.path, name: node.name, isDir: node.isDir,
-        kind: !oldNode ? "added" : !newNode ? "removed" : "changed",
-        beforeBytes: oldNode?.size ?? 0, afterBytes: newNode?.size ?? 0, deltaBytes: delta }]
+      return [
+        {
+          path: node.path,
+          name: node.name,
+          isDir: node.isDir,
+          kind: !oldNode ? "added" : !newNode ? "removed" : "changed",
+          beforeBytes: oldNode?.size ?? 0,
+          afterBytes: newNode?.size ?? 0,
+          deltaBytes: delta,
+        },
+      ]
     }
     changes.splice(0, changes.length, ...descend(previous, next))
   }
   changes.sort(
     (left, right) =>
       Math.abs(right.deltaBytes) - Math.abs(left.deltaBytes) ||
-      normalizePath(left.path, options.os).localeCompare(normalizePath(right.path, options.os)),
+      normalizePath(left.path, options.os).localeCompare(
+        normalizePath(right.path, options.os)
+      )
   )
-  const totalDeltaBytes = changes.reduce((total, change) => total + change.deltaBytes, 0)
+  const totalDeltaBytes = changes.reduce(
+    (total, change) => total + change.deltaBytes,
+    0
+  )
   return {
     changedPaths: disjoint,
     changes: changes.slice(0, Math.max(1, options.maxChangesPerEntry ?? 128)),
@@ -173,9 +245,15 @@ export function createScanHistory(options: ScanHistoryOptions = {}) {
     record(update: DiskScanUpdate): ScanHistoryEntry | undefined {
       const previous = roots.get(update.scanId)
       roots.set(update.scanId, update.root)
-      if (!previous || update.watchError || update.changedPaths.length === 0) return
-      const summary = summarizeScanChanges(previous, update.root, update.changedPaths, options)
-      if (summary.changes.length === 0) return
+      if (!previous || update.watchError || update.changedPaths.length === 0)
+        return undefined
+      const summary = summarizeScanChanges(
+        previous,
+        update.root,
+        update.changedPaths,
+        options
+      )
+      if (summary.changes.length === 0) return undefined
       const recordedAt = now()
       const entry: ScanHistoryEntry = {
         id: `${update.scanId}:${recordedAt}:${++sequence}`,

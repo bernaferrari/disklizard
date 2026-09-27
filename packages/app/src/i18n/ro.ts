@@ -26,7 +26,8 @@ export const dict = {
   "desktop.menu.toggleTerminal": "Comută terminalul",
   "desktop.menu.toggleFileTree": "Comută arborele de fișiere",
   "desktop.menu.reload": "Reîncarcă",
-  "desktop.menu.toggleDeveloperTools": "Comută instrumentele pentru dezvoltatori",
+  "desktop.menu.toggleDeveloperTools":
+    "Comută instrumentele pentru dezvoltatori",
   "desktop.menu.actualSize": "Dimensiune reală",
   "desktop.menu.zoomIn": "Mărește",
   "desktop.menu.zoomOut": "Micșorează",
@@ -44,13 +45,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Trimite feedback",
   "desktop.menu.reportBug": "Raportează o problemă",
   "desktop.menu.ariaLabel": "Meniu OpenCode",
-  "desktop.updater.dialog.checkFailed.message": "Verificarea actualizărilor a eșuat.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Verificarea actualizărilor a eșuat.",
   "desktop.updater.dialog.checkFailed.title": "Eroare actualizare",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Ai cea mai recentă versiune.",
   "desktop.updater.dialog.upToDate.title": "Nicio actualizare",
-  "desktop.updater.dialog.ready.message": "Actualizarea {{version}} a fost descărcată. Repornești acum?",
+  "desktop.updater.dialog.ready.message":
+    "Actualizarea {{version}} a fost descărcată. Repornești acum?",
   "desktop.updater.dialog.ready.title": "Actualizare pregătită",
   "desktop.updater.dialog.restart": "Repornește",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +66,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode nu a putut fi încărcat",
   "desktop.recovery.terminated": "Fereastra OpenCode s-a închis neașteptat",
   "desktop.recovery.unresponsive": "OpenCode nu răspunde",
-  "desktop.recovery.unresponsive.detail": "Poți reporni aplicația, deschide jurnalele sau aștepta în continuare.",
-  "desktop.recovery.loadFailed.detail": "Fereastră: {{window}}\nURL: {{url}}\nEroare: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Fereastră: {{window}}\nMotiv: {{reason}}\nCod: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Poți reporni aplicația, deschide jurnalele sau aștepta în continuare.",
+  "desktop.recovery.loadFailed.detail":
+    "Fereastră: {{window}}\nURL: {{url}}\nEroare: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Fereastră: {{window}}\nMotiv: {{reason}}\nCod: {{code}}",
   "desktop.recovery.unknown": "<necunoscut>",
   "desktop.dialog.chooseFolder": "Alege un folder",
   "desktop.dialog.chooseFile": "Alege un fișier",
@@ -73,27 +80,38 @@ export const dict = {
   "desktop.server.local": "Server local",
   "desktop.wsl.error.windowsOnly": "WSL este disponibil doar pe Windows",
   "desktop.wsl.error.unavailable": "WSL nu este disponibil",
-  "desktop.wsl.error.listInstalled": "Nu s-au putut afișa distribuțiile WSL instalate",
-  "desktop.wsl.error.listOnline": "Nu s-au putut afișa distribuțiile WSL online",
+  "desktop.wsl.error.listInstalled":
+    "Nu s-au putut afișa distribuțiile WSL instalate",
+  "desktop.wsl.error.listOnline":
+    "Nu s-au putut afișa distribuțiile WSL online",
   "desktop.wsl.error.executeDistro": "Nu se pot executa comenzi în distribuție",
   "desktop.wsl.error.installWsl": "Instalarea WSL a eșuat",
-  "desktop.wsl.error.installDistro": "Nu s-a putut instala distribuția: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Nu s-a putut instala distribuția: {{distro}}",
   "desktop.wsl.error.installOpencode": "Instalarea OpenCode a eșuat",
   "desktop.wsl.error.alreadyAdded": "{{distro}} este deja adăugată",
-  "desktop.wsl.error.opencodeMissing": "opencode nu este instalat în această distribuție",
-  "desktop.wsl.error.opencodeCannotRun": "opencode este instalat, dar nu a putut fi pornit",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode nu este instalat în {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode nu este instalat în această distribuție",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode este instalat, dar nu a putut fi pornit",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode nu este instalat în {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Actualizarea OpenCode s-a terminat, dar {{distro}} raportează tot {{installed}}; era așteptat {{expected}}",
   "desktop.wsl.error.noVersion": "nicio versiune",
-  "desktop.wsl.error.serverExited": "Serverul WSL s-a oprit după pornire (cod={{code}} semnal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Serverul WSL s-a oprit după pornire (cod={{code}} semnal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Serverul WSL s-a oprit înainte să fie funcțional (cod={{code}} semnal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Verificarea stării pentru sidecar-ul {{distro}} a expirat după {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} a expirat după {{timeout}} ms",
+  "desktop.wsl.error.healthTimeout":
+    "Verificarea stării pentru sidecar-ul {{distro}} a expirat după {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} a expirat după {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Nu s-a putut obține portul",
-  "desktop.picker.error.notSelected": "Fișierul nu a fost selectat din selector",
-  "desktop.picker.error.sizeLimit": "Atașamentele selectate depășesc limita de {{limit}} MB",
+  "desktop.picker.error.notSelected":
+    "Fișierul nu a fost selectat din selector",
+  "desktop.picker.error.sizeLimit":
+    "Atașamentele selectate depășesc limita de {{limit}} MB",
   "command.category.suggested": "Sugerat",
   "command.category.view": "Vizualizare",
   "command.category.project": "Proiect",
@@ -140,7 +158,8 @@ export const dict = {
   "command.tab.close": "Închide fila",
   "command.tab.reopenClosed": "Redeschide fila închisă",
   "command.context.addSelection": "Adaugă selecția în context",
-  "command.context.addSelection.description": "Adaugă liniile selectate din fișierul curent",
+  "command.context.addSelection.description":
+    "Adaugă liniile selectate din fișierul curent",
   "command.input.focus": "Focalizează pe câmpul de introducere",
   "command.terminal.toggle": "Comută terminalul",
   "command.fileTree.toggle": "Comută arborele de fișiere",
@@ -148,11 +167,14 @@ export const dict = {
   "command.terminal.new": "Terminal nou",
   "command.terminal.new.description": "Creează o filă de terminal nouă",
   "command.steps.toggle": "Comută pașii",
-  "command.steps.toggle.description": "Afișează sau ascunde pașii pentru mesajul curent",
+  "command.steps.toggle.description":
+    "Afișează sau ascunde pașii pentru mesajul curent",
   "command.message.previous": "Mesajul anterior",
-  "command.message.previous.description": "Mergi la mesajul anterior al utilizatorului",
+  "command.message.previous.description":
+    "Mergi la mesajul anterior al utilizatorului",
   "command.message.next": "Mesajul următor",
-  "command.message.next.description": "Mergi la mesajul următor al utilizatorului",
+  "command.message.next.description":
+    "Mergi la mesajul următor al utilizatorului",
   "command.model.choose": "Alege modelul",
   "command.model.choose.description": "Selectează alt model",
   "command.mcp.toggle": "Comută MCP-uri",
@@ -162,27 +184,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Schimbă agentul înapoi",
   "command.agent.cycle.reverse.description": "Treci la agentul anterior",
   "command.model.variant.cycle": "Schimbă nivelul de efort",
-  "command.model.variant.cycle.description": "Treci la următorul nivel de efort",
+  "command.model.variant.cycle.description":
+    "Treci la următorul nivel de efort",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Solicitare",
   "command.permissions.autoaccept.enable": "Acceptă automat permisiunile",
-  "command.permissions.autoaccept.disable": "Oprește acceptarea automată a permisiunilor",
+  "command.permissions.autoaccept.disable":
+    "Oprește acceptarea automată a permisiunilor",
   "command.workspace.toggle": "Comută spațiile de lucru",
-  "command.workspace.toggle.description": "Activează sau dezactivează mai multe spații de lucru în bara laterală",
+  "command.workspace.toggle.description":
+    "Activează sau dezactivează mai multe spații de lucru în bara laterală",
   "command.session.undo": "Anulează",
   "command.session.undo.description": "Anulează ultimul mesaj",
   "command.session.redo": "Refă",
   "command.session.redo.description": "Refă ultimul mesaj anulat",
   "command.session.compact": "Compactează sesiunea",
-  "command.session.compact.description": "Rezumă sesiunea pentru a reduce dimensiunea contextului",
+  "command.session.compact.description":
+    "Rezumă sesiunea pentru a reduce dimensiunea contextului",
   "command.session.fork": "Derivează din mesaj",
-  "command.session.fork.description": "Creează o sesiune nouă dintr-un mesaj anterior",
+  "command.session.fork.description":
+    "Creează o sesiune nouă dintr-un mesaj anterior",
   "command.session.share": "Partajează sesiunea",
-  "command.session.share.description": "Partajează această sesiune și copiază URL-ul în clipboard",
+  "command.session.share.description":
+    "Partajează această sesiune și copiază URL-ul în clipboard",
   "command.session.unshare": "Oprește partajarea sesiunii",
   "command.session.unshare.description": "Nu mai partaja această sesiune",
   "command.session.export": "Exportă sesiunea",
-  "command.session.export.description": "Exportă transcriptul complet al sesiunii ca JSON",
+  "command.session.export.description":
+    "Exportă transcriptul complet al sesiunii ca JSON",
   "palette.search.placeholder": "Caută fișiere, comenzi și sesiuni",
   "palette.search.placeholder.home": "Caută comenzi și sesiuni",
   "palette.empty": "Niciun rezultat găsit",
@@ -194,28 +223,39 @@ export const dict = {
   "dialog.provider.group.other": "Altele",
   "dialog.provider.custom.label": "Furnizor compatibil OpenAI personalizat",
   "dialog.provider.tag.recommended": "Recomandat",
-  "dialog.provider.opencode.note": "Modele selectate, inclusiv Claude, GPT, Gemini și altele",
+  "dialog.provider.opencode.note":
+    "Modele selectate, inclusiv Claude, GPT, Gemini și altele",
   "dialog.provider.opencode.tagline": "Modele optimizate, fiabile",
   "dialog.provider.opencodeGo.tagline": "Abonament accesibil pentru toți",
-  "dialog.provider.anthropic.note": "Acces direct la modelele Claude, inclusiv Pro și Max",
-  "dialog.provider.copilot.note": "Modele AI pentru asistență la programare prin GitHub Copilot",
-  "dialog.provider.openai.note": "Modele GPT pentru sarcini AI generale rapide și performante",
-  "dialog.provider.google.note": "Modele Gemini pentru răspunsuri rapide și structurate",
-  "dialog.provider.openrouter.note": "Accesează toate modelele suportate de la un singur furnizor",
-  "dialog.provider.vercel.note": "Acces unificat la modele AI cu rutare inteligentă",
+  "dialog.provider.anthropic.note":
+    "Acces direct la modelele Claude, inclusiv Pro și Max",
+  "dialog.provider.copilot.note":
+    "Modele AI pentru asistență la programare prin GitHub Copilot",
+  "dialog.provider.openai.note":
+    "Modele GPT pentru sarcini AI generale rapide și performante",
+  "dialog.provider.google.note":
+    "Modele Gemini pentru răspunsuri rapide și structurate",
+  "dialog.provider.openrouter.note":
+    "Accesează toate modelele suportate de la un singur furnizor",
+  "dialog.provider.vercel.note":
+    "Acces unificat la modele AI cu rutare inteligentă",
   "dialog.model.select.title": "Selectează modelul",
   "dialog.model.search.placeholder": "Caută modele",
   "dialog.model.empty": "Niciun model găsit",
   "dialog.model.manage": "Gestionează modelele",
-  "dialog.model.manage.description": "Personalizează ce modele apar în selectorul de modele.",
-  "dialog.model.manage.provider.toggle": "Activează toate modelele {{provider}}",
+  "dialog.model.manage.description":
+    "Personalizează ce modele apar în selectorul de modele.",
+  "dialog.model.manage.provider.toggle":
+    "Activează toate modelele {{provider}}",
   "dialog.model.unpaid.freeModels.title": "Modele gratuite oferite de OpenCode",
-  "dialog.model.unpaid.addMore.title": "Adaugă mai multe modele de la furnizori populari",
+  "dialog.model.unpaid.addMore.title":
+    "Adaugă mai multe modele de la furnizori populari",
   "dialog.model.unpaid.viewMoreProviders": "Vezi peste 70 de furnizori",
   "dialog.provider.viewAll": "Afișează mai mulți furnizori",
   "provider.connect.title": "Conectează {{provider}}",
   "provider.connect.title.anthropicProMax": "Autentificare cu Claude Pro/Max",
-  "provider.connect.selectMethod": "Selectează metoda de autentificare pentru {{provider}}.",
+  "provider.connect.selectMethod":
+    "Selectează metoda de autentificare pentru {{provider}}.",
   "provider.connect.method.apiKey": "Cheie API",
   "provider.connect.method.browser": "Navigator",
   "provider.connect.method.headless": "Fără interfață",
@@ -240,7 +280,8 @@ export const dict = {
     " pentru a obține codul de autorizare și a-ți conecta contul ca să folosești modelele {{provider}} în OpenCode.",
   "provider.connect.oauth.code.label": "Cod de autorizare {{method}}",
   "provider.connect.oauth.code.placeholder": "Cod de autorizare",
-  "provider.connect.oauth.code.required": "Codul de autorizare este obligatoriu",
+  "provider.connect.oauth.code.required":
+    "Codul de autorizare este obligatoriu",
   "provider.connect.oauth.code.invalid": "Cod de autorizare invalid",
   "provider.connect.oauth.auto.visit.prefix": "Vizitează",
   "provider.connect.oauth.auto.visit.link": "acest link",
@@ -248,22 +289,28 @@ export const dict = {
     " și introdu codul de mai jos pentru a-ți conecta contul și a folosi modelele {{provider}} în OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Cod de confirmare",
   "provider.connect.toast.connected.title": "{{provider}} conectat",
-  "provider.connect.toast.connected.description": "Modelele {{provider}} sunt acum disponibile.",
+  "provider.connect.toast.connected.description":
+    "Modelele {{provider}} sunt acum disponibile.",
   "provider.custom.title": "Provider personalizat",
-  "provider.custom.unavailable": "Providerii personalizați nu sunt disponibili pe acest server",
-  "provider.custom.description.prefix": "Configurează un provider compatibil OpenAI. Vezi",
-  "provider.custom.description.link": "documentația de configurare a providerului",
+  "provider.custom.unavailable":
+    "Providerii personalizați nu sunt disponibili pe acest server",
+  "provider.custom.description.prefix":
+    "Configurează un provider compatibil OpenAI. Vezi",
+  "provider.custom.description.link":
+    "documentația de configurare a providerului",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID provider",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Litere mici, cifre, cratime sau underscore",
+  "provider.custom.field.providerID.description":
+    "Litere mici, cifre, cratime sau underscore",
   "provider.custom.field.name.label": "Nume afișat",
   "provider.custom.field.name.placeholder": "Providerul meu AI",
   "provider.custom.field.baseURL.label": "URL de bază",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "Cheie API",
   "provider.custom.field.apiKey.placeholder": "Cheie API",
-  "provider.custom.field.apiKey.description": "Opțional. Lasă gol dacă gestionezi autentificarea prin headere.",
+  "provider.custom.field.apiKey.description":
+    "Opțional. Lasă gol dacă gestionezi autentificarea prin headere.",
   "provider.custom.models.label": "Modele",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -278,16 +325,20 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "valoare",
   "provider.custom.headers.remove": "Elimină headerul",
   "provider.custom.headers.add": "Adaugă header",
-  "provider.custom.error.providerID.required": "ID-ul providerului este obligatoriu",
-  "provider.custom.error.providerID.format": "Folosește litere mici, cifre, cratime sau underscore",
+  "provider.custom.error.providerID.required":
+    "ID-ul providerului este obligatoriu",
+  "provider.custom.error.providerID.format":
+    "Folosește litere mici, cifre, cratime sau underscore",
   "provider.custom.error.providerID.exists": "ID-ul de provider există deja",
   "provider.custom.error.name.required": "Numele afișat este obligatoriu",
   "provider.custom.error.baseURL.required": "URL-ul de bază este obligatoriu",
-  "provider.custom.error.baseURL.format": "Trebuie să înceapă cu http:// sau https://",
+  "provider.custom.error.baseURL.format":
+    "Trebuie să înceapă cu http:// sau https://",
   "provider.custom.error.required": "Obligatoriu",
   "provider.custom.error.duplicate": "Duplicat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} deconectat",
-  "provider.disconnect.toast.disconnected.description": "Modelele {{provider}} nu mai sunt disponibile.",
+  "provider.disconnect.toast.disconnected.description":
+    "Modelele {{provider}} nu mai sunt disponibile.",
   "model.tag.free": "Gratuit",
   "model.tag.latest": "Ultimul",
   "model.provider.anthropic": "Anthropic",
@@ -381,10 +432,12 @@ export const dict = {
   "prompt.action.send": "Trimite",
   "prompt.action.stop": "Oprește",
   "prompt.toast.pasteUnsupported.title": "Atașament neacceptat",
-  "prompt.toast.pasteUnsupported.description": "Poți atașa doar imagini, PDF-uri sau fișiere text aici.",
+  "prompt.toast.pasteUnsupported.description":
+    "Poți atașa doar imagini, PDF-uri sau fișiere text aici.",
   "prompt.toast.attachmentDuplicate.title": "Acest fișier a fost deja încărcat",
   "prompt.toast.modelAgentRequired.title": "Selectează un agent și un model",
-  "prompt.toast.modelAgentRequired.description": "Alege un agent și un model înainte de a trimite un prompt.",
+  "prompt.toast.modelAgentRequired.description":
+    "Alege un agent și un model înainte de a trimite un prompt.",
   "prompt.toast.worktreeCreateFailed.title": "Nu s-a putut crea worktree-ul",
   "prompt.toast.sessionCreateFailed.title": "Nu s-a putut crea sesiunea",
   "prompt.toast.shellSendFailed.title": "Nu s-a putut trimite comanda shell",
@@ -413,7 +466,8 @@ export const dict = {
   "app.server.retrying": "Se reîncearcă automat...",
   "app.server.otherServers": "Alte servere",
   "dialog.server.title": "Servere",
-  "dialog.server.description": "Schimbă serverul OpenCode la care se conectează aplicația.",
+  "dialog.server.description":
+    "Schimbă serverul OpenCode la care se conectează aplicația.",
   "dialog.server.search.placeholder": "Caută servere",
   "dialog.server.empty": "Niciun server",
   "dialog.server.add.title": "Adaugă server",
@@ -451,7 +505,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Alege distribuția",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Se verifică WSL...",
-  "wsl.onboarding.restartRequired": "Windows trebuie repornit pentru a finaliza instalarea WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows trebuie repornit pentru a finaliza instalarea WSL.",
   "wsl.onboarding.ready": "WSL este gata.",
   "wsl.onboarding.required": "WSL este necesar pentru a continua.",
   "wsl.onboarding.checkingDistros": "Se verifică distribuțiile...",
@@ -460,13 +515,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Se afișează distribuțiile...",
   "wsl.onboarding.distroReady": "{{distro}} este gata.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} nu este instalat încă.",
-  "wsl.onboarding.openDistroOnce": "Deschide {{distro}} o dată pentru a finaliza configurarea.",
-  "wsl.onboarding.finishingDistro": "Se finalizează configurarea pentru {{distro}}.",
-  "wsl.onboarding.pickDistro": "Alege o distribuție sau instalează una mai jos.",
+  "wsl.onboarding.openDistroOnce":
+    "Deschide {{distro}} o dată pentru a finaliza configurarea.",
+  "wsl.onboarding.finishingDistro":
+    "Se finalizează configurarea pentru {{distro}}.",
+  "wsl.onboarding.pickDistro":
+    "Alege o distribuție sau instalează una mai jos.",
   "wsl.onboarding.checkingOpencode": "Se verifică OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Se verifică OpenCode în {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Se actualizează OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "Se actualizează OpenCode în {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Se actualizează OpenCode în {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Actualizează OpenCode în {{distro}}.",
   "wsl.onboarding.updateOpencode": "Actualizează OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode este gata în {{distro}}.",
@@ -484,18 +543,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Lipsesc bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Nesuportat · Folosește WSL 2",
   "wsl.onboarding.needAnotherDistro": "Ai nevoie de altă distribuție?",
-  "wsl.onboarding.needAnotherDistroHint": "Instalează o distribuție Linux din catalogul WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instalează o distribuție Linux din catalogul WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL nu este instalat",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Subsistemul Windows pentru Linux) este necesar înainte ca OpenCode să poată adăuga un server WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL indisponibil",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode nu a putut verifica WSL pe acest calculator.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode nu a putut verifica WSL pe acest calculator.",
   "wsl.onboarding.installWsl": "Instalează WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Repornește Windows pentru a finaliza instalarea WSL, apoi redeschide OpenCode.",
   "wsl.onboarding.next": "Următorul",
   "wsl.onboarding.refresh": "Reîmprospătează",
-  "wsl.onboarding.allDistrosAdded": "Toate distro-urile instalate sunt deja adăugate.",
+  "wsl.onboarding.allDistrosAdded":
+    "Toate distro-urile instalate sunt deja adăugate.",
   "wsl.onboarding.noDistros": "Nu a fost detectat niciun distro încă.",
   "wsl.onboarding.install": "Instalează",
   "wsl.onboarding.installing": "Se instalează...",
@@ -509,21 +571,25 @@ export const dict = {
   "wsl.onboarding.version": "Versiune: {{version}}",
   "wsl.onboarding.unknown": "necunoscut",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Versiunea instalată nu corespunde cu versiunea aplicației desktop.",
+  "wsl.onboarding.versionMismatch":
+    "Versiunea instalată nu corespunde cu versiunea aplicației desktop.",
   "wsl.onboarding.adding": "Se adaugă...",
-  "help.tabs.toast.ariaLabel": "Descoperă filele. Organizează-ți munca și sesiunile active cu file",
+  "help.tabs.toast.ariaLabel":
+    "Descoperă filele. Organizează-ți munca și sesiunile active cu file",
   "help.tabs.toast.dismiss": "Închide informațiile despre file",
   "help.tabs.title": "Descoperă filele",
   "help.tabs.description": "Organizează-ți munca și sesiunile active cu file",
   "help.tabs.date": "14 iulie",
-  "help.tabs.introduction": "OpenCode Desktop este acum construit în jurul filelor.",
+  "help.tabs.introduction":
+    "OpenCode Desktop este acum construit în jurul filelor.",
   "help.tabs.sessions":
     "Pornește o sesiune nouă într-o filă sau deschide o sesiune existentă din oricare dintre proiectele tale. Deschide o filă nouă când începi ceva nou și închide-o când ai terminat.",
   "help.tabs.organize":
     "Păstrând câteva file deschise, îți organizezi mai ușor sesiunile active. Redenumește filele cu ceva memorabil dacă vrei să le păstrezi.",
   "help.tabs.home":
     "Toate sesiunile și proiectele tale sunt pe noul ecran Acasă. Selectarea unei sesiuni o deschide într-o filă.",
-  "help.tabs.persistence": "Când redeschizi aplicația, filele tale rămân deschise.",
+  "help.tabs.persistence":
+    "Când redeschizi aplicația, filele tale rămân deschise.",
   "help.tabs.worktrees":
     "Noul design nu suportă încă Git Worktrees, dar va fi disponibil în curând. Dacă preferi să folosești aspectul anterior, poți comuta între layout-uri din Setări. Ține cont că noul layout va deveni permanent în câteva săptămâni.",
   "server.row.noUsername": "fără nume de utilizator",
@@ -536,7 +602,8 @@ export const dict = {
   "dialog.project.edit.color": "Culoare",
   "dialog.project.edit.color.select": "Selectează culoarea {{color}}",
   "dialog.project.edit.worktree.startup": "Script de pornire workspace",
-  "dialog.project.edit.worktree.startup.description": "Rulează după crearea unui workspace nou (worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "Rulează după crearea unui workspace nou (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "ex: bun install",
   "dialog.releaseNotes.action.getStarted": "Începe",
   "dialog.releaseNotes.action.next": "Următorul",
@@ -597,50 +664,73 @@ export const dict = {
   "toast.theme.title": "Tema a fost schimbată",
   "toast.scheme.title": "Paletă de culori",
   "toast.workspace.enabled.title": "Spații de lucru activate",
-  "toast.workspace.enabled.description": "Mai multe worktree-uri sunt afișate acum în bara laterală",
+  "toast.workspace.enabled.description":
+    "Mai multe worktree-uri sunt afișate acum în bara laterală",
   "toast.workspace.disabled.title": "Spații de lucru dezactivate",
-  "toast.workspace.disabled.description": "Doar worktree-ul principal este afișat în bara laterală",
+  "toast.workspace.disabled.description":
+    "Doar worktree-ul principal este afișat în bara laterală",
   "toast.permissions.autoaccept.on.title": "Permisiuni acceptate automat",
-  "toast.permissions.autoaccept.on.description": "Solicitările de permisiune vor fi aprobate automat",
-  "toast.permissions.autoaccept.off.title": "Oprire acceptare automată permisiuni",
-  "toast.permissions.autoaccept.off.description": "Solicitările de permisiune vor necesita aprobare",
+  "toast.permissions.autoaccept.on.description":
+    "Solicitările de permisiune vor fi aprobate automat",
+  "toast.permissions.autoaccept.off.title":
+    "Oprire acceptare automată permisiuni",
+  "toast.permissions.autoaccept.off.description":
+    "Solicitările de permisiune vor necesita aprobare",
   "toast.model.none.title": "Niciun model selectat",
-  "toast.model.none.description": "Conectează un furnizor pentru a rezuma această sesiune",
+  "toast.model.none.description":
+    "Conectează un furnizor pentru a rezuma această sesiune",
   "toast.file.loadFailed.title": "Nu s-a putut încărca fișierul",
   "toast.file.listFailed.title": "Nu s-au putut lista fișierele",
   "toast.context.noLineSelection.title": "Nicio linie selectată",
-  "toast.context.noLineSelection.description": "Selectează mai întâi un interval de linii într-un tab de fișier.",
-  "toast.session.share.copyFailed.title": "Nu s-a putut copia URL-ul în clipboard",
+  "toast.context.noLineSelection.description":
+    "Selectează mai întâi un interval de linii într-un tab de fișier.",
+  "toast.session.share.copyFailed.title":
+    "Nu s-a putut copia URL-ul în clipboard",
   "toast.session.share.success.title": "Sesiune partajată",
-  "toast.session.share.success.description": "URL-ul de partajare a fost copiat în clipboard!",
+  "toast.session.share.success.description":
+    "URL-ul de partajare a fost copiat în clipboard!",
   "toast.session.share.failed.title": "Nu s-a putut partaja sesiunea",
-  "toast.session.share.failed.description": "A apărut o eroare la partajarea sesiunii",
+  "toast.session.share.failed.description":
+    "A apărut o eroare la partajarea sesiunii",
   "toast.session.unshare.success.title": "Sesiune nepartajată",
-  "toast.session.unshare.success.description": "Sesiunea a fost nepartajată cu succes!",
-  "toast.session.unshare.failed.title": "Nu s-a putut anula partajarea sesiunii",
-  "toast.session.unshare.failed.description": "A apărut o eroare la anularea partajării sesiunii",
+  "toast.session.unshare.success.description":
+    "Sesiunea a fost nepartajată cu succes!",
+  "toast.session.unshare.failed.title":
+    "Nu s-a putut anula partajarea sesiunii",
+  "toast.session.unshare.failed.description":
+    "A apărut o eroare la anularea partajării sesiunii",
   "toast.session.export.success.title": "Sesiune exportată",
-  "toast.session.export.success.description": "Sesiunea a fost salvată în {{filename}}",
+  "toast.session.export.success.description":
+    "Sesiunea a fost salvată în {{filename}}",
   "toast.session.export.failed.title": "Nu s-a putut exporta sesiunea",
-  "toast.session.export.failed.description": "A apărut o eroare la exportarea sesiunii",
-  "toast.session.listFailed.title": "Nu s-au putut încărca sesiunile pentru {{project}}",
+  "toast.session.export.failed.description":
+    "A apărut o eroare la exportarea sesiunii",
+  "toast.session.listFailed.title":
+    "Nu s-au putut încărca sesiunile pentru {{project}}",
   "toast.project.reloadFailed.title": "Nu s-a putut reîncărca {{project}}",
   "toast.update.title": "Actualizare disponibilă",
-  "toast.update.description": "O nouă versiune OpenCode ({{version}}) este disponibilă pentru instalare.",
+  "toast.update.description":
+    "O nouă versiune OpenCode ({{version}}) este disponibilă pentru instalare.",
   "toast.update.action.installRestart": "Instalează și repornește",
   "toast.update.action.notYet": "Nu acum",
   "toast.update.installFailed.title": "Actualizarea nu a putut fi instalată",
   "toast.update.installFailed.retry": "Reîncearcă",
 
-  "disk.accessGuidance.macos": "Acordă Full Disk Access pentru DiskLizard în System Settings, apoi scanează din nou.",
-  "disk.accessGuidance.windows": "Folosește un cont cu acces la acest disc sau scanează un dosar pe care contul tău îl poate citi.",
-  "disk.accessGuidance.linux": "Verifică permisiunile dosarelor și ale punctelor de montare, apoi scanează din nou.",
-  "disk.accessGuidance.default": "Verifică accesul la aceste dosare, apoi scanează din nou.",
-  "disk.accessGuidance.rescan": "Folosește Rescan din bara de sus după ce modifici accesul.",
+  "disk.accessGuidance.macos":
+    "Acordă Full Disk Access pentru DiskLizard în System Settings, apoi scanează din nou.",
+  "disk.accessGuidance.windows":
+    "Folosește un cont cu acces la acest disc sau scanează un dosar pe care contul tău îl poate citi.",
+  "disk.accessGuidance.linux":
+    "Verifică permisiunile dosarelor și ale punctelor de montare, apoi scanează din nou.",
+  "disk.accessGuidance.default":
+    "Verifică accesul la aceste dosare, apoi scanează din nou.",
+  "disk.accessGuidance.rescan":
+    "Folosește Rescan din bara de sus după ce modifici accesul.",
   "disk.common.rescan": "Rescanează",
   "error.page.title": "Ceva nu a funcționat",
   "error.page.description": "A apărut o eroare la încărcarea aplicației.",
-  "error.page.description.localServerStartup": "A apărut o eroare la pornirea serverului local.",
+  "error.page.description.localServerStartup":
+    "A apărut o eroare la pornirea serverului local.",
   "error.page.details.label": "Detalii eroare",
   "error.page.action.restart": "Repornește",
   "error.page.action.report": "Raportează eroarea",
@@ -650,17 +740,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Caută actualizări",
   "error.page.action.updateTo": "Actualizează la {{version}}",
   "error.page.circular": "[Ciclic]",
-  "error.page.report.prefix": "Te rugăm să raportezi această eroare echipei OpenCode",
+  "error.page.report.prefix":
+    "Te rugăm să raportezi această eroare echipei OpenCode",
   "error.page.report.discord": "pe Discord",
   "error.page.version": "Versiune: {{version}}",
   "error.dev.rootNotFound":
     "Elementul root nu a fost găsit. L-ai adăugat în index.html? Sau poate atributul id este scris greșit?",
-  "error.serverSync.connectFailed": "Nu s-a putut conecta la server. Rulează un server la `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Nu s-a putut conecta la server. Rulează un server la `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Niciun server disponibil",
   "error.serverSDK.serverNotAvailable": "Server indisponibil",
-  "error.childStore.persistedCacheCreateFailed": "Nu s-a putut crea memoria cache persistentă",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Nu s-au putut salva metadatele proiectului",
-  "error.childStore.persistedProjectIconCreateFailed": "Nu s-a putut salva pictograma proiectului",
+  "error.childStore.persistedCacheCreateFailed":
+    "Nu s-a putut crea memoria cache persistentă",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Nu s-au putut salva metadatele proiectului",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Nu s-a putut salva pictograma proiectului",
   "error.childStore.storeCreateFailed": "Nu s-a putut crea magazinul de date",
   "directory.error.invalidUrl": "Director invalid în URL.",
   "error.chain.unknown": "Eroare necunoscută",
@@ -671,24 +766,34 @@ export const dict = {
   "error.chain.retryable": "Poate fi reluată: {{retryable}}",
   "error.chain.responseBody": "Răspuns:\n{{body}}",
   "error.chain.didYouMean": "Ai vrut să scrii: {{suggestions}}",
-  "error.chain.modelNotFound": "Modelul nu a fost găsit: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Verifică numele provider/model în config (opencode.json)",
-  "error.chain.mcpFailed": 'Serverul MCP "{{name}}" a eșuat. Atenție, OpenCode nu suportă încă autentificarea MCP.',
-  "error.chain.providerAuthFailed": "Autentificarea providerului a eșuat ({{provider}}): {{message}}",
+  "error.chain.modelNotFound":
+    "Modelul nu a fost găsit: {{provider}}/{{model}}",
+  "error.chain.checkConfig":
+    "Verifică numele provider/model în config (opencode.json)",
+  "error.chain.mcpFailed":
+    'Serverul MCP "{{name}}" a eșuat. Atenție, OpenCode nu suportă încă autentificarea MCP.',
+  "error.chain.providerAuthFailed":
+    "Autentificarea providerului a eșuat ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Nu s-a putut inițializa providerul "{{provider}}". Verifică datele de autentificare și configurația.',
-  "error.chain.configJsonInvalid": "Fișierul de configurare de la {{path}} nu este JSON(C) valid",
+  "error.chain.configJsonInvalid":
+    "Fișierul de configurare de la {{path}} nu este JSON(C) valid",
   "error.chain.configJsonInvalidWithMessage":
     "Fișierul de configurare de la {{path}} nu este JSON(C) valid: {{message}}",
   "error.chain.configDirectoryTypo":
     'Directorul "{{dir}}" din {{path}} nu este valid. Redenumește directorul în "{{suggestion}}" sau șterge-l. Aceasta este o greșeală frecventă.',
-  "error.chain.configFrontmatterError": "Nu s-a putut parsa frontmatter-ul din {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "Fișierul de configurare de la {{path}} este invalid",
-  "error.chain.configInvalidWithMessage": "Fișierul de configurare de la {{path}} este invalid: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Nu s-a putut parsa frontmatter-ul din {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "Fișierul de configurare de la {{path}} este invalid",
+  "error.chain.configInvalidWithMessage":
+    "Fișierul de configurare de la {{path}} este invalid: {{message}}",
   "notification.permission.title": "Permisiune necesară",
-  "notification.permission.description": "{{sessionTitle}} din {{projectName}} are nevoie de permisiune",
+  "notification.permission.description":
+    "{{sessionTitle}} din {{projectName}} are nevoie de permisiune",
   "notification.question.title": "Întrebare",
-  "notification.question.description": "{{sessionTitle}} din {{projectName}} are o întrebare",
+  "notification.question.description":
+    "{{sessionTitle}} din {{projectName}} are o întrebare",
   "notification.action.goToSession": "Mergi la sesiune",
   "notification.session.responseReady.title": "Răspuns pregătit",
   "notification.session.error.title": "Eroare sesiune",
@@ -719,7 +824,8 @@ export const dict = {
   "session.tab.unknown": "Sesiune necunoscută",
   "session.panel.reviewAndFiles": "Revizuire și fișiere",
   "session.error.notFound": "Această sesiune nu poate fi găsită",
-  "session.error.notFound.description": "Acest tab indică spre o sesiune care nu mai există pe acest server.",
+  "session.error.notFound.description":
+    "Acest tab indică spre o sesiune care nu mai există pe acest server.",
   "session.error.notFound.closeTab": "Închide tab-ul",
   "session.error.serverConnection": "Nu se poate conecta la acest server",
   "session.review.filesChanged": "{{count}} fișiere modificate",
@@ -730,7 +836,8 @@ export const dict = {
   "session.review.noVcs":
     "Nu a fost detectat niciun sistem de control al versiunilor Git, modificările nu sunt afișate",
   "session.review.noVcs.createGit.title": "Creează un depozit Git",
-  "session.review.noVcs.createGit.description": "Urmărește, revizuiește și anulează modificările din acest proiect",
+  "session.review.noVcs.createGit.description":
+    "Urmărește, revizuiește și anulează modificările din acest proiect",
   "session.review.noVcs.createGit.actionLoading": "Se creează depozitul Git...",
   "session.review.noVcs.createGit.action": "Creează depozit Git",
   "session.review.noSnapshot":
@@ -818,7 +925,8 @@ export const dict = {
   "status.popover.tab.plugins": "Pluginuri",
   "status.popover.action.manageServers": "Gestionează servere",
   "session.share.popover.title": "Publică pe web",
-  "session.share.popover.description.shared": "Această sesiune este publică pe web. Este accesibilă oricui are linkul.",
+  "session.share.popover.description.shared":
+    "Această sesiune este publică pe web. Este accesibilă oricui are linkul.",
   "session.share.popover.description.unshared":
     "Partajează sesiunea public pe web. Va fi accesibilă oricui are linkul.",
   "session.share.action.share": "Partajează",
@@ -837,12 +945,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Închide terminalul",
   "terminal.connectionLost.title": "Conexiune pierdută",
-  "terminal.connectionLost.abnormalClose": "WebSocket s-a închis anormal: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket s-a închis anormal: {{code}}",
   "terminal.connectionLost.description":
     "Conexiunea la terminal a fost întreruptă. Acest lucru poate apărea când serverul repornește.",
   "terminal.connectTicket.csrfError":
     "Biletul de conectare PTY a fost respins din cauza originii sau a verificărilor CSRF. Verifică configurația CORS a serverului.",
-  "terminal.connectTicket.statusError": "Biletul de conectare PTY a eșuat cu {{status}}",
+  "terminal.connectTicket.statusError":
+    "Biletul de conectare PTY a eșuat cu {{status}}",
   "titlebar.update": "Actualizează",
   "titlebar.updateVersion": "Actualizează la {{version}}",
   "common.closeTab": "Închide fila",
@@ -886,8 +996,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Activează spațiile de lucru",
   "sidebar.workspaces.disable": "Dezactivează spațiile de lucru",
   "sidebar.gettingStarted.title": "Începe rapid",
-  "sidebar.gettingStarted.line1": "OpenCode include modele gratuite ca să poți începe imediat.",
-  "sidebar.gettingStarted.line2": "Conectează orice furnizor pentru a folosi modele, inclusiv Claude, GPT, Gemini etc.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode include modele gratuite ca să poți începe imediat.",
+  "sidebar.gettingStarted.line2":
+    "Conectează orice furnizor pentru a folosi modele, inclusiv Claude, GPT, Gemini etc.",
   "sidebar.project.recentSessions": "Sesiuni recente",
   "sidebar.project.viewAllSessions": "Vezi toate sesiunile",
   "sidebar.project.clearNotifications": "Șterge notificările",
@@ -905,23 +1017,29 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Cadre peste 32 ms în ultimele 5 secunde.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Timp blocat și număr de sarcini lungi în ultimele 5 secunde. Sarcina maximă: {{max}}.",
+  "debugBar.long.tip":
+    "Timp blocat și număr de sarcini lungi în ultimele 5 secunde. Sarcina maximă: {{max}}.",
   "debugBar.delay.label": "ÎNTÂRZIERE",
-  "debugBar.delay.tip": "Cea mai mare întârziere de input observată în ultimele 5 secunde.",
+  "debugBar.delay.tip":
+    "Cea mai mare întârziere de input observată în ultimele 5 secunde.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Durata aproximativă a interacțiunii din ultimele 5 secunde. Este similar cu INP, nu valoarea oficială Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Deplasare cumulativă a layoutului pentru durata actuală a aplicației.",
+  "debugBar.cls.tip":
+    "Deplasare cumulativă a layoutului pentru durata actuală a aplicației.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Heap JS folosit vs limită heap. Doar în Chromium.",
+  "debugBar.mem.tipUnavailable":
+    "Heap JS folosit vs limită heap. Doar în Chromium.",
   "debugBar.mem.tip": "Heap JS folosit vs limită heap. {{used}} din {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Forțează stilurile de focus pe toate elementele interactive",
+  "debugBar.focus.tip":
+    "Forțează stilurile de focus pe toate elementele interactive",
   "debugBar.focus.on": "PORNEȘTE",
   "debugBar.focus.off": "OPREȘTE",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Forțează direcția completă a layoutului aplicației fără a schimba limba selectată",
+  "debugBar.direction.tip":
+    "Forțează direcția completă a layoutului aplicației fără a schimba limba selectată",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -931,7 +1049,8 @@ export const dict = {
   "settings.tab.shortcuts": "Scurtături",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "Integrare WSL",
-  "settings.desktop.wsl.description": "Rulează serverul OpenCode în WSL pe Windows.",
+  "settings.desktop.wsl.description":
+    "Rulează serverul OpenCode în WSL pe Windows.",
   "settings.general.section.appearance": "Aspect",
   "settings.general.section.advanced": "Avansat",
   "settings.general.section.notifications": "Notificări de sistem",
@@ -940,50 +1059,65 @@ export const dict = {
   "settings.general.section.feed": "Flux",
   "settings.general.section.display": "Afișare",
   "settings.general.row.language.title": "Limbă",
-  "settings.general.row.language.description": "Schimbă limba de afișare pentru OpenCode",
+  "settings.general.row.language.description":
+    "Schimbă limba de afișare pentru OpenCode",
   "settings.general.row.shell.title": "Shell terminal",
-  "settings.general.row.shell.description": "Shell folosit de terminal și instrumentele agentului",
+  "settings.general.row.shell.description":
+    "Shell folosit de terminal și instrumentele agentului",
   "settings.general.row.shell.autoDefault": "Auto (implicit)",
   "settings.general.row.shell.terminalOnly": "doar terminal",
   "settings.general.row.appearance.title": "Aspect",
-  "settings.general.row.appearance.description": "Personalizează aspectul OpenCode pe dispozitivul tău",
+  "settings.general.row.appearance.description":
+    "Personalizează aspectul OpenCode pe dispozitivul tău",
   "settings.general.row.colorScheme.title": "Scheamă de culori",
-  "settings.general.row.colorScheme.description": "Alege dacă OpenCode urmează sistemul, tema deschisă sau închisă",
+  "settings.general.row.colorScheme.description":
+    "Alege dacă OpenCode urmează sistemul, tema deschisă sau închisă",
   "settings.general.row.theme.title": "Temă",
   "settings.general.row.theme.description": "Personalizează tema OpenCode.",
   "settings.general.row.font.title": "Font cod",
-  "settings.general.row.font.description": "Personalizează fontul folosit în blocurile de cod",
+  "settings.general.row.font.description":
+    "Personalizează fontul folosit în blocurile de cod",
   "settings.general.row.terminalFont.title": "Font terminal",
-  "settings.general.row.terminalFont.description": "Personalizează fontul folosit în terminal",
+  "settings.general.row.terminalFont.description":
+    "Personalizează fontul folosit în terminal",
   "settings.general.row.uiFont.title": "Font interfață",
-  "settings.general.row.uiFont.description": "Personalizează fontul folosit în toată interfața",
+  "settings.general.row.uiFont.description":
+    "Personalizează fontul folosit în toată interfața",
   "settings.general.row.followup.title": "Comportament follow-up",
   "settings.general.row.followup.description":
     "Alege dacă solicitările follow-up se execută imediat sau așteaptă în coadă",
   "settings.general.row.followup.option.queue": "Coadă",
   "settings.general.row.followup.option.steer": "Execută imediat",
   "settings.general.row.showFileTree.title": "Arbore fișiere",
-  "settings.general.row.showFileTree.description": "Afișează panoul cu arborele de fișiere în sesiuni",
+  "settings.general.row.showFileTree.description":
+    "Afișează panoul cu arborele de fișiere în sesiuni",
   "settings.general.row.showNavigation.title": "Controale navigare",
-  "settings.general.row.showNavigation.description": "Afișează butoanele Înapoi și Înainte în bara de titlu desktop",
+  "settings.general.row.showNavigation.description":
+    "Afișează butoanele Înapoi și Înainte în bara de titlu desktop",
   "settings.general.row.showSearch.title": "Paletă comenzi",
-  "settings.general.row.showSearch.description": "Afișează butonul de căutare și paleta de comenzi în bara de titlu",
+  "settings.general.row.showSearch.description":
+    "Afișează butonul de căutare și paleta de comenzi în bara de titlu",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Afișează butonul de terminal în bara de titlu desktop",
+  "settings.general.row.showTerminal.description":
+    "Afișează butonul de terminal în bara de titlu desktop",
   "settings.general.row.showStatus.title": "Stare server",
-  "settings.general.row.showStatus.description": "Afișează butonul de stare server în bara de titlu",
+  "settings.general.row.showStatus.description":
+    "Afișează butonul de stare server în bara de titlu",
   "settings.general.row.mobileTitlebarBottom.title": "Navigare jos",
   "settings.general.row.mobileTitlebarBottom.description":
     "Afișează bara de titlu și filele de sesiune în partea de jos pe mobil",
   "settings.general.row.showCustomAgents.title": "Afișează agentul",
   "settings.general.row.showCustomAgents.description":
     "Comută între agenți în editor. Când este ascuns, se folosește agentul Build.",
-  "settings.general.row.reasoningSummaries.title": "Afișează rezumatele de raționament",
+  "settings.general.row.reasoningSummaries.title":
+    "Afișează rezumatele de raționament",
   "settings.general.row.reasoningSummaries.description":
     "Afișează rezumatele de raționament ale modelului în cronologie",
   "settings.general.row.shellToolPartsExpanded.title": "Extinde părțile shell",
-  "settings.general.row.shellToolPartsExpanded.description": "Afișează implicit părțile shell extinse în cronologie",
-  "settings.general.row.editToolPartsExpanded.title": "Extinde părțile de editare",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "Afișează implicit părțile shell extinse în cronologie",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Extinde părțile de editare",
   "settings.general.row.editToolPartsExpanded.description":
     "Afișează implicit părțile de editare, scriere și patch extinse în cronologie",
   "settings.general.row.newInterface.title": "Aspect nou",
@@ -991,26 +1125,33 @@ export const dict = {
   "settings.general.row.newInterface.description":
     "Folosește noul aspect cu file și pagină principală. Poți comuta între aspecte pentru o perioadă limitată.",
   "settings.general.row.newInterfaceNotice.title": "Folosești noul aspect",
-  "settings.general.row.newInterfaceNotice.description": "Aspectul anterior nu mai este disponibil",
+  "settings.general.row.newInterfaceNotice.description":
+    "Aspectul anterior nu mai este disponibil",
   "settings.general.row.newInterfaceNotice.dismiss": "Închide",
   "settings.general.row.pinchZoom.title": "Zoom prin ciupire",
-  "settings.general.row.pinchZoom.description": "Permite zoom cu gesturi de ciupire pe trackpad și Ctrl-scroll",
+  "settings.general.row.pinchZoom.description":
+    "Permite zoom cu gesturi de ciupire pe trackpad și Ctrl-scroll",
   "settings.general.row.wayland.title": "Folosește Wayland nativ",
-  "settings.general.row.wayland.description": "Dezactivează fallback-ul X11 pe Wayland. Necesită repornire.",
+  "settings.general.row.wayland.description":
+    "Dezactivează fallback-ul X11 pe Wayland. Necesită repornire.",
   "settings.general.row.wayland.tooltip":
     "Pe Linux cu monitoare cu rate de reîmprospătare diferite, Wayland nativ poate fi mai stabil.",
   "settings.general.row.releaseNotes.title": "Note de lansare",
-  "settings.general.row.releaseNotes.description": "Afișează notificări cu noutăți după actualizări",
+  "settings.general.row.releaseNotes.description":
+    "Afișează notificări cu noutăți după actualizări",
   "settings.updates.row.startup.title": "Verifică actualizări la pornire",
-  "settings.updates.row.startup.description": "Verifică automat actualizările la lansarea OpenCode",
+  "settings.updates.row.startup.description":
+    "Verifică automat actualizările la lansarea OpenCode",
   "settings.updates.row.check.title": "Verifică actualizări",
-  "settings.updates.row.check.description": "Verifică manual actualizările și instalează dacă sunt disponibile",
+  "settings.updates.row.check.description":
+    "Verifică manual actualizările și instalează dacă sunt disponibile",
   "settings.updates.action.checkNow": "Verifică acum",
   "settings.updates.action.checking": "Se verifică...",
   "settings.updates.action.downloading": "Se descarcă...",
   "settings.updates.action.installing": "Se instalează...",
   "settings.updates.toast.latest.title": "Ești la zi",
-  "settings.updates.toast.latest.description": "Folosești cea mai recentă versiune OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Folosești cea mai recentă versiune OpenCode.",
   "sound.option.none": "Fără sunet",
   "sound.option.alert01": "Avertizare 01",
   "sound.option.alert02": "Avertizare 02",
@@ -1064,19 +1205,25 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Afișează notificare de sistem când este necesară o permisiune",
   "settings.general.notifications.errors.title": "Erori",
-  "settings.general.notifications.errors.description": "Afișează notificare de sistem când apare o eroare",
+  "settings.general.notifications.errors.description":
+    "Afișează notificare de sistem când apare o eroare",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Redă sunet când agentul a terminat sau are nevoie de atenție",
+  "settings.general.sounds.agent.description":
+    "Redă sunet când agentul a terminat sau are nevoie de atenție",
   "settings.general.sounds.permissions.title": "Permisiuni",
-  "settings.general.sounds.permissions.description": "Redă sunet când este necesară o permisiune",
+  "settings.general.sounds.permissions.description":
+    "Redă sunet când este necesară o permisiune",
   "settings.general.sounds.errors.title": "Erori",
-  "settings.general.sounds.errors.description": "Redă sunet la apariția unei erori",
+  "settings.general.sounds.errors.description":
+    "Redă sunet la apariția unei erori",
   "settings.shortcuts.title": "Scurtături de la tastatură",
   "settings.shortcuts.reset.button": "Resetează la valorile implicite",
   "settings.shortcuts.reset.toast.title": "Scurtăturile au fost resetate",
-  "settings.shortcuts.reset.toast.description": "Scurtăturile de la tastatură au fost resetate la valorile implicite.",
+  "settings.shortcuts.reset.toast.description":
+    "Scurtăturile de la tastatură au fost resetate la valorile implicite.",
   "settings.shortcuts.conflict.title": "Scurtătură deja folosită",
-  "settings.shortcuts.conflict.description": "{{keybind}} este deja atribuit pentru {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} este deja atribuit pentru {{titles}}.",
   "settings.shortcuts.unassigned": "Neatribuit",
   "settings.shortcuts.pressKeys": "Apasă tastele",
   "settings.shortcuts.search.placeholder": "Caută scurtături",
@@ -1088,59 +1235,78 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Solicitare",
   "settings.providers.title": "Furnizori",
-  "settings.providers.description": "Setările furnizorilor vor putea fi configurate aici.",
+  "settings.providers.description":
+    "Setările furnizorilor vor putea fi configurate aici.",
   "settings.providers.section.connected": "Furnizori conectați",
   "settings.providers.connected.empty": "Niciun furnizor conectat",
-  "settings.providers.connected.environmentDescription": "Conectat prin variabilele de mediu",
+  "settings.providers.connected.environmentDescription":
+    "Conectat prin variabilele de mediu",
   "settings.providers.section.popular": "Furnizori populari",
-  "settings.providers.custom.description": "Adaugă un furnizor compatibil OpenAI prin URL de bază.",
+  "settings.providers.custom.description":
+    "Adaugă un furnizor compatibil OpenAI prin URL de bază.",
   "settings.providers.tag.environment": "Mediu",
   "settings.providers.tag.config": "Configurare",
   "settings.providers.tag.custom": "Personalizat",
   "settings.providers.tag.other": "Altele",
   "settings.models.title": "Modele",
-  "settings.models.description": "Setările modelelor vor putea fi configurate aici.",
+  "settings.models.description":
+    "Setările modelelor vor putea fi configurate aici.",
   "settings.agents.title": "Agenți",
-  "settings.agents.description": "Setările agenților vor putea fi configurate aici.",
+  "settings.agents.description":
+    "Setările agenților vor putea fi configurate aici.",
   "settings.commands.title": "Comenzi",
-  "settings.commands.description": "Setările comenzilor vor putea fi configurate aici.",
+  "settings.commands.description":
+    "Setările comenzilor vor putea fi configurate aici.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Setările MCP vor putea fi configurate aici.",
   "settings.permissions.title": "Permisiuni",
-  "settings.permissions.description": "Controlează ce unelte poate folosi serverul implicit.",
+  "settings.permissions.description":
+    "Controlează ce unelte poate folosi serverul implicit.",
   "settings.permissions.section.tools": "Unelte",
-  "settings.permissions.toast.updateFailed.title": "Actualizarea permisiunilor a eșuat",
+  "settings.permissions.toast.updateFailed.title":
+    "Actualizarea permisiunilor a eșuat",
   "settings.permissions.action.allow": "Permite",
   "settings.permissions.action.ask": "Întreabă",
   "settings.permissions.action.deny": "Refuză",
   "settings.permissions.tool.read.title": "Citire",
-  "settings.permissions.tool.read.description": "Citește un fișier (potrivește calea fișierului)",
+  "settings.permissions.tool.read.description":
+    "Citește un fișier (potrivește calea fișierului)",
   "settings.permissions.tool.edit.title": "Editare",
-  "settings.permissions.tool.edit.description": "Modifică fișiere, inclusiv editări, scrieri și patch-uri",
+  "settings.permissions.tool.edit.description":
+    "Modifică fișiere, inclusiv editări, scrieri și patch-uri",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Potrivește fișiere folosind modele glob",
+  "settings.permissions.tool.glob.description":
+    "Potrivește fișiere folosind modele glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Caută în conținutul fișierelor folosind expresii regulate",
+  "settings.permissions.tool.grep.description":
+    "Caută în conținutul fișierelor folosind expresii regulate",
   "settings.permissions.tool.list.title": "Listare",
-  "settings.permissions.tool.list.description": "Listează fișierele dintr-un director",
+  "settings.permissions.tool.list.description":
+    "Listează fișierele dintr-un director",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Rulează comenzi shell",
   "settings.permissions.tool.task.title": "Task",
   "settings.permissions.tool.task.description": "Pornește subagenți",
   "settings.permissions.tool.skill.title": "Skill",
-  "settings.permissions.tool.skill.description": "Încarcă o abilitate după nume",
+  "settings.permissions.tool.skill.description":
+    "Încarcă o abilitate după nume",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Rulează interogări către serverul de limbaj",
+  "settings.permissions.tool.lsp.description":
+    "Rulează interogări către serverul de limbaj",
   "settings.permissions.tool.todowrite.title": "Scriere Todo",
-  "settings.permissions.tool.todowrite.description": "Actualizează lista de sarcini",
+  "settings.permissions.tool.todowrite.description":
+    "Actualizează lista de sarcini",
   "settings.permissions.tool.webfetch.title": "Preluare web",
-  "settings.permissions.tool.webfetch.description": "Preia conținut de la un URL",
+  "settings.permissions.tool.webfetch.description":
+    "Preia conținut de la un URL",
   "settings.permissions.tool.websearch.title": "Căutare web",
   "settings.permissions.tool.websearch.description": "Caută pe web",
   "settings.permissions.tool.external_directory.title": "Director extern",
-  "settings.permissions.tool.external_directory.description": "Accesează fișiere din afara directorului proiectului",
+  "settings.permissions.tool.external_directory.description":
+    "Accesează fișiere din afara directorului proiectului",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Detectează apeluri repetate ale uneltei cu aceeași intrare",
+  "settings.permissions.tool.doom_loop.description":
+    "Detectează apeluri repetate ale uneltei cu aceeași intrare",
   "session.delete.failed.title": "Ștergerea sesiunii a eșuat",
   "session.delete.title": "Șterge sesiunea",
   "session.delete.confirm": "Ștergi sesiunea „{{name}}”?",
@@ -1154,12 +1320,14 @@ export const dict = {
   "workspace.resetting.description": "Aceasta poate dura un minut.",
   "workspace.reset.failed.title": "Resetarea spațiului de lucru a eșuat",
   "workspace.reset.success.title": "Spațiul de lucru a fost resetat",
-  "workspace.reset.success.description": "Spațiul de lucru corespunde acum ramurii implicite.",
+  "workspace.reset.success.description":
+    "Spațiul de lucru corespunde acum ramurii implicite.",
   "workspace.error.stillPreparing": "Spațiul de lucru este încă în pregătire",
   "workspace.status.checking": "Se verifică modificările necomasate...",
   "workspace.status.error": "Nu s-a putut verifica statusul git.",
   "workspace.status.clean": "Nu s-au detectat modificări necomasate.",
-  "workspace.status.dirty": "S-au detectat modificări necomasate în acest spațiu de lucru.",
+  "workspace.status.dirty":
+    "S-au detectat modificări necomasate în acest spațiu de lucru.",
   "workspace.delete.title": "Șterge spațiul de lucru",
   "workspace.delete.confirm": "Ștergi spațiul de lucru „{{name}}”?",
   "workspace.delete.button": "Șterge spațiul de lucru",
@@ -1169,6 +1337,7 @@ export const dict = {
   "workspace.reset.archived.none": "Nicio sesiune activă nu va fi arhivată.",
   "workspace.reset.archived.one": "1 sesiune va fi arhivată.",
   "workspace.reset.archived.many": "{{count}} sesiuni vor fi arhivate.",
-  "workspace.reset.note": "Aceasta va reseta spațiul de lucru la ramura implicită.",
+  "workspace.reset.note":
+    "Aceasta va reseta spațiul de lucru la ramura implicită.",
   "dialog.usageExceeded.dontShowAgain": "Nu mai afișa",
 }

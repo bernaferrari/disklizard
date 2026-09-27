@@ -2,23 +2,37 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ScrollArea as ScrollView } from "@/components/ui/scroll-area"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import type { DiskScanNode } from "./types"
-import { isReviewNavigationKey, reviewNavigationTarget } from "./review-navigation"
+import {
+  isReviewNavigationKey,
+  reviewNavigationTarget,
+} from "./review-navigation"
 import { useLanguage } from "./runtime"
 
 const INDEX_ROW_ESTIMATE = 48
 const DEFAULT_LIST_PAGE_SIZE = 10
 
-type IndexEntry = { node: DiskScanNode; colorIndex: number; displaySize: number }
+type IndexEntry = {
+  node: DiskScanNode
+  colorIndex: number
+  displaySize: number
+}
 
 export function VirtualIndex(props: {
   groupLabel?: (entry: IndexEntry, index: number) => string | undefined
-  rowHeight?: number
+  rowHeight?: number | ((entry: IndexEntry, index: number) => number)
   entries: IndexEntry[]
   bindScrollToIndex: (fn: ((index: number) => void) | undefined) => void
   bindPageSize: (fn: (() => number) | undefined) => void
   onMoveFocus: (delta: number, extendRange?: boolean) => number
-  onPageFocus: (direction: -1 | 1, pageSize: number, extendRange?: boolean) => number
-  onMoveFocusToBoundary: (boundary: "first" | "last", extendRange?: boolean) => number
+  onPageFocus: (
+    direction: -1 | 1,
+    pageSize: number,
+    extendRange?: boolean
+  ) => number
+  onMoveFocusToBoundary: (
+    boundary: "first" | "last",
+    extendRange?: boolean
+  ) => number
   render: (entry: IndexEntry, index: () => number) => ReactNode
 }) {
   const language = useLanguage()
@@ -26,19 +40,33 @@ export function VirtualIndex(props: {
   // react-virtual's layout-effect subscription saw null; storing the element re-renders so
   // the virtualizer re-subscribes — matching v1's synchronous signal binding.
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null)
+  const rowHeightAt = (index: number) =>
+    typeof props.rowHeight === "function" && props.entries[index]
+      ? props.rowHeight(props.entries[index], index)
+      : typeof props.rowHeight === "number"
+        ? props.rowHeight
+        : INDEX_ROW_ESTIMATE
   const virtualizer = useVirtualizer<HTMLDivElement, HTMLLIElement>({
     count: props.entries.length,
     getScrollElement: () => viewport,
-    estimateSize: (index) => (props.rowHeight ?? INDEX_ROW_ESTIMATE) + (props.groupLabel?.(props.entries[index]!, index) ? 28 : 0),
+    estimateSize: (index) =>
+      rowHeightAt(index) +
+      (props.groupLabel?.(props.entries[index], index) ? 28 : 0),
     overscan: 10,
     getItemKey: (index) => props.entries[index]?.node.path ?? index,
   })
-  useEffect(() => { virtualizer.measure() }, [props.rowHeight, props.groupLabel])
-  const scrollToIndex = (index: number) => virtualizer.scrollToIndex(index, { align: "auto" })
+  useEffect(() => {
+    virtualizer.measure()
+  }, [props.rowHeight, props.groupLabel])
+  const scrollToIndex = (index: number) =>
+    virtualizer.scrollToIndex(index, { align: "auto" })
   const pageSize = () =>
     Math.max(
       1,
-      Math.floor((viewport?.clientHeight ?? INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / (props.rowHeight ?? INDEX_ROW_ESTIMATE)),
+      Math.floor(
+        (viewport?.clientHeight ??
+          INDEX_ROW_ESTIMATE * DEFAULT_LIST_PAGE_SIZE) / rowHeightAt(0)
+      )
     )
   useEffect(() => {
     props.bindScrollToIndex(scrollToIndex)
@@ -55,7 +83,8 @@ export function VirtualIndex(props: {
       viewportRef={setViewport}
       onKeyDown={(event) => {
         if (event.defaultPrevented) return
-        const supportsRangeNavigation = !event.metaKey && !event.ctrlKey && !event.altKey
+        const supportsRangeNavigation =
+          !event.metaKey && !event.ctrlKey && !event.altKey
         const isPlainShortcut = supportsRangeNavigation && !event.shiftKey
         if (
           supportsRangeNavigation &&
@@ -65,19 +94,35 @@ export function VirtualIndex(props: {
         ) {
           event.preventDefault()
           event.stopPropagation()
-          props.onMoveFocus(event.key === "ArrowDown" || event.key === "j" ? 1 : -1, event.shiftKey)
+          props.onMoveFocus(
+            event.key === "ArrowDown" || event.key === "j" ? 1 : -1,
+            event.shiftKey
+          )
           return
         }
-        if (supportsRangeNavigation && (event.key === "PageDown" || event.key === "PageUp")) {
+        if (
+          supportsRangeNavigation &&
+          (event.key === "PageDown" || event.key === "PageUp")
+        ) {
           event.preventDefault()
           event.stopPropagation()
-          props.onPageFocus(event.key === "PageDown" ? 1 : -1, pageSize(), event.shiftKey)
+          props.onPageFocus(
+            event.key === "PageDown" ? 1 : -1,
+            pageSize(),
+            event.shiftKey
+          )
           return
         }
-        if (supportsRangeNavigation && (event.key === "Home" || event.key === "End")) {
+        if (
+          supportsRangeNavigation &&
+          (event.key === "Home" || event.key === "End")
+        ) {
           event.preventDefault()
           event.stopPropagation()
-          props.onMoveFocusToBoundary(event.key === "Home" ? "first" : "last", event.shiftKey)
+          props.onMoveFocusToBoundary(
+            event.key === "Home" ? "first" : "last",
+            event.shiftKey
+          )
         }
       }}
     >
@@ -93,11 +138,20 @@ export function VirtualIndex(props: {
           return (
             <li
               key={item.key}
-              className="absolute left-0 top-0 w-full"
-              style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
+              className="absolute top-0 left-0 w-full"
+              style={{
+                height: `${item.size}px`,
+                transform: `translateY(${item.start}px)`,
+              }}
             >
-              {props.groupLabel?.(entry, item.index) && <div className="flex h-7 items-center px-3 text-xs font-medium text-text-weak">{props.groupLabel(entry, item.index)}</div>}
-              <div style={{ height: props.rowHeight ?? INDEX_ROW_ESTIMATE }}>{props.render(entry, () => item.index)}</div>
+              {props.groupLabel?.(entry, item.index) && (
+                <div className="flex h-7 items-center px-3 text-xs font-medium text-text-weak">
+                  {props.groupLabel(entry, item.index)}
+                </div>
+              )}
+              <div style={{ height: rowHeightAt(item.index) }}>
+                {props.render(entry, () => item.index)}
+              </div>
             </li>
           )
         })}
@@ -144,13 +198,20 @@ export function VirtualRows<T>(props: {
   const pageSize = () => {
     const item = props.items[activeIndex] ?? props.items[firstFocusable()]
     const estimate = item ? props.estimateSize(item) : INDEX_ROW_ESTIMATE
-    return Math.max(1, Math.floor((viewport?.clientHeight ?? estimate * DEFAULT_LIST_PAGE_SIZE) / estimate))
+    return Math.max(
+      1,
+      Math.floor(
+        (viewport?.clientHeight ?? estimate * DEFAULT_LIST_PAGE_SIZE) / estimate
+      )
+    )
   }
   const focusRow = (index: number, attempt = 0) => {
     setActiveIndex(index)
     virtualizer.scrollToIndex(index, { align: "auto" })
     requestAnimationFrame(() => {
-      const row = list.current?.querySelector<HTMLElement>(`[data-disk-review-index="${index}"]`)
+      const row = list.current?.querySelector<HTMLElement>(
+        `[data-disk-review-index="${index}"]`
+      )
       if (row) {
         row.focus({ preventScroll: true })
         return
@@ -159,7 +220,13 @@ export function VirtualRows<T>(props: {
     })
   }
   const onReviewNavigation = (event: KeyboardEvent) => {
-    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || !isReviewNavigationKey(event.key)) {
+    if (
+      event.defaultPrevented ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.altKey ||
+      !isReviewNavigationKey(event.key)
+    ) {
       return
     }
     const target = reviewNavigationTarget({
@@ -184,14 +251,17 @@ export function VirtualRows<T>(props: {
     removeViewportKeydown.current = undefined
     setViewport(element ?? null)
     if (!element) return
-    const listener = (event: KeyboardEvent) => onReviewNavigationRef.current(event)
+    const listener = (event: KeyboardEvent) =>
+      onReviewNavigationRef.current(event)
     element.addEventListener("keydown", listener, true)
-    removeViewportKeydown.current = () => element.removeEventListener("keydown", listener, true)
+    removeViewportKeydown.current = () =>
+      element.removeEventListener("keydown", listener, true)
   }, [])
   useEffect(() => () => removeViewportKeydown.current?.(), [])
 
   useEffect(() => {
-    if (activeIndex < 0 || !isFocusable(activeIndex)) setActiveIndex(firstFocusable())
+    if (activeIndex < 0 || !isFocusable(activeIndex))
+      setActiveIndex(firstFocusable())
   }, [activeIndex, props.items, props.isFocusable])
 
   return (
@@ -208,10 +278,19 @@ export function VirtualRows<T>(props: {
           return (
             <li
               key={row.key}
-              className="absolute left-0 top-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-weak"
-              style={{ height: `${row.size}px`, transform: `translateY(${row.start + padding}px)` }}
+              className="absolute top-0 left-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-text-weak focus-visible:ring-inset"
+              style={{
+                height: `${row.size}px`,
+                transform: `translateY(${row.start + padding}px)`,
+              }}
               data-disk-review-index={row.index}
-              tabIndex={isFocusable(row.index) ? (row.index === activeIndex ? 0 : -1) : undefined}
+              tabIndex={
+                isFocusable(row.index)
+                  ? row.index === activeIndex
+                    ? 0
+                    : -1
+                  : undefined
+              }
               aria-posinset={row.index + 1}
               aria-setsize={props.items.length}
               onFocus={() => {

@@ -101,6 +101,27 @@
     },
     {
       "name": "target",
+      "parent": "payments",
+      "signatures": ["debug"],
+      "parentMarkers": ["Cargo.toml"],
+      "expected": { "kind": "build-output", "ecosystem": "rust", "confidence": "verified", "cleanup": "eligible" }
+    },
+    {
+      "name": "target",
+      "parent": "payments",
+      "signatures": ["classes"],
+      "parentMarkers": ["pom.xml"],
+      "expected": { "kind": "build-output", "ecosystem": "jvm", "confidence": "verified", "cleanup": "eligible" }
+    },
+    {
+      "name": "target",
+      "parent": "payments",
+      "signatures": [],
+      "parentMarkers": ["pom.xml"],
+      "expected": { "kind": "build-output", "ecosystem": "generic", "confidence": "ambiguous", "cleanup": "review" }
+    },
+    {
+      "name": "target",
       "parent": "project",
       "signatures": ["classes"],
       "parentMarkers": [],
@@ -119,6 +140,13 @@
       "signatures": ["cmakecache.txt"],
       "parentMarkers": [],
       "expected": { "kind": "build-output", "ecosystem": "cpp", "confidence": "verified", "cleanup": "eligible" }
+    },
+    {
+      "name": "build",
+      "parent": "service",
+      "signatures": ["classes"],
+      "parentMarkers": ["build.gradle.kts"],
+      "expected": { "kind": "build-output", "ecosystem": "jvm", "confidence": "verified", "cleanup": "eligible" }
     },
     {
       "name": "build",

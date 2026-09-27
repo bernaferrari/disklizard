@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Sniegt atsauksmi",
   "desktop.menu.reportBug": "Ziņot par kļūdu",
   "desktop.menu.ariaLabel": "OpenCode izvēlne",
-  "desktop.updater.dialog.checkFailed.message": "Neizdevās pārbaudīt atjauninājumus.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Neizdevās pārbaudīt atjauninājumus.",
   "desktop.updater.dialog.checkFailed.title": "Atjaunināšanas kļūda",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Jums ir jaunākā versija.",
   "desktop.updater.dialog.upToDate.title": "Nav atjauninājumu",
-  "desktop.updater.dialog.ready.message": "Atjauninājums {{version}} lejupielādēts. Vai pārstartēt tagad?",
+  "desktop.updater.dialog.ready.message":
+    "Atjauninājums {{version}} lejupielādēts. Vai pārstartēt tagad?",
   "desktop.updater.dialog.ready.title": "Atjauninājums gatavs",
   "desktop.updater.dialog.restart": "Pārstartēt",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +65,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "Neizdevās ielādēt OpenCode",
   "desktop.recovery.terminated": "OpenCode logs negaidīti aizvērts",
   "desktop.recovery.unresponsive": "OpenCode neatbild",
-  "desktop.recovery.unresponsive.detail": "Varat palaist lietotni no jauna, atvērt žurnālus vai turpināt gaidīt.",
-  "desktop.recovery.loadFailed.detail": "Logs: {{window}}\nURL: {{url}}\nKļūda: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Logs: {{window}}\nIemesls: {{reason}}\nKods: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Varat palaist lietotni no jauna, atvērt žurnālus vai turpināt gaidīt.",
+  "desktop.recovery.loadFailed.detail":
+    "Logs: {{window}}\nURL: {{url}}\nKļūda: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Logs: {{window}}\nIemesls: {{reason}}\nKods: {{code}}",
   "desktop.recovery.unknown": "<nezināms>",
   "desktop.dialog.chooseFolder": "Izvēlieties mapi",
   "desktop.dialog.chooseFile": "Izvēlieties failu",
@@ -73,27 +79,36 @@ export const dict = {
   "desktop.server.local": "Lokālais serveris",
   "desktop.wsl.error.windowsOnly": "WSL ir pieejams tikai Windows",
   "desktop.wsl.error.unavailable": "WSL nav pieejams",
-  "desktop.wsl.error.listInstalled": "Neizdevās uzskaitīt instalētās WSL distribūcijas",
-  "desktop.wsl.error.listOnline": "Neizdevās uzskaitīt tiešsaistes WSL distribūcijas",
+  "desktop.wsl.error.listInstalled":
+    "Neizdevās uzskaitīt instalētās WSL distribūcijas",
+  "desktop.wsl.error.listOnline":
+    "Neizdevās uzskaitīt tiešsaistes WSL distribūcijas",
   "desktop.wsl.error.executeDistro": "Nevar izpildīt komandas distribūcijā",
   "desktop.wsl.error.installWsl": "WSL instalēšana neizdevās",
-  "desktop.wsl.error.installDistro": "Neizdevās instalēt distribūciju: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Neizdevās instalēt distribūciju: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode instalēšana neizdevās",
   "desktop.wsl.error.alreadyAdded": "{{distro}} jau ir pievienota",
-  "desktop.wsl.error.opencodeMissing": "opencode nav instalēts šajā distribūcijā",
-  "desktop.wsl.error.opencodeCannotRun": "opencode ir instalēts, bet to nevar palaist",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode nav instalēts šajā distribūcijā",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode ir instalēts, bet to nevar palaist",
   "desktop.wsl.error.opencodeNotInstalled": "OpenCode nav instalēts {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode atjaunināšana pabeigta, bet {{distro}} joprojām rāda {{installed}}; gaidīts {{expected}}",
   "desktop.wsl.error.noVersion": "nav versijas",
-  "desktop.wsl.error.serverExited": "WSL serveris izslēdzās pēc palaišanas (kods={{code}} signāls={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL serveris izslēdzās pēc palaišanas (kods={{code}} signāls={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL serveris izslēdzās pirms kļuva gatavs darbam (kods={{code}} signāls={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} pārbaudes Sidecar laiks beidzās pēc {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} laiks beidzās pēc {{timeout}} ms",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} pārbaudes Sidecar laiks beidzās pēc {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} laiks beidzās pēc {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Neizdevās iegūt portu",
   "desktop.picker.error.notSelected": "Fails netika izvēlēts ar atlasītāju",
-  "desktop.picker.error.sizeLimit": "Izvēlētie pielikumi pārsniedz {{limit}} MB ierobežojumu",
+  "desktop.picker.error.sizeLimit":
+    "Izvēlētie pielikumi pārsniedz {{limit}} MB ierobežojumu",
   "command.category.suggested": "Ieteikts",
   "command.category.view": "Skats",
   "command.category.project": "Projekts",
@@ -140,7 +155,8 @@ export const dict = {
   "command.tab.close": "Aizvērt cilni",
   "command.tab.reopenClosed": "Atvērt aizvērtu cilni",
   "command.context.addSelection": "Pievienot atlasi kontekstam",
-  "command.context.addSelection.description": "Pievienot atlasītās rindas no pašreizējā faila",
+  "command.context.addSelection.description":
+    "Pievienot atlasītās rindas no pašreizējā faila",
   "command.input.focus": "Aktivizēt ievadi",
   "command.terminal.toggle": "Rādīt/paslēpt termināli",
   "command.fileTree.toggle": "Rādīt/paslēpt failu koku",
@@ -150,7 +166,8 @@ export const dict = {
   "command.steps.toggle": "Rādīt/paslēpt soļus",
   "command.steps.toggle.description": "Rādīt vai slēpt soļus šim ziņojumam",
   "command.message.previous": "Iepriekšējais ziņojums",
-  "command.message.previous.description": "Pāriet uz iepriekšējo lietotāja ziņojumu",
+  "command.message.previous.description":
+    "Pāriet uz iepriekšējo lietotāja ziņojumu",
   "command.message.next": "Nākamais ziņojums",
   "command.message.next.description": "Pāriet uz nākamo lietotāja ziņojumu",
   "command.model.choose": "Izvēlēties modeli",
@@ -166,23 +183,29 @@ export const dict = {
   "command.prompt.mode.shell": "Čaula",
   "command.prompt.mode.normal": "Uzvedne",
   "command.permissions.autoaccept.enable": "Automātiski pieņemt atļaujas",
-  "command.permissions.autoaccept.disable": "Apturēt automātisku atļauju pieņemšanu",
+  "command.permissions.autoaccept.disable":
+    "Apturēt automātisku atļauju pieņemšanu",
   "command.workspace.toggle": "Pārslēgt darbvietas",
-  "command.workspace.toggle.description": "Ieslēgt vai izslēgt vairākas darbvietas sānjoslā",
+  "command.workspace.toggle.description":
+    "Ieslēgt vai izslēgt vairākas darbvietas sānjoslā",
   "command.session.undo": "Atsaukt",
   "command.session.undo.description": "Atsaukt pēdējo ziņojumu",
   "command.session.redo": "Atatsaukt",
   "command.session.redo.description": "Atatsaukt pēdējo atsaukto ziņojumu",
   "command.session.compact": "Saspiest sesiju",
-  "command.session.compact.description": "Kopsavilkt sesiju, lai samazinātu konteksta apjomu",
+  "command.session.compact.description":
+    "Kopsavilkt sesiju, lai samazinātu konteksta apjomu",
   "command.session.fork": "Atzarot no ziņojuma",
-  "command.session.fork.description": "Izveidot jaunu sesiju no iepriekšēja ziņojuma",
+  "command.session.fork.description":
+    "Izveidot jaunu sesiju no iepriekšēja ziņojuma",
   "command.session.share": "Kopīgot sesiju",
-  "command.session.share.description": "Kopīgot šo sesiju un kopēt URL starpliktuvē",
+  "command.session.share.description":
+    "Kopīgot šo sesiju un kopēt URL starpliktuvē",
   "command.session.unshare": "Pārtraukt kopīgošanu",
   "command.session.unshare.description": "Pārtraukt šīs sesijas kopīgošanu",
   "command.session.export": "Eksportēt sesiju",
-  "command.session.export.description": "Eksportēt pilnu sesijas transkriptu kā JSON",
+  "command.session.export.description":
+    "Eksportēt pilnu sesijas transkriptu kā JSON",
   "palette.search.placeholder": "Meklēt failus, komandas un sesijas",
   "palette.search.placeholder.home": "Meklēt komandas un sesijas",
   "palette.empty": "Rezultāti nav atrasti",
@@ -194,28 +217,37 @@ export const dict = {
   "dialog.provider.group.other": "Citi",
   "dialog.provider.custom.label": "Pielāgots OpenAI saderīgs nodrošinātājs",
   "dialog.provider.tag.recommended": "Ieteikts",
-  "dialog.provider.opencode.note": "Atlasīti modeļi, tostarp Claude, GPT, Gemini un citi",
+  "dialog.provider.opencode.note":
+    "Atlasīti modeļi, tostarp Claude, GPT, Gemini un citi",
   "dialog.provider.opencode.tagline": "Uzticami optimizēti modeļi",
   "dialog.provider.opencodeGo.tagline": "Zemas cenas abonements visiem",
-  "dialog.provider.anthropic.note": "Tieša piekļuve Claude modeļiem, tostarp Pro un Max",
-  "dialog.provider.copilot.note": "AI modeļi programmēšanas atbalstam ar GitHub Copilot",
-  "dialog.provider.openai.note": "GPT modeļi ātriem, spējīgiem vispārējiem AI uzdevumiem",
+  "dialog.provider.anthropic.note":
+    "Tieša piekļuve Claude modeļiem, tostarp Pro un Max",
+  "dialog.provider.copilot.note":
+    "AI modeļi programmēšanas atbalstam ar GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT modeļi ātriem, spējīgiem vispārējiem AI uzdevumiem",
   "dialog.provider.google.note": "Gemini modeļi ātrām, strukturētām atbildēm",
-  "dialog.provider.openrouter.note": "Piekļuve visiem atbalstītajiem modeļiem no viena nodrošinātāja",
-  "dialog.provider.vercel.note": "Vienota piekļuve AI modeļiem ar viedu maršrutēšanu",
+  "dialog.provider.openrouter.note":
+    "Piekļuve visiem atbalstītajiem modeļiem no viena nodrošinātāja",
+  "dialog.provider.vercel.note":
+    "Vienota piekļuve AI modeļiem ar viedu maršrutēšanu",
   "dialog.model.select.title": "Izvēlieties modeli",
   "dialog.model.search.placeholder": "Meklēt modeļus",
   "dialog.model.empty": "Modeļi nav atrasti",
   "dialog.model.manage": "Pārvaldīt modeļus",
-  "dialog.model.manage.description": "Pielāgojiet, kuri modeļi tiek rādīti modeļu atlasītājā.",
+  "dialog.model.manage.description":
+    "Pielāgojiet, kuri modeļi tiek rādīti modeļu atlasītājā.",
   "dialog.model.manage.provider.toggle": "Pārslēgt visus {{provider}} modeļus",
   "dialog.model.unpaid.freeModels.title": "Bezmaksas modeļi no OpenCode",
-  "dialog.model.unpaid.addMore.title": "Pievienot vairāk modeļu no populāriem nodrošinātājiem",
+  "dialog.model.unpaid.addMore.title":
+    "Pievienot vairāk modeļu no populāriem nodrošinātājiem",
   "dialog.model.unpaid.viewMoreProviders": "Skatīt vēl 70+ nodrošinātājus",
   "dialog.provider.viewAll": "Rādīt vairāk nodrošinātāju",
   "provider.connect.title": "Savienot {{provider}}",
   "provider.connect.title.anthropicProMax": "Pieteikties ar Claude Pro/Max",
-  "provider.connect.selectMethod": "Izvēlieties pieteikšanās metodi pakalpojumam {{provider}}.",
+  "provider.connect.selectMethod":
+    "Izvēlieties pieteikšanās metodi pakalpojumam {{provider}}.",
   "provider.connect.method.apiKey": "API atslēga",
   "provider.connect.method.browser": "Pārlūks",
   "provider.connect.method.headless": "Bezgalvas režīms",
@@ -233,7 +265,8 @@ export const dict = {
     "Ar vienu API atslēgu iegūsiet piekļuvi tādiem modeļiem kā Claude, GPT, Gemini, GLM un citiem.",
   "provider.connect.opencodeZen.visit.prefix": "Apmeklējiet",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": ", lai saņemtu savu API atslēgu.",
+  "provider.connect.opencodeZen.visit.suffix":
+    ", lai saņemtu savu API atslēgu.",
   "provider.connect.oauth.code.visit.prefix": "Apmeklējiet",
   "provider.connect.oauth.code.visit.link": "šo saiti",
   "provider.connect.oauth.code.visit.suffix":
@@ -248,15 +281,20 @@ export const dict = {
     " un ievadiet zemāk redzamo kodu, lai savienotu kontu un izmantotu {{provider}} modeļus OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Apstiprinājuma kods",
   "provider.connect.toast.connected.title": "{{provider}} savienots",
-  "provider.connect.toast.connected.description": "{{provider}} modeļi tagad ir pieejami lietošanai.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} modeļi tagad ir pieejami lietošanai.",
   "provider.custom.title": "Pielāgots nodrošinātājs",
-  "provider.custom.unavailable": "Pielāgoti nodrošinātāji šajā serverī nav pieejami",
-  "provider.custom.description.prefix": "Konfigurējiet ar OpenAI saderīgu nodrošinātāju. Skatiet",
-  "provider.custom.description.link": "nodrošinātāja konfigurācijas dokumentāciju",
+  "provider.custom.unavailable":
+    "Pielāgoti nodrošinātāji šajā serverī nav pieejami",
+  "provider.custom.description.prefix":
+    "Konfigurējiet ar OpenAI saderīgu nodrošinātāju. Skatiet",
+  "provider.custom.description.link":
+    "nodrošinātāja konfigurācijas dokumentāciju",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Nodrošinātāja ID",
   "provider.custom.field.providerID.placeholder": "mananodrosinatajs",
-  "provider.custom.field.providerID.description": "Mazie burti, cipari, domuzīmes vai pasvītras",
+  "provider.custom.field.providerID.description":
+    "Mazie burti, cipari, domuzīmes vai pasvītras",
   "provider.custom.field.name.label": "Parādāmais nosaukums",
   "provider.custom.field.name.placeholder": "Mans AI nodrošinātājs",
   "provider.custom.field.baseURL.label": "Bāzes URL",
@@ -279,8 +317,10 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "vērtība",
   "provider.custom.headers.remove": "Noņemt galveni",
   "provider.custom.headers.add": "Pievienot galveni",
-  "provider.custom.error.providerID.required": "Nepieciešams norādīt nodrošinātāja ID",
-  "provider.custom.error.providerID.format": "Izmantojiet mazos burtus, ciparus, domuzīmes vai pasvītras",
+  "provider.custom.error.providerID.required":
+    "Nepieciešams norādīt nodrošinātāja ID",
+  "provider.custom.error.providerID.format":
+    "Izmantojiet mazos burtus, ciparus, domuzīmes vai pasvītras",
   "provider.custom.error.providerID.exists": "Šāds nodrošinātāja ID jau pastāv",
   "provider.custom.error.name.required": "Nepieciešams parādāmais nosaukums",
   "provider.custom.error.baseURL.required": "Nepieciešams pamata URL",
@@ -288,7 +328,8 @@ export const dict = {
   "provider.custom.error.required": "Obligāti",
   "provider.custom.error.duplicate": "Dublikāts",
   "provider.disconnect.toast.disconnected.title": "{{provider}} atvienots",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modeļi vairs nav pieejami.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modeļi vairs nav pieejami.",
   "model.tag.free": "Bezmaksas",
   "model.tag.latest": "Jaunākais",
   "model.provider.anthropic": "Anthropic",
@@ -382,10 +423,12 @@ export const dict = {
   "prompt.action.send": "Sūtīt",
   "prompt.action.stop": "Apturēt",
   "prompt.toast.pasteUnsupported.title": "Neatbalstīts pielikums",
-  "prompt.toast.pasteUnsupported.description": "Šeit var pievienot tikai attēlus, PDF vai teksta failus.",
+  "prompt.toast.pasteUnsupported.description":
+    "Šeit var pievienot tikai attēlus, PDF vai teksta failus.",
   "prompt.toast.attachmentDuplicate.title": "Šis fails jau ir augšupielādēts",
   "prompt.toast.modelAgentRequired.title": "Izvēlieties aģentu un modeli",
-  "prompt.toast.modelAgentRequired.description": "Pirms nosūtīšanas izvēlieties aģentu un modeli.",
+  "prompt.toast.modelAgentRequired.description":
+    "Pirms nosūtīšanas izvēlieties aģentu un modeli.",
   "prompt.toast.worktreeCreateFailed.title": "Neizdevās izveidot darba koku",
   "prompt.toast.sessionCreateFailed.title": "Neizdevās izveidot sesiju",
   "prompt.toast.shellSendFailed.title": "Neizdevās nosūtīt čaulas komandu",
@@ -414,7 +457,8 @@ export const dict = {
   "app.server.retrying": "Automātiska atkārtota mēģināšana...",
   "app.server.otherServers": "Citi serveri",
   "dialog.server.title": "Serveri",
-  "dialog.server.description": "Mainiet, pie kura OpenCode servera šī lietotne pieslēdzas.",
+  "dialog.server.description":
+    "Mainiet, pie kura OpenCode servera šī lietotne pieslēdzas.",
   "dialog.server.search.placeholder": "Meklēt serverus",
   "dialog.server.empty": "Vēl nav serveru",
   "dialog.server.add.title": "Pievienot serveri",
@@ -452,7 +496,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Izvēlieties distribūciju",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Pārbauda WSL...",
-  "wsl.onboarding.restartRequired": "Lai pabeigtu WSL instalēšanu, nepieciešama Windows pārstartēšana.",
+  "wsl.onboarding.restartRequired":
+    "Lai pabeigtu WSL instalēšanu, nepieciešama Windows pārstartēšana.",
   "wsl.onboarding.ready": "WSL ir gatavs.",
   "wsl.onboarding.required": "Turpināšanai nepieciešams WSL.",
   "wsl.onboarding.checkingDistros": "Pārbauda distribūcijas...",
@@ -461,18 +506,25 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Uzskaita distribūcijas...",
   "wsl.onboarding.distroReady": "{{distro}} ir gatava.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} vēl nav instalēta.",
-  "wsl.onboarding.openDistroOnce": "Atveriet {{distro}} vienu reizi, lai pabeigtu iestatīšanu.",
+  "wsl.onboarding.openDistroOnce":
+    "Atveriet {{distro}} vienu reizi, lai pabeigtu iestatīšanu.",
   "wsl.onboarding.finishingDistro": "Pabeidzu {{distro}} iestatīšanu.",
-  "wsl.onboarding.pickDistro": "Izvēlieties distribūciju vai instalējiet kādu no zemāk redzamajām.",
+  "wsl.onboarding.pickDistro":
+    "Izvēlieties distribūciju vai instalējiet kādu no zemāk redzamajām.",
   "wsl.onboarding.checkingOpencode": "Pārbaudu OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "Pārbaudu OpenCode distribūcijā {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "Pārbaudu OpenCode distribūcijā {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Atjauninu OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "Atjauninu OpenCode distribūcijā {{distro}}...",
-  "wsl.onboarding.updateOpencodeIn": "Atjauniniet OpenCode distribūcijā {{distro}}.",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Atjauninu OpenCode distribūcijā {{distro}}...",
+  "wsl.onboarding.updateOpencodeIn":
+    "Atjauniniet OpenCode distribūcijā {{distro}}.",
   "wsl.onboarding.updateOpencode": "Atjauniniet OpenCode",
-  "wsl.onboarding.opencodeReadyIn": "OpenCode ir gatavs distribūcijā {{distro}}.",
+  "wsl.onboarding.opencodeReadyIn":
+    "OpenCode ir gatavs distribūcijā {{distro}}.",
   "wsl.onboarding.opencodeReady": "OpenCode ir gatavs.",
-  "wsl.onboarding.installOpencodeIn": "Instalējiet OpenCode distribūcijā {{distro}}.",
+  "wsl.onboarding.installOpencodeIn":
+    "Instalējiet OpenCode distribūcijā {{distro}}.",
   "wsl.onboarding.installOpencode": "Instalējiet OpenCode",
   "wsl.onboarding.chooseDistroFirst": "Vispirms izvēlieties distribūciju.",
   "wsl.onboarding.loadFailed": "Neizdevās ielādēt WSL stāvokli.",
@@ -483,36 +535,43 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Pārbaudu...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode nav instalēts",
   "wsl.onboarding.distroStatus.missingTools": "Trūkst bash, curl",
-  "wsl.onboarding.distroStatus.unsupported": "Nav atbalstīts · Izmantojiet WSL 2",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Nav atbalstīts · Izmantojiet WSL 2",
   "wsl.onboarding.needAnotherDistro": "Nepieciešama cita distribūcija?",
-  "wsl.onboarding.needAnotherDistroHint": "Instalējiet Linux distribūciju no WSL kataloga",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instalējiet Linux distribūciju no WSL kataloga",
   "wsl.onboarding.wslNotInstalled.title": "WSL nav instalēts",
   "wsl.onboarding.wslNotInstalled.description":
     "Pirms OpenCode var pievienot WSL serveri, nepieciešams WSL (Windows Subsystem for Linux)",
   "wsl.onboarding.wslUnavailable.title": "WSL nav pieejams",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode neizdevās pārbaudīt WSL šajā datorā.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode neizdevās pārbaudīt WSL šajā datorā.",
   "wsl.onboarding.installWsl": "Instalēt WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Restartējiet Windows, lai pabeigtu WSL instalēšanu, pēc tam atveriet OpenCode no jauna.",
   "wsl.onboarding.next": "Tālāk",
   "wsl.onboarding.refresh": "Atsvaidzināt",
-  "wsl.onboarding.allDistrosAdded": "Visas instalētās distribūcijas jau ir pievienotas.",
+  "wsl.onboarding.allDistrosAdded":
+    "Visas instalētās distribūcijas jau ir pievienotas.",
   "wsl.onboarding.noDistros": "Distribūcijas vēl nav atrastas.",
   "wsl.onboarding.install": "Instalēt",
   "wsl.onboarding.installing": "Notiek instalēšana...",
   "wsl.onboarding.installDistro": "Instalēt distribūciju",
   "wsl.onboarding.searchDistros": "Meklēt distribūcijas",
   "wsl.onboarding.wsl2Required": "Nepieciešams WSL 2.",
-  "wsl.onboarding.toolsRequired": "Šai distribūcijai nepieciešami bash un curl.",
+  "wsl.onboarding.toolsRequired":
+    "Šai distribūcijai nepieciešami bash un curl.",
   "wsl.onboarding.openTerminal": "Atvērt termināli",
   "wsl.onboarding.path": "Ceļš: {{path}}",
   "wsl.onboarding.notFound": "nav atrasts",
   "wsl.onboarding.version": "Versija: {{version}}",
   "wsl.onboarding.unknown": "nezināms",
   "wsl.onboarding.desktopVersion": "darbvirsmas {{version}}",
-  "wsl.onboarding.versionMismatch": "Instalētā versija neatbilst darbvirsmas lietotnes versijai.",
+  "wsl.onboarding.versionMismatch":
+    "Instalētā versija neatbilst darbvirsmas lietotnes versijai.",
   "wsl.onboarding.adding": "Pievieno...",
-  "help.tabs.toast.ariaLabel": "Iepazīstinām ar cilnēm. Organizējiet darbu un aktīvās sesijas ar cilnēm",
+  "help.tabs.toast.ariaLabel":
+    "Iepazīstinām ar cilnēm. Organizējiet darbu un aktīvās sesijas ar cilnēm",
   "help.tabs.toast.dismiss": "Aizvērt cilņu informāciju",
   "help.tabs.title": "Iepazīstinām ar cilnēm",
   "help.tabs.description": "Organizējiet darbu un aktīvās sesijas ar cilnēm",
@@ -524,7 +583,8 @@ export const dict = {
     "Dažas atvērtas cilnes atvieglo aktīvo sesiju pārvaldību. Ja plānojat tās paturēt, pārdēvējiet cilnes saprotamāk.",
   "help.tabs.home":
     "Visas sesijas un projektus atradīsiet jaunajā sākuma ekrānā. Izvēloties sesiju, tā tiks atvērta cilnē.",
-  "help.tabs.persistence": "Atverot lietotni no jauna, jūsu cilnes paliek atvērtas.",
+  "help.tabs.persistence":
+    "Atverot lietotni no jauna, jūsu cilnes paliek atvērtas.",
   "help.tabs.worktrees":
     "Jaunais dizains vēl neatbalsta Git Worktrees, tas drīzumā būs pieejams. Ja vēlaties turpināt lietot iepriekšējo izkārtojumu, varat pārslēgties starp izkārtojumiem iestatījumos. Ņemiet vērā, ka jaunais izkārtojums pēc dažām nedēļām kļūs pastāvīgs.",
   "server.row.noUsername": "nav lietotājvārda",
@@ -537,14 +597,16 @@ export const dict = {
   "dialog.project.edit.color": "Krāsa",
   "dialog.project.edit.color.select": "Izvēlieties {{color}} krāsu",
   "dialog.project.edit.worktree.startup": "Darbtelpas starta skripts",
-  "dialog.project.edit.worktree.startup.description": "Tiek palaists pēc jaunas darbtelpas (worktree) izveides.",
+  "dialog.project.edit.worktree.startup.description":
+    "Tiek palaists pēc jaunas darbtelpas (worktree) izveides.",
   "dialog.project.edit.worktree.startup.placeholder": "piem., bun install",
   "dialog.releaseNotes.action.getStarted": "Sākt",
   "dialog.releaseNotes.action.next": "Tālāk",
   "dialog.releaseNotes.action.hideFuture": "Turpmāk nerādīt",
   "dialog.releaseNotes.media.alt": "Versijas priekšskatījums",
   "context.breakdown.title": "Konteksta sadalījums",
-  "context.breakdown.note": 'Aptuvens ievades tokenu sadalījums. "Citi" ietver rīku definīcijas un piesaisti.',
+  "context.breakdown.note":
+    'Aptuvens ievades tokenu sadalījums. "Citi" ietver rīku definīcijas un piesaisti.',
   "context.breakdown.system": "Sistēma",
   "context.breakdown.user": "Lietotājs",
   "context.breakdown.assistant": "Asistents",
@@ -597,49 +659,69 @@ export const dict = {
   "toast.theme.title": "Tēma nomainīta",
   "toast.scheme.title": "Krāsu shēma",
   "toast.workspace.enabled.title": "Darbtelpas ieslēgtas",
-  "toast.workspace.enabled.description": "Sānu joslā tagad redzamas vairākas darba kopijas",
+  "toast.workspace.enabled.description":
+    "Sānu joslā tagad redzamas vairākas darba kopijas",
   "toast.workspace.disabled.title": "Darbtelpas izslēgtas",
-  "toast.workspace.disabled.description": "Sānu joslā redzama tikai galvenā darba kopija",
-  "toast.permissions.autoaccept.on.title": "Atļaujas tiek automātiski apstiprinātas",
-  "toast.permissions.autoaccept.on.description": "Atļauju pieprasījumi tiks apstiprināti automātiski",
-  "toast.permissions.autoaccept.off.title": "Automātiska atļauju apstiprināšana apturēta",
-  "toast.permissions.autoaccept.off.description": "Atļauju pieprasījumiem būs nepieciešams apstiprinājums",
+  "toast.workspace.disabled.description":
+    "Sānu joslā redzama tikai galvenā darba kopija",
+  "toast.permissions.autoaccept.on.title":
+    "Atļaujas tiek automātiski apstiprinātas",
+  "toast.permissions.autoaccept.on.description":
+    "Atļauju pieprasījumi tiks apstiprināti automātiski",
+  "toast.permissions.autoaccept.off.title":
+    "Automātiska atļauju apstiprināšana apturēta",
+  "toast.permissions.autoaccept.off.description":
+    "Atļauju pieprasījumiem būs nepieciešams apstiprinājums",
   "toast.model.none.title": "Nav izvēlēts modelis",
-  "toast.model.none.description": "Pievienojiet nodrošinātāju, lai apkopotu šo sesiju",
+  "toast.model.none.description":
+    "Pievienojiet nodrošinātāju, lai apkopotu šo sesiju",
   "toast.file.loadFailed.title": "Neizdevās ielādēt failu",
   "toast.file.listFailed.title": "Neizdevās uzskaitīt failus",
   "toast.context.noLineSelection.title": "Nav izvēlētas rindas",
-  "toast.context.noLineSelection.description": "Vispirms izvēlieties rindu diapazonu faila cilnē.",
+  "toast.context.noLineSelection.description":
+    "Vispirms izvēlieties rindu diapazonu faila cilnē.",
   "toast.session.share.copyFailed.title": "Neizdevās kopēt URL starpliktuvē",
   "toast.session.share.success.title": "Sesija kopīgota",
-  "toast.session.share.success.description": "Kopīgošanas URL nokopēts starpliktuvē!",
+  "toast.session.share.success.description":
+    "Kopīgošanas URL nokopēts starpliktuvē!",
   "toast.session.share.failed.title": "Neizdevās kopīgot sesiju",
   "toast.session.share.failed.description": "Radās kļūda, kopīgojot sesiju",
   "toast.session.unshare.success.title": "Sesija atsaistīta",
   "toast.session.unshare.success.description": "Sesija veiksmīgi atsaistīta!",
-  "toast.session.unshare.failed.title": "Neizdevās pārtraukt sesijas kopīgošanu",
-  "toast.session.unshare.failed.description": "Radās kļūda, pārtraucot sesijas kopīgošanu",
+  "toast.session.unshare.failed.title":
+    "Neizdevās pārtraukt sesijas kopīgošanu",
+  "toast.session.unshare.failed.description":
+    "Radās kļūda, pārtraucot sesijas kopīgošanu",
   "toast.session.export.success.title": "Sesija eksportēta",
-  "toast.session.export.success.description": "Sesija saglabāta kā {{filename}}",
+  "toast.session.export.success.description":
+    "Sesija saglabāta kā {{filename}}",
   "toast.session.export.failed.title": "Neizdevās eksportēt sesiju",
   "toast.session.export.failed.description": "Radās kļūda, eksportējot sesiju",
-  "toast.session.listFailed.title": "Neizdevās ielādēt sesijas projektam {{project}}",
+  "toast.session.listFailed.title":
+    "Neizdevās ielādēt sesijas projektam {{project}}",
   "toast.project.reloadFailed.title": "Neizdevās pārlādēt {{project}}",
   "toast.update.title": "Pieejams atjauninājums",
-  "toast.update.description": "Pieejama jauna OpenCode versija ({{version}}) instalēšanai.",
+  "toast.update.description":
+    "Pieejama jauna OpenCode versija ({{version}}) instalēšanai.",
   "toast.update.action.installRestart": "Instalēt un restartēt",
-  "disk.accessGuidance.macos": "Sistēmas iestatījumos piešķiriet DiskLizard piekļuvi Full Disk Access un pēc tam veiciet jaunu skenēšanu.",
-  "disk.accessGuidance.windows": "Izmantojiet kontu ar piekļuvi šim diskam vai skenējiet mapi, kuru jūsu konts var lasīt.",
-  "disk.accessGuidance.linux": "Pārbaudiet mapju un montāžas punktu atļaujas un veiciet jaunu skenēšanu.",
-  "disk.accessGuidance.default": "Pārbaudiet piekļuvi šīm mapēm un veiciet jaunu skenēšanu.",
-  "disk.accessGuidance.rescan": "Pēc piekļuves maiņas augšējā joslā izmantojiet Rescan.",
+  "disk.accessGuidance.macos":
+    "Sistēmas iestatījumos piešķiriet DiskLizard piekļuvi Full Disk Access un pēc tam veiciet jaunu skenēšanu.",
+  "disk.accessGuidance.windows":
+    "Izmantojiet kontu ar piekļuvi šim diskam vai skenējiet mapi, kuru jūsu konts var lasīt.",
+  "disk.accessGuidance.linux":
+    "Pārbaudiet mapju un montāžas punktu atļaujas un veiciet jaunu skenēšanu.",
+  "disk.accessGuidance.default":
+    "Pārbaudiet piekļuvi šīm mapēm un veiciet jaunu skenēšanu.",
+  "disk.accessGuidance.rescan":
+    "Pēc piekļuves maiņas augšējā joslā izmantojiet Rescan.",
   "disk.common.rescan": "Skenēt atkārtoti",
   "toast.update.action.notYet": "Vēlāk",
   "toast.update.installFailed.title": "Neizdevās instalēt atjauninājumu",
   "toast.update.installFailed.retry": "Mēģināt vēlreiz",
   "error.page.title": "Kaut kas nogāja greizi",
   "error.page.description": "Radās kļūda, ielādējot lietotni.",
-  "error.page.description.localServerStartup": "Radās kļūda, startējot lokālo serveri.",
+  "error.page.description.localServerStartup":
+    "Radās kļūda, startējot lokālo serveri.",
   "error.page.details.label": "Kļūdas detaļas",
   "error.page.action.restart": "Restartēt",
   "error.page.action.report": "Ziņot par kļūdu",
@@ -658,9 +740,12 @@ export const dict = {
     "Neizdevās izveidot savienojumu ar serveri. Vai serveris darbojas adresē `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Nav pieejams neviens serveris",
   "error.serverSDK.serverNotAvailable": "Serveris nav pieejams",
-  "error.childStore.persistedCacheCreateFailed": "Neizdevās izveidot saglabāto kešatmiņu",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Neizdevās izveidot saglabātos projekta metadatus",
-  "error.childStore.persistedProjectIconCreateFailed": "Neizdevās izveidot saglabāto projekta ikonu",
+  "error.childStore.persistedCacheCreateFailed":
+    "Neizdevās izveidot saglabāto kešatmiņu",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Neizdevās izveidot saglabātos projekta metadatus",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Neizdevās izveidot saglabāto projekta ikonu",
   "error.childStore.storeCreateFailed": "Neizdevās izveidot krātuvi",
   "directory.error.invalidUrl": "Nederīgs direktorijs URL.",
   "error.chain.unknown": "Nezināma kļūda",
@@ -672,23 +757,31 @@ export const dict = {
   "error.chain.responseBody": "Atbildes saturs:\n{{body}}",
   "error.chain.didYouMean": "Vai domājāt: {{suggestions}}",
   "error.chain.modelNotFound": "Modelis nav atrasts: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Pārbaudiet konfigurāciju (opencode.json) pakalpojuma/modela nosaukumus",
+  "error.chain.checkConfig":
+    "Pārbaudiet konfigurāciju (opencode.json) pakalpojuma/modela nosaukumus",
   "error.chain.mcpFailed":
     'MCP serveris "{{name}}" neizdevās. Ņemiet vērā, OpenCode vēl neatbalsta MCP autentifikāciju.',
-  "error.chain.providerAuthFailed": "Pakalpojuma autentifikācija neizdevās ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Pakalpojuma autentifikācija neizdevās ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Neizdevās inicializēt pakalpojumu "{{provider}}". Pārbaudiet akreditācijas datus un konfigurāciju.',
-  "error.chain.configJsonInvalid": "Konfigurācijas fails {{path}} nav derīgs JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurācijas fails {{path}} nav derīgs JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfigurācijas fails {{path}} nav derīgs JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurācijas fails {{path}} nav derīgs JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Direktorijs "{{dir}}" failā {{path}} nav derīgs. Pārdēvējiet direktoriju uz "{{suggestion}}" vai izdzēsiet to. Tā ir bieža drukas kļūda.',
-  "error.chain.configFrontmatterError": "Neizdevās parsēt frontmatter failā {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Neizdevās parsēt frontmatter failā {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Konfigurācijas fails {{path}} nav derīgs",
-  "error.chain.configInvalidWithMessage": "Konfigurācijas fails {{path}} nav derīgs: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigurācijas fails {{path}} nav derīgs: {{message}}",
   "notification.permission.title": "Nepieciešama atļauja",
-  "notification.permission.description": "{{sessionTitle}} projektā {{projectName}} nepieciešama atļauja",
+  "notification.permission.description":
+    "{{sessionTitle}} projektā {{projectName}} nepieciešama atļauja",
   "notification.question.title": "Jautājums",
-  "notification.question.description": "{{sessionTitle}} projektā {{projectName}} ir jautājums",
+  "notification.question.description":
+    "{{sessionTitle}} projektā {{projectName}} ir jautājums",
   "notification.action.goToSession": "Doties uz sesiju",
   "notification.session.responseReady.title": "Atbilde gatava",
   "notification.session.error.title": "Sesijas kļūda",
@@ -719,7 +812,8 @@ export const dict = {
   "session.tab.unknown": "Nezināma sesija",
   "session.panel.reviewAndFiles": "Pārskats un faili",
   "session.error.notFound": "Šī sesija nav atrodama",
-  "session.error.notFound.description": "Šī cilne norāda uz sesiju, kas vairs neeksistē šajā serverī.",
+  "session.error.notFound.description":
+    "Šī cilne norāda uz sesiju, kas vairs neeksistē šajā serverī.",
   "session.error.notFound.closeTab": "Aizvērt cilni",
   "session.error.serverConnection": "Nevar izveidot savienojumu ar šo serveri",
   "session.review.filesChanged": "Mainīti faili: {{count}}",
@@ -727,10 +821,13 @@ export const dict = {
   "session.review.change.other": "Izmaiņas",
   "session.review.loadingChanges": "Notiek izmaiņu ielāde...",
   "session.review.empty": "Šajā sesijā vēl nav izmaiņu",
-  "session.review.noVcs": "Nav atrasta Git versiju kontrole, izmaiņas netiek rādītas",
+  "session.review.noVcs":
+    "Nav atrasta Git versiju kontrole, izmaiņas netiek rādītas",
   "session.review.noVcs.createGit.title": "Izveidot Git repozitoriju",
-  "session.review.noVcs.createGit.description": "Izseko, pārskati un atsauc izmaiņas šajā projektā",
-  "session.review.noVcs.createGit.actionLoading": "Notiek Git repozitorija izveide...",
+  "session.review.noVcs.createGit.description":
+    "Izseko, pārskati un atsauc izmaiņas šajā projektā",
+  "session.review.noVcs.createGit.actionLoading":
+    "Notiek Git repozitorija izveide...",
   "session.review.noVcs.createGit.action": "Izveidot Git repozitoriju",
   "session.review.noSnapshot":
     "Konfigurācijā atspējota momentuzņēmumu izsekošana, tāpēc sesijas izmaiņas nav pieejamas",
@@ -819,7 +916,8 @@ export const dict = {
   "session.share.popover.title": "Publicēt tīmeklī",
   "session.share.popover.description.shared":
     "Šī sesija ir publiski pieejama tīmeklī. Tai var piekļūt ikviens ar saiti.",
-  "session.share.popover.description.unshared": "Kopīgot sesiju publiski tīmeklī. Tai varēs piekļūt ikviens ar saiti.",
+  "session.share.popover.description.unshared":
+    "Kopīgot sesiju publiski tīmeklī. Tai varēs piekļūt ikviens ar saiti.",
   "session.share.action.share": "Kopīgot",
   "session.share.action.publish": "Publicēt",
   "session.share.action.publishing": "Publicē...",
@@ -836,12 +934,14 @@ export const dict = {
   "terminal.title.numbered": "Terminālis {{number}}",
   "terminal.close": "Aizvērt termināli",
   "terminal.connectionLost.title": "Savienojums zudis",
-  "terminal.connectionLost.abnormalClose": "WebSocket savienojums neparasti pārtraukts: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket savienojums neparasti pārtraukts: {{code}}",
   "terminal.connectionLost.description":
     "Termināļa savienojums tika pārtraukts. Tas var notikt, ja serveris tiek restartēts.",
   "terminal.connectTicket.csrfError":
     "PTY savienojuma biļeti noraidīja izcelsmes vai CSRF pārbaudes. Pārbaudiet servera CORS konfigurāciju.",
-  "terminal.connectTicket.statusError": "PTY savienojuma biļete neizdevās ar statusu {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY savienojuma biļete neizdevās ar statusu {{status}}",
   "titlebar.update": "Atjaunināt",
   "titlebar.updateVersion": "Atjaunināt uz {{version}}",
   "common.closeTab": "Aizvērt cilni",
@@ -885,7 +985,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Ieslēgt darba telpas",
   "sidebar.workspaces.disable": "Izslēgt darba telpas",
   "sidebar.gettingStarted.title": "Darba sākšana",
-  "sidebar.gettingStarted.line1": "OpenCode ietver bezmaksas modeļus, lai varētu sākt uzreiz.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ietver bezmaksas modeļus, lai varētu sākt uzreiz.",
   "sidebar.gettingStarted.line2":
     "Pievienojiet jebkuru nodrošinātāju, lai izmantotu modeļus, t.sk. Claude, GPT, Gemini u.c.",
   "sidebar.project.recentSessions": "Nesenās sesijas",
@@ -905,23 +1006,28 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Kadri virs 32 ms pēdējās 5 sekundēs.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Bloķētais laiks un garo uzdevumu skaits pēdējās 5 sekundēs. Maks. uzdevums: {{max}}.",
+  "debugBar.long.tip":
+    "Bloķētais laiks un garo uzdevumu skaits pēdējās 5 sekundēs. Maks. uzdevums: {{max}}.",
   "debugBar.delay.label": "AIZKAVE",
   "debugBar.delay.tip": "Sliktākā novērotā ievades aizkave pēdējās 5 sekundēs.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Aptuvenais mijiedarbības ilgums pēdējās 5 sekundēs. Tas ir līdzīgs INP, nevis oficiālais Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kopējā izkārtojuma nobīde pašreizējā lietotnes darbības laikā.",
+  "debugBar.cls.tip":
+    "Kopējā izkārtojuma nobīde pašreizējā lietotnes darbības laikā.",
   "debugBar.mem.label": "ATMIŅA",
-  "debugBar.mem.tipUnavailable": "Izmantotā JS kaudze pret kaudzes limitu. Tikai Chromium.",
+  "debugBar.mem.tipUnavailable":
+    "Izmantotā JS kaudze pret kaudzes limitu. Tikai Chromium.",
   "debugBar.mem.tip": "Izmantotā JS kaudze: {{used}} no {{limit}}.",
   "debugBar.focus.label": "FOKUSS",
-  "debugBar.focus.tip": "Piespiedu kārtā parādīt fokusa stilus visiem interaktīvajiem elementiem",
+  "debugBar.focus.tip":
+    "Piespiedu kārtā parādīt fokusa stilus visiem interaktīvajiem elementiem",
   "debugBar.focus.on": "IESL.",
   "debugBar.focus.off": "IZSL.",
   "debugBar.direction.label": "VIRZIENS",
-  "debugBar.direction.tip": "Piespiedu kārtā lietot pilnu lietotnes izkārtojuma virzienu, nemainot izvēlēto valodu",
+  "debugBar.direction.tip":
+    "Piespiedu kārtā lietot pilnu lietotnes izkārtojuma virzienu, nemainot izvēlēto valodu",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode darbvirsma",
@@ -931,7 +1037,8 @@ export const dict = {
   "settings.tab.shortcuts": "Saīsnes",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integrācija",
-  "settings.desktop.wsl.description": "Palaist OpenCode serveri WSL vidē uz Windows.",
+  "settings.desktop.wsl.description":
+    "Palaist OpenCode serveri WSL vidē uz Windows.",
   "settings.general.section.appearance": "Izskats",
   "settings.general.section.advanced": "Paplašināti",
   "settings.general.section.notifications": "Sistēmas paziņojumi",
@@ -940,77 +1047,100 @@ export const dict = {
   "settings.general.section.feed": "Plūsma",
   "settings.general.section.display": "Displejs",
   "settings.general.row.language.title": "Valoda",
-  "settings.general.row.language.description": "Mainīt OpenCode saskarnes valodu",
+  "settings.general.row.language.description":
+    "Mainīt OpenCode saskarnes valodu",
   "settings.general.row.shell.title": "Termināļa čaula",
-  "settings.general.row.shell.description": "Čaula, ko izmanto terminālis un aģenta rīki",
+  "settings.general.row.shell.description":
+    "Čaula, ko izmanto terminālis un aģenta rīki",
   "settings.general.row.shell.autoDefault": "Automātiski (noklusējums)",
   "settings.general.row.shell.terminalOnly": "tikai terminālis",
   "settings.general.row.appearance.title": "Izskats",
-  "settings.general.row.appearance.description": "Pielāgojiet, kā OpenCode izskatās jūsu ierīcē",
+  "settings.general.row.appearance.description":
+    "Pielāgojiet, kā OpenCode izskatās jūsu ierīcē",
   "settings.general.row.colorScheme.title": "Krāsu shēma",
   "settings.general.row.colorScheme.description":
     "Izvēlieties, vai OpenCode sekos sistēmas, gaišajai vai tumšajai tēmai",
   "settings.general.row.theme.title": "Tēma",
   "settings.general.row.theme.description": "Pielāgojiet OpenCode tēmu.",
   "settings.general.row.font.title": "Koda fonts",
-  "settings.general.row.font.description": "Pielāgojiet fontu, kas tiek izmantots koda blokos",
+  "settings.general.row.font.description":
+    "Pielāgojiet fontu, kas tiek izmantots koda blokos",
   "settings.general.row.terminalFont.title": "Termināļa fonts",
-  "settings.general.row.terminalFont.description": "Pielāgojiet fontu, kas tiek izmantots terminālī",
+  "settings.general.row.terminalFont.description":
+    "Pielāgojiet fontu, kas tiek izmantots terminālī",
   "settings.general.row.uiFont.title": "Saskarnes fonts",
   "settings.general.row.uiFont.description": "Pielāgojiet fontu visā saskarnē",
   "settings.general.row.followup.title": "Turpmākā darbība",
-  "settings.general.row.followup.description": "Izvēlieties, vai turpmākie uzvedumi tiek izpildīti uzreiz vai rindā",
+  "settings.general.row.followup.description":
+    "Izvēlieties, vai turpmākie uzvedumi tiek izpildīti uzreiz vai rindā",
   "settings.general.row.followup.option.queue": "Rinda",
   "settings.general.row.followup.option.steer": "Izpildīt uzreiz",
   "settings.general.row.showFileTree.title": "Failu koks",
-  "settings.general.row.showFileTree.description": "Rādīt failu koka paneli sesijās",
+  "settings.general.row.showFileTree.description":
+    "Rādīt failu koka paneli sesijās",
   "settings.general.row.showNavigation.title": "Navigācijas vadīklas",
-  "settings.general.row.showNavigation.description": "Rādīt atpakaļ un uz priekšu pogas darbvirsmas virsraksta joslā",
+  "settings.general.row.showNavigation.description":
+    "Rādīt atpakaļ un uz priekšu pogas darbvirsmas virsraksta joslā",
   "settings.general.row.showSearch.title": "Komandu palete",
-  "settings.general.row.showSearch.description": "Rādīt meklēšanas un komandu paletes pogu virsraksta joslā",
+  "settings.general.row.showSearch.description":
+    "Rādīt meklēšanas un komandu paletes pogu virsraksta joslā",
   "settings.general.row.showTerminal.title": "Terminālis",
-  "settings.general.row.showTerminal.description": "Rādīt termināļa pogu darbvirsmas virsraksta joslā",
+  "settings.general.row.showTerminal.description":
+    "Rādīt termināļa pogu darbvirsmas virsraksta joslā",
   "settings.general.row.showStatus.title": "Servera statuss",
-  "settings.general.row.showStatus.description": "Rādīt servera statusa pogu virsraksta joslā",
+  "settings.general.row.showStatus.description":
+    "Rādīt servera statusa pogu virsraksta joslā",
   "settings.general.row.mobileTitlebarBottom.title": "Apakšējā navigācija",
   "settings.general.row.mobileTitlebarBottom.description":
     "Rādīt virsraksta joslu un sesiju cilnes ekrāna apakšā mobilajās ierīcēs",
   "settings.general.row.showCustomAgents.title": "Rādīt aģentu",
   "settings.general.row.showCustomAgents.description":
     "Pārslēgties starp aģentiem redaktorā. Ja paslēpts, tiek izmantots Build aģents.",
-  "settings.general.row.reasoningSummaries.title": "Rādīt pamatojuma kopsavilkumus",
-  "settings.general.row.reasoningSummaries.description": "Rādīt modeļa pamatojuma kopsavilkumus laika joslā",
-  "settings.general.row.shellToolPartsExpanded.title": "Izvērst čaulas rīka daļas",
+  "settings.general.row.reasoningSummaries.title":
+    "Rādīt pamatojuma kopsavilkumus",
+  "settings.general.row.reasoningSummaries.description":
+    "Rādīt modeļa pamatojuma kopsavilkumus laika joslā",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Izvērst čaulas rīka daļas",
   "settings.general.row.shellToolPartsExpanded.description":
     "Pēc noklusējuma rādīt čaulas rīka daļas izvērstas laika joslā",
-  "settings.general.row.editToolPartsExpanded.title": "Izvērst rediģēšanas rīka daļas",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Izvērst rediģēšanas rīka daļas",
   "settings.general.row.editToolPartsExpanded.description":
     "Pēc noklusējuma rādīt rediģēšanas, rakstīšanas un labošanas rīka daļas izvērstas laika joslā",
   "settings.general.row.newInterface.title": "Jauns izkārtojums",
   "settings.general.row.newInterface.badge": "Jauns",
   "settings.general.row.newInterface.description":
     "Izmantot jauno cilņu un sākuma izkārtojumu. Ierobežotu laiku var pārslēgties starp izkārtojumiem.",
-  "settings.general.row.newInterfaceNotice.title": "Tagad izmantojat jauno izkārtojumu",
-  "settings.general.row.newInterfaceNotice.description": "Iepriekšējais izkārtojums vairs nav pieejams",
+  "settings.general.row.newInterfaceNotice.title":
+    "Tagad izmantojat jauno izkārtojumu",
+  "settings.general.row.newInterfaceNotice.description":
+    "Iepriekšējais izkārtojums vairs nav pieejams",
   "settings.general.row.newInterfaceNotice.dismiss": "Aizvērt",
   "settings.general.row.pinchZoom.title": "Tuvināt ar šķipsnu",
-  "settings.general.row.pinchZoom.description": "Atļaut tuvināšanu ar skārienpaliktņa šķipsnu un Ctrl-ritināšanu",
+  "settings.general.row.pinchZoom.description":
+    "Atļaut tuvināšanu ar skārienpaliktņa šķipsnu un Ctrl-ritināšanu",
   "settings.general.row.wayland.title": "Izmantot vietējo Wayland",
-  "settings.general.row.wayland.description": "Atspējot X11 rezerves režīmu Wayland vidē. Nepieciešama pārstartēšana.",
+  "settings.general.row.wayland.description":
+    "Atspējot X11 rezerves režīmu Wayland vidē. Nepieciešama pārstartēšana.",
   "settings.general.row.wayland.tooltip":
     "Linux ar dažādu atsvaidzes ātrumu monitoriem vietējais Wayland var būt stabilāks.",
   "settings.general.row.releaseNotes.title": "Izlaiduma piezīmes",
-  "settings.general.row.releaseNotes.description": "Rādīt Jaunumu logus pēc atjauninājumiem",
+  "settings.general.row.releaseNotes.description":
+    "Rādīt Jaunumu logus pēc atjauninājumiem",
   "settings.updates.row.startup.title": "Pārbaudīt atjauninājumus startējot",
-  "settings.updates.row.startup.description": "Automātiski pārbaudīt atjauninājumus, palaižot OpenCode",
+  "settings.updates.row.startup.description":
+    "Automātiski pārbaudīt atjauninājumus, palaižot OpenCode",
   "settings.updates.row.check.title": "Pārbaudīt atjauninājumus",
-  "settings.updates.row.check.description": "Manuāli pārbaudīt un instalēt atjauninājumus, ja pieejami",
+  "settings.updates.row.check.description":
+    "Manuāli pārbaudīt un instalēt atjauninājumus, ja pieejami",
   "settings.updates.action.checkNow": "Pārbaudīt tagad",
   "settings.updates.action.checking": "Pārbauda...",
   "settings.updates.action.downloading": "Lejupielādē...",
   "settings.updates.action.installing": "Instalē...",
   "settings.updates.toast.latest.title": "Jums ir jaunākā versija",
-  "settings.updates.toast.latest.description": "Jūs izmantojat jaunāko OpenCode versiju.",
+  "settings.updates.toast.latest.description":
+    "Jūs izmantojat jaunāko OpenCode versiju.",
   "sound.option.none": "Nav",
   "sound.option.alert01": "Brīdinājums 01",
   "sound.option.alert02": "Brīdinājums 02",
@@ -1061,21 +1191,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Rādīt sistēmas paziņojumu, kad aģents ir pabeigts vai nepieciešama uzmanība",
   "settings.general.notifications.permissions.title": "Atļaujas",
-  "settings.general.notifications.permissions.description": "Rādīt sistēmas paziņojumu, kad nepieciešama atļauja",
+  "settings.general.notifications.permissions.description":
+    "Rādīt sistēmas paziņojumu, kad nepieciešama atļauja",
   "settings.general.notifications.errors.title": "Kļūdas",
-  "settings.general.notifications.errors.description": "Rādīt sistēmas paziņojumu, kad notiek kļūda",
+  "settings.general.notifications.errors.description":
+    "Rādīt sistēmas paziņojumu, kad notiek kļūda",
   "settings.general.sounds.agent.title": "Aģents",
-  "settings.general.sounds.agent.description": "Atskaņot skaņu, kad aģents ir pabeigts vai nepieciešama uzmanība",
+  "settings.general.sounds.agent.description":
+    "Atskaņot skaņu, kad aģents ir pabeigts vai nepieciešama uzmanība",
   "settings.general.sounds.permissions.title": "Atļaujas",
-  "settings.general.sounds.permissions.description": "Atskaņot skaņu, kad nepieciešama atļauja",
+  "settings.general.sounds.permissions.description":
+    "Atskaņot skaņu, kad nepieciešama atļauja",
   "settings.general.sounds.errors.title": "Kļūdas",
-  "settings.general.sounds.errors.description": "Atskaņot skaņu, kad notiek kļūda",
+  "settings.general.sounds.errors.description":
+    "Atskaņot skaņu, kad notiek kļūda",
   "settings.shortcuts.title": "Tastatūras saīsnes",
   "settings.shortcuts.reset.button": "Atjaunot noklusējumus",
   "settings.shortcuts.reset.toast.title": "Saīsnes atjaunotas",
-  "settings.shortcuts.reset.toast.description": "Tastatūras saīsnes ir atjaunotas uz noklusējuma vērtībām.",
+  "settings.shortcuts.reset.toast.description":
+    "Tastatūras saīsnes ir atjaunotas uz noklusējuma vērtībām.",
   "settings.shortcuts.conflict.title": "Saīsne jau tiek izmantota",
-  "settings.shortcuts.conflict.description": "{{keybind}} jau ir piešķirts {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} jau ir piešķirts {{titles}}.",
   "settings.shortcuts.unassigned": "Nav piešķirts",
   "settings.shortcuts.pressKeys": "Nospiediet taustiņus",
   "settings.shortcuts.search.placeholder": "Meklēt saīsnes",
@@ -1087,12 +1224,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminālis",
   "settings.shortcuts.group.prompt": "Uzvedne",
   "settings.providers.title": "Pakalpojumu sniedzēji",
-  "settings.providers.description": "Pakalpojumu iestatījumus varēs konfigurēt šeit.",
+  "settings.providers.description":
+    "Pakalpojumu iestatījumus varēs konfigurēt šeit.",
   "settings.providers.section.connected": "Pievienotie pakalpojumi",
   "settings.providers.connected.empty": "Nav pievienotu pakalpojumu",
-  "settings.providers.connected.environmentDescription": "Pievienots no jūsu vides mainīgajiem",
+  "settings.providers.connected.environmentDescription":
+    "Pievienots no jūsu vides mainīgajiem",
   "settings.providers.section.popular": "Populāri pakalpojumi",
-  "settings.providers.custom.description": "Pievienojiet OpenAI saderīgu pakalpojumu, norādot bāzes URL.",
+  "settings.providers.custom.description":
+    "Pievienojiet OpenAI saderīgu pakalpojumu, norādot bāzes URL.",
   "settings.providers.tag.environment": "Vide",
   "settings.providers.tag.config": "Konfigurācija",
   "settings.providers.tag.custom": "Pielāgots",
@@ -1102,24 +1242,31 @@ export const dict = {
   "settings.agents.title": "Aģenti",
   "settings.agents.description": "Šeit varēs konfigurēt aģentu iestatījumus.",
   "settings.commands.title": "Komandas",
-  "settings.commands.description": "Šeit varēs konfigurēt komandu iestatījumus.",
+  "settings.commands.description":
+    "Šeit varēs konfigurēt komandu iestatījumus.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Šeit varēs konfigurēt MCP iestatījumus.",
   "settings.permissions.title": "Atļaujas",
-  "settings.permissions.description": "Kontrolējiet, kādus rīkus serveris var izmantot pēc noklusējuma.",
+  "settings.permissions.description":
+    "Kontrolējiet, kādus rīkus serveris var izmantot pēc noklusējuma.",
   "settings.permissions.section.tools": "Rīki",
-  "settings.permissions.toast.updateFailed.title": "Neizdevās atjaunināt atļaujas",
+  "settings.permissions.toast.updateFailed.title":
+    "Neizdevās atjaunināt atļaujas",
   "settings.permissions.action.allow": "Atļaut",
   "settings.permissions.action.ask": "Jautāt",
   "settings.permissions.action.deny": "Liegt",
   "settings.permissions.tool.read.title": "Lasīt",
-  "settings.permissions.tool.read.description": "Faila lasīšana (atbilst faila ceļam)",
+  "settings.permissions.tool.read.description":
+    "Faila lasīšana (atbilst faila ceļam)",
   "settings.permissions.tool.edit.title": "Rediģēt",
-  "settings.permissions.tool.edit.description": "Mainīt failus, tostarp labojumus, ierakstus un ielāpus",
+  "settings.permissions.tool.edit.description":
+    "Mainīt failus, tostarp labojumus, ierakstus un ielāpus",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Atrast failus, izmantojot glob paraugus",
+  "settings.permissions.tool.glob.description":
+    "Atrast failus, izmantojot glob paraugus",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Meklēt failu saturu ar regulārajām izteiksmēm",
+  "settings.permissions.tool.grep.description":
+    "Meklēt failu saturu ar regulārajām izteiksmēm",
   "settings.permissions.tool.list.title": "Saraksts",
   "settings.permissions.tool.list.description": "Uzskaitīt failus mapē",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1129,17 +1276,21 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Prasme",
   "settings.permissions.tool.skill.description": "Ielādēt prasmi pēc nosaukuma",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Izpildīt valodas servera vaicājumus",
+  "settings.permissions.tool.lsp.description":
+    "Izpildīt valodas servera vaicājumus",
   "settings.permissions.tool.todowrite.title": "Todo rakstīšana",
-  "settings.permissions.tool.todowrite.description": "Atjaunināt uzdevumu sarakstu",
+  "settings.permissions.tool.todowrite.description":
+    "Atjaunināt uzdevumu sarakstu",
   "settings.permissions.tool.webfetch.title": "Web iegūšana",
   "settings.permissions.tool.webfetch.description": "Iegūt saturu no URL",
   "settings.permissions.tool.websearch.title": "Tīmekļa meklēšana",
   "settings.permissions.tool.websearch.description": "Meklēt tīmeklī",
   "settings.permissions.tool.external_directory.title": "Ārējais katalogs",
-  "settings.permissions.tool.external_directory.description": "Piekļūt failiem ārpus projekta mapes",
+  "settings.permissions.tool.external_directory.description":
+    "Piekļūt failiem ārpus projekta mapes",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Noteikt atkārtotus rīka izsaukumus ar identisku ievadi",
+  "settings.permissions.tool.doom_loop.description":
+    "Noteikt atkārtotus rīka izsaukumus ar identisku ievadi",
   "session.delete.failed.title": "Neizdevās dzēst sesiju",
   "session.delete.title": "Dzēst sesiju",
   "session.delete.confirm": 'Dzēst sesiju "{{name}}"?',
@@ -1153,7 +1304,8 @@ export const dict = {
   "workspace.resetting.description": "Tas var aizņemt minūti.",
   "workspace.reset.failed.title": "Neizdevās atiestatīt darba vidi",
   "workspace.reset.success.title": "Darba vide atiestatīta",
-  "workspace.reset.success.description": "Darba vide tagad atbilst noklusētajam zaram.",
+  "workspace.reset.success.description":
+    "Darba vide tagad atbilst noklusētajam zaram.",
   "workspace.error.stillPreparing": "Darba vide vēl tiek sagatavota",
   "workspace.status.checking": "Pārbauda nesapludinātās izmaiņas...",
   "workspace.status.error": "Nevar pārbaudīt git statusu.",
@@ -1168,6 +1320,7 @@ export const dict = {
   "workspace.reset.archived.none": "Neviena aktīva sesija netiks arhivēta.",
   "workspace.reset.archived.one": "Tiks arhivēta 1 sesija.",
   "workspace.reset.archived.many": "Tiks arhivētas {{count}} sesijas.",
-  "workspace.reset.note": "Darbvieta tiks atiestatīta uz noklusējuma zara stāvokli.",
+  "workspace.reset.note":
+    "Darbvieta tiks atiestatīta uz noklusējuma zara stāvokli.",
   "dialog.usageExceeded.dontShowAgain": "Vairs nerādīt",
 }

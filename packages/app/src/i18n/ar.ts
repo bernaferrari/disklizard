@@ -1,9 +1,14 @@
 export const dict = {
-  "disk.accessGuidance.macos": "امنح DiskLizard صلاحية Full Disk Access في System Settings، ثم امسح ضوئيًا من جديد.",
-  "disk.accessGuidance.windows": "استخدم حسابًا لديه صلاحية الوصول إلى هذا القرص، أو امسح مجلدًا يمكن لحسابك قراءته.",
-  "disk.accessGuidance.linux": "راجع أذونات المجلد والتحميل (mount)، ثم امسح ضوئيًا من جديد.",
-  "disk.accessGuidance.default": "راجع صلاحية الوصول إلى هذه المجلدات، ثم امسح ضوئيًا من جديد.",
-  "disk.accessGuidance.rescan": "استخدم خيار Rescan في الشريط العلوي بعد تغيير الصلاحيات.",
+  "disk.accessGuidance.macos":
+    "امنح DiskLizard صلاحية Full Disk Access في System Settings، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.windows":
+    "استخدم حسابًا لديه صلاحية الوصول إلى هذا القرص، أو امسح مجلدًا يمكن لحسابك قراءته.",
+  "disk.accessGuidance.linux":
+    "راجع أذونات المجلد والتحميل (mount)، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.default":
+    "راجع صلاحية الوصول إلى هذه المجلدات، ثم امسح ضوئيًا من جديد.",
+  "disk.accessGuidance.rescan":
+    "استخدم خيار Rescan في الشريط العلوي بعد تغيير الصلاحيات.",
   "disk.common.rescan": "إعادة الفحص",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "ملف",
@@ -58,7 +63,8 @@ export const dict = {
   "desktop.updater.dialog.installFailed.title": "تعذر تثبيت التحديث",
   "desktop.updater.dialog.upToDate.message": "لديك أحدث إصدار.",
   "desktop.updater.dialog.upToDate.title": "لا توجد تحديثات",
-  "desktop.updater.dialog.ready.message": "تم تنزيل التحديث {{version}}. هل تريد إعادة التشغيل الآن؟",
+  "desktop.updater.dialog.ready.message":
+    "تم تنزيل التحديث {{version}}. هل تريد إعادة التشغيل الآن؟",
   "desktop.updater.dialog.ready.title": "التحديث جاهز",
   "desktop.updater.dialog.restart": "إعادة التشغيل",
   "desktop.updater.dialog.retry": "إعادة المحاولة",
@@ -71,9 +77,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "فشل تحميل OpenCode",
   "desktop.recovery.terminated": "توقفت نافذة OpenCode بشكل غير متوقع",
   "desktop.recovery.unresponsive": "OpenCode لا يستجيب",
-  "desktop.recovery.unresponsive.detail": "يمكنك إعادة تشغيل التطبيق أو فتح السجلات أو متابعة الانتظار.",
-  "desktop.recovery.loadFailed.detail": "النافذة: {{window}}\nعنوان URL: {{url}}\nالخطأ: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "النافذة: {{window}}\nالسبب: {{reason}}\nالرمز: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "يمكنك إعادة تشغيل التطبيق أو فتح السجلات أو متابعة الانتظار.",
+  "desktop.recovery.loadFailed.detail":
+    "النافذة: {{window}}\nعنوان URL: {{url}}\nالخطأ: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "النافذة: {{window}}\nالسبب: {{reason}}\nالرمز: {{code}}",
   "desktop.recovery.unknown": "<غير معروف>",
 
   "desktop.dialog.chooseFolder": "اختيار مجلد",
@@ -97,15 +106,19 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "اكتمل تحديث OpenCode، لكن {{distro}} ما زالت تعرض الإصدار {{installed}}؛ الإصدار المتوقع هو {{expected}}",
   "desktop.wsl.error.noVersion": "لا يوجد إصدار",
-  "desktop.wsl.error.serverExited": "خرج خادم WSL بعد بدء التشغيل (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "خرج خادم WSL بعد بدء التشغيل (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "خرج خادم WSL قبل أن يصبح سليمًا (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "انتهت مهلة فحص سلامة العملية المصاحبة للتوزيعة {{distro}} بعد {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "انتهت مهلة {{command}} {{args}} بعد {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "انتهت مهلة فحص سلامة العملية المصاحبة للتوزيعة {{distro}} بعد {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "انتهت مهلة {{command}} {{args}} بعد {{timeout}}ms",
   "desktop.wsl.error.failedPort": "فشل الحصول على المنفذ",
 
   "desktop.picker.error.notSelected": "لم يحدد منتقي الملفات ملفًا",
-  "desktop.picker.error.sizeLimit": "تتجاوز المرفقات المحددة الحد البالغ {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "تتجاوز المرفقات المحددة الحد البالغ {{limit}} MB",
 
   "command.category.suggested": "مقترح",
   "command.category.view": "عرض",
@@ -153,7 +166,8 @@ export const dict = {
   "command.tab.close": "إغلاق علامة التبويب",
   "command.tab.reopenClosed": "إعادة فتح علامة التبويب المغلقة",
   "command.context.addSelection": "إضافة التحديد إلى السياق",
-  "command.context.addSelection.description": "إضافة الأسطر المحددة من الملف الحالي",
+  "command.context.addSelection.description":
+    "إضافة الأسطر المحددة من الملف الحالي",
   "command.input.focus": "التركيز على حقل الإدخال",
   "command.terminal.toggle": "تبديل المحطة الطرفية",
   "command.fileTree.toggle": "تبديل شجرة الملفات",
@@ -181,7 +195,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "قبول الأذونات تلقائيًا",
   "command.permissions.autoaccept.disable": "إيقاف قبول الأذونات تلقائيًا",
   "command.workspace.toggle": "تبديل مساحات العمل",
-  "command.workspace.toggle.description": "تمكين أو تعطيل مساحات العمل المتعددة في الشريط الجانبي",
+  "command.workspace.toggle.description":
+    "تمكين أو تعطيل مساحات العمل المتعددة في الشريط الجانبي",
   "command.session.undo": "تراجع",
   "command.session.undo.description": "تراجع عن الرسالة الأخيرة",
   "command.session.redo": "إعادة",
@@ -191,7 +206,8 @@ export const dict = {
   "command.session.fork": "تشعب من الرسالة",
   "command.session.fork.description": "إنشاء جلسة جديدة من رسالة سابقة",
   "command.session.share": "مشاركة الجلسة",
-  "command.session.share.description": "مشاركة هذه الجلسة ونسخ الرابط إلى الحافظة",
+  "command.session.share.description":
+    "مشاركة هذه الجلسة ونسخ الرابط إلى الحافظة",
   "command.session.unshare": "إلغاء مشاركة الجلسة",
   "command.session.unshare.description": "إيقاف مشاركة هذه الجلسة",
   "command.session.export": "تصدير الجلسة",
@@ -208,15 +224,21 @@ export const dict = {
   "dialog.provider.group.other": "آخر",
   "dialog.provider.custom.label": "موفر مخصص متوافق مع OpenAI",
   "dialog.provider.tag.recommended": "موصى به",
-  "dialog.provider.opencode.note": "نماذج مختارة تتضمن Claude و GPT و Gemini والمزيد",
+  "dialog.provider.opencode.note":
+    "نماذج مختارة تتضمن Claude و GPT و Gemini والمزيد",
   "dialog.provider.opencode.tagline": "نماذج موثوقة ومحسنة",
   "dialog.provider.opencodeGo.tagline": "اشتراك منخفض التكلفة للجميع",
-  "dialog.provider.anthropic.note": "وصول مباشر إلى نماذج Claude، بما فيها Pro و Max",
-  "dialog.provider.copilot.note": "نماذج ذكاء اصطناعي للمساعدة في البرمجة عبر GitHub Copilot",
-  "dialog.provider.openai.note": "نماذج GPT لمهام الذكاء الاصطناعي العامة السريعة والمتقدمة",
+  "dialog.provider.anthropic.note":
+    "وصول مباشر إلى نماذج Claude، بما فيها Pro و Max",
+  "dialog.provider.copilot.note":
+    "نماذج ذكاء اصطناعي للمساعدة في البرمجة عبر GitHub Copilot",
+  "dialog.provider.openai.note":
+    "نماذج GPT لمهام الذكاء الاصطناعي العامة السريعة والمتقدمة",
   "dialog.provider.google.note": "نماذج Gemini لاستجابات سريعة ومنظمة",
-  "dialog.provider.openrouter.note": "الوصول إلى جميع النماذج المدعومة من موفر واحد",
-  "dialog.provider.vercel.note": "وصول موحد إلى نماذج الذكاء الاصطناعي مع توجيه ذكي",
+  "dialog.provider.openrouter.note":
+    "الوصول إلى جميع النماذج المدعومة من موفر واحد",
+  "dialog.provider.vercel.note":
+    "وصول موحد إلى نماذج الذكاء الاصطناعي مع توجيه ذكي",
   "dialog.model.select.title": "تحديد نموذج",
   "dialog.model.search.placeholder": "البحث عن نماذج",
   "dialog.model.empty": "لا توجد نتائج للنماذج",
@@ -224,11 +246,13 @@ export const dict = {
   "dialog.model.manage.description": "تخصيص النماذج التي تظهر في محدد النماذج.",
   "dialog.model.manage.provider.toggle": "تبديل جميع نماذج {{provider}}",
   "dialog.model.unpaid.freeModels.title": "نماذج مجانية مقدمة من OpenCode",
-  "dialog.model.unpaid.addMore.title": "إضافة المزيد من النماذج من موفرين مشهورين",
+  "dialog.model.unpaid.addMore.title":
+    "إضافة المزيد من النماذج من موفرين مشهورين",
   "dialog.model.unpaid.viewMoreProviders": "عرض أكثر من 70 موفرًا إضافيًا",
   "dialog.provider.viewAll": "عرض المزيد من الموفرين",
   "provider.connect.title": "الاتصال بـ {{provider}}",
-  "provider.connect.title.anthropicProMax": "تسجيل الدخول باستخدام Claude Pro/Max",
+  "provider.connect.title.anthropicProMax":
+    "تسجيل الدخول باستخدام Claude Pro/Max",
   "provider.connect.selectMethod": "حدد طريقة تسجيل الدخول لـ {{provider}}.",
   "provider.connect.method.apiKey": "مفتاح API",
   "provider.connect.method.browser": "المتصفح",
@@ -247,7 +271,8 @@ export const dict = {
     "باستخدام مفتاح API واحد، ستحصل على إمكانية الوصول إلى نماذج مثل Claude و GPT و Gemini و GLM والمزيد.",
   "provider.connect.opencodeZen.visit.prefix": "قم بزيارة ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " للحصول على مفتاح API الخاص بك.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " للحصول على مفتاح API الخاص بك.",
   "provider.connect.oauth.code.visit.prefix": "قم بزيارة ",
   "provider.connect.oauth.code.visit.link": "هذا الرابط",
   "provider.connect.oauth.code.visit.suffix":
@@ -262,7 +287,8 @@ export const dict = {
     " وأدخل الرمز أدناه لتوصيل حسابك واستخدام نماذج {{provider}} في OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "رمز التأكيد",
   "provider.connect.toast.connected.title": "تم توصيل {{provider}}",
-  "provider.connect.toast.connected.description": "نماذج {{provider}} متاحة الآن للاستخدام.",
+  "provider.connect.toast.connected.description":
+    "نماذج {{provider}} متاحة الآن للاستخدام.",
   "provider.custom.title": "موفر مخصص",
   "provider.custom.unavailable": "الموفرون المخصصون غير متاحين على هذا الخادم",
   "provider.custom.description.prefix": "تكوين موفر متوافق مع OpenAI. راجع ",
@@ -270,14 +296,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "معرف الموفر",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "أحرف صغيرة، أرقام، شرطات، أو شرطات سفلية",
+  "provider.custom.field.providerID.description":
+    "أحرف صغيرة، أرقام، شرطات، أو شرطات سفلية",
   "provider.custom.field.name.label": "اسم العرض",
   "provider.custom.field.name.placeholder": "موفر الذكاء الاصطناعي الخاص بي",
   "provider.custom.field.baseURL.label": "عنوان URL الأساسي",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "مفتاح API",
   "provider.custom.field.apiKey.placeholder": "مفتاح API",
-  "provider.custom.field.apiKey.description": "اختياري. اتركه فارغًا إذا كنت تدير المصادقة عبر الترويسات.",
+  "provider.custom.field.apiKey.description":
+    "اختياري. اتركه فارغًا إذا كنت تدير المصادقة عبر الترويسات.",
   "provider.custom.models.label": "النماذج",
   "provider.custom.models.id.label": "المعرف",
   "provider.custom.models.id.placeholder": "model-id",
@@ -293,7 +321,8 @@ export const dict = {
   "provider.custom.headers.remove": "إزالة الترويسة",
   "provider.custom.headers.add": "إضافة ترويسة",
   "provider.custom.error.providerID.required": "معرف الموفر مطلوب",
-  "provider.custom.error.providerID.format": "استخدم أحرفًا صغيرة، أرقامًا، شرطات، أو شرطات سفلية",
+  "provider.custom.error.providerID.format":
+    "استخدم أحرفًا صغيرة، أرقامًا، شرطات، أو شرطات سفلية",
   "provider.custom.error.providerID.exists": "معرف الموفر هذا موجود بالفعل",
   "provider.custom.error.name.required": "اسم العرض مطلوب",
   "provider.custom.error.baseURL.required": "عنوان URL الأساسي مطلوب",
@@ -301,7 +330,8 @@ export const dict = {
   "provider.custom.error.required": "مطلوب",
   "provider.custom.error.duplicate": "مكرر",
   "provider.disconnect.toast.disconnected.title": "تم فصل {{provider}}",
-  "provider.disconnect.toast.disconnected.description": "لم تعد نماذج {{provider}} متاحة.",
+  "provider.disconnect.toast.disconnected.description":
+    "لم تعد نماذج {{provider}} متاحة.",
   "model.tag.free": "مجاني",
   "model.tag.latest": "الأحدث",
   "model.provider.anthropic": "Anthropic",
@@ -346,7 +376,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "موجّه",
   "prompt.mode.shell.exit": "esc للخروج",
-  "session.child.promptDisabled": "لا يمكن إرسال موجّهات إلى جلسات الوكلاء الفرعيين.",
+  "session.child.promptDisabled":
+    "لا يمكن إرسال موجّهات إلى جلسات الوكلاء الفرعيين.",
   "session.child.backToParent": "العودة إلى الجلسة الرئيسية.",
   "prompt.example.1": "إصلاح TODO في قاعدة التعليمات البرمجية",
   "prompt.example.2": "ما هو المكدس التقني لهذا المشروع؟",
@@ -395,9 +426,11 @@ export const dict = {
   "prompt.action.stop": "إيقاف",
   "prompt.toast.pasteUnsupported.title": "مرفق غير مدعوم",
   "prompt.toast.attachmentDuplicate.title": "تم تحميل هذا الملف بالفعل",
-  "prompt.toast.pasteUnsupported.description": "يمكن إرفاق الصور أو ملفات PDF أو الملفات النصية فقط هنا.",
+  "prompt.toast.pasteUnsupported.description":
+    "يمكن إرفاق الصور أو ملفات PDF أو الملفات النصية فقط هنا.",
   "prompt.toast.modelAgentRequired.title": "حدد وكيلاً ونموذجاً",
-  "prompt.toast.modelAgentRequired.description": "اختر وكيلاً ونموذجاً قبل إرسال الموجه.",
+  "prompt.toast.modelAgentRequired.description":
+    "اختر وكيلاً ونموذجاً قبل إرسال الموجه.",
   "prompt.toast.worktreeCreateFailed.title": "فشل إنشاء شجرة العمل",
   "prompt.toast.sessionCreateFailed.title": "فشل إنشاء الجلسة",
   "prompt.toast.shellSendFailed.title": "فشل إرسال أمر shell",
@@ -459,7 +492,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "اختر توزيعة",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "جارٍ التحقق من WSL...",
-  "wsl.onboarding.restartRequired": "يحتاج Windows إلى إعادة التشغيل لإكمال تثبيت WSL.",
+  "wsl.onboarding.restartRequired":
+    "يحتاج Windows إلى إعادة التشغيل لإكمال تثبيت WSL.",
   "wsl.onboarding.ready": "WSL جاهز.",
   "wsl.onboarding.required": "يلزم WSL للمتابعة.",
   "wsl.onboarding.checkingDistros": "جارٍ التحقق من التوزيعات...",
@@ -472,7 +506,8 @@ export const dict = {
   "wsl.onboarding.finishingDistro": "جارٍ إكمال إعداد {{distro}}.",
   "wsl.onboarding.pickDistro": "اختر توزيعة أو ثبّت واحدة أدناه.",
   "wsl.onboarding.checkingOpencode": "جارٍ التحقق من OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "جارٍ التحقق من OpenCode في {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "جارٍ التحقق من OpenCode في {{distro}}...",
   "wsl.onboarding.updatingOpencode": "جارٍ تحديث OpenCode...",
   "wsl.onboarding.updatingOpencodeIn": "جارٍ تحديث OpenCode في {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "حدّث OpenCode في {{distro}}.",
@@ -497,9 +532,11 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "يلزم WSL (نظام Windows الفرعي لـ Linux) قبل أن يتمكن OpenCode من إضافة خادم WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL غير متاح",
-  "wsl.onboarding.wslUnavailable.description": "تعذر على OpenCode التحقق من WSL على هذا الجهاز.",
+  "wsl.onboarding.wslUnavailable.description":
+    "تعذر على OpenCode التحقق من WSL على هذا الجهاز.",
   "wsl.onboarding.installWsl": "تثبيت WSL",
-  "wsl.onboarding.windowsRestartRequired": "أعد تشغيل Windows لإكمال تثبيت WSL، ثم أعد فتح OpenCode.",
+  "wsl.onboarding.windowsRestartRequired":
+    "أعد تشغيل Windows لإكمال تثبيت WSL، ثم أعد فتح OpenCode.",
   "wsl.onboarding.next": "التالي",
   "wsl.onboarding.refresh": "تحديث",
   "wsl.onboarding.allDistrosAdded": "تمت إضافة جميع التوزيعات المثبتة بالفعل.",
@@ -516,14 +553,17 @@ export const dict = {
   "wsl.onboarding.version": "الإصدار: {{version}}",
   "wsl.onboarding.unknown": "غير معروف",
   "wsl.onboarding.desktopVersion": "سطح المكتب {{version}}",
-  "wsl.onboarding.versionMismatch": "لا يتطابق الإصدار المثبت مع إصدار تطبيق سطح المكتب.",
+  "wsl.onboarding.versionMismatch":
+    "لا يتطابق الإصدار المثبت مع إصدار تطبيق سطح المكتب.",
   "wsl.onboarding.adding": "جارٍ الإضافة...",
-  "help.tabs.toast.ariaLabel": "نقدّم علامات التبويب. نظّم عملك وجلساتك النشطة باستخدام علامات التبويب",
+  "help.tabs.toast.ariaLabel":
+    "نقدّم علامات التبويب. نظّم عملك وجلساتك النشطة باستخدام علامات التبويب",
   "help.tabs.toast.dismiss": "إغلاق معلومات علامات التبويب",
   "help.tabs.title": "نقدّم علامات التبويب",
   "help.tabs.description": "نظّم عملك وجلساتك النشطة باستخدام علامات التبويب",
   "help.tabs.date": "14 يوليو",
-  "help.tabs.introduction": "أصبح OpenCode Desktop الآن قائمًا على علامات التبويب.",
+  "help.tabs.introduction":
+    "أصبح OpenCode Desktop الآن قائمًا على علامات التبويب.",
   "help.tabs.sessions":
     "ابدأ جلسة جديدة في علامة تبويب، أو افتح جلسة حالية من أي من مشاريعك. افتح علامة تبويب جديدة عندما تبدأ عملاً جديدًا، وأغلقها عند الانتهاء.",
   "help.tabs.organize":
@@ -542,12 +582,14 @@ export const dict = {
   "dialog.project.edit.color": "لون",
   "dialog.project.edit.color.select": "اختر لون {{color}}",
   "dialog.project.edit.worktree.startup": "برنامج نصي لبدء تشغيل مساحة العمل",
-  "dialog.project.edit.worktree.startup.description": "يتم تشغيله بعد إنشاء مساحة عمل جديدة (شجرة عمل).",
+  "dialog.project.edit.worktree.startup.description":
+    "يتم تشغيله بعد إنشاء مساحة عمل جديدة (شجرة عمل).",
   "dialog.project.edit.worktree.startup.placeholder": "مثال: bun install",
   "dialog.usageExceeded.dontShowAgain": "عدم الإظهار مرة أخرى",
 
   "context.breakdown.title": "تفصيل السياق",
-  "context.breakdown.note": 'تفصيل تقريبي لرموز الإدخال المميزة. يشمل "أخرى" تعريفات الأدوات والأعباء الإضافية.',
+  "context.breakdown.note":
+    'تفصيل تقريبي لرموز الإدخال المميزة. يشمل "أخرى" تعريفات الأدوات والأعباء الإضافية.',
   "context.breakdown.system": "النظام",
   "context.breakdown.user": "المستخدم",
   "context.breakdown.assistant": "المساعد",
@@ -601,11 +643,14 @@ export const dict = {
   "toast.theme.title": "تم تبديل السمة",
   "toast.scheme.title": "مخطط الألوان",
   "toast.workspace.enabled.title": "تم تمكين مساحات العمل",
-  "toast.workspace.enabled.description": "تُعرض الآن عدة أشجار عمل في الشريط الجانبي",
+  "toast.workspace.enabled.description":
+    "تُعرض الآن عدة أشجار عمل في الشريط الجانبي",
   "toast.workspace.disabled.title": "تم تعطيل مساحات العمل",
-  "toast.workspace.disabled.description": "تُعرض شجرة العمل الرئيسية فقط في الشريط الجانبي",
+  "toast.workspace.disabled.description":
+    "تُعرض شجرة العمل الرئيسية فقط في الشريط الجانبي",
   "toast.permissions.autoaccept.on.title": "يتم قبول الأذونات تلقائيًا",
-  "toast.permissions.autoaccept.on.description": "ستتم الموافقة على طلبات الأذونات تلقائيًا",
+  "toast.permissions.autoaccept.on.description":
+    "ستتم الموافقة على طلبات الأذونات تلقائيًا",
   "toast.permissions.autoaccept.off.title": "تم إيقاف قبول الأذونات تلقائيًا",
   "toast.permissions.autoaccept.off.description": "ستتطلب طلبات الأذونات موافقة",
   "toast.model.none.title": "لم يتم تحديد نموذج",
@@ -613,31 +658,37 @@ export const dict = {
   "toast.file.loadFailed.title": "فشل تحميل الملف",
   "toast.file.listFailed.title": "فشل سرد الملفات",
   "toast.context.noLineSelection.title": "لا يوجد تحديد للأسطر",
-  "toast.context.noLineSelection.description": "حدد نطاق أسطر في تبويب ملف أولاً.",
+  "toast.context.noLineSelection.description":
+    "حدد نطاق أسطر في تبويب ملف أولاً.",
   "toast.session.share.copyFailed.title": "فشل نسخ عنوان URL إلى الحافظة",
   "toast.session.share.success.title": "تمت مشاركة الجلسة",
-  "toast.session.share.success.description": "تم نسخ عنوان URL للمشاركة إلى الحافظة!",
+  "toast.session.share.success.description":
+    "تم نسخ عنوان URL للمشاركة إلى الحافظة!",
   "toast.session.share.failed.title": "فشل مشاركة الجلسة",
   "toast.session.share.failed.description": "حدث خطأ أثناء مشاركة الجلسة",
   "toast.session.unshare.success.title": "تم إلغاء مشاركة الجلسة",
   "toast.session.unshare.success.description": "تم إلغاء مشاركة الجلسة بنجاح!",
   "toast.session.unshare.failed.title": "فشل إلغاء مشاركة الجلسة",
-  "toast.session.unshare.failed.description": "حدث خطأ أثناء إلغاء مشاركة الجلسة",
+  "toast.session.unshare.failed.description":
+    "حدث خطأ أثناء إلغاء مشاركة الجلسة",
   "toast.session.export.success.title": "تم تصدير الجلسة",
-  "toast.session.export.success.description": "تم حفظ الجلسة في \u2068{{filename}}\u2069",
+  "toast.session.export.success.description":
+    "تم حفظ الجلسة في \u2068{{filename}}\u2069",
   "toast.session.export.failed.title": "فشل تصدير الجلسة",
   "toast.session.export.failed.description": "حدث خطأ أثناء تصدير الجلسة",
 
   "toast.session.listFailed.title": "فشل تحميل الجلسات لـ {{project}}",
   "toast.update.title": "تحديث متاح",
-  "toast.update.description": "يتوفر الآن إصدار جديد من OpenCode ({{version}}) للتثبيت.",
+  "toast.update.description":
+    "يتوفر الآن إصدار جديد من OpenCode ({{version}}) للتثبيت.",
   "toast.update.action.installRestart": "تثبيت وإعادة تشغيل",
   "toast.update.action.notYet": "ليس الآن",
   "toast.update.installFailed.title": "تعذّر تثبيت التحديث",
   "toast.update.installFailed.retry": "إعادة المحاولة",
   "error.page.title": "حدث خطأ ما",
   "error.page.description": "حدث خطأ أثناء تحميل التطبيق.",
-  "error.page.description.localServerStartup": "حدث خطأ أثناء بدء تشغيل الخادم المحلي.",
+  "error.page.description.localServerStartup":
+    "حدث خطأ أثناء بدء تشغيل الخادم المحلي.",
   "error.page.details.label": "تفاصيل الخطأ",
   "error.page.action.restart": "إعادة تشغيل",
   "error.page.action.report": "الإبلاغ عن الخطأ",
@@ -651,7 +702,8 @@ export const dict = {
   "error.page.version": "الإصدار: {{version}}",
   "error.dev.rootNotFound":
     "لم يتم العثور على العنصر الجذري. هل نسيت إضافته إلى index.html؟ أو ربما تمت كتابة سمة id بشكل خاطئ؟",
-  "error.serverSync.connectFailed": "تعذر الاتصال بالخادم. هل هناك خادم يعمل في `{{url}}`؟",
+  "error.serverSync.connectFailed":
+    "تعذر الاتصال بالخادم. هل هناك خادم يعمل في `{{url}}`؟",
   "directory.error.invalidUrl": "مجلد غير صالح في عنوان URL.",
   "error.chain.unknown": "خطأ غير معروف",
   "error.chain.causedBy": "بسبب:",
@@ -661,21 +713,30 @@ export const dict = {
   "error.chain.responseBody": "نص الاستجابة:\n{{body}}",
   "error.chain.didYouMean": "هل كنت تعني: {{suggestions}}",
   "error.chain.modelNotFound": "النموذج غير موجود: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "تحقق من أسماء الموفر/النموذج في التكوين (opencode.json)",
-  "error.chain.mcpFailed": 'فشل خادم MCP "{{name}}". لاحظ أن OpenCode لا يدعم مصادقة MCP بعد.',
-  "error.chain.providerAuthFailed": "فشلت مصادقة الموفر ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'فشل تهيئة الموفر "{{provider}}". تحقق من بيانات الاعتماد والتكوين.',
+  "error.chain.checkConfig":
+    "تحقق من أسماء الموفر/النموذج في التكوين (opencode.json)",
+  "error.chain.mcpFailed":
+    'فشل خادم MCP "{{name}}". لاحظ أن OpenCode لا يدعم مصادقة MCP بعد.',
+  "error.chain.providerAuthFailed":
+    "فشلت مصادقة الموفر ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'فشل تهيئة الموفر "{{provider}}". تحقق من بيانات الاعتماد والتكوين.',
   "error.chain.configJsonInvalid": "ملف التكوين في {{path}} ليس JSON(C) صالحًا",
-  "error.chain.configJsonInvalidWithMessage": "ملف التكوين في {{path}} ليس JSON(C) صالحًا: {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "ملف التكوين في {{path}} ليس JSON(C) صالحًا: {{message}}",
   "error.chain.configDirectoryTypo":
     'الدليل "{{dir}}" في {{path}} غير صالح. أعد تسمية الدليل إلى "{{suggestion}}" أو قم بإزالته. هذا خطأ مطبعي شائع.',
-  "error.chain.configFrontmatterError": "فشل تحليل frontmatter في {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "فشل تحليل frontmatter في {{path}}:\n{{message}}",
   "error.chain.configInvalid": "ملف التكوين في {{path}} غير صالح",
-  "error.chain.configInvalidWithMessage": "ملف التكوين في {{path}} غير صالح: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "ملف التكوين في {{path}} غير صالح: {{message}}",
   "notification.permission.title": "مطلوب إذن",
-  "notification.permission.description": "{{sessionTitle}} في {{projectName}} يحتاج إلى إذن",
+  "notification.permission.description":
+    "{{sessionTitle}} في {{projectName}} يحتاج إلى إذن",
   "notification.question.title": "سؤال",
-  "notification.question.description": "{{sessionTitle}} في {{projectName}} لديه سؤال",
+  "notification.question.description":
+    "{{sessionTitle}} في {{projectName}} لديه سؤال",
   "notification.action.goToSession": "انتقل إلى الجلسة",
   "notification.session.responseReady.title": "الاستجابة جاهزة",
   "notification.session.error.title": "خطأ في الجلسة",
@@ -698,14 +759,16 @@ export const dict = {
   "home.sessions.group.today": "اليوم",
   "home.sessions.group.yesterday": "أمس",
   "home.sessions.group.older": "الأقدم",
-  "home.providerTip": "اتصل بأكثر من 75 موفرًا لاستخدام نماذج أخرى، بما فيها Claude وGPT وGemini وغيرها",
+  "home.providerTip":
+    "اتصل بأكثر من 75 موفرًا لاستخدام نماذج أخرى، بما فيها Claude وGPT وGemini وغيرها",
   "session.tab.session": "جلسة",
   "session.tab.review": "مراجعة",
   "session.tab.context": "سياق",
   "session.tab.unknown": "جلسة غير معروفة",
   "session.panel.reviewAndFiles": "المراجعة والملفات",
   "session.error.notFound": "لا يمكن العثور على هذه الجلسة",
-  "session.error.notFound.description": "يشير هذا التبويب إلى جلسة لم تعد موجودة على هذا الخادم.",
+  "session.error.notFound.description":
+    "يشير هذا التبويب إلى جلسة لم تعد موجودة على هذا الخادم.",
   "session.error.notFound.closeTab": "إغلاق علامة التبويب",
   "session.error.serverConnection": "تعذر الاتصال بهذا الخادم",
   "session.review.filesChanged": "الملفات المتغيرة: {{count}}",
@@ -716,8 +779,10 @@ export const dict = {
   "session.review.noChanges": "لا توجد تغييرات",
   "session.review.noUncommittedChanges": "لا توجد تغييرات غير مُودَعة بعد",
   "session.review.noBranchChanges": "لا توجد تغييرات في الفرع بعد",
-  "session.review.noVcs": "لم يُكتشف نظام Git للتحكم في الإصدارات، لذا لن تُعرض التغييرات",
-  "session.review.noSnapshot": "تم تعطيل تتبع اللقطات في التكوين، لذا فإن تغييرات الجلسة غير متوفرة",
+  "session.review.noVcs":
+    "لم يُكتشف نظام Git للتحكم في الإصدارات، لذا لن تُعرض التغييرات",
+  "session.review.noSnapshot":
+    "تم تعطيل تتبع اللقطات في التكوين، لذا فإن تغييرات الجلسة غير متوفرة",
   "session.files.selectToOpen": "اختر ملفًا لفتحه",
   "session.files.all": "كل الملفات",
   "session.files.empty": "لا توجد ملفات",
@@ -740,7 +805,8 @@ export const dict = {
   "session.question.pending.many": "{{count}} سؤالًا معلقًا",
   "session.question.pending.other": "الأسئلة المعلقة: {{count}}",
   "session.followupDock.summary.one": "{{count}} رسالة في قائمة الانتظار",
-  "session.followupDock.summary.zero": "عدد الرسائل في قائمة الانتظار: {{count}}",
+  "session.followupDock.summary.zero":
+    "عدد الرسائل في قائمة الانتظار: {{count}}",
   "session.followupDock.summary.two": "عدد الرسائل في قائمة الانتظار: {{count}}",
   "session.followupDock.summary.few": "{{count}} رسائل في قائمة الانتظار",
   "session.followupDock.summary.many": "{{count}} رسالةً في قائمة الانتظار",
@@ -750,8 +816,10 @@ export const dict = {
   "session.followupDock.collapse": "طي الرسائل المنتظرة",
   "session.followupDock.expand": "توسيع الرسائل المنتظرة",
   "session.revertDock.summary.one": "{{count}} رسالة تم التراجع عنها",
-  "session.revertDock.summary.zero": "عدد الرسائل التي تم التراجع عنها: {{count}}",
-  "session.revertDock.summary.two": "عدد الرسائل التي تم التراجع عنها: {{count}}",
+  "session.revertDock.summary.zero":
+    "عدد الرسائل التي تم التراجع عنها: {{count}}",
+  "session.revertDock.summary.two":
+    "عدد الرسائل التي تم التراجع عنها: {{count}}",
   "session.revertDock.summary.few": "{{count}} رسائل تم التراجع عنها",
   "session.revertDock.summary.many": "{{count}} رسالةً تم التراجع عنها",
   "session.revertDock.summary.other": "{{count}} رسائل تم التراجع عنها",
@@ -786,8 +854,10 @@ export const dict = {
   "status.popover.tab.plugins": "الإضافات",
   "status.popover.action.manageServers": "إدارة الخوادم",
   "session.share.popover.title": "نشر على الويب",
-  "session.share.popover.description.shared": "هذه الجلسة عامة على الويب. يمكن لأي شخص لديه الرابط الوصول إليها.",
-  "session.share.popover.description.unshared": "شارك الجلسة علنًا على الويب. ستكون متاحة لأي شخص لديه الرابط.",
+  "session.share.popover.description.shared":
+    "هذه الجلسة عامة على الويب. يمكن لأي شخص لديه الرابط الوصول إليها.",
+  "session.share.popover.description.unshared":
+    "شارك الجلسة علنًا على الويب. ستكون متاحة لأي شخص لديه الرابط.",
   "session.share.action.share": "مشاركة",
   "session.share.action.publish": "نشر",
   "session.share.action.publishing": "جارٍ النشر...",
@@ -804,9 +874,12 @@ export const dict = {
   "terminal.title.numbered": "محطة طرفية {{number}}",
   "terminal.close": "إغلاق المحطة الطرفية",
   "terminal.connectionLost.title": "فقد الاتصال",
-  "terminal.connectionLost.description": "انقطع اتصال المحطة الطرفية. يمكن أن يحدث هذا عند إعادة تشغيل الخادم.",
-  "terminal.connectTicket.csrfError": "رُفضت تذكرة اتصال PTY بسبب فحوصات الأصل أو CSRF. تحقق من إعداد CORS للخادم.",
-  "terminal.connectTicket.statusError": "فشلت تذكرة اتصال PTY بالحالة {{status}}",
+  "terminal.connectionLost.description":
+    "انقطع اتصال المحطة الطرفية. يمكن أن يحدث هذا عند إعادة تشغيل الخادم.",
+  "terminal.connectTicket.csrfError":
+    "رُفضت تذكرة اتصال PTY بسبب فحوصات الأصل أو CSRF. تحقق من إعداد CORS للخادم.",
+  "terminal.connectTicket.statusError":
+    "فشلت تذكرة اتصال PTY بالحالة {{status}}",
 
   "titlebar.update": "تحديث",
   "titlebar.updateVersion": "تحديث {{version}}",
@@ -832,8 +905,10 @@ export const dict = {
   "sidebar.workspaces.enable": "تمكين مساحات العمل",
   "sidebar.workspaces.disable": "تعطيل مساحات العمل",
   "sidebar.gettingStarted.title": "البدء",
-  "sidebar.gettingStarted.line1": "يتضمن OpenCode نماذج مجانية حتى تتمكن من البدء فورًا.",
-  "sidebar.gettingStarted.line2": "قم بتوصيل أي موفر لاستخدام النماذج، بما في ذلك Claude و GPT و Gemini وما إلى ذلك.",
+  "sidebar.gettingStarted.line1":
+    "يتضمن OpenCode نماذج مجانية حتى تتمكن من البدء فورًا.",
+  "sidebar.gettingStarted.line2":
+    "قم بتوصيل أي موفر لاستخدام النماذج، بما في ذلك Claude و GPT و Gemini وما إلى ذلك.",
   "sidebar.project.recentSessions": "الجلسات الأخيرة",
   "sidebar.project.viewAllSessions": "عرض جميع الجلسات",
   "sidebar.project.clearNotifications": "مسح الإشعارات",
@@ -846,7 +921,8 @@ export const dict = {
   "settings.tab.shortcuts": "اختصارات",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "تكامل WSL",
-  "settings.desktop.wsl.description": "تشغيل خادم OpenCode داخل WSL على Windows.",
+  "settings.desktop.wsl.description":
+    "تشغيل خادم OpenCode داخل WSL على Windows.",
   "settings.general.section.appearance": "المظهر",
   "settings.general.section.advanced": "متقدم",
   "settings.general.section.notifications": "إشعارات النظام",
@@ -862,31 +938,42 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "تلقائي (افتراضي)",
   "settings.general.row.shell.terminalOnly": "المحطة الطرفية فقط",
   "settings.general.row.appearance.title": "المظهر",
-  "settings.general.row.appearance.description": "تخصيص كيفية ظهور OpenCode على جهازك",
+  "settings.general.row.appearance.description":
+    "تخصيص كيفية ظهور OpenCode على جهازك",
   "settings.general.row.colorScheme.title": "مخطط الألوان",
-  "settings.general.row.colorScheme.description": "اختر ما إذا كان OpenCode يتبع سمة النظام أو الفاتح أو الداكن",
+  "settings.general.row.colorScheme.description":
+    "اختر ما إذا كان OpenCode يتبع سمة النظام أو الفاتح أو الداكن",
   "settings.general.row.theme.title": "السمة",
   "settings.general.row.theme.description": "تخصيص سمة OpenCode.",
   "settings.general.row.font.title": "خط الكود",
-  "settings.general.row.font.description": "خصّص الخط المستخدم في كتل التعليمات البرمجية",
+  "settings.general.row.font.description":
+    "خصّص الخط المستخدم في كتل التعليمات البرمجية",
   "settings.general.row.terminalFont.title": "خط الطرفية",
-  "settings.general.row.terminalFont.description": "خصّص الخط المستخدم في الطرفية",
+  "settings.general.row.terminalFont.description":
+    "خصّص الخط المستخدم في الطرفية",
   "settings.general.row.uiFont.title": "خط الواجهة",
-  "settings.general.row.uiFont.description": "خصّص الخط المستخدم في الواجهة بأكملها",
+  "settings.general.row.uiFont.description":
+    "خصّص الخط المستخدم في الواجهة بأكملها",
   "settings.general.row.followup.title": "سلوك المتابعة",
-  "settings.general.row.followup.description": "اختر ما إذا كانت طلبات المتابعة توجه فورًا أو تنتظر في قائمة انتظار",
+  "settings.general.row.followup.description":
+    "اختر ما إذا كانت طلبات المتابعة توجه فورًا أو تنتظر في قائمة انتظار",
   "settings.general.row.followup.option.queue": "قائمة انتظار",
   "settings.general.row.followup.option.steer": "توجيه",
   "settings.general.row.showFileTree.title": "شجرة الملفات",
-  "settings.general.row.showFileTree.description": "إظهار لوحة شجرة الملفات في الجلسات",
+  "settings.general.row.showFileTree.description":
+    "إظهار لوحة شجرة الملفات في الجلسات",
   "settings.general.row.showNavigation.title": "عناصر التحكم في التنقل",
-  "settings.general.row.showNavigation.description": "إظهار زري الرجوع والتقدم في شريط عنوان سطح المكتب",
+  "settings.general.row.showNavigation.description":
+    "إظهار زري الرجوع والتقدم في شريط عنوان سطح المكتب",
   "settings.general.row.showSearch.title": "لوحة الأوامر",
-  "settings.general.row.showSearch.description": "إظهار زر البحث ولوحة الأوامر في شريط العنوان",
+  "settings.general.row.showSearch.description":
+    "إظهار زر البحث ولوحة الأوامر في شريط العنوان",
   "settings.general.row.showTerminal.title": "المحطة الطرفية",
-  "settings.general.row.showTerminal.description": "إظهار زر المحطة الطرفية في شريط عنوان سطح المكتب",
+  "settings.general.row.showTerminal.description":
+    "إظهار زر المحطة الطرفية في شريط عنوان سطح المكتب",
   "settings.general.row.showStatus.title": "حالة الخادم",
-  "settings.general.row.showStatus.description": "إظهار زر حالة الخادم في شريط العنوان",
+  "settings.general.row.showStatus.description":
+    "إظهار زر حالة الخادم في شريط العنوان",
   "settings.general.row.mobileTitlebarBottom.title": "التنقل السفلي",
   "settings.general.row.mobileTitlebarBottom.description":
     "وضع شريط العنوان وعلامات تبويب الجلسات أسفل الشاشة على الأجهزة المحمولة",
@@ -894,7 +981,8 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "التبديل بين الوكلاء في محرر الرسائل. عند إخفائه، يُستخدم وكيل Build افتراضيًا.",
   "settings.general.row.reasoningSummaries.title": "إظهار ملخصات الاستدلال",
-  "settings.general.row.reasoningSummaries.description": "عرض ملخصات استدلال النموذج في الشريط الزمني",
+  "settings.general.row.reasoningSummaries.description":
+    "عرض ملخصات استدلال النموذج في الشريط الزمني",
   "settings.general.row.shellToolPartsExpanded.title": "توسيع أجزاء أداة shell",
   "settings.general.row.shellToolPartsExpanded.description":
     "إظهار أجزاء أداة shell موسعة بشكل افتراضي في الشريط الزمني",
@@ -905,28 +993,35 @@ export const dict = {
   "settings.general.row.newInterface.badge": "جديد",
   "settings.general.row.newInterface.description":
     "استخدم علامات التبويب الجديدة وتخطيط الصفحة الرئيسية. يمكنك التبديل بين التخطيطات لفترة محدودة.",
-  "settings.general.row.newInterfaceNotice.title": "أنت تستخدم الآن التخطيط الجديد",
-  "settings.general.row.newInterfaceNotice.description": "التخطيط السابق لم يعد متاحًا",
+  "settings.general.row.newInterfaceNotice.title":
+    "أنت تستخدم الآن التخطيط الجديد",
+  "settings.general.row.newInterfaceNotice.description":
+    "التخطيط السابق لم يعد متاحًا",
   "settings.general.row.newInterfaceNotice.dismiss": "إهمال",
   "settings.general.row.pinchZoom.title": "التكبير بالمقاربة والمباعدة",
   "settings.general.row.pinchZoom.description":
     "السماح بإيماءات مقاربة الأصابع ومباعدتها على لوحة التعقب والتمرير مع الضغط على Ctrl للتكبير",
   "settings.general.row.wayland.title": "استخدام Wayland الأصلي",
-  "settings.general.row.wayland.description": "تعطيل الرجوع إلى X11 على Wayland. يتطلب إعادة التشغيل.",
+  "settings.general.row.wayland.description":
+    "تعطيل الرجوع إلى X11 على Wayland. يتطلب إعادة التشغيل.",
   "settings.general.row.wayland.tooltip":
     "على Linux مع شاشات بمعدلات تحديث مختلطة، يمكن أن يكون Wayland الأصلي أكثر استقرارًا.",
   "settings.general.row.releaseNotes.title": "ملاحظات الإصدار",
-  "settings.general.row.releaseNotes.description": 'عرض نوافذ "ما الجديد" المنبثقة بعد التحديثات',
+  "settings.general.row.releaseNotes.description":
+    'عرض نوافذ "ما الجديد" المنبثقة بعد التحديثات',
   "settings.updates.row.startup.title": "التحقق من التحديثات عند بدء التشغيل",
-  "settings.updates.row.startup.description": "التحقق تلقائيًا من التحديثات عند تشغيل OpenCode",
+  "settings.updates.row.startup.description":
+    "التحقق تلقائيًا من التحديثات عند تشغيل OpenCode",
   "settings.updates.row.check.title": "التحقق من التحديثات",
-  "settings.updates.row.check.description": "التحقق يدويًا من التحديثات وتثبيتها إذا كانت متاحة",
+  "settings.updates.row.check.description":
+    "التحقق يدويًا من التحديثات وتثبيتها إذا كانت متاحة",
   "settings.updates.action.checkNow": "تحقق الآن",
   "settings.updates.action.checking": "جارٍ التحقق...",
   "settings.updates.action.downloading": "جارٍ التنزيل...",
   "settings.updates.action.installing": "جارٍ التثبيت...",
   "settings.updates.toast.latest.title": "لديك أحدث إصدار",
-  "settings.updates.toast.latest.description": "أنت تستخدم أحدث إصدار من OpenCode.",
+  "settings.updates.toast.latest.description":
+    "أنت تستخدم أحدث إصدار من OpenCode.",
   "sound.option.none": "بلا",
   "sound.option.alert01": "تنبيه 01",
   "sound.option.alert02": "تنبيه 02",
@@ -974,23 +1069,30 @@ export const dict = {
   "sound.option.yup05": "نعم 05",
   "sound.option.yup06": "نعم 06",
   "settings.general.notifications.agent.title": "وكيل",
-  "settings.general.notifications.agent.description": "عرض إشعار النظام عندما يكتمل الوكيل أو يحتاج إلى اهتمام",
+  "settings.general.notifications.agent.description":
+    "عرض إشعار النظام عندما يكتمل الوكيل أو يحتاج إلى اهتمام",
   "settings.general.notifications.permissions.title": "أذونات",
-  "settings.general.notifications.permissions.description": "عرض إشعار النظام عند الحاجة إلى إذن",
+  "settings.general.notifications.permissions.description":
+    "عرض إشعار النظام عند الحاجة إلى إذن",
   "settings.general.notifications.errors.title": "أخطاء",
-  "settings.general.notifications.errors.description": "عرض إشعار النظام عند حدوث خطأ",
+  "settings.general.notifications.errors.description":
+    "عرض إشعار النظام عند حدوث خطأ",
   "settings.general.sounds.agent.title": "وكيل",
-  "settings.general.sounds.agent.description": "تشغيل صوت عندما يكتمل الوكيل أو يحتاج إلى اهتمام",
+  "settings.general.sounds.agent.description":
+    "تشغيل صوت عندما يكتمل الوكيل أو يحتاج إلى اهتمام",
   "settings.general.sounds.permissions.title": "أذونات",
-  "settings.general.sounds.permissions.description": "تشغيل صوت عند الحاجة إلى إذن",
+  "settings.general.sounds.permissions.description":
+    "تشغيل صوت عند الحاجة إلى إذن",
   "settings.general.sounds.errors.title": "أخطاء",
   "settings.general.sounds.errors.description": "تشغيل صوت عند حدوث خطأ",
   "settings.shortcuts.title": "اختصارات لوحة المفاتيح",
   "settings.shortcuts.reset.button": "إعادة التعيين إلى الافتراضيات",
   "settings.shortcuts.reset.toast.title": "أُعيد تعيين الاختصارات",
-  "settings.shortcuts.reset.toast.description": "أُعيد تعيين اختصارات لوحة المفاتيح إلى الإعدادات الافتراضية.",
+  "settings.shortcuts.reset.toast.description":
+    "أُعيد تعيين اختصارات لوحة المفاتيح إلى الإعدادات الافتراضية.",
   "settings.shortcuts.conflict.title": "الاختصار قيد الاستخدام بالفعل",
-  "settings.shortcuts.conflict.description": "الاختصار {{keybind}} مخصص بالفعل لـ {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "الاختصار {{keybind}} مخصص بالفعل لـ {{titles}}.",
   "settings.shortcuts.unassigned": "غير مخصص",
   "settings.shortcuts.pressKeys": "اضغط على المفاتيح",
   "settings.shortcuts.search.placeholder": "البحث في الاختصارات",
@@ -1019,7 +1121,8 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "ستكون إعدادات MCP قابلة للتكوين هنا.",
   "settings.permissions.title": "الأذونات",
-  "settings.permissions.description": "تحكم في الأدوات التي يمكن للخادم استخدامها بشكل افتراضي.",
+  "settings.permissions.description":
+    "تحكم في الأدوات التي يمكن للخادم استخدامها بشكل افتراضي.",
   "settings.permissions.section.tools": "الأدوات",
   "settings.permissions.toast.updateFailed.title": "فشل تحديث الأذونات",
   "settings.permissions.action.allow": "السماح",
@@ -1028,11 +1131,14 @@ export const dict = {
   "settings.permissions.tool.read.title": "قراءة",
   "settings.permissions.tool.read.description": "قراءة ملف (يطابق مسار الملف)",
   "settings.permissions.tool.edit.title": "تحرير",
-  "settings.permissions.tool.edit.description": "تعديل الملفات، بما في ذلك عمليات التحرير والكتابة وتطبيق الرقع",
+  "settings.permissions.tool.edit.description":
+    "تعديل الملفات، بما في ذلك عمليات التحرير والكتابة وتطبيق الرقع",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "مطابقة الملفات باستخدام أنماط glob",
+  "settings.permissions.tool.glob.description":
+    "مطابقة الملفات باستخدام أنماط glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "البحث في محتويات الملف باستخدام التعبيرات العادية",
+  "settings.permissions.tool.grep.description":
+    "البحث في محتويات الملف باستخدام التعبيرات العادية",
   "settings.permissions.tool.list.title": "سرد",
   "settings.permissions.tool.list.description": "سرد الملفات داخل دليل",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1050,9 +1156,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "بحث الويب",
   "settings.permissions.tool.websearch.description": "البحث في الويب",
   "settings.permissions.tool.external_directory.title": "دليل خارجي",
-  "settings.permissions.tool.external_directory.description": "الوصول إلى الملفات خارج دليل المشروع",
+  "settings.permissions.tool.external_directory.description":
+    "الوصول إلى الملفات خارج دليل المشروع",
   "settings.permissions.tool.doom_loop.title": "حلقة مفرغة",
-  "settings.permissions.tool.doom_loop.description": "اكتشاف استدعاءات الأدوات المتكررة بمدخلات متطابقة",
+  "settings.permissions.tool.doom_loop.description":
+    "اكتشاف استدعاءات الأدوات المتكررة بمدخلات متطابقة",
   "session.delete.failed.title": "فشل حذف الجلسة",
   "session.delete.title": "حذف الجلسة",
   "session.delete.confirm": 'حذف الجلسة "{{name}}"؟',
@@ -1066,7 +1174,8 @@ export const dict = {
   "workspace.resetting.description": "قد يستغرق هذا دقيقة.",
   "workspace.reset.failed.title": "فشل إعادة تعيين مساحة العمل",
   "workspace.reset.success.title": "تمت إعادة تعيين مساحة العمل",
-  "workspace.reset.success.description": "مساحة العمل تطابق الآن الفرع الافتراضي.",
+  "workspace.reset.success.description":
+    "مساحة العمل تطابق الآن الفرع الافتراضي.",
   "workspace.error.stillPreparing": "مساحة العمل لا تزال قيد الإعداد",
   "workspace.status.checking": "التحقق من التغييرات غير المدمجة...",
   "workspace.status.error": "تعذر التحقق من حالة Git.",
@@ -1081,7 +1190,8 @@ export const dict = {
   "workspace.reset.archived.none": "لن تتم أرشفة أي جلسات نشطة.",
   "workspace.reset.archived.one": "ستتم أرشفة جلسة واحدة.",
   "workspace.reset.archived.many": "ستتم أرشفة {{count}} جلسات.",
-  "workspace.reset.note": "سيؤدي هذا إلى إعادة تعيين مساحة العمل لتتطابق مع الفرع الافتراضي.",
+  "workspace.reset.note":
+    "سيؤدي هذا إلى إعادة تعيين مساحة العمل لتتطابق مع الفرع الافتراضي.",
   "common.open": "فتح",
   "dialog.releaseNotes.action.getStarted": "البدء",
   "dialog.releaseNotes.action.next": "التالي",
@@ -1094,8 +1204,10 @@ export const dict = {
   "common.time.minutesAgo.short": "قبل {{count}} د",
   "common.time.hoursAgo.short": "قبل {{count}} س",
   "common.time.daysAgo.short": "قبل {{count}} ي",
-  "settings.providers.connected.environmentDescription": "متصل من متغيرات البيئة الخاصة بك",
-  "settings.providers.custom.description": "أضف موفرًا متوافقًا مع OpenAI باستخدام عنوان URL الأساسي.",
+  "settings.providers.connected.environmentDescription":
+    "متصل من متغيرات البيئة الخاصة بك",
+  "settings.providers.custom.description":
+    "أضف موفرًا متوافقًا مع OpenAI باستخدام عنوان URL الأساسي.",
 
   "app.server.unreachable": "تعذر الوصول إلى {{server}}",
   "app.server.retrying": "جارٍ إعادة المحاولة تلقائيًا...",
@@ -1104,7 +1216,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "كلمة المرور",
   "server.row.noUsername": "لا يوجد اسم مستخدم",
   "session.review.noVcs.createGit.title": "إنشاء مستودع Git",
-  "session.review.noVcs.createGit.description": "تتبع ومراجعة والتراجع عن التغييرات في هذا المشروع",
+  "session.review.noVcs.createGit.description":
+    "تتبع ومراجعة والتراجع عن التغييرات في هذا المشروع",
   "session.review.noVcs.createGit.actionLoading": "جارٍ إنشاء مستودع Git...",
   "session.review.noVcs.createGit.action": "إنشاء مستودع Git",
   "session.todo.progress": "تم إكمال {{done}} من {{total}} مهام",
@@ -1131,7 +1244,8 @@ export const dict = {
   "debugBar.ariaLabel": "تشخيص أداء التطوير",
   "debugBar.na": "غير متاح",
   "debugBar.nav.label": "NAV",
-  "debugBar.nav.tip": "آخر انتقال مكتمل للمسار يتضمن صفحة جلسة، مُقاسًا من بدء التوجيه حتى أول رسم بعد استقراره.",
+  "debugBar.nav.tip":
+    "آخر انتقال مكتمل للمسار يتضمن صفحة جلسة، مُقاسًا من بدء التوجيه حتى أول رسم بعد استقراره.",
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "متوسط متحرك لمعدل الإطارات في الثانية خلال آخر 5 ثوانٍ.",
   "debugBar.frame.label": "FRAME",
@@ -1139,22 +1253,27 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "الإطارات التي تزيد عن 32 مللي ثانية في آخر 5 ثوانٍ.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "الوقت المحظور وعدد المهام الطويلة في آخر 5 ثوانٍ. أقصى مهمة: {{max}}.",
+  "debugBar.long.tip":
+    "الوقت المحظور وعدد المهام الطويلة في آخر 5 ثوانٍ. أقصى مهمة: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "أسوأ تأخير إدخال تمت ملاحظته في آخر 5 ثوانٍ.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "مدة التفاعل التقريبية خلال آخر 5 ثوانٍ. هذا يشبه INP، وليس Web Vitals INP الرسمي.",
+  "debugBar.inp.tip":
+    "مدة التفاعل التقريبية خلال آخر 5 ثوانٍ. هذا يشبه INP، وليس Web Vitals INP الرسمي.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "التحول التخطيطي التراكمي منذ تشغيل التطبيق الحالي.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "كومة JS المستخدمة مقابل حد الكومة. Chromium فقط.",
-  "debugBar.mem.tip": "كومة JS المستخدمة مقابل حد الكومة. {{used}} من {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "كومة JS المستخدمة مقابل حد الكومة. Chromium فقط.",
+  "debugBar.mem.tip":
+    "كومة JS المستخدمة مقابل حد الكومة. {{used}} من {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "فرض أنماط التركيز على جميع العناصر التفاعلية",
   "debugBar.focus.on": "تشغيل",
   "debugBar.focus.off": "إيقاف",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "فرض اتجاه التخطيط على التطبيق بالكامل دون تغيير اللغة المحددة",
+  "debugBar.direction.tip":
+    "فرض اتجاه التخطيط على التطبيق بالكامل دون تغيير اللغة المحددة",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "common.key.ctrl": "Ctrl",
@@ -1175,9 +1294,13 @@ export const dict = {
   "error.page.circular": "[مرجع دائري]",
   "error.serverSDK.noServerAvailable": "لا يوجد خادم متاح",
   "error.serverSDK.serverNotAvailable": "الخادم غير متاح",
-  "error.childStore.persistedCacheCreateFailed": "فشل إنشاء ذاكرة التخزين المؤقت الدائمة",
-  "error.childStore.persistedProjectMetadataCreateFailed": "فشل إنشاء بيانات تعريف المشروع الدائمة",
-  "error.childStore.persistedProjectIconCreateFailed": "فشل إنشاء أيقونة المشروع الدائمة",
+  "error.childStore.persistedCacheCreateFailed":
+    "فشل إنشاء ذاكرة التخزين المؤقت الدائمة",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "فشل إنشاء بيانات تعريف المشروع الدائمة",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "فشل إنشاء أيقونة المشروع الدائمة",
   "error.childStore.storeCreateFailed": "فشل إنشاء المخزن",
-  "terminal.connectionLost.abnormalClose": "تم إغلاق WebSocket بشكل غير طبيعي: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "تم إغلاق WebSocket بشكل غير طبيعي: {{code}}",
 }

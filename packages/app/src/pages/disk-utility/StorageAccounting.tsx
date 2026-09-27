@@ -11,11 +11,15 @@ export type StorageAccountingFact = {
  * Explain exceptional byte accounting without pretending an individual path
  * owns bytes that its filesystem says are shared.
  */
-export function storageAccountingFacts(node: DiskScanNode): StorageAccountingFact[] {
+export function storageAccountingFacts(
+  node: DiskScanNode
+): StorageAccountingFact[] {
   const facts: StorageAccountingFact[] = []
   if (node.logicalSize !== undefined && node.logicalSize !== node.size) {
     facts.push({
-      label: diskLanguageText("disk.accounting.fileSize", { size: formatBytes(node.logicalSize) }),
+      label: diskLanguageText("disk.accounting.fileSize", {
+        size: formatBytes(node.logicalSize),
+      }),
       detail: diskLanguageText("disk.accounting.fileSizeDetail", {
         size: formatBytes(node.size),
         logicalSize: formatBytes(node.logicalSize),
@@ -50,14 +54,19 @@ export function storageAccountingFacts(node: DiskScanNode): StorageAccountingFac
     facts.push({
       label: diskLanguageText("disk.accounting.cloneShares"),
       detail: node.clone.reportedFullCloneCount
-        ? diskLanguageText("disk.accounting.cloneSharesCount", { count: node.clone.reportedFullCloneCount })
+        ? diskLanguageText("disk.accounting.cloneSharesCount", {
+            count: node.clone.reportedFullCloneCount,
+          })
         : diskLanguageText("disk.accounting.cloneSharesDetail"),
     })
   }
   return facts
 }
 
-export function StorageAccountingFacts(props: { node: DiskScanNode; className?: string }) {
+export function StorageAccountingFacts(props: {
+  node: DiskScanNode
+  className?: string
+}) {
   const language = useLanguage()
   const facts = storageAccountingFacts(props.node)
   return facts.length > 0 ? (
@@ -67,7 +76,7 @@ export function StorageAccountingFacts(props: { node: DiskScanNode; className?: 
     >
       {facts.map((fact) => (
         <details key={fact.label} className="max-w-full">
-          <summary className="flex min-h-11 min-w-11 max-w-full cursor-pointer list-none items-center rounded-full bg-surface-raised-base px-2 py-0.5 text-13-semibold text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
+          <summary className="text-13-semibold flex min-h-11 max-w-full min-w-11 cursor-pointer list-none items-center rounded-full bg-surface-raised-base px-2 py-0.5 text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)] outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
             <span className="truncate">{fact.label}</span>
             <span className="ml-1 shrink-0 text-text-weaker" aria-hidden="true">
               ?
@@ -75,7 +84,7 @@ export function StorageAccountingFacts(props: { node: DiskScanNode; className?: 
           </summary>
           <div
             role="note"
-            className="mt-1 w-[min(20rem,calc(100vw-3rem))] max-w-full rounded-xl bg-background-base px-3 py-2 text-13-regular leading-relaxed text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
+            className="text-13-regular mt-1 w-[min(20rem,calc(100vw-3rem))] max-w-full rounded-xl bg-background-base px-3 py-2 leading-relaxed text-text-weak shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]"
           >
             {fact.detail}
           </div>

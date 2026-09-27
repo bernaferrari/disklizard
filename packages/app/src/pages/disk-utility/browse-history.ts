@@ -33,13 +33,15 @@ const DEFAULT_HISTORY_LIMIT = 64
 export function transitionDiskBrowseHistory(
   history: DiskBrowseHistory,
   intent: DiskBrowseIntent,
-  options: DiskBrowseHistoryOptions = {},
+  options: DiskBrowseHistoryOptions = {}
 ): DiskBrowseHistory {
   const limit = normalizeLimit(options.limit)
   const equals = options.equals ?? Object.is
 
   if (intent.type === "reset") {
-    return intent.path ? { past: [], current: intent.path, future: [] } : EMPTY_DISK_BROWSE_HISTORY
+    return intent.path
+      ? { past: [], current: intent.path, future: [] }
+      : EMPTY_DISK_BROWSE_HISTORY
   }
 
   if (intent.type === "visit") {
@@ -82,7 +84,7 @@ export function resolveDiskBrowseHistoryMove(
   history: DiskBrowseHistory,
   direction: DiskBrowseDirection,
   isAvailable: (path: string) => boolean,
-  options: DiskBrowseHistoryOptions = {},
+  options: DiskBrowseHistoryOptions = {}
 ): DiskBrowseHistory {
   const limit = normalizeLimit(options.limit)
   const current = history.current
@@ -113,17 +115,26 @@ export function resolveDiskBrowseHistoryMove(
   return history.future.length ? { ...history, future: [] } : history
 }
 
-function appendBounded(values: readonly string[], value: string, limit: number) {
+function appendBounded(
+  values: readonly string[],
+  value: string,
+  limit: number
+) {
   const start = Math.max(0, values.length - limit + 1)
   return [...values.slice(start), value]
 }
 
-function prependBounded(value: string, values: readonly string[], limit: number) {
+function prependBounded(
+  value: string,
+  values: readonly string[],
+  limit: number
+) {
   return [value, ...values.slice(0, limit - 1)]
 }
 
 function normalizeLimit(value: number | undefined) {
   if (value === undefined) return DEFAULT_HISTORY_LIMIT
-  if (!Number.isSafeInteger(value) || value < 1) throw new RangeError("Browse history limit must be a positive integer")
+  if (!Number.isSafeInteger(value) || value < 1)
+    throw new RangeError("Browse history limit must be a positive integer")
   return value
 }

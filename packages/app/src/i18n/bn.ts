@@ -46,11 +46,13 @@ export const dict: Record<string, string> = {
   "desktop.menu.ariaLabel": "OpenCode মেনু",
   "desktop.updater.dialog.checkFailed.message": "আপডেট চেক ব্যর্থ হয়েছে.",
   "desktop.updater.dialog.checkFailed.title": "আপডেট ত্রুটি",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "আপনি আপ টু ডেট.",
   "desktop.updater.dialog.upToDate.title": "কোন আপডেট নেই",
-  "desktop.updater.dialog.ready.message": "আপডেট {{version}} ডাউনলোড করা হয়েছে। এখন রিস্টার্ট করবেন?",
+  "desktop.updater.dialog.ready.message":
+    "আপডেট {{version}} ডাউনলোড করা হয়েছে। এখন রিস্টার্ট করবেন?",
   "desktop.updater.dialog.ready.title": "আপডেট প্রস্তুত",
   "desktop.updater.dialog.restart": "রিস্টার্ট করুন",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict: Record<string, string> = {
   "desktop.recovery.unresponsive": "OpenCode সাড়া দিচ্ছে না",
   "desktop.recovery.unresponsive.detail":
     "আপনি অ্যাপটি পুনরায় চালু করতে পারেন, লগগুলি খুলতে পারেন বা অপেক্ষা করতে পারেন৷",
-  "desktop.recovery.loadFailed.detail": "উইন্ডো: {{window}}\nURL: {{url}}\nত্রুটি: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "উইন্ডো: {{window}}\nকারণ: {{reason}}\nকোড: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "উইন্ডো: {{window}}\nURL: {{url}}\nত্রুটি: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "উইন্ডো: {{window}}\nকারণ: {{reason}}\nকোড: {{code}}",
   "desktop.recovery.unknown": "<অজানা>",
   "desktop.dialog.chooseFolder": "একটি ফোল্ডার নির্বাচন করুন",
   "desktop.dialog.chooseFile": "একটি ফাইল নির্বাচন করুন",
@@ -83,18 +87,23 @@ export const dict: Record<string, string> = {
   "desktop.wsl.error.alreadyAdded": "{{distro}} ইতিমধ্যেই যোগ করা হয়েছে৷",
   "desktop.wsl.error.opencodeMissing": "এই ডিস্ট্রোতে opencode ইনস্টল করা নেই",
   "desktop.wsl.error.opencodeCannotRun": "opencode ইনস্টল করা আছে কিন্তু চালানো যায়নি",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode {{distro}} এ ইনস্টল করা নেই",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode {{distro}} এ ইনস্টল করা নেই",
   "desktop.wsl.error.updateVersion":
     "OpenCode আপডেট শেষ হয়েছে কিন্তু {{distro}} এখনও রিপোর্ট করে {{installed}}; প্রত্যাশিত {{expected}}",
   "desktop.wsl.error.noVersion": "কোন সংস্করণ নেই",
-  "desktop.wsl.error.serverExited": "WSL সার্ভার স্টার্টআপের পরে প্রস্থান হয়েছে (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL সার্ভার স্টার্টআপের পরে প্রস্থান হয়েছে (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL সার্ভার সুস্থ হওয়ার আগে প্রস্থান করেছে (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} স্বাস্থ্য পরীক্ষার জন্য সাইডকার {{timeout}}ms পরে সময় শেষ হয়েছে",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms পরে সময় শেষ হয়েছে",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} স্বাস্থ্য পরীক্ষার জন্য সাইডকার {{timeout}}ms পরে সময় শেষ হয়েছে",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms পরে সময় শেষ হয়েছে",
   "desktop.wsl.error.failedPort": "পোর্ট পেতে ব্যর্থ",
   "desktop.picker.error.notSelected": "ফাইল পিকার দ্বারা নির্বাচন করা হয়নি",
-  "desktop.picker.error.sizeLimit": "নির্বাচিত সংযুক্তিগুলি {{limit}} MB সীমা অতিক্রম করেছে৷",
+  "desktop.picker.error.sizeLimit":
+    "নির্বাচিত সংযুক্তিগুলি {{limit}} MB সীমা অতিক্রম করেছে৷",
   "command.category.suggested": "প্রস্তাবিত",
   "command.category.view": "দেখুন",
   "command.category.project": "প্রকল্প",
@@ -141,7 +150,8 @@ export const dict: Record<string, string> = {
   "command.tab.close": "ট্যাব বন্ধ করুন",
   "command.tab.reopenClosed": "বন্ধ ট্যাব আবার খুলুন",
   "command.context.addSelection": "প্রসঙ্গে নির্বাচন যোগ করুন",
-  "command.context.addSelection.description": "বর্তমান ফাইল থেকে নির্বাচিত লাইন যোগ করুন",
+  "command.context.addSelection.description":
+    "বর্তমান ফাইল থেকে নির্বাচিত লাইন যোগ করুন",
   "command.input.focus": "ফোকাস ইনপুট",
   "command.terminal.toggle": "টার্মিনাল টগল করুন",
   "command.fileTree.toggle": "ফাইল ট্রি টগল করুন",
@@ -169,7 +179,8 @@ export const dict: Record<string, string> = {
   "command.permissions.autoaccept.enable": "স্বয়ংক্রিয়ভাবে অনুমতি গ্রহণ করুন",
   "command.permissions.autoaccept.disable": "স্বয়ংক্রিয়ভাবে অনুমতি নেওয়া বন্ধ করুন",
   "command.workspace.toggle": "ওয়ার্কস্পেস টগল করুন",
-  "command.workspace.toggle.description": "সাইডবারে একাধিক ওয়ার্কস্পেস সক্রিয় বা অক্ষম করুন",
+  "command.workspace.toggle.description":
+    "সাইডবারে একাধিক ওয়ার্কস্পেস সক্রিয় বা অক্ষম করুন",
   "command.session.undo": "পূর্বাবস্থায় ফেরান",
   "command.session.undo.description": "শেষ বার্তাটি পূর্বাবস্থায় ফেরান",
   "command.session.redo": "আবার করুন",
@@ -177,13 +188,16 @@ export const dict: Record<string, string> = {
   "command.session.compact": "কমপ্যাক্ট সেশন",
   "command.session.compact.description": "প্রসঙ্গ আকার কমাতে সেশনের সারসংক্ষেপ করুন",
   "command.session.fork": "বার্তা থেকে ফর্ক",
-  "command.session.fork.description": "একটি পূর্ববর্তী বার্তা থেকে একটি নতুন সেশন তৈরি করুন",
+  "command.session.fork.description":
+    "একটি পূর্ববর্তী বার্তা থেকে একটি নতুন সেশন তৈরি করুন",
   "command.session.share": "সেশন শেয়ার করুন",
-  "command.session.share.description": "এই সেশনটি শেয়ার করুন এবং ক্লিপবোর্ডে URL অনুলিপি করুন",
+  "command.session.share.description":
+    "এই সেশনটি শেয়ার করুন এবং ক্লিপবোর্ডে URL অনুলিপি করুন",
   "command.session.unshare": "সেশন শেয়ার করা",
   "command.session.unshare.description": "এই সেশন শেয়ার করা বন্ধ করুন",
   "command.session.export": "রপ্তানি সেশন",
-  "command.session.export.description": "JSON হিসাবে সম্পূর্ণ সেশন ট্রান্সক্রিপ্ট রপ্তানি করুন",
+  "command.session.export.description":
+    "JSON হিসাবে সম্পূর্ণ সেশন ট্রান্সক্রিপ্ট রপ্তানি করুন",
   "palette.search.placeholder": "অনুসন্ধান ফাইল, কমান্ড, এবং সেশন",
   "palette.search.placeholder.home": "অনুসন্ধান কমান্ড এবং সেশন",
   "palette.empty": "কোন ফলাফল পাওয়া যায়নি",
@@ -195,23 +209,29 @@ export const dict: Record<string, string> = {
   "dialog.provider.group.other": "অন্যান্য",
   "dialog.provider.custom.label": "কাস্টম OpenAI-সামঞ্জস্যপূর্ণ প্রদানকারী",
   "dialog.provider.tag.recommended": "প্রস্তাবিত",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini এবং আরও অনেক কিছু সহ কিউরেট করা মডেল",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini এবং আরও অনেক কিছু সহ কিউরেট করা মডেল",
   "dialog.provider.opencode.tagline": "নির্ভরযোগ্য অপ্টিমাইজ করা মডেল",
   "dialog.provider.opencodeGo.tagline": "সবার জন্য কম খরচে সাবস্ক্রিপশন",
-  "dialog.provider.anthropic.note": "প্রো এবং ম্যাক্স সহ Claude মডেলগুলিতে সরাসরি অ্যাক্সেস",
-  "dialog.provider.copilot.note": "GitHub Copilot এর মাধ্যমে কোডিং সহায়তার জন্য AI মডেল",
+  "dialog.provider.anthropic.note":
+    "প্রো এবং ম্যাক্স সহ Claude মডেলগুলিতে সরাসরি অ্যাক্সেস",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot এর মাধ্যমে কোডিং সহায়তার জন্য AI মডেল",
   "dialog.provider.openai.note": "দ্রুত, সক্ষম সাধারণ AI কার্যগুলির জন্য GPT মডেল",
   "dialog.provider.google.note": "দ্রুত, কাঠামোগত প্রতিক্রিয়ার জন্য Gemini মডেল",
-  "dialog.provider.openrouter.note": "একটি প্রদানকারী থেকে সমস্ত সমর্থিত মডেল অ্যাক্সেস করুন",
+  "dialog.provider.openrouter.note":
+    "একটি প্রদানকারী থেকে সমস্ত সমর্থিত মডেল অ্যাক্সেস করুন",
   "dialog.provider.vercel.note": "স্মার্ট রাউটিং সহ AI মডেলগুলিতে ইউনিফাইড অ্যাক্সেস",
   "dialog.model.select.title": "মডেল নির্বাচন করুন",
   "dialog.model.search.placeholder": "মডেল অনুসন্ধান করুন",
   "dialog.model.empty": "কোন মডেল ফলাফল নেই",
   "dialog.model.manage": "মডেল পরিচালনা করুন",
-  "dialog.model.manage.description": "মডেল নির্বাচকের মধ্যে কোন মডেলগুলি উপস্থিত হবে তা কাস্টমাইজ করুন৷",
+  "dialog.model.manage.description":
+    "মডেল নির্বাচকের মধ্যে কোন মডেলগুলি উপস্থিত হবে তা কাস্টমাইজ করুন৷",
   "dialog.model.manage.provider.toggle": "সমস্ত {{provider}} মডেল টগল করুন",
   "dialog.model.unpaid.freeModels.title": "বিনামূল্যের মডেলগুলি OpenCode দ্বারা প্রদত্ত",
-  "dialog.model.unpaid.addMore.title": "জনপ্রিয় প্রদানকারীদের থেকে আরো মডেল যোগ করুন",
+  "dialog.model.unpaid.addMore.title":
+    "জনপ্রিয় প্রদানকারীদের থেকে আরো মডেল যোগ করুন",
   "dialog.model.unpaid.viewMoreProviders": "আরও 70+ প্রদানকারী দেখুন",
   "dialog.provider.viewAll": "আরো প্রদানকারী দেখান",
   "provider.connect.title": "{{provider}} সংযোগ করুন",
@@ -249,22 +269,26 @@ export const dict: Record<string, string> = {
     "এবং আপনার অ্যাকাউন্ট সংযোগ করতে নীচের কোডটি লিখুন এবং {{provider}} মডেলগুলি OpenCode-এ ব্যবহার করুন৷",
   "provider.connect.oauth.auto.confirmationCode": "নিশ্চিতকরণ কোড",
   "provider.connect.toast.connected.title": "{{provider}} সংযুক্ত",
-  "provider.connect.toast.connected.description": "{{provider}} মডেলগুলি এখন ব্যবহারের জন্য উপলব্ধ৷",
+  "provider.connect.toast.connected.description":
+    "{{provider}} মডেলগুলি এখন ব্যবহারের জন্য উপলব্ধ৷",
   "provider.custom.title": "কাস্টম প্রদানকারী",
   "provider.custom.unavailable": "কাস্টম প্রদানকারী এই সার্ভারে অনুপলব্ধ",
-  "provider.custom.description.prefix": "একটি OpenAI-সামঞ্জস্যপূর্ণ প্রদানকারী কনফিগার করুন। দেখুন",
+  "provider.custom.description.prefix":
+    "একটি OpenAI-সামঞ্জস্যপূর্ণ প্রদানকারী কনফিগার করুন। দেখুন",
   "provider.custom.description.link": "প্রদানকারী কনফিগার ডক্স",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "প্রদানকারী আইডি",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "ছোট হাতের অক্ষর, সংখ্যা, হাইফেন বা আন্ডারস্কোর",
+  "provider.custom.field.providerID.description":
+    "ছোট হাতের অক্ষর, সংখ্যা, হাইফেন বা আন্ডারস্কোর",
   "provider.custom.field.name.label": "প্রদর্শনের নাম",
   "provider.custom.field.name.placeholder": "আমার AI প্রদানকারী",
   "provider.custom.field.baseURL.label": "ভিত্তি URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API কী",
   "provider.custom.field.apiKey.placeholder": "API কী",
-  "provider.custom.field.apiKey.description": "ঐচ্ছিক। আপনি শিরোনামের মাধ্যমে প্রমাণীকরণ পরিচালনা করলে খালি ছেড়ে দিন।",
+  "provider.custom.field.apiKey.description":
+    "ঐচ্ছিক। আপনি শিরোনামের মাধ্যমে প্রমাণীকরণ পরিচালনা করলে খালি ছেড়ে দিন।",
   "provider.custom.models.label": "মডেল",
   "provider.custom.models.id.label": "আইডি",
   "provider.custom.models.id.placeholder": "মডেল-আইডি",
@@ -280,15 +304,18 @@ export const dict: Record<string, string> = {
   "provider.custom.headers.remove": "হেডার সরান",
   "provider.custom.headers.add": "হেডার যোগ করুন",
   "provider.custom.error.providerID.required": "প্রদানকারী আইডি প্রয়োজন",
-  "provider.custom.error.providerID.format": "ছোট হাতের অক্ষর, সংখ্যা, হাইফেন বা আন্ডারস্কোর ব্যবহার করুন",
+  "provider.custom.error.providerID.format":
+    "ছোট হাতের অক্ষর, সংখ্যা, হাইফেন বা আন্ডারস্কোর ব্যবহার করুন",
   "provider.custom.error.providerID.exists": "সেই প্রদানকারী আইডি আগে থেকেই আছে",
   "provider.custom.error.name.required": "প্রদর্শন নাম প্রয়োজন",
   "provider.custom.error.baseURL.required": "বেস URL প্রয়োজন",
-  "provider.custom.error.baseURL.format": "http:// অথবা https:// দিয়ে শুরু করতে হবে",
+  "provider.custom.error.baseURL.format":
+    "http:// অথবা https:// দিয়ে শুরু করতে হবে",
   "provider.custom.error.required": "প্রয়োজন",
   "provider.custom.error.duplicate": "ডুপ্লিকেট",
   "provider.disconnect.toast.disconnected.title": "{{provider}} সংযোগ বিচ্ছিন্ন",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} মডেল আর উপলব্ধ নেই৷",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} মডেল আর উপলব্ধ নেই৷",
   "model.tag.free": "বিনামূল্যে",
   "model.tag.latest": "সর্বশেষ",
   "model.provider.anthropic": "Anthropic",
@@ -382,10 +409,12 @@ export const dict: Record<string, string> = {
   "prompt.action.send": "পাঠান",
   "prompt.action.stop": "থামো",
   "prompt.toast.pasteUnsupported.title": "অসমর্থিত সংযুক্তি",
-  "prompt.toast.pasteUnsupported.description": "এখানে শুধুমাত্র ছবি, পিডিএফ বা টেক্সট ফাইল সংযুক্ত করা যাবে।",
+  "prompt.toast.pasteUnsupported.description":
+    "এখানে শুধুমাত্র ছবি, পিডিএফ বা টেক্সট ফাইল সংযুক্ত করা যাবে।",
   "prompt.toast.attachmentDuplicate.title": "এই ফাইল ইতিমধ্যে আপলোড করা হয়েছে",
   "prompt.toast.modelAgentRequired.title": "একটি এজেন্ট এবং মডেল নির্বাচন করুন",
-  "prompt.toast.modelAgentRequired.description": "প্রম্পট পাঠানোর আগে একটি এজেন্ট এবং মডেল বেছে নিন।",
+  "prompt.toast.modelAgentRequired.description":
+    "প্রম্পট পাঠানোর আগে একটি এজেন্ট এবং মডেল বেছে নিন।",
   "prompt.toast.worktreeCreateFailed.title": "ওয়ার্কট্রি তৈরি করতে ব্যর্থ হয়েছে৷",
   "prompt.toast.sessionCreateFailed.title": "সেশন তৈরি করতে ব্যর্থ হয়েছে৷",
   "prompt.toast.shellSendFailed.title": "শেল কমান্ড পাঠাতে ব্যর্থ হয়েছে",
@@ -414,7 +443,8 @@ export const dict: Record<string, string> = {
   "app.server.retrying": "স্বয়ংক্রিয়ভাবে পুনরায় চেষ্টা করা হচ্ছে...",
   "app.server.otherServers": "অন্যান্য সার্ভার",
   "dialog.server.title": "সার্ভার",
-  "dialog.server.description": "এই অ্যাপটি কোন OpenCode সার্ভারের সাথে সংযোগ করে তা পরিবর্তন করুন।",
+  "dialog.server.description":
+    "এই অ্যাপটি কোন OpenCode সার্ভারের সাথে সংযোগ করে তা পরিবর্তন করুন।",
   "dialog.server.search.placeholder": "সার্ভার সার্চ করুন",
   "dialog.server.empty": "এখনো কোনো সার্ভার নেই",
   "dialog.server.add.title": "সার্ভার যোগ করুন",
@@ -452,7 +482,8 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.step.distro": "ডিস্ট্রো নির্বাচন করুন",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL পরীক্ষা করা হচ্ছে...",
-  "wsl.onboarding.restartRequired": "WSL ইনস্টল করা শেষ করার জন্য Windows-এর একটি রিস্টার্ট প্রয়োজন।",
+  "wsl.onboarding.restartRequired":
+    "WSL ইনস্টল করা শেষ করার জন্য Windows-এর একটি রিস্টার্ট প্রয়োজন।",
   "wsl.onboarding.ready": "WSL প্রস্তুত।",
   "wsl.onboarding.required": "WSL চালিয়ে যেতে হবে।",
   "wsl.onboarding.checkingDistros": "ডিস্ট্রো পরীক্ষা করা হচ্ছে...",
@@ -485,18 +516,21 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.distroStatus.missingTools": "অনুপস্থিত বাশ, কার্ল",
   "wsl.onboarding.distroStatus.unsupported": "অসমর্থিত · WSL 2 ব্যবহার করুন",
   "wsl.onboarding.needAnotherDistro": "অন্য ডিস্ট্রো প্রয়োজন?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL ক্যাটালগ থেকে একটি Linux বিতরণ ইনস্টল করুন",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL ক্যাটালগ থেকে একটি Linux বিতরণ ইনস্টল করুন",
   "wsl.onboarding.wslNotInstalled.title": "WSL ইনস্টল করা হয়নি",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Linux এর জন্য Windows সাবসিস্টেম) OpenCode একটি WSL সার্ভার যোগ করার আগে প্রয়োজন",
   "wsl.onboarding.wslUnavailable.title": "WSL অনুপলব্ধ",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode এই মেশিনে WSL যাচাই করতে পারেনি।",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode এই মেশিনে WSL যাচাই করতে পারেনি।",
   "wsl.onboarding.installWsl": "WSL ইনস্টল করুন",
   "wsl.onboarding.windowsRestartRequired":
     "WSL ইনস্টল করা শেষ করতে Windows পুনরায় চালু করুন, তারপর OpenCode আবার খুলুন।",
   "wsl.onboarding.next": "পরবর্তী",
   "wsl.onboarding.refresh": "রিফ্রেশ",
-  "wsl.onboarding.allDistrosAdded": "সমস্ত ইনস্টল করা ডিস্ট্রো ইতিমধ্যেই যোগ করা হয়েছে।",
+  "wsl.onboarding.allDistrosAdded":
+    "সমস্ত ইনস্টল করা ডিস্ট্রো ইতিমধ্যেই যোগ করা হয়েছে।",
   "wsl.onboarding.noDistros": "কোন ডিস্ট্রো এখনও সনাক্ত করা হয়নি.",
   "wsl.onboarding.install": "ইনস্টল করুন",
   "wsl.onboarding.installing": "ইনস্টল করা হচ্ছে...",
@@ -510,9 +544,11 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.version": "সংস্করণ: {{version}}",
   "wsl.onboarding.unknown": "অজানা",
   "wsl.onboarding.desktopVersion": "ডেস্কটপ {{version}}",
-  "wsl.onboarding.versionMismatch": "ইনস্টল করা সংস্করণ ডেস্কটপ অ্যাপ সংস্করণের সাথে মেলে না।",
+  "wsl.onboarding.versionMismatch":
+    "ইনস্টল করা সংস্করণ ডেস্কটপ অ্যাপ সংস্করণের সাথে মেলে না।",
   "wsl.onboarding.adding": "যোগ করা হচ্ছে...",
-  "help.tabs.toast.ariaLabel": "ট্যাব চালু করা হচ্ছে। ট্যাব দিয়ে আপনার কাজ এবং সক্রিয় সেশনগুলি সংগঠিত করুন",
+  "help.tabs.toast.ariaLabel":
+    "ট্যাব চালু করা হচ্ছে। ট্যাব দিয়ে আপনার কাজ এবং সক্রিয় সেশনগুলি সংগঠিত করুন",
   "help.tabs.toast.dismiss": "ট্যাব তথ্য খারিজ",
   "help.tabs.title": "ট্যাব চালু করা হচ্ছে",
   "help.tabs.description": "ট্যাব দিয়ে আপনার কাজ এবং সক্রিয় সেশনগুলি সংগঠিত করুন",
@@ -524,7 +560,8 @@ export const dict: Record<string, string> = {
     "কয়েকটি ট্যাব খোলা রাখলে আপনার সক্রিয় সেশনগুলি সংগঠিত করা সহজ হয়৷ ট্যাবগুলিকে স্মরণীয় কিছুতে পুনঃনামকরণ করুন যদি আপনি সেগুলিকে কাছাকাছি রাখার পরিকল্পনা করেন৷",
   "help.tabs.home":
     "আপনি নতুন হোম স্ক্রিনে আপনার সমস্ত সেশন এবং প্রকল্পগুলি খুঁজে পাবেন৷ একটি সেশন নির্বাচন করা এটি একটি ট্যাবে খোলে।",
-  "help.tabs.persistence": "আপনি যখন অ্যাপটি আবার খুলবেন, তখনও আপনার ট্যাবগুলি খোলা থাকবে৷",
+  "help.tabs.persistence":
+    "আপনি যখন অ্যাপটি আবার খুলবেন, তখনও আপনার ট্যাবগুলি খোলা থাকবে৷",
   "help.tabs.worktrees":
     "নতুন ডিজাইন এখনও Git Worktrees সমর্থন করে না, এটি শীঘ্রই আসছে। সুতরাং আপনি যদি পূর্ববর্তী লেআউটটি ব্যবহার করা চালিয়ে যেতে চান তবে আপনি সেটিংসে লেআউটগুলির মধ্যে স্যুইচ করতে পারেন৷ শুধু মনে রাখবেন যে নতুন লেআউট কয়েক সপ্তাহের মধ্যে স্থায়ী হয়ে যাবে।",
   "server.row.noUsername": "ব্যবহারকারীর নাম নেই",
@@ -537,14 +574,16 @@ export const dict: Record<string, string> = {
   "dialog.project.edit.color": "রঙ",
   "dialog.project.edit.color.select": "{{color}} রঙ নির্বাচন করুন",
   "dialog.project.edit.worktree.startup": "ওয়ার্কস্পেস স্টার্টআপ স্ক্রিপ্ট",
-  "dialog.project.edit.worktree.startup.description": "একটি নতুন ওয়ার্কস্পেস (ওয়ার্কট্রি) তৈরি করার পরে চলে।",
+  "dialog.project.edit.worktree.startup.description":
+    "একটি নতুন ওয়ার্কস্পেস (ওয়ার্কট্রি) তৈরি করার পরে চলে।",
   "dialog.project.edit.worktree.startup.placeholder": "যেমন বান ইনস্টল",
   "dialog.releaseNotes.action.getStarted": "শুরু করুন",
   "dialog.releaseNotes.action.next": "পরবর্তী",
   "dialog.releaseNotes.action.hideFuture": "ভবিষ্যতে এগুলো দেখাবেন না",
   "dialog.releaseNotes.media.alt": "রিলিজ পূর্বরূপ",
   "context.breakdown.title": "প্রসঙ্গ ব্রেকডাউন",
-  "context.breakdown.note": 'ইনপুট টোকেনগুলির আনুমানিক ভাঙ্গন। "অন্যান্য" টুল সংজ্ঞা এবং ওভারহেড অন্তর্ভুক্ত।',
+  "context.breakdown.note":
+    'ইনপুট টোকেনগুলির আনুমানিক ভাঙ্গন। "অন্যান্য" টুল সংজ্ঞা এবং ওভারহেড অন্তর্ভুক্ত।',
   "context.breakdown.system": "সিস্টেম",
   "context.breakdown.user": "ব্যবহারকারী",
   "context.breakdown.assistant": "সহকারী",
@@ -599,47 +638,66 @@ export const dict: Record<string, string> = {
   "toast.workspace.enabled.title": "ওয়ার্কস্পেস সক্রিয় করা হয়েছে",
   "toast.workspace.enabled.description": "একাধিক ওয়ার্কট্রি এখন সাইডবারে দেখানো হয়েছে",
   "toast.workspace.disabled.title": "ওয়ার্কস্পেস অক্ষম করা হয়েছে",
-  "toast.workspace.disabled.description": "সাইডবারে শুধুমাত্র প্রধান ওয়ার্কট্রি দেখানো হয়েছে",
+  "toast.workspace.disabled.description":
+    "সাইডবারে শুধুমাত্র প্রধান ওয়ার্কট্রি দেখানো হয়েছে",
   "toast.permissions.autoaccept.on.title": "স্বয়ংক্রিয়ভাবে গ্রহণযোগ্য অনুমতি",
-  "toast.permissions.autoaccept.on.description": "অনুমতি অনুরোধ স্বয়ংক্রিয়ভাবে অনুমোদিত হবে",
-  "toast.permissions.autoaccept.off.title": "স্বয়ংক্রিয়ভাবে গ্রহণযোগ্য অনুমতি বন্ধ করা হয়েছে৷",
-  "toast.permissions.autoaccept.off.description": "অনুমতি অনুরোধ অনুমোদন প্রয়োজন হবে",
+  "toast.permissions.autoaccept.on.description":
+    "অনুমতি অনুরোধ স্বয়ংক্রিয়ভাবে অনুমোদিত হবে",
+  "toast.permissions.autoaccept.off.title":
+    "স্বয়ংক্রিয়ভাবে গ্রহণযোগ্য অনুমতি বন্ধ করা হয়েছে৷",
+  "toast.permissions.autoaccept.off.description":
+    "অনুমতি অনুরোধ অনুমোদন প্রয়োজন হবে",
   "toast.model.none.title": "কোনো মডেল নির্বাচন করা হয়নি",
-  "toast.model.none.description": "এই সেশনের সংক্ষিপ্ত বিবরণ দিতে একজন প্রদানকারীকে সংযুক্ত করুন",
+  "toast.model.none.description":
+    "এই সেশনের সংক্ষিপ্ত বিবরণ দিতে একজন প্রদানকারীকে সংযুক্ত করুন",
   "toast.file.loadFailed.title": "ফাইল লোড করতে ব্যর্থ হয়েছে",
   "toast.file.listFailed.title": "ফাইল তালিকা করতে ব্যর্থ হয়েছে",
   "toast.context.noLineSelection.title": "কোন লাইন নির্বাচন নেই",
-  "toast.context.noLineSelection.description": "প্রথমে একটি ফাইল ট্যাবে একটি লাইন পরিসর নির্বাচন করুন।",
-  "toast.session.share.copyFailed.title": "ক্লিপবোর্ডে URL অনুলিপি করতে ব্যর্থ হয়েছে৷",
+  "toast.context.noLineSelection.description":
+    "প্রথমে একটি ফাইল ট্যাবে একটি লাইন পরিসর নির্বাচন করুন।",
+  "toast.session.share.copyFailed.title":
+    "ক্লিপবোর্ডে URL অনুলিপি করতে ব্যর্থ হয়েছে৷",
   "toast.session.share.success.title": "সেশন শেয়ার করা হয়েছে",
-  "toast.session.share.success.description": "শেয়ার করুন URL ক্লিপবোর্ডে কপি করা হয়েছে!",
+  "toast.session.share.success.description":
+    "শেয়ার করুন URL ক্লিপবোর্ডে কপি করা হয়েছে!",
   "toast.session.share.failed.title": "সেশন শেয়ার করতে ব্যর্থ হয়েছে",
-  "toast.session.share.failed.description": "সেশন শেয়ার করার সময় একটি ত্রুটি ঘটেছে৷",
+  "toast.session.share.failed.description":
+    "সেশন শেয়ার করার সময় একটি ত্রুটি ঘটেছে৷",
   "toast.session.unshare.success.title": "সেশন শেয়ার করা বাদ দেওয়া হয়েছে",
   "toast.session.unshare.success.description": "সেশন সফলভাবে মুক্ত করা হয়েছে!",
   "toast.session.unshare.failed.title": "সেশন শেয়ার মুক্ত করতে ব্যর্থ হয়েছে",
-  "toast.session.unshare.failed.description": "সেশনটি শেয়ার না করার সময় একটি ত্রুটি ঘটেছে৷",
+  "toast.session.unshare.failed.description":
+    "সেশনটি শেয়ার না করার সময় একটি ত্রুটি ঘটেছে৷",
   "toast.session.export.success.title": "সেশন এক্সপোর্ট করা হয়েছে",
-  "toast.session.export.success.description": "{{filename}}-এ সেশন সেভ করা হয়েছে",
+  "toast.session.export.success.description":
+    "{{filename}}-এ সেশন সেভ করা হয়েছে",
   "toast.session.export.failed.title": "সেশন এক্সপোর্ট করতে ব্যর্থ হয়েছে৷",
-  "toast.session.export.failed.description": "সেশন এক্সপোর্ট করার সময় একটি ত্রুটি ঘটেছে৷",
-  "toast.session.listFailed.title": "{{project}} এর জন্য সেশন লোড করতে ব্যর্থ হয়েছে৷",
+  "toast.session.export.failed.description":
+    "সেশন এক্সপোর্ট করার সময় একটি ত্রুটি ঘটেছে৷",
+  "toast.session.listFailed.title":
+    "{{project}} এর জন্য সেশন লোড করতে ব্যর্থ হয়েছে৷",
   "toast.project.reloadFailed.title": "{{project}} পুনরায় লোড করতে ব্যর্থ হয়েছে৷",
   "toast.update.title": "আপডেট উপলব্ধ",
-  "toast.update.description": "OpenCode ({{version}}) এর একটি নতুন সংস্করণ এখন ইনস্টল করার জন্য উপলব্ধ৷",
+  "toast.update.description":
+    "OpenCode ({{version}}) এর একটি নতুন সংস্করণ এখন ইনস্টল করার জন্য উপলব্ধ৷",
   "toast.update.action.installRestart": "ইনস্টল করুন এবং পুনরায় চালু করুন",
   "toast.update.action.notYet": "এখনো না",
-  "disk.accessGuidance.macos": "System Settings-এ DiskLizard-কে Full Disk Access দিন, তারপর আবার স্ক্যান করুন।",
-  "disk.accessGuidance.windows": "এই ড্রাইভে অ্যাক্সেস আছে এমন অ্যাকাউন্ট ব্যবহার করুন, অথবা এমন ফোল্ডার স্ক্যান করুন যা আপনার অ্যাকাউন্ট পড়তে পারে।",
+  "disk.accessGuidance.macos":
+    "System Settings-এ DiskLizard-কে Full Disk Access দিন, তারপর আবার স্ক্যান করুন।",
+  "disk.accessGuidance.windows":
+    "এই ড্রাইভে অ্যাক্সেস আছে এমন অ্যাকাউন্ট ব্যবহার করুন, অথবা এমন ফোল্ডার স্ক্যান করুন যা আপনার অ্যাকাউন্ট পড়তে পারে।",
   "disk.accessGuidance.linux": "ফোল্ডার ও মাউন্ট অনুমতিগুলো দেখুন, তারপর আবার স্ক্যান করুন।",
-  "disk.accessGuidance.default": "এই ফোল্ডারগুলোতে অ্যাক্সেস দেখুন, তারপর আবার স্ক্যান করুন।",
-  "disk.accessGuidance.rescan": "অ্যাক্সেস পরিবর্তনের পর উপরের বারে Rescan ব্যবহার করুন।",
+  "disk.accessGuidance.default":
+    "এই ফোল্ডারগুলোতে অ্যাক্সেস দেখুন, তারপর আবার স্ক্যান করুন।",
+  "disk.accessGuidance.rescan":
+    "অ্যাক্সেস পরিবর্তনের পর উপরের বারে Rescan ব্যবহার করুন।",
   "disk.common.rescan": "পুনরায় স্ক্যান করুন",
   "toast.update.installFailed.title": "আপডেটটি ইনস্টল করা যায়নি",
   "toast.update.installFailed.retry": "আবার চেষ্টা করুন",
   "error.page.title": "কিছু ভুল হয়েছে",
   "error.page.description": "অ্যাপ্লিকেশন লোড করার সময় একটি ত্রুটি ঘটেছে৷",
-  "error.page.description.localServerStartup": "স্থানীয় সার্ভার শুরু করার সময় একটি ত্রুটি ঘটেছে৷",
+  "error.page.description.localServerStartup":
+    "স্থানীয় সার্ভার শুরু করার সময় একটি ত্রুটি ঘটেছে৷",
   "error.page.details.label": "ত্রুটি বিবরণ",
   "error.page.action.restart": "রিস্টার্ট করুন",
   "error.page.action.report": "রিপোর্ট ত্রুটি",
@@ -649,17 +707,22 @@ export const dict: Record<string, string> = {
   "error.page.action.checkUpdates": "আপডেটের জন্য চেক করুন",
   "error.page.action.updateTo": "{{version}}-এ আপডেট করুন",
   "error.page.circular": "[সার্কুলার]",
-  "error.page.report.prefix": "অনুগ্রহ করে এই ত্রুটিটি OpenCode টিমের কাছে রিপোর্ট করুন",
+  "error.page.report.prefix":
+    "অনুগ্রহ করে এই ত্রুটিটি OpenCode টিমের কাছে রিপোর্ট করুন",
   "error.page.report.discord": "Discord-এ",
   "error.page.version": "সংস্করণ: {{version}}",
   "error.dev.rootNotFound":
     "মূল উপাদান পাওয়া যায়নি. আপনি কি আপনার index.html এ যোগ করতে ভুলে গেছেন? অথবা হয়তো আইডি অ্যাট্রিবিউট ভুল বানান হয়েছে?",
-  "error.serverSync.connectFailed": "সার্ভারের সাথে সংযোগ করা যায়নি। `{{url}}` এ কি কোনো সার্ভার চলছে?",
+  "error.serverSync.connectFailed":
+    "সার্ভারের সাথে সংযোগ করা যায়নি। `{{url}}` এ কি কোনো সার্ভার চলছে?",
   "error.serverSDK.noServerAvailable": "কোন সার্ভার উপলব্ধ",
   "error.serverSDK.serverNotAvailable": "সার্ভার উপলব্ধ নয়",
-  "error.childStore.persistedCacheCreateFailed": "স্থায়ী ক্যাশে তৈরি করতে ব্যর্থ হয়েছে৷",
-  "error.childStore.persistedProjectMetadataCreateFailed": "স্থায়ী প্রকল্প মেটাডেটা তৈরি করতে ব্যর্থ হয়েছে",
-  "error.childStore.persistedProjectIconCreateFailed": "স্থায়ী প্রকল্প আইকন তৈরি করতে ব্যর্থ হয়েছে৷",
+  "error.childStore.persistedCacheCreateFailed":
+    "স্থায়ী ক্যাশে তৈরি করতে ব্যর্থ হয়েছে৷",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "স্থায়ী প্রকল্প মেটাডেটা তৈরি করতে ব্যর্থ হয়েছে",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "স্থায়ী প্রকল্প আইকন তৈরি করতে ব্যর্থ হয়েছে৷",
   "error.childStore.storeCreateFailed": "স্টোর তৈরি করতে ব্যর্থ হয়েছে৷",
   "directory.error.invalidUrl": "URL-এ অবৈধ ডিরেক্টরি।",
   "error.chain.unknown": "অজানা ত্রুটি",
@@ -671,23 +734,30 @@ export const dict: Record<string, string> = {
   "error.chain.responseBody": "প্রতিক্রিয়ার অংশ:\n{{body}}৷",
   "error.chain.didYouMean": "আপনি কি বলতে চাইছেন: {{suggestions}}",
   "error.chain.modelNotFound": "মডেল পাওয়া যায়নি: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "আপনার কনফিগারেশন (opencode.json) প্রদানকারী/মডেলের নাম পরীক্ষা করুন",
+  "error.chain.checkConfig":
+    "আপনার কনফিগারেশন (opencode.json) প্রদানকারী/মডেলের নাম পরীক্ষা করুন",
   "error.chain.mcpFailed":
     'MCP সার্ভার "{{name}}" ব্যর্থ হয়েছে৷ মনে রাখবেন, OpenCode এখনও MCP প্রমাণীকরণ সমর্থন করে না।',
-  "error.chain.providerAuthFailed": "প্রদানকারীর প্রমাণীকরণ ব্যর্থ হয়েছে ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "প্রদানকারীর প্রমাণীকরণ ব্যর্থ হয়েছে ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" প্রদানকারী শুরু করতে ব্যর্থ হয়েছে৷ শংসাপত্র এবং কনফিগারেশন চেক করুন.',
   "error.chain.configJsonInvalid": "{{path}}-এ কনফিগার করা ফাইলটি বৈধ JSON(C) নয়",
-  "error.chain.configJsonInvalidWithMessage": "{{path}}-এ কনফিগার ফাইল বৈধ নয় JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}}-এ কনফিগার ফাইল বৈধ নয় JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}}-এ "{{dir}}" ডিরেক্টরিটি বৈধ নয়৷ ডিরেক্টরিটির নাম পরিবর্তন করুন "{{suggestion}}" বা এটি সরান। এটি একটি সাধারণ টাইপো।',
-  "error.chain.configFrontmatterError": "{{path}} এ ফ্রন্টম্যাটার পার্স করতে ব্যর্থ হয়েছে:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} এ ফ্রন্টম্যাটার পার্স করতে ব্যর্থ হয়েছে:\n{{message}}",
   "error.chain.configInvalid": "{{path}}-এ কনফিগ ফাইলটি অবৈধ",
-  "error.chain.configInvalidWithMessage": "{{path}}-এ কনফিগ ফাইলটি অবৈধ: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}}-এ কনফিগ ফাইলটি অবৈধ: {{message}}",
   "notification.permission.title": "অনুমতি প্রয়োজন",
-  "notification.permission.description": "{{projectName}}-এ {{sessionTitle}} অনুমতি প্রয়োজন",
+  "notification.permission.description":
+    "{{projectName}}-এ {{sessionTitle}} অনুমতি প্রয়োজন",
   "notification.question.title": "প্রশ্ন",
-  "notification.question.description": "{{projectName}}-এ {{sessionTitle}} একটি প্রশ্ন আছে",
+  "notification.question.description":
+    "{{projectName}}-এ {{sessionTitle}} একটি প্রশ্ন আছে",
   "notification.action.goToSession": "সেশনে যান",
   "notification.session.responseReady.title": "প্রতিক্রিয়া প্রস্তুত",
   "notification.session.error.title": "সেশন ত্রুটি",
@@ -710,14 +780,16 @@ export const dict: Record<string, string> = {
   "home.sessions.group.today": "আজ",
   "home.sessions.group.yesterday": "গতকাল",
   "home.sessions.group.older": "বয়স্ক",
-  "home.providerTip": "Claude, GPT, Gemini, ইত্যাদি সহ অন্যান্য মডেল ব্যবহার করতে 75+ প্রদানকারীর সাথে সংযোগ করুন",
+  "home.providerTip":
+    "Claude, GPT, Gemini, ইত্যাদি সহ অন্যান্য মডেল ব্যবহার করতে 75+ প্রদানকারীর সাথে সংযোগ করুন",
   "session.tab.session": "সেশন",
   "session.tab.review": "পর্যালোচনা",
   "session.tab.context": "প্রসঙ্গ",
   "session.tab.unknown": "অজানা সেশন",
   "session.panel.reviewAndFiles": "পর্যালোচনা এবং ফাইল",
   "session.error.notFound": "এই সেশন খুঁজে পাওয়া যাবে না",
-  "session.error.notFound.description": "এই ট্যাবটি এমন একটি সেশনের দিকে নির্দেশ করে যা এই সার্ভারে আর বিদ্যমান নেই।",
+  "session.error.notFound.description":
+    "এই ট্যাবটি এমন একটি সেশনের দিকে নির্দেশ করে যা এই সার্ভারে আর বিদ্যমান নেই।",
   "session.error.notFound.closeTab": "ট্যাব বন্ধ করুন",
   "session.error.serverConnection": "এই সার্ভারের সাথে সংযোগ করা যাচ্ছে না৷",
   "session.review.filesChanged": "ফাইলগুলি পরিবর্তন করা হয়েছে {{count}}৷",
@@ -725,13 +797,16 @@ export const dict: Record<string, string> = {
   "session.review.change.other": "পরিবর্তন",
   "session.review.loadingChanges": "পরিবর্তনগুলি লোড হচ্ছে...",
   "session.review.empty": "এই সেশনে এখনও কোন পরিবর্তন নেই",
-  "session.review.noVcs": "কোন Git সংস্করণ নিয়ন্ত্রণ সিস্টেম সনাক্ত করা যায়নি, পরিবর্তনগুলি প্রদর্শিত হয় না",
+  "session.review.noVcs":
+    "কোন Git সংস্করণ নিয়ন্ত্রণ সিস্টেম সনাক্ত করা যায়নি, পরিবর্তনগুলি প্রদর্শিত হয় না",
   "session.review.noVcs.createGit.title": "একটি Git সংগ্রহস্থল তৈরি করুন",
   "session.review.noVcs.createGit.description":
     "এই প্রকল্পের পরিবর্তনগুলি ট্র্যাক করুন, পর্যালোচনা করুন এবং পূর্বাবস্থায় ফেরান৷",
-  "session.review.noVcs.createGit.actionLoading": "Git সংগ্রহস্থল তৈরি করা হচ্ছে...",
+  "session.review.noVcs.createGit.actionLoading":
+    "Git সংগ্রহস্থল তৈরি করা হচ্ছে...",
   "session.review.noVcs.createGit.action": "Git সংগ্রহস্থল তৈরি করুন",
-  "session.review.noSnapshot": "কনফিগারেশনে স্ন্যাপশট ট্র্যাকিং অক্ষম করা হয়েছে, তাই সেশন পরিবর্তনগুলি অনুপলব্ধ৷",
+  "session.review.noSnapshot":
+    "কনফিগারেশনে স্ন্যাপশট ট্র্যাকিং অক্ষম করা হয়েছে, তাই সেশন পরিবর্তনগুলি অনুপলব্ধ৷",
   "session.review.noChanges": "কোনো পরিবর্তন নেই",
   "session.review.noUncommittedChanges": "এখনও কোন অপ্রতিরোধ্য পরিবর্তন",
   "session.review.noBranchChanges": "এখনো কোনো শাখা পরিবর্তন হয়নি",
@@ -812,7 +887,8 @@ export const dict: Record<string, string> = {
   "status.popover.tab.plugins": "প্লাগইন",
   "status.popover.action.manageServers": "সার্ভার পরিচালনা করুন",
   "session.share.popover.title": "ওয়েবে প্রকাশ করুন",
-  "session.share.popover.description.shared": "এই সেশনটি ওয়েবে সর্বজনীন। এটি লিঙ্ক সহ যে কেউ অ্যাক্সেসযোগ্য।",
+  "session.share.popover.description.shared":
+    "এই সেশনটি ওয়েবে সর্বজনীন। এটি লিঙ্ক সহ যে কেউ অ্যাক্সেসযোগ্য।",
   "session.share.popover.description.unshared":
     "ওয়েবে সর্বজনীনভাবে সেশন শেয়ার করুন। এটি লিঙ্ক সহ যে কেউ অ্যাক্সেসযোগ্য হবে।",
   "session.share.action.share": "শেয়ার করুন",
@@ -832,10 +908,12 @@ export const dict: Record<string, string> = {
   "terminal.close": "টার্মিনাল বন্ধ করুন",
   "terminal.connectionLost.title": "সংযোগ হারিয়েছে",
   "terminal.connectionLost.abnormalClose": "WebSocket অস্বাভাবিকভাবে বন্ধ: {{code}}",
-  "terminal.connectionLost.description": "টার্মিনাল সংযোগ বিঘ্নিত হয়েছে। সার্ভার পুনরায় চালু হলে এটি ঘটতে পারে।",
+  "terminal.connectionLost.description":
+    "টার্মিনাল সংযোগ বিঘ্নিত হয়েছে। সার্ভার পুনরায় চালু হলে এটি ঘটতে পারে।",
   "terminal.connectTicket.csrfError":
     "PTY সংযোগ টিকিট মূল বা CSRF চেক দ্বারা প্রত্যাখ্যাত। সার্ভার CORS কনফিগারেশন চেক করুন।",
-  "terminal.connectTicket.statusError": "{{status}}-এর সাথে PTY সংযোগ টিকিট ব্যর্থ হয়েছে",
+  "terminal.connectTicket.statusError":
+    "{{status}}-এর সাথে PTY সংযোগ টিকিট ব্যর্থ হয়েছে",
   "titlebar.update": "আপডেট",
   "titlebar.updateVersion": "{{version}} আপডেট করুন",
   "common.closeTab": "ট্যাব বন্ধ করুন",
@@ -879,7 +957,8 @@ export const dict: Record<string, string> = {
   "sidebar.workspaces.enable": "ওয়ার্কস্পেস সক্রিয় করুন",
   "sidebar.workspaces.disable": "ওয়ার্কস্পেস অক্ষম করুন",
   "sidebar.gettingStarted.title": "শুরু হচ্ছে",
-  "sidebar.gettingStarted.line1": "OpenCode বিনামূল্যে মডেল অন্তর্ভুক্ত করে যাতে আপনি অবিলম্বে শুরু করতে পারেন।",
+  "sidebar.gettingStarted.line1":
+    "OpenCode বিনামূল্যে মডেল অন্তর্ভুক্ত করে যাতে আপনি অবিলম্বে শুরু করতে পারেন।",
   "sidebar.gettingStarted.line2":
     "মডেল, inc ব্যবহার করতে যেকোনো প্রদানকারীকে সংযুক্ত করুন। Claude, GPT, Gemini ইত্যাদি।",
   "sidebar.project.recentSessions": "সাম্প্রতিক সেশন",
@@ -899,11 +978,13 @@ export const dict: Record<string, string> = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "শেষ 5 সেকেন্ডে 32ms এর বেশি ফ্রেম।",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "শেষ 5 সেকেন্ডে অবরুদ্ধ সময় এবং দীর্ঘ-টাস্ক গণনা। সর্বোচ্চ টাস্ক: {{max}}।",
+  "debugBar.long.tip":
+    "শেষ 5 সেকেন্ডে অবরুদ্ধ সময় এবং দীর্ঘ-টাস্ক গণনা। সর্বোচ্চ টাস্ক: {{max}}।",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "গত 5 সেকেন্ডের মধ্যে সবচেয়ে খারাপ পর্যবেক্ষণ করা ইনপুট বিলম্ব।",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "শেষ 5 সেকেন্ডে আনুমানিক মিথস্ক্রিয়া সময়কাল। এটি INP-এর মতো, অফিসিয়াল ওয়েব ভাইটাল INP নয়।",
+  "debugBar.inp.tip":
+    "শেষ 5 সেকেন্ডে আনুমানিক মিথস্ক্রিয়া সময়কাল। এটি INP-এর মতো, অফিসিয়াল ওয়েব ভাইটাল INP নয়।",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "বর্তমান অ্যাপের জীবনকালের জন্য ক্রমবর্ধমান বিন্যাস স্থানান্তর।",
   "debugBar.mem.label": "MEM",
@@ -914,7 +995,8 @@ export const dict: Record<string, string> = {
   "debugBar.focus.on": "চালু",
   "debugBar.focus.off": "বন্ধ",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "নির্বাচিত ভাষা পরিবর্তন না করে সম্পূর্ণ অ্যাপ লেআউটের দিকনির্দেশ জোর করে",
+  "debugBar.direction.tip":
+    "নির্বাচিত ভাষা পরিবর্তন না করে সম্পূর্ণ অ্যাপ লেআউটের দিকনির্দেশ জোর করে",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode ডেস্কটপ",
@@ -924,7 +1006,8 @@ export const dict: Record<string, string> = {
   "settings.tab.shortcuts": "শর্টকাট",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ইন্টিগ্রেশন",
-  "settings.desktop.wsl.description": "Windows-এ WSL-এর ভিতরে OpenCode সার্ভার চালান।",
+  "settings.desktop.wsl.description":
+    "Windows-এ WSL-এর ভিতরে OpenCode সার্ভার চালান।",
   "settings.general.section.appearance": "চেহারা",
   "settings.general.section.advanced": "উন্নত",
   "settings.general.section.notifications": "সিস্টেম বিজ্ঞপ্তি",
@@ -933,37 +1016,48 @@ export const dict: Record<string, string> = {
   "settings.general.section.feed": "খাওয়ান",
   "settings.general.section.display": "প্রদর্শন",
   "settings.general.row.language.title": "ভাষা",
-  "settings.general.row.language.description": "OpenCode-এর জন্য প্রদর্শনের ভাষা পরিবর্তন করুন",
+  "settings.general.row.language.description":
+    "OpenCode-এর জন্য প্রদর্শনের ভাষা পরিবর্তন করুন",
   "settings.general.row.shell.title": "টার্মিনাল শেল",
-  "settings.general.row.shell.description": "টার্মিনাল এবং এজেন্ট সরঞ্জাম দ্বারা ব্যবহৃত শেল",
+  "settings.general.row.shell.description":
+    "টার্মিনাল এবং এজেন্ট সরঞ্জাম দ্বারা ব্যবহৃত শেল",
   "settings.general.row.shell.autoDefault": "স্বয়ংক্রিয় (ডিফল্ট)",
   "settings.general.row.shell.terminalOnly": "শুধুমাত্র টার্মিনাল",
   "settings.general.row.appearance.title": "চেহারা",
-  "settings.general.row.appearance.description": "আপনার ডিভাইসে OpenCode কেমন দেখায় তা কাস্টমাইজ করুন",
+  "settings.general.row.appearance.description":
+    "আপনার ডিভাইসে OpenCode কেমন দেখায় তা কাস্টমাইজ করুন",
   "settings.general.row.colorScheme.title": "রঙের স্কিম",
-  "settings.general.row.colorScheme.description": "OpenCode সিস্টেম, হালকা বা অন্ধকার থিম অনুসরণ করে কিনা তা বেছে নিন",
+  "settings.general.row.colorScheme.description":
+    "OpenCode সিস্টেম, হালকা বা অন্ধকার থিম অনুসরণ করে কিনা তা বেছে নিন",
   "settings.general.row.theme.title": "থিম",
-  "settings.general.row.theme.description": "কিভাবে OpenCode থিম করা হয় তা কাস্টমাইজ করুন।",
+  "settings.general.row.theme.description":
+    "কিভাবে OpenCode থিম করা হয় তা কাস্টমাইজ করুন।",
   "settings.general.row.font.title": "কোড ফন্ট",
   "settings.general.row.font.description": "কোড ব্লকে ব্যবহৃত ফন্ট কাস্টমাইজ করুন",
   "settings.general.row.terminalFont.title": "টার্মিনাল ফন্ট",
-  "settings.general.row.terminalFont.description": "টার্মিনালে ব্যবহৃত ফন্টটি কাস্টমাইজ করুন",
+  "settings.general.row.terminalFont.description":
+    "টার্মিনালে ব্যবহৃত ফন্টটি কাস্টমাইজ করুন",
   "settings.general.row.uiFont.title": "UI ফন্ট",
   "settings.general.row.uiFont.description": "ইন্টারফেস জুড়ে ব্যবহৃত ফন্ট কাস্টমাইজ করুন",
   "settings.general.row.followup.title": "ফলো-আপ আচরণ",
-  "settings.general.row.followup.description": "ফলো-আপ প্রম্পট অবিলম্বে বাছা বা একটি সারিতে অপেক্ষা করুন চয়ন করুন",
+  "settings.general.row.followup.description":
+    "ফলো-আপ প্রম্পট অবিলম্বে বাছা বা একটি সারিতে অপেক্ষা করুন চয়ন করুন",
   "settings.general.row.followup.option.queue": "সারি",
   "settings.general.row.followup.option.steer": "বাহা",
   "settings.general.row.showFileTree.title": "ফাইল গাছ",
   "settings.general.row.showFileTree.description": "সেশনে ফাইল ট্রি প্যানেল দেখান",
   "settings.general.row.showNavigation.title": "নেভিগেশন নিয়ন্ত্রণ",
-  "settings.general.row.showNavigation.description": "ডেস্কটপ শিরোনাম বারে পিছনে এবং এগিয়ে বোতামগুলি দেখান৷",
+  "settings.general.row.showNavigation.description":
+    "ডেস্কটপ শিরোনাম বারে পিছনে এবং এগিয়ে বোতামগুলি দেখান৷",
   "settings.general.row.showSearch.title": "কমান্ড প্যালেট",
-  "settings.general.row.showSearch.description": "টাইটেল বারে অনুসন্ধান এবং কমান্ড প্যালেট বোতামটি দেখান",
+  "settings.general.row.showSearch.description":
+    "টাইটেল বারে অনুসন্ধান এবং কমান্ড প্যালেট বোতামটি দেখান",
   "settings.general.row.showTerminal.title": "টার্মিনাল",
-  "settings.general.row.showTerminal.description": "ডেস্কটপ শিরোনাম বারে টার্মিনাল বোতামটি দেখান",
+  "settings.general.row.showTerminal.description":
+    "ডেস্কটপ শিরোনাম বারে টার্মিনাল বোতামটি দেখান",
   "settings.general.row.showStatus.title": "সার্ভারের অবস্থা",
-  "settings.general.row.showStatus.description": "টাইটেল বারে সার্ভার স্ট্যাটাস বোতামটি দেখান",
+  "settings.general.row.showStatus.description":
+    "টাইটেল বারে সার্ভার স্ট্যাটাস বোতামটি দেখান",
   "settings.general.row.mobileTitlebarBottom.title": "নীচের নেভিগেশন",
   "settings.general.row.mobileTitlebarBottom.description":
     "মোবাইলে স্ক্রিনের নীচে শিরোনাম বার এবং সেশন ট্যাবগুলি রাখুন৷",
@@ -971,9 +1065,11 @@ export const dict: Record<string, string> = {
   "settings.general.row.showCustomAgents.description":
     "কম্পোজারে এজেন্টদের মধ্যে স্যুইচ করুন। লুকানো হলে, বিল্ড এজেন্টে ডিফল্ট।",
   "settings.general.row.reasoningSummaries.title": "যুক্তির সারাংশ দেখান",
-  "settings.general.row.reasoningSummaries.description": "টাইমলাইনে মডেল যুক্তির সারাংশ প্রদর্শন করুন",
+  "settings.general.row.reasoningSummaries.description":
+    "টাইমলাইনে মডেল যুক্তির সারাংশ প্রদর্শন করুন",
   "settings.general.row.shellToolPartsExpanded.title": "শেল টুল অংশ প্রসারিত",
-  "settings.general.row.shellToolPartsExpanded.description": "টাইমলাইনে ডিফল্টরূপে প্রসারিত শেল টুল অংশগুলি দেখান",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "টাইমলাইনে ডিফল্টরূপে প্রসারিত শেল টুল অংশগুলি দেখান",
   "settings.general.row.editToolPartsExpanded.title": "সম্পাদনা টুল অংশ প্রসারিত করুন",
   "settings.general.row.editToolPartsExpanded.description":
     "টাইমলাইনে ডিফল্টরূপে প্রসারিত সম্পাদনা, লিখুন এবং প্যাচ টুল অংশগুলি দেখান৷",
@@ -981,26 +1077,35 @@ export const dict: Record<string, string> = {
   "settings.general.row.newInterface.badge": "নতুন",
   "settings.general.row.newInterface.description":
     "নতুন ট্যাব এবং হোম লেআউট ব্যবহার করুন. একটি সীমিত সময়ের জন্য লেআউটগুলির মধ্যে স্যুইচ করুন৷",
-  "settings.general.row.newInterfaceNotice.title": "আপনি এখন নতুন লেআউট ব্যবহার করছেন",
-  "settings.general.row.newInterfaceNotice.description": "আগের লেআউট আর উপলব্ধ নেই৷",
+  "settings.general.row.newInterfaceNotice.title":
+    "আপনি এখন নতুন লেআউট ব্যবহার করছেন",
+  "settings.general.row.newInterfaceNotice.description":
+    "আগের লেআউট আর উপলব্ধ নেই৷",
   "settings.general.row.newInterfaceNotice.dismiss": "খারিজ",
   "settings.general.row.pinchZoom.title": "জুম করতে চিমটি করুন",
-  "settings.general.row.pinchZoom.description": "ট্র্যাকপ্যাড পিঞ্চ এবং Ctrl - স্ক্রোল অঙ্গভঙ্গি জুম করার অনুমতি দিন",
+  "settings.general.row.pinchZoom.description":
+    "ট্র্যাকপ্যাড পিঞ্চ এবং Ctrl - স্ক্রোল অঙ্গভঙ্গি জুম করার অনুমতি দিন",
   "settings.general.row.wayland.title": "স্থানীয় Wayland ব্যবহার করুন",
-  "settings.general.row.wayland.description": "Wayland-এ X11 ফলব্যাক অক্ষম করুন। পুনরায় চালু করা প্রয়োজন।",
-  "settings.general.row.wayland.tooltip": "মিশ্র রিফ্রেশ-রেট মনিটর সহ Linux এ, নেটিভ Wayland আরও স্থিতিশীল হতে পারে।",
+  "settings.general.row.wayland.description":
+    "Wayland-এ X11 ফলব্যাক অক্ষম করুন। পুনরায় চালু করা প্রয়োজন।",
+  "settings.general.row.wayland.tooltip":
+    "মিশ্র রিফ্রেশ-রেট মনিটর সহ Linux এ, নেটিভ Wayland আরও স্থিতিশীল হতে পারে।",
   "settings.general.row.releaseNotes.title": "রিলিজ নোট",
-  "settings.general.row.releaseNotes.description": "আপডেটের পর নতুন কি পপআপ দেখান",
+  "settings.general.row.releaseNotes.description":
+    "আপডেটের পর নতুন কি পপআপ দেখান",
   "settings.updates.row.startup.title": "স্টার্টআপে আপডেটের জন্য চেক করুন",
-  "settings.updates.row.startup.description": "OpenCode চালু হলে স্বয়ংক্রিয়ভাবে আপডেটের জন্য চেক করুন",
+  "settings.updates.row.startup.description":
+    "OpenCode চালু হলে স্বয়ংক্রিয়ভাবে আপডেটের জন্য চেক করুন",
   "settings.updates.row.check.title": "আপডেটের জন্য চেক করুন",
-  "settings.updates.row.check.description": "আপডেটের জন্য ম্যানুয়ালি পরীক্ষা করুন এবং উপলব্ধ থাকলে ইনস্টল করুন",
+  "settings.updates.row.check.description":
+    "আপডেটের জন্য ম্যানুয়ালি পরীক্ষা করুন এবং উপলব্ধ থাকলে ইনস্টল করুন",
   "settings.updates.action.checkNow": "এখন পরীক্ষা করুন",
   "settings.updates.action.checking": "পরীক্ষা করা হচ্ছে...",
   "settings.updates.action.downloading": "ডাউনলোড হচ্ছে...",
   "settings.updates.action.installing": "ইনস্টল করা হচ্ছে...",
   "settings.updates.toast.latest.title": "আপনি আপ টু ডেট",
-  "settings.updates.toast.latest.description": "আপনি OpenCode এর সর্বশেষ সংস্করণ চালাচ্ছেন।",
+  "settings.updates.toast.latest.description":
+    "আপনি OpenCode এর সর্বশেষ সংস্করণ চালাচ্ছেন।",
   "sound.option.none": "কোনোটিই নয়",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1051,21 +1156,27 @@ export const dict: Record<string, string> = {
   "settings.general.notifications.agent.description":
     "এজেন্ট সম্পূর্ণ হলে বা মনোযোগের প্রয়োজন হলে সিস্টেম বিজ্ঞপ্তি দেখান",
   "settings.general.notifications.permissions.title": "অনুমতি",
-  "settings.general.notifications.permissions.description": "একটি অনুমতি প্রয়োজন হলে সিস্টেম বিজ্ঞপ্তি দেখান",
+  "settings.general.notifications.permissions.description":
+    "একটি অনুমতি প্রয়োজন হলে সিস্টেম বিজ্ঞপ্তি দেখান",
   "settings.general.notifications.errors.title": "ত্রুটি",
-  "settings.general.notifications.errors.description": "একটি ত্রুটি ঘটলে সিস্টেম বিজ্ঞপ্তি দেখান",
+  "settings.general.notifications.errors.description":
+    "একটি ত্রুটি ঘটলে সিস্টেম বিজ্ঞপ্তি দেখান",
   "settings.general.sounds.agent.title": "এজেন্ট",
-  "settings.general.sounds.agent.description": "এজেন্ট সম্পূর্ণ হলে বা মনোযোগের প্রয়োজন হলে শব্দ বাজান",
+  "settings.general.sounds.agent.description":
+    "এজেন্ট সম্পূর্ণ হলে বা মনোযোগের প্রয়োজন হলে শব্দ বাজান",
   "settings.general.sounds.permissions.title": "অনুমতি",
-  "settings.general.sounds.permissions.description": "অনুমতির প্রয়োজন হলে শব্দ বাজান",
+  "settings.general.sounds.permissions.description":
+    "অনুমতির প্রয়োজন হলে শব্দ বাজান",
   "settings.general.sounds.errors.title": "ত্রুটি",
   "settings.general.sounds.errors.description": "একটি ত্রুটি ঘটলে শব্দ বাজান",
   "settings.shortcuts.title": "কীবোর্ড শর্টকাট",
   "settings.shortcuts.reset.button": "ডিফল্টে রিসেট করুন",
   "settings.shortcuts.reset.toast.title": "শর্টকাট রিসেট",
-  "settings.shortcuts.reset.toast.description": "কীবোর্ড শর্টকাটগুলি ডিফল্টে রিসেট করা হয়েছে৷",
+  "settings.shortcuts.reset.toast.description":
+    "কীবোর্ড শর্টকাটগুলি ডিফল্টে রিসেট করা হয়েছে৷",
   "settings.shortcuts.conflict.title": "শর্টকাট ইতিমধ্যেই ব্যবহার করা হচ্ছে৷",
-  "settings.shortcuts.conflict.description": "{{keybind}} ইতিমধ্যেই {{titles}} এ বরাদ্দ করা হয়েছে৷",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ইতিমধ্যেই {{titles}} এ বরাদ্দ করা হয়েছে৷",
   "settings.shortcuts.unassigned": "আনঅ্যাসাইন করা হয়েছে",
   "settings.shortcuts.pressKeys": "কী টিপুন",
   "settings.shortcuts.search.placeholder": "শর্টকাট অনুসন্ধান করুন",
@@ -1080,9 +1191,11 @@ export const dict: Record<string, string> = {
   "settings.providers.description": "প্রদানকারী সেটিংস এখানে কনফিগারযোগ্য হবে।",
   "settings.providers.section.connected": "সংযুক্ত প্রদানকারী",
   "settings.providers.connected.empty": "কোন সংযুক্ত প্রদানকারী",
-  "settings.providers.connected.environmentDescription": "আপনার পরিবেশ ভেরিয়েবল থেকে সংযুক্ত",
+  "settings.providers.connected.environmentDescription":
+    "আপনার পরিবেশ ভেরিয়েবল থেকে সংযুক্ত",
   "settings.providers.section.popular": "জনপ্রিয় প্রদানকারী",
-  "settings.providers.custom.description": "বেস URL দ্বারা একটি OpenAI-সামঞ্জস্যপূর্ণ প্রদানকারী যোগ করুন।",
+  "settings.providers.custom.description":
+    "বেস URL দ্বারা একটি OpenAI-সামঞ্জস্যপূর্ণ প্রদানকারী যোগ করুন।",
   "settings.providers.tag.environment": "পরিবেশ",
   "settings.providers.tag.config": "কনফিগার",
   "settings.providers.tag.custom": "কাস্টম",
@@ -1096,20 +1209,24 @@ export const dict: Record<string, string> = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP সেটিংস এখানে কনফিগার করা যাবে।",
   "settings.permissions.title": "অনুমতি",
-  "settings.permissions.description": "সার্ভার ডিফল্টরূপে কোন সরঞ্জামগুলি ব্যবহার করতে পারে তা নিয়ন্ত্রণ করুন।",
+  "settings.permissions.description":
+    "সার্ভার ডিফল্টরূপে কোন সরঞ্জামগুলি ব্যবহার করতে পারে তা নিয়ন্ত্রণ করুন।",
   "settings.permissions.section.tools": "টুলস",
-  "settings.permissions.toast.updateFailed.title": "অনুমতি আপডেট করতে ব্যর্থ হয়েছে",
+  "settings.permissions.toast.updateFailed.title":
+    "অনুমতি আপডেট করতে ব্যর্থ হয়েছে",
   "settings.permissions.action.allow": "অনুমতি দিন",
   "settings.permissions.action.ask": "জিজ্ঞাসা করুন",
   "settings.permissions.action.deny": "অস্বীকার করুন",
   "settings.permissions.tool.read.title": "পড়ুন",
   "settings.permissions.tool.read.description": "একটি ফাইল পড়া (ফাইল পাথ মেলে)",
   "settings.permissions.tool.edit.title": "সম্পাদনা করুন",
-  "settings.permissions.tool.edit.description": "সম্পাদনা, লেখা এবং প্যাচ সহ ফাইলগুলি পরিবর্তন করুন",
+  "settings.permissions.tool.edit.description":
+    "সম্পাদনা, লেখা এবং প্যাচ সহ ফাইলগুলি পরিবর্তন করুন",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "গ্লোব প্যাটার্ন ব্যবহার করে ফাইল মেলে",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "রেগুলার এক্সপ্রেশন ব্যবহার করে ফাইলের বিষয়বস্তু অনুসন্ধান করুন",
+  "settings.permissions.tool.grep.description":
+    "রেগুলার এক্সপ্রেশন ব্যবহার করে ফাইলের বিষয়বস্তু অনুসন্ধান করুন",
   "settings.permissions.tool.list.title": "তালিকা",
   "settings.permissions.tool.list.description": "একটি ডিরেক্টরির মধ্যে ফাইল তালিকা",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1127,9 +1244,11 @@ export const dict: Record<string, string> = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "ওয়েব অনুসন্ধান করুন",
   "settings.permissions.tool.external_directory.title": "বাহ্যিক ডিরেক্টরি",
-  "settings.permissions.tool.external_directory.description": "প্রকল্প ডিরেক্টরির বাইরে ফাইল অ্যাক্সেস করুন",
+  "settings.permissions.tool.external_directory.description":
+    "প্রকল্প ডিরেক্টরির বাইরে ফাইল অ্যাক্সেস করুন",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "অভিন্ন ইনপুট সহ বারবার টুল কল সনাক্ত করুন",
+  "settings.permissions.tool.doom_loop.description":
+    "অভিন্ন ইনপুট সহ বারবার টুল কল সনাক্ত করুন",
   "session.delete.failed.title": "সেশন মুছে ফেলতে ব্যর্থ হয়েছে৷",
   "session.delete.title": "সেশন মুছুন",
   "session.delete.confirm": 'সেশন "{{name}}" মুছবেন?',

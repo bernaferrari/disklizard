@@ -43,7 +43,10 @@ const INTERACTIVE_SELECTOR = [
 ].join(", ")
 
 /** Global spatial-navigation shortcuts must never steal keys from controls. */
-export function shouldHandleDiskShortcut(target: EventTarget | null, defaultPrevented: boolean): boolean {
+export function shouldHandleDiskShortcut(
+  target: EventTarget | null,
+  defaultPrevented: boolean
+): boolean {
   if (defaultPrevented) return false
   return !(target instanceof Element && target.closest(INTERACTIVE_SELECTOR))
 }
@@ -58,7 +61,9 @@ export function scanAccessGuidance(os?: DesktopOS): ScanAccessGuidanceKey {
 
 /** Use the operating system's own name for its recoverable deletion destination. */
 export function nativeTrashName(os?: DesktopOS): string {
-  return os === "windows" ? diskLanguageText("disk.common.recycleBin") : diskLanguageText("disk.common.trash")
+  return os === "windows"
+    ? diskLanguageText("disk.common.recycleBin")
+    : diskLanguageText("disk.common.trash")
 }
 
 /** Name the exact system file browser instead of the ambiguous verb "Reveal". */
@@ -73,13 +78,20 @@ export function nativeRevealLabel(os?: DesktopOS): string {
 export function describeStorageNode(
   node: DiskScanNode | null,
   parentSize: number,
-  capabilities: StorageNodeCapabilities = {},
+  capabilities: StorageNodeCapabilities = {}
 ): string {
   if (!node) return ""
-  const share = parentSize > 0 ? diskLanguageText("disk.node.share", { value: formatPct(node.size, parentSize) }) : ""
-  const canPreview = !node.isOther && !node.isHidden && capabilities.canPreview !== false
+  const share =
+    parentSize > 0
+      ? diskLanguageText("disk.node.share", {
+          value: formatPct(node.size, parentSize),
+        })
+      : ""
+  const canPreview =
+    !node.isOther && !node.isHidden && capabilities.canPreview !== false
   const canReview = !node.isOther && capabilities.canReview !== false
-  const inventoryOnly = (node as DiskScanNode & { inventoryOnly?: boolean }).inventoryOnly === true
+  const inventoryOnly =
+    (node as DiskScanNode & { inventoryOnly?: boolean }).inventoryOnly === true
   const action = inventoryOnly
     ? diskLanguageText("disk.node.inventoryAction")
     : node.isOther && !node.isHidden
@@ -108,7 +120,10 @@ export function describeStorageNode(
  * That keeps breadcrumbs correct for POSIX, Windows drive paths, UNC shares,
  * and synthetic roots alike.
  */
-export function buildCrumbs(root: DiskScanNode | null, view: DiskScanNode | null): Crumb[] {
+export function buildCrumbs(
+  root: DiskScanNode | null,
+  view: DiskScanNode | null
+): Crumb[] {
   if (!root || !view) return []
 
   const chain: DiskScanNode[] = []
@@ -123,9 +138,19 @@ export function buildCrumbs(root: DiskScanNode | null, view: DiskScanNode | null
     return false
   }
 
-  if (!visit(root)) return [{ name: root._label || root.name || root.path, path: root.path, node: root }]
+  if (!visit(root))
+    return [
+      {
+        name: root._label || root.name || root.path,
+        path: root.path,
+        node: root,
+      },
+    ]
   return chain.map((node, index) => ({
-    name: index === 0 ? root._label || root.name || root.path : diskNodeDisplayName(node),
+    name:
+      index === 0
+        ? root._label || root.name || root.path
+        : diskNodeDisplayName(node),
     path: node.path,
     node,
   }))

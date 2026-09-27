@@ -1,4 +1,7 @@
-import type { DeveloperArtifact, DeveloperArtifactDirectoryIdentity } from "@/core"
+import type {
+  DeveloperArtifact,
+  DeveloperArtifactDirectoryIdentity,
+} from "@/core"
 import type { DiskScanNode } from "./types"
 
 /**
@@ -9,7 +12,9 @@ import type { DiskScanNode } from "./types"
  */
 export type DeveloperInventoryNode = DiskScanNode & DeveloperArtifact
 
-export function developerInventoryNode(artifact: DeveloperArtifact): DeveloperInventoryNode {
+export function developerInventoryNode(
+  artifact: DeveloperArtifact
+): DeveloperInventoryNode {
   return {
     ...artifact,
     children: [],
@@ -17,7 +22,11 @@ export function developerInventoryNode(artifact: DeveloperArtifact): DeveloperIn
   }
 }
 
-function inventoryPathEquals(a: string, b: string, os?: "macos" | "windows" | "linux") {
+function inventoryPathEquals(
+  a: string,
+  b: string,
+  os?: "macos" | "windows" | "linux"
+) {
   const normalize = (path: string) => {
     const normalized = path.replaceAll("\\", "/").replace(/\/+$/, "") || "/"
     return os === "windows" ? normalized.toLowerCase() : normalized
@@ -28,7 +37,7 @@ function inventoryPathEquals(a: string, b: string, os?: "macos" | "windows" | "l
 function findMaterializedNode(
   root: DiskScanNode,
   targetPath: string,
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): DiskScanNode | undefined {
   if (inventoryPathEquals(root.path, targetPath, os)) return root
   for (const child of root.children) {
@@ -39,13 +48,21 @@ function findMaterializedNode(
 }
 
 /** Keep the inventory-only boundary explicit at every destructive call site. */
-export function isDeveloperInventoryNode(node: DiskScanNode): node is DeveloperInventoryNode {
+export function isDeveloperInventoryNode(
+  node: DiskScanNode
+): node is DeveloperInventoryNode {
   const candidate = node as Partial<DeveloperArtifact>
-  return candidate.inventoryOnly === true && candidate.isDir === true && typeof candidate.kind === "string"
+  return (
+    candidate.inventoryOnly === true &&
+    candidate.isDir === true &&
+    typeof candidate.kind === "string"
+  )
 }
 
 /** Scanner data is already validated at the desktop boundary; this narrows it for the renderer. */
-export function developerArtifactFromInventoryNode(node: DiskScanNode): DeveloperArtifact | undefined {
+export function developerArtifactFromInventoryNode(
+  node: DiskScanNode
+): DeveloperArtifact | undefined {
   return isDeveloperInventoryNode(node) ? node : undefined
 }
 
@@ -59,11 +76,14 @@ export type DeveloperArtifactDeletePrecondition = {
   kind: "developer-artifact"
   /** The IPC contract permits this to be optional, but the renderer fails closed without it. */
   directoryIdentity?: DeveloperArtifactDirectoryIdentity
-  artifact: Pick<DeveloperArtifact, "name" | "kind" | "ecosystem" | "confidence" | "cleanup">
+  artifact: Pick<
+    DeveloperArtifact,
+    "name" | "kind" | "ecosystem" | "confidence" | "cleanup"
+  >
 }
 
 export function developerInventoryDeletePrecondition(
-  node: DiskScanNode,
+  node: DiskScanNode
 ): DeveloperArtifactDeletePrecondition | undefined {
   const artifact = developerArtifactFromInventoryNode(node)
   if (!artifact?.directoryIdentity) return undefined
@@ -83,11 +103,13 @@ export function developerInventoryDeletePrecondition(
 export function developerInventoryCollectionNodeForPath(
   root: DiskScanNode,
   path: string,
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): DiskScanNode | undefined {
   const materialized = findMaterializedNode(root, path, os)
   if (materialized) return materialized
-  const artifact = root.developerArtifactInventory?.items.find((item) => inventoryPathEquals(item.path, path, os))
+  const artifact = root.developerArtifactInventory?.items.find((item) =>
+    inventoryPathEquals(item.path, path, os)
+  )
   if (!artifact) return undefined
   const node = developerInventoryNode(artifact)
   return developerInventoryDeletePrecondition(node) ? node : undefined
@@ -103,7 +125,7 @@ export function developerInventoryCollectionNodeForPath(
 export function developerInventoryNeedsRefresh(
   root: DiskScanNode | null | undefined,
   removed: readonly DiskScanNode[],
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): boolean {
   if (!root?.developerArtifactInventory || !removed.length) return false
   const normalized = (path: string) => {
@@ -112,7 +134,8 @@ export function developerInventoryNeedsRefresh(
   }
   const rootPath = normalized(root.path)
   const contains = (parent: string, child: string) =>
-    parent === child || (parent === "/" ? child.startsWith("/") : child.startsWith(`${parent}/`))
+    parent === child ||
+    (parent === "/" ? child.startsWith("/") : child.startsWith(`${parent}/`))
   return removed.some((node) => {
     const path = normalized(node.path)
     return contains(rootPath, path) || contains(path, rootPath)
@@ -126,7 +149,7 @@ export function developerInventoryNeedsRefresh(
 export function developerInventoryRootsNeedRefresh(
   roots: readonly (DiskScanNode | null | undefined)[],
   removed: readonly DiskScanNode[],
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): boolean {
   return roots.some((root) => developerInventoryNeedsRefresh(root, removed, os))
 }

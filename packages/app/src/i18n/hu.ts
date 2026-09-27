@@ -98,7 +98,9 @@ const desktop = [
 ]
 
 export const dict = {
-  ...Object.fromEntries(DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])),
+  ...Object.fromEntries(
+    DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])
+  ),
   "command.category.suggested": "Javasolt",
   "command.category.view": "Nézet",
   "command.category.project": "Projekt",
@@ -145,7 +147,8 @@ export const dict = {
   "command.tab.close": "Lap bezárása",
   "command.tab.reopenClosed": "Nyissa meg újra a bezárt lapot",
   "command.context.addSelection": "Kijelölés hozzáadása a kontextushoz",
-  "command.context.addSelection.description": "Kijelölt sorok hozzáadása az aktuális fájlból",
+  "command.context.addSelection.description":
+    "Kijelölt sorok hozzáadása az aktuális fájlból",
   "command.input.focus": "Beviteli mező fókuszálása",
   "command.terminal.toggle": "Kapcsolja be a terminált",
   "command.fileTree.toggle": "Fájlfa váltása",
@@ -153,9 +156,11 @@ export const dict = {
   "command.terminal.new": "Új terminál",
   "command.terminal.new.description": "Hozzon létre egy új terminállapot",
   "command.steps.toggle": "Lépések váltása",
-  "command.steps.toggle.description": "Az aktuális üzenet lépéseinek megjelenítése vagy elrejtése",
+  "command.steps.toggle.description":
+    "Az aktuális üzenet lépéseinek megjelenítése vagy elrejtése",
   "command.message.previous": "Előző üzenet",
-  "command.message.previous.description": "Ugrás az előző felhasználói üzenetre",
+  "command.message.previous.description":
+    "Ugrás az előző felhasználói üzenetre",
   "command.message.next": "Következő üzenet",
   "command.message.next.description": "Ugrás a következő felhasználói üzenetre",
   "command.model.choose": "Válasszon modellt",
@@ -167,27 +172,35 @@ export const dict = {
   "command.agent.cycle.reverse": "Váltás az előző ügynökre",
   "command.agent.cycle.reverse.description": "Váltás az előző ügynökre",
   "command.model.variant.cycle": "Ciklikus gondolkodási erőfeszítés",
-  "command.model.variant.cycle.description": "Váltson a következő erőfeszítési szintre",
+  "command.model.variant.cycle.description":
+    "Váltson a következő erőfeszítési szintre",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Utasítás",
   "command.permissions.autoaccept.enable": "Engedélyek automatikus elfogadása",
-  "command.permissions.autoaccept.disable": "Állítsa le az engedélyek automatikus elfogadását",
+  "command.permissions.autoaccept.disable":
+    "Állítsa le az engedélyek automatikus elfogadását",
   "command.workspace.toggle": "Munkaterületek váltása",
-  "command.workspace.toggle.description": "Több munkaterület engedélyezése vagy letiltása az oldalsávon",
+  "command.workspace.toggle.description":
+    "Több munkaterület engedélyezése vagy letiltása az oldalsávon",
   "command.session.undo": "Visszavonás",
   "command.session.undo.description": "Az utolsó üzenet visszavonása",
   "command.session.redo": "Újra",
-  "command.session.redo.description": "Ismételje meg az utolsó visszavont üzenetet",
+  "command.session.redo.description":
+    "Ismételje meg az utolsó visszavont üzenetet",
   "command.session.compact": "Munkamenet tömörítése",
-  "command.session.compact.description": "A kontextus méretének csökkentése érdekében foglalja össze a munkamenetet",
+  "command.session.compact.description":
+    "A kontextus méretének csökkentése érdekében foglalja össze a munkamenetet",
   "command.session.fork": "Elágazás az üzenettől",
-  "command.session.fork.description": "Hozzon létre új munkamenetet egy korábbi üzenetből",
+  "command.session.fork.description":
+    "Hozzon létre új munkamenetet egy korábbi üzenetből",
   "command.session.share": "Munkamenet megosztása",
-  "command.session.share.description": "Ossza meg ezt a munkamenetet, és másolja a URL fájlt a vágólapra",
+  "command.session.share.description":
+    "Ossza meg ezt a munkamenetet, és másolja a URL fájlt a vágólapra",
   "command.session.unshare": "Munkamenet megosztásának megszüntetése",
   "command.session.unshare.description": "Állítsa le a munkamenet megosztását",
   "command.session.export": "Exportálási munkamenet",
-  "command.session.export.description": "Exportálja a teljes munkamenet-átiratot JSON formátumban",
+  "command.session.export.description":
+    "Exportálja a teljes munkamenet-átiratot JSON formátumban",
   "palette.search.placeholder": "Fájlok, parancsok és munkamenetek keresése",
   "palette.search.placeholder.home": "Parancsok és munkamenetek keresése",
   "palette.empty": "Nincs találat",
@@ -199,28 +212,40 @@ export const dict = {
   "dialog.provider.group.other": "Más",
   "dialog.provider.custom.label": "Egyedi OpenAI-kompatibilis szolgáltató",
   "dialog.provider.tag.recommended": "Ajánlott",
-  "dialog.provider.opencode.note": "Összeválogatott modellek, köztük Claude, GPT, Gemini és még sok más",
+  "dialog.provider.opencode.note":
+    "Összeválogatott modellek, köztük Claude, GPT, Gemini és még sok más",
   "dialog.provider.opencode.tagline": "Megbízható optimalizált modellek",
   "dialog.provider.opencodeGo.tagline": "Olcsó előfizetés mindenki számára",
-  "dialog.provider.anthropic.note": "Közvetlen hozzáférés a Claude modellekhez, beleértve a Pro és Max modelleket",
-  "dialog.provider.copilot.note": "AI modellek a kódoláshoz a GitHub Copilot segítségével",
-  "dialog.provider.openai.note": "GPT modellek a gyors, általános AI-feladatokhoz",
-  "dialog.provider.google.note": "Gemini modellek a gyors, strukturált válaszokhoz",
-  "dialog.provider.openrouter.note": "Hozzáférés az összes támogatott modellhez egy szolgáltatótól",
-  "dialog.provider.vercel.note": "Egységes hozzáférés az AI modellekhez intelligens útválasztással",
+  "dialog.provider.anthropic.note":
+    "Közvetlen hozzáférés a Claude modellekhez, beleértve a Pro és Max modelleket",
+  "dialog.provider.copilot.note":
+    "AI modellek a kódoláshoz a GitHub Copilot segítségével",
+  "dialog.provider.openai.note":
+    "GPT modellek a gyors, általános AI-feladatokhoz",
+  "dialog.provider.google.note":
+    "Gemini modellek a gyors, strukturált válaszokhoz",
+  "dialog.provider.openrouter.note":
+    "Hozzáférés az összes támogatott modellhez egy szolgáltatótól",
+  "dialog.provider.vercel.note":
+    "Egységes hozzáférés az AI modellekhez intelligens útválasztással",
   "dialog.model.select.title": "Válasszon modellt",
   "dialog.model.search.placeholder": "Modellek keresése",
   "dialog.model.empty": "Nincsenek modelleredmények",
   "dialog.model.manage": "Modellek kezelése",
-  "dialog.model.manage.description": "Testreszabhatja, hogy mely modellek jelenjenek meg a modellválasztóban.",
-  "dialog.model.manage.provider.toggle": "Kapcsolja be az összes {{provider}} modellt",
+  "dialog.model.manage.description":
+    "Testreszabhatja, hogy mely modellek jelenjenek meg a modellválasztóban.",
+  "dialog.model.manage.provider.toggle":
+    "Kapcsolja be az összes {{provider}} modellt",
   "dialog.model.unpaid.freeModels.title": "A OpenCode ingyenes modelljei",
-  "dialog.model.unpaid.addMore.title": "Adjon hozzá további modelleket a népszerű szolgáltatóktól",
-  "dialog.model.unpaid.viewMoreProviders": "További 70+ szolgáltató megtekintése",
+  "dialog.model.unpaid.addMore.title":
+    "Adjon hozzá további modelleket a népszerű szolgáltatóktól",
+  "dialog.model.unpaid.viewMoreProviders":
+    "További 70+ szolgáltató megtekintése",
   "dialog.provider.viewAll": "További szolgáltatók megjelenítése",
   "provider.connect.title": "Csatlakoztassa a {{provider}}-t",
   "provider.connect.title.anthropicProMax": "Jelentkezzen be a Claude Pro/Max",
-  "provider.connect.selectMethod": "Válassza ki a {{provider}} bejelentkezési módját.",
+  "provider.connect.selectMethod":
+    "Válassza ki a {{provider}} bejelentkezési módját.",
   "provider.connect.method.apiKey": "API kulcs",
   "provider.connect.method.browser": "Böngésző",
   "provider.connect.method.headless": "Fejetlen",
@@ -253,15 +278,19 @@ export const dict = {
     "és írja be az alábbi kódot fiókja összekapcsolásához, és használja a {{provider}} modelleket a OpenCode-ben.",
   "provider.connect.oauth.auto.confirmationCode": "Megerősítő kód",
   "provider.connect.toast.connected.title": "{{provider}} csatlakoztatva",
-  "provider.connect.toast.connected.description": "A {{provider}} modellek már használhatók.",
+  "provider.connect.toast.connected.description":
+    "A {{provider}} modellek már használhatók.",
   "provider.custom.title": "Egyedi szolgáltató",
-  "provider.custom.unavailable": "Egyéni szolgáltatók nem érhetők el ezen a szerveren",
-  "provider.custom.description.prefix": "Konfiguráljon egy OpenAI-kompatibilis szolgáltatót. Lásd a",
+  "provider.custom.unavailable":
+    "Egyéni szolgáltatók nem érhetők el ezen a szerveren",
+  "provider.custom.description.prefix":
+    "Konfiguráljon egy OpenAI-kompatibilis szolgáltatót. Lásd a",
   "provider.custom.description.link": "szolgáltató konfigurációs dokumentumai",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Szolgáltató azonosítója",
   "provider.custom.field.providerID.placeholder": "a szolgáltatóm",
-  "provider.custom.field.providerID.description": "Kisbetűk, számok, kötőjelek vagy aláhúzásjelek",
+  "provider.custom.field.providerID.description":
+    "Kisbetűk, számok, kötőjelek vagy aláhúzásjelek",
   "provider.custom.field.name.label": "Megjelenítési név",
   "provider.custom.field.name.placeholder": "AI szolgáltatóm",
   "provider.custom.field.baseURL.label": "Alap URL",
@@ -284,16 +313,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "érték",
   "provider.custom.headers.remove": "Fejléc eltávolítása",
   "provider.custom.headers.add": "Fejléc hozzáadása",
-  "provider.custom.error.providerID.required": "Szolgáltatói azonosító szükséges",
-  "provider.custom.error.providerID.format": "Használjon kisbetűket, számokat, kötőjeleket vagy aláhúzásjeleket",
-  "provider.custom.error.providerID.exists": "Ez a szolgáltatói azonosító már létezik",
+  "provider.custom.error.providerID.required":
+    "Szolgáltatói azonosító szükséges",
+  "provider.custom.error.providerID.format":
+    "Használjon kisbetűket, számokat, kötőjeleket vagy aláhúzásjeleket",
+  "provider.custom.error.providerID.exists":
+    "Ez a szolgáltatói azonosító már létezik",
   "provider.custom.error.name.required": "A megjelenített név kötelező",
   "provider.custom.error.baseURL.required": "Alap URL szükséges",
-  "provider.custom.error.baseURL.format": "http:// vagy https:// karakterekkel kell kezdődnie",
+  "provider.custom.error.baseURL.format":
+    "http:// vagy https:// karakterekkel kell kezdődnie",
   "provider.custom.error.required": "Kívánt",
   "provider.custom.error.duplicate": "Másolat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} leválasztva",
-  "provider.disconnect.toast.disconnected.description": "A {{provider}} modellek már nem kaphatók.",
+  "provider.disconnect.toast.disconnected.description":
+    "A {{provider}} modellek már nem kaphatók.",
   "model.tag.free": "Ingyenes",
   "model.tag.latest": "Legújabb",
   "model.provider.anthropic": "Anthropic",
@@ -346,8 +380,10 @@ export const dict = {
   "prompt.example.3": "Javítsa ki a hibás teszteket",
   "prompt.example.4": "Ismertesse a hitelesítés működését",
   "prompt.example.5": "Keresse meg és javítsa ki a biztonsági réseket",
-  "prompt.example.6": "Adjon hozzá egységteszteket a felhasználói szolgáltatáshoz",
-  "prompt.example.7": "Refaktorálja ezt a függvényt, hogy jobban olvasható legyen",
+  "prompt.example.6":
+    "Adjon hozzá egységteszteket a felhasználói szolgáltatáshoz",
+  "prompt.example.7":
+    "Refaktorálja ezt a függvényt, hogy jobban olvasható legyen",
   "prompt.example.8": "Mit jelent ez a hiba?",
   "prompt.example.9": "Segítsen a probléma hibakeresésében",
   "prompt.example.10": "API dokumentáció létrehozása",
@@ -368,14 +404,16 @@ export const dict = {
   "prompt.example.25": "Hogyan működnek itt a környezeti változók?",
   "prompt.popover.emptyResults": "Nincsenek megfelelő eredmények",
   "prompt.popover.emptyCommands": "Nincsenek megfelelő parancsok",
-  "prompt.dropzone.label": "Húzza ide a képeket, PDF-eket vagy szöveges fájlokat",
+  "prompt.dropzone.label":
+    "Húzza ide a képeket, PDF-eket vagy szöveges fájlokat",
   "prompt.dropzone.file.label": "Vidd a @említési fájlba",
   "prompt.slash.badge.custom": "szokás",
   "prompt.slash.badge.skill": "készség",
   "prompt.slash.badge.mcp": "mcp",
   "prompt.context.active": "aktív",
   "prompt.context.includeActiveFile": "Aktív fájl hozzáadása",
-  "prompt.context.removeActiveFile": "Távolítsa el az aktív fájlt a kontextusból",
+  "prompt.context.removeActiveFile":
+    "Távolítsa el az aktív fájlt a kontextusból",
   "prompt.context.removeFile": "Távolítsa el a fájlt a kontextusból",
   "prompt.action.attachFile": "Fájlok hozzáadása",
   "prompt.menu.addImagesAndFiles": "Fájlok hozzáadása és egyebek",
@@ -387,21 +425,29 @@ export const dict = {
   "prompt.action.send": "Elküld",
   "prompt.action.stop": "Leállítás",
   "prompt.toast.pasteUnsupported.title": "Nem támogatott melléklet",
-  "prompt.toast.pasteUnsupported.description": "Ide csak képeket, PDF-eket vagy szöveges fájlokat lehet csatolni.",
+  "prompt.toast.pasteUnsupported.description":
+    "Ide csak képeket, PDF-eket vagy szöveges fájlokat lehet csatolni.",
   "prompt.toast.attachmentDuplicate.title": "Ezt a fájlt már feltöltötték",
   "prompt.toast.modelAgentRequired.title": "Válasszon egy ügynököt és modellt",
-  "prompt.toast.modelAgentRequired.description": "A felszólítás elküldése előtt válasszon ügynököt és modellt.",
-  "prompt.toast.worktreeCreateFailed.title": "Nem sikerült létrehozni a munkafát",
-  "prompt.toast.sessionCreateFailed.title": "Nem sikerült létrehozni a munkamenetet",
-  "prompt.toast.shellSendFailed.title": "Nem sikerült elküldeni a shell parancsot",
+  "prompt.toast.modelAgentRequired.description":
+    "A felszólítás elküldése előtt válasszon ügynököt és modellt.",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Nem sikerült létrehozni a munkafát",
+  "prompt.toast.sessionCreateFailed.title":
+    "Nem sikerült létrehozni a munkamenetet",
+  "prompt.toast.shellSendFailed.title":
+    "Nem sikerült elküldeni a shell parancsot",
   "prompt.toast.commandSendFailed.title": "Nem sikerült elküldeni a parancsot",
-  "prompt.toast.promptSendFailed.title": "Nem sikerült elküldeni a felszólítást",
-  "prompt.toast.promptSendFailed.description": "Nem sikerült lekérni a munkamenetet",
+  "prompt.toast.promptSendFailed.title":
+    "Nem sikerült elküldeni a felszólítást",
+  "prompt.toast.promptSendFailed.description":
+    "Nem sikerült lekérni a munkamenetet",
   "dialog.mcp.title": "MCPs",
   "dialog.mcp.description": "{{enabled}}/{{total}} engedélyezve",
   "dialog.mcp.empty": "Nincs konfigurálva MCP",
   "dialog.lsp.empty": "A LSP automatikusan felismerhető a fájltípusokból",
-  "dialog.plugins.empty": "Az opencode.json fájlban konfigurált beépülő modulok",
+  "dialog.plugins.empty":
+    "Az opencode.json fájlban konfigurált beépülő modulok",
   "mcp.status.connected": "csatlakoztatva",
   "mcp.status.failed": "sikertelen",
   "mcp.status.needs_auth": "hitelesítést igényel",
@@ -419,7 +465,8 @@ export const dict = {
   "app.server.retrying": "Automatikus újrapróbálkozás...",
   "app.server.otherServers": "Egyéb szerverek",
   "dialog.server.title": "Szerverek",
-  "dialog.server.description": "Állítsa be, hogy ez az alkalmazás melyik OpenCode szerverhez csatlakozzon.",
+  "dialog.server.description":
+    "Állítsa be, hogy ez az alkalmazás melyik OpenCode szerverhez csatlakozzon.",
   "dialog.server.search.placeholder": "Szerverek keresése",
   "dialog.server.empty": "Még nincsenek szerverek",
   "dialog.server.add.title": "Szerver hozzáadása",
@@ -439,7 +486,8 @@ export const dict = {
   "dialog.server.default.description":
     "Helyi szerver indítása helyett csatlakozzon ehhez a szerverhez az alkalmazás indításakor. Újraindítást igényel.",
   "dialog.server.default.none": "Nincs kiválasztva szerver",
-  "dialog.server.default.set": "Az aktuális szerver beállítása alapértelmezettként",
+  "dialog.server.default.set":
+    "Az aktuális szerver beállítása alapértelmezettként",
   "dialog.server.default.clear": "Törlés",
   "dialog.server.action.remove": "Szerver eltávolítása",
   "dialog.server.menu.edit": "Szerkesztés",
@@ -457,7 +505,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Válasszon disztrót",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL ellenőrzése...",
-  "wsl.onboarding.restartRequired": "A Windows készüléket újra kell indítani a WSL telepítésének befejezéséhez.",
+  "wsl.onboarding.restartRequired":
+    "A Windows készüléket újra kell indítani a WSL telepítésének befejezéséhez.",
   "wsl.onboarding.ready": "A WSL készen áll.",
   "wsl.onboarding.required": "A folytatáshoz WSL szükséges.",
   "wsl.onboarding.checkingDistros": "A disztribúciók ellenőrzése...",
@@ -466,13 +515,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "A disztribúciók listázása...",
   "wsl.onboarding.distroReady": "A {{distro}} készen áll.",
   "wsl.onboarding.distroNotInstalled": "A {{distro}} még nincs telepítve.",
-  "wsl.onboarding.openDistroOnce": "Nyissa meg egyszer a {{distro}}-t a beállítás befejezéséhez.",
+  "wsl.onboarding.openDistroOnce":
+    "Nyissa meg egyszer a {{distro}}-t a beállítás befejezéséhez.",
   "wsl.onboarding.finishingDistro": "A {{distro}} befejező beállítása.",
-  "wsl.onboarding.pickDistro": "Válasszon disztrót vagy telepítsen egyet alább.",
+  "wsl.onboarding.pickDistro":
+    "Válasszon disztrót vagy telepítsen egyet alább.",
   "wsl.onboarding.checkingOpencode": "OpenCode ellenőrzése...",
-  "wsl.onboarding.checkingOpencodeIn": "OpenCode ellenőrzése a {{distro}}-ben...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "OpenCode ellenőrzése a {{distro}}-ben...",
   "wsl.onboarding.updatingOpencode": "OpenCode frissítése...",
-  "wsl.onboarding.updatingOpencodeIn": "OpenCode frissítése a {{distro}}-ben...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "OpenCode frissítése a {{distro}}-ben...",
   "wsl.onboarding.updateOpencodeIn": "Frissítse a OpenCode-t a {{distro}}-ben.",
   "wsl.onboarding.updateOpencode": "Frissítse a OpenCode-t",
   "wsl.onboarding.opencodeReadyIn": "A OpenCode készen áll a {{distro}}-ben.",
@@ -488,20 +541,24 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Ellenőrzés...",
   "wsl.onboarding.distroStatus.opencodeMissing": "A OpenCode nincs telepítve",
   "wsl.onboarding.distroStatus.missingTools": "Hiányzik a bash, curl",
-  "wsl.onboarding.distroStatus.unsupported": "Nem támogatott · Használja a WSL 2-t",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Nem támogatott · Használja a WSL 2-t",
   "wsl.onboarding.needAnotherDistro": "Kell még egy disztró?",
-  "wsl.onboarding.needAnotherDistroHint": "Telepítsen egy Linux disztribúciót a WSL katalógusból",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Telepítsen egy Linux disztribúciót a WSL katalógusból",
   "wsl.onboarding.wslNotInstalled.title": "A WSL nincs telepítve",
   "wsl.onboarding.wslNotInstalled.description":
     "A WSL (Windows alrendszer a Linux számára) szükséges ahhoz, hogy a OpenCode hozzáadhasson egy WSL szervert",
   "wsl.onboarding.wslUnavailable.title": "A WSL nem elérhető",
-  "wsl.onboarding.wslUnavailable.description": "A OpenCode nem tudta ellenőrizni a WSL jelet ezen a gépen.",
+  "wsl.onboarding.wslUnavailable.description":
+    "A OpenCode nem tudta ellenőrizni a WSL jelet ezen a gépen.",
   "wsl.onboarding.installWsl": "Telepítse a WSL-t",
   "wsl.onboarding.windowsRestartRequired":
     "Indítsa újra a Windows programot a WSL telepítésének befejezéséhez, majd nyissa meg újra a OpenCode programot.",
   "wsl.onboarding.next": "Következő",
   "wsl.onboarding.refresh": "Frissítés",
-  "wsl.onboarding.allDistrosAdded": "Az összes telepített disztribúció már hozzáadva van.",
+  "wsl.onboarding.allDistrosAdded":
+    "Az összes telepített disztribúció már hozzáadva van.",
   "wsl.onboarding.noDistros": "Még nem észleltek disztribúciót.",
   "wsl.onboarding.install": "Telepítés",
   "wsl.onboarding.installing": "Telepítés...",
@@ -515,12 +572,15 @@ export const dict = {
   "wsl.onboarding.version": "Kivitel: {{version}}",
   "wsl.onboarding.unknown": "ismeretlen",
   "wsl.onboarding.desktopVersion": "asztali {{version}}",
-  "wsl.onboarding.versionMismatch": "A telepített verzió nem egyezik az asztali alkalmazás verziójával.",
+  "wsl.onboarding.versionMismatch":
+    "A telepített verzió nem egyezik az asztali alkalmazás verziójával.",
   "wsl.onboarding.adding": "Hozzáadás...",
-  "help.tabs.toast.ariaLabel": "Bemutatjuk a Tab-ket. A lapokkal megszervezheti munkáját és aktív munkameneteit",
+  "help.tabs.toast.ariaLabel":
+    "Bemutatjuk a Tab-ket. A lapokkal megszervezheti munkáját és aktív munkameneteit",
   "help.tabs.toast.dismiss": "Tabs információ elvetése",
   "help.tabs.title": "Bemutatjuk a Tab-ket",
-  "help.tabs.description": "A lapokkal megszervezheti munkáját és aktív munkameneteit",
+  "help.tabs.description":
+    "A lapokkal megszervezheti munkáját és aktív munkameneteit",
   "help.tabs.date": "július 14",
   "help.tabs.introduction": "A OpenCode Desktop mostantól lapokra épül.",
   "help.tabs.sessions":
@@ -529,7 +589,8 @@ export const dict = {
     "Néhány lap nyitva tartása megkönnyíti az aktív munkamenetek megszervezését. Nevezze át a lapokat valami emlékezetesre, ha azt tervezi, hogy megtartja őket.",
   "help.tabs.home":
     "Minden munkamenetét és projektjét megtalálja az új Home képernyőn. Ha kiválaszt egy munkamenetet, az egy lapon nyílik meg.",
-  "help.tabs.persistence": "Amikor újra megnyitja az alkalmazást, a lapok továbbra is nyitva maradnak.",
+  "help.tabs.persistence":
+    "Amikor újra megnyitja az alkalmazást, a lapok továbbra is nyitva maradnak.",
   "help.tabs.worktrees":
     "Az új kialakítás még nem támogatja a Git Worktrees-t, hamarosan megjelenik. Ha tehát szeretné folytatni az előző elrendezést, a Beállításokban válthat az elrendezések között. Ne feledje, hogy az új elrendezés néhány héten belül állandóvá válik.",
   "server.row.noUsername": "nincs felhasználónév",
@@ -542,8 +603,10 @@ export const dict = {
   "dialog.project.edit.color": "Szín",
   "dialog.project.edit.color.select": "Válassza ki a {{color}} színt",
   "dialog.project.edit.worktree.startup": "Munkaterület indító szkriptje",
-  "dialog.project.edit.worktree.startup.description": "Új munkaterület (munkafa) létrehozása után fut.",
-  "dialog.project.edit.worktree.startup.placeholder": "például zsemle telepítés",
+  "dialog.project.edit.worktree.startup.description":
+    "Új munkaterület (munkafa) létrehozása után fut.",
+  "dialog.project.edit.worktree.startup.placeholder":
+    "például zsemle telepítés",
   "dialog.releaseNotes.action.getStarted": "Kezdje el",
   "dialog.releaseNotes.action.next": "Következő",
   "dialog.releaseNotes.action.hideFuture": "Ne mutasd ezeket a jövőben",
@@ -603,48 +666,70 @@ export const dict = {
   "toast.theme.title": "Téma váltva",
   "toast.scheme.title": "Színséma",
   "toast.workspace.enabled.title": "Munkaterületek engedélyezve",
-  "toast.workspace.enabled.description": "Most több munkafa is megjelenik az oldalsávban",
+  "toast.workspace.enabled.description":
+    "Most több munkafa is megjelenik az oldalsávban",
   "toast.workspace.disabled.title": "Munkaterületek letiltva",
-  "toast.workspace.disabled.description": "Csak a fő munkafa jelenik meg az oldalsávban",
+  "toast.workspace.disabled.description":
+    "Csak a fő munkafa jelenik meg az oldalsávban",
   "toast.permissions.autoaccept.on.title": "Engedélyek automatikus elfogadása",
-  "toast.permissions.autoaccept.on.description": "Az engedélykérések automatikusan jóváhagyásra kerülnek",
-  "toast.permissions.autoaccept.off.title": "Az engedélyek automatikus elfogadása leállítva",
-  "toast.permissions.autoaccept.off.description": "Az engedélykérésekhez jóváhagyás szükséges",
+  "toast.permissions.autoaccept.on.description":
+    "Az engedélykérések automatikusan jóváhagyásra kerülnek",
+  "toast.permissions.autoaccept.off.title":
+    "Az engedélyek automatikus elfogadása leállítva",
+  "toast.permissions.autoaccept.off.description":
+    "Az engedélykérésekhez jóváhagyás szükséges",
   "toast.model.none.title": "Nincs kiválasztott modell",
-  "toast.model.none.description": "Csatlakozzon egy szolgáltatóhoz a munkamenet összefoglalásához",
+  "toast.model.none.description":
+    "Csatlakozzon egy szolgáltatóhoz a munkamenet összefoglalásához",
   "toast.file.loadFailed.title": "Nem sikerült betölteni a fájlt",
   "toast.file.listFailed.title": "Nem sikerült listázni a fájlokat",
   "toast.context.noLineSelection.title": "Nincs vonalválasztás",
-  "toast.context.noLineSelection.description": "Először válasszon ki egy sortartományt egy fájl lapon.",
-  "toast.session.share.copyFailed.title": "Nem sikerült a URL vágólapra másolása",
+  "toast.context.noLineSelection.description":
+    "Először válasszon ki egy sortartományt egy fájl lapon.",
+  "toast.session.share.copyFailed.title":
+    "Nem sikerült a URL vágólapra másolása",
   "toast.session.share.success.title": "Munkamenet megosztva",
   "toast.session.share.success.description": "Megosztás URL vágólapra másolva!",
   "toast.session.share.failed.title": "Nem sikerült megosztani a munkamenetet",
-  "toast.session.share.failed.description": "Hiba történt a munkamenet megosztása közben",
+  "toast.session.share.failed.description":
+    "Hiba történt a munkamenet megosztása közben",
   "toast.session.unshare.success.title": "Munkamenet megosztása visszavonva",
-  "toast.session.unshare.success.description": "A munkamenet megosztása sikeresen visszavonva!",
-  "toast.session.unshare.failed.title": "Nem sikerült megszüntetni a munkamenet megosztását",
-  "toast.session.unshare.failed.description": "Hiba történt a munkamenet megosztásának megszüntetése közben",
+  "toast.session.unshare.success.description":
+    "A munkamenet megosztása sikeresen visszavonva!",
+  "toast.session.unshare.failed.title":
+    "Nem sikerült megszüntetni a munkamenet megosztását",
+  "toast.session.unshare.failed.description":
+    "Hiba történt a munkamenet megosztásának megszüntetése közben",
   "toast.session.export.success.title": "Munkamenet exportálva",
-  "toast.session.export.success.description": "A munkamenet elmentve ide: {{filename}}",
+  "toast.session.export.success.description":
+    "A munkamenet elmentve ide: {{filename}}",
   "toast.session.export.failed.title": "Nem sikerült exportálni a munkamenetet",
-  "toast.session.export.failed.description": "Hiba történt a munkamenet exportálása közben",
-  "toast.session.listFailed.title": "Nem sikerült betölteni a {{project}} munkameneteit",
+  "toast.session.export.failed.description":
+    "Hiba történt a munkamenet exportálása közben",
+  "toast.session.listFailed.title":
+    "Nem sikerült betölteni a {{project}} munkameneteit",
   "toast.project.reloadFailed.title": "A {{project}} újratöltése nem sikerült",
   "toast.update.title": "Frissítés elérhető",
-  "toast.update.description": "A OpenCode ({{version}}) új verziója már telepíthető.",
+  "toast.update.description":
+    "A OpenCode ({{version}}) új verziója már telepíthető.",
   "toast.update.action.installRestart": "Telepítse és indítsa újra",
-  "disk.accessGuidance.macos": "A Rendszerbeállításokban adjon Full Disk Access hozzáférést a DiskLizardnak, majd indítsa újra a vizsgálatot.",
-  "disk.accessGuidance.windows": "Olyan fiókot használjon, amely hozzáfér ehhez a meghajtóhoz, vagy olyan mappát vizsgáljon, amelyet a fiókja tud olvasni.",
-  "disk.accessGuidance.linux": "Ellenőrizze a mappa- és csatolási jogosultságokat, majd indítsa újra a vizsgálatot.",
-  "disk.accessGuidance.default": "Ellenőrizze ezekhez a mappákhoz való hozzáférést, majd indítsa újra a vizsgálatot.",
-  "disk.accessGuidance.rescan": "A hozzáférés módosítása után használja az Újravizsgálat lehetőséget a felső sávon.",
+  "disk.accessGuidance.macos":
+    "A Rendszerbeállításokban adjon Full Disk Access hozzáférést a DiskLizardnak, majd indítsa újra a vizsgálatot.",
+  "disk.accessGuidance.windows":
+    "Olyan fiókot használjon, amely hozzáfér ehhez a meghajtóhoz, vagy olyan mappát vizsgáljon, amelyet a fiókja tud olvasni.",
+  "disk.accessGuidance.linux":
+    "Ellenőrizze a mappa- és csatolási jogosultságokat, majd indítsa újra a vizsgálatot.",
+  "disk.accessGuidance.default":
+    "Ellenőrizze ezekhez a mappákhoz való hozzáférést, majd indítsa újra a vizsgálatot.",
+  "disk.accessGuidance.rescan":
+    "A hozzáférés módosítása után használja az Újravizsgálat lehetőséget a felső sávon.",
   "toast.update.action.notYet": "Még nem",
   "toast.update.installFailed.title": "A frissítés telepítése nem sikerült",
   "toast.update.installFailed.retry": "Újrapróbálás",
   "error.page.title": "Valami elromlott",
   "error.page.description": "Hiba történt az alkalmazás betöltése közben.",
-  "error.page.description.localServerStartup": "Hiba történt a helyi szerver indításakor.",
+  "error.page.description.localServerStartup":
+    "Hiba történt a helyi szerver indításakor.",
   "error.page.details.label": "Hiba részletei",
   "error.page.action.restart": "Indítsa újra",
   "error.page.action.report": "Jelentés hiba",
@@ -654,17 +739,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Ellenőrizze a frissítéseket",
   "error.page.action.updateTo": "Frissítés a {{version}}-re",
   "error.page.circular": "[Kör alakú]",
-  "error.page.report.prefix": "Kérjük, jelentse ezt a hibát a OpenCode csapatának",
+  "error.page.report.prefix":
+    "Kérjük, jelentse ezt a hibát a OpenCode csapatának",
   "error.page.report.discord": "a Discord-n",
   "error.page.version": "Kivitel: {{version}}",
   "error.dev.rootNotFound":
     "A gyökérelem nem található. Elfelejtette hozzáadni az index.html-hez? Vagy lehet, hogy az id attribútumot rosszul írták?",
-  "error.serverSync.connectFailed": "Nem sikerült csatlakozni a szerverhez. A `{{url}}`-n fut szerver?",
+  "error.serverSync.connectFailed":
+    "Nem sikerült csatlakozni a szerverhez. A `{{url}}`-n fut szerver?",
   "error.serverSDK.noServerAvailable": "Nincs elérhető szerver",
   "error.serverSDK.serverNotAvailable": "A szerver nem elérhető",
-  "error.childStore.persistedCacheCreateFailed": "Nem sikerült létrehozni a tartós gyorsítótárat",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Nem sikerült létrehozni a megmaradt projekt metaadatait",
-  "error.childStore.persistedProjectIconCreateFailed": "Nem sikerült létrehozni a megmaradt projekt ikont",
+  "error.childStore.persistedCacheCreateFailed":
+    "Nem sikerült létrehozni a tartós gyorsítótárat",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Nem sikerült létrehozni a megmaradt projekt metaadatait",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Nem sikerült létrehozni a megmaradt projekt ikont",
   "error.childStore.storeCreateFailed": "Nem sikerült létrehozni az üzletet",
   "directory.error.invalidUrl": "Érvénytelen könyvtár a URL-ben.",
   "error.chain.unknown": "Ismeretlen hiba",
@@ -676,23 +766,31 @@ export const dict = {
   "error.chain.responseBody": "Válasz törzse:\n{{body}}",
   "error.chain.didYouMean": "Erre gondolt: {{suggestions}}?",
   "error.chain.modelNotFound": "A modell nem található: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Ellenőrizze a konfigurációs (opencode.json) szolgáltató/modell nevét",
+  "error.chain.checkConfig":
+    "Ellenőrizze a konfigurációs (opencode.json) szolgáltató/modell nevét",
   "error.chain.mcpFailed":
     'A "{{name}}" MCP szerver meghibásodott. Megjegyzés: a OpenCode még nem támogatja a MCP hitelesítést.',
-  "error.chain.providerAuthFailed": "A szolgáltató hitelesítése nem sikerült ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "A szolgáltató hitelesítése nem sikerült ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "Nem sikerült inicializálni a „{{provider}}” szolgáltatót. Ellenőrizze a hitelesítő adatokat és a konfigurációt.",
-  "error.chain.configJsonInvalid": "A {{path}} konfigurációs fájlja nem érvényes JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "A {{path}} konfigurációs fájlja nem érvényes JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "A {{path}} konfigurációs fájlja nem érvényes JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "A {{path}} konfigurációs fájlja nem érvényes JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'A "{{dir}}" könyvtár a {{path}}-ben nem érvényes. Nevezze át a könyvtárat "{{suggestion}}" névre, vagy távolítsa el. Ez egy gyakori elírás.',
-  "error.chain.configFrontmatterError": "A frontanyag elemzése nem sikerült a {{path}}-ben:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "A frontanyag elemzése nem sikerült a {{path}}-ben:\n{{message}}",
   "error.chain.configInvalid": "A {{path}} konfigurációs fájl érvénytelen",
-  "error.chain.configInvalidWithMessage": "A {{path}} konfigurációs fájlja érvénytelen: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "A {{path}} konfigurációs fájlja érvénytelen: {{message}}",
   "notification.permission.title": "Engedély szükséges",
-  "notification.permission.description": "A {{sessionTitle}} {{projectName}}-ben engedélyre van szüksége",
+  "notification.permission.description":
+    "A {{sessionTitle}} {{projectName}}-ben engedélyre van szüksége",
   "notification.question.title": "Kérdés",
-  "notification.question.description": "A {{sessionTitle}} {{projectName}}-ben van egy kérdése",
+  "notification.question.description":
+    "A {{sessionTitle}} {{projectName}}-ben van egy kérdése",
   "notification.action.goToSession": "Ugrás a munkamenetre",
   "notification.session.responseReady.title": "Válasz kész",
   "notification.session.error.title": "Munkamenet hiba",
@@ -707,11 +805,14 @@ export const dict = {
   "home.server.collapse": "Szerverprojektek összecsukása",
   "home.server.expand": "Bővítse ki a szerverprojekteket",
   "home.sessions.search.placeholder": "Munkamenetek keresése",
-  "home.sessions.search.placeholder.scoped": "Keresés a munkamenetekben a {{scope}} nyelven",
+  "home.sessions.search.placeholder.scoped":
+    "Keresés a munkamenetekben a {{scope}} nyelven",
   "home.sessions.search.sessions": "Munkamenetek",
-  "home.sessions.search.noResults": "Nem található munkamenet a {{query}} számára",
+  "home.sessions.search.noResults":
+    "Nem található munkamenet a {{query}} számára",
   "home.sessions.empty": "Itt még semmi",
-  "home.sessions.empty.description": "A kezdéshez hozzon létre egy munkamenetet",
+  "home.sessions.empty.description":
+    "A kezdéshez hozzon létre egy munkamenetet",
   "home.sessions.group.today": "Ma",
   "home.sessions.group.yesterday": "Tegnap",
   "home.sessions.group.older": "Régebbi",
@@ -723,7 +824,8 @@ export const dict = {
   "session.tab.unknown": "Ismeretlen munkamenet",
   "session.panel.reviewAndFiles": "Áttekintés és fájlok",
   "session.error.notFound": "Ez a munkamenet nem található",
-  "session.error.notFound.description": "Ez a lap olyan munkamenetre mutat, amely már nem létezik ezen a kiszolgálón.",
+  "session.error.notFound.description":
+    "Ez a lap olyan munkamenetre mutat, amely már nem létezik ezen a kiszolgálón.",
   "session.error.notFound.closeTab": "Zárja be a Tab-t",
   "session.error.serverConnection": "Nem lehet csatlakozni ehhez a szerverhez",
   "session.review.filesChanged": "A fájlok megváltoztak {{count}}",
@@ -731,7 +833,8 @@ export const dict = {
   "session.review.change.other": "Változások",
   "session.review.loadingChanges": "Módosítások betöltése...",
   "session.review.empty": "Ebben a munkamenetben még nincs változás",
-  "session.review.noVcs": "Nem észlelt Git verzióvezérlő rendszert, a változások nem jelennek meg",
+  "session.review.noVcs":
+    "Nem észlelt Git verzióvezérlő rendszert, a változások nem jelennek meg",
   "session.review.noVcs.createGit.title": "Hozzon létre egy Git tárolót",
   "session.review.noVcs.createGit.description":
     "Kövesse nyomon, tekintse át és vonja vissza a változtatásokat ebben a projektben",
@@ -740,12 +843,14 @@ export const dict = {
   "session.review.noSnapshot":
     "A pillanatkép-követés le van tiltva a konfigurációban, így a munkamenet-módosítások nem érhetők el",
   "session.review.noChanges": "Nincs változás",
-  "session.review.noUncommittedChanges": "Még nincsenek végrehajtatlan változtatások",
+  "session.review.noUncommittedChanges":
+    "Még nincsenek végrehajtatlan változtatások",
   "session.review.noBranchChanges": "A fióktelep még nem változott",
   "session.files.selectToOpen": "Válassza ki a megnyitandó fájlt",
   "session.files.all": "Minden fájl",
   "session.files.empty": "Nincsenek fájlok",
-  "session.files.binaryContent": "Bináris fájl (a tartalom nem jeleníthető meg)",
+  "session.files.binaryContent":
+    "Bináris fájl (a tartalom nem jeleníthető meg)",
   "session.messages.renderEarlier": "A korábbi üzenetek megjelenítése",
   "session.messages.loadingEarlier": "Korábbi üzenetek betöltése...",
   "session.messages.loadEarlier": "Korábbi üzenetek betöltése",
@@ -819,7 +924,8 @@ export const dict = {
   "status.popover.tab.plugins": "Beépülő modulok",
   "status.popover.action.manageServers": "Szerverek kezelése",
   "session.share.popover.title": "Közzététel a weben",
-  "session.share.popover.description.shared": "Ez a munkamenet nyilvános a weben. A link birtokában bárki hozzáférhet.",
+  "session.share.popover.description.shared":
+    "Ez a munkamenet nyilvános a weben. A link birtokában bárki hozzáférhet.",
   "session.share.popover.description.unshared":
     "Ossza meg a munkamenetet nyilvánosan az interneten. A link birtokában bárki számára elérhető lesz.",
   "session.share.action.share": "Részesedés",
@@ -838,12 +944,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Zárja be a terminált",
   "terminal.connectionLost.title": "Kapcsolat megszakadt",
-  "terminal.connectionLost.abnormalClose": "WebSocket rendellenesen zárva: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket rendellenesen zárva: {{code}}",
   "terminal.connectionLost.description":
     "A terminál kapcsolat megszakadt. Ez akkor fordulhat elő, amikor a szerver újraindul.",
   "terminal.connectTicket.csrfError":
     "A PTY csatlakozási jegyet az eredet vagy a CSRF ellenőrzések elutasították. Ellenőrizze a szerver CORS konfigurációját.",
-  "terminal.connectTicket.statusError": "A PTY csatlakozási jegy sikertelen a {{status}}-vel",
+  "terminal.connectTicket.statusError":
+    "A PTY csatlakozási jegy sikertelen a {{status}}-vel",
   "titlebar.update": "Frissítés",
   "titlebar.updateVersion": "Frissítse a {{version}}-t",
   "common.closeTab": "Lap bezárása",
@@ -887,7 +995,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Munkaterületek engedélyezése",
   "sidebar.workspaces.disable": "Munkaterületek letiltása",
   "sidebar.gettingStarted.title": "Kezdő lépések",
-  "sidebar.gettingStarted.line1": "A OpenCode ingyenes modelleket tartalmaz, így azonnal elkezdheti.",
+  "sidebar.gettingStarted.line1":
+    "A OpenCode ingyenes modelleket tartalmaz, így azonnal elkezdheti.",
   "sidebar.gettingStarted.line2":
     "Csatlakozzon bármely szolgáltatóhoz a modellek használatához, pl. Claude, GPT, Gemini stb.",
   "sidebar.project.recentSessions": "Legutóbbi munkamenetek",
@@ -901,25 +1010,32 @@ export const dict = {
   "debugBar.nav.tip":
     "Utolsó befejezett útvonal-átmenet, amely egy munkamenet-oldalt érint, az útválasztó indulásától az első festésig mérve.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Gördülő képkockák másodpercenként az utolsó 5 másodpercben.",
+  "debugBar.fps.tip":
+    "Gördülő képkockák másodpercenként az utolsó 5 másodpercben.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "A legrosszabb képkockaidő az elmúlt 5 másodpercben.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "32 ms-nál hosszabb képkockák az utolsó 5 másodpercben.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokkolt idő és hosszú feladatok száma az utolsó 5 másodpercben. Max feladat: {{max}}.",
+  "debugBar.long.tip":
+    "Blokkolt idő és hosszú feladatok száma az utolsó 5 másodpercben. Max feladat: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "A legrosszabb megfigyelt bemeneti késleltetés az elmúlt 5 másodpercben.",
+  "debugBar.delay.tip":
+    "A legrosszabb megfigyelt bemeneti késleltetés az elmúlt 5 másodpercben.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Az interakció hozzávetőleges időtartama az elmúlt 5 másodpercben. Ez a INP-szerű, nem a hivatalos Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Összesített elrendezési eltolódás az alkalmazás jelenlegi élettartamára vonatkozóan.",
+  "debugBar.cls.tip":
+    "Összesített elrendezési eltolódás az alkalmazás jelenlegi élettartamára vonatkozóan.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Használt JS kupac a kupackorláthoz képest. Csak a Chromium.",
-  "debugBar.mem.tip": "Használt JS kupac a kupackorláthoz képest. {{used}} vagy {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Használt JS kupac a kupackorláthoz képest. Csak a Chromium.",
+  "debugBar.mem.tip":
+    "Használt JS kupac a kupackorláthoz képest. {{used}} vagy {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "A fókuszstílusok kényszerítése az összes interaktív elemre",
+  "debugBar.focus.tip":
+    "A fókuszstílusok kényszerítése az összes interaktív elemre",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
@@ -934,7 +1050,8 @@ export const dict = {
   "settings.tab.shortcuts": "Parancsikonok",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integráció",
-  "settings.desktop.wsl.description": "Futtassa a OpenCode szervert a WSL belsejében a Windows rendszeren.",
+  "settings.desktop.wsl.description":
+    "Futtassa a OpenCode szervert a WSL belsejében a Windows rendszeren.",
   "settings.general.section.appearance": "Megjelenés",
   "settings.general.section.advanced": "Fejlett",
   "settings.general.section.notifications": "Rendszerértesítések",
@@ -943,79 +1060,103 @@ export const dict = {
   "settings.general.section.feed": "Takarmány",
   "settings.general.section.display": "Kijelző",
   "settings.general.row.language.title": "Nyelv",
-  "settings.general.row.language.description": "Módosítsa a OpenCode kijelző nyelvét",
+  "settings.general.row.language.description":
+    "Módosítsa a OpenCode kijelző nyelvét",
   "settings.general.row.shell.title": "Terminál shellje",
-  "settings.general.row.shell.description": "A terminál és az ügynökeszközök által használt shell",
+  "settings.general.row.shell.description":
+    "A terminál és az ügynökeszközök által használt shell",
   "settings.general.row.shell.autoDefault": "Automatikus (alapértelmezett)",
   "settings.general.row.shell.terminalOnly": "csak terminál",
   "settings.general.row.appearance.title": "Megjelenés",
-  "settings.general.row.appearance.description": "Szabja személyre, hogyan néz ki a OpenCode az eszközén",
+  "settings.general.row.appearance.description":
+    "Szabja személyre, hogyan néz ki a OpenCode az eszközén",
   "settings.general.row.colorScheme.title": "Színséma",
   "settings.general.row.colorScheme.description":
     "Válassza ki, hogy a OpenCode a rendszer, a világos vagy a sötét témát követi-e",
   "settings.general.row.theme.title": "Téma",
-  "settings.general.row.theme.description": "Szabja személyre a OpenCode témáját.",
+  "settings.general.row.theme.description":
+    "Szabja személyre a OpenCode témáját.",
   "settings.general.row.font.title": "Kód betűtípus",
-  "settings.general.row.font.description": "Testreszabhatja a kódblokkban használt betűtípust",
+  "settings.general.row.font.description":
+    "Testreszabhatja a kódblokkban használt betűtípust",
   "settings.general.row.terminalFont.title": "Terminal betűtípus",
-  "settings.general.row.terminalFont.description": "Testreszabhatja a terminálban használt betűtípust",
+  "settings.general.row.terminalFont.description":
+    "Testreszabhatja a terminálban használt betűtípust",
   "settings.general.row.uiFont.title": "UI betűtípus",
-  "settings.general.row.uiFont.description": "Testreszabhatja a felületen használt betűtípust",
+  "settings.general.row.uiFont.description":
+    "Testreszabhatja a felületen használt betűtípust",
   "settings.general.row.followup.title": "Nyomon követési viselkedés",
   "settings.general.row.followup.description":
     "Válassza ki, hogy a nyomon követési felszólítások azonnal irányítsák, vagy várakozzanak a sorban",
   "settings.general.row.followup.option.queue": "Sor",
   "settings.general.row.followup.option.steer": "Tinó",
   "settings.general.row.showFileTree.title": "Fájlfa",
-  "settings.general.row.showFileTree.description": "A fájlfa panel megjelenítése a munkamenetekben",
+  "settings.general.row.showFileTree.description":
+    "A fájlfa panel megjelenítése a munkamenetekben",
   "settings.general.row.showNavigation.title": "Navigációs vezérlők",
-  "settings.general.row.showNavigation.description": "A vissza és előre gombok megjelenítése az asztal címsorában",
+  "settings.general.row.showNavigation.description":
+    "A vissza és előre gombok megjelenítése az asztal címsorában",
   "settings.general.row.showSearch.title": "Parancs paletta",
-  "settings.general.row.showSearch.description": "A kereső és a parancspaletta gomb megjelenítése a címsorban",
+  "settings.general.row.showSearch.description":
+    "A kereső és a parancspaletta gomb megjelenítése a címsorban",
   "settings.general.row.showTerminal.title": "Terminál",
-  "settings.general.row.showTerminal.description": "Jelenítse meg a terminál gombot az asztal címsorában",
+  "settings.general.row.showTerminal.description":
+    "Jelenítse meg a terminál gombot az asztal címsorában",
   "settings.general.row.showStatus.title": "Szerver állapota",
-  "settings.general.row.showStatus.description": "Jelenítse meg a szerver állapot gombját a címsorban",
+  "settings.general.row.showStatus.description":
+    "Jelenítse meg a szerver állapot gombját a címsorban",
   "settings.general.row.mobileTitlebarBottom.title": "Alsó navigáció",
   "settings.general.row.mobileTitlebarBottom.description":
     "Helyezze el a címsort és a munkamenet füleket a képernyő aljára mobileszközön",
   "settings.general.row.showCustomAgents.title": "Mutasd az ügynököt",
   "settings.general.row.showCustomAgents.description":
     "Váltás az ágensek között a zeneszerzőben. Ha rejtett, alapértelmezés szerint Build agent.",
-  "settings.general.row.reasoningSummaries.title": "Mutasson érvelési összefoglalókat",
-  "settings.general.row.reasoningSummaries.description": "Modell indoklási összefoglalók megjelenítése az idővonalon",
-  "settings.general.row.shellToolPartsExpanded.title": "Shelleszköz részeinek kibontása",
+  "settings.general.row.reasoningSummaries.title":
+    "Mutasson érvelési összefoglalókat",
+  "settings.general.row.reasoningSummaries.description":
+    "Modell indoklási összefoglalók megjelenítése az idővonalon",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Shelleszköz részeinek kibontása",
   "settings.general.row.shellToolPartsExpanded.description":
     "Alapértelmezés szerint kibontott shell eszközrészek megjelenítése az idővonalon",
-  "settings.general.row.editToolPartsExpanded.title": "A Szerkesztőeszköz részei kibontása",
+  "settings.general.row.editToolPartsExpanded.title":
+    "A Szerkesztőeszköz részei kibontása",
   "settings.general.row.editToolPartsExpanded.description":
     "Az idővonalon alapértelmezés szerint kibontott szerkesztési, írási és javítási eszközrészek megjelenítése",
   "settings.general.row.newInterface.title": "Új elrendezés",
   "settings.general.row.newInterface.badge": "Új",
   "settings.general.row.newInterface.description":
     "Használja az új lapokat és a kezdőlap elrendezését. Váltás az elrendezések között korlátozott ideig.",
-  "settings.general.row.newInterfaceNotice.title": "Most új elrendezést használ",
-  "settings.general.row.newInterfaceNotice.description": "Az előző elrendezés már nem elérhető",
+  "settings.general.row.newInterfaceNotice.title":
+    "Most új elrendezést használ",
+  "settings.general.row.newInterfaceNotice.description":
+    "Az előző elrendezés már nem elérhető",
   "settings.general.row.newInterfaceNotice.dismiss": "Elvetés",
   "settings.general.row.pinchZoom.title": "Csípje össze a nagyításhoz",
   "settings.general.row.pinchZoom.description":
     "Engedélyezze az érintőpad összecsípését és a Ctrl-görgetést a nagyításhoz",
   "settings.general.row.wayland.title": "Használja a natív Wayland-t",
-  "settings.general.row.wayland.description": "A X11 tartalék letiltása a Wayland-n. Újraindítást igényel.",
+  "settings.general.row.wayland.description":
+    "A X11 tartalék letiltása a Wayland-n. Újraindítást igényel.",
   "settings.general.row.wayland.tooltip":
     "A vegyes frissítési gyakoriságú monitorokkal rendelkező Linux esetében a natív Wayland stabilabb lehet.",
   "settings.general.row.releaseNotes.title": "Kiadási megjegyzések",
-  "settings.general.row.releaseNotes.description": "Az Újdonságok előugró ablakok megjelenítése a frissítések után",
-  "settings.updates.row.startup.title": "Indításkor ellenőrizze a frissítéseket",
-  "settings.updates.row.startup.description": "A OpenCode indításakor automatikusan ellenőrizze a frissítéseket",
+  "settings.general.row.releaseNotes.description":
+    "Az Újdonságok előugró ablakok megjelenítése a frissítések után",
+  "settings.updates.row.startup.title":
+    "Indításkor ellenőrizze a frissítéseket",
+  "settings.updates.row.startup.description":
+    "A OpenCode indításakor automatikusan ellenőrizze a frissítéseket",
   "settings.updates.row.check.title": "Ellenőrizze a frissítéseket",
-  "settings.updates.row.check.description": "Manuálisan ellenőrizze a frissítéseket, és telepítse, ha elérhető",
+  "settings.updates.row.check.description":
+    "Manuálisan ellenőrizze a frissítéseket, és telepítse, ha elérhető",
   "settings.updates.action.checkNow": "Ellenőrizze most",
   "settings.updates.action.checking": "Ellenőrzés...",
   "settings.updates.action.downloading": "Letöltés...",
   "settings.updates.action.installing": "Telepítés...",
   "settings.updates.toast.latest.title": "Ön naprakész",
-  "settings.updates.toast.latest.description": "Ön a OpenCode legújabb verzióját futtatja.",
+  "settings.updates.toast.latest.description":
+    "Ön a OpenCode legújabb verzióját futtatja.",
   "sound.option.none": "Egyik sem",
   "sound.option.alert01": "Figyelmeztetés 01",
   "sound.option.alert02": "Figyelmeztetés 02",
@@ -1069,19 +1210,25 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Rendszerértesítés megjelenítése, ha engedélyre van szükség",
   "settings.general.notifications.errors.title": "Hibák",
-  "settings.general.notifications.errors.description": "Rendszerértesítés megjelenítése hiba esetén",
+  "settings.general.notifications.errors.description":
+    "Rendszerértesítés megjelenítése hiba esetén",
   "settings.general.sounds.agent.title": "Ügynök",
-  "settings.general.sounds.agent.description": "Hang lejátszása, ha az ügynök befejeződött vagy figyelmet igényel",
+  "settings.general.sounds.agent.description":
+    "Hang lejátszása, ha az ügynök befejeződött vagy figyelmet igényel",
   "settings.general.sounds.permissions.title": "Engedélyek",
-  "settings.general.sounds.permissions.description": "Hang lejátszása, ha engedélyre van szükség",
+  "settings.general.sounds.permissions.description":
+    "Hang lejátszása, ha engedélyre van szükség",
   "settings.general.sounds.errors.title": "Hibák",
   "settings.general.sounds.errors.description": "Hang lejátszása hiba esetén",
   "settings.shortcuts.title": "Billentyűparancsok",
-  "settings.shortcuts.reset.button": "Állítsa vissza az alapértelmezett értékeket",
+  "settings.shortcuts.reset.button":
+    "Állítsa vissza az alapértelmezett értékeket",
   "settings.shortcuts.reset.toast.title": "Parancsikonok visszaállítása",
-  "settings.shortcuts.reset.toast.description": "A billentyűparancsok visszaálltak az alapértelmezett értékekre.",
+  "settings.shortcuts.reset.toast.description":
+    "A billentyűparancsok visszaálltak az alapértelmezett értékekre.",
   "settings.shortcuts.conflict.title": "A parancsikon már használatban van",
-  "settings.shortcuts.conflict.description": "A {{keybind}} már hozzá van rendelve a {{titles}}-hez.",
+  "settings.shortcuts.conflict.description":
+    "A {{keybind}} már hozzá van rendelve a {{titles}}-hez.",
   "settings.shortcuts.unassigned": "Nincs hozzárendelve",
   "settings.shortcuts.pressKeys": "Nyomja meg a gombokat",
   "settings.shortcuts.search.placeholder": "Parancsikonok keresése",
@@ -1093,12 +1240,16 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminál",
   "settings.shortcuts.group.prompt": "Utasítás",
   "settings.providers.title": "Szolgáltatók",
-  "settings.providers.description": "A szolgáltató beállításai itt konfigurálhatók.",
+  "settings.providers.description":
+    "A szolgáltató beállításai itt konfigurálhatók.",
   "settings.providers.section.connected": "Csatlakozott szolgáltatók",
-  "settings.providers.connected.empty": "Nincsenek csatlakoztatott szolgáltatók",
-  "settings.providers.connected.environmentDescription": "A környezeti változókból csatlakozik",
+  "settings.providers.connected.empty":
+    "Nincsenek csatlakoztatott szolgáltatók",
+  "settings.providers.connected.environmentDescription":
+    "A környezeti változókból csatlakozik",
   "settings.providers.section.popular": "Népszerű szolgáltatók",
-  "settings.providers.custom.description": "Adjon hozzá egy OpenAI-kompatibilis szolgáltatót az alap URL segítségével.",
+  "settings.providers.custom.description":
+    "Adjon hozzá egy OpenAI-kompatibilis szolgáltatót az alap URL segítségével.",
   "settings.providers.tag.environment": "Környezet",
   "settings.providers.tag.config": "Konfiguráció",
   "settings.providers.tag.custom": "Szokás",
@@ -1115,39 +1266,49 @@ export const dict = {
   "settings.permissions.description":
     "Szabályozza, hogy a szerver milyen eszközöket használhat alapértelmezés szerint.",
   "settings.permissions.section.tools": "Eszközök",
-  "settings.permissions.toast.updateFailed.title": "Nem sikerült frissíteni az engedélyeket",
+  "settings.permissions.toast.updateFailed.title":
+    "Nem sikerült frissíteni az engedélyeket",
   "settings.permissions.action.allow": "Engedélyezze",
   "settings.permissions.action.ask": "Kérdez",
   "settings.permissions.action.deny": "Megtagadás",
   "settings.permissions.tool.read.title": "Olvas",
-  "settings.permissions.tool.read.description": "Fájl olvasása (egyezik a fájl elérési útjával)",
+  "settings.permissions.tool.read.description":
+    "Fájl olvasása (egyezik a fájl elérési útjával)",
   "settings.permissions.tool.edit.title": "Szerkesztés",
   "settings.permissions.tool.edit.description":
     "Fájlok módosítása, beleértve a szerkesztéseket, írásokat és javításokat",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Fájlok egyezése glob-mintákkal",
+  "settings.permissions.tool.glob.description":
+    "Fájlok egyezése glob-mintákkal",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Keresés a fájl tartalmában reguláris kifejezések használatával",
+  "settings.permissions.tool.grep.description":
+    "Keresés a fájl tartalmában reguláris kifejezések használatával",
   "settings.permissions.tool.list.title": "Lista",
-  "settings.permissions.tool.list.description": "Fájlok listázása egy könyvtárban",
+  "settings.permissions.tool.list.description":
+    "Fájlok listázása egy könyvtárban",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Futtassa a shell parancsokat",
   "settings.permissions.tool.task.title": "Feladat",
   "settings.permissions.tool.task.description": "Al-ügynökök indítása",
   "settings.permissions.tool.skill.title": "Ügyesség",
-  "settings.permissions.tool.skill.description": "Töltsön be egy képességet név szerint",
+  "settings.permissions.tool.skill.description":
+    "Töltsön be egy képességet név szerint",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Nyelvi szerver lekérdezések futtatása",
+  "settings.permissions.tool.lsp.description":
+    "Nyelvi szerver lekérdezések futtatása",
   "settings.permissions.tool.todowrite.title": "Todo Write",
-  "settings.permissions.tool.todowrite.description": "Frissítse a teendők listáját",
+  "settings.permissions.tool.todowrite.description":
+    "Frissítse a teendők listáját",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
   "settings.permissions.tool.webfetch.description": "Tartalom lekérése URL-ről",
   "settings.permissions.tool.websearch.title": "Webes keresés",
   "settings.permissions.tool.websearch.description": "Keresés a weben",
   "settings.permissions.tool.external_directory.title": "Külső címtár",
-  "settings.permissions.tool.external_directory.description": "Hozzáférés a projektkönyvtáron kívüli fájlokhoz",
+  "settings.permissions.tool.external_directory.description":
+    "Hozzáférés a projektkönyvtáron kívüli fájlokhoz",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Ismétlődő szerszámhívások észlelése azonos bemenettel",
+  "settings.permissions.tool.doom_loop.description":
+    "Ismétlődő szerszámhívások észlelése azonos bemenettel",
   "session.delete.failed.title": "Nem sikerült törölni a munkamenetet",
   "session.delete.title": "Delete munkamenet",
   "session.delete.confirm": "Delete „{{name}}” munkamenet?",
@@ -1159,23 +1320,29 @@ export const dict = {
   "workspace.delete.failed.title": "Nem sikerült törölni a munkaterületet",
   "workspace.resetting.title": "Munkaterület visszaállítása",
   "workspace.resetting.description": "Ez eltarthat egy percig.",
-  "workspace.reset.failed.title": "Nem sikerült visszaállítani a munkaterületet",
+  "workspace.reset.failed.title":
+    "Nem sikerült visszaállítani a munkaterületet",
   "workspace.reset.success.title": "Munkaterület visszaállítása",
-  "workspace.reset.success.description": "A munkaterület most megegyezik az alapértelmezett ággal.",
+  "workspace.reset.success.description":
+    "A munkaterület most megegyezik az alapértelmezett ággal.",
   "workspace.error.stillPreparing": "A munkaterület még készül",
   "workspace.status.checking": "Nem egyesített módosítások ellenőrzése...",
   "workspace.status.error": "Nem lehet ellenőrizni a git állapotát.",
   "workspace.status.clean": "Nem észleltek összevont változtatásokat.",
-  "workspace.status.dirty": "Nem egyesített változtatásokat észleltünk ezen a munkaterületen.",
+  "workspace.status.dirty":
+    "Nem egyesített változtatásokat észleltünk ezen a munkaterületen.",
   "workspace.delete.title": "Delete munkaterület",
   "workspace.delete.confirm": 'Delete munkaterület "{{name}}"?',
   "workspace.delete.button": "Delete munkaterület",
   "workspace.reset.title": "Állítsa vissza a munkaterületet",
   "workspace.reset.confirm": "Visszaállítja a „{{name}}” munkaterületet?",
   "workspace.reset.button": "Állítsa vissza a munkaterületet",
-  "workspace.reset.archived.none": "Az aktív munkamenetek nem lesznek archiválva.",
+  "workspace.reset.archived.none":
+    "Az aktív munkamenetek nem lesznek archiválva.",
   "workspace.reset.archived.one": "1 munkamenet archiválva lesz.",
-  "workspace.reset.archived.many": "A {{count}} munkamenetek archiválva lesznek.",
-  "workspace.reset.note": "Ezzel visszaállítja a munkaterületet, hogy megfeleljen az alapértelmezett ágnak.",
+  "workspace.reset.archived.many":
+    "A {{count}} munkamenetek archiválva lesznek.",
+  "workspace.reset.note":
+    "Ezzel visszaállítja a munkaterületet, hogy megfeleljen az alapértelmezett ágnak.",
   "dialog.usageExceeded.dontShowAgain": "Ne jelenjen meg újra",
 }

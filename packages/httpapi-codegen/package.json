@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "effect": "catalog:",
-    "prettier": "3.6.2"
+    "oxfmt": "0.68.0"
   },
   "devDependencies": {
     "@tsconfig/bun": "catalog:",

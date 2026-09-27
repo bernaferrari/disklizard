@@ -39,7 +39,10 @@ describe("reviewed deletion controller", () => {
     expect(removed).toEqual(["/work/first.txt:first-token"])
     expect(result.removed).toEqual([first])
     expect(result.failed).toHaveLength(1)
-    expect(result.failed[0]).toMatchObject({ node: second, error: new Error("Second item changed") })
+    expect(result.failed[0]).toMatchObject({
+      node: second,
+      error: new Error("Second item changed"),
+    })
     expect(progress).toEqual([
       [1, 2],
       [2, 2],
@@ -51,17 +54,19 @@ describe("reviewed deletion controller", () => {
       resolveDeleteAuthorization(
         [{ path: "C:\\Work\\Artifact.bin", authorization: "token" }],
         "C:\\Work\\artifact.bin",
-        "Mismatch",
-        "windows",
-      ),
+        "Mismatch"
+      )
     ).toThrow("Mismatch")
-    expect(resolveDeleteAuthorization(
-      [{ path: "C:\\Work\\Artifact.bin", authorization: "token" }],
-      "C:\\Work\\Artifact.bin",
-      "Mismatch",
-      "windows",
-    )).toBe("token")
-    expect(() => resolveDeleteAuthorization([], "/missing", "Mismatch", "linux")).toThrow("Mismatch")
+    expect(
+      resolveDeleteAuthorization(
+        [{ path: "C:\\Work\\Artifact.bin", authorization: "token" }],
+        "C:\\Work\\Artifact.bin",
+        "Mismatch"
+      )
+    ).toBe("token")
+    expect(() =>
+      resolveDeleteAuthorization([], "/missing", "Mismatch")
+    ).toThrow("Mismatch")
   })
 
   test("deduplicates nested roots and skips cleanup-protected paths before authorization", async () => {
@@ -74,7 +79,7 @@ describe("reviewed deletion controller", () => {
     let requested: readonly string[] = []
 
     const result = await executeAuthorizedDeletionBatch({
-      nodes: [parent.children[0]!, parent, protectedNode],
+      nodes: [parent.children[0], parent, protectedNode],
       cleanupProtectionsReady: true,
       locks: [{ path: "/work/protected.bin", label: "Protected" }],
       authorize: async (paths) => {
@@ -92,20 +97,27 @@ describe("reviewed deletion controller", () => {
 
   test("never requests capabilities while saved cleanup protections are unavailable", async () => {
     let authorizations = 0
-    await expect(
-      executeAuthorizedDeletionBatch({
-        nodes: [node("/work/file.txt")],
-        cleanupProtectionsReady: false,
-        authorize: async () => {
-          authorizations += 1
-          return []
-        },
-        remove: async () => undefined,
-        authorizationMismatchMessage: "Mismatch",
-      }),
-    ).rejects.toThrow("Saved cleanup protections are unavailable")
+    const failure = await executeAuthorizedDeletionBatch({
+      nodes: [node("/work/file.txt")],
+      cleanupProtectionsReady: false,
+      authorize: async () => {
+        authorizations += 1
+        return []
+      },
+      remove: async () => undefined,
+      authorizationMismatchMessage: "Mismatch",
+    }).then(
+      () => null,
+      (error: unknown) => error
+    )
+    expect(failure).toBeInstanceOf(Error)
+    expect((failure as Error).message).toBe(
+      "Saved cleanup protections are unavailable"
+    )
     expect(authorizations).toBe(0)
-    expect(() => assertCleanupProtectionsReady(false, "Protections not ready")).toThrow("Protections not ready")
+    expect(() =>
+      assertCleanupProtectionsReady(false, "Protections not ready")
+    ).toThrow("Protections not ready")
   })
 
   test("stops an authorized batch when a newly persisted lock protects a later item", async () => {
@@ -119,7 +131,8 @@ describe("reviewed deletion controller", () => {
       cleanupProtectionsReady: true,
       locks: [],
       currentCleanupLocks: () => currentLocks,
-      authorize: async (paths) => paths.map((path) => ({ path, authorization: `token:${path}` })),
+      authorize: async (paths) =>
+        paths.map((path) => ({ path, authorization: `token:${path}` })),
       remove: async (candidate) => {
         removed.push(candidate.path)
         currentLocks = [{ path: "/work", label: "Work" }]
@@ -130,6 +143,8 @@ describe("reviewed deletion controller", () => {
 
     expect(removed).toEqual([first.path])
     expect(result.removed).toEqual([first])
-    expect(result.failed).toEqual([{ node: second, error: new Error("Cleanup protections changed") }])
+    expect(result.failed).toEqual([
+      { node: second, error: new Error("Cleanup protections changed") },
+    ])
   })
 })

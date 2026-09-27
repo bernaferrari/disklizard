@@ -11,7 +11,8 @@
           const saved = localStorage.getItem("disklizard-color-scheme")
           const dark =
             saved === "dark" ||
-            ((saved === null || saved === "system") && matchMedia("(prefers-color-scheme: dark)").matches)
+            ((saved === null || saved === "system") &&
+              matchMedia("(prefers-color-scheme: dark)").matches)
           const scheme = dark ? "dark" : "light"
           document.documentElement.style.colorScheme = scheme
           document.documentElement.setAttribute("data-color-scheme", scheme)

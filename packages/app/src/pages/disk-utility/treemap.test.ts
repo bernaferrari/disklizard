@@ -13,7 +13,7 @@ const mk = (name: string, size: number): DiskScanNode => ({
 
 const overlap = (
   a: { x: number; y: number; w: number; h: number },
-  b: { x: number; y: number; w: number; h: number },
+  b: { x: number; y: number; w: number; h: number }
 ) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
 
 describe("layoutTreemap", () => {
@@ -51,31 +51,42 @@ describe("layoutTreemap", () => {
   it("keeps aspect ratios reasonable (max <= ~4 for balanced input)", () => {
     const kids = Array.from({ length: 8 }, (_, i) => mk(`n${i}`, 100 - i * 5))
     const rects = layoutTreemap(kids)
-    const maxAspect = Math.max(...rects.map((r) => Math.max(r.w / r.h, r.h / r.w)))
+    const maxAspect = Math.max(
+      ...rects.map((r) => Math.max(r.w / r.h, r.h / r.w))
+    )
     expect(maxAspect).toBeLessThan(4)
   })
 
   it("indexes by sorted (size desc) order for color sync", () => {
-    const rects = layoutTreemap([mk("small", 10), mk("huge", 1000), mk("mid", 100)])
+    const rects = layoutTreemap([
+      mk("small", 10),
+      mk("huge", 1000),
+      mk("mid", 100),
+    ])
     expect(rects.map((r) => r.index)).toEqual([0, 1, 2])
     expect(rects[0].node.name).toBe("huge")
   })
 
   it("bounds visual tiles without hiding bytes from the map", () => {
-    const children = Array.from({ length: 1_000 }, (_, index) => mk(`item-${index}`, index + 1))
+    const children = Array.from({ length: 1_000 }, (_, index) =>
+      mk(`item-${index}`, index + 1)
+    )
     const collapsed = collapseTreemapChildren(children, 100)
 
     expect(collapsed).toHaveLength(100)
-    expect(collapsed.at(-1)).toMatchObject({ name: "", isOther: true, otherCount: 901 })
+    expect(collapsed.at(-1)).toMatchObject({
+      name: "",
+      isOther: true,
+      otherCount: 901,
+    })
     expect(collapsed.reduce((sum, child) => sum + child.size, 0)).toBe(
-      children.reduce((sum, child) => sum + child.size, 0),
+      children.reduce((sum, child) => sum + child.size, 0)
     )
     const rects = layoutTreemap(collapsed, undefined, true)
     expect(rects.find((rect) => rect.node.name === "item-999")?.index).toBe(0)
     expect(rects.find((rect) => rect.node.isOther)?.index).toBe(99)
   })
 })
-
 
 describe("smaller-item inspection", () => {
   it("retains grouped children for browsing without another scan", () => {

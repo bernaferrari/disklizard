@@ -38,7 +38,12 @@ describe("createSurfacePresence", () => {
   it("reverses an interrupted exit instead of unmounting later", () => {
     vi.useFakeTimers()
     try {
-      const surface = createSurfacePresence({ exitMs: 160, reducedMotion: () => false, requestFrame: () => 1, cancelFrame: () => {} })
+      const surface = createSurfacePresence({
+        exitMs: 160,
+        reducedMotion: () => false,
+        requestFrame: () => 1,
+        cancelFrame: () => {},
+      })
       let closed = false
 
       surface.open()

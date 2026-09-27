@@ -2,7 +2,14 @@ import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "./types"
 import { ViewMorph, type MorphPose, type MorphTile } from "./ViewMorph"
 
-const node = (name: string): DiskScanNode => ({ name, path: `/${name}`, size: 10, isDir: true, children: [], ext: "" })
+const node = (name: string): DiskScanNode => ({
+  name,
+  path: `/${name}`,
+  size: 10,
+  isDir: true,
+  children: [],
+  ext: "",
+})
 
 const pose = (wedgeStart: number, wedgeEnd: number): MorphPose => ({
   wedge: { start: wedgeStart, end: wedgeEnd, inner: 100, outer: 200 },
@@ -13,7 +20,13 @@ describe("MorphTile poses", () => {
   it("round-trip through from/to without mutation", () => {
     const from = pose(0, 1)
     const to = pose(2, 3)
-    const tile: MorphTile = { path: "/big", node: node("big"), colorIndex: 4, from, to }
+    const tile: MorphTile = {
+      path: "/big",
+      node: node("big"),
+      colorIndex: 4,
+      from,
+      to,
+    }
     // Reverse direction is the caller swapping from/to — poses must survive intact.
     const swapped: MorphTile = { ...tile, from: to, to: from }
     expect(swapped.from.wedge.start).toBe(2)
@@ -74,11 +87,14 @@ describe("ViewMorph lifecycle", () => {
             drawsThisFrame++
           }
         }
-        if (property === "moveTo" || property === "lineTo") return (x: number, y: number) => drawnPoints.push([x, y])
+        if (property === "moveTo" || property === "lineTo")
+          return (x: number, y: number) => drawnPoints.push([x, y])
         const value = Reflect.get(target, property, receiver)
         // The morph only calls ctx methods; stub every read as a no-op
         // function so property sets and calls both succeed.
-        return typeof value === "function" || value === undefined ? () => undefined : value
+        return typeof value === "function" || value === undefined
+          ? () => undefined
+          : value
       },
     })
   }
@@ -95,8 +111,8 @@ describe("ViewMorph lifecycle", () => {
     // Bun has no DOM; the morph reads devicePixelRatio through `window`.
     const globals: { window?: unknown } = globalThis
     const previousWindow = globals.window
-    globalThis.requestAnimationFrame = clock.request as typeof requestAnimationFrame
-    globalThis.cancelAnimationFrame = clock.cancel as typeof cancelAnimationFrame
+    globalThis.requestAnimationFrame = clock.request
+    globalThis.cancelAnimationFrame = clock.cancel
     globalThis.getComputedStyle = (() => ({
       getPropertyValue: () => "",
     })) as unknown as typeof getComputedStyle
@@ -111,7 +127,7 @@ describe("ViewMorph lifecycle", () => {
         centerReads++
         return { ...center }
       },
-      () => options.reducedMotion ?? false,
+      () => options.reducedMotion ?? false
     )
     const restore = () => {
       globalThis.requestAnimationFrame = previousRaf
@@ -120,7 +136,14 @@ describe("ViewMorph lifecycle", () => {
       performance.now = previousNow
       globals.window = previousWindow
     }
-    return { morph, clock, restore, center, centerReads: () => centerReads, centerCalls }
+    return {
+      morph,
+      clock,
+      restore,
+      center,
+      centerReads: () => centerReads,
+      centerCalls,
+    }
   }
 
   const tiles = (): MorphTile[] => [
@@ -144,17 +167,29 @@ describe("ViewMorph lifecycle", () => {
     const { morph, clock, restore } = harness()
     try {
       const tile = tiles()[0]
-      tile.from = { ...tile.from, shape: "rect", rect: { x: 2, y: 3, w: 12, h: 8 } }
-      tile.to = { ...tile.to, shape: "rect", rect: { x: 20, y: 25, w: 30, h: 15 } }
+      tile.from = {
+        ...tile.from,
+        shape: "rect",
+        rect: { x: 2, y: 3, w: 12, h: 8 },
+      }
+      tile.to = {
+        ...tile.to,
+        shape: "rect",
+        rect: { x: 20, y: 25, w: 30, h: 15 },
+      }
       morph.play([tile], "toGrid", () => {})
       drawnPoints = []
       clock.tick(0)
       expect(drawnPoints.length).toBeGreaterThan(0)
-      expect(drawnPoints.every(([x, y]) => x >= 2 && x <= 14 && y >= 3 && y <= 11)).toBe(true)
+      expect(
+        drawnPoints.every(([x, y]) => x >= 2 && x <= 14 && y >= 3 && y <= 11)
+      ).toBe(true)
       clock.tick(240)
       expect(morph.active).toBe(false)
       expect(clock.pending).toBe(0)
-    } finally { restore() }
+    } finally {
+      restore()
+    }
   })
 
   it("restarts keep exactly one frame chain and fire each continuation once", () => {
@@ -194,7 +229,7 @@ describe("ViewMorph lifecycle", () => {
     try {
       const completions: string[] = []
       morph.play(tiles(), "toGrid", () => completions.push("a"))
-      const stale = clock.pendingCallbacks()[0]!
+      const stale = clock.pendingCallbacks()[0]
       clock.tick(16)
 
       morph.play(tiles(), "toMap", () => completions.push("b"))
@@ -225,13 +260,17 @@ describe("ViewMorph lifecycle", () => {
     const { morph, clock, restore } = harness()
     try {
       let completed = false
-      morph.play(tiles(), "toGrid", () => { completed = true })
+      morph.play(tiles(), "toGrid", () => {
+        completed = true
+      })
       const before = clearRectCount
       clock.tick(300)
       expect(completed).toBe(true)
       // One clear to draw the last pose; no second clear on handoff.
       expect(clearRectCount - before).toBe(1)
-    } finally { restore() }
+    } finally {
+      restore()
+    }
   })
 
   it("cancel drops the scheduled frame, completes once, and stops drawing", () => {

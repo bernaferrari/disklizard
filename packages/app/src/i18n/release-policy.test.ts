@@ -26,11 +26,15 @@ describe("DiskLizard beta language policy", () => {
   })
 
   test("does not make non-release catalogs into production bundle entry points", () => {
-    const source = readFileSync(fileURLToPath(new URL("./catalog.ts", import.meta.url)), "utf8")
+    const source = readFileSync(
+      fileURLToPath(new URL("./catalog.ts", import.meta.url)),
+      "utf8"
+    )
     const imported = DESKTOP_NATIVE_LOCALES.filter(
       (locale) =>
         locale !== DISKLIZARD_RELEASE_LOCALE &&
-        (source.includes(`import("./${locale}")`) || source.includes(`import("@opencode-ai/ui/i18n/${locale}")`)),
+        (source.includes(`import("./${locale}")`) ||
+          source.includes(`import("@opencode-ai/ui/i18n/${locale}")`))
     )
     expect(imported).toEqual([])
   })

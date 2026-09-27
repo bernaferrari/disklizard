@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Sdílejte zpětnou vazbu",
   "desktop.menu.reportBug": "Nahlásit chybu",
   "desktop.menu.ariaLabel": "Nabídka OpenCode",
-  "desktop.updater.dialog.checkFailed.message": "Kontrola aktualizace se nezdařila.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Kontrola aktualizace se nezdařila.",
   "desktop.updater.dialog.checkFailed.title": "Chyba aktualizace",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Jste aktuální.",
   "desktop.updater.dialog.upToDate.title": "Žádné aktualizace",
-  "desktop.updater.dialog.ready.message": "Aktualizace {{version}} stažena. Restartovat nyní?",
+  "desktop.updater.dialog.ready.message":
+    "Aktualizace {{version}} stažena. Restartovat nyní?",
   "desktop.updater.dialog.ready.title": "Aktualizace připravena",
   "desktop.updater.dialog.restart": "Restartujte",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +65,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode se nepodařilo načíst",
   "desktop.recovery.terminated": "OpenCode okno bylo neočekávaně ukončeno",
   "desktop.recovery.unresponsive": "OpenCode nereaguje",
-  "desktop.recovery.unresponsive.detail": "Můžete znovu spustit aplikaci, otevřít protokoly nebo čekat.",
-  "desktop.recovery.loadFailed.detail": "Okno: {{window}}\nURL: {{url}}\nChyba: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Okno: {{window}}\nDůvod: {{reason}}\nKód: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Můžete znovu spustit aplikaci, otevřít protokoly nebo čekat.",
+  "desktop.recovery.loadFailed.detail":
+    "Okno: {{window}}\nURL: {{url}}\nChyba: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Okno: {{window}}\nDůvod: {{reason}}\nKód: {{code}}",
   "desktop.recovery.unknown": "<neznámé>",
   "desktop.dialog.chooseFolder": "Vyberte složku",
   "desktop.dialog.chooseFile": "Vyberte soubor",
@@ -73,27 +79,36 @@ export const dict = {
   "desktop.server.local": "Místní server",
   "desktop.wsl.error.windowsOnly": "WSL je k dispozici pouze na Windows",
   "desktop.wsl.error.unavailable": "WSL není k dispozici",
-  "desktop.wsl.error.listInstalled": "Seznam nainstalovaných WSL distribucí se nezdařil",
+  "desktop.wsl.error.listInstalled":
+    "Seznam nainstalovaných WSL distribucí se nezdařil",
   "desktop.wsl.error.listOnline": "Seznam online WSL distribucí se nezdařil",
   "desktop.wsl.error.executeDistro": "Nelze provádět příkazy v distro",
   "desktop.wsl.error.installWsl": "WSL instalace se nezdařila",
-  "desktop.wsl.error.installDistro": "Nepodařilo se nainstalovat distribuci: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Nepodařilo se nainstalovat distribuci: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode instalace se nezdařila",
   "desktop.wsl.error.alreadyAdded": "{{distro}} je již přidáno",
-  "desktop.wsl.error.opencodeMissing": "opencode není v této distribuci nainstalováno",
-  "desktop.wsl.error.opencodeCannotRun": "opencode je nainstalován, ale nelze jej spustit",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode není nainstalován v {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode není v této distribuci nainstalováno",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode je nainstalován, ale nelze jej spustit",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode není nainstalován v {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode aktualizace dokončena, ale {{distro}} stále hlásí {{installed}}; očekává se {{expected}}",
   "desktop.wsl.error.noVersion": "žádná verze",
-  "desktop.wsl.error.serverExited": "Server WSL byl po spuštění ukončen (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Server WSL byl po spuštění ukončen (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Server WSL byl ukončen, než byl připraven (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Postranní vozík pro {{distro}} kontrolu stavu vypršel po {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} vypršel po {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Postranní vozík pro {{distro}} kontrolu stavu vypršel po {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} vypršel po {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Nepodařilo se získat port",
   "desktop.picker.error.notSelected": "Soubor nebyl vybrán nástrojem pro výběr",
-  "desktop.picker.error.sizeLimit": "Vybrané přílohy překračují limit {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Vybrané přílohy překračují limit {{limit}} MB",
   "command.category.suggested": "Doporučeno",
   "command.category.view": "Zobrazit",
   "command.category.project": "Projekt",
@@ -140,7 +155,8 @@ export const dict = {
   "command.tab.close": "Zavřít kartu",
   "command.tab.reopenClosed": "Znovu otevřete zavřenou kartu",
   "command.context.addSelection": "Přidejte výběr do kontextu",
-  "command.context.addSelection.description": "Přidat vybrané řádky z aktuálního souboru",
+  "command.context.addSelection.description":
+    "Přidat vybrané řádky z aktuálního souboru",
   "command.input.focus": "Zaměření vstupu",
   "command.terminal.toggle": "Přepínací terminál",
   "command.fileTree.toggle": "Přepnout strom souborů",
@@ -148,9 +164,11 @@ export const dict = {
   "command.terminal.new": "Nový terminál",
   "command.terminal.new.description": "Vytvořte novou kartu terminálu",
   "command.steps.toggle": "Přepínání kroků",
-  "command.steps.toggle.description": "Zobrazit nebo skrýt kroky pro aktuální zprávu",
+  "command.steps.toggle.description":
+    "Zobrazit nebo skrýt kroky pro aktuální zprávu",
   "command.message.previous": "Předchozí zpráva",
-  "command.message.previous.description": "Přejděte na předchozí zprávu uživatele",
+  "command.message.previous.description":
+    "Přejděte na předchozí zprávu uživatele",
   "command.message.next": "Další zpráva",
   "command.message.next.description": "Přejděte na další uživatelskou zprávu",
   "command.model.choose": "Vyberte model",
@@ -166,23 +184,29 @@ export const dict = {
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Automaticky přijímat oprávnění",
-  "command.permissions.autoaccept.disable": "Zastavit automatické přijímání oprávnění",
+  "command.permissions.autoaccept.disable":
+    "Zastavit automatické přijímání oprávnění",
   "command.workspace.toggle": "Přepnout pracovní prostory",
-  "command.workspace.toggle.description": "Povolit nebo zakázat více pracovních ploch na postranním panelu",
+  "command.workspace.toggle.description":
+    "Povolit nebo zakázat více pracovních ploch na postranním panelu",
   "command.session.undo": "Vrátit zpět",
   "command.session.undo.description": "Vrátit zpět poslední zprávu",
   "command.session.redo": "Znovu",
   "command.session.redo.description": "Opakujte poslední vrácenou zprávu",
   "command.session.compact": "Kompaktní relace",
-  "command.session.compact.description": "Shrňte relaci, abyste snížili velikost kontextu",
+  "command.session.compact.description":
+    "Shrňte relaci, abyste snížili velikost kontextu",
   "command.session.fork": "Vytvořit větev ze zprávy",
-  "command.session.fork.description": "Vytvořte novou relaci z předchozí zprávy",
+  "command.session.fork.description":
+    "Vytvořte novou relaci z předchozí zprávy",
   "command.session.share": "Sdílejte relaci",
-  "command.session.share.description": "Sdílejte tuto relaci a zkopírujte URL do schránky",
+  "command.session.share.description":
+    "Sdílejte tuto relaci a zkopírujte URL do schránky",
   "command.session.unshare": "Zrušit sdílení relace",
   "command.session.unshare.description": "Přestat sdílet tuto relaci",
   "command.session.export": "Export relace",
-  "command.session.export.description": "Exportovat celý přepis relace jako JSON",
+  "command.session.export.description":
+    "Exportovat celý přepis relace jako JSON",
   "palette.search.placeholder": "Prohledávejte soubory, příkazy a relace",
   "palette.search.placeholder.home": "Hledat příkazy a relace",
   "palette.empty": "Nebyly nalezeny žádné výsledky",
@@ -194,28 +218,41 @@ export const dict = {
   "dialog.provider.group.other": "Jiné",
   "dialog.provider.custom.label": "Vlastní poskytovatel kompatibilní s OpenAI",
   "dialog.provider.tag.recommended": "Doporučeno",
-  "dialog.provider.opencode.note": "Vybrané modely včetně Claude, GPT, Gemini a dalších",
+  "dialog.provider.opencode.note":
+    "Vybrané modely včetně Claude, GPT, Gemini a dalších",
   "dialog.provider.opencode.tagline": "Spolehlivé optimalizované modely",
   "dialog.provider.opencodeGo.tagline": "Nízkonákladové předplatné pro každého",
-  "dialog.provider.anthropic.note": "Přímý přístup k modelům Claude, včetně modelů Pro a Max",
-  "dialog.provider.copilot.note": "Modely umělé inteligence pro pomoc s kódováním prostřednictvím GitHub Copilot",
-  "dialog.provider.openai.note": "GPT modely pro rychlé a schopné obecné úlohy umělé inteligence",
-  "dialog.provider.google.note": "Gemini modely pro rychlé, strukturované odpovědi",
-  "dialog.provider.openrouter.note": "Získejte přístup ke všem podporovaným modelům od jednoho poskytovatele",
-  "dialog.provider.vercel.note": "Jednotný přístup k modelům AI s chytrým směrováním",
+  "dialog.provider.anthropic.note":
+    "Přímý přístup k modelům Claude, včetně modelů Pro a Max",
+  "dialog.provider.copilot.note":
+    "Modely umělé inteligence pro pomoc s kódováním prostřednictvím GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT modely pro rychlé a schopné obecné úlohy umělé inteligence",
+  "dialog.provider.google.note":
+    "Gemini modely pro rychlé, strukturované odpovědi",
+  "dialog.provider.openrouter.note":
+    "Získejte přístup ke všem podporovaným modelům od jednoho poskytovatele",
+  "dialog.provider.vercel.note":
+    "Jednotný přístup k modelům AI s chytrým směrováním",
   "dialog.model.select.title": "Vyberte model",
   "dialog.model.search.placeholder": "Hledat modely",
   "dialog.model.empty": "Žádné výsledky modelu",
   "dialog.model.manage": "Správa modelů",
-  "dialog.model.manage.description": "Upravte, které modely se zobrazí ve voliči modelů.",
+  "dialog.model.manage.description":
+    "Upravte, které modely se zobrazí ve voliči modelů.",
   "dialog.model.manage.provider.toggle": "Přepnout všechny modely {{provider}}",
-  "dialog.model.unpaid.freeModels.title": "Bezplatné modely poskytované OpenCode",
-  "dialog.model.unpaid.addMore.title": "Přidejte další modely od oblíbených poskytovatelů",
-  "dialog.model.unpaid.viewMoreProviders": "Zobrazit více než 70 dalších poskytovatelů",
+  "dialog.model.unpaid.freeModels.title":
+    "Bezplatné modely poskytované OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Přidejte další modely od oblíbených poskytovatelů",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Zobrazit více než 70 dalších poskytovatelů",
   "dialog.provider.viewAll": "Zobrazit další poskytovatele",
   "provider.connect.title": "Připojit {{provider}}",
-  "provider.connect.title.anthropicProMax": "Přihlaste se pomocí Claude Pro/Max",
-  "provider.connect.selectMethod": "Vyberte způsob přihlášení pro {{provider}}.",
+  "provider.connect.title.anthropicProMax":
+    "Přihlaste se pomocí Claude Pro/Max",
+  "provider.connect.selectMethod":
+    "Vyberte způsob přihlášení pro {{provider}}.",
   "provider.connect.method.apiKey": "API klíč",
   "provider.connect.method.browser": "Prohlížeč",
   "provider.connect.method.headless": "Bezhlavě",
@@ -248,15 +285,19 @@ export const dict = {
     " a zadejte níže uvedený kód pro připojení svého účtu a používání {{provider}} modelů v OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Potvrzovací kód",
   "provider.connect.toast.connected.title": "{{provider}} připojeno",
-  "provider.connect.toast.connected.description": "Nyní jsou k dispozici modely {{provider}}.",
+  "provider.connect.toast.connected.description":
+    "Nyní jsou k dispozici modely {{provider}}.",
   "provider.custom.title": "Vlastní poskytovatel",
-  "provider.custom.unavailable": "Vlastní poskytovatelé nejsou na tomto serveru k dispozici",
-  "provider.custom.description.prefix": "Nakonfigurujte poskytovatele kompatibilního s OpenAI. Viz ",
+  "provider.custom.unavailable":
+    "Vlastní poskytovatelé nejsou na tomto serveru k dispozici",
+  "provider.custom.description.prefix":
+    "Nakonfigurujte poskytovatele kompatibilního s OpenAI. Viz ",
   "provider.custom.description.link": "konfigurační dokumenty poskytovatele",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Poskytovatel ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Malá písmena, čísla, pomlčky nebo podtržítka",
+  "provider.custom.field.providerID.description":
+    "Malá písmena, čísla, pomlčky nebo podtržítka",
   "provider.custom.field.name.label": "Zobrazovaný název",
   "provider.custom.field.name.placeholder": "Můj poskytovatel AI",
   "provider.custom.field.baseURL.label": "základ URL",
@@ -280,15 +321,18 @@ export const dict = {
   "provider.custom.headers.remove": "Odstraňte záhlaví",
   "provider.custom.headers.add": "Přidat záhlaví",
   "provider.custom.error.providerID.required": "Poskytovatel ID je povinný",
-  "provider.custom.error.providerID.format": "Používejte malá písmena, čísla, pomlčky nebo podtržítka",
-  "provider.custom.error.providerID.exists": "Tento poskytovatel ID již existuje",
+  "provider.custom.error.providerID.format":
+    "Používejte malá písmena, čísla, pomlčky nebo podtržítka",
+  "provider.custom.error.providerID.exists":
+    "Tento poskytovatel ID již existuje",
   "provider.custom.error.name.required": "Zobrazovaný název je povinný",
   "provider.custom.error.baseURL.required": "Je vyžadována základna URL",
   "provider.custom.error.baseURL.format": "Musí začínat http:// nebo https://",
   "provider.custom.error.required": "Povinné",
   "provider.custom.error.duplicate": "Duplicitní",
   "provider.disconnect.toast.disconnected.title": "{{provider}} odpojeno",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modely již nejsou k dispozici.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modely již nejsou k dispozici.",
   "model.tag.free": "Zdarma",
   "model.tag.latest": "Nejnovější",
   "model.provider.anthropic": "Anthropic",
@@ -357,7 +401,8 @@ export const dict = {
   "prompt.example.19": "Přidejte protokolování v celé kódové základně",
   "prompt.example.20": "Jaké závislosti jsou zastaralé?",
   "prompt.example.21": "Pomozte mi napsat migrační skript",
-  "prompt.example.22": "Implementujte ukládání do mezipaměti pro tento koncový bod",
+  "prompt.example.22":
+    "Implementujte ukládání do mezipaměti pro tento koncový bod",
   "prompt.example.23": "Přidejte stránkování do tohoto seznamu",
   "prompt.example.24": "Vytvořte příkaz CLI pro...",
   "prompt.example.25": "Jak zde fungují proměnné prostředí?",
@@ -382,11 +427,14 @@ export const dict = {
   "prompt.action.send": "Odeslat",
   "prompt.action.stop": "Přestaň",
   "prompt.toast.pasteUnsupported.title": "Nepodporovaná příloha",
-  "prompt.toast.pasteUnsupported.description": "Zde lze připojit pouze obrázky, PDFs nebo textové soubory.",
+  "prompt.toast.pasteUnsupported.description":
+    "Zde lze připojit pouze obrázky, PDFs nebo textové soubory.",
   "prompt.toast.attachmentDuplicate.title": "Tento soubor již byl nahrán",
   "prompt.toast.modelAgentRequired.title": "Vyberte agenta a model",
-  "prompt.toast.modelAgentRequired.description": "Před odesláním výzvy vyberte zástupce a model.",
-  "prompt.toast.worktreeCreateFailed.title": "Vytvoření pracovního stromu se nezdařilo",
+  "prompt.toast.modelAgentRequired.description":
+    "Před odesláním výzvy vyberte zástupce a model.",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Vytvoření pracovního stromu se nezdařilo",
   "prompt.toast.sessionCreateFailed.title": "Vytvoření relace se nezdařilo",
   "prompt.toast.shellSendFailed.title": "Odeslání příkazu shellu se nezdařilo",
   "prompt.toast.commandSendFailed.title": "Odeslání příkazu se nezdařilo",
@@ -414,7 +462,8 @@ export const dict = {
   "app.server.retrying": "Automaticky opakování...",
   "app.server.otherServers": "Jiné servery",
   "dialog.server.title": "servery",
-  "dialog.server.description": "Přepněte, ke kterému OpenCode serveru se tato aplikace připojuje.",
+  "dialog.server.description":
+    "Přepněte, ke kterému OpenCode serveru se tato aplikace připojuje.",
   "dialog.server.search.placeholder": "Vyhledávací servery",
   "dialog.server.empty": "Zatím žádné servery",
   "dialog.server.add.title": "Přidat server",
@@ -452,7 +501,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Vyberte distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Kontrola WSL...",
-  "wsl.onboarding.restartRequired": "Windows vyžaduje restart k dokončení instalace WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows vyžaduje restart k dokončení instalace WSL.",
   "wsl.onboarding.ready": "WSL je připraven.",
   "wsl.onboarding.required": "Pro pokračování je vyžadováno WSL.",
   "wsl.onboarding.checkingDistros": "Kontrola distribucí...",
@@ -461,7 +511,8 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Výpis distribucí...",
   "wsl.onboarding.distroReady": "{{distro}} je připraven.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} ještě není nainstalováno.",
-  "wsl.onboarding.openDistroOnce": "Pro dokončení nastavení jednou otevřete {{distro}}.",
+  "wsl.onboarding.openDistroOnce":
+    "Pro dokončení nastavení jednou otevřete {{distro}}.",
   "wsl.onboarding.finishingDistro": "Dokončování nastavení pro {{distro}}.",
   "wsl.onboarding.pickDistro": "Vyberte distribuci nebo ji nainstalujte níže.",
   "wsl.onboarding.checkingOpencode": "Kontrola OpenCode...",
@@ -485,18 +536,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Chybí bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Nepodporováno · Použijte WSL 2",
   "wsl.onboarding.needAnotherDistro": "Potřebujete další distribuci?",
-  "wsl.onboarding.needAnotherDistroHint": "Nainstalujte distribuci Linux z katalogu WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Nainstalujte distribuci Linux z katalogu WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL není nainstalováno",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystém pro Linux) je vyžadován předtím, než OpenCode může přidat server WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL není k dispozici",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode nemohl ověřit WSL na tomto počítači.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode nemohl ověřit WSL na tomto počítači.",
   "wsl.onboarding.installWsl": "Instalovat WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Restartujte Windows pro dokončení instalace WSL a poté znovu otevřete OpenCode.",
   "wsl.onboarding.next": "Další",
   "wsl.onboarding.refresh": "Obnovit",
-  "wsl.onboarding.allDistrosAdded": "Všechny nainstalované distribuce jsou již přidány.",
+  "wsl.onboarding.allDistrosAdded":
+    "Všechny nainstalované distribuce jsou již přidány.",
   "wsl.onboarding.noDistros": "Dosud nebyla zjištěna žádná distribuce.",
   "wsl.onboarding.install": "Instalovat",
   "wsl.onboarding.installing": "Instalace...",
@@ -510,9 +564,11 @@ export const dict = {
   "wsl.onboarding.version": "Verze: {{version}}",
   "wsl.onboarding.unknown": "neznámý",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Nainstalovaná verze neodpovídá verzi aplikace pro stolní počítače.",
+  "wsl.onboarding.versionMismatch":
+    "Nainstalovaná verze neodpovídá verzi aplikace pro stolní počítače.",
   "wsl.onboarding.adding": "Přidávání...",
-  "help.tabs.toast.ariaLabel": "Představujeme karty. Uspořádejte si práci a aktivní relace pomocí karet",
+  "help.tabs.toast.ariaLabel":
+    "Představujeme karty. Uspořádejte si práci a aktivní relace pomocí karet",
   "help.tabs.toast.dismiss": "Zavřít informace o kartách",
   "help.tabs.title": "Představujeme karty",
   "help.tabs.description": "Uspořádejte si práci a aktivní relace pomocí karet",
@@ -524,7 +580,8 @@ export const dict = {
     "Ponechání několika otevřených karet usnadňuje organizaci aktivních relací. Přejmenujte karty na něco zapamatovatelného, ​​pokud si je plánujete ponechat.",
   "help.tabs.home":
     "Všechny relace a projekty najdete na nové domovské obrazovce. Výběrem relace ji otevřete na kartě.",
-  "help.tabs.persistence": "Když aplikaci znovu otevřete, vaše karty jsou stále otevřené.",
+  "help.tabs.persistence":
+    "Když aplikaci znovu otevřete, vaše karty jsou stále otevřené.",
   "help.tabs.worktrees":
     "Nový design zatím nepodporuje Git Worktrees, brzy bude k dispozici. Pokud tedy chcete pokračovat v používání předchozího rozložení, můžete mezi rozloženími přepínat v Nastavení. Jen mějte na paměti, že nové rozložení se za několik týdnů stane trvalým.",
   "server.row.noUsername": "žádné uživatelské jméno",
@@ -536,7 +593,8 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Doporučeno: 128x128px",
   "dialog.project.edit.color": "Barva",
   "dialog.project.edit.color.select": "Vyberte barvu {{color}}",
-  "dialog.project.edit.worktree.startup": "Spouštěcí skript pracovního prostoru",
+  "dialog.project.edit.worktree.startup":
+    "Spouštěcí skript pracovního prostoru",
   "dialog.project.edit.worktree.startup.description":
     "Spustí se po vytvoření nového pracovního prostoru (pracovního stromu).",
   "dialog.project.edit.worktree.startup.placeholder": "např. bun install",
@@ -545,7 +603,8 @@ export const dict = {
   "dialog.releaseNotes.action.hideFuture": "V budoucnu je nezobrazujte",
   "dialog.releaseNotes.media.alt": "Náhled vydání",
   "context.breakdown.title": "Rozdělení kontextu",
-  "context.breakdown.note": 'Přibližný rozpis vstupních tokenů. "Jiné" zahrnuje definice nástrojů a režii.',
+  "context.breakdown.note":
+    'Přibližný rozpis vstupních tokenů. "Jiné" zahrnuje definice nástrojů a režii.',
   "context.breakdown.system": "Systém",
   "context.breakdown.user": "Uživatel",
   "context.breakdown.assistant": "asistent",
@@ -598,49 +657,69 @@ export const dict = {
   "toast.theme.title": "Téma se změnilo",
   "toast.scheme.title": "Barevné schéma",
   "toast.workspace.enabled.title": "Pracovní prostory povoleny",
-  "toast.workspace.enabled.description": "V postranním panelu se nyní zobrazuje více pracovních stromů",
+  "toast.workspace.enabled.description":
+    "V postranním panelu se nyní zobrazuje více pracovních stromů",
   "toast.workspace.disabled.title": "Pracovní prostory jsou zakázány",
-  "toast.workspace.disabled.description": "Na postranním panelu je zobrazen pouze hlavní pracovní strom",
+  "toast.workspace.disabled.description":
+    "Na postranním panelu je zobrazen pouze hlavní pracovní strom",
   "toast.permissions.autoaccept.on.title": "Automatické přijímání oprávnění",
-  "toast.permissions.autoaccept.on.description": "Žádosti o povolení budou automaticky schváleny",
-  "toast.permissions.autoaccept.off.title": "Zastaveno automatické přijímání oprávnění",
-  "toast.permissions.autoaccept.off.description": "Žádosti o povolení budou vyžadovat schválení",
+  "toast.permissions.autoaccept.on.description":
+    "Žádosti o povolení budou automaticky schváleny",
+  "toast.permissions.autoaccept.off.title":
+    "Zastaveno automatické přijímání oprávnění",
+  "toast.permissions.autoaccept.off.description":
+    "Žádosti o povolení budou vyžadovat schválení",
   "toast.model.none.title": "Není vybrán žádný model",
-  "toast.model.none.description": "Chcete-li tuto relaci shrnout, připojte poskytovatele",
+  "toast.model.none.description":
+    "Chcete-li tuto relaci shrnout, připojte poskytovatele",
   "toast.file.loadFailed.title": "Soubor se nepodařilo načíst",
   "toast.file.listFailed.title": "Seznam souborů se nezdařil",
   "toast.context.noLineSelection.title": "Žádný výběr řádku",
-  "toast.context.noLineSelection.description": "Nejprve vyberte rozsah řádků na kartě souboru.",
-  "toast.session.share.copyFailed.title": "Zkopírování URL do schránky se nezdařilo",
+  "toast.context.noLineSelection.description":
+    "Nejprve vyberte rozsah řádků na kartě souboru.",
+  "toast.session.share.copyFailed.title":
+    "Zkopírování URL do schránky se nezdařilo",
   "toast.session.share.success.title": "Relace sdílena",
-  "toast.session.share.success.description": "Sdílet URL zkopírováno do schránky!",
+  "toast.session.share.success.description":
+    "Sdílet URL zkopírováno do schránky!",
   "toast.session.share.failed.title": "Sdílení relace se nezdařilo",
   "toast.session.share.failed.description": "Při sdílení relace došlo k chybě",
   "toast.session.unshare.success.title": "Relace byla zrušena",
-  "toast.session.unshare.success.description": "Sdílení relace bylo úspěšně zrušeno!",
+  "toast.session.unshare.success.description":
+    "Sdílení relace bylo úspěšně zrušeno!",
   "toast.session.unshare.failed.title": "Zrušení sdílení relace se nezdařilo",
-  "toast.session.unshare.failed.description": "Při zrušení sdílení relace došlo k chybě",
+  "toast.session.unshare.failed.description":
+    "Při zrušení sdílení relace došlo k chybě",
   "toast.session.export.success.title": "Relace byla exportována",
-  "toast.session.export.success.description": "Relace byla uložena do {{filename}}",
+  "toast.session.export.success.description":
+    "Relace byla uložena do {{filename}}",
   "toast.session.export.failed.title": "Export relace se nezdařil",
   "toast.session.export.failed.description": "Při exportu relace došlo k chybě",
-  "toast.session.listFailed.title": "Nepodařilo se načíst relace pro {{project}}",
+  "toast.session.listFailed.title":
+    "Nepodařilo se načíst relace pro {{project}}",
   "toast.project.reloadFailed.title": "Nepodařilo se znovu načíst {{project}}",
   "toast.update.title": "Aktualizace k dispozici",
-  "toast.update.description": "Nyní je k dispozici k instalaci nová verze OpenCode ({{version}}).",
+  "toast.update.description":
+    "Nyní je k dispozici k instalaci nová verze OpenCode ({{version}}).",
   "toast.update.action.installRestart": "Nainstalujte a restartujte",
   "toast.update.action.notYet": "Ještě ne",
-  "disk.accessGuidance.macos": "Udělte aplikaci DiskLizard úplný přístup na disk v Nastavení systému a poté skenujte znovu.",
-  "disk.accessGuidance.windows": "Použijte účet s přístupem k této jednotce, nebo skenujte složku, kterou váš účet může číst.",
-  "disk.accessGuidance.linux": "Zkontrolujte oprávnění složek a připojených úložišť a poté skenujte znovu.",
-  "disk.accessGuidance.default": "Zkontrolujte přístup k těmto složkám a poté skenujte znovu.",
-  "disk.accessGuidance.rescan": "Po změně přístupu použijte tlačítko Znovu skenovat v horní liště.",
+  "disk.accessGuidance.macos":
+    "Udělte aplikaci DiskLizard úplný přístup na disk v Nastavení systému a poté skenujte znovu.",
+  "disk.accessGuidance.windows":
+    "Použijte účet s přístupem k této jednotce, nebo skenujte složku, kterou váš účet může číst.",
+  "disk.accessGuidance.linux":
+    "Zkontrolujte oprávnění složek a připojených úložišť a poté skenujte znovu.",
+  "disk.accessGuidance.default":
+    "Zkontrolujte přístup k těmto složkám a poté skenujte znovu.",
+  "disk.accessGuidance.rescan":
+    "Po změně přístupu použijte tlačítko Znovu skenovat v horní liště.",
   "disk.common.rescan": "Skenovat znovu",
   "toast.update.installFailed.title": "Aktualizaci se nepodařilo nainstalovat",
   "toast.update.installFailed.retry": "Zkusit znovu",
   "error.page.title": "Něco se pokazilo",
   "error.page.description": "Při načítání aplikace došlo k chybě.",
-  "error.page.description.localServerStartup": "Při spouštění místního serveru došlo k chybě.",
+  "error.page.description.localServerStartup":
+    "Při spouštění místního serveru došlo k chybě.",
   "error.page.details.label": "Podrobnosti o chybě",
   "error.page.action.restart": "Restartujte",
   "error.page.action.report": "Nahlásit chybu",
@@ -655,12 +734,16 @@ export const dict = {
   "error.page.version": "Verze: {{version}}",
   "error.dev.rootNotFound":
     "Kořenový prvek nenalezen. Zapomněli jste to přidat do index.html? Nebo je možná chyba v atributu id?",
-  "error.serverSync.connectFailed": "Nelze se připojit k serveru. Existuje server spuštěný na `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Nelze se připojit k serveru. Existuje server spuštěný na `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Žádný dostupný server",
   "error.serverSDK.serverNotAvailable": "Server není dostupný",
-  "error.childStore.persistedCacheCreateFailed": "Nepodařilo se vytvořit trvalou mezipaměť",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Nepodařilo se vytvořit trvalá metadata projektu",
-  "error.childStore.persistedProjectIconCreateFailed": "Nepodařilo se vytvořit trvalou ikonu projektu",
+  "error.childStore.persistedCacheCreateFailed":
+    "Nepodařilo se vytvořit trvalou mezipaměť",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Nepodařilo se vytvořit trvalá metadata projektu",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Nepodařilo se vytvořit trvalou ikonu projektu",
   "error.childStore.storeCreateFailed": "Obchod se nepodařilo vytvořit",
   "directory.error.invalidUrl": "Neplatný adresář v URL.",
   "error.chain.unknown": "Neznámá chyba",
@@ -672,22 +755,31 @@ export const dict = {
   "error.chain.responseBody": "Tělo odpovědi:\n{{body}}",
   "error.chain.didYouMean": "Měli jste na mysli: {{suggestions}}",
   "error.chain.modelNotFound": "Model nenalezen: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Zkontrolujte název poskytovatele/modelu konfigurace (opencode.json).",
-  "error.chain.mcpFailed": 'MCP server "{{name}}" selhal. Poznámka: OpenCode zatím nepodporuje ověřování MCP.',
-  "error.chain.providerAuthFailed": "Ověření poskytovatele se nezdařilo ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Zkontrolujte název poskytovatele/modelu konfigurace (opencode.json).",
+  "error.chain.mcpFailed":
+    'MCP server "{{name}}" selhal. Poznámka: OpenCode zatím nepodporuje ověřování MCP.',
+  "error.chain.providerAuthFailed":
+    "Ověření poskytovatele se nezdařilo ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Nepodařilo se inicializovat poskytovatele "{{provider}}". Zkontrolujte přihlašovací údaje a konfiguraci.',
-  "error.chain.configJsonInvalid": "Konfigurační soubor na {{path}} není platný JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurační soubor na {{path}} není platný JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfigurační soubor na {{path}} není platný JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurační soubor na {{path}} není platný JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Adresář "{{dir}}" v {{path}} není platný. Přejmenujte adresář na "{{suggestion}}" nebo jej odeberte. Toto je běžný překlep.',
-  "error.chain.configFrontmatterError": "Nepodařilo se analyzovat frontmatter v {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Nepodařilo se analyzovat frontmatter v {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Konfigurační soubor na {{path}} je neplatný",
-  "error.chain.configInvalidWithMessage": "Konfigurační soubor na {{path}} je neplatný: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigurační soubor na {{path}} je neplatný: {{message}}",
   "notification.permission.title": "Vyžaduje se povolení",
-  "notification.permission.description": "{{sessionTitle}} v {{projectName}} potřebuje povolení",
+  "notification.permission.description":
+    "{{sessionTitle}} v {{projectName}} potřebuje povolení",
   "notification.question.title": "Otázka",
-  "notification.question.description": "{{sessionTitle}} v {{projectName}} má otázku",
+  "notification.question.description":
+    "{{sessionTitle}} v {{projectName}} má otázku",
   "notification.action.goToSession": "Přejít na relaci",
   "notification.session.responseReady.title": "Odpověď připravena",
   "notification.session.error.title": "Chyba relace",
@@ -704,7 +796,8 @@ export const dict = {
   "home.sessions.search.placeholder": "Vyhledávání relací",
   "home.sessions.search.placeholder.scoped": "Hledat relace v {{scope}}",
   "home.sessions.search.sessions": "Relace",
-  "home.sessions.search.noResults": "Pro {{query}} nebyly nalezeny žádné relace",
+  "home.sessions.search.noResults":
+    "Pro {{query}} nebyly nalezeny žádné relace",
   "home.sessions.empty": "Tady zatím nic",
   "home.sessions.empty.description": "Začněte vytvořením relace",
   "home.sessions.group.today": "dnes",
@@ -718,7 +811,8 @@ export const dict = {
   "session.tab.unknown": "Neznámá relace",
   "session.panel.reviewAndFiles": "Recenze a soubory",
   "session.error.notFound": "Tuto relaci nelze najít",
-  "session.error.notFound.description": "Tato karta ukazuje na relaci, která již na tomto serveru neexistuje.",
+  "session.error.notFound.description":
+    "Tato karta ukazuje na relaci, která již na tomto serveru neexistuje.",
   "session.error.notFound.closeTab": "Zavřít kartu",
   "session.error.serverConnection": "K tomuto serveru se nelze připojit",
   "session.review.filesChanged": "Soubory změněny {{count}}",
@@ -726,12 +820,15 @@ export const dict = {
   "session.review.change.other": "Změny",
   "session.review.loadingChanges": "Načítání změn...",
   "session.review.empty": "V této relaci zatím žádné změny",
-  "session.review.noVcs": "Ne Git Zjištěn systém správy verzí, změny se nezobrazují",
+  "session.review.noVcs":
+    "Ne Git Zjištěn systém správy verzí, změny se nezobrazují",
   "session.review.noVcs.createGit.title": "Vytvořte úložiště Git",
-  "session.review.noVcs.createGit.description": "Sledujte, kontrolujte a vracejte změny v tomto projektu",
+  "session.review.noVcs.createGit.description":
+    "Sledujte, kontrolujte a vracejte změny v tomto projektu",
   "session.review.noVcs.createGit.actionLoading": "Vytváření Git úložiště...",
   "session.review.noVcs.createGit.action": "Vytvořit Git úložiště",
-  "session.review.noSnapshot": "Sledování snímků je v konfiguraci zakázáno, takže změny relace nejsou dostupné",
+  "session.review.noSnapshot":
+    "Sledování snímků je v konfiguraci zakázáno, takže změny relace nejsou dostupné",
   "session.review.noChanges": "Žádné změny",
   "session.review.noUncommittedChanges": "Zatím žádné neprovedené změny",
   "session.review.noBranchChanges": "Zatím žádné změny ve větvi",
@@ -818,8 +915,10 @@ export const dict = {
   "status.popover.tab.plugins": "Pluginy",
   "status.popover.action.manageServers": "Správa serverů",
   "session.share.popover.title": "Publikovat na webu",
-  "session.share.popover.description.shared": "Tato relace je veřejná na webu. Je přístupný komukoli s odkazem.",
-  "session.share.popover.description.unshared": "Sdílejte relaci veřejně na webu. Bude přístupný komukoli s odkazem.",
+  "session.share.popover.description.shared":
+    "Tato relace je veřejná na webu. Je přístupný komukoli s odkazem.",
+  "session.share.popover.description.unshared":
+    "Sdílejte relaci veřejně na webu. Bude přístupný komukoli s odkazem.",
   "session.share.action.share": "Sdílejte",
   "session.share.action.publish": "Publikovat",
   "session.share.action.publishing": "Publikování...",
@@ -836,12 +935,14 @@ export const dict = {
   "terminal.title.numbered": "Terminál {{number}}",
   "terminal.close": "Zavřete terminál",
   "terminal.connectionLost.title": "Připojení ztraceno",
-  "terminal.connectionLost.abnormalClose": "WebSocket abnormálně uzavřeno: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket abnormálně uzavřeno: {{code}}",
   "terminal.connectionLost.description":
     "Spojení terminálu bylo přerušeno. To se může stát, když se server restartuje.",
   "terminal.connectTicket.csrfError":
     "PTY lístek připojení zamítnut původem nebo CSRF kontrolami. Zkontrolujte konfiguraci serveru CORS.",
-  "terminal.connectTicket.statusError": "PTY lístek připojení se nezdařil s {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY lístek připojení se nezdařil s {{status}}",
   "titlebar.update": "Aktualizovat",
   "titlebar.updateVersion": "Aktualizovat {{version}}",
   "common.closeTab": "Zavřít kartu",
@@ -885,7 +986,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Povolit pracovní prostory",
   "sidebar.workspaces.disable": "Zakázat pracovní prostory",
   "sidebar.gettingStarted.title": "Začínáme",
-  "sidebar.gettingStarted.line1": "OpenCode obsahuje bezplatné modely, takže můžete začít okamžitě.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode obsahuje bezplatné modely, takže můžete začít okamžitě.",
   "sidebar.gettingStarted.line2":
     "Připojte libovolného poskytovatele, abyste mohli používat modely, vč. Claude, GPT, Gemini atd.",
   "sidebar.project.recentSessions": "Nedávné relace",
@@ -905,23 +1007,28 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Snímky delší než 32 ms za posledních 5 sekund.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokovaný čas a počet dlouhých úkolů za posledních 5 sekund. Maximální úkol: {{max}}.",
+  "debugBar.long.tip":
+    "Blokovaný čas a počet dlouhých úkolů za posledních 5 sekund. Maximální úkol: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Nejhorší pozorované zpoždění vstupu za posledních 5 sekund.",
+  "debugBar.delay.tip":
+    "Nejhorší pozorované zpoždění vstupu za posledních 5 sekund.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Přibližná doba trvání interakce za posledních 5 sekund. Toto je INP, nikoli oficiální Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kumulativní změna rozvržení pro aktuální životnost aplikace.",
+  "debugBar.cls.tip":
+    "Kumulativní změna rozvržení pro aktuální životnost aplikace.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Použitá halda JS vs limit haldy. pouze Chromium.",
+  "debugBar.mem.tipUnavailable":
+    "Použitá halda JS vs limit haldy. pouze Chromium.",
   "debugBar.mem.tip": "Použitá halda JS vs limit haldy. {{used}} z {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Vynutit styly zaměření na všechny interaktivní prvky",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "VYPNUTO",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Vynutit úplný směr rozvržení aplikace bez změny vybraného jazyka",
+  "debugBar.direction.tip":
+    "Vynutit úplný směr rozvržení aplikace bez změny vybraného jazyka",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -931,7 +1038,8 @@ export const dict = {
   "settings.tab.shortcuts": "Zkratky",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integrace",
-  "settings.desktop.wsl.description": "Spusťte server OpenCode uvnitř WSL na Windows.",
+  "settings.desktop.wsl.description":
+    "Spusťte server OpenCode uvnitř WSL na Windows.",
   "settings.general.section.appearance": "Vzhled",
   "settings.general.section.advanced": "Pokročilé",
   "settings.general.section.notifications": "Systémová upozornění",
@@ -940,38 +1048,51 @@ export const dict = {
   "settings.general.section.feed": "Krmivo",
   "settings.general.section.display": "Displej",
   "settings.general.row.language.title": "Jazyk",
-  "settings.general.row.language.description": "Změnit jazyk zobrazení pro OpenCode",
+  "settings.general.row.language.description":
+    "Změnit jazyk zobrazení pro OpenCode",
   "settings.general.row.shell.title": "Shell terminálu",
-  "settings.general.row.shell.description": "Shell používaný terminálem a nástroji agenta",
+  "settings.general.row.shell.description":
+    "Shell používaný terminálem a nástroji agenta",
   "settings.general.row.shell.autoDefault": "Auto (výchozí)",
   "settings.general.row.shell.terminalOnly": "pouze terminál",
   "settings.general.row.appearance.title": "Vzhled",
-  "settings.general.row.appearance.description": "Přizpůsobte si vzhled OpenCode na vašem zařízení",
+  "settings.general.row.appearance.description":
+    "Přizpůsobte si vzhled OpenCode na vašem zařízení",
   "settings.general.row.colorScheme.title": "Barevné schéma",
   "settings.general.row.colorScheme.description":
     "Zvolte, zda bude OpenCode následovat systémové, světlé nebo tmavé téma",
   "settings.general.row.theme.title": "téma",
-  "settings.general.row.theme.description": "Přizpůsobte, jak je téma OpenCode.",
+  "settings.general.row.theme.description":
+    "Přizpůsobte, jak je téma OpenCode.",
   "settings.general.row.font.title": "Písmo kódu",
-  "settings.general.row.font.description": "Přizpůsobte písmo používané v blocích kódu",
+  "settings.general.row.font.description":
+    "Přizpůsobte písmo používané v blocích kódu",
   "settings.general.row.terminalFont.title": "Terminálové písmo",
-  "settings.general.row.terminalFont.description": "Přizpůsobte písmo použité v terminálu",
+  "settings.general.row.terminalFont.description":
+    "Přizpůsobte písmo použité v terminálu",
   "settings.general.row.uiFont.title": "UI Písmo",
-  "settings.general.row.uiFont.description": "Přizpůsobte písmo používané v celém rozhraní",
+  "settings.general.row.uiFont.description":
+    "Přizpůsobte písmo používané v celém rozhraní",
   "settings.general.row.followup.title": "Následné chování",
-  "settings.general.row.followup.description": "Zvolte, zda se mají následné výzvy řídit okamžitě nebo čekat ve frontě",
+  "settings.general.row.followup.description":
+    "Zvolte, zda se mají následné výzvy řídit okamžitě nebo čekat ve frontě",
   "settings.general.row.followup.option.queue": "Fronta",
   "settings.general.row.followup.option.steer": "Řídit",
   "settings.general.row.showFileTree.title": "Strom souborů",
-  "settings.general.row.showFileTree.description": "Zobrazit panel stromu souborů v relacích",
+  "settings.general.row.showFileTree.description":
+    "Zobrazit panel stromu souborů v relacích",
   "settings.general.row.showNavigation.title": "Ovládací prvky navigace",
-  "settings.general.row.showNavigation.description": "Zobrazte tlačítka zpět a vpřed v záhlaví plochy",
+  "settings.general.row.showNavigation.description":
+    "Zobrazte tlačítka zpět a vpřed v záhlaví plochy",
   "settings.general.row.showSearch.title": "Paleta příkazů",
-  "settings.general.row.showSearch.description": "Zobrazit tlačítko vyhledávací a příkazové palety v záhlaví",
+  "settings.general.row.showSearch.description":
+    "Zobrazit tlačítko vyhledávací a příkazové palety v záhlaví",
   "settings.general.row.showTerminal.title": "Terminál",
-  "settings.general.row.showTerminal.description": "Zobrazit tlačítko terminálu v záhlaví plochy",
+  "settings.general.row.showTerminal.description":
+    "Zobrazit tlačítko terminálu v záhlaví plochy",
   "settings.general.row.showStatus.title": "Stav serveru",
-  "settings.general.row.showStatus.description": "Zobrazit tlačítko stavu serveru v záhlaví",
+  "settings.general.row.showStatus.description":
+    "Zobrazit tlačítko stavu serveru v záhlaví",
   "settings.general.row.mobileTitlebarBottom.title": "Spodní navigace",
   "settings.general.row.mobileTitlebarBottom.description":
     "Umístěte záhlaví a karty relací do spodní části obrazovky na mobilu",
@@ -979,38 +1100,49 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "Přepínání mezi agenty ve skladateli. Když je skrytý, výchozí nastavení je Sestavit agenta.",
   "settings.general.row.reasoningSummaries.title": "Ukažte shrnutí odůvodnění",
-  "settings.general.row.reasoningSummaries.description": "Zobrazte souhrny zdůvodnění modelu na časové ose",
-  "settings.general.row.shellToolPartsExpanded.title": "Rozbalte části nástroje shell",
+  "settings.general.row.reasoningSummaries.description":
+    "Zobrazte souhrny zdůvodnění modelu na časové ose",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Rozbalte části nástroje shell",
   "settings.general.row.shellToolPartsExpanded.description":
     "Ve výchozím nastavení zobrazit na časové ose rozbalené části nástroje shell",
-  "settings.general.row.editToolPartsExpanded.title": "Rozbalte části nástroje pro úpravy",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Rozbalte části nástroje pro úpravy",
   "settings.general.row.editToolPartsExpanded.description":
     "Ve výchozím nastavení zobrazit na časové ose rozbalené části nástroje pro úpravy, zápis a opravy",
   "settings.general.row.newInterface.title": "Nové rozložení",
   "settings.general.row.newInterface.badge": "Nové",
   "settings.general.row.newInterface.description":
     "Použijte nové karty a domovské rozvržení. Přepínejte mezi rozvrženími po omezenou dobu.",
-  "settings.general.row.newInterfaceNotice.title": "Nyní používáte nové rozvržení",
-  "settings.general.row.newInterfaceNotice.description": "Předchozí rozložení již není k dispozici",
+  "settings.general.row.newInterfaceNotice.title":
+    "Nyní používáte nové rozvržení",
+  "settings.general.row.newInterfaceNotice.description":
+    "Předchozí rozložení již není k dispozici",
   "settings.general.row.newInterfaceNotice.dismiss": "Odmítnout",
   "settings.general.row.pinchZoom.title": "Stažením prstů přiblížíte",
-  "settings.general.row.pinchZoom.description": "Povolit přiblížení pomocí gest trackpadu a gesta Ctrl posouvání",
+  "settings.general.row.pinchZoom.description":
+    "Povolit přiblížení pomocí gest trackpadu a gesta Ctrl posouvání",
   "settings.general.row.wayland.title": "Použít nativní Wayland",
-  "settings.general.row.wayland.description": "Zakázat zálohu X11 na Wayland. Vyžaduje restart.",
+  "settings.general.row.wayland.description":
+    "Zakázat zálohu X11 na Wayland. Vyžaduje restart.",
   "settings.general.row.wayland.tooltip":
     "Na Linux s monitory se smíšenou obnovovací frekvencí může být nativní Wayland stabilnější.",
   "settings.general.row.releaseNotes.title": "Poznámky k vydání",
-  "settings.general.row.releaseNotes.description": "Zobrazit vyskakovací okna Co je nového po aktualizacích",
+  "settings.general.row.releaseNotes.description":
+    "Zobrazit vyskakovací okna Co je nového po aktualizacích",
   "settings.updates.row.startup.title": "Zkontrolujte aktualizace při spuštění",
-  "settings.updates.row.startup.description": "Automaticky kontrolovat aktualizace při spuštění OpenCode",
+  "settings.updates.row.startup.description":
+    "Automaticky kontrolovat aktualizace při spuštění OpenCode",
   "settings.updates.row.check.title": "Zkontrolujte aktualizace",
-  "settings.updates.row.check.description": "Ručně zkontrolujte aktualizace a nainstalujte je, pokud jsou k dispozici",
+  "settings.updates.row.check.description":
+    "Ručně zkontrolujte aktualizace a nainstalujte je, pokud jsou k dispozici",
   "settings.updates.action.checkNow": "Zkontrolujte nyní",
   "settings.updates.action.checking": "Kontrola...",
   "settings.updates.action.downloading": "Stahování...",
   "settings.updates.action.installing": "Instalace...",
   "settings.updates.toast.latest.title": "Jste aktuální",
-  "settings.updates.toast.latest.description": "Používáte nejnovější verzi OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Používáte nejnovější verzi OpenCode.",
   "sound.option.none": "žádný",
   "sound.option.alert01": "Upozornění 01",
   "sound.option.alert02": "Upozornění 02",
@@ -1064,19 +1196,25 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Zobrazit systémové upozornění, když je vyžadováno oprávnění",
   "settings.general.notifications.errors.title": "Chyby",
-  "settings.general.notifications.errors.description": "Zobrazit systémové upozornění, když dojde k chybě",
+  "settings.general.notifications.errors.description":
+    "Zobrazit systémové upozornění, když dojde k chybě",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Přehrajte zvuk, když je agent kompletní nebo vyžaduje pozornost",
+  "settings.general.sounds.agent.description":
+    "Přehrajte zvuk, když je agent kompletní nebo vyžaduje pozornost",
   "settings.general.sounds.permissions.title": "Oprávnění",
-  "settings.general.sounds.permissions.description": "Přehrát zvuk, když je vyžadováno povolení",
+  "settings.general.sounds.permissions.description":
+    "Přehrát zvuk, když je vyžadováno povolení",
   "settings.general.sounds.errors.title": "Chyby",
-  "settings.general.sounds.errors.description": "Přehrát zvuk, když dojde k chybě",
+  "settings.general.sounds.errors.description":
+    "Přehrát zvuk, když dojde k chybě",
   "settings.shortcuts.title": "Klávesové zkratky",
   "settings.shortcuts.reset.button": "Obnovit výchozí nastavení",
   "settings.shortcuts.reset.toast.title": "Zkratky byly resetovány",
-  "settings.shortcuts.reset.toast.description": "Klávesové zkratky byly resetovány na výchozí hodnoty.",
+  "settings.shortcuts.reset.toast.description":
+    "Klávesové zkratky byly resetovány na výchozí hodnoty.",
   "settings.shortcuts.conflict.title": "Zástupce se již používá",
-  "settings.shortcuts.conflict.description": "{{keybind}} je již přiřazeno {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} je již přiřazeno {{titles}}.",
   "settings.shortcuts.unassigned": "Nepřiřazeno",
   "settings.shortcuts.pressKeys": "Stiskněte klávesy",
   "settings.shortcuts.search.placeholder": "Vyhledávací zkratky",
@@ -1088,39 +1226,51 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminál",
   "settings.shortcuts.group.prompt": "Prompt",
   "settings.providers.title": "Poskytovatelé",
-  "settings.providers.description": "Zde bude možné konfigurovat nastavení poskytovatele.",
+  "settings.providers.description":
+    "Zde bude možné konfigurovat nastavení poskytovatele.",
   "settings.providers.section.connected": "Připojení poskytovatelé",
   "settings.providers.connected.empty": "Žádní připojení poskytovatelé",
-  "settings.providers.connected.environmentDescription": "Připojeno z vašich proměnných prostředí",
+  "settings.providers.connected.environmentDescription":
+    "Připojeno z vašich proměnných prostředí",
   "settings.providers.section.popular": "Populární poskytovatelé",
-  "settings.providers.custom.description": "Přidejte poskytovatele kompatibilního s OpenAI podle základny URL.",
+  "settings.providers.custom.description":
+    "Přidejte poskytovatele kompatibilního s OpenAI podle základny URL.",
   "settings.providers.tag.environment": "Životní prostředí",
   "settings.providers.tag.config": "Konfigurace",
   "settings.providers.tag.custom": "Vlastní",
   "settings.providers.tag.other": "Jiné",
   "settings.models.title": "Modely",
-  "settings.models.description": "Zde bude možné konfigurovat nastavení modelu.",
+  "settings.models.description":
+    "Zde bude možné konfigurovat nastavení modelu.",
   "settings.agents.title": "Agenti",
-  "settings.agents.description": "Zde bude možné konfigurovat nastavení agenta.",
+  "settings.agents.description":
+    "Zde bude možné konfigurovat nastavení agenta.",
   "settings.commands.title": "Příkazy",
-  "settings.commands.description": "Zde bude možné konfigurovat nastavení příkazů.",
+  "settings.commands.description":
+    "Zde bude možné konfigurovat nastavení příkazů.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Zde bude možné konfigurovat nastavení MCP.",
   "settings.permissions.title": "Oprávnění",
-  "settings.permissions.description": "Určete, jaké nástroje může server ve výchozím nastavení používat.",
+  "settings.permissions.description":
+    "Určete, jaké nástroje může server ve výchozím nastavení používat.",
   "settings.permissions.section.tools": "Nástroje",
-  "settings.permissions.toast.updateFailed.title": "Aktualizace oprávnění se nezdařila",
+  "settings.permissions.toast.updateFailed.title":
+    "Aktualizace oprávnění se nezdařila",
   "settings.permissions.action.allow": "Povolit",
   "settings.permissions.action.ask": "Zeptejte se",
   "settings.permissions.action.deny": "Odmítnout",
   "settings.permissions.tool.read.title": "Přečtěte si",
-  "settings.permissions.tool.read.description": "Čtení souboru (odpovídá cestě k souboru)",
+  "settings.permissions.tool.read.description":
+    "Čtení souboru (odpovídá cestě k souboru)",
   "settings.permissions.tool.edit.title": "Upravit",
-  "settings.permissions.tool.edit.description": "Upravte soubory, včetně úprav, zápisů a oprav",
+  "settings.permissions.tool.edit.description":
+    "Upravte soubory, včetně úprav, zápisů a oprav",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Porovnejte soubory pomocí vzorů glob",
+  "settings.permissions.tool.glob.description":
+    "Porovnejte soubory pomocí vzorů glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Prohledávejte obsah souboru pomocí regulárních výrazů",
+  "settings.permissions.tool.grep.description":
+    "Prohledávejte obsah souboru pomocí regulárních výrazů",
   "settings.permissions.tool.list.title": "Seznam",
   "settings.permissions.tool.list.description": "Seznam souborů v adresáři",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1128,19 +1278,24 @@ export const dict = {
   "settings.permissions.tool.task.title": "Úkol",
   "settings.permissions.tool.task.description": "Spusťte dílčí agenty",
   "settings.permissions.tool.skill.title": "Dovednost",
-  "settings.permissions.tool.skill.description": "Načtěte dovednost podle názvu",
+  "settings.permissions.tool.skill.description":
+    "Načtěte dovednost podle názvu",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Spusťte dotazy na jazykový server",
+  "settings.permissions.tool.lsp.description":
+    "Spusťte dotazy na jazykový server",
   "settings.permissions.tool.todowrite.title": "Todo Napište",
-  "settings.permissions.tool.todowrite.description": "Aktualizujte seznam úkolů",
+  "settings.permissions.tool.todowrite.description":
+    "Aktualizujte seznam úkolů",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
   "settings.permissions.tool.webfetch.description": "Načíst obsah z URL",
   "settings.permissions.tool.websearch.title": "Vyhledávání na webu",
   "settings.permissions.tool.websearch.description": "Hledejte na webu",
   "settings.permissions.tool.external_directory.title": "Externí adresář",
-  "settings.permissions.tool.external_directory.description": "Přístup k souborům mimo adresář projektu",
+  "settings.permissions.tool.external_directory.description":
+    "Přístup k souborům mimo adresář projektu",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Detekce opakovaných volání nástrojů se stejným zadáním",
+  "settings.permissions.tool.doom_loop.description":
+    "Detekce opakovaných volání nástrojů se stejným zadáním",
   "session.delete.failed.title": "Smazání relace se nezdařilo",
   "session.delete.title": "Odstranit relaci",
   "session.delete.confirm": 'Odstranit relaci "{{name}}"?',
@@ -1154,12 +1309,14 @@ export const dict = {
   "workspace.resetting.description": "Může to chvíli trvat.",
   "workspace.reset.failed.title": "Obnovení pracovního prostoru se nezdařilo",
   "workspace.reset.success.title": "Obnovení pracovního prostoru",
-  "workspace.reset.success.description": "Pracovní prostor nyní odpovídá výchozí větvi.",
+  "workspace.reset.success.description":
+    "Pracovní prostor nyní odpovídá výchozí větvi.",
   "workspace.error.stillPreparing": "Pracovní plocha se stále připravuje",
   "workspace.status.checking": "Kontrola nesloučených změn...",
   "workspace.status.error": "Nelze ověřit stav git.",
   "workspace.status.clean": "Nebyly zjištěny žádné nesloučené změny.",
-  "workspace.status.dirty": "V tomto pracovním prostoru byly zjištěny nesloučené změny.",
+  "workspace.status.dirty":
+    "V tomto pracovním prostoru byly zjištěny nesloučené změny.",
   "workspace.delete.title": "Odstranit pracovní prostor",
   "workspace.delete.confirm": 'Odstranit pracovní prostor "{{name}}"?',
   "workspace.delete.button": "Odstranit pracovní prostor",
@@ -1169,6 +1326,7 @@ export const dict = {
   "workspace.reset.archived.none": "Žádné aktivní relace nebudou archivovány.",
   "workspace.reset.archived.one": "1 relace bude archivována.",
   "workspace.reset.archived.many": "{{count}} relací bude archivováno.",
-  "workspace.reset.note": "Tím se pracovní prostor resetuje tak, aby odpovídal výchozí větvi.",
+  "workspace.reset.note":
+    "Tím se pracovní prostor resetuje tak, aby odpovídal výchozí větvi.",
   "dialog.usageExceeded.dontShowAgain": "Znovu nezobrazovat",
 }

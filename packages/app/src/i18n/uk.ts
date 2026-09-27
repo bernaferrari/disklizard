@@ -1,9 +1,14 @@
 export const dict = {
-  "disk.accessGuidance.macos": "Надайте DiskLizard повний доступ до диска у «Системних налаштуваннях», а потім виконайте сканування ще раз.",
-  "disk.accessGuidance.windows": "Використовуйте обліковий запис із доступом до цього диска або проскануйте папку, доступну вашому обліковому запису.",
-  "disk.accessGuidance.linux": "Перевірте права доступу до папки та точки монтування, а потім виконайте сканування ще раз.",
-  "disk.accessGuidance.default": "Перевірте доступ до цих папок, а потім виконайте сканування ще раз.",
-  "disk.accessGuidance.rescan": "Після зміни доступу скористайтеся «Повторним скануванням» у верхній панелі.",
+  "disk.accessGuidance.macos":
+    "Надайте DiskLizard повний доступ до диска у «Системних налаштуваннях», а потім виконайте сканування ще раз.",
+  "disk.accessGuidance.windows":
+    "Використовуйте обліковий запис із доступом до цього диска або проскануйте папку, доступну вашому обліковому запису.",
+  "disk.accessGuidance.linux":
+    "Перевірте права доступу до папки та точки монтування, а потім виконайте сканування ще раз.",
+  "disk.accessGuidance.default":
+    "Перевірте доступ до цих папок, а потім виконайте сканування ще раз.",
+  "disk.accessGuidance.rescan":
+    "Після зміни доступу скористайтеся «Повторним скануванням» у верхній панелі.",
   "disk.common.rescan": "Пересканувати",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Файл",
@@ -51,13 +56,16 @@ export const dict = {
   "desktop.menu.reportBug": "Повідомити про помилку",
   "desktop.menu.ariaLabel": "Меню OpenCode",
 
-  "desktop.updater.dialog.checkFailed.message": "Не вдалося перевірити наявність оновлень.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Не вдалося перевірити наявність оновлень.",
   "desktop.updater.dialog.checkFailed.title": "Помилка оновлення",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "У вас найновіша версія.",
   "desktop.updater.dialog.upToDate.title": "Оновлень немає",
-  "desktop.updater.dialog.ready.message": "Оновлення {{version}} завантажено. Перезапустити зараз?",
+  "desktop.updater.dialog.ready.message":
+    "Оновлення {{version}} завантажено. Перезапустити зараз?",
   "desktop.updater.dialog.ready.title": "Оновлення готове",
   "desktop.updater.dialog.restart": "Перезапустити",
   "desktop.updater.dialog.retry": "Retry",
@@ -72,8 +80,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode не відповідає",
   "desktop.recovery.unresponsive.detail":
     "Ви можете повторно запустити програму, відкрити журнали або продовжити очікування.",
-  "desktop.recovery.loadFailed.detail": "Вікно: {{window}}\nURL: {{url}}\nПомилка: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Вікно: {{window}}\nПричина: {{reason}}\nКод: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Вікно: {{window}}\nURL: {{url}}\nПомилка: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Вікно: {{window}}\nПричина: {{reason}}\nКод: {{code}}",
   "desktop.recovery.unknown": "<невідомо>",
 
   "desktop.dialog.chooseFolder": "Виберіть папку",
@@ -84,29 +94,39 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL доступна лише у Windows",
   "desktop.wsl.error.unavailable": "WSL недоступна",
-  "desktop.wsl.error.listInstalled": "Не вдалося отримати список встановлених дистрибутивів WSL",
-  "desktop.wsl.error.listOnline": "Не вдалося отримати список доступних онлайн дистрибутивів WSL",
-  "desktop.wsl.error.executeDistro": "Не вдалося виконати команди в дистрибутиві",
+  "desktop.wsl.error.listInstalled":
+    "Не вдалося отримати список встановлених дистрибутивів WSL",
+  "desktop.wsl.error.listOnline":
+    "Не вдалося отримати список доступних онлайн дистрибутивів WSL",
+  "desktop.wsl.error.executeDistro":
+    "Не вдалося виконати команди в дистрибутиві",
   "desktop.wsl.error.installWsl": "Не вдалося встановити WSL",
-  "desktop.wsl.error.installDistro": "Не вдалося встановити дистрибутив: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Не вдалося встановити дистрибутив: {{distro}}",
   "desktop.wsl.error.installOpencode": "Не вдалося встановити OpenCode",
   "desktop.wsl.error.alreadyAdded": "{{distro}} уже додано",
-  "desktop.wsl.error.opencodeMissing": "opencode не встановлено в цьому дистрибутиві",
-  "desktop.wsl.error.opencodeCannotRun": "opencode встановлено, але його не вдалося запустити",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode не встановлено в {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode не встановлено в цьому дистрибутиві",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode встановлено, але його не вдалося запустити",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode не встановлено в {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Оновлення OpenCode завершено, але {{distro}} усе ще повідомляє про версію {{installed}}; очікувалася {{expected}}",
   "desktop.wsl.error.noVersion": "версію не вказано",
-  "desktop.wsl.error.serverExited": "Сервер WSL завершив роботу після запуску (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Сервер WSL завершив роботу після запуску (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Сервер WSL завершив роботу, не досягнувши працездатного стану (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Час очікування перевірки працездатності sidecar для {{distro}} минув через {{timeout}}мс",
-  "desktop.wsl.error.commandTimeout": "Час очікування {{command}} {{args}} минув через {{timeout}}мс",
+  "desktop.wsl.error.commandTimeout":
+    "Час очікування {{command}} {{args}} минув через {{timeout}}мс",
   "desktop.wsl.error.failedPort": "Не вдалося отримати порт",
 
   "desktop.picker.error.notSelected": "Засіб вибору не повернув вибраний файл",
-  "desktop.picker.error.sizeLimit": "Вибрані вкладення перевищують обмеження в {{limit}} МБ",
+  "desktop.picker.error.sizeLimit":
+    "Вибрані вкладення перевищують обмеження в {{limit}} МБ",
 
   "command.category.suggested": "Рекомендовані",
   "command.category.view": "Вигляд",
@@ -160,7 +180,8 @@ export const dict = {
   "command.tab.close": "Закрити вкладку",
   "command.tab.reopenClosed": "Повторно відкрити закриту вкладку",
   "command.context.addSelection": "Додати виділення до контексту",
-  "command.context.addSelection.description": "Додати вибрані рядки з поточного файлу",
+  "command.context.addSelection.description":
+    "Додати вибрані рядки з поточного файлу",
   "command.input.focus": "Фокус на полі введення",
   "command.terminal.toggle": "Перемкнути термінал",
   "command.fileTree.toggle": "Перемкнути дерево файлів",
@@ -168,11 +189,14 @@ export const dict = {
   "command.terminal.new": "Новий термінал",
   "command.terminal.new.description": "Створити нову вкладку термінала",
   "command.steps.toggle": "Перемкнути кроки",
-  "command.steps.toggle.description": "Показати або приховати кроки для поточного повідомлення",
+  "command.steps.toggle.description":
+    "Показати або приховати кроки для поточного повідомлення",
   "command.message.previous": "Попереднє повідомлення",
-  "command.message.previous.description": "Перейти до попереднього повідомлення користувача",
+  "command.message.previous.description":
+    "Перейти до попереднього повідомлення користувача",
   "command.message.next": "Наступне повідомлення",
-  "command.message.next.description": "Перейти до наступного повідомлення користувача",
+  "command.message.next.description":
+    "Перейти до наступного повідомлення користувача",
   "command.model.choose": "Вибрати модель",
   "command.model.choose.description": "Вибрати іншу модель",
   "command.mcp.toggle": "Перемкнути MCP",
@@ -180,30 +204,39 @@ export const dict = {
   "command.agent.cycle": "Перемкнути агента",
   "command.agent.cycle.description": "Перемкнути на наступного агента",
   "command.agent.cycle.reverse": "Перемкнути агента в зворотному напрямку",
-  "command.agent.cycle.reverse.description": "Перемкнути на попереднього агента",
+  "command.agent.cycle.reverse.description":
+    "Перемкнути на попереднього агента",
   "command.model.variant.cycle": "Перемкнути рівень мислення",
-  "command.model.variant.cycle.description": "Перемкнути на наступний рівень зусилля",
+  "command.model.variant.cycle.description":
+    "Перемкнути на наступний рівень зусилля",
   "command.prompt.mode.shell": "Команда",
   "command.prompt.mode.normal": "Запит",
   "command.permissions.autoaccept.enable": "Автоматично приймати дозволи",
-  "command.permissions.autoaccept.disable": "Зупинити автоматичне прийняття дозволів",
+  "command.permissions.autoaccept.disable":
+    "Зупинити автоматичне прийняття дозволів",
   "command.workspace.toggle": "Перемкнути робочі області",
-  "command.workspace.toggle.description": "Увімкнути або вимкнути декілька робочих областей на бічній панелі",
+  "command.workspace.toggle.description":
+    "Увімкнути або вимкнути декілька робочих областей на бічній панелі",
   "command.session.undo": "Скасувати",
   "command.session.undo.description": "Скасувати останнє повідомлення",
   "command.session.redo": "Повторити",
-  "command.session.redo.description": "Повторити останнє скасоване повідомлення",
+  "command.session.redo.description":
+    "Повторити останнє скасоване повідомлення",
   "command.session.compact": "Стиснути сесію",
-  "command.session.compact.description": "Підсумувати сесію, щоб зменшити розмір контексту",
+  "command.session.compact.description":
+    "Підсумувати сесію, щоб зменшити розмір контексту",
   "command.session.fork": "Відгалузити від повідомлення",
-  "command.session.fork.description": "Створити нову сесію з попереднього повідомлення",
+  "command.session.fork.description":
+    "Створити нову сесію з попереднього повідомлення",
   "command.session.share": "Поділитися сесією",
-  "command.session.share.description": "Поділитися цією сесією та скопіювати URL у буфер обміну",
+  "command.session.share.description":
+    "Поділитися цією сесією та скопіювати URL у буфер обміну",
   "command.session.unshare": "Припинити поширення сесії",
   "command.session.unshare.description": "Припинити поширення цієї сесії",
 
   "command.session.export": "Експортувати сесію",
-  "command.session.export.description": "Експортувати повну історію сесії у форматі JSON",
+  "command.session.export.description":
+    "Експортувати повну історію сесії у форматі JSON",
 
   "palette.search.placeholder": "Пошук файлів, команд і сесій",
   "palette.search.placeholder.home": "Пошук команд і сесій",
@@ -217,26 +250,36 @@ export const dict = {
   "dialog.provider.group.other": "Інші",
   "dialog.provider.custom.label": "Користувацький провайдер, сумісний з OpenAI",
   "dialog.provider.tag.recommended": "Рекомендовані",
-  "dialog.provider.opencode.note": "Відібрані моделі, включаючи Claude, GPT, Gemini та інші",
+  "dialog.provider.opencode.note":
+    "Відібрані моделі, включаючи Claude, GPT, Gemini та інші",
   "dialog.provider.opencode.tagline": "Надійні оптимізовані моделі",
   "dialog.provider.opencodeGo.tagline": "Недорога підписка для всіх",
-  "dialog.provider.anthropic.note": "Прямий доступ до моделей Claude, включаючи Pro та Max",
-  "dialog.provider.copilot.note": "Моделі ШІ для допомоги в кодуванні через GitHub Copilot",
-  "dialog.provider.openai.note": "Моделі GPT для швидких і універсальних завдань ШІ",
-  "dialog.provider.google.note": "Моделі Gemini для швидких структурованих відповідей",
-  "dialog.provider.openrouter.note": "Доступ до всіх підтримуваних моделей від одного провайдера",
-  "dialog.provider.vercel.note": "Уніфікований доступ до моделей ШІ з інтелектуальною маршрутизацією",
+  "dialog.provider.anthropic.note":
+    "Прямий доступ до моделей Claude, включаючи Pro та Max",
+  "dialog.provider.copilot.note":
+    "Моделі ШІ для допомоги в кодуванні через GitHub Copilot",
+  "dialog.provider.openai.note":
+    "Моделі GPT для швидких і універсальних завдань ШІ",
+  "dialog.provider.google.note":
+    "Моделі Gemini для швидких структурованих відповідей",
+  "dialog.provider.openrouter.note":
+    "Доступ до всіх підтримуваних моделей від одного провайдера",
+  "dialog.provider.vercel.note":
+    "Уніфікований доступ до моделей ШІ з інтелектуальною маршрутизацією",
 
   "dialog.model.select.title": "Вибрати модель",
   "dialog.model.search.placeholder": "Пошук моделей",
   "dialog.model.empty": "Моделей не знайдено",
   "dialog.model.manage": "Керувати моделями",
-  "dialog.model.manage.description": "Налаштуйте, які моделі відображатимуться у виборі моделей.",
+  "dialog.model.manage.description":
+    "Налаштуйте, які моделі відображатимуться у виборі моделей.",
   "dialog.model.manage.provider.toggle": "Перемкнути всі моделі {{provider}}",
 
   "dialog.model.unpaid.freeModels.title": "Безкоштовні моделі від OpenCode",
-  "dialog.model.unpaid.addMore.title": "Додати більше моделей від популярних провайдерів",
-  "dialog.model.unpaid.viewMoreProviders": "Переглянути ще понад 70 провайдерів",
+  "dialog.model.unpaid.addMore.title":
+    "Додати більше моделей від популярних провайдерів",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Переглянути ще понад 70 провайдерів",
 
   "dialog.provider.viewAll": "Показати більше провайдерів",
 
@@ -275,16 +318,20 @@ export const dict = {
     " і введіть код нижче, щоб підключити обліковий запис і використовувати моделі {{provider}} у OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Код підтвердження",
   "provider.connect.toast.connected.title": "{{provider}} підключено",
-  "provider.connect.toast.connected.description": "Моделі {{provider}} тепер доступні для використання.",
+  "provider.connect.toast.connected.description":
+    "Моделі {{provider}} тепер доступні для використання.",
 
   "provider.custom.title": "Користувацький провайдер",
-  "provider.custom.unavailable": "Користувацькі провайдери недоступні на цьому сервері",
-  "provider.custom.description.prefix": "Налаштуйте провайдера, сумісного з OpenAI. Перегляньте ",
+  "provider.custom.unavailable":
+    "Користувацькі провайдери недоступні на цьому сервері",
+  "provider.custom.description.prefix":
+    "Налаштуйте провайдера, сумісного з OpenAI. Перегляньте ",
   "provider.custom.description.link": "документацію з налаштування провайдера",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID провайдера",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Малі літери, цифри, дефіси або підкреслення",
+  "provider.custom.field.providerID.description":
+    "Малі літери, цифри, дефіси або підкреслення",
   "provider.custom.field.name.label": "Відображувана назва",
   "provider.custom.field.name.placeholder": "Мій провайдер ШІ",
   "provider.custom.field.baseURL.label": "Базовий URL",
@@ -308,16 +355,19 @@ export const dict = {
   "provider.custom.headers.remove": "Видалити заголовок",
   "provider.custom.headers.add": "Додати заголовок",
   "provider.custom.error.providerID.required": "ID провайдера обов'язковий",
-  "provider.custom.error.providerID.format": "Використовуйте малі літери, цифри, дефіси або підкреслення",
+  "provider.custom.error.providerID.format":
+    "Використовуйте малі літери, цифри, дефіси або підкреслення",
   "provider.custom.error.providerID.exists": "ID провайдера вже існує",
   "provider.custom.error.name.required": "Відображувана назва обов'язкова",
   "provider.custom.error.baseURL.required": "Базовий URL обов'язковий",
-  "provider.custom.error.baseURL.format": "Має починатися з http:// або https://",
+  "provider.custom.error.baseURL.format":
+    "Має починатися з http:// або https://",
   "provider.custom.error.required": "Обов'язково",
   "provider.custom.error.duplicate": "Дублікат",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} відключено",
-  "provider.disconnect.toast.disconnected.description": "Моделі {{provider}} більше недоступні.",
+  "provider.disconnect.toast.disconnected.description":
+    "Моделі {{provider}} більше недоступні.",
 
   "model.tag.free": "Безкоштовно",
   "model.tag.latest": "Остання",
@@ -375,7 +425,8 @@ export const dict = {
   "prompt.example.4": "Пояснити, як працює автентифікація",
   "prompt.example.5": "Знайти та виправити вразливості безпеки",
   "prompt.example.6": "Додати модульні тести для сервісу користувача",
-  "prompt.example.7": "Рефакторити цю функцію, щоб зробити її більш читабельною",
+  "prompt.example.7":
+    "Рефакторити цю функцію, щоб зробити її більш читабельною",
   "prompt.example.8": "Що означає ця помилка?",
   "prompt.example.9": "Допоможіть мені налагодити цю проблему",
   "prompt.example.10": "Згенерувати документацію API",
@@ -383,7 +434,8 @@ export const dict = {
   "prompt.example.12": "Додати валідацію введення",
   "prompt.example.13": "Створити новий компонент для...",
   "prompt.example.14": "Як розгорнути цей проєкт?",
-  "prompt.example.15": "Перевірити мій код на відповідність найкращим практикам",
+  "prompt.example.15":
+    "Перевірити мій код на відповідність найкращим практикам",
   "prompt.example.16": "Додати обробку помилок до цієї функції",
   "prompt.example.17": "Пояснити цей регулярний вираз",
   "prompt.example.18": "Конвертувати це в TypeScript",
@@ -397,7 +449,8 @@ export const dict = {
 
   "prompt.popover.emptyResults": "Немає відповідних результатів",
   "prompt.popover.emptyCommands": "Немає відповідних команд",
-  "prompt.dropzone.label": "Перетягніть сюди зображення, PDF або текстові файли",
+  "prompt.dropzone.label":
+    "Перетягніть сюди зображення, PDF або текстові файли",
   "prompt.dropzone.file.label": "Перетягніть, щоб @згадати файл",
   "prompt.slash.badge.custom": "користувацький",
   "prompt.slash.badge.skill": "навичка",
@@ -418,12 +471,16 @@ export const dict = {
 
   "prompt.toast.pasteUnsupported.title": "Непідтримуване вкладення",
   "prompt.toast.attachmentDuplicate.title": "Цей файл уже завантажено",
-  "prompt.toast.pasteUnsupported.description": "Сюди можна прикріплювати лише зображення, PDF або текстові файли.",
+  "prompt.toast.pasteUnsupported.description":
+    "Сюди можна прикріплювати лише зображення, PDF або текстові файли.",
   "prompt.toast.modelAgentRequired.title": "Виберіть агента та модель",
-  "prompt.toast.modelAgentRequired.description": "Виберіть агента та модель перед надсиланням запиту.",
-  "prompt.toast.worktreeCreateFailed.title": "Не вдалося створити робоче дерево",
+  "prompt.toast.modelAgentRequired.description":
+    "Виберіть агента та модель перед надсиланням запиту.",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Не вдалося створити робоче дерево",
   "prompt.toast.sessionCreateFailed.title": "Не вдалося створити сесію",
-  "prompt.toast.shellSendFailed.title": "Не вдалося надіслати команду термінала",
+  "prompt.toast.shellSendFailed.title":
+    "Не вдалося надіслати команду термінала",
   "prompt.toast.commandSendFailed.title": "Не вдалося надіслати команду",
   "prompt.toast.promptSendFailed.title": "Не вдалося надіслати запит",
   "prompt.toast.promptSendFailed.description": "Не вдалося отримати сесію",
@@ -456,7 +513,8 @@ export const dict = {
   "app.server.otherServers": "Інші сервери",
 
   "dialog.server.title": "Сервери",
-  "dialog.server.description": "Перемкніть сервер OpenCode, до якого підключається ця програма.",
+  "dialog.server.description":
+    "Перемкніть сервер OpenCode, до якого підключається ця програма.",
   "dialog.server.search.placeholder": "Пошук серверів",
   "dialog.server.empty": "Ще немає серверів",
   "dialog.server.add.title": "Додати сервер",
@@ -476,7 +534,8 @@ export const dict = {
   "dialog.server.default.description":
     "Підключатися до цього сервера під час запуску програми замість запуску локального сервера. Потребує перезапуску.",
   "dialog.server.default.none": "Сервер не вибрано",
-  "dialog.server.default.set": "Встановити поточний сервер як сервер за замовчуванням",
+  "dialog.server.default.set":
+    "Встановити поточний сервер як сервер за замовчуванням",
   "dialog.server.default.clear": "Очистити",
   "dialog.server.action.remove": "Видалити сервер",
 
@@ -495,7 +554,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Вибрати дистрибутив",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Перевірка WSL...",
-  "wsl.onboarding.restartRequired": "Щоб завершити встановлення WSL, потрібно перезапустити Windows.",
+  "wsl.onboarding.restartRequired":
+    "Щоб завершити встановлення WSL, потрібно перезапустити Windows.",
   "wsl.onboarding.ready": "WSL готова до роботи.",
   "wsl.onboarding.required": "Для продовження потрібна WSL.",
   "wsl.onboarding.checkingDistros": "Перевірка дистрибутивів...",
@@ -504,9 +564,11 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Отримання списку дистрибутивів...",
   "wsl.onboarding.distroReady": "{{distro}} готовий до роботи.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} ще не встановлено.",
-  "wsl.onboarding.openDistroOnce": "Відкрийте {{distro}} один раз, щоб завершити налаштування.",
+  "wsl.onboarding.openDistroOnce":
+    "Відкрийте {{distro}} один раз, щоб завершити налаштування.",
   "wsl.onboarding.finishingDistro": "Завершення налаштування {{distro}}.",
-  "wsl.onboarding.pickDistro": "Виберіть дистрибутив або встановіть один із наведених нижче.",
+  "wsl.onboarding.pickDistro":
+    "Виберіть дистрибутив або встановіть один із наведених нижче.",
   "wsl.onboarding.checkingOpencode": "Перевірка OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Перевірка OpenCode у {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Оновлення OpenCode...",
@@ -526,14 +588,17 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Перевірка...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode не встановлено",
   "wsl.onboarding.distroStatus.missingTools": "Немає bash і curl",
-  "wsl.onboarding.distroStatus.unsupported": "Не підтримується · Використовуйте WSL 2",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Не підтримується · Використовуйте WSL 2",
   "wsl.onboarding.needAnotherDistro": "Потрібен інший дистрибутив?",
-  "wsl.onboarding.needAnotherDistroHint": "Встановіть дистрибутив Linux із каталогу WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Встановіть дистрибутив Linux із каталогу WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL не встановлено",
   "wsl.onboarding.wslNotInstalled.description":
     "Для додавання сервера WSL в OpenCode потрібна WSL (Підсистема Windows для Linux)",
   "wsl.onboarding.wslUnavailable.title": "WSL недоступна",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode не вдалося перевірити WSL на цьому комп'ютері.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode не вдалося перевірити WSL на цьому комп'ютері.",
   "wsl.onboarding.installWsl": "Встановити WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Перезапустіть Windows, щоб завершити встановлення WSL, а потім знову відкрийте OpenCode.",
@@ -546,29 +611,35 @@ export const dict = {
   "wsl.onboarding.installDistro": "Встановити дистрибутив",
   "wsl.onboarding.searchDistros": "Пошук дистрибутивів",
   "wsl.onboarding.wsl2Required": "Для роботи потрібна WSL 2.",
-  "wsl.onboarding.toolsRequired": "Для цього дистрибутива потрібні bash і curl.",
+  "wsl.onboarding.toolsRequired":
+    "Для цього дистрибутива потрібні bash і curl.",
   "wsl.onboarding.openTerminal": "Відкрити термінал",
   "wsl.onboarding.path": "Шлях: {{path}}",
   "wsl.onboarding.notFound": "не знайдено",
   "wsl.onboarding.version": "Версія: {{version}}",
   "wsl.onboarding.unknown": "невідомо",
   "wsl.onboarding.desktopVersion": "десктопний застосунок {{version}}",
-  "wsl.onboarding.versionMismatch": "Встановлена версія не відповідає версії десктопного застосунку.",
+  "wsl.onboarding.versionMismatch":
+    "Встановлена версія не відповідає версії десктопного застосунку.",
   "wsl.onboarding.adding": "Додавання...",
 
-  "help.tabs.toast.ariaLabel": "Представляємо вкладки. Упорядковуйте роботу й активні сесії за допомогою вкладок",
+  "help.tabs.toast.ariaLabel":
+    "Представляємо вкладки. Упорядковуйте роботу й активні сесії за допомогою вкладок",
   "help.tabs.toast.dismiss": "Закрити інформацію про вкладки",
   "help.tabs.title": "Представляємо вкладки",
-  "help.tabs.description": "Упорядковуйте роботу й активні сесії за допомогою вкладок",
+  "help.tabs.description":
+    "Упорядковуйте роботу й активні сесії за допомогою вкладок",
   "help.tabs.date": "14 липня",
-  "help.tabs.introduction": "OpenCode Desktop тепер побудовано навколо вкладок.",
+  "help.tabs.introduction":
+    "OpenCode Desktop тепер побудовано навколо вкладок.",
   "help.tabs.sessions":
     "Почніть нову сесію у вкладці або відкрийте наявну сесію з будь-якого свого проєкту. Відкривайте нову вкладку, коли починаєте щось нове, і закривайте її після завершення.",
   "help.tabs.organize":
     "Кілька відкритих вкладок полегшують упорядкування активних сесій. Якщо плануєте залишити вкладки відкритими, перейменуйте їх на щось пам'ятне.",
   "help.tabs.home":
     "Усі свої сесії та проєкти ви знайдете на новому екрані «Головна». Вибрана сесія відкриється у вкладці.",
-  "help.tabs.persistence": "Після повторного відкриття програми ваші вкладки залишаться відкритими.",
+  "help.tabs.persistence":
+    "Після повторного відкриття програми ваші вкладки залишаться відкритими.",
   "help.tabs.worktrees":
     "Новий дизайн поки не підтримує робочі дерева Git, але ця можливість незабаром з'явиться. Тож якщо ви бажаєте й надалі користуватися попереднім макетом, перемикатися між макетами можна в налаштуваннях. Зауважте, що за кілька тижнів новий макет стане постійним.",
   "server.row.noUsername": "без імені користувача",
@@ -582,7 +653,8 @@ export const dict = {
   "dialog.project.edit.color": "Колір",
   "dialog.project.edit.color.select": "Вибрати колір {{color}}",
   "dialog.project.edit.worktree.startup": "Скрипт запуску робочої області",
-  "dialog.project.edit.worktree.startup.description": "Виконується після створення нової робочої області (worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "Виконується після створення нової робочої області (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "напр. bun install",
 
   "dialog.releaseNotes.action.getStarted": "Розпочати",
@@ -655,45 +727,61 @@ export const dict = {
   "toast.scheme.title": "Кольорова схема",
 
   "toast.workspace.enabled.title": "Робочі області увімкнено",
-  "toast.workspace.enabled.description": "Кілька робочих дерев тепер відображаються на бічній панелі",
+  "toast.workspace.enabled.description":
+    "Кілька робочих дерев тепер відображаються на бічній панелі",
   "toast.workspace.disabled.title": "Робочі області вимкнено",
-  "toast.workspace.disabled.description": "Тільки головне робоче дерево відображається на бічній панелі",
+  "toast.workspace.disabled.description":
+    "Тільки головне робоче дерево відображається на бічній панелі",
 
   "toast.permissions.autoaccept.on.title": "Автоматичне прийняття дозволів",
-  "toast.permissions.autoaccept.on.description": "Запити дозволів будуть автоматично схвалюватися",
-  "toast.permissions.autoaccept.off.title": "Автоматичне прийняття дозволів зупинено",
-  "toast.permissions.autoaccept.off.description": "Запити дозволів вимагатимуть схвалення",
+  "toast.permissions.autoaccept.on.description":
+    "Запити дозволів будуть автоматично схвалюватися",
+  "toast.permissions.autoaccept.off.title":
+    "Автоматичне прийняття дозволів зупинено",
+  "toast.permissions.autoaccept.off.description":
+    "Запити дозволів вимагатимуть схвалення",
 
   "toast.model.none.title": "Модель не вибрано",
-  "toast.model.none.description": "Підключіть провайдера, щоб підсумувати цю сесію",
+  "toast.model.none.description":
+    "Підключіть провайдера, щоб підсумувати цю сесію",
 
   "toast.file.loadFailed.title": "Не вдалося завантажити файл",
   "toast.file.listFailed.title": "Не вдалося отримати список файлів",
 
   "toast.context.noLineSelection.title": "Не вибрано рядків",
-  "toast.context.noLineSelection.description": "Спочатку виберіть діапазон рядків у вкладці файлу.",
+  "toast.context.noLineSelection.description":
+    "Спочатку виберіть діапазон рядків у вкладці файлу.",
 
-  "toast.session.share.copyFailed.title": "Не вдалося скопіювати URL у буфер обміну",
+  "toast.session.share.copyFailed.title":
+    "Не вдалося скопіювати URL у буфер обміну",
   "toast.session.share.success.title": "Сесію опубліковано",
-  "toast.session.share.success.description": "Посилання скопійовано в буфер обміну!",
+  "toast.session.share.success.description":
+    "Посилання скопійовано в буфер обміну!",
   "toast.session.share.failed.title": "Не вдалося опублікувати сесію",
-  "toast.session.share.failed.description": "Під час публікації сесії сталася помилка",
+  "toast.session.share.failed.description":
+    "Під час публікації сесії сталася помилка",
 
   "toast.session.unshare.success.title": "Поширення сесії припинено",
-  "toast.session.unshare.success.description": "Поширення сесії успішно припинено!",
+  "toast.session.unshare.success.description":
+    "Поширення сесії успішно припинено!",
   "toast.session.unshare.failed.title": "Не вдалося припинити поширення сесії",
-  "toast.session.unshare.failed.description": "Під час припинення поширення сесії сталася помилка",
+  "toast.session.unshare.failed.description":
+    "Під час припинення поширення сесії сталася помилка",
 
   "toast.session.export.success.title": "Сесію експортовано",
-  "toast.session.export.success.description": "Сесію збережено у файл {{filename}}",
+  "toast.session.export.success.description":
+    "Сесію збережено у файл {{filename}}",
   "toast.session.export.failed.title": "Не вдалося експортувати сесію",
-  "toast.session.export.failed.description": "Під час експортування сесії сталася помилка",
+  "toast.session.export.failed.description":
+    "Під час експортування сесії сталася помилка",
 
-  "toast.session.listFailed.title": "Не вдалося завантажити сесії для {{project}}",
+  "toast.session.listFailed.title":
+    "Не вдалося завантажити сесії для {{project}}",
   "toast.project.reloadFailed.title": "Не вдалося перезавантажити {{project}}",
 
   "toast.update.title": "Доступне оновлення",
-  "toast.update.description": "Нова версія OpenCode ({{version}}) тепер доступна для встановлення.",
+  "toast.update.description":
+    "Нова версія OpenCode ({{version}}) тепер доступна для встановлення.",
   "toast.update.action.installRestart": "Встановити та перезапустити",
   "toast.update.action.notYet": "Не зараз",
   "toast.update.installFailed.title": "Не вдалося встановити оновлення",
@@ -701,7 +789,8 @@ export const dict = {
 
   "error.page.title": "Щось пішло не так",
   "error.page.description": "Під час завантаження програми сталася помилка.",
-  "error.page.description.localServerStartup": "Під час запуску локального сервера сталася помилка.",
+  "error.page.description.localServerStartup":
+    "Під час запуску локального сервера сталася помилка.",
   "error.page.details.label": "Деталі помилки",
   "error.page.action.restart": "Перезапустити",
   "error.page.action.report": "Повідомити про помилку",
@@ -711,19 +800,24 @@ export const dict = {
   "error.page.action.checkUpdates": "Перевірити оновлення",
   "error.page.action.updateTo": "Оновити до {{version}}",
   "error.page.circular": "[Циклічне]",
-  "error.page.report.prefix": "Будь ласка, повідомте про цю помилку команді OpenCode",
+  "error.page.report.prefix":
+    "Будь ласка, повідомте про цю помилку команді OpenCode",
   "error.page.report.discord": "у Discord",
   "error.page.version": "Версія: {{version}}",
 
   "error.dev.rootNotFound":
     "Кореневий елемент не знайдено. Ви забули додати його до index.html? Або, можливо, атрибут id було написано з помилкою?",
 
-  "error.serverSync.connectFailed": "Не вдалося підключитися до сервера. Чи працює сервер за адресою `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Не вдалося підключитися до сервера. Чи працює сервер за адресою `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Сервер недоступний",
   "error.serverSDK.serverNotAvailable": "Сервер недоступний",
-  "error.childStore.persistedCacheCreateFailed": "Не вдалося створити постійний кеш",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Не вдалося створити постійні метадані проєкту",
-  "error.childStore.persistedProjectIconCreateFailed": "Не вдалося створити постійну іконку проєкту",
+  "error.childStore.persistedCacheCreateFailed":
+    "Не вдалося створити постійний кеш",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Не вдалося створити постійні метадані проєкту",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Не вдалося створити постійну іконку проєкту",
   "error.childStore.storeCreateFailed": "Не вдалося створити сховище",
   "directory.error.invalidUrl": "Недійсний каталог у URL.",
 
@@ -736,24 +830,32 @@ export const dict = {
   "error.chain.responseBody": "Тіло відповіді:\n{{body}}",
   "error.chain.didYouMean": "Можливо, ви мали на увазі: {{suggestions}}",
   "error.chain.modelNotFound": "Модель не знайдено: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Перевірте назви провайдерів/моделей у конфігурації (opencode.json)",
+  "error.chain.checkConfig":
+    "Перевірте назви провайдерів/моделей у конфігурації (opencode.json)",
   "error.chain.mcpFailed":
     'Сервер MCP "{{name}}" не працює. Зверніть увагу, OpenCode ще не підтримує автентифікацію MCP.',
-  "error.chain.providerAuthFailed": "Автентифікація провайдера не вдалася ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Автентифікація провайдера не вдалася ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Не вдалося ініціалізувати провайдера "{{provider}}". Перевірте облікові дані та конфігурацію.',
-  "error.chain.configJsonInvalid": "Файл конфігурації {{path}} не є дійсним JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Файл конфігурації {{path}} не є дійсним JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Файл конфігурації {{path}} не є дійсним JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Файл конфігурації {{path}} не є дійсним JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Каталог "{{dir}}" у {{path}} недійсний. Перейменуйте каталог на "{{suggestion}}" або видаліть його. Це поширена помилка.',
-  "error.chain.configFrontmatterError": "Не вдалося розібрати frontmatter у {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Не вдалося розібрати frontmatter у {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Файл конфігурації {{path}} недійсний",
-  "error.chain.configInvalidWithMessage": "Файл конфігурації {{path}} недійсний: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Файл конфігурації {{path}} недійсний: {{message}}",
 
   "notification.permission.title": "Потрібен дозвіл",
-  "notification.permission.description": "{{sessionTitle}} у {{projectName}} потребує дозволу",
+  "notification.permission.description":
+    "{{sessionTitle}} у {{projectName}} потребує дозволу",
   "notification.question.title": "Запитання",
-  "notification.question.description": "{{sessionTitle}} у {{projectName}} має запитання",
+  "notification.question.description":
+    "{{sessionTitle}} у {{projectName}} має запитання",
   "notification.action.goToSession": "Перейти до сесії",
 
   "notification.session.responseReady.title": "Відповідь готова",
@@ -787,7 +889,8 @@ export const dict = {
   "session.tab.unknown": "Невідома сесія",
   "session.panel.reviewAndFiles": "Огляд і файли",
   "session.error.notFound": "Цю сесію не знайдено",
-  "session.error.notFound.description": "Ця вкладка посилається на сесію, якої більше немає на цьому сервері.",
+  "session.error.notFound.description":
+    "Ця вкладка посилається на сесію, якої більше немає на цьому сервері.",
   "session.error.notFound.closeTab": "Закрити вкладку",
   "session.error.serverConnection": "Не вдається підключитися до цього сервера",
   "session.review.filesChanged": "Змінено файлів: {{count}}",
@@ -795,12 +898,16 @@ export const dict = {
   "session.review.change.other": "Зміни",
   "session.review.loadingChanges": "Завантаження змін...",
   "session.review.empty": "У цій сесії ще немає змін",
-  "session.review.noVcs": "Систему контролю версій Git не виявлено, зміни не відображаються",
+  "session.review.noVcs":
+    "Систему контролю версій Git не виявлено, зміни не відображаються",
   "session.review.noVcs.createGit.title": "Створити Git-репозиторій",
-  "session.review.noVcs.createGit.description": "Відстежуйте, переглядайте та скасовуйте зміни в цьому проєкті",
-  "session.review.noVcs.createGit.actionLoading": "Створення Git-репозиторію...",
+  "session.review.noVcs.createGit.description":
+    "Відстежуйте, переглядайте та скасовуйте зміни в цьому проєкті",
+  "session.review.noVcs.createGit.actionLoading":
+    "Створення Git-репозиторію...",
   "session.review.noVcs.createGit.action": "Створити Git-репозиторій",
-  "session.review.noSnapshot": "Відстеження знімків вимкнено в конфігурації, тому зміни сесії недоступні",
+  "session.review.noSnapshot":
+    "Відстеження знімків вимкнено в конфігурації, тому зміни сесії недоступні",
   "session.review.noChanges": "Немає змін",
   "session.review.noUncommittedChanges": "Ще немає незафіксованих змін",
   "session.review.noBranchChanges": "Ще немає змін у гілці",
@@ -827,7 +934,8 @@ export const dict = {
   "session.question.pending.one": "{{count}} запитання очікує відповіді",
   "session.question.pending.few": "{{count}} запитання очікують відповіді",
   "session.question.pending.many": "{{count}} запитань очікують відповіді",
-  "session.question.pending.other": "Запитання, що очікують відповіді: {{count}}",
+  "session.question.pending.other":
+    "Запитання, що очікують відповіді: {{count}}",
   "session.followupDock.summary.one": "{{count}} повідомлення в черзі",
   "session.followupDock.summary.few": "{{count}} повідомлення в черзі",
   "session.followupDock.summary.many": "{{count}} повідомлень у черзі",
@@ -916,12 +1024,14 @@ export const dict = {
   "terminal.title.numbered": "Термінал {{number}}",
   "terminal.close": "Закрити термінал",
   "terminal.connectionLost.title": "З'єднання втрачено",
-  "terminal.connectionLost.abnormalClose": "WebSocket закрито аномально: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket закрито аномально: {{code}}",
   "terminal.connectionLost.description":
     "З'єднання з терміналом було перервано. Це може статися під час перезапуску сервера.",
   "terminal.connectTicket.csrfError":
     "Квиток підключення PTY відхилено через перевірку джерела або CSRF. Перевірте конфігурацію CORS сервера.",
-  "terminal.connectTicket.statusError": "Помилка квитка підключення PTY зі статусом {{status}}",
+  "terminal.connectTicket.statusError":
+    "Помилка квитка підключення PTY зі статусом {{status}}",
 
   "titlebar.update": "Оновити",
   "titlebar.updateVersion": "Оновити {{version}}",
@@ -969,7 +1079,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Увімкнути робочі області",
   "sidebar.workspaces.disable": "Вимкнути робочі області",
   "sidebar.gettingStarted.title": "Початок роботи",
-  "sidebar.gettingStarted.line1": "OpenCode містить безкоштовні моделі, тому ви можете почати негайно.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode містить безкоштовні моделі, тому ви можете почати негайно.",
   "sidebar.gettingStarted.line2":
     "Підключіть будь-якого провайдера, щоб використовувати моделі, включаючи Claude, GPT, Gemini тощо.",
   "sidebar.project.recentSessions": "Нещодавні сесії",
@@ -984,29 +1095,36 @@ export const dict = {
   "debugBar.nav.tip":
     "Останній завершений перехід маршруту, що торкається сторінки сесії, виміряний від запуску маршрутизатора до першого відображення після стабілізації.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Поточна кількість кадрів за секунду за останні 5 секунд.",
+  "debugBar.fps.tip":
+    "Поточна кількість кадрів за секунду за останні 5 секунд.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Найгірший час кадру за останні 5 секунд.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Кадри понад 32 мс за останні 5 секунд.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Заблокований час і кількість довгих завдань за останні 5 секунд. Макс. завдання: {{max}}.",
+  "debugBar.long.tip":
+    "Заблокований час і кількість довгих завдань за останні 5 секунд. Макс. завдання: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Найгірша спостережувана затримка введення за останні 5 секунд.",
+  "debugBar.delay.tip":
+    "Найгірша спостережувана затримка введення за останні 5 секунд.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Приблизна тривалість взаємодії за останні 5 секунд. Це схоже на INP, а не на офіційний Web Vitals INP.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "Сукупний зсув макета за весь час роботи програми.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Використана купа JS проти ліміту купи. Тільки Chromium.",
-  "debugBar.mem.tip": "Використана купа JS проти ліміту купи. {{used}} з {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Використана купа JS проти ліміту купи. Тільки Chromium.",
+  "debugBar.mem.tip":
+    "Використана купа JS проти ліміту купи. {{used}} з {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Примусово застосувати стилі фокуса до всіх інтерактивних елементів",
+  "debugBar.focus.tip":
+    "Примусово застосувати стилі фокуса до всіх інтерактивних елементів",
   "debugBar.focus.on": "УВІМК.",
   "debugBar.focus.off": "ВИМК.",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Примусово задати напрямок макета всієї програми, не змінюючи вибрану мову",
+  "debugBar.direction.tip":
+    "Примусово задати напрямок макета всієї програми, не змінюючи вибрану мову",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
 
@@ -1018,7 +1136,8 @@ export const dict = {
   "settings.tab.shortcuts": "Клавіатурні скорочення",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "Інтеграція WSL",
-  "settings.desktop.wsl.description": "Запускати сервер OpenCode всередині WSL на Windows.",
+  "settings.desktop.wsl.description":
+    "Запускати сервер OpenCode всередині WSL на Windows.",
 
   "settings.general.section.appearance": "Зовнішній вигляд",
   "settings.general.section.advanced": "Додатково",
@@ -1029,83 +1148,104 @@ export const dict = {
   "settings.general.section.display": "Дисплей",
 
   "settings.general.row.language.title": "Мова",
-  "settings.general.row.language.description": "Змінити мову інтерфейсу OpenCode",
+  "settings.general.row.language.description":
+    "Змінити мову інтерфейсу OpenCode",
   "settings.general.row.shell.title": "Командна оболонка термінала",
   "settings.general.row.shell.description":
     "Виберіть оболонку для термінала. Сумісні оболонки також використовуються для викликів інструментів агента.",
   "settings.general.row.shell.autoDefault": "Автоматично (за замовчуванням)",
   "settings.general.row.shell.terminalOnly": "тільки термінал",
   "settings.general.row.appearance.title": "Зовнішній вигляд",
-  "settings.general.row.appearance.description": "Налаштуйте вигляд OpenCode на вашому пристрої",
+  "settings.general.row.appearance.description":
+    "Налаштуйте вигляд OpenCode на вашому пристрої",
   "settings.general.row.colorScheme.title": "Кольорова схема",
-  "settings.general.row.colorScheme.description": "Виберіть, чи OpenCode використовує системну, світлу або темну тему",
+  "settings.general.row.colorScheme.description":
+    "Виберіть, чи OpenCode використовує системну, світлу або темну тему",
   "settings.general.row.theme.title": "Тема",
   "settings.general.row.theme.description": "Налаштуйте тему OpenCode.",
   "settings.general.row.font.title": "Шрифт коду",
-  "settings.general.row.font.description": "Налаштуйте шрифт, який використовується в блоках коду",
+  "settings.general.row.font.description":
+    "Налаштуйте шрифт, який використовується в блоках коду",
   "settings.general.row.terminalFont.title": "Шрифт термінала",
-  "settings.general.row.terminalFont.description": "Налаштуйте шрифт, який використовується в терміналі",
+  "settings.general.row.terminalFont.description":
+    "Налаштуйте шрифт, який використовується в терміналі",
   "settings.general.row.uiFont.title": "Шрифт інтерфейсу",
-  "settings.general.row.uiFont.description": "Налаштуйте шрифт, який використовується в інтерфейсі",
+  "settings.general.row.uiFont.description":
+    "Налаштуйте шрифт, який використовується в інтерфейсі",
   "settings.general.row.followup.title": "Поведінка продовження",
-  "settings.general.row.followup.description": "Виберіть, чи продовження виконується негайно, чи чекає в черзі",
+  "settings.general.row.followup.description":
+    "Виберіть, чи продовження виконується негайно, чи чекає в черзі",
   "settings.general.row.followup.option.queue": "Черга",
   "settings.general.row.followup.option.steer": "Керування",
   "settings.general.row.showFileTree.title": "Дерево файлів",
-  "settings.general.row.showFileTree.description": "Показувати панель дерева файлів у сесіях",
+  "settings.general.row.showFileTree.description":
+    "Показувати панель дерева файлів у сесіях",
   "settings.general.row.showNavigation.title": "Елементи навігації",
   "settings.general.row.showNavigation.description":
     "Показувати кнопки назад і вперед на панелі заголовка десктопного застосунку",
   "settings.general.row.showSearch.title": "Палітра команд",
-  "settings.general.row.showSearch.description": "Показувати кнопку пошуку та палітри команд на панелі заголовка",
+  "settings.general.row.showSearch.description":
+    "Показувати кнопку пошуку та палітри команд на панелі заголовка",
   "settings.general.row.showTerminal.title": "Термінал",
   "settings.general.row.showTerminal.description":
     "Показувати кнопку термінала на панелі заголовка десктопного застосунку",
   "settings.general.row.showStatus.title": "Статус сервера",
-  "settings.general.row.showStatus.description": "Показувати кнопку стану сервера на панелі заголовка",
+  "settings.general.row.showStatus.description":
+    "Показувати кнопку стану сервера на панелі заголовка",
   "settings.general.row.mobileTitlebarBottom.title": "Нижня навігація",
   "settings.general.row.mobileTitlebarBottom.description":
     "Розмістити панель заголовка та вкладки сесії внизу екрана на мобільних пристроях",
   "settings.general.row.showCustomAgents.title": "Показувати агента",
   "settings.general.row.showCustomAgents.description":
     "Перемикатися між агентами в редакторі запиту. Якщо приховано, типовим є агент Build.",
-  "settings.general.row.reasoningSummaries.title": "Показувати підсумки мислення",
-  "settings.general.row.reasoningSummaries.description": "Відображати підсумки мислення моделі на часовій шкалі",
-  "settings.general.row.shellToolPartsExpanded.title": "Розгортати частини інструменту оболонки",
+  "settings.general.row.reasoningSummaries.title":
+    "Показувати підсумки мислення",
+  "settings.general.row.reasoningSummaries.description":
+    "Відображати підсумки мислення моделі на часовій шкалі",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Розгортати частини інструменту оболонки",
   "settings.general.row.shellToolPartsExpanded.description":
     "Показувати частини інструменту оболонки розгорнутими за замовчуванням на часовій шкалі",
-  "settings.general.row.editToolPartsExpanded.title": "Розгортати частини інструменту редагування",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Розгортати частини інструменту редагування",
   "settings.general.row.editToolPartsExpanded.description":
     "Показувати частини інструментів редагування, запису та патчів розгорнутими за замовчуванням на часовій шкалі",
   "settings.general.row.newInterface.title": "Новий макет",
   "settings.general.row.newInterface.badge": "Нове",
   "settings.general.row.newInterface.description":
     "Використовуйте нові вкладки та макет головної сторінки. Протягом обмеженого часу можна перемикатися між макетами.",
-  "settings.general.row.newInterfaceNotice.title": "Тепер ви використовуєте новий макет",
-  "settings.general.row.newInterfaceNotice.description": "Попередній макет більше недоступний",
+  "settings.general.row.newInterfaceNotice.title":
+    "Тепер ви використовуєте новий макет",
+  "settings.general.row.newInterfaceNotice.description":
+    "Попередній макет більше недоступний",
   "settings.general.row.newInterfaceNotice.dismiss": "Відхилити",
   "settings.general.row.pinchZoom.title": "Масштабування щипком",
   "settings.general.row.pinchZoom.description":
     "Дозволити масштабування жестом щипка на трекпаді та прокручуванням із Ctrl",
 
   "settings.general.row.wayland.title": "Використовувати нативний Wayland",
-  "settings.general.row.wayland.description": "Вимкнути резервний X11 на Wayland. Потребує перезапуску.",
+  "settings.general.row.wayland.description":
+    "Вимкнути резервний X11 на Wayland. Потребує перезапуску.",
   "settings.general.row.wayland.tooltip":
     "На Linux з моніторами з різною частотою оновлення нативний Wayland може бути більш стабільним.",
 
   "settings.general.row.releaseNotes.title": "Нотатки до релізу",
-  "settings.general.row.releaseNotes.description": 'Показувати спливаючі вікна "Що нового" після оновлень',
+  "settings.general.row.releaseNotes.description":
+    'Показувати спливаючі вікна "Що нового" після оновлень',
 
   "settings.updates.row.startup.title": "Перевіряти оновлення під час запуску",
-  "settings.updates.row.startup.description": "Автоматично перевіряти наявність оновлень під час запуску OpenCode",
+  "settings.updates.row.startup.description":
+    "Автоматично перевіряти наявність оновлень під час запуску OpenCode",
   "settings.updates.row.check.title": "Перевірити оновлення",
-  "settings.updates.row.check.description": "Вручну перевірити наявність оновлень і встановити, якщо доступні",
+  "settings.updates.row.check.description":
+    "Вручну перевірити наявність оновлень і встановити, якщо доступні",
   "settings.updates.action.checkNow": "Перевірити зараз",
   "settings.updates.action.checking": "Перевірка...",
   "settings.updates.action.downloading": "Завантаження...",
   "settings.updates.action.installing": "Встановлення...",
   "settings.updates.toast.latest.title": "У вас актуальна версія",
-  "settings.updates.toast.latest.description": "Ви використовуєте останню версію OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Ви використовуєте останню версію OpenCode.",
   "sound.option.none": "Немає",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1157,23 +1297,31 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Показувати системне сповіщення, коли агент завершує роботу або потребує уваги",
   "settings.general.notifications.permissions.title": "Дозволи",
-  "settings.general.notifications.permissions.description": "Показувати системне сповіщення, коли потрібен дозвіл",
+  "settings.general.notifications.permissions.description":
+    "Показувати системне сповіщення, коли потрібен дозвіл",
   "settings.general.notifications.errors.title": "Помилки",
-  "settings.general.notifications.errors.description": "Показувати системне сповіщення, коли виникає помилка",
+  "settings.general.notifications.errors.description":
+    "Показувати системне сповіщення, коли виникає помилка",
 
   "settings.general.sounds.agent.title": "Агент",
-  "settings.general.sounds.agent.description": "Відтворювати звук, коли агент завершує роботу або потребує уваги",
+  "settings.general.sounds.agent.description":
+    "Відтворювати звук, коли агент завершує роботу або потребує уваги",
   "settings.general.sounds.permissions.title": "Дозволи",
-  "settings.general.sounds.permissions.description": "Відтворювати звук, коли потрібен дозвіл",
+  "settings.general.sounds.permissions.description":
+    "Відтворювати звук, коли потрібен дозвіл",
   "settings.general.sounds.errors.title": "Помилки",
-  "settings.general.sounds.errors.description": "Відтворювати звук, коли виникає помилка",
+  "settings.general.sounds.errors.description":
+    "Відтворювати звук, коли виникає помилка",
 
   "settings.shortcuts.title": "Клавіатурні скорочення",
   "settings.shortcuts.reset.button": "Відновити стандартні",
   "settings.shortcuts.reset.toast.title": "Клавіатурні скорочення відновлено",
-  "settings.shortcuts.reset.toast.description": "Стандартні клавіатурні скорочення відновлено.",
-  "settings.shortcuts.conflict.title": "Клавіатурне скорочення вже використовується",
-  "settings.shortcuts.conflict.description": "{{keybind}} вже призначено для {{titles}}.",
+  "settings.shortcuts.reset.toast.description":
+    "Стандартні клавіатурні скорочення відновлено.",
+  "settings.shortcuts.conflict.title":
+    "Клавіатурне скорочення вже використовується",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} вже призначено для {{titles}}.",
   "settings.shortcuts.unassigned": "Не призначено",
   "settings.shortcuts.pressKeys": "Натисніть клавіші",
   "settings.shortcuts.search.placeholder": "Пошук клавіатурних скорочень",
@@ -1187,12 +1335,15 @@ export const dict = {
   "settings.shortcuts.group.prompt": "Запит",
 
   "settings.providers.title": "Провайдери",
-  "settings.providers.description": "Налаштування провайдерів будуть доступні тут.",
+  "settings.providers.description":
+    "Налаштування провайдерів будуть доступні тут.",
   "settings.providers.section.connected": "Підключені провайдери",
   "settings.providers.connected.empty": "Немає підключених провайдерів",
-  "settings.providers.connected.environmentDescription": "Підключено зі змінних середовища",
+  "settings.providers.connected.environmentDescription":
+    "Підключено зі змінних середовища",
   "settings.providers.section.popular": "Популярні провайдери",
-  "settings.providers.custom.description": "Додайте провайдера, сумісного з OpenAI, за базовим URL.",
+  "settings.providers.custom.description":
+    "Додайте провайдера, сумісного з OpenAI, за базовим URL.",
   "settings.providers.tag.environment": "Середовище",
   "settings.providers.tag.config": "Конфігурація",
   "settings.providers.tag.custom": "Користувацький",
@@ -1207,7 +1358,8 @@ export const dict = {
   "settings.mcp.description": "Налаштування MCP будуть доступні тут.",
 
   "settings.permissions.title": "Дозволи",
-  "settings.permissions.description": "Керуйте тим, які інструменти сервер може використовувати за замовчуванням.",
+  "settings.permissions.description":
+    "Керуйте тим, які інструменти сервер може використовувати за замовчуванням.",
   "settings.permissions.section.tools": "Інструменти",
   "settings.permissions.toast.updateFailed.title": "Не вдалося оновити дозволи",
 
@@ -1216,13 +1368,17 @@ export const dict = {
   "settings.permissions.action.deny": "Заборонити",
 
   "settings.permissions.tool.read.title": "Читання",
-  "settings.permissions.tool.read.description": "Читання файлу (відповідає шляху файлу)",
+  "settings.permissions.tool.read.description":
+    "Читання файлу (відповідає шляху файлу)",
   "settings.permissions.tool.edit.title": "Редагування",
-  "settings.permissions.tool.edit.description": "Зміна файлів, включаючи редагування, запис і патчі",
+  "settings.permissions.tool.edit.description":
+    "Зміна файлів, включаючи редагування, запис і патчі",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Зіставлення файлів за допомогою glob-шаблонів",
+  "settings.permissions.tool.glob.description":
+    "Зіставлення файлів за допомогою glob-шаблонів",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Пошук вмісту файлів за допомогою регулярних виразів",
+  "settings.permissions.tool.grep.description":
+    "Пошук вмісту файлів за допомогою регулярних виразів",
   "settings.permissions.tool.list.title": "Список",
   "settings.permissions.tool.list.description": "Список файлів у каталозі",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1230,9 +1386,11 @@ export const dict = {
   "settings.permissions.tool.task.title": "Завдання",
   "settings.permissions.tool.task.description": "Запуск підагентів",
   "settings.permissions.tool.skill.title": "Навичка",
-  "settings.permissions.tool.skill.description": "Завантаження навички за назвою",
+  "settings.permissions.tool.skill.description":
+    "Завантаження навички за назвою",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Виконання запитів мовного сервера",
+  "settings.permissions.tool.lsp.description":
+    "Виконання запитів мовного сервера",
   "settings.permissions.tool.todowrite.title": "Todo Write",
   "settings.permissions.tool.todowrite.description": "Оновлення списку завдань",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
@@ -1240,7 +1398,8 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "Пошук в інтернеті",
   "settings.permissions.tool.external_directory.title": "Зовнішній каталог",
-  "settings.permissions.tool.external_directory.description": "Доступ до файлів за межами каталогу проєкту",
+  "settings.permissions.tool.external_directory.description":
+    "Доступ до файлів за межами каталогу проєкту",
   "settings.permissions.tool.doom_loop.title": "Цикл приреченості",
   "settings.permissions.tool.doom_loop.description":
     "Виявлення повторюваних викликів інструментів з однаковими вхідними даними",
@@ -1259,7 +1418,8 @@ export const dict = {
   "workspace.resetting.description": "Це може зайняти хвилину.",
   "workspace.reset.failed.title": "Не вдалося скинути робочу область",
   "workspace.reset.success.title": "Робочу область скинуто",
-  "workspace.reset.success.description": "Робоча область тепер відповідає гілці за замовчуванням.",
+  "workspace.reset.success.description":
+    "Робоча область тепер відповідає гілці за замовчуванням.",
   "workspace.error.stillPreparing": "Робоча область все ще готується",
   "workspace.status.checking": "Перевірка незлитих змін...",
   "workspace.status.error": "Не вдалося перевірити статус git.",
@@ -1274,5 +1434,6 @@ export const dict = {
   "workspace.reset.archived.none": "Жодна активна сесія не буде заархівована.",
   "workspace.reset.archived.one": "1 сесію буде заархівовано.",
   "workspace.reset.archived.many": "{{count}} сесій буде заархівовано.",
-  "workspace.reset.note": "Це скине робочу область, щоб вона відповідала гілці за замовчуванням.",
+  "workspace.reset.note":
+    "Це скине робочу область, щоб вона відповідала гілці за замовчуванням.",
 }

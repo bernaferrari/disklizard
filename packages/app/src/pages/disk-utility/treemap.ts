@@ -22,8 +22,13 @@ export type TreemapRect = {
 type Item = { node: DiskScanNode; size: number; index: number }
 type Box = { x: number; y: number; w: number; h: number }
 
-export function collapseTreemapChildren(children: DiskScanNode[], maxTiles = 320): DiskScanNode[] {
-  const visible = children.filter((child) => child.size > 0).toSorted((a, b) => b.size - a.size)
+export function collapseTreemapChildren(
+  children: DiskScanNode[],
+  maxTiles = 320
+): DiskScanNode[] {
+  const visible = children
+    .filter((child) => child.size > 0)
+    .toSorted((a, b) => b.size - a.size)
   if (visible.length <= maxTiles) return visible
   if (maxTiles < 2) {
     return [
@@ -77,9 +82,23 @@ function layoutRow(row: Item[], box: Box, out: TreemapRect[]) {
   for (const r of row) {
     const len = (r.size / sum) * stripLen
     if (horizontal) {
-      out.push({ node: r.node, index: r.index, x: box.x, y: box.y + offset, w: thickness, h: len })
+      out.push({
+        node: r.node,
+        index: r.index,
+        x: box.x,
+        y: box.y + offset,
+        w: thickness,
+        h: len,
+      })
     } else {
-      out.push({ node: r.node, index: r.index, x: box.x + offset, y: box.y, w: len, h: thickness })
+      out.push({
+        node: r.node,
+        index: r.index,
+        x: box.x + offset,
+        y: box.y,
+        w: len,
+        h: thickness,
+      })
     }
     offset += len
   }
@@ -98,7 +117,7 @@ function layoutRow(row: Item[], box: Box, out: TreemapRect[]) {
 export function layoutTreemap(
   children: DiskScanNode[],
   box: Box = { x: 0, y: 0, w: 1, h: 1 },
-  preserveRankedIndices = false,
+  preserveRankedIndices = false
 ): TreemapRect[] {
   const items: Item[] = children
     .map((node, index) => ({ node, size: node.size, index }))
@@ -122,7 +141,10 @@ export function layoutTreemap(
     const shortest = Math.min(area.w, area.h)
     const next = remaining[0]
     const withNext = [...row, next]
-    if (row.length === 0 || worstRatio(withNext, shortest) <= worstRatio(row, shortest)) {
+    if (
+      row.length === 0 ||
+      worstRatio(withNext, shortest) <= worstRatio(row, shortest)
+    ) {
       row = withNext
       remaining.shift()
     } else {

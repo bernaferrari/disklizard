@@ -30,25 +30,43 @@ describe("deletion safety", () => {
     expect(canDeletePath("C:\\Windows.old", "win32")).toBe(false)
 
     expect(canDeletePath("/Users/alex/Library/Caches/app", "darwin")).toBe(true)
-    expect(canDeletePath("/home/alex/Downloads/archive.iso", "linux")).toBe(true)
-    expect(canDeletePath("C:\\Users\\Alex\\Downloads\\archive.iso", "win32")).toBe(true)
+    expect(canDeletePath("/home/alex/Downloads/archive.iso", "linux")).toBe(
+      true
+    )
+    expect(
+      canDeletePath("C:\\Users\\Alex\\Downloads\\archive.iso", "win32")
+    ).toBe(true)
   })
 
   it("protects the active home and every mounted volume root", () => {
-    expect(deletionBlockReason("/home/alex", "linux", { homePath: "/home/alex" })).toContain("home")
-    expect(deletionBlockReason("/media/Archive", "linux", { mountRoots: ["/", "/media/Archive/"] })).toContain(
-      "mounted volume",
-    )
+    expect(
+      deletionBlockReason("/home/alex", "linux", { homePath: "/home/alex" })
+    ).toContain("home")
+    expect(
+      deletionBlockReason("/media/Archive", "linux", {
+        mountRoots: ["/", "/media/Archive/"],
+      })
+    ).toContain("mounted volume")
   })
 
   it("never offers whole account profiles as deletion targets on any desktop OS", () => {
-    expect(deletionBlockReason("/Users/alex", "darwin")).toContain("home directory")
-    expect(deletionBlockReason("/home/alex", "linux")).toContain("home directory")
-    expect(deletionBlockReason("C:\\Users\\Alex", "win32")).toContain("user profile")
+    expect(deletionBlockReason("/Users/alex", "darwin")).toContain(
+      "home directory"
+    )
+    expect(deletionBlockReason("/home/alex", "linux")).toContain(
+      "home directory"
+    )
+    expect(deletionBlockReason("C:\\Users\\Alex", "win32")).toContain(
+      "user profile"
+    )
 
-    expect(canDeletePath("/Users/alex/Downloads/archive.zip", "darwin")).toBe(true)
+    expect(canDeletePath("/Users/alex/Downloads/archive.zip", "darwin")).toBe(
+      true
+    )
     expect(canDeletePath("/home/alex/.cache/tool", "linux")).toBe(true)
-    expect(canDeletePath("C:\\Users\\Alex\\Downloads\\archive.zip", "win32")).toBe(true)
+    expect(
+      canDeletePath("C:\\Users\\Alex\\Downloads\\archive.zip", "win32")
+    ).toBe(true)
   })
 
   it("rejects Windows device namespaces", () => {
@@ -66,7 +84,9 @@ describe("deletion safety", () => {
     ]) {
       expect(canDeletePath(path, "darwin")).toBe(false)
     }
-    expect(canDeletePath("C:\\Users\\Alex\\project\\.git\\objects", "win32")).toBe(false)
+    expect(
+      canDeletePath("C:\\Users\\Alex\\project\\.git\\objects", "win32")
+    ).toBe(false)
     expect(canDeletePath("C:\\$Recycle.Bin\\deleted-file", "win32")).toBe(false)
     expect(canDeletePath("/home/alex/project/node_modules", "linux")).toBe(true)
   })

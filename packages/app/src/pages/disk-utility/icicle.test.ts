@@ -1,7 +1,11 @@
 import { expect, it } from "bun:test"
 import { layoutIcicle } from "./icicle"
 import type { DiskScanNode } from "./types"
-const node = (name: string, size: number, children: DiskScanNode[] = []): DiskScanNode => ({
+const node = (
+  name: string,
+  size: number,
+  children: DiskScanNode[] = []
+): DiskScanNode => ({
   name,
   path: name,
   size,
@@ -10,9 +14,16 @@ const node = (name: string, size: number, children: DiskScanNode[] = []): DiskSc
   ext: "",
 })
 it("aligns children under parents without changing their weights or colors", () => {
-  const root = node("root", 100, [node("large", 80, [node("nested", 40)]), node("small", 20)])
+  const root = node("root", 100, [
+    node("large", 80, [node("nested", 40)]),
+    node("small", 20),
+  ])
   const cells = layoutIcicle(root)
-  expect(cells.filter((cell) => cell.depth === 0).reduce((sum, cell) => sum + cell.width, 0)).toBe(1)
+  expect(
+    cells
+      .filter((cell) => cell.depth === 0)
+      .reduce((sum, cell) => sum + cell.width, 0)
+  ).toBe(1)
   const parent = cells.find((cell) => cell.node.name === "large")!
   const child = cells.find((cell) => cell.node.name === "nested")!
   expect(child.x).toBe(parent.x)
@@ -30,14 +41,26 @@ it("groups narrow siblings while preserving every byte and the grouped children"
   const cells = layoutIcicle(node("root", 100, children), 5, 600)
   expect(cells.length).toBeLessThan(12)
   expect(cells.reduce((sum, cell) => sum + cell.node.size, 0)).toBe(100)
-  expect(cells.find(cell => cell.node.isOther)?.node.children).toHaveLength(100)
+  expect(cells.find((cell) => cell.node.isOther)?.node.children).toHaveLength(
+    100
+  )
 })
 
 it("keeps substantial folders visible and recalculates small items after zoom", () => {
-  const folder = node("Downloads", 359, [55,34,33,27,25,23,20,8,7,6,5,4, ...Array(112).fill(1)].map((size,i)=>node(`folder-${i}`,size)))
+  const folder = node(
+    "Downloads",
+    359,
+    [55, 34, 33, 27, 25, 23, 20, 8, 7, 6, 5, 4, ...Array(112).fill(1)].map(
+      (size, i) => node(`folder-${i}`, size)
+    )
+  )
   const overview = layoutIcicle(node("disk", 1200, [folder]), 5, 600)
-  const zoomed = layoutIcicle(folder, 5, 600).filter(cell=>cell.depth===0)
-  expect(zoomed.filter(cell=>!cell.node.isOther).length).toBeGreaterThanOrEqual(5)
-  expect(zoomed.find(cell=>cell.node.isOther)!.node.size).toBeLessThan(180)
-  expect(overview.filter(cell=>cell.depth===1 && !cell.node.isOther).length).toBeLessThan(zoomed.filter(cell=>!cell.node.isOther).length)
+  const zoomed = layoutIcicle(folder, 5, 600).filter((cell) => cell.depth === 0)
+  expect(
+    zoomed.filter((cell) => !cell.node.isOther).length
+  ).toBeGreaterThanOrEqual(5)
+  expect(zoomed.find((cell) => cell.node.isOther)!.node.size).toBeLessThan(180)
+  expect(
+    overview.filter((cell) => cell.depth === 1 && !cell.node.isOther).length
+  ).toBeLessThan(zoomed.filter((cell) => !cell.node.isOther).length)
 })

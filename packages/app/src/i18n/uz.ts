@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Fikr-mulohaza ulashing",
   "desktop.menu.reportBug": "Xato haqida xabar berish",
   "desktop.menu.ariaLabel": "OpenCode menyusi",
-  "desktop.updater.dialog.checkFailed.message": "Yangilanish tekshiruvi amalga oshmadi.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Yangilanish tekshiruvi amalga oshmadi.",
   "desktop.updater.dialog.checkFailed.title": "Yangilash xatosi",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Siz yangilangansiz.",
   "desktop.updater.dialog.upToDate.title": "Yangilanishlar yoʻq",
-  "desktop.updater.dialog.ready.message": "{{version}} yangilanishi yuklab olindi. Hozir qayta ishga tushirilsinmi?",
+  "desktop.updater.dialog.ready.message":
+    "{{version}} yangilanishi yuklab olindi. Hozir qayta ishga tushirilsinmi?",
   "desktop.updater.dialog.ready.title": "Yangilanish tayyor",
   "desktop.updater.dialog.restart": "Qayta ishga tushirish",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +67,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode javob bermayapti",
   "desktop.recovery.unresponsive.detail":
     "Siz ilovani qayta ishga tushirishingiz, jurnallarni ochishingiz yoki kutishda davom etishingiz mumkin.",
-  "desktop.recovery.loadFailed.detail": "Oyna: {{window}}\nURL: {{url}}\nXato: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Oyna: {{window}}\nSababi: {{reason}}\nKod: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Oyna: {{window}}\nURL: {{url}}\nXato: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Oyna: {{window}}\nSababi: {{reason}}\nKod: {{code}}",
   "desktop.recovery.unknown": "<noma'lum>",
   "desktop.dialog.chooseFolder": "Jildni tanlang",
   "desktop.dialog.chooseFile": "Faylni tanlang",
@@ -74,28 +79,36 @@ export const dict = {
   "desktop.server.local": "Mahalliy server",
   "desktop.wsl.error.windowsOnly": "WSL faqat Windows da mavjud",
   "desktop.wsl.error.unavailable": "WSL mavjud emas",
-  "desktop.wsl.error.listInstalled": "Oʻrnatilgan WSL distrolarini roʻyxatga kiritib boʻlmadi",
-  "desktop.wsl.error.listOnline": "Onlayn WSL distrolarini roʻyxatga kiritib boʻlmadi",
+  "desktop.wsl.error.listInstalled":
+    "Oʻrnatilgan WSL distrolarini roʻyxatga kiritib boʻlmadi",
+  "desktop.wsl.error.listOnline":
+    "Onlayn WSL distrolarini roʻyxatga kiritib boʻlmadi",
   "desktop.wsl.error.executeDistro": "Distroda buyruqlarni bajarib bo'lmaydi",
   "desktop.wsl.error.installWsl": "WSL oʻrnatilmadi",
   "desktop.wsl.error.installDistro": "Distroni oʻrnatib boʻlmadi: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode oʻrnatilmadi",
   "desktop.wsl.error.alreadyAdded": "{{distro}} allaqachon qo'shilgan",
-  "desktop.wsl.error.opencodeMissing": "Opencode ushbu tarqatishda o'rnatilmagan",
-  "desktop.wsl.error.opencodeCannotRun": "opencode o'rnatilgan, lekin ishga tushirilmadi",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode {{distro}} da o'rnatilmagan",
+  "desktop.wsl.error.opencodeMissing":
+    "Opencode ushbu tarqatishda o'rnatilmagan",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode o'rnatilgan, lekin ishga tushirilmadi",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode {{distro}} da o'rnatilmagan",
   "desktop.wsl.error.updateVersion":
     "OpenCode yangilanishi tugallandi, lekin {{distro}} hali ham {{installed}} haqida xabar beradi; kutilgan {{expected}}",
   "desktop.wsl.error.noVersion": "versiya yo'q",
-  "desktop.wsl.error.serverExited": "WSL server ishga tushirilgandan so'ng chiqdi (kod = {{code}} signal = {{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL server ishga tushirilgandan so'ng chiqdi (kod = {{code}} signal = {{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL serveri sog'lom bo'lgunga qadar chiqdi (kod={{code}} signali={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{distro}} sog'lig'ini tekshirish uchun yon mashina {{timeout}}ms dan keyin tugadi",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms dan keyin vaqt tugadi",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms dan keyin vaqt tugadi",
   "desktop.wsl.error.failedPort": "Port olinmadi",
   "desktop.picker.error.notSelected": "Fayl tanlovchi tomonidan tanlanmagan",
-  "desktop.picker.error.sizeLimit": "Tanlangan biriktirmalar {{limit}} MB chegarasidan oshib ketadi",
+  "desktop.picker.error.sizeLimit":
+    "Tanlangan biriktirmalar {{limit}} MB chegarasidan oshib ketadi",
   "command.category.suggested": "Tavsiya etilgan",
   "command.category.view": "Ko'rish",
   "command.category.project": "Loyiha",
@@ -142,7 +155,8 @@ export const dict = {
   "command.tab.close": "Tabni yoping",
   "command.tab.reopenClosed": "Yopiq tabni qayta oching",
   "command.context.addSelection": "Kontekstga tanlov qo'shing",
-  "command.context.addSelection.description": "Joriy fayldan tanlangan qatorlarni qo'shing",
+  "command.context.addSelection.description":
+    "Joriy fayldan tanlangan qatorlarni qo'shing",
   "command.input.focus": "Fokus kiritish",
   "command.terminal.toggle": "Terminalni almashtirish",
   "command.fileTree.toggle": "Fayl daraxtini almashtirish",
@@ -150,9 +164,11 @@ export const dict = {
   "command.terminal.new": "Yangi terminal",
   "command.terminal.new.description": "Yangi terminal yorlig'ini yarating",
   "command.steps.toggle": "Qadamlarni almashtirish",
-  "command.steps.toggle.description": "Joriy xabar uchun qadamlarni ko'rsatish yoki yashirish",
+  "command.steps.toggle.description":
+    "Joriy xabar uchun qadamlarni ko'rsatish yoki yashirish",
   "command.message.previous": "Oldingi xabar",
-  "command.message.previous.description": "Oldingi foydalanuvchi xabariga o'ting",
+  "command.message.previous.description":
+    "Oldingi foydalanuvchi xabariga o'ting",
   "command.message.next": "Keyingi xabar",
   "command.message.next.description": "Keyingi foydalanuvchi xabariga o'ting",
   "command.model.choose": "Modelni tanlang",
@@ -164,27 +180,35 @@ export const dict = {
   "command.agent.cycle.reverse": "Oldingi agent",
   "command.agent.cycle.reverse.description": "Oldingi agentga o'tish",
   "command.model.variant.cycle": "Keyingi fikrlash darajasi",
-  "command.model.variant.cycle.description": "Keyingi harakat darajasiga o'ting",
+  "command.model.variant.cycle.description":
+    "Keyingi harakat darajasiga o'ting",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Tezkor",
   "command.permissions.autoaccept.enable": "Ruxsatlarni avtomatik qabul qilish",
-  "command.permissions.autoaccept.disable": "Ruxsatlarni avtomatik qabul qilishni to'xtating",
+  "command.permissions.autoaccept.disable":
+    "Ruxsatlarni avtomatik qabul qilishni to'xtating",
   "command.workspace.toggle": "Ish joylarini almashtirish",
-  "command.workspace.toggle.description": "Yon panelda bir nechta ish joylarini yoqing yoki o'chiring",
+  "command.workspace.toggle.description":
+    "Yon panelda bir nechta ish joylarini yoqing yoki o'chiring",
   "command.session.undo": "Bekor qilish",
   "command.session.undo.description": "Oxirgi xabarni bekor qiling",
   "command.session.redo": "Qayta qiling",
-  "command.session.redo.description": "Oxirgi bekor qilingan xabarni takrorlang",
+  "command.session.redo.description":
+    "Oxirgi bekor qilingan xabarni takrorlang",
   "command.session.compact": "Yilni seans",
-  "command.session.compact.description": "Kontekst hajmini kamaytirish uchun sessiyani umumlashtiring",
+  "command.session.compact.description":
+    "Kontekst hajmini kamaytirish uchun sessiyani umumlashtiring",
   "command.session.fork": "Xabardan vilka",
   "command.session.fork.description": "Oldingi xabardan yangi seans yarating",
   "command.session.share": "Seansni ulashish",
-  "command.session.share.description": "Ushbu seansni baham ko'ring va URL-ni vaqtinchalik xotiraga nusxalash",
+  "command.session.share.description":
+    "Ushbu seansni baham ko'ring va URL-ni vaqtinchalik xotiraga nusxalash",
   "command.session.unshare": "Seansni ulashishni bekor qilish",
-  "command.session.unshare.description": "Ushbu seansni baham ko'rishni to'xtating",
+  "command.session.unshare.description":
+    "Ushbu seansni baham ko'rishni to'xtating",
   "command.session.export": "Eksport seansi",
-  "command.session.export.description": "Toʻliq seans transkriptini JSON sifatida eksport qiling",
+  "command.session.export.description":
+    "Toʻliq seans transkriptini JSON sifatida eksport qiling",
   "palette.search.placeholder": "Fayllar, buyruqlar va seanslarni qidiring",
   "palette.search.placeholder.home": "Qidiruv buyruqlar va seanslar",
   "palette.empty": "Hech qanday natija topilmadi",
@@ -196,27 +220,40 @@ export const dict = {
   "dialog.provider.group.other": "Boshqa",
   "dialog.provider.custom.label": "Maxsus OpenAI-mos keladigan provayder",
   "dialog.provider.tag.recommended": "Tavsiya etilgan",
-  "dialog.provider.opencode.note": "Tanlangan modellar, jumladan Claude, GPT, Gemini va boshqalar",
+  "dialog.provider.opencode.note":
+    "Tanlangan modellar, jumladan Claude, GPT, Gemini va boshqalar",
   "dialog.provider.opencode.tagline": "Ishonchli optimallashtirilgan modellar",
   "dialog.provider.opencodeGo.tagline": "Hamma uchun arzon obuna",
-  "dialog.provider.anthropic.note": "Claude modellariga, jumladan Pro va Maksga to'g'ridan-to'g'ri kirish",
-  "dialog.provider.copilot.note": "GitHub Copilot orqali kodlash yordami uchun AI modellari",
-  "dialog.provider.openai.note": "Tez, qobiliyatli umumiy AI vazifalari uchun GPT modellari",
-  "dialog.provider.google.note": "Tez, tuzilgan javoblar uchun Gemini modellari",
-  "dialog.provider.openrouter.note": "Barcha qo'llab-quvvatlanadigan modellarga bitta provayderdan kiring",
-  "dialog.provider.vercel.note": "Aqlli marshrutlash bilan AI modellariga yagona kirish",
+  "dialog.provider.anthropic.note":
+    "Claude modellariga, jumladan Pro va Maksga to'g'ridan-to'g'ri kirish",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot orqali kodlash yordami uchun AI modellari",
+  "dialog.provider.openai.note":
+    "Tez, qobiliyatli umumiy AI vazifalari uchun GPT modellari",
+  "dialog.provider.google.note":
+    "Tez, tuzilgan javoblar uchun Gemini modellari",
+  "dialog.provider.openrouter.note":
+    "Barcha qo'llab-quvvatlanadigan modellarga bitta provayderdan kiring",
+  "dialog.provider.vercel.note":
+    "Aqlli marshrutlash bilan AI modellariga yagona kirish",
   "dialog.model.select.title": "Modelni tanlang",
   "dialog.model.search.placeholder": "Modellarni qidirish",
   "dialog.model.empty": "Model natijalari yo'q",
   "dialog.model.manage": "Modellarni boshqarish",
-  "dialog.model.manage.description": "Model selektorida qaysi modellar ko'rinishini sozlang.",
-  "dialog.model.manage.provider.toggle": "Barcha {{provider}} modellarini almashtiring",
-  "dialog.model.unpaid.freeModels.title": "OpenCode tomonidan taqdim etilgan bepul modellar",
-  "dialog.model.unpaid.addMore.title": "Mashhur provayderlarning ko'proq modellarini qo'shing",
-  "dialog.model.unpaid.viewMoreProviders": "Yana 70 dan ortiq provayderlarni koʻring",
+  "dialog.model.manage.description":
+    "Model selektorida qaysi modellar ko'rinishini sozlang.",
+  "dialog.model.manage.provider.toggle":
+    "Barcha {{provider}} modellarini almashtiring",
+  "dialog.model.unpaid.freeModels.title":
+    "OpenCode tomonidan taqdim etilgan bepul modellar",
+  "dialog.model.unpaid.addMore.title":
+    "Mashhur provayderlarning ko'proq modellarini qo'shing",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Yana 70 dan ortiq provayderlarni koʻring",
   "dialog.provider.viewAll": "Ko'proq provayderlarni ko'rsatish",
   "provider.connect.title": "{{provider}} ni ulang",
-  "provider.connect.title.anthropicProMax": "Claude Pro/Maks bilan tizimga kiring",
+  "provider.connect.title.anthropicProMax":
+    "Claude Pro/Maks bilan tizimga kiring",
   "provider.connect.selectMethod": "{{provider}} uchun kirish usulini tanlang.",
   "provider.connect.method.apiKey": "API kaliti",
   "provider.connect.method.browser": "Brauzer",
@@ -250,15 +287,19 @@ export const dict = {
     " va hisobingizni ulash uchun quyidagi kodni kiriting va OpenCode da {{provider}} modellaridan foydalaning.",
   "provider.connect.oauth.auto.confirmationCode": "Tasdiqlash kodi",
   "provider.connect.toast.connected.title": "{{provider}} ulandi",
-  "provider.connect.toast.connected.description": "{{provider}} modellaridan endi foydalanish mumkin.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} modellaridan endi foydalanish mumkin.",
   "provider.custom.title": "Maxsus provayder",
-  "provider.custom.unavailable": "Ushbu serverda maxsus provayderlar mavjud emas",
-  "provider.custom.description.prefix": "OpenAI-mos keladigan provayderni sozlang. ga qarang ",
+  "provider.custom.unavailable":
+    "Ushbu serverda maxsus provayderlar mavjud emas",
+  "provider.custom.description.prefix":
+    "OpenAI-mos keladigan provayderni sozlang. ga qarang ",
   "provider.custom.description.link": "provayder konfiguratsiyasi hujjatlari",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Provayder identifikatori",
   "provider.custom.field.providerID.placeholder": "provayderim",
-  "provider.custom.field.providerID.description": "Kichik harflar, raqamlar, tire yoki pastki chiziq",
+  "provider.custom.field.providerID.description":
+    "Kichik harflar, raqamlar, tire yoki pastki chiziq",
   "provider.custom.field.name.label": "Ko'rsatilgan nom",
   "provider.custom.field.name.placeholder": "Mening AI provayderim",
   "provider.custom.field.baseURL.label": "Baza URL",
@@ -281,16 +322,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "qiymat",
   "provider.custom.headers.remove": "Sarlavhani olib tashlang",
   "provider.custom.headers.add": "Sarlavha qo'shing",
-  "provider.custom.error.providerID.required": "Provayder identifikatori talab qilinadi",
-  "provider.custom.error.providerID.format": "Kichik harflar, raqamlar, tire yoki pastki chiziqdan foydalaning",
-  "provider.custom.error.providerID.exists": "Bu provayder identifikatori allaqachon mavjud",
+  "provider.custom.error.providerID.required":
+    "Provayder identifikatori talab qilinadi",
+  "provider.custom.error.providerID.format":
+    "Kichik harflar, raqamlar, tire yoki pastki chiziqdan foydalaning",
+  "provider.custom.error.providerID.exists":
+    "Bu provayder identifikatori allaqachon mavjud",
   "provider.custom.error.name.required": "Ko'rsatilgan nom talab qilinadi",
   "provider.custom.error.baseURL.required": "URL bazasi talab qilinadi",
-  "provider.custom.error.baseURL.format": "http:// yoki https:// bilan boshlanishi kerak",
+  "provider.custom.error.baseURL.format":
+    "http:// yoki https:// bilan boshlanishi kerak",
   "provider.custom.error.required": "Majburiy",
   "provider.custom.error.duplicate": "Dublikat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} uzildi",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modellari endi mavjud emas.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modellari endi mavjud emas.",
   "model.tag.free": "Bepul",
   "model.tag.latest": "Oxirgi",
   "model.provider.anthropic": "Anthropic",
@@ -344,7 +390,8 @@ export const dict = {
   "prompt.example.4": "Autentifikatsiya qanday ishlashini tushuntiring",
   "prompt.example.5": "Xavfsizlik zaifliklarini toping va tuzating",
   "prompt.example.6": "Foydalanuvchi xizmati uchun birlik testlarini qo'shing",
-  "prompt.example.7": "Ko'proq o'qilishi uchun ushbu funktsiyani qayta tahrirlang",
+  "prompt.example.7":
+    "Ko'proq o'qilishi uchun ushbu funktsiyani qayta tahrirlang",
   "prompt.example.8": "Bu xato nimani anglatadi?",
   "prompt.example.9": "Bu muammoni tuzatishga yordam bering",
   "prompt.example.10": "API hujjatlarini yarating",
@@ -352,7 +399,8 @@ export const dict = {
   "prompt.example.12": "Kirish tekshiruvini qo'shing",
   "prompt.example.13": "Yangi komponent yarating...",
   "prompt.example.14": "Ushbu loyihani qanday tarqataman?",
-  "prompt.example.15": "Eng yaxshi amaliyotlar uchun mening kodimni ko'rib chiqing",
+  "prompt.example.15":
+    "Eng yaxshi amaliyotlar uchun mening kodimni ko'rib chiqing",
   "prompt.example.16": "Ushbu funktsiyaga xatolarni qayta ishlashni qo'shing",
   "prompt.example.17": "Ushbu regex naqshini tushuntiring",
   "prompt.example.18": "Buni TypeScript-ga aylantiring",
@@ -365,7 +413,8 @@ export const dict = {
   "prompt.example.25": "Atrof-muhit o'zgaruvchilari bu erda qanday ishlaydi?",
   "prompt.popover.emptyResults": "Mos natijalar topilmadi",
   "prompt.popover.emptyCommands": "Mos keladigan buyruqlar yo'q",
-  "prompt.dropzone.label": "Tasvirlar, PDF yoki matnli fayllarni bu yerga tashlang",
+  "prompt.dropzone.label":
+    "Tasvirlar, PDF yoki matnli fayllarni bu yerga tashlang",
   "prompt.dropzone.file.label": "@mention fayliga o'tkazing",
   "prompt.slash.badge.custom": "odatiy",
   "prompt.slash.badge.skill": "mahorat",
@@ -384,10 +433,12 @@ export const dict = {
   "prompt.action.send": "Yuborish",
   "prompt.action.stop": "To'xtang",
   "prompt.toast.pasteUnsupported.title": "Qoʻllab-quvvatlanmaydigan biriktirma",
-  "prompt.toast.pasteUnsupported.description": "Bu yerda faqat rasmlar, PDF yoki matnli fayllar biriktirilishi mumkin.",
+  "prompt.toast.pasteUnsupported.description":
+    "Bu yerda faqat rasmlar, PDF yoki matnli fayllar biriktirilishi mumkin.",
   "prompt.toast.attachmentDuplicate.title": "Bu fayl allaqachon yuklangan",
   "prompt.toast.modelAgentRequired.title": "Agent va modelni tanlang",
-  "prompt.toast.modelAgentRequired.description": "So'rov yuborishdan oldin agent va modelni tanlang.",
+  "prompt.toast.modelAgentRequired.description":
+    "So'rov yuborishdan oldin agent va modelni tanlang.",
   "prompt.toast.worktreeCreateFailed.title": "Ish daraxtini yaratib boʻlmadi",
   "prompt.toast.sessionCreateFailed.title": "Seans yaratib boʻlmadi",
   "prompt.toast.shellSendFailed.title": "Shell buyrug'ini yuborib bo'lmadi",
@@ -416,7 +467,8 @@ export const dict = {
   "app.server.retrying": "Avtomatik qayta urinish...",
   "app.server.otherServers": "Boshqa serverlar",
   "dialog.server.title": "Serverlar",
-  "dialog.server.description": "Ushbu ilova qaysi OpenCode serveriga ulanishini almashtiring.",
+  "dialog.server.description":
+    "Ushbu ilova qaysi OpenCode serveriga ulanishini almashtiring.",
   "dialog.server.search.placeholder": "Serverlarni qidirish",
   "dialog.server.empty": "Hozircha serverlar yoʻq",
   "dialog.server.add.title": "Server qo'shish",
@@ -454,7 +506,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Distroni tanlang",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL tekshirilmoqda...",
-  "wsl.onboarding.restartRequired": "WSL oʻrnatilishini tugatish uchun Windows qayta ishga tushirilishi kerak.",
+  "wsl.onboarding.restartRequired":
+    "WSL oʻrnatilishini tugatish uchun Windows qayta ishga tushirilishi kerak.",
   "wsl.onboarding.ready": "WSL tayyor.",
   "wsl.onboarding.required": "Davom etish uchun WSL talab qilinadi.",
   "wsl.onboarding.checkingDistros": "Tarqatishlar tekshirilmoqda...",
@@ -463,13 +516,16 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Tarqatishlar roʻyxati...",
   "wsl.onboarding.distroReady": "{{distro}} tayyor.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} hali o'rnatilmagan.",
-  "wsl.onboarding.openDistroOnce": "Oʻrnatishni tugatish uchun {{distro}} ni bir marta oching.",
+  "wsl.onboarding.openDistroOnce":
+    "Oʻrnatishni tugatish uchun {{distro}} ni bir marta oching.",
   "wsl.onboarding.finishingDistro": "{{distro}} uchun sozlash tugallanmoqda.",
   "wsl.onboarding.pickDistro": "Distroni tanlang yoki quyida o'rnating.",
   "wsl.onboarding.checkingOpencode": "OpenCode tekshirilmoqda...",
-  "wsl.onboarding.checkingOpencodeIn": "OpenCode {{distro}} da tekshirilmoqda...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "OpenCode {{distro}} da tekshirilmoqda...",
   "wsl.onboarding.updatingOpencode": "OpenCode yangilanmoqda...",
-  "wsl.onboarding.updatingOpencodeIn": "OpenCode {{distro}} da yangilanmoqda...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "OpenCode {{distro}} da yangilanmoqda...",
   "wsl.onboarding.updateOpencodeIn": "OpenCode-ni {{distro}}-da yangilang.",
   "wsl.onboarding.updateOpencode": "OpenCode-ni yangilang",
   "wsl.onboarding.opencodeReadyIn": "OpenCode {{distro}} da tayyor.",
@@ -485,20 +541,24 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Tekshirilmoqda...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode o'rnatilmagan",
   "wsl.onboarding.distroStatus.missingTools": "Bash, curl etishmayapti",
-  "wsl.onboarding.distroStatus.unsupported": "Qo'llab-quvvatlanmaydi · WSL 2 dan foydalaning",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Qo'llab-quvvatlanmaydi · WSL 2 dan foydalaning",
   "wsl.onboarding.needAnotherDistro": "Boshqa tarqatish kerakmi?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL katalogidan Linux distributivini o'rnating",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL katalogidan Linux distributivini o'rnating",
   "wsl.onboarding.wslNotInstalled.title": "WSL o'rnatilmagan",
   "wsl.onboarding.wslNotInstalled.description":
     "OpenCode WSL serverini qoʻshishdan oldin WSL (Linux uchun Windows quyi tizimi) talab qilinadi.",
   "wsl.onboarding.wslUnavailable.title": "WSL mavjud emas",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode WSL ni ushbu mashinada tasdiqlay olmadi.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode WSL ni ushbu mashinada tasdiqlay olmadi.",
   "wsl.onboarding.installWsl": "WSL-ni o'rnating",
   "wsl.onboarding.windowsRestartRequired":
     "WSL-ni o'rnatishni tugatish uchun Windows-ni qayta ishga tushiring, so'ngra OpenCode-ni qayta oching.",
   "wsl.onboarding.next": "Keyingi",
   "wsl.onboarding.refresh": "Yangilash",
-  "wsl.onboarding.allDistrosAdded": "Barcha o'rnatilgan tarqatishlar allaqachon qo'shilgan.",
+  "wsl.onboarding.allDistrosAdded":
+    "Barcha o'rnatilgan tarqatishlar allaqachon qo'shilgan.",
   "wsl.onboarding.noDistros": "Hali hech qanday tarqatish aniqlanmadi.",
   "wsl.onboarding.install": "O'rnatish",
   "wsl.onboarding.installing": "Oʻrnatilmoqda...",
@@ -512,21 +572,26 @@ export const dict = {
   "wsl.onboarding.version": "Versiya: {{version}}",
   "wsl.onboarding.unknown": "noma'lum",
   "wsl.onboarding.desktopVersion": "ish stoli {{version}}",
-  "wsl.onboarding.versionMismatch": "Oʻrnatilgan versiya ish stoli ilovasi versiyasiga mos kelmaydi.",
+  "wsl.onboarding.versionMismatch":
+    "Oʻrnatilgan versiya ish stoli ilovasi versiyasiga mos kelmaydi.",
   "wsl.onboarding.adding": "Qo'shilmoqda...",
-  "help.tabs.toast.ariaLabel": "Tablar bilan tanishtirish. Yorliqlar bilan ish va faol seanslaringizni tashkil qiling",
+  "help.tabs.toast.ariaLabel":
+    "Tablar bilan tanishtirish. Yorliqlar bilan ish va faol seanslaringizni tashkil qiling",
   "help.tabs.toast.dismiss": "Yorliqlar ma'lumotlarini o'chirish",
   "help.tabs.title": "Tablar bilan tanishtirish",
-  "help.tabs.description": "Yorliqlar bilan ish va faol seanslaringizni tashkil qiling",
+  "help.tabs.description":
+    "Yorliqlar bilan ish va faol seanslaringizni tashkil qiling",
   "help.tabs.date": "14 iyul",
-  "help.tabs.introduction": "OpenCode Desktop endi yorliqlar atrofida qurilgan.",
+  "help.tabs.introduction":
+    "OpenCode Desktop endi yorliqlar atrofida qurilgan.",
   "help.tabs.sessions":
     "Yorliqda yangi seansni boshlang yoki loyihalaringizdan mavjud sessiyani oching. Yangi ishni boshlaganingizda yangi varaqni oching va ish tugagach, uni yoping.",
   "help.tabs.organize":
     "Bir nechta yorliqlarni ochiq saqlash sizning faol seanslaringizni tashkil qilishni osonlashtiradi. Yorliqlar nomlarini esda qolarli qilib o'zgartiring, agar siz ularni atrofingizda saqlamoqchi bo'lsangiz.",
   "help.tabs.home":
     "Siz barcha seanslaringiz va loyihalaringizni yangi Home ekranida topasiz. Seansni tanlash uni yorliqda ochadi.",
-  "help.tabs.persistence": "Ilovani qayta ochganingizda, yorliqlaringiz hali ham ochiq.",
+  "help.tabs.persistence":
+    "Ilovani qayta ochganingizda, yorliqlaringiz hali ham ochiq.",
   "help.tabs.worktrees":
     "Yangi dizayn hali Git Worktrees-ni qo'llab-quvvatlamaydi, u tez orada chiqadi. Shunday qilib, agar siz avvalgi tartibdan foydalanishni davom ettirmoqchi boʻlsangiz, Sozlamalar orqali tartiblar oʻrtasida almashishingiz mumkin. Shuni yodda tutingki, yangi tartib bir necha hafta ichida doimiy bo'ladi.",
   "server.row.noUsername": "foydalanuvchi nomi yo'q",
@@ -538,8 +603,10 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Tavsiya etilgan: 128x128px",
   "dialog.project.edit.color": "Rang",
   "dialog.project.edit.color.select": "{{color}} rangini tanlang",
-  "dialog.project.edit.worktree.startup": "Ish maydonini ishga tushirish skripti",
-  "dialog.project.edit.worktree.startup.description": "Yangi ish maydoni (ishchi daraxt) yaratilgandan keyin ishlaydi.",
+  "dialog.project.edit.worktree.startup":
+    "Ish maydonini ishga tushirish skripti",
+  "dialog.project.edit.worktree.startup.description":
+    "Yangi ish maydoni (ishchi daraxt) yaratilgandan keyin ishlaydi.",
   "dialog.project.edit.worktree.startup.placeholder": "masalan bun install",
   "dialog.releaseNotes.action.getStarted": "Boshlash",
   "dialog.releaseNotes.action.next": "Keyingi",
@@ -600,50 +667,70 @@ export const dict = {
   "toast.theme.title": "Mavzu almashtirildi",
   "toast.scheme.title": "Rang sxemasi",
   "toast.workspace.enabled.title": "Ish joylari yoqilgan",
-  "toast.workspace.enabled.description": "Endi yon panelda bir nechta ishchi daraxtlar ko'rsatilgan",
+  "toast.workspace.enabled.description":
+    "Endi yon panelda bir nechta ishchi daraxtlar ko'rsatilgan",
   "toast.workspace.disabled.title": "Ish joylari oʻchirilgan",
-  "toast.workspace.disabled.description": "Yon panelda faqat asosiy ishchi daraxt ko'rsatilgan",
+  "toast.workspace.disabled.description":
+    "Yon panelda faqat asosiy ishchi daraxt ko'rsatilgan",
   "toast.permissions.autoaccept.on.title": "Ruxsatlarni avtomatik qabul qilish",
-  "toast.permissions.autoaccept.on.description": "Ruxsat so'rovlari avtomatik ravishda tasdiqlanadi",
-  "toast.permissions.autoaccept.off.title": "Ruxsatlarni avtomatik qabul qilish toʻxtatildi",
-  "toast.permissions.autoaccept.off.description": "Ruxsat so'rovlari tasdiqlashni talab qiladi",
+  "toast.permissions.autoaccept.on.description":
+    "Ruxsat so'rovlari avtomatik ravishda tasdiqlanadi",
+  "toast.permissions.autoaccept.off.title":
+    "Ruxsatlarni avtomatik qabul qilish toʻxtatildi",
+  "toast.permissions.autoaccept.off.description":
+    "Ruxsat so'rovlari tasdiqlashni talab qiladi",
   "toast.model.none.title": "Hech qanday model tanlanmagan",
-  "toast.model.none.description": "Ushbu seansni yakunlash uchun provayderni ulang",
+  "toast.model.none.description":
+    "Ushbu seansni yakunlash uchun provayderni ulang",
   "toast.file.loadFailed.title": "Faylni yuklab boʻlmadi",
   "toast.file.listFailed.title": "Fayllarni roʻyxatga kiritib boʻlmadi",
   "toast.context.noLineSelection.title": "Qator tanlovi yo'q",
-  "toast.context.noLineSelection.description": "Avval fayl yorlig'ida qator oralig'ini tanlang.",
-  "toast.session.share.copyFailed.title": "URLni vaqtinchalik xotiraga nusxalab boʻlmadi",
+  "toast.context.noLineSelection.description":
+    "Avval fayl yorlig'ida qator oralig'ini tanlang.",
+  "toast.session.share.copyFailed.title":
+    "URLni vaqtinchalik xotiraga nusxalab boʻlmadi",
   "toast.session.share.success.title": "Seans ulashildi",
-  "toast.session.share.success.description": "Buferga nusxalangan URL bilan baham ko'ring!",
+  "toast.session.share.success.description":
+    "Buferga nusxalangan URL bilan baham ko'ring!",
   "toast.session.share.failed.title": "Seansni ulashib boʻlmadi",
-  "toast.session.share.failed.description": "Seansni ulashishda xatolik yuz berdi",
+  "toast.session.share.failed.description":
+    "Seansni ulashishda xatolik yuz berdi",
   "toast.session.unshare.success.title": "Seans ulashilmadi",
-  "toast.session.unshare.success.description": "Seans muvaffaqiyatli bekor qilindi!",
+  "toast.session.unshare.success.description":
+    "Seans muvaffaqiyatli bekor qilindi!",
   "toast.session.unshare.failed.title": "Seansni taqsimlab boʻlmadi",
-  "toast.session.unshare.failed.description": "Seansni taqsimlashda xatolik yuz berdi",
+  "toast.session.unshare.failed.description":
+    "Seansni taqsimlashda xatolik yuz berdi",
   "toast.session.export.success.title": "Seans eksport qilindi",
   "toast.session.export.success.description": "Seans {{filename}}ga saqlandi",
   "toast.session.export.failed.title": "Seansni eksport qilib boʻlmadi",
-  "toast.session.export.failed.description": "Seansni eksport qilishda xatolik yuz berdi",
+  "toast.session.export.failed.description":
+    "Seansni eksport qilishda xatolik yuz berdi",
   "toast.session.listFailed.title": "{{project}} uchun seanslar yuklanmadi",
   "toast.project.reloadFailed.title": "{{project}} qayta yuklanmadi",
   "toast.update.title": "Yangilanish mavjud",
-  "toast.update.description": "OpenCode ({{version}}) yangi versiyasi endi oʻrnatish mumkin.",
+  "toast.update.description":
+    "OpenCode ({{version}}) yangi versiyasi endi oʻrnatish mumkin.",
   "toast.update.action.installRestart": "O'rnating va qayta ishga tushiring",
   "toast.update.action.notYet": "Hali emas",
   "toast.update.installFailed.title": "Yangilashni o'rnatib bo'lmadi",
   "toast.update.installFailed.retry": "Qayta urinish",
 
-  "disk.accessGuidance.macos": "System Settings'da DiskLizard'ga Full Disk Access ruxsatini bering, so'ngra qayta skanerlang.",
-  "disk.accessGuidance.windows": "Ushbu diskka kirish huquqi bor hisobdan foydalaning yoki hisobingiz o'qiy oladigan papkani skanerlang.",
-  "disk.accessGuidance.linux": "Papka va montaj nuqtalari ruxsatlarini ko'rib chiqib, so'ngra qayta skanerlang.",
-  "disk.accessGuidance.default": "Ushbu papkalarga kirishni ko'rib chiqib, so'ngra qayta skanerlang.",
-  "disk.accessGuidance.rescan": "Kirishni o'zgartirgandan so'ng yuqori paneldagi Rescan'dan foydalaning.",
+  "disk.accessGuidance.macos":
+    "System Settings'da DiskLizard'ga Full Disk Access ruxsatini bering, so'ngra qayta skanerlang.",
+  "disk.accessGuidance.windows":
+    "Ushbu diskka kirish huquqi bor hisobdan foydalaning yoki hisobingiz o'qiy oladigan papkani skanerlang.",
+  "disk.accessGuidance.linux":
+    "Papka va montaj nuqtalari ruxsatlarini ko'rib chiqib, so'ngra qayta skanerlang.",
+  "disk.accessGuidance.default":
+    "Ushbu papkalarga kirishni ko'rib chiqib, so'ngra qayta skanerlang.",
+  "disk.accessGuidance.rescan":
+    "Kirishni o'zgartirgandan so'ng yuqori paneldagi Rescan'dan foydalaning.",
   "disk.common.rescan": "Qayta skanerlash",
   "error.page.title": "Nimadir xato ketdi",
   "error.page.description": "Ilovani yuklashda xatolik yuz berdi.",
-  "error.page.description.localServerStartup": "Mahalliy serverni ishga tushirishda xatolik yuz berdi.",
+  "error.page.description.localServerStartup":
+    "Mahalliy serverni ishga tushirishda xatolik yuz berdi.",
   "error.page.details.label": "Xato tafsilotlari",
   "error.page.action.restart": "Qayta ishga tushirish",
   "error.page.action.report": "Xato haqida xabar berish",
@@ -653,17 +740,21 @@ export const dict = {
   "error.page.action.checkUpdates": "Yangilanishlarni tekshiring",
   "error.page.action.updateTo": "{{version}} ga yangilang",
   "error.page.circular": "[Diraviy]",
-  "error.page.report.prefix": "Iltimos, ushbu xato haqida OpenCode jamoasiga xabar bering",
+  "error.page.report.prefix":
+    "Iltimos, ushbu xato haqida OpenCode jamoasiga xabar bering",
   "error.page.report.discord": "Discord-da",
   "error.page.version": "Versiya: {{version}}",
   "error.dev.rootNotFound":
     "Ildiz element topilmadi. Uni index.html-ga qo'shishni unutdingizmi? Yoki id atributi noto'g'ri yozilgandir?",
-  "error.serverSync.connectFailed": "Serverga ulanib boʻlmadi. `{{url}}` da ishlaydigan server bormi?",
+  "error.serverSync.connectFailed":
+    "Serverga ulanib boʻlmadi. `{{url}}` da ishlaydigan server bormi?",
   "error.serverSDK.noServerAvailable": "Hech qanday server mavjud emas",
   "error.serverSDK.serverNotAvailable": "Server mavjud emas",
   "error.childStore.persistedCacheCreateFailed": "Doimiy kesh yaratib bo'lmadi",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Doimiy loyiha metamaʼlumotlarini yaratib boʻlmadi",
-  "error.childStore.persistedProjectIconCreateFailed": "Doimiy loyiha belgisini yaratib boʻlmadi",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Doimiy loyiha metamaʼlumotlarini yaratib boʻlmadi",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Doimiy loyiha belgisini yaratib boʻlmadi",
   "error.childStore.storeCreateFailed": "Doʻkon yaratib boʻlmadi",
   "directory.error.invalidUrl": "URL da noto'g'ri katalog.",
   "error.chain.unknown": "Noma'lum xato",
@@ -675,23 +766,31 @@ export const dict = {
   "error.chain.responseBody": "Javob organi:\n{{body}}",
   "error.chain.didYouMean": "Buni nazarda tutdingizmi: {{suggestions}}",
   "error.chain.modelNotFound": "Model topilmadi: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Konfiguratsiya (opencode.json) provayder/model nomlarini tekshiring",
+  "error.chain.checkConfig":
+    "Konfiguratsiya (opencode.json) provayder/model nomlarini tekshiring",
   "error.chain.mcpFailed":
     "MCP \"{{name}}\" serveri muvaffaqiyatsiz tugadi. E'tibor bering, OpenCode hali MCP autentifikatsiyasini qo'llab-quvvatlamaydi.",
-  "error.chain.providerAuthFailed": "Provayder autentifikatsiyasi amalga oshmadi ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Provayder autentifikatsiyasi amalga oshmadi ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" provayderini ishga tushirib boʻlmadi. Hisob ma\'lumotlari va konfiguratsiyani tekshiring.',
-  "error.chain.configJsonInvalid": "{{path}} da konfiguratsiya fayli yaroqsiz JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} da konfiguratsiya fayli yaroqsiz JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "{{path}} da konfiguratsiya fayli yaroqsiz JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} da konfiguratsiya fayli yaroqsiz JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} da "{{dir}}" katalogi yaroqsiz. Katalog nomini "{{suggestion}}" ga o\'zgartiring yoki uni olib tashlang. Bu keng tarqalgan yozuv xatosi.',
-  "error.chain.configFrontmatterError": "{{path}} da oldingi materialni tahlil qilib boʻlmadi:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} da oldingi materialni tahlil qilib boʻlmadi:\n{{message}}",
   "error.chain.configInvalid": "{{path}} da konfiguratsiya fayli yaroqsiz",
-  "error.chain.configInvalidWithMessage": "{{path}} da konfiguratsiya fayli notoʻgʻri: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} da konfiguratsiya fayli notoʻgʻri: {{message}}",
   "notification.permission.title": "Ruxsat talab qilinadi",
-  "notification.permission.description": "{{sessionTitle}} uchun {{projectName}} uchun ruxsat kerak",
+  "notification.permission.description":
+    "{{sessionTitle}} uchun {{projectName}} uchun ruxsat kerak",
   "notification.question.title": "Savol",
-  "notification.question.description": "{{projectName}} da {{sessionTitle}} savol bor",
+  "notification.question.description":
+    "{{projectName}} da {{sessionTitle}} savol bor",
   "notification.action.goToSession": "Seansga o'ting",
   "notification.session.responseReady.title": "Javob tayyor",
   "notification.session.error.title": "Seans xatosi",
@@ -722,7 +821,8 @@ export const dict = {
   "session.tab.unknown": "Noma'lum sessiya",
   "session.panel.reviewAndFiles": "Ko'rib chiqish va fayllar",
   "session.error.notFound": "Bu sessiya topilmadi",
-  "session.error.notFound.description": "Ushbu yorliq endi ushbu serverda mavjud bo'lmagan seansga ishora qiladi.",
+  "session.error.notFound.description":
+    "Ushbu yorliq endi ushbu serverda mavjud bo'lmagan seansga ishora qiladi.",
   "session.error.notFound.closeTab": "Tab ni yoping",
   "session.error.serverConnection": "Bu serverga ulanib boʻlmadi",
   "session.review.filesChanged": "Fayllar o'zgartirildi {{count}}",
@@ -730,7 +830,8 @@ export const dict = {
   "session.review.change.other": "O'zgarishlar",
   "session.review.loadingChanges": "Oʻzgarishlar yuklanmoqda...",
   "session.review.empty": "Bu sessiyada hali oʻzgarishlar yoʻq",
-  "session.review.noVcs": "Git versiyasini boshqarish tizimi aniqlanmadi, o'zgarishlar ko'rsatilmadi",
+  "session.review.noVcs":
+    "Git versiyasini boshqarish tizimi aniqlanmadi, o'zgarishlar ko'rsatilmadi",
   "session.review.noVcs.createGit.title": "Git omborini yarating",
   "session.review.noVcs.createGit.description":
     "Ushbu loyihadagi oʻzgarishlarni kuzating, koʻrib chiqing va bekor qiling",
@@ -739,7 +840,8 @@ export const dict = {
   "session.review.noSnapshot":
     "Snapshot kuzatish konfiguratsiyada oʻchirilgan, shuning uchun sessiya oʻzgarishlari mavjud emas",
   "session.review.noChanges": "Oʻzgarishlar yoʻq",
-  "session.review.noUncommittedChanges": "Hali tasdiqlanmagan o'zgarishlar yo'q",
+  "session.review.noUncommittedChanges":
+    "Hali tasdiqlanmagan o'zgarishlar yo'q",
   "session.review.noBranchChanges": "Hozircha filial o'zgarmadi",
   "session.files.selectToOpen": "Ochish uchun faylni tanlang",
   "session.files.all": "Barcha fayllar",
@@ -838,12 +940,14 @@ export const dict = {
   "terminal.title.numbered": "{{number}} terminali",
   "terminal.close": "Terminalni yoping",
   "terminal.connectionLost.title": "Ulanish uzildi",
-  "terminal.connectionLost.abnormalClose": "WebSocket anormal tarzda yopildi: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket anormal tarzda yopildi: {{code}}",
   "terminal.connectionLost.description":
     "Terminal aloqasi uzildi. Bu server qayta ishga tushirilganda sodir bo'lishi mumkin.",
   "terminal.connectTicket.csrfError":
     "PTY ulanish chiptasi kelib chiqishi yoki CSRF tekshiruvlari tomonidan rad etilgan. CORS server konfiguratsiyasini tekshiring.",
-  "terminal.connectTicket.statusError": "PTY ulanish chiptasi {{status}} bilan amalga oshmadi",
+  "terminal.connectTicket.statusError":
+    "PTY ulanish chiptasi {{status}} bilan amalga oshmadi",
   "titlebar.update": "Yangilash",
   "titlebar.updateVersion": "{{version}}-ni yangilang",
   "common.closeTab": "Tabni yoping",
@@ -908,23 +1012,30 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Oxirgi 5 soniyada 32 ms dan ortiq kadrlar.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Bloklangan vaqt va oxirgi 5 soniyadagi uzoq topshiriqlar soni. Maksimal vazifa: {{max}}.",
+  "debugBar.long.tip":
+    "Bloklangan vaqt va oxirgi 5 soniyadagi uzoq topshiriqlar soni. Maksimal vazifa: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Oxirgi 5 soniya ichida kuzatilgan eng yomon kiritish kechikishi.",
+  "debugBar.delay.tip":
+    "Oxirgi 5 soniya ichida kuzatilgan eng yomon kiritish kechikishi.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Oxirgi 5 soniya davomida o'zaro ta'sir qilishning taxminiy davomiyligi. Bu INP-ga o'xshaydi, rasmiy Web Vitals INP emas.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Joriy ilovaning ishlash muddati uchun joylashuvning umumiy siljishi.",
+  "debugBar.cls.tip":
+    "Joriy ilovaning ishlash muddati uchun joylashuvning umumiy siljishi.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Ishlatilgan JS to'plami va to'p chegarasi. Faqat Chromium.",
-  "debugBar.mem.tip": "Ishlatilgan JS to'plami va to'p chegarasi. {{used}}, {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Ishlatilgan JS to'plami va to'p chegarasi. Faqat Chromium.",
+  "debugBar.mem.tip":
+    "Ishlatilgan JS to'plami va to'p chegarasi. {{used}}, {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Fokus uslublarini barcha interaktiv elementlarga majburlash",
+  "debugBar.focus.tip":
+    "Fokus uslublarini barcha interaktiv elementlarga majburlash",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Tanlangan tilni oʻzgartirmasdan ilovaning toʻliq joylashuvi yoʻnalishini majburlang",
+  "debugBar.direction.tip":
+    "Tanlangan tilni oʻzgartirmasdan ilovaning toʻliq joylashuvi yoʻnalishini majburlang",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -934,7 +1045,8 @@ export const dict = {
   "settings.tab.shortcuts": "Yorliqlar",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integratsiyasi",
-  "settings.desktop.wsl.description": "Windows da WSL ichidagi OpenCode serverini ishga tushiring.",
+  "settings.desktop.wsl.description":
+    "Windows da WSL ichidagi OpenCode serverini ishga tushiring.",
   "settings.general.section.appearance": "Tashqi ko'rinish",
   "settings.general.section.advanced": "Murakkab",
   "settings.general.section.notifications": "Tizim bildirishnomalari",
@@ -943,31 +1055,38 @@ export const dict = {
   "settings.general.section.feed": "Oziqlantirish",
   "settings.general.section.display": "Displey",
   "settings.general.row.language.title": "Til",
-  "settings.general.row.language.description": "OpenCode uchun ekran tilini o'zgartiring",
+  "settings.general.row.language.description":
+    "OpenCode uchun ekran tilini o'zgartiring",
   "settings.general.row.shell.title": "Terminal qobig'i",
-  "settings.general.row.shell.description": "Terminal va agent vositalari tomonidan ishlatiladigan qobiq",
+  "settings.general.row.shell.description":
+    "Terminal va agent vositalari tomonidan ishlatiladigan qobiq",
   "settings.general.row.shell.autoDefault": "Avtomatik (standart)",
   "settings.general.row.shell.terminalOnly": "faqat terminal",
   "settings.general.row.appearance.title": "Tashqi ko'rinish",
-  "settings.general.row.appearance.description": "OpenCode qurilmangizda qanday koʻrinishini sozlang",
+  "settings.general.row.appearance.description":
+    "OpenCode qurilmangizda qanday koʻrinishini sozlang",
   "settings.general.row.colorScheme.title": "Rang sxemasi",
   "settings.general.row.colorScheme.description":
     "OpenCode tizimga, yorugʻlik yoki qorongʻi mavzuga amal qilishini tanlang",
   "settings.general.row.theme.title": "Mavzu",
   "settings.general.row.theme.description": "OpenCode mavzusini sozlash.",
   "settings.general.row.font.title": "Kod shrifti",
-  "settings.general.row.font.description": "Kod bloklarida ishlatiladigan shriftni moslashtiring",
+  "settings.general.row.font.description":
+    "Kod bloklarida ishlatiladigan shriftni moslashtiring",
   "settings.general.row.terminalFont.title": "Terminal shrifti",
-  "settings.general.row.terminalFont.description": "Terminalda ishlatiladigan shriftni sozlang",
+  "settings.general.row.terminalFont.description":
+    "Terminalda ishlatiladigan shriftni sozlang",
   "settings.general.row.uiFont.title": "UI shrifti",
-  "settings.general.row.uiFont.description": "Interfeys davomida ishlatiladigan shriftni moslashtiring",
+  "settings.general.row.uiFont.description":
+    "Interfeys davomida ishlatiladigan shriftni moslashtiring",
   "settings.general.row.followup.title": "Kuzatuv xatti-harakati",
   "settings.general.row.followup.description":
     "Kuzatuv soʻrovlari darhol boshqarilishini yoki navbatda kutishini tanlang",
   "settings.general.row.followup.option.queue": "Navbat",
   "settings.general.row.followup.option.steer": "Boshqarmoq",
   "settings.general.row.showFileTree.title": "Fayl daraxti",
-  "settings.general.row.showFileTree.description": "Seanslarda fayl daraxti panelini ko'rsatish",
+  "settings.general.row.showFileTree.description":
+    "Seanslarda fayl daraxti panelini ko'rsatish",
   "settings.general.row.showNavigation.title": "Navigatsiya boshqaruvlari",
   "settings.general.row.showNavigation.description":
     "Ish stolining sarlavha satrida orqaga va oldinga tugmalarini ko'rsating",
@@ -975,29 +1094,37 @@ export const dict = {
   "settings.general.row.showSearch.description":
     "Sarlavha satrida qidirish va buyruqlar palitrasi tugmasini ko'rsating",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Ish stolining sarlavha satrida terminal tugmachasini ko'rsating",
+  "settings.general.row.showTerminal.description":
+    "Ish stolining sarlavha satrida terminal tugmachasini ko'rsating",
   "settings.general.row.showStatus.title": "Server holati",
-  "settings.general.row.showStatus.description": "Sarlavha satrida server holati tugmasini ko'rsating",
+  "settings.general.row.showStatus.description":
+    "Sarlavha satrida server holati tugmasini ko'rsating",
   "settings.general.row.mobileTitlebarBottom.title": "Pastki navigatsiya",
   "settings.general.row.mobileTitlebarBottom.description":
     "Sarlavha satrini va seans yorliqlarini mobil telefonda ekranning pastki qismiga joylashtiring",
   "settings.general.row.showCustomAgents.title": "Agentni ko'rsatish",
   "settings.general.row.showCustomAgents.description":
     "Kompozitorda agentlar o'rtasida almashish. Yashirin bo'lsa, birlamchi Build agenti bo'ladi.",
-  "settings.general.row.reasoningSummaries.title": "Fikrlash xulosalarini ko'rsating",
-  "settings.general.row.reasoningSummaries.description": "Vaqt jadvalida model asoslarini ko'rsatish",
-  "settings.general.row.shellToolPartsExpanded.title": "Qobiq asboblari qismlarini kengaytiring",
+  "settings.general.row.reasoningSummaries.title":
+    "Fikrlash xulosalarini ko'rsating",
+  "settings.general.row.reasoningSummaries.description":
+    "Vaqt jadvalida model asoslarini ko'rsatish",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Qobiq asboblari qismlarini kengaytiring",
   "settings.general.row.shellToolPartsExpanded.description":
     "Xronologiyada sukut bo'yicha kengaytirilgan qobiq asboblari qismlarini ko'rsatish",
-  "settings.general.row.editToolPartsExpanded.title": "Tahrirlash vositasi qismlarini kengaytiring",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Tahrirlash vositasi qismlarini kengaytiring",
   "settings.general.row.editToolPartsExpanded.description":
     "Vaqt jadvalida sukut boʻyicha kengaytirilgan tahrirlash, yozish va tuzatish vositalari qismlarini koʻrsatish",
   "settings.general.row.newInterface.title": "Yangi tartib",
   "settings.general.row.newInterface.badge": "Yangi",
   "settings.general.row.newInterface.description":
     "Yangi yorliqlar va uy tartibidan foydalaning. Cheklangan vaqt uchun tartiblar o'rtasida almashinish.",
-  "settings.general.row.newInterfaceNotice.title": "Siz hozir yangi tartibdan foydalanmoqdasiz",
-  "settings.general.row.newInterfaceNotice.description": "Oldingi tartib endi mavjud emas",
+  "settings.general.row.newInterfaceNotice.title":
+    "Siz hozir yangi tartibdan foydalanmoqdasiz",
+  "settings.general.row.newInterfaceNotice.description":
+    "Oldingi tartib endi mavjud emas",
   "settings.general.row.newInterfaceNotice.dismiss": "Rad etish",
   "settings.general.row.pinchZoom.title": "Kattalashtirish uchun chimchilang",
   "settings.general.row.pinchZoom.description":
@@ -1010,16 +1137,20 @@ export const dict = {
   "settings.general.row.releaseNotes.title": "Chiqarish qaydlari",
   "settings.general.row.releaseNotes.description":
     "Yangilanishlardan so'ng nimalar yangi qalqib chiquvchi oynalarni ko'rsating",
-  "settings.updates.row.startup.title": "Ishga tushganda yangilanishlarni tekshiring",
-  "settings.updates.row.startup.description": "OpenCode ishga tushganda avtomatik ravishda yangilanishlarni tekshiring",
+  "settings.updates.row.startup.title":
+    "Ishga tushganda yangilanishlarni tekshiring",
+  "settings.updates.row.startup.description":
+    "OpenCode ishga tushganda avtomatik ravishda yangilanishlarni tekshiring",
   "settings.updates.row.check.title": "Yangilanishlarni tekshiring",
-  "settings.updates.row.check.description": "Yangilanishlarni qo'lda tekshiring va mavjud bo'lsa o'rnating",
+  "settings.updates.row.check.description":
+    "Yangilanishlarni qo'lda tekshiring va mavjud bo'lsa o'rnating",
   "settings.updates.action.checkNow": "Hozir tekshiring",
   "settings.updates.action.checking": "Tekshirilmoqda...",
   "settings.updates.action.downloading": "Yuklab olinmoqda...",
   "settings.updates.action.installing": "Oʻrnatilmoqda...",
   "settings.updates.toast.latest.title": "Siz yangilangansiz",
-  "settings.updates.toast.latest.description": "Siz OpenCode oxirgi versiyasini ishga tushiryapsiz.",
+  "settings.updates.toast.latest.description":
+    "Siz OpenCode oxirgi versiyasini ishga tushiryapsiz.",
   "sound.option.none": "Yo'q",
   "sound.option.alert01": "Ogohlantirish 01",
   "sound.option.alert02": "Ogohlantirish 02",
@@ -1070,21 +1201,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Agent tugallanganda yoki unga e'tibor kerak bo'lganda tizim bildirishnomasini ko'rsatish",
   "settings.general.notifications.permissions.title": "Ruxsatlar",
-  "settings.general.notifications.permissions.description": "Ruxsat kerak bo'lganda tizim bildirishnomasini ko'rsatish",
+  "settings.general.notifications.permissions.description":
+    "Ruxsat kerak bo'lganda tizim bildirishnomasini ko'rsatish",
   "settings.general.notifications.errors.title": "Xatolar",
-  "settings.general.notifications.errors.description": "Xatolik yuz berganda tizim bildirishnomasini ko'rsatish",
+  "settings.general.notifications.errors.description":
+    "Xatolik yuz berganda tizim bildirishnomasini ko'rsatish",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Agent tugallanganda yoki e'tiborga muhtoj bo'lganida ovozni ijro eting",
+  "settings.general.sounds.agent.description":
+    "Agent tugallanganda yoki e'tiborga muhtoj bo'lganida ovozni ijro eting",
   "settings.general.sounds.permissions.title": "Ruxsatlar",
-  "settings.general.sounds.permissions.description": "Ruxsat kerak bo'lganda ovozni ijro etish",
+  "settings.general.sounds.permissions.description":
+    "Ruxsat kerak bo'lganda ovozni ijro etish",
   "settings.general.sounds.errors.title": "Xatolar",
-  "settings.general.sounds.errors.description": "Xatolik yuz berganda ovozni ijro eting",
+  "settings.general.sounds.errors.description":
+    "Xatolik yuz berganda ovozni ijro eting",
   "settings.shortcuts.title": "Klaviatura yorliqlari",
   "settings.shortcuts.reset.button": "Standart sozlamalarni tiklash",
   "settings.shortcuts.reset.toast.title": "Yorliqlar qayta tiklandi",
-  "settings.shortcuts.reset.toast.description": "Klaviatura yorliqlari standart sozlamalarga qaytarildi.",
+  "settings.shortcuts.reset.toast.description":
+    "Klaviatura yorliqlari standart sozlamalarga qaytarildi.",
   "settings.shortcuts.conflict.title": "Yorliq allaqachon ishlatilmoqda",
-  "settings.shortcuts.conflict.description": "{{keybind}} allaqachon {{titles}} ga tayinlangan.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} allaqachon {{titles}} ga tayinlangan.",
   "settings.shortcuts.unassigned": "Tayinlanmagan",
   "settings.shortcuts.pressKeys": "Tugmalarni bosing",
   "settings.shortcuts.search.placeholder": "Yorliqlarni qidirish",
@@ -1096,12 +1234,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Tezkor",
   "settings.providers.title": "Provayderlar",
-  "settings.providers.description": "Bu yerda provayder sozlamalari sozlanishi mumkin.",
+  "settings.providers.description":
+    "Bu yerda provayder sozlamalari sozlanishi mumkin.",
   "settings.providers.section.connected": "Ulangan provayderlar",
   "settings.providers.connected.empty": "Ulangan provayderlar yo'q",
-  "settings.providers.connected.environmentDescription": "Atrof-muhit o'zgaruvchilaringizdan ulangan",
+  "settings.providers.connected.environmentDescription":
+    "Atrof-muhit o'zgaruvchilaringizdan ulangan",
   "settings.providers.section.popular": "Mashhur provayderlar",
-  "settings.providers.custom.description": "URL bazasi bo'yicha OpenAI-mos provayderni qo'shing.",
+  "settings.providers.custom.description":
+    "URL bazasi bo'yicha OpenAI-mos provayderni qo'shing.",
   "settings.providers.tag.environment": "Atrof-muhit",
   "settings.providers.tag.config": "Konfiguratsiya",
   "settings.providers.tag.custom": "Maxsus",
@@ -1109,44 +1250,59 @@ export const dict = {
   "settings.models.title": "Modellar",
   "settings.models.description": "Model sozlamalari bu erda sozlanishi mumkin.",
   "settings.agents.title": "Agentlar",
-  "settings.agents.description": "Bu yerda agent sozlamalari sozlanishi mumkin.",
+  "settings.agents.description":
+    "Bu yerda agent sozlamalari sozlanishi mumkin.",
   "settings.commands.title": "Buyruqlar",
-  "settings.commands.description": "Buyruq sozlamalari bu yerda sozlanishi mumkin.",
+  "settings.commands.description":
+    "Buyruq sozlamalari bu yerda sozlanishi mumkin.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP sozlamalari bu yerda sozlanishi mumkin.",
   "settings.permissions.title": "Ruxsatlar",
-  "settings.permissions.description": "Server sukut bo'yicha qanday vositalardan foydalanishi mumkinligini boshqaring.",
+  "settings.permissions.description":
+    "Server sukut bo'yicha qanday vositalardan foydalanishi mumkinligini boshqaring.",
   "settings.permissions.section.tools": "Asboblar",
-  "settings.permissions.toast.updateFailed.title": "Ruxsatlarni yangilab boʻlmadi",
+  "settings.permissions.toast.updateFailed.title":
+    "Ruxsatlarni yangilab boʻlmadi",
   "settings.permissions.action.allow": "Ruxsat bering",
   "settings.permissions.action.ask": "So'rang",
   "settings.permissions.action.deny": "Rad etish",
   "settings.permissions.tool.read.title": "O'qing",
-  "settings.permissions.tool.read.description": "Faylni o'qish (fayl yo'liga mos keladi)",
+  "settings.permissions.tool.read.description":
+    "Faylni o'qish (fayl yo'liga mos keladi)",
   "settings.permissions.tool.edit.title": "Tahrirlash",
-  "settings.permissions.tool.edit.description": "Fayllarni o'zgartirish, jumladan tahrirlash, yozish va tuzatishlar",
+  "settings.permissions.tool.edit.description":
+    "Fayllarni o'zgartirish, jumladan tahrirlash, yozish va tuzatishlar",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Glob naqshlari yordamida fayllarni moslashtiring",
+  "settings.permissions.tool.glob.description":
+    "Glob naqshlari yordamida fayllarni moslashtiring",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Oddiy iboralar yordamida fayl tarkibini qidiring",
+  "settings.permissions.tool.grep.description":
+    "Oddiy iboralar yordamida fayl tarkibini qidiring",
   "settings.permissions.tool.list.title": "Roʻyxat",
-  "settings.permissions.tool.list.description": "Katalog ichidagi fayllarni ro'yxatlash",
+  "settings.permissions.tool.list.description":
+    "Katalog ichidagi fayllarni ro'yxatlash",
   "settings.permissions.tool.bash.title": "Bash",
-  "settings.permissions.tool.bash.description": "Shell buyruqlarini ishga tushiring",
+  "settings.permissions.tool.bash.description":
+    "Shell buyruqlarini ishga tushiring",
   "settings.permissions.tool.task.title": "Vazifa",
-  "settings.permissions.tool.task.description": "Sub-agentlarni ishga tushiring",
+  "settings.permissions.tool.task.description":
+    "Sub-agentlarni ishga tushiring",
   "settings.permissions.tool.skill.title": "Malaka",
-  "settings.permissions.tool.skill.description": "Nomi bo'yicha mahorat yuklang",
+  "settings.permissions.tool.skill.description":
+    "Nomi bo'yicha mahorat yuklang",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Til serveri so'rovlarini ishga tushirish",
+  "settings.permissions.tool.lsp.description":
+    "Til serveri so'rovlarini ishga tushirish",
   "settings.permissions.tool.todowrite.title": "Todo Write",
-  "settings.permissions.tool.todowrite.description": "Ishlar ro'yxatini yangilang",
+  "settings.permissions.tool.todowrite.description":
+    "Ishlar ro'yxatini yangilang",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
   "settings.permissions.tool.webfetch.description": "URL dan kontentni olish",
   "settings.permissions.tool.websearch.title": "Veb-qidiruv",
   "settings.permissions.tool.websearch.description": "Internetda qidiring",
   "settings.permissions.tool.external_directory.title": "Tashqi katalog",
-  "settings.permissions.tool.external_directory.description": "Loyiha katalogidan tashqaridagi fayllarga kirish",
+  "settings.permissions.tool.external_directory.description":
+    "Loyiha katalogidan tashqaridagi fayllarga kirish",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
   "settings.permissions.tool.doom_loop.description":
     "Bir xil kirish bilan takrorlangan asboblar qo'ng'iroqlarini aniqlang",
@@ -1163,12 +1319,15 @@ export const dict = {
   "workspace.resetting.description": "Bu bir daqiqa vaqt olishi mumkin.",
   "workspace.reset.failed.title": "Ish joyini qayta oʻrnatib boʻlmadi",
   "workspace.reset.success.title": "Ish joyini tiklash",
-  "workspace.reset.success.description": "Ish maydoni endi standart filialga mos keladi.",
+  "workspace.reset.success.description":
+    "Ish maydoni endi standart filialga mos keladi.",
   "workspace.error.stillPreparing": "Ish maydoni hali ham tayyorlanmoqda",
-  "workspace.status.checking": "Birlashtirilmagan o'zgarishlar tekshirilmoqda...",
+  "workspace.status.checking":
+    "Birlashtirilmagan o'zgarishlar tekshirilmoqda...",
   "workspace.status.error": "Git holatini tekshirib boʻlmadi.",
   "workspace.status.clean": "Birlashtirilmagan o'zgarishlar aniqlanmadi.",
-  "workspace.status.dirty": "Ushbu ish maydonida birlashtirilmagan o'zgarishlar aniqlandi.",
+  "workspace.status.dirty":
+    "Ushbu ish maydonida birlashtirilmagan o'zgarishlar aniqlandi.",
   "workspace.delete.title": "Ish maydonini o'chirish",
   "workspace.delete.confirm": '"{{name}}" ish maydoni o‘chirilsinmi?',
   "workspace.delete.button": "Ish maydonini o'chirish",
@@ -1178,6 +1337,7 @@ export const dict = {
   "workspace.reset.archived.none": "Hech qanday faol seans arxivlanmaydi.",
   "workspace.reset.archived.one": "1 seans arxivlanadi.",
   "workspace.reset.archived.many": "{{count}} seanslari arxivlanadi.",
-  "workspace.reset.note": "Bu standart filialga mos keladigan ish maydonini tiklaydi.",
+  "workspace.reset.note":
+    "Bu standart filialga mos keladigan ish maydonini tiklaydi.",
   "dialog.usageExceeded.dontShowAgain": "Boshqa ko‘rsatma",
 }

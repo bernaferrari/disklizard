@@ -73,11 +73,19 @@ export const DEVELOPER_PROJECT_MARKER_NAMES = new Set([
   "uv.lock",
   "go.mod",
   "go.sum",
+  "cargo.toml",
+  "cargo.lock",
+  "pom.xml",
+  "build.gradle",
+  "build.gradle.kts",
+  "settings.gradle",
+  "settings.gradle.kts",
+  "cmakelists.txt",
   "pubspec.yaml",
   "pubspec.lock",
 ])
 
-const ECOSYSTEM_MARKERS: Record<"node" | "python" | "go" | "dart", readonly string[]> = {
+const ECOSYSTEM_MARKERS: Record<"node" | "python" | "go" | "rust" | "jvm" | "cpp" | "dart", readonly string[]> = {
   node: [
     "package.json",
     "package-lock.json",
@@ -98,6 +106,9 @@ const ECOSYSTEM_MARKERS: Record<"node" | "python" | "go" | "dart", readonly stri
     "uv.lock",
   ],
   go: ["go.mod", "go.sum"],
+  rust: ["cargo.toml", "cargo.lock"],
+  jvm: ["pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"],
+  cpp: ["cmakelists.txt"],
   dart: ["pubspec.yaml", "pubspec.lock"],
 }
 
@@ -200,6 +211,9 @@ export function classifyDeveloperArtifact(
   const nodeMarkers = markersFor("node")
   const pythonMarkers = markersFor("python")
   const goMarkers = markersFor("go")
+  const rustMarkers = markersFor("rust")
+  const jvmMarkers = markersFor("jvm")
+  const cppMarkers = markersFor("cpp")
   const dartMarkers = markersFor("dart")
   const hasMarker = (ecosystem: keyof typeof ECOSYSTEM_MARKERS) => markersFor(ecosystem).length > 0
 
@@ -261,16 +275,19 @@ export function classifyDeveloperArtifact(
         : likely("toolchain-cache", "go", name)
     case "target": {
       const rust = signatures.filter((value) => [".rustc_info.json", "debug", "release"].includes(value))
-      if (has(".rustc_info.json")) return verified("build-output", "rust", name, rust)
+      if (has(".rustc_info.json")) return verified("build-output", "rust", name, rust, rustMarkers)
+      if (rust.length > 0 && hasMarker("rust")) return verified("build-output", "rust", name, rust, rustMarkers)
       if (rust.length > 0) return likely("build-output", "rust", name, rust)
       const jvm = signatures.filter((value) => ["classes", "test-classes", "generated-sources", "surefire-reports"].includes(value))
+      if (jvm.length > 0 && hasMarker("jvm")) return verified("build-output", "jvm", name, jvm, jvmMarkers)
       if (jvm.length > 0) return likely("build-output", "jvm", name, jvm)
       return review("build-output", name)
     }
     case "build": {
       const cmake = signatures.filter((value) => ["cmakecache.txt", "cmakefiles", "build.ninja"].includes(value))
-      if (cmake.length > 0) return verified("build-output", "cpp", name, cmake)
+      if (cmake.length > 0) return verified("build-output", "cpp", name, cmake, cppMarkers)
       const jvm = signatures.filter((value) => ["classes", "intermediates", "outputs", "libs"].includes(value))
+      if (jvm.length > 0 && hasMarker("jvm")) return verified("build-output", "jvm", name, jvm, jvmMarkers)
       if (jvm.length > 0) return likely("build-output", "jvm", name, jvm)
       const dotnet = signatures.filter((value) => ["bin", "obj"].includes(value))
       if (dotnet.length > 0) return likely("build-output", "dotnet", name, dotnet)

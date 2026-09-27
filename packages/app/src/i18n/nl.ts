@@ -30,7 +30,8 @@ export const dict = {
   "desktop.menu.actualSize": "Werkelijke grootte",
   "desktop.menu.zoomIn": "Inzoomen",
   "desktop.menu.zoomOut": "Uitzoomen",
-  "desktop.menu.toggleFullScreen": "Schermvullende weergave in- of uitschakelen",
+  "desktop.menu.toggleFullScreen":
+    "Schermvullende weergave in- of uitschakelen",
   "desktop.menu.back": "Terug",
   "desktop.menu.forward": "Vooruit",
   "desktop.menu.previousSession": "Vorige sessie",
@@ -44,13 +45,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Feedback delen",
   "desktop.menu.reportBug": "Een bug melden",
   "desktop.menu.ariaLabel": "OpenCode-menu",
-  "desktop.updater.dialog.checkFailed.message": "Controleren op updates is mislukt.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Controleren op updates is mislukt.",
   "desktop.updater.dialog.checkFailed.title": "Updatefout",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Je bent helemaal bijgewerkt.",
   "desktop.updater.dialog.upToDate.title": "Geen updates",
-  "desktop.updater.dialog.ready.message": "Update {{version}} is gedownload. Nu opnieuw opstarten?",
+  "desktop.updater.dialog.ready.message":
+    "Update {{version}} is gedownload. Nu opnieuw opstarten?",
   "desktop.updater.dialog.ready.title": "Update gereed",
   "desktop.updater.dialog.restart": "Opnieuw opstarten",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +66,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode kan niet worden geladen",
   "desktop.recovery.terminated": "Het OpenCode-venster is onverwacht beëindigd",
   "desktop.recovery.unresponsive": "OpenCode reageert niet",
-  "desktop.recovery.unresponsive.detail": "Je kunt de app opnieuw openen, de logboeken openen of blijven wachten.",
-  "desktop.recovery.loadFailed.detail": "Venster: {{window}}\nURL: {{url}}\nFout: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Venster: {{window}}\nReden: {{reason}}\nCode: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Je kunt de app opnieuw openen, de logboeken openen of blijven wachten.",
+  "desktop.recovery.loadFailed.detail":
+    "Venster: {{window}}\nURL: {{url}}\nFout: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Venster: {{window}}\nReden: {{reason}}\nCode: {{code}}",
   "desktop.recovery.unknown": "<onbekend>",
   "desktop.dialog.chooseFolder": "Kies een map",
   "desktop.dialog.chooseFile": "Kies een bestand",
@@ -73,27 +80,38 @@ export const dict = {
   "desktop.server.local": "Lokale server",
   "desktop.wsl.error.windowsOnly": "WSL is alleen beschikbaar op Windows",
   "desktop.wsl.error.unavailable": "WSL is niet beschikbaar",
-  "desktop.wsl.error.listInstalled": "Kan geïnstalleerde WSL-distributies niet weergeven",
+  "desktop.wsl.error.listInstalled":
+    "Kan geïnstalleerde WSL-distributies niet weergeven",
   "desktop.wsl.error.listOnline": "Kan online WSL-distributies niet weergeven",
-  "desktop.wsl.error.executeDistro": "Kan geen opdrachten uitvoeren in de distributie",
+  "desktop.wsl.error.executeDistro":
+    "Kan geen opdrachten uitvoeren in de distributie",
   "desktop.wsl.error.installWsl": "Installatie van WSL is mislukt",
-  "desktop.wsl.error.installDistro": "Kan distributie niet installeren: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Kan distributie niet installeren: {{distro}}",
   "desktop.wsl.error.installOpencode": "Installatie van OpenCode is mislukt",
   "desktop.wsl.error.alreadyAdded": "{{distro}} is al toegevoegd",
-  "desktop.wsl.error.opencodeMissing": "opencode is niet geïnstalleerd in deze distributie",
-  "desktop.wsl.error.opencodeCannotRun": "opencode is geïnstalleerd, maar kan niet worden uitgevoerd",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode is niet geïnstalleerd in {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode is niet geïnstalleerd in deze distributie",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode is geïnstalleerd, maar kan niet worden uitgevoerd",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode is niet geïnstalleerd in {{distro}}",
   "desktop.wsl.error.updateVersion":
     "De OpenCode-update is voltooid, maar {{distro}} meldt nog steeds {{installed}}; verwacht: {{expected}}",
   "desktop.wsl.error.noVersion": "geen versie",
-  "desktop.wsl.error.serverExited": "WSL-server is na het opstarten afgesloten (code={{code}} signaal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL-server is na het opstarten afgesloten (code={{code}} signaal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL-server is afgesloten voordat deze gereed was (code={{code}} signaal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Time-out bij statuscontrole van sidecar voor {{distro}} na {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "Time-out voor {{command}} {{args}} na {{timeout}} ms",
+  "desktop.wsl.error.healthTimeout":
+    "Time-out bij statuscontrole van sidecar voor {{distro}} na {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "Time-out voor {{command}} {{args}} na {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Kan poort niet ophalen",
-  "desktop.picker.error.notSelected": "Er is geen bestand geselecteerd in de bestandskiezer",
-  "desktop.picker.error.sizeLimit": "De geselecteerde bijlagen overschrijden de limiet van {{limit}} MB",
+  "desktop.picker.error.notSelected":
+    "Er is geen bestand geselecteerd in de bestandskiezer",
+  "desktop.picker.error.sizeLimit":
+    "De geselecteerde bijlagen overschrijden de limiet van {{limit}} MB",
   "command.category.suggested": "Voorgesteld",
   "command.category.view": "Weergave",
   "command.category.project": "Project",
@@ -140,7 +158,8 @@ export const dict = {
   "command.tab.close": "Tabblad sluiten",
   "command.tab.reopenClosed": "Gesloten tabblad opnieuw openen",
   "command.context.addSelection": "Voeg selectie toe aan context",
-  "command.context.addSelection.description": "Voeg geselecteerde regels uit het huidige bestand toe",
+  "command.context.addSelection.description":
+    "Voeg geselecteerde regels uit het huidige bestand toe",
   "command.input.focus": "Invoerveld activeren",
   "command.terminal.toggle": "Terminal tonen of verbergen",
   "command.fileTree.toggle": "Bestandsstructuur tonen of verbergen",
@@ -148,9 +167,11 @@ export const dict = {
   "command.terminal.new": "Nieuwe terminal",
   "command.terminal.new.description": "Maak een nieuw terminaltabblad",
   "command.steps.toggle": "Stappen tonen of verbergen",
-  "command.steps.toggle.description": "Toon of verberg stappen voor het huidige bericht",
+  "command.steps.toggle.description":
+    "Toon of verberg stappen voor het huidige bericht",
   "command.message.previous": "Vorig bericht",
-  "command.message.previous.description": "Ga naar het vorige gebruikersbericht",
+  "command.message.previous.description":
+    "Ga naar het vorige gebruikersbericht",
   "command.message.next": "Volgend bericht",
   "command.message.next.description": "Ga naar het volgende gebruikersbericht",
   "command.model.choose": "Kies model",
@@ -160,29 +181,39 @@ export const dict = {
   "command.agent.cycle": "Volgende agent",
   "command.agent.cycle.description": "Schakel over naar de volgende agent",
   "command.agent.cycle.reverse": "Vorige agent",
-  "command.agent.cycle.reverse.description": "Schakel over naar de vorige agent",
+  "command.agent.cycle.reverse.description":
+    "Schakel over naar de vorige agent",
   "command.model.variant.cycle": "Volgend denkniveau",
-  "command.model.variant.cycle.description": "Ga naar het volgende inspanningsniveau",
+  "command.model.variant.cycle.description":
+    "Ga naar het volgende inspanningsniveau",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
-  "command.permissions.autoaccept.enable": "Machtigingen automatisch accepteren",
-  "command.permissions.autoaccept.disable": "Stop met het automatisch accepteren van machtigingen",
+  "command.permissions.autoaccept.enable":
+    "Machtigingen automatisch accepteren",
+  "command.permissions.autoaccept.disable":
+    "Stop met het automatisch accepteren van machtigingen",
   "command.workspace.toggle": "Werkruimten in- of uitschakelen",
-  "command.workspace.toggle.description": "Schakel meerdere werkruimten in de zijbalk in of uit",
+  "command.workspace.toggle.description":
+    "Schakel meerdere werkruimten in de zijbalk in of uit",
   "command.session.undo": "Ongedaan maken",
   "command.session.undo.description": "Maak het laatste bericht ongedaan",
   "command.session.redo": "Opnieuw uitvoeren",
-  "command.session.redo.description": "Voer het laatste ongedaan gemaakte bericht opnieuw uit",
+  "command.session.redo.description":
+    "Voer het laatste ongedaan gemaakte bericht opnieuw uit",
   "command.session.compact": "Sessie comprimeren",
-  "command.session.compact.description": "Vat de sessie samen om de contextgrootte te verkleinen",
+  "command.session.compact.description":
+    "Vat de sessie samen om de contextgrootte te verkleinen",
   "command.session.fork": "Afsplitsen vanaf bericht",
-  "command.session.fork.description": "Maak een nieuwe sessie op basis van een eerder bericht",
+  "command.session.fork.description":
+    "Maak een nieuwe sessie op basis van een eerder bericht",
   "command.session.share": "Sessie delen",
-  "command.session.share.description": "Deel deze sessie en kopieer de URL naar het klembord",
+  "command.session.share.description":
+    "Deel deze sessie en kopieer de URL naar het klembord",
   "command.session.unshare": "Sessie niet meer delen",
   "command.session.unshare.description": "Stop met het delen van deze sessie",
   "command.session.export": "Sessie exporteren",
-  "command.session.export.description": "Het volledige sessietranscript exporteren als JSON",
+  "command.session.export.description":
+    "Het volledige sessietranscript exporteren als JSON",
 
   "palette.search.placeholder": "Zoek naar bestanden, opdrachten en sessies",
   "palette.search.placeholder.home": "Opdrachten en sessies zoeken",
@@ -195,28 +226,40 @@ export const dict = {
   "dialog.provider.group.other": "Anders",
   "dialog.provider.custom.label": "Aangepaste OpenAI-compatibele aanbieder",
   "dialog.provider.tag.recommended": "Aanbevolen",
-  "dialog.provider.opencode.note": "Samengestelde modellen, waaronder Claude, GPT, Gemini en meer",
+  "dialog.provider.opencode.note":
+    "Samengestelde modellen, waaronder Claude, GPT, Gemini en meer",
   "dialog.provider.opencode.tagline": "Betrouwbare geoptimaliseerde modellen",
   "dialog.provider.opencodeGo.tagline": "Goedkoop abonnement voor iedereen",
-  "dialog.provider.anthropic.note": "Directe toegang tot Claude-modellen, inclusief Pro en Max",
-  "dialog.provider.copilot.note": "AI-modellen voor codeerondersteuning via GitHub Copilot",
-  "dialog.provider.openai.note": "GPT-modellen voor snelle, capabele algemene AI-taken",
-  "dialog.provider.google.note": "Gemini-modellen voor snelle, gestructureerde reacties",
-  "dialog.provider.openrouter.note": "Toegang tot alle ondersteunde modellen via één aanbieder",
-  "dialog.provider.vercel.note": "Uniforme toegang tot AI-modellen met slimme routering",
+  "dialog.provider.anthropic.note":
+    "Directe toegang tot Claude-modellen, inclusief Pro en Max",
+  "dialog.provider.copilot.note":
+    "AI-modellen voor codeerondersteuning via GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT-modellen voor snelle, capabele algemene AI-taken",
+  "dialog.provider.google.note":
+    "Gemini-modellen voor snelle, gestructureerde reacties",
+  "dialog.provider.openrouter.note":
+    "Toegang tot alle ondersteunde modellen via één aanbieder",
+  "dialog.provider.vercel.note":
+    "Uniforme toegang tot AI-modellen met slimme routering",
   "dialog.model.select.title": "Selecteer model",
   "dialog.model.search.placeholder": "Zoek modellen",
   "dialog.model.empty": "Geen modelresultaten",
   "dialog.model.manage": "Beheer modellen",
-  "dialog.model.manage.description": "Pas aan welke modellen in de modelkiezer verschijnen.",
-  "dialog.model.manage.provider.toggle": "Alle {{provider}}-modellen in- of uitschakelen",
-  "dialog.model.unpaid.freeModels.title": "Gratis modellen geleverd door OpenCode",
-  "dialog.model.unpaid.addMore.title": "Voeg meer modellen toe van populaire aanbieders",
+  "dialog.model.manage.description":
+    "Pas aan welke modellen in de modelkiezer verschijnen.",
+  "dialog.model.manage.provider.toggle":
+    "Alle {{provider}}-modellen in- of uitschakelen",
+  "dialog.model.unpaid.freeModels.title":
+    "Gratis modellen geleverd door OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Voeg meer modellen toe van populaire aanbieders",
   "dialog.model.unpaid.viewMoreProviders": "Bekijk nog 70+ aanbieders",
   "dialog.provider.viewAll": "Toon meer aanbieders",
   "provider.connect.title": "Verbinding maken met {{provider}}",
   "provider.connect.title.anthropicProMax": "Inloggen met Claude Pro/Max",
-  "provider.connect.selectMethod": "Selecteer de aanmeldingsmethode voor {{provider}}.",
+  "provider.connect.selectMethod":
+    "Selecteer de aanmeldingsmethode voor {{provider}}.",
   "provider.connect.method.apiKey": "API-sleutel",
   "provider.connect.method.browser": "Browser",
   "provider.connect.method.headless": "Headless",
@@ -234,7 +277,8 @@ export const dict = {
     "Met één API-sleutel krijg je toegang tot modellen zoals Claude, GPT, Gemini, GLM en meer.",
   "provider.connect.opencodeZen.visit.prefix": "Ga naar ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " om je API-sleutel op te halen.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " om je API-sleutel op te halen.",
   "provider.connect.oauth.code.visit.prefix": "Ga naar ",
   "provider.connect.oauth.code.visit.link": "deze link",
   "provider.connect.oauth.code.visit.suffix":
@@ -249,22 +293,28 @@ export const dict = {
     " en voer de onderstaande code in om je account te koppelen en {{provider}}-modellen in OpenCode te gebruiken.",
   "provider.connect.oauth.auto.confirmationCode": "Bevestigingscode",
   "provider.connect.toast.connected.title": "Verbonden met {{provider}}",
-  "provider.connect.toast.connected.description": "{{provider}}-modellen zijn nu beschikbaar voor gebruik.",
+  "provider.connect.toast.connected.description":
+    "{{provider}}-modellen zijn nu beschikbaar voor gebruik.",
   "provider.custom.title": "Aangepaste aanbieder",
-  "provider.custom.unavailable": "Aangepaste aanbieders zijn niet beschikbaar op deze server",
-  "provider.custom.description.prefix": "Configureer een OpenAI-compatibele aanbieder. Bekijk de ",
-  "provider.custom.description.link": "documentatie over aanbiedersconfiguratie",
+  "provider.custom.unavailable":
+    "Aangepaste aanbieders zijn niet beschikbaar op deze server",
+  "provider.custom.description.prefix":
+    "Configureer een OpenAI-compatibele aanbieder. Bekijk de ",
+  "provider.custom.description.link":
+    "documentatie over aanbiedersconfiguratie",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Aanbieder-ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Kleine letters, cijfers, koppeltekens of onderstrepingstekens",
+  "provider.custom.field.providerID.description":
+    "Kleine letters, cijfers, koppeltekens of onderstrepingstekens",
   "provider.custom.field.name.label": "Weergavenaam",
   "provider.custom.field.name.placeholder": "Mijn AI-aanbieder",
   "provider.custom.field.baseURL.label": "Basis-URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API-sleutel",
   "provider.custom.field.apiKey.placeholder": "API-sleutel",
-  "provider.custom.field.apiKey.description": "Optioneel. Laat leeg als je de authenticatie via headers beheert.",
+  "provider.custom.field.apiKey.description":
+    "Optioneel. Laat leeg als je de authenticatie via headers beheert.",
   "provider.custom.models.label": "Modellen",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -280,15 +330,19 @@ export const dict = {
   "provider.custom.headers.remove": "Header verwijderen",
   "provider.custom.headers.add": "Header toevoegen",
   "provider.custom.error.providerID.required": "Aanbieder-ID is vereist",
-  "provider.custom.error.providerID.format": "Gebruik kleine letters, cijfers, koppeltekens of onderstrepingstekens",
+  "provider.custom.error.providerID.format":
+    "Gebruik kleine letters, cijfers, koppeltekens of onderstrepingstekens",
   "provider.custom.error.providerID.exists": "Die aanbieder-ID bestaat al",
   "provider.custom.error.name.required": "Weergavenaam is vereist",
   "provider.custom.error.baseURL.required": "Basis-URL is vereist",
-  "provider.custom.error.baseURL.format": "Moet beginnen met http:// of https://",
+  "provider.custom.error.baseURL.format":
+    "Moet beginnen met http:// of https://",
   "provider.custom.error.required": "Vereist",
   "provider.custom.error.duplicate": "Duplicaat",
-  "provider.disconnect.toast.disconnected.title": "Verbinding met {{provider}} verbroken",
-  "provider.disconnect.toast.disconnected.description": "{{provider}}-modellen zijn niet langer beschikbaar.",
+  "provider.disconnect.toast.disconnected.title":
+    "Verbinding met {{provider}} verbroken",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}}-modellen zijn niet langer beschikbaar.",
   "model.tag.free": "Gratis",
   "model.tag.latest": "Nieuwste",
   "model.provider.anthropic": "Anthropic",
@@ -334,7 +388,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Prompt",
   "prompt.mode.shell.exit": "esc om af te sluiten",
-  "session.child.promptDisabled": "Je kunt geen prompts naar subagentsessies sturen.",
+  "session.child.promptDisabled":
+    "Je kunt geen prompts naar subagentsessies sturen.",
   "session.child.backToParent": "Terug naar de hoofdsessie.",
   "prompt.example.1": "Repareer een TODO in de codebase",
   "prompt.example.2": "Wat is de tech-stack van dit project?",
@@ -363,7 +418,8 @@ export const dict = {
   "prompt.example.25": "Hoe werken omgevingsvariabelen hier?",
   "prompt.popover.emptyResults": "Geen overeenkomende resultaten",
   "prompt.popover.emptyCommands": "Geen overeenkomende opdrachten",
-  "prompt.dropzone.label": "Zet hier afbeeldingen, pdf's of tekstbestanden neer",
+  "prompt.dropzone.label":
+    "Zet hier afbeeldingen, pdf's of tekstbestanden neer",
   "prompt.dropzone.file.label": "Zet neer om het bestand met @ te vermelden",
   "prompt.slash.badge.custom": "aangepast",
   "prompt.slash.badge.skill": "vaardigheid",
@@ -386,7 +442,8 @@ export const dict = {
     "Hier kunnen alleen afbeeldingen, pdf's of tekstbestanden worden bijgevoegd.",
   "prompt.toast.attachmentDuplicate.title": "Dit bestand is al geüpload",
   "prompt.toast.modelAgentRequired.title": "Selecteer een agent en model",
-  "prompt.toast.modelAgentRequired.description": "Kies een agent en model voordat je een prompt verzendt.",
+  "prompt.toast.modelAgentRequired.description":
+    "Kies een agent en model voordat je een prompt verzendt.",
   "prompt.toast.worktreeCreateFailed.title": "Kan worktree niet maken",
   "prompt.toast.sessionCreateFailed.title": "Kan sessie niet maken",
   "prompt.toast.shellSendFailed.title": "Kan shell-opdracht niet verzenden",
@@ -415,7 +472,8 @@ export const dict = {
   "app.server.retrying": "Automatisch opnieuw proberen...",
   "app.server.otherServers": "Andere servers",
   "dialog.server.title": "Servers",
-  "dialog.server.description": "Wijzig met welke OpenCode-server deze app verbinding maakt.",
+  "dialog.server.description":
+    "Wijzig met welke OpenCode-server deze app verbinding maakt.",
   "dialog.server.search.placeholder": "Servers zoeken",
   "dialog.server.empty": "Nog geen servers",
   "dialog.server.add.title": "Server toevoegen",
@@ -453,7 +511,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Kies distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL controleren...",
-  "wsl.onboarding.restartRequired": "Windows moet opnieuw worden opgestart om de installatie van WSL te voltooien.",
+  "wsl.onboarding.restartRequired":
+    "Windows moet opnieuw worden opgestart om de installatie van WSL te voltooien.",
   "wsl.onboarding.ready": "WSL is klaar.",
   "wsl.onboarding.required": "WSL is vereist om door te gaan.",
   "wsl.onboarding.checkingDistros": "Distributies controleren...",
@@ -462,9 +521,11 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Lijst met distributies ophalen...",
   "wsl.onboarding.distroReady": "{{distro}} is klaar.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} is nog niet geïnstalleerd.",
-  "wsl.onboarding.openDistroOnce": "Open {{distro}} één keer om de installatie te voltooien.",
+  "wsl.onboarding.openDistroOnce":
+    "Open {{distro}} één keer om de installatie te voltooien.",
   "wsl.onboarding.finishingDistro": "Installatie van {{distro}} voltooien.",
-  "wsl.onboarding.pickDistro": "Kies een distributie of installeer er hieronder een.",
+  "wsl.onboarding.pickDistro":
+    "Kies een distributie of installeer er hieronder een.",
   "wsl.onboarding.checkingOpencode": "OpenCode controleren...",
   "wsl.onboarding.checkingOpencodeIn": "OpenCode controleren in {{distro}}...",
   "wsl.onboarding.updatingOpencode": "OpenCode bijwerken...",
@@ -486,18 +547,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "bash en curl ontbreken",
   "wsl.onboarding.distroStatus.unsupported": "Niet ondersteund · Gebruik WSL 2",
   "wsl.onboarding.needAnotherDistro": "Nog een distro nodig?",
-  "wsl.onboarding.needAnotherDistroHint": "Installeer een Linux-distributie uit de WSL-catalogus",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Installeer een Linux-distributie uit de WSL-catalogus",
   "wsl.onboarding.wslNotInstalled.title": "WSL niet geïnstalleerd",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows-subsysteem voor Linux) is vereist voordat OpenCode een WSL-server kan toevoegen",
   "wsl.onboarding.wslUnavailable.title": "WSL niet beschikbaar",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode kan WSL niet verifiëren op deze machine.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode kan WSL niet verifiëren op deze machine.",
   "wsl.onboarding.installWsl": "Installeer WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Start Windows opnieuw om de installatie van WSL te voltooien en open vervolgens OpenCode opnieuw.",
   "wsl.onboarding.next": "Volgende",
   "wsl.onboarding.refresh": "Vernieuwen",
-  "wsl.onboarding.allDistrosAdded": "Alle geïnstalleerde distributies zijn al toegevoegd.",
+  "wsl.onboarding.allDistrosAdded":
+    "Alle geïnstalleerde distributies zijn al toegevoegd.",
   "wsl.onboarding.noDistros": "Nog geen distributies gedetecteerd.",
   "wsl.onboarding.install": "Installeren",
   "wsl.onboarding.installing": "Installeren...",
@@ -511,12 +575,15 @@ export const dict = {
   "wsl.onboarding.version": "Versie: {{version}}",
   "wsl.onboarding.unknown": "onbekend",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "De geïnstalleerde versie komt niet overeen met de versie van de desktop-app.",
+  "wsl.onboarding.versionMismatch":
+    "De geïnstalleerde versie komt niet overeen met de versie van de desktop-app.",
   "wsl.onboarding.adding": "Toevoegen...",
-  "help.tabs.toast.ariaLabel": "Introductie van tabbladen. Organiseer je werk en actieve sessies met tabbladen",
+  "help.tabs.toast.ariaLabel":
+    "Introductie van tabbladen. Organiseer je werk en actieve sessies met tabbladen",
   "help.tabs.toast.dismiss": "Informatie over tabbladen sluiten",
   "help.tabs.title": "Introductie van tabbladen",
-  "help.tabs.description": "Organiseer je werk en actieve sessies met tabbladen",
+  "help.tabs.description":
+    "Organiseer je werk en actieve sessies met tabbladen",
   "help.tabs.date": "14 juli",
   "help.tabs.introduction": "OpenCode Desktop is nu opgebouwd rond tabbladen.",
   "help.tabs.sessions":
@@ -525,7 +592,8 @@ export const dict = {
     "Met enkele geopende tabbladen kun je je actieve sessies gemakkelijker organiseren. Geef tabbladen een herkenbare naam als je ze geopend wilt houden.",
   "help.tabs.home":
     "Je vindt al je sessies en projecten op het nieuwe startscherm. Wanneer je een sessie selecteert, wordt deze in een tabblad geopend.",
-  "help.tabs.persistence": "Wanneer je de app opnieuw opent, zijn je tabbladen nog steeds geopend.",
+  "help.tabs.persistence":
+    "Wanneer je de app opnieuw opent, zijn je tabbladen nog steeds geopend.",
   "help.tabs.worktrees":
     "Het nieuwe ontwerp ondersteunt Git-worktrees nog niet, maar die ondersteuning komt binnenkort. Als je liever de vorige lay-out blijft gebruiken, kun je in Instellingen tussen de lay-outs schakelen. Houd er rekening mee dat de nieuwe lay-out over enkele weken permanent wordt.",
   "server.row.noUsername": "geen gebruikersnaam",
@@ -603,51 +671,73 @@ export const dict = {
   "toast.theme.title": "Thema gewijzigd",
   "toast.scheme.title": "Kleurenschema",
   "toast.workspace.enabled.title": "Werkruimten ingeschakeld",
-  "toast.workspace.enabled.description": "Er worden nu meerdere worktrees weergegeven in de zijbalk",
+  "toast.workspace.enabled.description":
+    "Er worden nu meerdere worktrees weergegeven in de zijbalk",
   "toast.workspace.disabled.title": "Werkruimten uitgeschakeld",
-  "toast.workspace.disabled.description": "Alleen de hoofdworktree wordt weergegeven in de zijbalk",
-  "toast.permissions.autoaccept.on.title": "Machtigingen automatisch accepteren",
-  "toast.permissions.autoaccept.on.description": "Toestemmingsverzoeken worden automatisch goedgekeurd",
-  "toast.permissions.autoaccept.off.title": "Machtigingen niet meer automatisch accepteren",
-  "toast.permissions.autoaccept.off.description": "Machtigingsverzoeken moeten worden goedgekeurd",
+  "toast.workspace.disabled.description":
+    "Alleen de hoofdworktree wordt weergegeven in de zijbalk",
+  "toast.permissions.autoaccept.on.title":
+    "Machtigingen automatisch accepteren",
+  "toast.permissions.autoaccept.on.description":
+    "Toestemmingsverzoeken worden automatisch goedgekeurd",
+  "toast.permissions.autoaccept.off.title":
+    "Machtigingen niet meer automatisch accepteren",
+  "toast.permissions.autoaccept.off.description":
+    "Machtigingsverzoeken moeten worden goedgekeurd",
   "toast.model.none.title": "Geen model geselecteerd",
-  "toast.model.none.description": "Maak verbinding met een aanbieder om deze sessie samen te vatten",
+  "toast.model.none.description":
+    "Maak verbinding met een aanbieder om deze sessie samen te vatten",
   "toast.file.loadFailed.title": "Kan bestand niet laden",
   "toast.file.listFailed.title": "Kan bestanden niet weergeven",
   "toast.context.noLineSelection.title": "Geen regels geselecteerd",
-  "toast.context.noLineSelection.description": "Selecteer eerst een reeks regels in een bestandstabblad.",
-  "toast.session.share.copyFailed.title": "Kan de URL niet naar het klembord kopiëren",
+  "toast.context.noLineSelection.description":
+    "Selecteer eerst een reeks regels in een bestandstabblad.",
+  "toast.session.share.copyFailed.title":
+    "Kan de URL niet naar het klembord kopiëren",
   "toast.session.share.success.title": "Sessie gedeeld",
-  "toast.session.share.success.description": "Deel-URL gekopieerd naar klembord!",
+  "toast.session.share.success.description":
+    "Deel-URL gekopieerd naar klembord!",
   "toast.session.share.failed.title": "Kan sessie niet delen",
-  "toast.session.share.failed.description": "Er is een fout opgetreden tijdens het delen van de sessie",
+  "toast.session.share.failed.description":
+    "Er is een fout opgetreden tijdens het delen van de sessie",
   "toast.session.unshare.success.title": "Sessie niet gedeeld",
   "toast.session.unshare.success.description": "Sessie is niet meer gedeeld!",
-  "toast.session.unshare.failed.title": "Kan het delen van de sessie niet ongedaan maken",
+  "toast.session.unshare.failed.title":
+    "Kan het delen van de sessie niet ongedaan maken",
   "toast.session.unshare.failed.description":
     "Er is een fout opgetreden bij het ongedaan maken van het delen van de sessie",
   "toast.session.export.success.title": "Sessie geëxporteerd",
-  "toast.session.export.success.description": "Sessie opgeslagen in {{filename}}",
+  "toast.session.export.success.description":
+    "Sessie opgeslagen in {{filename}}",
   "toast.session.export.failed.title": "Kan sessie niet exporteren",
-  "toast.session.export.failed.description": "Er is een fout opgetreden tijdens het exporteren van de sessie",
+  "toast.session.export.failed.description":
+    "Er is een fout opgetreden tijdens het exporteren van de sessie",
 
   "toast.session.listFailed.title": "Kan sessies voor {{project}} niet laden",
   "toast.project.reloadFailed.title": "Kan {{project}} niet opnieuw laden",
   "toast.update.title": "Update beschikbaar",
-  "toast.update.description": "Er is nu een nieuwe versie van OpenCode ({{version}}) beschikbaar om te installeren.",
+  "toast.update.description":
+    "Er is nu een nieuwe versie van OpenCode ({{version}}) beschikbaar om te installeren.",
   "toast.update.action.installRestart": "Installeren en opnieuw opstarten",
   "toast.update.action.notYet": "Nog niet",
-  "disk.accessGuidance.macos": "Geef DiskLizard Volledige schijftoegang in Systeeminstellingen en scan opnieuw.",
-  "disk.accessGuidance.windows": "Gebruik een account met toegang tot deze schijf, of scan een map die je account kan lezen.",
-  "disk.accessGuidance.linux": "Controleer de map- en koppelingsmachtigingen en scan opnieuw.",
-  "disk.accessGuidance.default": "Controleer de toegang tot deze mappen en scan opnieuw.",
-  "disk.accessGuidance.rescan": "Gebruik Opnieuw scannen in de balk bovenaan nadat je de toegang hebt gewijzigd.",
+  "disk.accessGuidance.macos":
+    "Geef DiskLizard Volledige schijftoegang in Systeeminstellingen en scan opnieuw.",
+  "disk.accessGuidance.windows":
+    "Gebruik een account met toegang tot deze schijf, of scan een map die je account kan lezen.",
+  "disk.accessGuidance.linux":
+    "Controleer de map- en koppelingsmachtigingen en scan opnieuw.",
+  "disk.accessGuidance.default":
+    "Controleer de toegang tot deze mappen en scan opnieuw.",
+  "disk.accessGuidance.rescan":
+    "Gebruik Opnieuw scannen in de balk bovenaan nadat je de toegang hebt gewijzigd.",
   "disk.common.rescan": "Opnieuw scannen",
   "toast.update.installFailed.title": "Kan de update niet installeren",
   "toast.update.installFailed.retry": "Opnieuw proberen",
   "error.page.title": "Er is iets misgegaan",
-  "error.page.description": "Er is een fout opgetreden tijdens het laden van de applicatie.",
-  "error.page.description.localServerStartup": "Er is een fout opgetreden bij het starten van de lokale server.",
+  "error.page.description":
+    "Er is een fout opgetreden tijdens het laden van de applicatie.",
+  "error.page.description.localServerStartup":
+    "Er is een fout opgetreden bij het starten van de lokale server.",
   "error.page.details.label": "Foutdetails",
   "error.page.action.restart": "Opnieuw opstarten",
   "error.page.action.report": "Rapporteer fout",
@@ -662,12 +752,16 @@ export const dict = {
   "error.page.version": "Versie: {{version}}",
   "error.dev.rootNotFound":
     "Root-element niet gevonden. Ben je vergeten het toe te voegen aan je index.html? Of is het id-attribuut misschien verkeerd gespeld?",
-  "error.serverSync.connectFailed": "Kan geen verbinding maken met de server. Draait er een server op `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Kan geen verbinding maken met de server. Draait er een server op `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Geen server beschikbaar",
   "error.serverSDK.serverNotAvailable": "Server niet beschikbaar",
-  "error.childStore.persistedCacheCreateFailed": "Kan persistente cache niet maken",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Kan de persistente projectmetagegevens niet maken",
-  "error.childStore.persistedProjectIconCreateFailed": "Kan het opgeslagen projectpictogram niet maken",
+  "error.childStore.persistedCacheCreateFailed":
+    "Kan persistente cache niet maken",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Kan de persistente projectmetagegevens niet maken",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Kan het opgeslagen projectpictogram niet maken",
   "error.childStore.storeCreateFailed": "Kan opslag niet maken",
   "directory.error.invalidUrl": "Ongeldige map in URL.",
   "error.chain.unknown": "Onbekende fout",
@@ -679,22 +773,31 @@ export const dict = {
   "error.chain.responseBody": "Antwoordtekst:\n{{body}}",
   "error.chain.didYouMean": "Bedoelde je: {{suggestions}}",
   "error.chain.modelNotFound": "Model niet gevonden: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Controleer de provider- en modelnamen in je configuratie (opencode.json)",
-  "error.chain.mcpFailed": 'MCP-server "{{name}}" is mislukt. Let op: OpenCode ondersteunt nog geen MCP-authenticatie.',
-  "error.chain.providerAuthFailed": "Authenticatie bij aanbieder mislukt ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Controleer de provider- en modelnamen in je configuratie (opencode.json)",
+  "error.chain.mcpFailed":
+    'MCP-server "{{name}}" is mislukt. Let op: OpenCode ondersteunt nog geen MCP-authenticatie.',
+  "error.chain.providerAuthFailed":
+    "Authenticatie bij aanbieder mislukt ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Kan provider "{{provider}}" niet initialiseren. Controleer de inloggegevens en configuratie.',
-  "error.chain.configJsonInvalid": "Configuratiebestand op {{path}} is niet geldig JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Configuratiebestand op {{path}} is niet geldig JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Configuratiebestand op {{path}} is niet geldig JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Configuratiebestand op {{path}} is niet geldig JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'De map "{{dir}}" in {{path}} is ongeldig. Hernoem de map naar "{{suggestion}}" of verwijder deze. Dit is een veelvoorkomende typefout.',
-  "error.chain.configFrontmatterError": "Kan frontmatter in {{path}} niet parseren:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Kan frontmatter in {{path}} niet parseren:\n{{message}}",
   "error.chain.configInvalid": "Configuratiebestand op {{path}} is ongeldig",
-  "error.chain.configInvalidWithMessage": "Configuratiebestand op {{path}} is ongeldig: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Configuratiebestand op {{path}} is ongeldig: {{message}}",
   "notification.permission.title": "Toestemming vereist",
-  "notification.permission.description": "{{sessionTitle}} in {{projectName}} heeft toestemming nodig",
+  "notification.permission.description":
+    "{{sessionTitle}} in {{projectName}} heeft toestemming nodig",
   "notification.question.title": "Vraag",
-  "notification.question.description": "{{sessionTitle}} in {{projectName}} heeft een vraag",
+  "notification.question.description":
+    "{{sessionTitle}} in {{projectName}} heeft een vraag",
   "notification.action.goToSession": "Ga naar sessie",
   "notification.session.responseReady.title": "Reactie klaar",
   "notification.session.error.title": "Sessiefout",
@@ -713,7 +816,8 @@ export const dict = {
   "home.sessions.search.sessions": "Sessies",
   "home.sessions.search.noResults": "Geen sessies gevonden voor {{query}}",
   "home.sessions.empty": "Hier nog niets",
-  "home.sessions.empty.description": "Maak een sessie aan om aan de slag te gaan",
+  "home.sessions.empty.description":
+    "Maak een sessie aan om aan de slag te gaan",
   "home.sessions.group.today": "Vandaag",
   "home.sessions.group.yesterday": "Gisteren",
   "home.sessions.group.older": "Ouder",
@@ -725,7 +829,8 @@ export const dict = {
   "session.tab.unknown": "Onbekende sessie",
   "session.panel.reviewAndFiles": "Beoordeling en bestanden",
   "session.error.notFound": "Deze sessie kan niet worden gevonden",
-  "session.error.notFound.description": "Dit tabblad verwijst naar een sessie die niet meer bestaat op deze server.",
+  "session.error.notFound.description":
+    "Dit tabblad verwijst naar een sessie die niet meer bestaat op deze server.",
   "session.error.notFound.closeTab": "Tabblad sluiten",
   "session.error.serverConnection": "Kan geen verbinding maken met deze server",
   "session.review.filesChanged": "Gewijzigde bestanden: {{count}}",
@@ -733,20 +838,24 @@ export const dict = {
   "session.review.change.other": "Wijzigingen",
   "session.review.loadingChanges": "Wijzigingen laden...",
   "session.review.empty": "Er zijn nog geen wijzigingen in deze sessie",
-  "session.review.noVcs": "Geen Git-versiecontrolesysteem gedetecteerd, wijzigingen niet weergegeven",
+  "session.review.noVcs":
+    "Geen Git-versiecontrolesysteem gedetecteerd, wijzigingen niet weergegeven",
   "session.review.noVcs.createGit.title": "Maak een Git-repository",
-  "session.review.noVcs.createGit.description": "Wijzigingen in dit project bijhouden, beoordelen en ongedaan maken",
+  "session.review.noVcs.createGit.description":
+    "Wijzigingen in dit project bijhouden, beoordelen en ongedaan maken",
   "session.review.noVcs.createGit.actionLoading": "Git-repository maken...",
   "session.review.noVcs.createGit.action": "Maak een Git-repository",
   "session.review.noSnapshot":
     "Het bijhouden van momentopnamen is uitgeschakeld in de configuratie, dus sessiewijzigingen zijn niet beschikbaar",
   "session.review.noChanges": "Geen wijzigingen",
-  "session.review.noUncommittedChanges": "Er zijn nog geen niet-gecommitteerde wijzigingen",
+  "session.review.noUncommittedChanges":
+    "Er zijn nog geen niet-gecommitteerde wijzigingen",
   "session.review.noBranchChanges": "Er zijn nog geen branchwijzigingen",
   "session.files.selectToOpen": "Selecteer een bestand om te openen",
   "session.files.all": "Alle bestanden",
   "session.files.empty": "Geen bestanden",
-  "session.files.binaryContent": "Binair bestand (inhoud kan niet worden weergegeven)",
+  "session.files.binaryContent":
+    "Binair bestand (inhoud kan niet worden weergegeven)",
   "session.messages.renderEarlier": "Geef eerdere berichten weer",
   "session.messages.loadingEarlier": "Eerdere berichten laden...",
   "session.messages.loadEarlier": "Laad eerdere berichten",
@@ -766,7 +875,8 @@ export const dict = {
   "session.followupDock.summary.other": "{{count}} berichten in de wachtrij",
   "session.followupDock.sendNow": "Verstuur nu",
   "session.followupDock.edit": "Bewerken",
-  "session.followupDock.collapse": "In de wachtrij geplaatste berichten samenvouwen",
+  "session.followupDock.collapse":
+    "In de wachtrij geplaatste berichten samenvouwen",
   "session.followupDock.expand": "Berichten in de wachtrij uitvouwen",
   "session.revertDock.summary.one": "{{count}} teruggedraaid bericht",
   "session.revertDock.summary.other": "{{count}} teruggedraaide berichten",
@@ -840,12 +950,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Terminal sluiten",
   "terminal.connectionLost.title": "Verbinding verloren",
-  "terminal.connectionLost.abnormalClose": "WebSocket abnormaal gesloten: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket abnormaal gesloten: {{code}}",
   "terminal.connectionLost.description":
     "De terminalverbinding is onderbroken. Dit kan gebeuren wanneer de server opnieuw wordt opgestart.",
   "terminal.connectTicket.csrfError":
     "PTY-verbindingsticket geweigerd door oorsprongs- of CSRF-controles. Controleer de CORS-configuratie van de server.",
-  "terminal.connectTicket.statusError": "PTY-verbindingsticket mislukt met status {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY-verbindingsticket mislukt met status {{status}}",
   "titlebar.update": "Bijwerken",
   "titlebar.updateVersion": "Bijwerken {{version}}",
   "common.closeTab": "Tabblad sluiten",
@@ -889,7 +1001,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Schakel werkruimten in",
   "sidebar.workspaces.disable": "Schakel werkruimten uit",
   "sidebar.gettingStarted.title": "Aan de slag",
-  "sidebar.gettingStarted.line1": "OpenCode bevat gratis modellen, zodat je direct aan de slag kunt.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode bevat gratis modellen, zodat je direct aan de slag kunt.",
   "sidebar.gettingStarted.line2":
     "Maak verbinding met een aanbieder om modellen te gebruiken, waaronder Claude, GPT en Gemini.",
   "sidebar.project.recentSessions": "Recente sessies",
@@ -903,29 +1016,37 @@ export const dict = {
   "debugBar.nav.tip":
     "Laatst voltooide routenavigatie naar of binnen een sessiepagina, gemeten vanaf het starten van de router tot de eerste render nadat de navigatie is voltooid.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Voortschrijdend aantal frames per seconde over de afgelopen 5 seconden.",
+  "debugBar.fps.tip":
+    "Voortschrijdend aantal frames per seconde over de afgelopen 5 seconden.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Slechtste frametijd van de afgelopen 5 seconden.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Frames van meer dan 32 ms in de afgelopen 5 seconden.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Geblokkeerde tijd en aantal lange taken in de afgelopen 5 seconden. Maximale taak: {{max}}.",
+  "debugBar.long.tip":
+    "Geblokkeerde tijd en aantal lange taken in de afgelopen 5 seconden. Maximale taak: {{max}}.",
   "debugBar.delay.label": "VERTRAGING",
-  "debugBar.delay.tip": "Slechtst waargenomen invoervertraging in de afgelopen 5 seconden.",
+  "debugBar.delay.tip":
+    "Slechtst waargenomen invoervertraging in de afgelopen 5 seconden.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Geschatte interactieduur gedurende de afgelopen 5 seconden. Dit is INP-achtig, niet de officiële Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Cumulatieve lay-outverschuiving sinds de app is gestart.",
+  "debugBar.cls.tip":
+    "Cumulatieve lay-outverschuiving sinds de app is gestart.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Gebruikte JS-heap versus heap-limiet. Alleen Chromium.",
-  "debugBar.mem.tip": "Gebruikte JS-heap versus heaplimiet. {{used}} van {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Gebruikte JS-heap versus heap-limiet. Alleen Chromium.",
+  "debugBar.mem.tip":
+    "Gebruikte JS-heap versus heaplimiet. {{used}} van {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Dwing focusstijlen af voor alle interactieve elementen",
+  "debugBar.focus.tip":
+    "Dwing focusstijlen af voor alle interactieve elementen",
   "debugBar.focus.on": "AAN",
   "debugBar.focus.off": "UIT",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Dwing de lay-outrichting voor de hele app af zonder de geselecteerde taal te wijzigen",
+  "debugBar.direction.tip":
+    "Dwing de lay-outrichting voor de hele app af zonder de geselecteerde taal te wijzigen",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -935,7 +1056,8 @@ export const dict = {
   "settings.tab.shortcuts": "Snelkoppelingen",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL-integratie",
-  "settings.desktop.wsl.description": "Voer de OpenCode-server uit in WSL op Windows.",
+  "settings.desktop.wsl.description":
+    "Voer de OpenCode-server uit in WSL op Windows.",
   "settings.general.section.appearance": "Uiterlijk",
   "settings.general.section.advanced": "Geavanceerd",
   "settings.general.section.notifications": "Systeemmeldingen",
@@ -944,40 +1066,50 @@ export const dict = {
   "settings.general.section.feed": "Feed",
   "settings.general.section.display": "Weergave",
   "settings.general.row.language.title": "Taal",
-  "settings.general.row.language.description": "Wijzig de weergavetaal voor OpenCode",
+  "settings.general.row.language.description":
+    "Wijzig de weergavetaal voor OpenCode",
   "settings.general.row.shell.title": "Terminalshell",
-  "settings.general.row.shell.description": "Shell gebruikt door de terminal- en agenttools",
+  "settings.general.row.shell.description":
+    "Shell gebruikt door de terminal- en agenttools",
   "settings.general.row.shell.autoDefault": "Automatisch (standaard)",
   "settings.general.row.shell.terminalOnly": "alleen terminal",
   "settings.general.row.appearance.title": "Uiterlijk",
-  "settings.general.row.appearance.description": "Pas aan hoe OpenCode eruitziet op je apparaat",
+  "settings.general.row.appearance.description":
+    "Pas aan hoe OpenCode eruitziet op je apparaat",
   "settings.general.row.colorScheme.title": "Kleurenschema",
   "settings.general.row.colorScheme.description":
     "Kies of OpenCode het systeemthema, het lichte thema of het donkere thema gebruikt",
   "settings.general.row.theme.title": "Thema",
   "settings.general.row.theme.description": "Pas het thema van OpenCode aan.",
   "settings.general.row.font.title": "Codelettertype",
-  "settings.general.row.font.description": "Pas het lettertype aan dat in codeblokken wordt gebruikt",
+  "settings.general.row.font.description":
+    "Pas het lettertype aan dat in codeblokken wordt gebruikt",
   "settings.general.row.terminalFont.title": "Terminal-lettertype",
-  "settings.general.row.terminalFont.description": "Pas het lettertype aan dat in de terminal wordt gebruikt",
+  "settings.general.row.terminalFont.description":
+    "Pas het lettertype aan dat in de terminal wordt gebruikt",
   "settings.general.row.uiFont.title": "UI-lettertype",
-  "settings.general.row.uiFont.description": "Pas het lettertype aan dat in de hele interface wordt gebruikt",
+  "settings.general.row.uiFont.description":
+    "Pas het lettertype aan dat in de hele interface wordt gebruikt",
   "settings.general.row.followup.title": "Vervolggedrag",
   "settings.general.row.followup.description":
     "Kies of vervolgprompts de sessie direct bijsturen of in een wachtrij wachten",
   "settings.general.row.followup.option.queue": "Wachtrij",
   "settings.general.row.followup.option.steer": "Sturen",
   "settings.general.row.showFileTree.title": "Bestandsstructuur",
-  "settings.general.row.showFileTree.description": "Toon het paneel met de bestandsstructuur in sessies",
+  "settings.general.row.showFileTree.description":
+    "Toon het paneel met de bestandsstructuur in sessies",
   "settings.general.row.showNavigation.title": "Navigatiebediening",
   "settings.general.row.showNavigation.description":
     "Toon de knoppen Vorige en Volgende in de titelbalk van de desktop-app",
   "settings.general.row.showSearch.title": "Commandopalet",
-  "settings.general.row.showSearch.description": "Toon de knop voor zoeken en het commandopalet in de titelbalk",
+  "settings.general.row.showSearch.description":
+    "Toon de knop voor zoeken en het commandopalet in de titelbalk",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Toon de terminalknop in de titelbalk van de desktop-app",
+  "settings.general.row.showTerminal.description":
+    "Toon de terminalknop in de titelbalk van de desktop-app",
   "settings.general.row.showStatus.title": "Serverstatus",
-  "settings.general.row.showStatus.description": "Toon de serverstatusknop in de titelbalk",
+  "settings.general.row.showStatus.description":
+    "Toon de serverstatusknop in de titelbalk",
   "settings.general.row.mobileTitlebarBottom.title": "Navigatie onderaan",
   "settings.general.row.mobileTitlebarBottom.description":
     "Plaats de titelbalk en sessietabbladen onderaan het scherm op mobiel",
@@ -987,38 +1119,48 @@ export const dict = {
   "settings.general.row.reasoningSummaries.title": "Toon redeneeroverzichten",
   "settings.general.row.reasoningSummaries.description":
     "Geef samenvattingen van modelredeneringen weer in de tijdlijn",
-  "settings.general.row.shellToolPartsExpanded.title": "Shelltoolonderdelen uitvouwen",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Shelltoolonderdelen uitvouwen",
   "settings.general.row.shellToolPartsExpanded.description":
     "Toon shelltoolonderdelen standaard uitgevouwen in de tijdlijn",
-  "settings.general.row.editToolPartsExpanded.title": "Bewerkingstoolonderdelen uitvouwen",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Bewerkingstoolonderdelen uitvouwen",
   "settings.general.row.editToolPartsExpanded.description":
     "Toon bewerkings-, schrijf- en patchtoolonderdelen standaard uitgevouwen in de tijdlijn",
   "settings.general.row.newInterface.title": "Nieuwe lay-out",
   "settings.general.row.newInterface.badge": "Nieuw",
   "settings.general.row.newInterface.description":
     "Gebruik de nieuwe tabbladen en home-indeling. Wissel gedurende een beperkte tijd tussen lay-outs.",
-  "settings.general.row.newInterfaceNotice.title": "Je gebruikt nu de nieuwe lay-out",
-  "settings.general.row.newInterfaceNotice.description": "De vorige lay-out is niet meer beschikbaar",
+  "settings.general.row.newInterfaceNotice.title":
+    "Je gebruikt nu de nieuwe lay-out",
+  "settings.general.row.newInterfaceNotice.description":
+    "De vorige lay-out is niet meer beschikbaar",
   "settings.general.row.newInterfaceNotice.dismiss": "Negeren",
   "settings.general.row.pinchZoom.title": "Knijp om te zoomen",
   "settings.general.row.pinchZoom.description":
     "Sta knijp- en Ctrl-scroll-bewegingen op het trackpad toe om in te zoomen",
   "settings.general.row.wayland.title": "Native Wayland gebruiken",
-  "settings.general.row.wayland.description": "Schakel X11-fallback uit op Wayland. Vereist opnieuw opstarten.",
+  "settings.general.row.wayland.description":
+    "Schakel X11-fallback uit op Wayland. Vereist opnieuw opstarten.",
   "settings.general.row.wayland.tooltip":
     "Op Linux met monitoren met verschillende vernieuwingsfrequenties kan native Wayland stabieler zijn.",
   "settings.general.row.releaseNotes.title": "Versienotities",
-  "settings.general.row.releaseNotes.description": "Pop-ups met nieuwe functies na updates tonen",
-  "settings.updates.row.startup.title": "Controleer op updates bij het opstarten",
-  "settings.updates.row.startup.description": "Controleer automatisch op updates wanneer OpenCode wordt gestart",
+  "settings.general.row.releaseNotes.description":
+    "Pop-ups met nieuwe functies na updates tonen",
+  "settings.updates.row.startup.title":
+    "Controleer op updates bij het opstarten",
+  "settings.updates.row.startup.description":
+    "Controleer automatisch op updates wanneer OpenCode wordt gestart",
   "settings.updates.row.check.title": "Controleer op updates",
-  "settings.updates.row.check.description": "Controleer handmatig op updates en installeer deze indien beschikbaar",
+  "settings.updates.row.check.description":
+    "Controleer handmatig op updates en installeer deze indien beschikbaar",
   "settings.updates.action.checkNow": "Controleer nu",
   "settings.updates.action.checking": "Controleren...",
   "settings.updates.action.downloading": "Downloaden...",
   "settings.updates.action.installing": "Installeren...",
   "settings.updates.toast.latest.title": "OpenCode is bijgewerkt",
-  "settings.updates.toast.latest.description": "Je gebruikt de nieuwste versie van OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Je gebruikt de nieuwste versie van OpenCode.",
   "sound.option.none": "Geen",
   "sound.option.alert01": "Waarschuwing 01",
   "sound.option.alert02": "Waarschuwing 02",
@@ -1069,21 +1211,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Toon systeemmelding wanneer de agent klaar is of aandacht nodig heeft",
   "settings.general.notifications.permissions.title": "Machtigingen",
-  "settings.general.notifications.permissions.description": "Systeemmelding weergeven wanneer toestemming vereist is",
+  "settings.general.notifications.permissions.description":
+    "Systeemmelding weergeven wanneer toestemming vereist is",
   "settings.general.notifications.errors.title": "Fouten",
-  "settings.general.notifications.errors.description": "Systeemmelding weergeven wanneer er een fout optreedt",
+  "settings.general.notifications.errors.description":
+    "Systeemmelding weergeven wanneer er een fout optreedt",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Speel geluid af wanneer de agent klaar is of aandacht nodig heeft",
+  "settings.general.sounds.agent.description":
+    "Speel geluid af wanneer de agent klaar is of aandacht nodig heeft",
   "settings.general.sounds.permissions.title": "Machtigingen",
-  "settings.general.sounds.permissions.description": "Speel geluid af wanneer toestemming vereist is",
+  "settings.general.sounds.permissions.description":
+    "Speel geluid af wanneer toestemming vereist is",
   "settings.general.sounds.errors.title": "Fouten",
-  "settings.general.sounds.errors.description": "Speel geluid af wanneer er een fout optreedt",
+  "settings.general.sounds.errors.description":
+    "Speel geluid af wanneer er een fout optreedt",
   "settings.shortcuts.title": "Sneltoetsen",
   "settings.shortcuts.reset.button": "Resetten naar standaardwaarden",
   "settings.shortcuts.reset.toast.title": "Snelkoppelingen opnieuw ingesteld",
-  "settings.shortcuts.reset.toast.description": "Sneltoetsen zijn teruggezet naar de standaardwaarden.",
+  "settings.shortcuts.reset.toast.description":
+    "Sneltoetsen zijn teruggezet naar de standaardwaarden.",
   "settings.shortcuts.conflict.title": "Snelkoppeling al in gebruik",
-  "settings.shortcuts.conflict.description": "{{keybind}} is al toegewezen aan {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} is al toegewezen aan {{titles}}.",
   "settings.shortcuts.unassigned": "Niet toegewezen",
   "settings.shortcuts.pressKeys": "Druk op toetsen",
   "settings.shortcuts.search.placeholder": "Zoek snelkoppelingen",
@@ -1095,42 +1244,55 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Prompt",
   "settings.providers.title": "Aanbieders",
-  "settings.providers.description": "Aanbiederinstellingen kunnen hier worden geconfigureerd.",
+  "settings.providers.description":
+    "Aanbiederinstellingen kunnen hier worden geconfigureerd.",
   "settings.providers.section.connected": "Verbonden aanbieders",
   "settings.providers.connected.empty": "Geen verbonden aanbieders",
-  "settings.providers.connected.environmentDescription": "Verbonden via je omgevingsvariabelen",
+  "settings.providers.connected.environmentDescription":
+    "Verbonden via je omgevingsvariabelen",
   "settings.providers.section.popular": "Populaire aanbieders",
-  "settings.providers.custom.description": "Voeg een OpenAI-compatibele aanbieder toe via de basis-URL.",
+  "settings.providers.custom.description":
+    "Voeg een OpenAI-compatibele aanbieder toe via de basis-URL.",
   "settings.providers.tag.environment": "Omgeving",
   "settings.providers.tag.config": "Configuratie",
   "settings.providers.tag.custom": "Aangepast",
   "settings.providers.tag.other": "Anders",
   "settings.models.title": "Modellen",
-  "settings.models.description": "Modelinstellingen kunnen hier worden geconfigureerd.",
+  "settings.models.description":
+    "Modelinstellingen kunnen hier worden geconfigureerd.",
   "settings.agents.title": "Agenten",
-  "settings.agents.description": "Agentinstellingen kunnen hier worden geconfigureerd.",
+  "settings.agents.description":
+    "Agentinstellingen kunnen hier worden geconfigureerd.",
   "settings.commands.title": "Commando's",
-  "settings.commands.description": "Commando-instellingen kunnen hier worden geconfigureerd.",
+  "settings.commands.description":
+    "Commando-instellingen kunnen hier worden geconfigureerd.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "MCP-instellingen kunnen hier worden geconfigureerd.",
+  "settings.mcp.description":
+    "MCP-instellingen kunnen hier worden geconfigureerd.",
   "settings.permissions.title": "Machtigingen",
-  "settings.permissions.description": "Bepaal welke tools de server standaard kan gebruiken.",
+  "settings.permissions.description":
+    "Bepaal welke tools de server standaard kan gebruiken.",
   "settings.permissions.section.tools": "Tools",
-  "settings.permissions.toast.updateFailed.title": "Kan machtigingen niet bijwerken",
+  "settings.permissions.toast.updateFailed.title":
+    "Kan machtigingen niet bijwerken",
   "settings.permissions.action.allow": "Toestaan",
   "settings.permissions.action.ask": "Vragen",
   "settings.permissions.action.deny": "Weigeren",
   "settings.permissions.tool.read.title": "Lees",
-  "settings.permissions.tool.read.description": "Een bestand lezen (komt overeen met het bestandspad)",
+  "settings.permissions.tool.read.description":
+    "Een bestand lezen (komt overeen met het bestandspad)",
   "settings.permissions.tool.edit.title": "Bewerken",
   "settings.permissions.tool.edit.description":
     "Wijzig bestanden, inclusief bewerkingen, schrijfbewerkingen en patches",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Bestanden zoeken met globpatronen",
+  "settings.permissions.tool.glob.description":
+    "Bestanden zoeken met globpatronen",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Zoek bestandsinhoud met behulp van reguliere expressies",
+  "settings.permissions.tool.grep.description":
+    "Zoek bestandsinhoud met behulp van reguliere expressies",
   "settings.permissions.tool.list.title": "Lijst",
-  "settings.permissions.tool.list.description": "Geef bestanden in een map weer",
+  "settings.permissions.tool.list.description":
+    "Geef bestanden in een map weer",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Voer shell-opdrachten uit",
   "settings.permissions.tool.task.title": "Taak",
@@ -1142,13 +1304,16 @@ export const dict = {
   "settings.permissions.tool.todowrite.title": "Taken schrijven",
   "settings.permissions.tool.todowrite.description": "Werk de takenlijst bij",
   "settings.permissions.tool.webfetch.title": "Web ophalen",
-  "settings.permissions.tool.webfetch.description": "Haal inhoud op van een URL",
+  "settings.permissions.tool.webfetch.description":
+    "Haal inhoud op van een URL",
   "settings.permissions.tool.websearch.title": "Zoeken op internet",
   "settings.permissions.tool.websearch.description": "Zoek op internet",
   "settings.permissions.tool.external_directory.title": "Externe map",
-  "settings.permissions.tool.external_directory.description": "Toegang tot bestanden buiten de projectmap",
+  "settings.permissions.tool.external_directory.description":
+    "Toegang tot bestanden buiten de projectmap",
   "settings.permissions.tool.doom_loop.title": "Doom-lus",
-  "settings.permissions.tool.doom_loop.description": "Herhaalde toolaanroepen met identieke invoer detecteren",
+  "settings.permissions.tool.doom_loop.description":
+    "Herhaalde toolaanroepen met identieke invoer detecteren",
   "session.delete.failed.title": "Kan sessie niet verwijderen",
   "session.delete.title": "Sessie verwijderen",
   "session.delete.confirm": 'Sessie "{{name}}" verwijderen?',
@@ -1162,19 +1327,24 @@ export const dict = {
   "workspace.resetting.description": "Dit kan een minuut duren.",
   "workspace.reset.failed.title": "Kan de werkruimte niet opnieuw instellen",
   "workspace.reset.success.title": "Werkruimte opnieuw ingesteld",
-  "workspace.reset.success.description": "De werkruimte komt nu overeen met de standaardbranch.",
+  "workspace.reset.success.description":
+    "De werkruimte komt nu overeen met de standaardbranch.",
   "workspace.error.stillPreparing": "Werkruimte is nog in voorbereiding",
-  "workspace.status.checking": "Controleren op niet-samengevoegde wijzigingen...",
+  "workspace.status.checking":
+    "Controleren op niet-samengevoegde wijzigingen...",
   "workspace.status.error": "Kan de git-status niet verifiëren.",
-  "workspace.status.clean": "Er zijn geen niet-samengevoegde wijzigingen gedetecteerd.",
-  "workspace.status.dirty": "Niet-samengevoegde wijzigingen gedetecteerd in deze werkruimte.",
+  "workspace.status.clean":
+    "Er zijn geen niet-samengevoegde wijzigingen gedetecteerd.",
+  "workspace.status.dirty":
+    "Niet-samengevoegde wijzigingen gedetecteerd in deze werkruimte.",
   "workspace.delete.title": "Werkruimte verwijderen",
   "workspace.delete.confirm": 'Werkruimte "{{name}}" verwijderen?',
   "workspace.delete.button": "Werkruimte verwijderen",
   "workspace.reset.title": "Werkruimte opnieuw instellen",
   "workspace.reset.confirm": 'Werkruimte "{{name}}" opnieuw instellen?',
   "workspace.reset.button": "Werkruimte opnieuw instellen",
-  "workspace.reset.archived.none": "Er worden geen actieve sessies gearchiveerd.",
+  "workspace.reset.archived.none":
+    "Er worden geen actieve sessies gearchiveerd.",
   "workspace.reset.archived.one": "Er wordt 1 sessie gearchiveerd.",
   "workspace.reset.archived.many": "{{count}} sessies worden gearchiveerd.",
   "workspace.reset.note":

@@ -11,7 +11,7 @@ export const RECENT_CHANGE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000
 export function recentChangeNodes(
   root: DiskScanNode | null | undefined,
   now = Date.now(),
-  windowMs = RECENT_CHANGE_WINDOW_MS,
+  windowMs = RECENT_CHANGE_WINDOW_MS
 ) {
   if (!root) return []
   const cutoff = now - windowMs
@@ -26,5 +26,7 @@ export function recentChangeNodes(
     if ((node.modifiedAt ?? 0) >= cutoff) result.push(node)
   }
   visit(root)
-  return result.toSorted((a, b) => b.size - a.size || (b.modifiedAt ?? 0) - (a.modifiedAt ?? 0))
+  return result.toSorted(
+    (a, b) => b.size - a.size || (b.modifiedAt ?? 0) - (a.modifiedAt ?? 0)
+  )
 }

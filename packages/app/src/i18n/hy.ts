@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode մենյու",
   "desktop.updater.dialog.checkFailed.message": "Թարմացման ստուգումը ձախողվեց։",
   "desktop.updater.dialog.checkFailed.title": "Թարմացման սխալ",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Դուք արդիական եք",
   "desktop.updater.dialog.upToDate.title": "Թարմացումներ չկան",
-  "desktop.updater.dialog.ready.message": "Թարմացումը {{version}} ներբեռնվել է։ Վերագործարկե՞լ հիմա:",
+  "desktop.updater.dialog.ready.message":
+    "Թարմացումը {{version}} ներբեռնվել է։ Վերագործարկե՞լ հիմա:",
   "desktop.updater.dialog.ready.title": "Թարմացումը պատրաստ է",
   "desktop.updater.dialog.restart": "Վերագործարկեք",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode-ը չի արձագանքում",
   "desktop.recovery.unresponsive.detail":
     "Դուք կարող եք վերագործարկել հավելվածը, բացել տեղեկամատյանները կամ շարունակել սպասել:",
-  "desktop.recovery.loadFailed.detail": "Պատուհան՝ {{window}}\nURL: {{url}}\nՍխալ՝ {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Պատուհան՝ {{window}}\nՊատճառը՝ {{reason}}\nԿոդ՝ {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Պատուհան՝ {{window}}\nURL: {{url}}\nՍխալ՝ {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Պատուհան՝ {{window}}\nՊատճառը՝ {{reason}}\nԿոդ՝ {{code}}",
   "desktop.recovery.unknown": "<unknown>",
   "desktop.dialog.chooseFolder": "Ընտրեք թղթապանակ",
   "desktop.dialog.chooseFile": "Ընտրեք ֆայլ",
@@ -74,28 +78,34 @@ export const dict = {
   "desktop.server.local": "Տեղական սերվեր",
   "desktop.wsl.error.windowsOnly": "WSL հասանելի է միայն Windows",
   "desktop.wsl.error.unavailable": "WSL անհասանելի է",
-  "desktop.wsl.error.listInstalled": "Չհաջողվեց ցուցակել տեղադրված WSL բաշխումները",
+  "desktop.wsl.error.listInstalled":
+    "Չհաջողվեց ցուցակել տեղադրված WSL բաշխումները",
   "desktop.wsl.error.listOnline": "Չհաջողվեց թվարկել առցանց WSL բաշխումները",
-  "desktop.wsl.error.executeDistro": "Հնարավոր չէ կատարել հրամաններ բաշխման մեջ",
+  "desktop.wsl.error.executeDistro":
+    "Հնարավոր չէ կատարել հրամաններ բաշխման մեջ",
   "desktop.wsl.error.installWsl": "WSL տեղադրումը ձախողվեց",
   "desktop.wsl.error.installDistro": "Չհաջողվեց տեղադրել բաշխում՝ {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode տեղադրումը ձախողվեց",
   "desktop.wsl.error.alreadyAdded": "{{distro}} արդեն ավելացված է",
   "desktop.wsl.error.opencodeMissing": "opencode-ը տեղադրված չէ այս բաշխում",
-  "desktop.wsl.error.opencodeCannotRun": "opencode-ը տեղադրված է, բայց չի կարող գործարկվել",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode-ը տեղադրված է, բայց չի կարող գործարկվել",
   "desktop.wsl.error.opencodeNotInstalled": "OpenCode տեղադրված չէ {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode թարմացումն ավարտված է, բայց {{distro}}-ը դեռ հայտնում է {{installed}}; սպասվում է {{expected}}",
   "desktop.wsl.error.noVersion": "առանց տարբերակ",
-  "desktop.wsl.error.serverExited": "WSL սերվերը դուրս է եկել գործարկումից հետո (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL սերվերը դուրս է եկել գործարկումից հետո (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL սերվերը դուրս է եկել առողջանալուց առաջ (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{distro}} առողջության ստուգման կողային մեքենայի ժամանակը սպառվել է {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} ժամանակը սպառվել է {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} ժամանակը սպառվել է {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Չհաջողվեց ստանալ միացքը",
   "desktop.picker.error.notSelected": "Ֆայլը ընտրողի կողմից ընտրված չէ",
-  "desktop.picker.error.sizeLimit": "Ընտրված հավելվածները գերազանցում են {{limit}} ՄԲ սահմանաչափը",
+  "desktop.picker.error.sizeLimit":
+    "Ընտրված հավելվածները գերազանցում են {{limit}} ՄԲ սահմանաչափը",
   "command.category.suggested": "Առաջարկված",
   "command.category.view": "Դիտել",
   "command.category.project": "Նախագիծ",
@@ -142,7 +152,8 @@ export const dict = {
   "command.tab.close": "Փակել ներդիրը",
   "command.tab.reopenClosed": "Վերաբացել փակ ներդիրը",
   "command.context.addSelection": "Ավելացնել ընտրությունը համատեքստում",
-  "command.context.addSelection.description": "Ավելացնել ընտրված տողերը ընթացիկ ֆայլից",
+  "command.context.addSelection.description":
+    "Ավելացնել ընտրված տողերը ընթացիկ ֆայլից",
   "command.input.focus": "Կիզակետային մուտքագրում",
   "command.terminal.toggle": "Փոխարկել տերմինալը",
   "command.fileTree.toggle": "Փոխարկել ֆայլի ծառը",
@@ -150,9 +161,11 @@ export const dict = {
   "command.terminal.new": "Նոր տերմինալ",
   "command.terminal.new.description": "Ստեղծել նոր տերմինալի ներդիր",
   "command.steps.toggle": "Փոխարկել քայլերը",
-  "command.steps.toggle.description": "Ցույց տալ կամ թաքցնել ընթացիկ հաղորդագրության քայլերը",
+  "command.steps.toggle.description":
+    "Ցույց տալ կամ թաքցնել ընթացիկ հաղորդագրության քայլերը",
   "command.message.previous": "Նախորդ հաղորդագրություն",
-  "command.message.previous.description": "Անցնել օգտվողի նախորդ հաղորդագրությունը",
+  "command.message.previous.description":
+    "Անցնել օգտվողի նախորդ հաղորդագրությունը",
   "command.message.next": "Հաջորդ հաղորդագրություն",
   "command.message.next.description": "Անցնել օգտվողի հաջորդ հաղորդագրությունը",
   "command.model.choose": "Ընտրեք մոդել",
@@ -167,24 +180,32 @@ export const dict = {
   "command.model.variant.cycle.description": "Անցնել հաջորդ ջանքերի մակարդակին",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Հուշում",
-  "command.permissions.autoaccept.enable": "Ավտոմատ ընդունել թույլտվությունները",
-  "command.permissions.autoaccept.disable": "Դադարեցնել թույլտվությունների ավտոմատ ընդունումը",
+  "command.permissions.autoaccept.enable":
+    "Ավտոմատ ընդունել թույլտվությունները",
+  "command.permissions.autoaccept.disable":
+    "Դադարեցնել թույլտվությունների ավտոմատ ընդունումը",
   "command.workspace.toggle": "Փոխարկել աշխատանքային տարածքները",
-  "command.workspace.toggle.description": "Միացնել կամ անջատել բազմաթիվ աշխատանքային տարածքներ կողագոտում",
+  "command.workspace.toggle.description":
+    "Միացնել կամ անջատել բազմաթիվ աշխատանքային տարածքներ կողագոտում",
   "command.session.undo": "Հետարկել",
   "command.session.undo.description": "Հետարկել վերջին հաղորդագրությունը",
   "command.session.redo": "Կրկնել",
-  "command.session.redo.description": "Կրկնել վերջին չեղարկված հաղորդագրությունը",
+  "command.session.redo.description":
+    "Կրկնել վերջին չեղարկված հաղորդագրությունը",
   "command.session.compact": "Կոմպակտ նիստ",
-  "command.session.compact.description": "Ամփոփեք նիստը՝ համատեքստի չափը նվազեցնելու համար",
+  "command.session.compact.description":
+    "Ամփոփեք նիստը՝ համատեքստի չափը նվազեցնելու համար",
   "command.session.fork": "Ստեղծել ճյուղ հաղորդագրությունից",
-  "command.session.fork.description": "Ստեղծել նոր նիստ նախորդ հաղորդագրությունից",
+  "command.session.fork.description":
+    "Ստեղծել նոր նիստ նախորդ հաղորդագրությունից",
   "command.session.share": "Կիսվել նիստ",
-  "command.session.share.description": "Կիսվել այս նիստով և պատճենել URL-ը սեղմատախտակին",
+  "command.session.share.description":
+    "Կիսվել այս նիստով և պատճենել URL-ը սեղմատախտակին",
   "command.session.unshare": "Դադարեցնել նիստի համօգտագործումը",
   "command.session.unshare.description": "Դադարեցնել այս նիստի համօգտագործումը",
   "command.session.export": "Արտահանման նիստ",
-  "command.session.export.description": "Արտահանել ամբողջ նիստի տառադարձումը որպես JSON",
+  "command.session.export.description":
+    "Արտահանել ամբողջ նիստի տառադարձումը որպես JSON",
   "palette.search.placeholder": "Որոնել ֆայլեր, հրամաններ և նիստեր",
   "palette.search.placeholder.home": "Որոնման հրամաններ և նիստեր",
   "palette.empty": "Արդյունքներ չեն գտնվել",
@@ -196,28 +217,41 @@ export const dict = {
   "dialog.provider.group.other": "Այլ",
   "dialog.provider.custom.label": "Պատվիրված OpenAI-համատեղելի մատակարար",
   "dialog.provider.tag.recommended": "Խորհուրդ է տրվում",
-  "dialog.provider.opencode.note": "Ընտրված մոդելներ, ներառյալ՝ Claude, GPT, Gemini և ավելին",
+  "dialog.provider.opencode.note":
+    "Ընտրված մոդելներ, ներառյալ՝ Claude, GPT, Gemini և ավելին",
   "dialog.provider.opencode.tagline": "Վստահելի օպտիմիզացված մոդելներ",
-  "dialog.provider.opencodeGo.tagline": "Ցածր գնով բաժանորդագրություն բոլորի համար",
-  "dialog.provider.anthropic.note": "Ուղիղ մուտք դեպի Claude մոդելներ, ներառյալ Pro և Max",
-  "dialog.provider.copilot.note": "AI մոդելներ կոդավորման օգնության համար՝ GitHub Copilot",
-  "dialog.provider.openai.note": "GPT մոդելներ արագ, ունակ ընդհանուր AI առաջադրանքների համար",
-  "dialog.provider.google.note": "Gemini մոդելներ արագ, կառուցվածքային պատասխանների համար",
-  "dialog.provider.openrouter.note": "Մուտք գործեք բոլոր աջակցվող մոդելները մեկ մատակարարից",
-  "dialog.provider.vercel.note": "Միասնական մուտք դեպի AI մոդելներ՝ խելացի երթուղիներով",
+  "dialog.provider.opencodeGo.tagline":
+    "Ցածր գնով բաժանորդագրություն բոլորի համար",
+  "dialog.provider.anthropic.note":
+    "Ուղիղ մուտք դեպի Claude մոդելներ, ներառյալ Pro և Max",
+  "dialog.provider.copilot.note":
+    "AI մոդելներ կոդավորման օգնության համար՝ GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT մոդելներ արագ, ունակ ընդհանուր AI առաջադրանքների համար",
+  "dialog.provider.google.note":
+    "Gemini մոդելներ արագ, կառուցվածքային պատասխանների համար",
+  "dialog.provider.openrouter.note":
+    "Մուտք գործեք բոլոր աջակցվող մոդելները մեկ մատակարարից",
+  "dialog.provider.vercel.note":
+    "Միասնական մուտք դեպի AI մոդելներ՝ խելացի երթուղիներով",
   "dialog.model.select.title": "Ընտրել մոդել",
   "dialog.model.search.placeholder": "Որոնել մոդելներ",
   "dialog.model.empty": "Մոդելի արդյունքներ չկա",
   "dialog.model.manage": "Կառավարել մոդելները",
-  "dialog.model.manage.description": "Անհատականացրեք, թե որ մոդելները կհայտնվեն մոդելի ընտրիչում:",
-  "dialog.model.manage.provider.toggle": "Փոխարկել բոլոր {{provider}} մոդելները",
-  "dialog.model.unpaid.freeModels.title": "Անվճար մոդելները տրամադրվում են OpenCode",
-  "dialog.model.unpaid.addMore.title": "Ավելացնել ավելի շատ մոդելներ հանրաճանաչ մատակարարներից",
+  "dialog.model.manage.description":
+    "Անհատականացրեք, թե որ մոդելները կհայտնվեն մոդելի ընտրիչում:",
+  "dialog.model.manage.provider.toggle":
+    "Փոխարկել բոլոր {{provider}} մոդելները",
+  "dialog.model.unpaid.freeModels.title":
+    "Անվճար մոդելները տրամադրվում են OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Ավելացնել ավելի շատ մոդելներ հանրաճանաչ մատակարարներից",
   "dialog.model.unpaid.viewMoreProviders": "Տես 70+ այլ մատակարարներ",
   "dialog.provider.viewAll": "Ցույց տալ ավելի շատ մատակարարներ",
   "provider.connect.title": "Միացեք {{provider}}",
   "provider.connect.title.anthropicProMax": "Մուտք գործեք Claude Pro/Max-ով",
-  "provider.connect.selectMethod": "Ընտրեք մուտքի եղանակը {{provider}}-ի համար։",
+  "provider.connect.selectMethod":
+    "Ընտրեք մուտքի եղանակը {{provider}}-ի համար։",
   "provider.connect.method.apiKey": "API բանալի",
   "provider.connect.method.browser": "Դիտարկիչ",
   "provider.connect.method.headless": "Առանց գրաֆիկական միջերեսի",
@@ -235,7 +269,8 @@ export const dict = {
     "Մեկ API բանալիով դուք մուտք կունենաք այնպիսի մոդելների, ինչպիսիք են՝ Claude, GPT, Gemini, GLM և ավելին:",
   "provider.connect.opencodeZen.visit.prefix": "Այցելություն ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " ձեր API բանալին հավաքելու համար",
+  "provider.connect.opencodeZen.visit.suffix":
+    " ձեր API բանալին հավաքելու համար",
   "provider.connect.oauth.code.visit.prefix": "Այցելություն ",
   "provider.connect.oauth.code.visit.link": "այս հղումը",
   "provider.connect.oauth.code.visit.suffix":
@@ -250,15 +285,19 @@ export const dict = {
     " և մուտքագրեք ստորև ծածկագիրը՝ ձեր հաշիվը միացնելու և OpenCode-ում {{provider}} մոդելներ օգտագործելու համար:",
   "provider.connect.oauth.auto.confirmationCode": "Հաստատման կոդը",
   "provider.connect.toast.connected.title": "{{provider}} կապված",
-  "provider.connect.toast.connected.description": "{{provider}} մոդելներ այժմ հասանելի են օգտագործման համար։",
+  "provider.connect.toast.connected.description":
+    "{{provider}} մոդելներ այժմ հասանելի են օգտագործման համար։",
   "provider.custom.title": "Պատվերով մատակարար",
-  "provider.custom.unavailable": "Պատվերով մատակարարներն անհասանելի են այս սերվերում",
-  "provider.custom.description.prefix": "Կարգավորել OpenAI-ի հետ համատեղելի մատակարար: Տեսեք ",
+  "provider.custom.unavailable":
+    "Պատվերով մատակարարներն անհասանելի են այս սերվերում",
+  "provider.custom.description.prefix":
+    "Կարգավորել OpenAI-ի հետ համատեղելի մատակարար: Տեսեք ",
   "provider.custom.description.link": "մատակարարի կազմաձևման փաստաթղթեր",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Մատակարարի ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Փոքրատառ, թվեր, գծիկներ կամ ընդգծում",
+  "provider.custom.field.providerID.description":
+    "Փոքրատառ, թվեր, գծիկներ կամ ընդգծում",
   "provider.custom.field.name.label": "Ցուցադրման անուն",
   "provider.custom.field.name.placeholder": "Իմ AI մատակարարը",
   "provider.custom.field.baseURL.label": "Հիմնական URL",
@@ -282,15 +321,18 @@ export const dict = {
   "provider.custom.headers.remove": "Հեռացնել վերնագիրը",
   "provider.custom.headers.add": "Ավելացնել վերնագիր",
   "provider.custom.error.providerID.required": "Պահանջվում է մատակարարի ID",
-  "provider.custom.error.providerID.format": "Օգտագործեք փոքրատառեր, թվեր, գծիկներ կամ ընդգծում",
-  "provider.custom.error.providerID.exists": "Այդ մատակարարի ID-ն արդեն գոյություն ունի",
+  "provider.custom.error.providerID.format":
+    "Օգտագործեք փոքրատառեր, թվեր, գծիկներ կամ ընդգծում",
+  "provider.custom.error.providerID.exists":
+    "Այդ մատակարարի ID-ն արդեն գոյություն ունի",
   "provider.custom.error.name.required": "Ցուցադրել անունը պարտադիր է",
   "provider.custom.error.baseURL.required": "Պահանջվում է բազային URL",
   "provider.custom.error.baseURL.format": "Պետք է սկսել http:// կամ https://",
   "provider.custom.error.required": "Պահանջվում",
   "provider.custom.error.duplicate": "Կրկնօրինակ",
   "provider.disconnect.toast.disconnected.title": "{{provider}} անջատված է",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} մոդելներն այլևս հասանելի չեն:",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} մոդելներն այլևս հասանելի չեն:",
   "model.tag.free": "Անվճար",
   "model.tag.latest": "Վերջին",
   "model.provider.anthropic": "Anthropic",
@@ -362,7 +404,8 @@ export const dict = {
   "prompt.example.22": "Իրականացնել քեշավորում այս վերջնակետի համար",
   "prompt.example.23": "Ավելացնել էջադրում այս ցանկին",
   "prompt.example.24": "Ստեղծել CLI հրաման...",
-  "prompt.example.25": "Ինչպե՞ս են այստեղ աշխատում շրջակա միջավայրի փոփոխականները",
+  "prompt.example.25":
+    "Ինչպե՞ս են այստեղ աշխատում շրջակա միջավայրի փոփոխականները",
   "prompt.popover.emptyResults": "Համապատասխան արդյունքներ չկա",
   "prompt.popover.emptyCommands": "Համապատասխան հրամաններ",
   "prompt.dropzone.label": "Թողեք պատկերներ, PDF կամ տեքստային ֆայլեր այստեղ",
@@ -384,11 +427,14 @@ export const dict = {
   "prompt.action.send": "Ուղարկել",
   "prompt.action.stop": "Կանգնեցնել",
   "prompt.toast.pasteUnsupported.title": "Չաջակցվող հավելված",
-  "prompt.toast.pasteUnsupported.description": "Այստեղ կարող են կցվել միայն պատկերներ, PDF կամ տեքստային ֆայլեր։",
+  "prompt.toast.pasteUnsupported.description":
+    "Այստեղ կարող են կցվել միայն պատկերներ, PDF կամ տեքստային ֆայլեր։",
   "prompt.toast.attachmentDuplicate.title": "Այս ֆայլն արդեն վերբեռնվել է",
   "prompt.toast.modelAgentRequired.title": "Ընտրեք գործակալ և մոդել",
-  "prompt.toast.modelAgentRequired.description": "Ընտրեք գործակալ և մոդել՝ նախքան հուշում ուղարկելը։",
-  "prompt.toast.worktreeCreateFailed.title": "Չհաջողվեց ստեղծել աշխատանքային ծառը",
+  "prompt.toast.modelAgentRequired.description":
+    "Ընտրեք գործակալ և մոդել՝ նախքան հուշում ուղարկելը։",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Չհաջողվեց ստեղծել աշխատանքային ծառը",
   "prompt.toast.sessionCreateFailed.title": "Չհաջողվեց ստեղծել նիստ",
   "prompt.toast.shellSendFailed.title": "Չհաջողվեց ուղարկել shell հրամանը",
   "prompt.toast.commandSendFailed.title": "Չհաջողվեց ուղարկել հրամանը",
@@ -416,7 +462,8 @@ export const dict = {
   "app.server.retrying": "Նորից ինքնաբերաբար...",
   "app.server.otherServers": "Այլ սերվերներ",
   "dialog.server.title": "Սերվերներ",
-  "dialog.server.description": "Փոխարկեք, թե որ OpenCode սերվերին է միանում այս հավելվածը։",
+  "dialog.server.description":
+    "Փոխարկեք, թե որ OpenCode սերվերին է միանում այս հավելվածը։",
   "dialog.server.search.placeholder": "Որոնման սերվերներ",
   "dialog.server.empty": "Սերվերներ դեռ չկան",
   "dialog.server.add.title": "Ավելացնել սերվեր",
@@ -454,7 +501,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Ընտրեք բաշխում",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Ստուգում է WSL...",
-  "wsl.onboarding.restartRequired": "Windows-ին անհրաժեշտ է վերագործարկում՝ WSL-ի տեղադրումն ավարտելու համար։",
+  "wsl.onboarding.restartRequired":
+    "Windows-ին անհրաժեշտ է վերագործարկում՝ WSL-ի տեղադրումն ավարտելու համար։",
   "wsl.onboarding.ready": "WSL պատրաստ է։",
   "wsl.onboarding.required": "WSL անհրաժեշտ է շարունակելու համար։",
   "wsl.onboarding.checkingDistros": "Ստուգում է բաշխումները...",
@@ -463,7 +511,8 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Ցուցակման բաշխումներ...",
   "wsl.onboarding.distroReady": "{{distro}} պատրաստ է։",
   "wsl.onboarding.distroNotInstalled": "{{distro}} դեռ տեղադրված չէ։",
-  "wsl.onboarding.openDistroOnce": "Բացեք {{distro}}-ը մեկ անգամ՝ կարգավորումն ավարտելու համար:",
+  "wsl.onboarding.openDistroOnce":
+    "Բացեք {{distro}}-ը մեկ անգամ՝ կարգավորումն ավարտելու համար:",
   "wsl.onboarding.finishingDistro": "{{distro}}-ի կարգավորումն ավարտվում է։",
   "wsl.onboarding.pickDistro": "Ընտրեք բաշխումը կամ տեղադրեք ստորև։",
   "wsl.onboarding.checkingOpencode": "Ստուգում է OpenCode...",
@@ -487,46 +536,55 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Բացակայում են bash-ը և curl-ը",
   "wsl.onboarding.distroStatus.unsupported": "Չի աջակցվում · Օգտագործել WSL 2",
   "wsl.onboarding.needAnotherDistro": "Պետք է մեկ այլ բաշխում",
-  "wsl.onboarding.needAnotherDistroHint": "Տեղադրեք Linux բաշխումը WSL կատալոգից",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Տեղադրեք Linux բաշխումը WSL կատալոգից",
   "wsl.onboarding.wslNotInstalled.title": "WSL տեղադրված չէ",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Ենթահամակարգը Linux-ի համար) անհրաժեշտ է, որպեսզի OpenCode-ը կարողանա ավելացնել WSL սերվեր",
   "wsl.onboarding.wslUnavailable.title": "WSL անհասանելի է",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode-ը չկարողացավ հաստատել WSL-ն այս մեքենայի վրա։",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode-ը չկարողացավ հաստատել WSL-ն այս մեքենայի վրա։",
   "wsl.onboarding.installWsl": "Տեղադրեք WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Վերագործարկեք Windows՝ WSL-ի տեղադրումն ավարտելու համար, այնուհետև նորից բացեք OpenCode։",
   "wsl.onboarding.next": "Հաջորդ",
   "wsl.onboarding.refresh": "Թարմացնել",
-  "wsl.onboarding.allDistrosAdded": "Բոլոր տեղադրված բաշխումները արդեն ավելացված են։",
+  "wsl.onboarding.allDistrosAdded":
+    "Բոլոր տեղադրված բաշխումները արդեն ավելացված են։",
   "wsl.onboarding.noDistros": "Դեռևս տարածումներ չեն հայտնաբերվել։",
   "wsl.onboarding.install": "Տեղադրել",
   "wsl.onboarding.installing": "Տեղադրվում է...",
   "wsl.onboarding.installDistro": "Տեղադրել դիստրիբուտիվը",
   "wsl.onboarding.searchDistros": "Որոնման բաշխումներ",
   "wsl.onboarding.wsl2Required": "WSL 2 պարտադիր է։",
-  "wsl.onboarding.toolsRequired": "Այս դիստրիբուտիվին անհրաժեշտ են bash և curl։",
+  "wsl.onboarding.toolsRequired":
+    "Այս դիստրիբուտիվին անհրաժեշտ են bash և curl։",
   "wsl.onboarding.openTerminal": "Բացել տերմինալը",
   "wsl.onboarding.path": "Ուղին՝ {{path}}",
   "wsl.onboarding.notFound": "չի գտնվել",
   "wsl.onboarding.version": "Տարբերակ՝ {{version}}",
   "wsl.onboarding.unknown": "անհայտ",
   "wsl.onboarding.desktopVersion": "աշխատասեղանի {{version}}",
-  "wsl.onboarding.versionMismatch": "Տեղադրված տարբերակը չի համապատասխանում աշխատասեղանի հավելվածի տարբերակին։",
+  "wsl.onboarding.versionMismatch":
+    "Տեղադրված տարբերակը չի համապատասխանում աշխատասեղանի հավելվածի տարբերակին։",
   "wsl.onboarding.adding": "Ավելացվում է...",
-  "help.tabs.toast.ariaLabel": "Ներկայացնում ենք ներդիրները։ Կազմակերպեք ձեր աշխատանքը և ակտիվ նիստերը ներդիրներով",
+  "help.tabs.toast.ariaLabel":
+    "Ներկայացնում ենք ներդիրները։ Կազմակերպեք ձեր աշխատանքը և ակտիվ նիստերը ներդիրներով",
   "help.tabs.toast.dismiss": "Փակել ներդիրների տեղեկությունները",
   "help.tabs.title": "Ներկայացնում ենք ներդիրները",
-  "help.tabs.description": "Կազմակերպեք ձեր աշխատանքը և ակտիվ նիստերը ներդիրներով",
+  "help.tabs.description":
+    "Կազմակերպեք ձեր աշխատանքը և ակտիվ նիստերը ներդիրներով",
   "help.tabs.date": "հուլիսի 14",
-  "help.tabs.introduction": "OpenCode Desktop-ն այժմ կառուցված է ներդիրների շուրջ։",
+  "help.tabs.introduction":
+    "OpenCode Desktop-ն այժմ կառուցված է ներդիրների շուրջ։",
   "help.tabs.sessions":
     "Սկսեք նոր նիստ ներդիրում կամ բացեք գոյություն ունեցող նիստը ձեր ցանկացած նախագծից: Բացեք նոր ներդիր, երբ ինչ-որ նոր բան եք սկսում, և փակեք այն, երբ ավարտեք:",
   "help.tabs.organize":
     "Մի քանի ներդիր բաց պահելը հեշտացնում է ձեր ակտիվ նիստերի կազմակերպումը։ Վերանվանեք ներդիրները հիշարժան որևէ բանի, եթե նախատեսում եք դրանք պահել:",
   "help.tabs.home":
     "Դուք կգտնեք ձեր բոլոր նիստերն ու նախագծերը նոր Հիմնական էկրանին։ Ընտրելով նիստը՝ այն բացվում է ներդիրում:",
-  "help.tabs.persistence": "Երբ վերաբացեք հավելվածը, ձեր ներդիրները դեռ բաց են։",
+  "help.tabs.persistence":
+    "Երբ վերաբացեք հավելվածը, ձեր ներդիրները դեռ բաց են։",
   "help.tabs.worktrees":
     "Նոր դիզայնը դեռ չի աջակցում Git Worktrees-ին, այն շուտով կլինի: Այսպիսով, եթե նախընտրում եք շարունակել օգտագործել նախորդ դասավորությունը, կարող եք անցնել դասավորությունների միջև Կարգավորումներում: Պարզապես հիշեք, որ նոր դասավորությունը կդառնա մշտական ​​մի քանի շաբաթից:",
   "server.row.noUsername": "առանց օգտվողի անուն",
@@ -601,49 +659,69 @@ export const dict = {
   "toast.theme.title": "Թեմա է փոխվել",
   "toast.scheme.title": "Գունային սխեման",
   "toast.workspace.enabled.title": "Աշխատանքային տարածքները միացված են",
-  "toast.workspace.enabled.description": "Բազմաթիվ աշխատանքային ծառեր այժմ ցուցադրված են կողագոտում",
+  "toast.workspace.enabled.description":
+    "Բազմաթիվ աշխատանքային ծառեր այժմ ցուցադրված են կողագոտում",
   "toast.workspace.disabled.title": "Աշխատանքային տարածքներն անջատված են",
-  "toast.workspace.disabled.description": "Միայն հիմնական աշխատանքային ծառը ցուցադրված է կողագոտում",
+  "toast.workspace.disabled.description":
+    "Միայն հիմնական աշխատանքային ծառը ցուցադրված է կողագոտում",
   "toast.permissions.autoaccept.on.title": "Ավտոմատների ընդունում",
-  "toast.permissions.autoaccept.on.description": "Թույլտվության հարցումներն ավտոմատ կերպով կհաստատվեն",
-  "toast.permissions.autoaccept.off.title": "Դադարեցվել է ավտոմատ ընդունելության թույլտվությունները",
-  "toast.permissions.autoaccept.off.description": "Թույլտվության հարցումները կպահանջեն հաստատում",
+  "toast.permissions.autoaccept.on.description":
+    "Թույլտվության հարցումներն ավտոմատ կերպով կհաստատվեն",
+  "toast.permissions.autoaccept.off.title":
+    "Դադարեցվել է ավտոմատ ընդունելության թույլտվությունները",
+  "toast.permissions.autoaccept.off.description":
+    "Թույլտվության հարցումները կպահանջեն հաստատում",
   "toast.model.none.title": "Ընտրված չէ մոդել",
-  "toast.model.none.description": "Միացրեք մատակարարին՝ այս նիստն ամփոփելու համար",
+  "toast.model.none.description":
+    "Միացրեք մատակարարին՝ այս նիստն ամփոփելու համար",
   "toast.file.loadFailed.title": "Չհաջողվեց բեռնել ֆայլը",
   "toast.file.listFailed.title": "Չհաջողվեց ցուցակագրել ֆայլերը",
   "toast.context.noLineSelection.title": "Տող չկա",
-  "toast.context.noLineSelection.description": "Ընտրեք տողերի տիրույթը ֆայլի ներդիրում:",
-  "toast.session.share.copyFailed.title": "Չհաջողվեց պատճենել URL-ը սեղմատախտակում",
+  "toast.context.noLineSelection.description":
+    "Ընտրեք տողերի տիրույթը ֆայլի ներդիրում:",
+  "toast.session.share.copyFailed.title":
+    "Չհաջողվեց պատճենել URL-ը սեղմատախտակում",
   "toast.session.share.success.title": "Նիստը համօգտագործված",
-  "toast.session.share.success.description": "Կիսվել URL-ը պատճենված է սեղմատախտակում:",
+  "toast.session.share.success.description":
+    "Կիսվել URL-ը պատճենված է սեղմատախտակում:",
   "toast.session.share.failed.title": "Չհաջողվեց կիսել նիստը",
   "toast.session.share.failed.description": "Սխալ է տեղի ունեցել նիստը կիսելիս",
   "toast.session.unshare.success.title": "Նիստի համօգտագործումը դադարեցված է",
-  "toast.session.unshare.success.description": "Նիստի համօգտագործումը հաջողությամբ դադարեցվեց",
-  "toast.session.unshare.failed.title": "Չհաջողվեց դադարեցնել նիստի համօգտագործումը",
-  "toast.session.unshare.failed.description": "Նիստի համօգտագործումը դադարեցնելիս սխալ է տեղի ունեցել",
+  "toast.session.unshare.success.description":
+    "Նիստի համօգտագործումը հաջողությամբ դադարեցվեց",
+  "toast.session.unshare.failed.title":
+    "Չհաջողվեց դադարեցնել նիստի համօգտագործումը",
+  "toast.session.unshare.failed.description":
+    "Նիստի համօգտագործումը դադարեցնելիս սխալ է տեղի ունեցել",
   "toast.session.export.success.title": "Նիստն արտահանվել է",
   "toast.session.export.success.description": "Նիստը պահվել է {{filename}}-ում",
   "toast.session.export.failed.title": "Չհաջողվեց արտահանել նիստը",
-  "toast.session.export.failed.description": "Սխալ է տեղի ունեցել նիստը արտահանելիս",
+  "toast.session.export.failed.description":
+    "Սխալ է տեղի ունեցել նիստը արտահանելիս",
   "toast.session.listFailed.title": "Չհաջողվեց բեռնել նիստերը {{project}}",
   "toast.project.reloadFailed.title": "Չհաջողվեց վերաբեռնել {{project}}",
   "toast.update.title": "Թարմացումը հասանելի է",
-  "toast.update.description": "OpenCode-ի ({{version}}) նոր տարբերակը այժմ հասանելի է տեղադրման համար:",
+  "toast.update.description":
+    "OpenCode-ի ({{version}}) նոր տարբերակը այժմ հասանելի է տեղադրման համար:",
   "toast.update.action.installRestart": "Տեղադրել և վերագործարկել",
-  "disk.accessGuidance.macos": "Համակարգի կարգավորումներում տրամադրեք DiskLizard-ին Full Disk Access թույլտվություն, ապա սկանավորեք նորից։",
-  "disk.accessGuidance.windows": "Օգտագործեք հաշիվ, որն ունի այս սկավառակի հասանելիություն, կամ սկանավորեք պանակ, որը ձեր հաշիվը կարող է կարդալ։",
-  "disk.accessGuidance.linux": "Ստուգեք պանակների և միացման կետերի թույլտվությունները, ապա սկանավորեք նորից։",
-  "disk.accessGuidance.default": "Ստուգեք այս պանակների հասանելիությունը, ապա սկանավորեք նորից։",
-  "disk.accessGuidance.rescan": "Մուտքը փոխելուց հետո օգտագործեք Վերասկանավորումը վերևի տողում։",
+  "disk.accessGuidance.macos":
+    "Համակարգի կարգավորումներում տրամադրեք DiskLizard-ին Full Disk Access թույլտվություն, ապա սկանավորեք նորից։",
+  "disk.accessGuidance.windows":
+    "Օգտագործեք հաշիվ, որն ունի այս սկավառակի հասանելիություն, կամ սկանավորեք պանակ, որը ձեր հաշիվը կարող է կարդալ։",
+  "disk.accessGuidance.linux":
+    "Ստուգեք պանակների և միացման կետերի թույլտվությունները, ապա սկանավորեք նորից։",
+  "disk.accessGuidance.default":
+    "Ստուգեք այս պանակների հասանելիությունը, ապա սկանավորեք նորից։",
+  "disk.accessGuidance.rescan":
+    "Մուտքը փոխելուց հետո օգտագործեք Վերասկանավորումը վերևի տողում։",
   "disk.common.rescan": "Վերասկանավորել",
   "toast.update.action.notYet": "դեռ ոչ",
   "toast.update.installFailed.title": "Չհաջողվեց տեղադրել թարմացումը",
   "toast.update.installFailed.retry": "Կրկնել",
   "error.page.title": "Սխալ առաջացավ",
   "error.page.description": "Սխալ է տեղի ունեցել հավելվածը բեռնելիս։",
-  "error.page.description.localServerStartup": "Սխալ է տեղի ունեցել տեղական սերվերը գործարկելիս:",
+  "error.page.description.localServerStartup":
+    "Սխալ է տեղի ունեցել տեղական սերվերը գործարկելիս:",
   "error.page.details.label": "Սխալի մանրամասներ",
   "error.page.action.restart": "Վերագործարկեք",
   "error.page.action.report": "Հաղորդել սխալ",
@@ -653,17 +731,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Ստուգեք թարմացումների համար",
   "error.page.action.updateTo": "Թարմացնել {{version}}",
   "error.page.circular": "[Circular]",
-  "error.page.report.prefix": "Խնդրում ենք հայտնել այս սխալի մասին OpenCode թիմին",
+  "error.page.report.prefix":
+    "Խնդրում ենք հայտնել այս սխալի մասին OpenCode թիմին",
   "error.page.report.discord": "Discord",
   "error.page.version": "Տարբերակ՝ {{version}}",
   "error.dev.rootNotFound":
     "Արմատային տարրը չի գտնվել։ Մոռացե՞լ եք այն ավելացնել ձեր index.html-ում: Կամ գուցե id հատկանիշը սխալ է գրվել:",
-  "error.serverSync.connectFailed": "Չհաջողվեց միանալ սերվերին։ Կա՞ սերվեր, որն աշխատում է `{{url}}`-ում:",
+  "error.serverSync.connectFailed":
+    "Չհաջողվեց միանալ սերվերին։ Կա՞ սերվեր, որն աշխատում է `{{url}}`-ում:",
   "error.serverSDK.noServerAvailable": "Սերվերը հասանելի չէ",
   "error.serverSDK.serverNotAvailable": "Սերվերը հասանելի չէ",
-  "error.childStore.persistedCacheCreateFailed": "Չհաջողվեց ստեղծել մշտական ​​քեշ",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Չհաջողվեց ստեղծել ծրագրի մշտական ​​մետատվյալներ",
-  "error.childStore.persistedProjectIconCreateFailed": "Չհաջողվեց ստեղծել շարունակական նախագծի պատկերակը",
+  "error.childStore.persistedCacheCreateFailed":
+    "Չհաջողվեց ստեղծել մշտական ​​քեշ",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Չհաջողվեց ստեղծել ծրագրի մշտական ​​մետատվյալներ",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Չհաջողվեց ստեղծել շարունակական նախագծի պատկերակը",
   "error.childStore.storeCreateFailed": "Չհաջողվեց ստեղծել խանութ",
   "directory.error.invalidUrl": "Անվավեր գրացուցակ URL-ում։",
   "error.chain.unknown": "Անհայտ սխալ",
@@ -675,23 +758,31 @@ export const dict = {
   "error.chain.responseBody": "Պատասխանող մարմին՝\n{{body}}",
   "error.chain.didYouMean": "Դուք նկատի ունեք՝ {{suggestions}}",
   "error.chain.modelNotFound": "Մոդելը չի ​​գտնվել՝ {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Ստուգեք ձեր կազմաձևը (opencode.json) մատակարարի/մոդելի անունները",
+  "error.chain.checkConfig":
+    "Ստուգեք ձեր կազմաձևը (opencode.json) մատակարարի/մոդելի անունները",
   "error.chain.mcpFailed":
     "MCP «{{name}}» սերվերը ձախողվեց: Նկատի ունեցեք, որ OpenCode-ը դեռ չի աջակցում MCP նույնականացումը:",
-  "error.chain.providerAuthFailed": "Մատակարարի նույնականացումը ձախողվեց ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Մատակարարի նույնականացումը ձախողվեց ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "Չհաջողվեց նախաստորագրել «{{provider}}» մատակարարը։ Ստուգեք հավատարմագրերը և կազմաձևումը:",
-  "error.chain.configJsonInvalid": "Կարգավորման ֆայլը {{path}}-ում վավեր չէ JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Կարգավորման ֆայլը {{path}}-ում վավեր չէ JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Կարգավորման ֆայլը {{path}}-ում վավեր չէ JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Կարգավորման ֆայլը {{path}}-ում վավեր չէ JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     "«{{dir}}» գրացուցակը {{path}}-ում վավեր չէ: Վերանվանել գրացուցակը «{{suggestion}}» կամ հեռացնել այն: Սա սովորական տառասխալ է:",
-  "error.chain.configFrontmatterError": "Չհաջողվեց վերլուծել ճակատային նյութը {{path}}-ում՝\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Չհաջողվեց վերլուծել ճակատային նյութը {{path}}-ում՝\n{{message}}",
   "error.chain.configInvalid": "Կարգավորման ֆայլը {{path}}-ում անվավեր է",
-  "error.chain.configInvalidWithMessage": "Կարգավորման ֆայլը {{path}}-ում անվավեր է՝ {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Կարգավորման ֆայլը {{path}}-ում անվավեր է՝ {{message}}",
   "notification.permission.title": "Պահանջվում է թույլտվություն",
-  "notification.permission.description": "{{sessionTitle}}-ը {{projectName}}-ում թույլտվություն է պահանջում",
+  "notification.permission.description":
+    "{{sessionTitle}}-ը {{projectName}}-ում թույլտվություն է պահանջում",
   "notification.question.title": "Հարց",
-  "notification.question.description": "{{sessionTitle}} {{projectName}}-ում հարց կա",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}}-ում հարց կա",
   "notification.action.goToSession": "Անցնել նիստին",
   "notification.session.responseReady.title": "Պատասխանը պատրաստ է",
   "notification.session.error.title": "Նիստի սխալ",
@@ -722,7 +813,8 @@ export const dict = {
   "session.tab.unknown": "Անհայտ նիստ",
   "session.panel.reviewAndFiles": "Վերանայել և ֆայլեր",
   "session.error.notFound": "Այս նիստը հնարավոր չէ գտնել",
-  "session.error.notFound.description": "Այս ներդիրը ցույց է տալիս նիստ, որն այլևս գոյություն չունի այս սերվերում։",
+  "session.error.notFound.description":
+    "Այս ներդիրը ցույց է տալիս նիստ, որն այլևս գոյություն չունի այս սերվերում։",
   "session.error.notFound.closeTab": "Փակել ներդիրը",
   "session.error.serverConnection": "Հնարավոր չէ միանալ այս սերվերին",
   "session.review.filesChanged": "Ֆայլերը փոխվել են {{count}}",
@@ -730,9 +822,11 @@ export const dict = {
   "session.review.change.other": "Փոփոխություններ",
   "session.review.loadingChanges": "Բեռնվում են փոփոխություններ...",
   "session.review.empty": "Այս նիստում դեռ փոփոխություններ չկան",
-  "session.review.noVcs": "Չի հայտնաբերվել Git Տարբերակի կառավարման համակարգ, փոփոխությունները չեն ցուցադրվում",
+  "session.review.noVcs":
+    "Չի հայտնաբերվել Git Տարբերակի կառավարման համակարգ, փոփոխությունները չեն ցուցադրվում",
   "session.review.noVcs.createGit.title": "Ստեղծել Git պահոց",
-  "session.review.noVcs.createGit.description": "Հետեւել, վերանայել և հետարկել այս նախագծի փոփոխությունները",
+  "session.review.noVcs.createGit.description":
+    "Հետեւել, վերանայել և հետարկել այս նախագծի փոփոխությունները",
   "session.review.noVcs.createGit.actionLoading": "Ստեղծվում է Git պահոց...",
   "session.review.noVcs.createGit.action": "Ստեղծել Git պահոց",
   "session.review.noSnapshot":
@@ -743,8 +837,10 @@ export const dict = {
   "session.files.selectToOpen": "Ընտրեք ֆայլ բացելու համար",
   "session.files.all": "Բոլոր ֆայլերը",
   "session.files.empty": "Ֆայլեր չկան",
-  "session.files.binaryContent": "Երկուական ֆայլ (բովանդակությունը չի կարող ցուցադրվել)",
-  "session.messages.renderEarlier": "Ներկայացնել ավելի վաղ հաղորդագրությունները",
+  "session.files.binaryContent":
+    "Երկուական ֆայլ (բովանդակությունը չի կարող ցուցադրվել)",
+  "session.messages.renderEarlier":
+    "Ներկայացնել ավելի վաղ հաղորդագրությունները",
   "session.messages.loadingEarlier": "Նախկին հաղորդագրությունների բեռնում...",
   "session.messages.loadEarlier": "Բեռնել ավելի վաղ հաղորդագրությունները",
   "session.messages.loading": "Բեռնվում է հաղորդագրություններ...",
@@ -760,13 +856,15 @@ export const dict = {
   "session.question.pending.one": "{{count}} առկախ հարց",
   "session.question.pending.other": "{{count}} առկախ հարցեր",
   "session.followupDock.summary.one": "{{count}} հերթագրված հաղորդագրություն",
-  "session.followupDock.summary.other": "{{count}} հերթագրված հաղորդագրություններ",
+  "session.followupDock.summary.other":
+    "{{count}} հերթագրված հաղորդագրություններ",
   "session.followupDock.sendNow": "Ուղարկել հիմա",
   "session.followupDock.edit": "Խմբագրել",
   "session.followupDock.collapse": "Ծալել հերթագրված հաղորդագրությունները",
   "session.followupDock.expand": "Ընդարձակել հերթագրված հաղորդագրությունները",
   "session.revertDock.summary.one": "{{count}} վերադարձված հաղորդագրություն",
-  "session.revertDock.summary.other": "{{count}} վերադարձված հաղորդագրություններ",
+  "session.revertDock.summary.other":
+    "{{count}} վերադարձված հաղորդագրություններ",
   "session.revertDock.collapse": "Ծալել վերադարձված հաղորդագրությունները",
   "session.revertDock.expand": "Ընդլայնել վերադարձված հաղորդագրությունները",
   "session.revertDock.restore": "Վերականգնել հաղորդագրությունը",
@@ -837,7 +935,8 @@ export const dict = {
   "terminal.title.numbered": "Տերմինալ {{number}}",
   "terminal.close": "Փակել տերմինալը",
   "terminal.connectionLost.title": "Կապը կորցրած",
-  "terminal.connectionLost.abnormalClose": "WebSocket փակվել է աննորմալ՝ {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket փակվել է աննորմալ՝ {{code}}",
   "terminal.connectionLost.description":
     "տերմինալի կապն ընդհատվել է։ Դա կարող է տեղի ունենալ, երբ սերվերը վերագործարկվի:",
   "terminal.connectTicket.csrfError":
@@ -886,7 +985,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Միացնել աշխատանքային տարածքները",
   "sidebar.workspaces.disable": "Անջատել աշխատանքային տարածքները",
   "sidebar.gettingStarted.title": "Սկսում",
-  "sidebar.gettingStarted.line1": "OpenCode ներառում է անվճար մոդելներ, որպեսզի կարողանաք անմիջապես սկսել:",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ներառում է անվճար մոդելներ, որպեսզի կարողանաք անմիջապես սկսել:",
   "sidebar.gettingStarted.line2":
     "Միացրեք ցանկացած մատակարարի՝ մոդելներ օգտագործելու համար, inc. Claude, GPT, Gemini և այլն",
   "sidebar.project.recentSessions": "Վերջին նիստերը",
@@ -902,28 +1002,33 @@ export const dict = {
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "Վայրկյանում գլորվող շրջանակներ վերջին 5 վայրկյանում",
   "debugBar.frame.label": "ԿԱԴՐ",
-  "debugBar.frame.tip": "Վերջին 5 վայրկյանի ընթացքում կադրերի վատթարագույն ժամանակը։",
+  "debugBar.frame.tip":
+    "Վերջին 5 վայրկյանի ընթացքում կադրերի վատթարագույն ժամանակը։",
   "debugBar.jank.label": "ԸՆԴՀԱՏՈՒՄ",
   "debugBar.jank.tip": "32 մվ-ից ավելի շրջանակներ վերջին 5 վայրկյանում",
   "debugBar.long.label": "ԵՐԿԱՐ",
   "debugBar.long.tip":
     "Արգելափակված ժամանակի և երկար առաջադրանքների քանակը վերջին 5 վայրկյանում։ Առավելագույն առաջադրանքը՝ {{max}}։",
   "debugBar.delay.label": "ՀԱՊԱՂՈՒՄ",
-  "debugBar.delay.tip": "Վերջին 5 վայրկյանում գրանցված մուտքի վատթարագույն ուշացումը:",
+  "debugBar.delay.tip":
+    "Վերջին 5 վայրկյանում գրանցված մուտքի վատթարագույն ուշացումը:",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Փոխգործակցության մոտավոր տևողությունը վերջին 5 վայրկյանում։ Սա INPնման է, ոչ թե պաշտոնական Web Vitals INP:",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "Հավելվածի ընթացիկ դասավորության փոփոխություն։",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Օգտագործված JS կույտ ընդդեմ կույտի սահմանաչափի։ Chromium միայն։",
-  "debugBar.mem.tip": "Օգտագործված JS կույտ ընդդեմ կույտի սահմանաչափի։ {{used}} {{limit}}-ից։",
+  "debugBar.mem.tipUnavailable":
+    "Օգտագործված JS կույտ ընդդեմ կույտի սահմանաչափի։ Chromium միայն։",
+  "debugBar.mem.tip":
+    "Օգտագործված JS կույտ ընդդեմ կույտի սահմանաչափի։ {{used}} {{limit}}-ից։",
   "debugBar.focus.label": "ԿԵՆՏՐՈՆԱՑՈՒՄ",
   "debugBar.focus.tip": "Ստիպել կենտրոնանալ ոճերը բոլոր ինտերակտիվ տարրերի վրա",
   "debugBar.focus.on": "ՄԻԱՑ",
   "debugBar.focus.off": "ԱՋԱՏ",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Ստիպել հավելվածի ամբողջական դասավորության ուղղությունը՝ առանց ընտրված լեզուն փոխելու",
+  "debugBar.direction.tip":
+    "Ստիպել հավելվածի ամբողջական դասավորության ուղղությունը՝ առանց ընտրված լեզուն փոխելու",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -933,7 +1038,8 @@ export const dict = {
   "settings.tab.shortcuts": "Դյուրանցումներ",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ինտեգրում",
-  "settings.desktop.wsl.description": "Գործարկեք OpenCode սերվերը WSL-ի ներսում՝ Windows-ում։",
+  "settings.desktop.wsl.description":
+    "Գործարկեք OpenCode սերվերը WSL-ի ներսում՝ Windows-ում։",
   "settings.general.section.appearance": "Արտաքին տեսք",
   "settings.general.section.advanced": "Ընդլայնված",
   "settings.general.section.notifications": "Համակարգի ծանուցումներ",
@@ -942,76 +1048,103 @@ export const dict = {
   "settings.general.section.feed": "Fed",
   "settings.general.section.display": "Ցուցադրել",
   "settings.general.row.language.title": "Լեզու",
-  "settings.general.row.language.description": "Փոխել ցուցադրման լեզուն OpenCode",
+  "settings.general.row.language.description":
+    "Փոխել ցուցադրման լեզուն OpenCode",
   "settings.general.row.shell.title": "Տերմինալի Shell",
-  "settings.general.row.shell.description": "Shell-ն օգտագործվում է տերմինալի և գործակալի գործիքների կողմից",
+  "settings.general.row.shell.description":
+    "Shell-ն օգտագործվում է տերմինալի և գործակալի գործիքների կողմից",
   "settings.general.row.shell.autoDefault": "Ավտոմատ (կանխադրված)",
   "settings.general.row.shell.terminalOnly": "միայն տերմինալ",
   "settings.general.row.appearance.title": "Արտաքին տեսք",
-  "settings.general.row.appearance.description": "Անհատականացրեք, թե ինչպես է OpenCode տեսքը ձեր սարքում",
+  "settings.general.row.appearance.description":
+    "Անհատականացրեք, թե ինչպես է OpenCode տեսքը ձեր սարքում",
   "settings.general.row.colorScheme.title": "Գունային սխեման",
-  "settings.general.row.colorScheme.description": "Ընտրեք՝ OpenCode-ը հետևում է համակարգին, թեթև թե մուգ թեմային",
+  "settings.general.row.colorScheme.description":
+    "Ընտրեք՝ OpenCode-ը հետևում է համակարգին, թեթև թե մուգ թեմային",
   "settings.general.row.theme.title": "Թեմա",
-  "settings.general.row.theme.description": "Անհատականացրեք, թե ինչպես է OpenCode-ի թեմատիկությունը։",
+  "settings.general.row.theme.description":
+    "Անհատականացրեք, թե ինչպես է OpenCode-ի թեմատիկությունը։",
   "settings.general.row.font.title": "Կոդի տառատեսակ",
-  "settings.general.row.font.description": "Անհատականացրեք կոդերի բլոկներում օգտագործվող տառատեսակը",
+  "settings.general.row.font.description":
+    "Անհատականացրեք կոդերի բլոկներում օգտագործվող տառատեսակը",
   "settings.general.row.terminalFont.title": "Տերմինալ տառատեսակ",
-  "settings.general.row.terminalFont.description": "Անհատականացրեք տերմինալում օգտագործվող տառատեսակը",
+  "settings.general.row.terminalFont.description":
+    "Անհատականացրեք տերմինալում օգտագործվող տառատեսակը",
   "settings.general.row.uiFont.title": "UI տառատեսակը",
-  "settings.general.row.uiFont.description": "Անհատականացրեք ինտերֆեյսի ընթացքում օգտագործվող տառատեսակը",
+  "settings.general.row.uiFont.description":
+    "Անհատականացրեք ինտերֆեյսի ընթացքում օգտագործվող տառատեսակը",
   "settings.general.row.followup.title": "Հետագա պահվածք",
-  "settings.general.row.followup.description": "Ընտրեք՝ հետևելու հուշումներն անմիջապես կուղղվեն, թե սպասեք հերթում",
+  "settings.general.row.followup.description":
+    "Ընտրեք՝ հետևելու հուշումներն անմիջապես կուղղվեն, թե սպասեք հերթում",
   "settings.general.row.followup.option.queue": "Հերթ",
   "settings.general.row.followup.option.steer": "Ղեկավար",
   "settings.general.row.showFileTree.title": "Ֆայլի ծառ",
-  "settings.general.row.showFileTree.description": "Ցույց տալ ֆայլի ծառի վահանակը նիստերում",
+  "settings.general.row.showFileTree.description":
+    "Ցույց տալ ֆայլի ծառի վահանակը նիստերում",
   "settings.general.row.showNavigation.title": "Նավարկության կառավարում",
-  "settings.general.row.showNavigation.description": "Ցույց տալ հետ և առաջ կոճակները աշխատասեղանի վերնագրի տողում",
+  "settings.general.row.showNavigation.description":
+    "Ցույց տալ հետ և առաջ կոճակները աշխատասեղանի վերնագրի տողում",
   "settings.general.row.showSearch.title": "Հրամանների գունապնակ",
-  "settings.general.row.showSearch.description": "Ցույց տալ որոնման և հրամանների պալիտրա կոճակը վերնագրի տողում",
+  "settings.general.row.showSearch.description":
+    "Ցույց տալ որոնման և հրամանների պալիտրա կոճակը վերնագրի տողում",
   "settings.general.row.showTerminal.title": "Տերմինալ",
-  "settings.general.row.showTerminal.description": "Ցույց տալ տերմինալի կոճակը աշխատասեղանի վերնագրի տողում",
+  "settings.general.row.showTerminal.description":
+    "Ցույց տալ տերմինալի կոճակը աշխատասեղանի վերնագրի տողում",
   "settings.general.row.showStatus.title": "Սերվերի կարգավիճակ",
-  "settings.general.row.showStatus.description": "Ցույց տալ սերվերի կարգավիճակի կոճակը վերնագրի տողում",
+  "settings.general.row.showStatus.description":
+    "Ցույց տալ սերվերի կարգավիճակի կոճակը վերնագրի տողում",
   "settings.general.row.mobileTitlebarBottom.title": "Նավարկություն ներքևում",
   "settings.general.row.mobileTitlebarBottom.description":
     "Տեղադրեք վերնագրի տողն ու նիստի ներդիրները էկրանի ներքևի մասում բջջային հեռախոսի վրա",
   "settings.general.row.showCustomAgents.title": "Ցույց տալ գործակալին",
   "settings.general.row.showCustomAgents.description":
     "Փոխարկեք կոմպոզիտորի գործակալների միջև։ Երբ թաքնված է, կանխադրված է Build agent:",
-  "settings.general.row.reasoningSummaries.title": "Ցույց տալ հիմնավորման ամփոփագրերը",
-  "settings.general.row.reasoningSummaries.description": "Ցուցադրել մոդելի հիմնավորման ամփոփագրերը ժամանակացույցում",
-  "settings.general.row.shellToolPartsExpanded.title": "Ընդարձակել Shell գործիքի մասերը",
+  "settings.general.row.reasoningSummaries.title":
+    "Ցույց տալ հիմնավորման ամփոփագրերը",
+  "settings.general.row.reasoningSummaries.description":
+    "Ցուցադրել մոդելի հիմնավորման ամփոփագրերը ժամանակացույցում",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Ընդարձակել Shell գործիքի մասերը",
   "settings.general.row.shellToolPartsExpanded.description":
     "Ցուցադրել ժամանակացույցում լռելյայնորեն ընդլայնված shell գործիքի մասերը",
-  "settings.general.row.editToolPartsExpanded.title": "Ընդարձակել խմբագրման գործիքի մասերը",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Ընդարձակել խմբագրման գործիքի մասերը",
   "settings.general.row.editToolPartsExpanded.description":
     "Ցուցադրել խմբագրման, գրելու և կարկատելու գործիքի մասերը, որոնք լռելյայն ընդլայնվել են ժամանակացույցում",
   "settings.general.row.newInterface.title": "Նոր դասավորություն",
   "settings.general.row.newInterface.badge": "Նոր",
   "settings.general.row.newInterface.description":
     "Օգտագործեք նոր ներդիրները և տան դասավորությունը։ Անցեք դասավորությունների միջև սահմանափակ ժամանակով:",
-  "settings.general.row.newInterfaceNotice.title": "Դուք այժմ օգտագործում եք նոր դասավորություն",
-  "settings.general.row.newInterfaceNotice.description": "Նախորդ դասավորությունն այլևս հասանելի չէ",
+  "settings.general.row.newInterfaceNotice.title":
+    "Դուք այժմ օգտագործում եք նոր դասավորություն",
+  "settings.general.row.newInterfaceNotice.description":
+    "Նախորդ դասավորությունն այլևս հասանելի չէ",
   "settings.general.row.newInterfaceNotice.dismiss": "Փակել",
   "settings.general.row.pinchZoom.title": "Սեղմեք՝ խոշորացնելու համար",
-  "settings.general.row.pinchZoom.description": "Թույլատրել մատնաչափի սեղմումը և Ctrl-scroll ժեստերը մեծացնելու համար",
+  "settings.general.row.pinchZoom.description":
+    "Թույլատրել մատնաչափի սեղմումը և Ctrl-scroll ժեստերը մեծացնելու համար",
   "settings.general.row.wayland.title": "Օգտագործել բնիկ Wayland",
-  "settings.general.row.wayland.description": "Անջատել X11-ի հետադարձ կապը Wayland-ում: Պահանջվում է վերագործարկում:",
+  "settings.general.row.wayland.description":
+    "Անջատել X11-ի հետադարձ կապը Wayland-ում: Պահանջվում է վերագործարկում:",
   "settings.general.row.wayland.tooltip":
     "Linux-ի վրա՝ թարմացման արագության խառը մոնիտորներով, բնիկ Wayland-ը կարող է ավելի կայուն լինել:",
   "settings.general.row.releaseNotes.title": "Թողարկման նշումներ",
-  "settings.general.row.releaseNotes.description": "Ցույց տալ, թե ինչ է նոր պատուհանները թարմացումներից հետո",
-  "settings.updates.row.startup.title": "Ստուգեք գործարկման ժամանակ թարմացումների համար",
-  "settings.updates.row.startup.description": "Ավտոմատ կերպով ստուգեք թարմացումների համար, երբ OpenCode-ը գործարկվի",
+  "settings.general.row.releaseNotes.description":
+    "Ցույց տալ, թե ինչ է նոր պատուհանները թարմացումներից հետո",
+  "settings.updates.row.startup.title":
+    "Ստուգեք գործարկման ժամանակ թարմացումների համար",
+  "settings.updates.row.startup.description":
+    "Ավտոմատ կերպով ստուգեք թարմացումների համար, երբ OpenCode-ը գործարկվի",
   "settings.updates.row.check.title": "Ստուգեք թարմացումների համար",
-  "settings.updates.row.check.description": "Ձեռքով ստուգեք թարմացումների համար և տեղադրեք, եթե առկա է",
+  "settings.updates.row.check.description":
+    "Ձեռքով ստուգեք թարմացումների համար և տեղադրեք, եթե առկա է",
   "settings.updates.action.checkNow": "Ստուգեք հիմա",
   "settings.updates.action.checking": "Ստուգում...",
   "settings.updates.action.downloading": "Ներբեռնվում է...",
   "settings.updates.action.installing": "Տեղադրվում է...",
   "settings.updates.toast.latest.title": "Դուք արդի եք",
-  "settings.updates.toast.latest.description": "Դուք օգտագործում եք OpenCode-ի վերջին տարբերակը։",
+  "settings.updates.toast.latest.description":
+    "Դուք օգտագործում եք OpenCode-ի վերջին տարբերակը։",
   "sound.option.none": "Ոչ մեկը",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1065,19 +1198,25 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Ցույց տալ համակարգի ծանուցումը, երբ անհրաժեշտ է թույլտվություն",
   "settings.general.notifications.errors.title": "Սխալներ",
-  "settings.general.notifications.errors.description": "Ցույց տալ համակարգի ծանուցումը, երբ սխալ է տեղի ունենում",
+  "settings.general.notifications.errors.description":
+    "Ցույց տալ համակարգի ծանուցումը, երբ սխալ է տեղի ունենում",
   "settings.general.sounds.agent.title": "Գործակալ",
-  "settings.general.sounds.agent.description": "Նվագարկեք ձայնը, երբ գործակալն ավարտված է կամ ուշադրության կարիք ունի",
+  "settings.general.sounds.agent.description":
+    "Նվագարկեք ձայնը, երբ գործակալն ավարտված է կամ ուշադրության կարիք ունի",
   "settings.general.sounds.permissions.title": "Թույլտվություններ",
-  "settings.general.sounds.permissions.description": "Նվագարկել ձայնը, երբ անհրաժեշտ է թույլտվություն",
+  "settings.general.sounds.permissions.description":
+    "Նվագարկել ձայնը, երբ անհրաժեշտ է թույլտվություն",
   "settings.general.sounds.errors.title": "Սխալներ",
-  "settings.general.sounds.errors.description": "Նվագարկել ձայնը, երբ սխալ է տեղի ունենում",
+  "settings.general.sounds.errors.description":
+    "Նվագարկել ձայնը, երբ սխալ է տեղի ունենում",
   "settings.shortcuts.title": "Ստեղնաշարի դյուրանցումներ",
   "settings.shortcuts.reset.button": "Վերականգնել լռելյայն",
   "settings.shortcuts.reset.toast.title": "Դյուրանցումների վերակայում",
-  "settings.shortcuts.reset.toast.description": "Ստեղնաշարի դյուրանցումները վերակայվել են կանխադրվածին։",
+  "settings.shortcuts.reset.toast.description":
+    "Ստեղնաշարի դյուրանցումները վերակայվել են կանխադրվածին։",
   "settings.shortcuts.conflict.title": "Դյուրանցումն արդեն օգտագործվում է",
-  "settings.shortcuts.conflict.description": "{{keybind}}-ն արդեն նշանակված է {{titles}}-ին։",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}}-ն արդեն նշանակված է {{titles}}-ին։",
   "settings.shortcuts.unassigned": "Չնշանակված",
   "settings.shortcuts.pressKeys": "Սեղմել ստեղները",
   "settings.shortcuts.search.placeholder": "Որոնման դյուրանցումներ",
@@ -1089,37 +1228,48 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Տերմինալ",
   "settings.shortcuts.group.prompt": "Հուշում",
   "settings.providers.title": "Մատակարարներ",
-  "settings.providers.description": "Մատակարարի կարգավորումները կկարգավորվեն այստեղ։",
+  "settings.providers.description":
+    "Մատակարարի կարգավորումները կկարգավորվեն այստեղ։",
   "settings.providers.section.connected": "Կապված մատակարարներ",
   "settings.providers.connected.empty": "Կապված մատակարարներ չկան",
-  "settings.providers.connected.environmentDescription": "Միացված է ձեր միջավայրի փոփոխականներից",
+  "settings.providers.connected.environmentDescription":
+    "Միացված է ձեր միջավայրի փոփոխականներից",
   "settings.providers.section.popular": "Հանրաճանաչ մատակարարներ",
-  "settings.providers.custom.description": "Ավելացնել OpenAI-համատեղելի մատակարար ըստ բազային URL։",
+  "settings.providers.custom.description":
+    "Ավելացնել OpenAI-համատեղելի մատակարար ըստ բազային URL։",
   "settings.providers.tag.environment": "Շրջակա միջավայր",
   "settings.providers.tag.config": "Կազմաձևում",
   "settings.providers.tag.custom": "Պատվիրված",
   "settings.providers.tag.other": "Այլ",
   "settings.models.title": "Մոդելներ",
-  "settings.models.description": "Մոդելի կարգավորումները կարգավորելի կլինեն այստեղ։",
+  "settings.models.description":
+    "Մոդելի կարգավորումները կարգավորելի կլինեն այստեղ։",
   "settings.agents.title": "Գործակալներ",
-  "settings.agents.description": "Գործակալի կարգավորումները կկարգավորվեն այստեղ։",
+  "settings.agents.description":
+    "Գործակալի կարգավորումները կկարգավորվեն այստեղ։",
   "settings.commands.title": "Հրամաններ",
-  "settings.commands.description": "Հրամանի կարգավորումները կկարգավորվեն այստեղ։",
+  "settings.commands.description":
+    "Հրամանի կարգավորումները կկարգավորվեն այստեղ։",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP կարգավորումները կկարգավորվեն այստեղ։",
   "settings.permissions.title": "Թույլտվություններ",
-  "settings.permissions.description": "Վերահսկեք, թե ինչ գործիքներ կարող է օգտագործել սերվերը լռելյայն։",
+  "settings.permissions.description":
+    "Վերահսկեք, թե ինչ գործիքներ կարող է օգտագործել սերվերը լռելյայն։",
   "settings.permissions.section.tools": "Գործիքներ",
-  "settings.permissions.toast.updateFailed.title": "Չհաջողվեց թարմացնել թույլտվությունները",
+  "settings.permissions.toast.updateFailed.title":
+    "Չհաջողվեց թարմացնել թույլտվությունները",
   "settings.permissions.action.allow": "Թույլատրել",
   "settings.permissions.action.ask": "Հարցրեք",
   "settings.permissions.action.deny": "Մերժել",
   "settings.permissions.tool.read.title": "Կարդալ",
-  "settings.permissions.tool.read.description": "Կարդում է ֆայլը (համընկնում է ֆայլի ուղու հետ)",
+  "settings.permissions.tool.read.description":
+    "Կարդում է ֆայլը (համընկնում է ֆայլի ուղու հետ)",
   "settings.permissions.tool.edit.title": "Խմբագրել",
-  "settings.permissions.tool.edit.description": "Փոփոխեք ֆայլերը, ներառյալ խմբագրումները, գրությունները և պատչերը",
+  "settings.permissions.tool.edit.description":
+    "Փոփոխեք ֆայլերը, ներառյալ խմբագրումները, գրությունները և պատչերը",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Համապատասխանեցրեք ֆայլերը՝ օգտագործելով գլոբի նախշերը",
+  "settings.permissions.tool.glob.description":
+    "Համապատասխանեցրեք ֆայլերը՝ օգտագործելով գլոբի նախշերը",
   "settings.permissions.tool.grep.title": "Grep",
   "settings.permissions.tool.grep.description":
     "Որոնել ֆայլի բովանդակությունը՝ օգտագործելով կանոնավոր արտահայտություններ",
@@ -1130,19 +1280,25 @@ export const dict = {
   "settings.permissions.tool.task.title": "Առաջադրանք",
   "settings.permissions.tool.task.description": "Ենթագործակալների գործարկում",
   "settings.permissions.tool.skill.title": "Հմտություն",
-  "settings.permissions.tool.skill.description": "Բեռնել հմտությունը ըստ անունով",
+  "settings.permissions.tool.skill.description":
+    "Բեռնել հմտությունը ըստ անունով",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Գործարկել լեզվի սերվերի հարցումները",
+  "settings.permissions.tool.lsp.description":
+    "Գործարկել լեզվի սերվերի հարցումները",
   "settings.permissions.tool.todowrite.title": "Todo Write",
-  "settings.permissions.tool.todowrite.description": "Թարմացնել անելիքների ցուցակը",
+  "settings.permissions.tool.todowrite.description":
+    "Թարմացնել անելիքների ցուցակը",
   "settings.permissions.tool.webfetch.title": "Վեբ առբերում",
-  "settings.permissions.tool.webfetch.description": "Առբերել բովանդակությունը URL-ից",
+  "settings.permissions.tool.webfetch.description":
+    "Առբերել բովանդակությունը URL-ից",
   "settings.permissions.tool.websearch.title": "Վեբ որոնում",
   "settings.permissions.tool.websearch.description": "Որոնել համացանցում",
   "settings.permissions.tool.external_directory.title": "Արտաքին գրացուցակ",
-  "settings.permissions.tool.external_directory.description": "Մուտք գործեք ֆայլեր նախագծի գրացուցակից դուրս",
+  "settings.permissions.tool.external_directory.description":
+    "Մուտք գործեք ֆայլեր նախագծի գրացուցակից դուրս",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Գտեք գործիքի կրկնվող զանգերը՝ նույն մուտքագրմամբ",
+  "settings.permissions.tool.doom_loop.description":
+    "Գտեք գործիքի կրկնվող զանգերը՝ նույն մուտքագրմամբ",
   "session.delete.failed.title": "Չհաջողվեց ջնջել նիստը",
   "session.delete.title": "Ջնջել նիստը",
   "session.delete.confirm": "Ջնջե՞լ «{{name}}» նիստը",
@@ -1156,12 +1312,14 @@ export const dict = {
   "workspace.resetting.description": "Սա կարող է տևել մեկ րոպե։",
   "workspace.reset.failed.title": "Չհաջողվեց վերականգնել աշխատանքային տարածքը",
   "workspace.reset.success.title": "Աշխատանքային տարածքի վերակայում",
-  "workspace.reset.success.description": "Աշխատանքային տարածքն այժմ համապատասխանում է լռելյայն ճյուղին։",
+  "workspace.reset.success.description":
+    "Աշխատանքային տարածքն այժմ համապատասխանում է լռելյայն ճյուղին։",
   "workspace.error.stillPreparing": "Աշխատանքային տարածքը դեռ պատրաստվում է",
   "workspace.status.checking": "Չմիաձուլված փոփոխությունների ստուգում...",
   "workspace.status.error": "Հնարավոր չէ ստուգել git կարգավիճակը։",
   "workspace.status.clean": "Չմիաձուլված փոփոխություններ չեն հայտնաբերվել։",
-  "workspace.status.dirty": "Չմիաձուլված փոփոխություններ են հայտնաբերվել այս աշխատանքային տարածքում։",
+  "workspace.status.dirty":
+    "Չմիաձուլված փոփոխություններ են հայտնաբերվել այս աշխատանքային տարածքում։",
   "workspace.delete.title": "Ջնջել աշխատանքային տարածքը",
   "workspace.delete.confirm": "Ջնջե՞լ «{{name}}» աշխատանքային տարածքը",
   "workspace.delete.button": "Ջնջել աշխատանքային տարածքը",
@@ -1171,6 +1329,7 @@ export const dict = {
   "workspace.reset.archived.none": "Ակտիվ նիստեր չեն արխիվացվի։",
   "workspace.reset.archived.one": "1 նիստ կարխիվացվի։",
   "workspace.reset.archived.many": "{{count}} նիստերը կարխիվացվեն։",
-  "workspace.reset.note": "Սա կվերակայի աշխատանքային տարածքը, որպեսզի համապատասխանի լռելյայն ճյուղին:",
+  "workspace.reset.note":
+    "Սա կվերակայի աշխատանքային տարածքը, որպեսզի համապատասխանի լռելյայն ճյուղին:",
   "dialog.usageExceeded.dontShowAgain": "Այլևս չցուցադրել",
 }

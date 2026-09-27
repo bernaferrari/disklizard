@@ -1,4 +1,8 @@
-import { EMPTY_DISK_BROWSE_HISTORY, transitionDiskBrowseHistory, type DiskBrowseHistory } from "./browse-history"
+import {
+  EMPTY_DISK_BROWSE_HISTORY,
+  transitionDiskBrowseHistory,
+  type DiskBrowseHistory,
+} from "./browse-history"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { diskPathEquals } from "./storage"
 
@@ -21,7 +25,10 @@ export type ScanTab = ScanTabSnapshot & {
   id: string
 }
 
-export type RetainedScanTab = Pick<ScanTab, "id" | "sessionID" | "tree" | "view">
+export type RetainedScanTab = Pick<
+  ScanTab,
+  "id" | "sessionID" | "tree" | "view"
+>
 
 export type CurrentScanTabState = Omit<ScanTabSnapshot, "tree" | "view"> & {
   tree: DiskScanNode | null
@@ -42,22 +49,34 @@ export type SaveCurrentScanTabOptions = {
 export function saveCurrentScanTab(
   tabs: ScanTab[],
   current: CurrentScanTabState,
-  options: SaveCurrentScanTabOptions,
+  options: SaveCurrentScanTabOptions
 ): ScanTab[] {
   if (!current.tree) return tabs
-  if (current.sessionID && options.volumeJobSessionIDs.includes(current.sessionID)) return tabs
+  if (
+    current.sessionID &&
+    options.volumeJobSessionIDs.includes(current.sessionID)
+  )
+    return tabs
 
   const snapshot = normalizeScanSnapshot(current, options.os)
   const matchesCurrent = (tab: ScanTab) =>
-    current.sessionID ? tab.sessionID === current.sessionID : !tab.sessionID && tab.tree === current.tree
+    current.sessionID
+      ? tab.sessionID === current.sessionID
+      : !tab.sessionID && tab.tree === current.tree
   const existingIndex = tabs.findIndex(matchesCurrent)
-  if (existingIndex < 0) return [...tabs, { id: uniqueTabID(tabs, options.newTabID), ...snapshot }]
+  if (existingIndex < 0)
+    return [...tabs, { id: uniqueTabID(tabs, options.newTabID), ...snapshot }]
 
-  const existingID = tabs[existingIndex]!.id
-  return [...tabs.filter((tab) => !matchesCurrent(tab)), { id: existingID, ...snapshot }]
+  const existingID = tabs[existingIndex].id
+  return [
+    ...tabs.filter((tab) => !matchesCurrent(tab)),
+    { id: existingID, ...snapshot },
+  ]
 }
 
-export type LimitRetainedScanTabsOptions = CloseScanTabOptions & { limit?: number }
+export type LimitRetainedScanTabsOptions = CloseScanTabOptions & {
+  limit?: number
+}
 
 export type LimitRetainedScanTabsResult = {
   tabs: ScanTab[]
@@ -68,20 +87,27 @@ export type LimitRetainedScanTabsResult = {
 /** Evict least-recently parked maps and identify every watcher that lost its final owner. */
 export function limitRetainedScanTabs(
   tabs: readonly ScanTab[],
-  options: LimitRetainedScanTabsOptions,
+  options: LimitRetainedScanTabsOptions
 ): LimitRetainedScanTabsResult {
   const limit = options.limit ?? MAX_RETAINED_SCAN_TABS
-  if (!Number.isSafeInteger(limit) || limit < 0) throw new TypeError("Invalid retained scan tab limit")
+  if (!Number.isSafeInteger(limit) || limit < 0)
+    throw new TypeError("Invalid retained scan tab limit")
   if (tabs.length <= limit) return { tabs: [...tabs], releaseSessionIDs: [] }
 
   const evicted = tabs.slice(0, tabs.length - limit)
   const retained = tabs.slice(tabs.length - limit)
-  const retainedSessions = new Set(retained.flatMap((tab) => (tab.sessionID ? [tab.sessionID] : [])))
-  const releaseSessionIDs = [...new Set(evicted.flatMap((tab) => (tab.sessionID ? [tab.sessionID] : [])))].filter(
+  const retainedSessions = new Set(
+    retained.flatMap((tab) => (tab.sessionID ? [tab.sessionID] : []))
+  )
+  const releaseSessionIDs = [
+    ...new Set(
+      evicted.flatMap((tab) => (tab.sessionID ? [tab.sessionID] : []))
+    ),
+  ].filter(
     (sessionID) =>
       sessionID !== options.activeSessionID &&
       !options.volumeJobSessionIDs.includes(sessionID) &&
-      !retainedSessions.has(sessionID),
+      !retainedSessions.has(sessionID)
   )
   return { tabs: retained, releaseSessionIDs }
 }
@@ -101,14 +127,16 @@ export function restoreScanTab(
   tabs: ScanTab[],
   tabID: string,
   current: CurrentScanTabState,
-  options: SaveCurrentScanTabOptions,
+  options: SaveCurrentScanTabOptions
 ): RestoreScanTabResult {
   const selected = tabs.find((tab) => tab.id === tabID)
   if (!selected) return { tabs }
 
   const withCurrent = saveCurrentScanTab(tabs, current, options)
   const matchesRestored = (tab: ScanTab) =>
-    selected.sessionID ? tab.sessionID === selected.sessionID : !tab.sessionID && tab.tree === selected.tree
+    selected.sessionID
+      ? tab.sessionID === selected.sessionID
+      : !tab.sessionID && tab.tree === selected.tree
   return {
     tabs: withCurrent.filter((tab) => !matchesRestored(tab)),
     restored: normalizeScanSnapshot(selected, options.os),
@@ -134,7 +162,7 @@ export type CloseScanTabResult = {
 export function closeScanTab(
   tabs: ScanTab[],
   tabID: string,
-  options: CloseScanTabOptions,
+  options: CloseScanTabOptions
 ): CloseScanTabResult {
   const closed = tabs.find((tab) => tab.id === tabID)
   if (!closed) return { tabs }
@@ -154,11 +182,13 @@ export function closeScanTab(
 
 function normalizeScanSnapshot(
   current: CurrentScanTabState | ScanTabSnapshot,
-  os?: DiskOS,
+  os?: DiskOS
 ): ScanTabSnapshot {
   const tree = current.tree
   if (!tree) throw new TypeError("A retained scan requires a tree")
-  const requestedView = current.view ? findNodeInTree(tree, current.view.path, os) : undefined
+  const requestedView = current.view
+    ? findNodeInTree(tree, current.view.path, os)
+    : undefined
   const view = requestedView ?? tree
   const historyCurrent = current.browseHistory.current
   const historyCurrentIsView =
@@ -177,7 +207,10 @@ function normalizeScanSnapshot(
           current: view.path,
           future: [...current.browseHistory.future],
         }
-      : transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, { type: "reset", path: view.path })
+      : transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, {
+          type: "reset",
+          path: view.path,
+        })
 
   return {
     sessionID: current.sessionID,
@@ -215,7 +248,7 @@ export function visibleScanTabCount(input: {
 function findNodeInTree(
   root: DiskScanNode,
   targetPath: string,
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): DiskScanNode | undefined {
   if (diskPathEquals(root.path, targetPath, os)) return root
   for (const child of root.children) {
@@ -234,7 +267,7 @@ export function refreshScanTabsForWatcherUpdate<T extends RetainedScanTab>(
   tabs: readonly T[],
   scanID: string,
   nextTreeForTab: (tab: T) => DiskScanNode,
-  os?: "macos" | "windows" | "linux",
+  os?: "macos" | "windows" | "linux"
 ): T[] {
   let changed = false
   const next = tabs.map((tab) => {

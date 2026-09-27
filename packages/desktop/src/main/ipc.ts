@@ -1,7 +1,8 @@
 import log from "electron-log/main.js"
 import { execFile, spawn } from "node:child_process"
-import { stat } from "node:fs/promises"
-import { join } from "node:path"
+import { access, stat } from "node:fs/promises"
+import { constants } from "node:fs"
+import { dirname, join } from "node:path"
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
 import type { IpcMainEvent, IpcMainInvokeEvent, WebContents } from "electron"
 import type { DesktopMenuAction } from "./desktop-menu"
@@ -23,6 +24,13 @@ import { getStore, removeStoreFileIfEmpty } from "./store"
 import { getPinchZoomEnabled, openExternalURL, setPinchZoomEnabled, setTitlebar, updateTitlebar } from "./windows"
 import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
+
+// `app.getFileIcon` traps the browser process on macOS 27 (SIGTRAP, brk #0)
+// for ordinary directories, not only the boot volume. The picker still lists
+// every volume; it just has no custom icon.
+export function volumeIconLookupAllowed(_path: string, platform = process.platform) {
+  return platform !== "darwin"
+}
 import { nativeT } from "./native-translations"
 
 let deletionHistory: DiskDeletionHistory | undefined
@@ -285,7 +293,9 @@ export function registerIpcHandlers(deps: Deps) {
   handle("disklizard:volume-info", async (_event, target: unknown) => {
     const drive = (await getDrives()).find(drive => drive.path === target)
     if (!drive) return null
-    const icon = await app.getFileIcon(drive.path, { size: "large" }).catch(() => undefined)
+    const icon = volumeIconLookupAllowed(drive.path)
+      ? await app.getFileIcon(drive.path, { size: "large" }).catch(() => undefined)
+      : undefined
     return { icon: icon?.toDataURL(), canEject: process.platform === "darwin" && drive.type === "removable" && drive.path.startsWith("/Volumes/") }
   })
   handle("disklizard:reveal-volume", async (_event, target: unknown) => {
@@ -505,6 +515,17 @@ export function registerIpcHandlers(deps: Deps) {
   handle("disklizard:authorize-delete-paths", (event: IpcMainInvokeEvent, paths: readonly string[]) =>
     diskDeleteAuthorizations.authorize(event.sender.id, paths, assertSafeDeletionPath),
   )
+  handle("disklizard:check-delete-access", async (event: IpcMainInvokeEvent, targetPath: string) => {
+    diskDeleteAuthorizations.assertTrustedPath(event.sender.id, targetPath)
+    await assertSafeDeletionPath(targetPath)
+    try {
+      await access(dirname(targetPath), constants.W_OK)
+      return { state: "likely" as const }
+    } catch (error) {
+      const code = error && typeof error === "object" && "code" in error ? error.code : undefined
+      return { state: code === "EROFS" ? "read-only" as const : code === "EACCES" || code === "EPERM" ? "denied" as const : "unknown" as const }
+    }
+  })
   handle(
     "disklizard:delete-path",
     async (event: IpcMainInvokeEvent, targetPath: string, options: DiskDeleteOptions) => {

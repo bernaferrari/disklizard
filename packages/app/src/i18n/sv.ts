@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Skicka feedback",
   "desktop.menu.reportBug": "Rapportera ett fel",
   "desktop.menu.ariaLabel": "OpenCode-meny",
-  "desktop.updater.dialog.checkFailed.message": "Det gick inte att söka efter uppdateringar.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Det gick inte att söka efter uppdateringar.",
   "desktop.updater.dialog.checkFailed.title": "Uppdateringsfel",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Du har den senaste versionen.",
   "desktop.updater.dialog.upToDate.title": "Inga uppdateringar",
-  "desktop.updater.dialog.ready.message": "Uppdateringen {{version}} har hämtats. Vill du starta om nu?",
+  "desktop.updater.dialog.ready.message":
+    "Uppdateringen {{version}} har hämtats. Vill du starta om nu?",
   "desktop.updater.dialog.ready.title": "Uppdateringen är klar",
   "desktop.updater.dialog.restart": "Starta om",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +65,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode kunde inte läsas in",
   "desktop.recovery.terminated": "OpenCode-fönstret avslutades oväntat",
   "desktop.recovery.unresponsive": "OpenCode svarar inte",
-  "desktop.recovery.unresponsive.detail": "Du kan starta om appen, öppna loggarna eller fortsätta vänta.",
-  "desktop.recovery.loadFailed.detail": "Fönster: {{window}}\nURL: {{url}}\nFel: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Fönster: {{window}}\nOrsak: {{reason}}\nKod: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Du kan starta om appen, öppna loggarna eller fortsätta vänta.",
+  "desktop.recovery.loadFailed.detail":
+    "Fönster: {{window}}\nURL: {{url}}\nFel: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Fönster: {{window}}\nOrsak: {{reason}}\nKod: {{code}}",
   "desktop.recovery.unknown": "<okänd>",
   "desktop.dialog.chooseFolder": "Välj en mapp",
   "desktop.dialog.chooseFile": "Välj en fil",
@@ -73,28 +79,39 @@ export const dict = {
   "desktop.server.local": "Lokal server",
   "desktop.wsl.error.windowsOnly": "WSL är endast tillgängligt i Windows",
   "desktop.wsl.error.unavailable": "WSL är inte tillgängligt",
-  "desktop.wsl.error.listInstalled": "Det gick inte att lista installerade WSL-distributioner",
-  "desktop.wsl.error.listOnline": "Det gick inte att lista tillgängliga WSL-distributioner",
-  "desktop.wsl.error.executeDistro": "Det går inte att köra kommandon i distributionen",
+  "desktop.wsl.error.listInstalled":
+    "Det gick inte att lista installerade WSL-distributioner",
+  "desktop.wsl.error.listOnline":
+    "Det gick inte att lista tillgängliga WSL-distributioner",
+  "desktop.wsl.error.executeDistro":
+    "Det går inte att köra kommandon i distributionen",
   "desktop.wsl.error.installWsl": "Installationen av WSL misslyckades",
-  "desktop.wsl.error.installDistro": "Det gick inte att installera distributionen: {{distro}}",
-  "desktop.wsl.error.installOpencode": "Installationen av OpenCode misslyckades",
+  "desktop.wsl.error.installDistro":
+    "Det gick inte att installera distributionen: {{distro}}",
+  "desktop.wsl.error.installOpencode":
+    "Installationen av OpenCode misslyckades",
   "desktop.wsl.error.alreadyAdded": "{{distro}} har redan lagts till",
-  "desktop.wsl.error.opencodeMissing": "opencode är inte installerat i den här distributionen",
-  "desktop.wsl.error.opencodeCannotRun": "opencode är installerat men kunde inte köras",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode är inte installerat i {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode är inte installerat i den här distributionen",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode är installerat men kunde inte köras",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode är inte installerat i {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode-uppdateringen slutfördes, men {{distro}} rapporterar fortfarande {{installed}}. {{expected}} förväntades",
   "desktop.wsl.error.noVersion": "ingen version",
-  "desktop.wsl.error.serverExited": "WSL-servern avslutades efter start (kod={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL-servern avslutades efter start (kod={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL-servern avslutades innan den blev felfri (kod={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Tidsgränsen för hälsokontrollen av sidoprocessen för {{distro}} överskreds efter {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "Tidsgränsen för {{command}} {{args}} överskreds efter {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "Tidsgränsen för {{command}} {{args}} överskreds efter {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Det gick inte att hämta porten",
   "desktop.picker.error.notSelected": "Ingen fil valdes i filväljaren",
-  "desktop.picker.error.sizeLimit": "De valda bilagorna överskrider gränsen på {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "De valda bilagorna överskrider gränsen på {{limit}} MB",
   "command.category.suggested": "Föreslagna",
   "command.category.view": "Visa",
   "command.category.project": "Projekt",
@@ -141,7 +158,8 @@ export const dict = {
   "command.tab.close": "Stäng fliken",
   "command.tab.reopenClosed": "Öppna stängd flik igen",
   "command.context.addSelection": "Lägg till markering i kontexten",
-  "command.context.addSelection.description": "Lägg till markerade rader från den aktuella filen",
+  "command.context.addSelection.description":
+    "Lägg till markerade rader från den aktuella filen",
   "command.input.focus": "Fokusera inmatningsfältet",
   "command.terminal.toggle": "Växla terminal",
   "command.fileTree.toggle": "Växla filträdet",
@@ -149,9 +167,11 @@ export const dict = {
   "command.terminal.new": "Ny terminal",
   "command.terminal.new.description": "Skapa en ny terminalflik",
   "command.steps.toggle": "Växla steg",
-  "command.steps.toggle.description": "Visa eller dölj steg för det aktuella meddelandet",
+  "command.steps.toggle.description":
+    "Visa eller dölj steg för det aktuella meddelandet",
   "command.message.previous": "Föregående meddelande",
-  "command.message.previous.description": "Gå till föregående användarmeddelande",
+  "command.message.previous.description":
+    "Gå till föregående användarmeddelande",
   "command.message.next": "Nästa meddelande",
   "command.message.next.description": "Gå till nästa användarmeddelande",
   "command.model.choose": "Välj modell",
@@ -167,23 +187,29 @@ export const dict = {
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Autoacceptera behörigheter",
-  "command.permissions.autoaccept.disable": "Sluta att automatiskt acceptera behörigheter",
+  "command.permissions.autoaccept.disable":
+    "Sluta att automatiskt acceptera behörigheter",
   "command.workspace.toggle": "Växla arbetsytor",
-  "command.workspace.toggle.description": "Aktivera eller inaktivera flera arbetsytor i sidofältet",
+  "command.workspace.toggle.description":
+    "Aktivera eller inaktivera flera arbetsytor i sidofältet",
   "command.session.undo": "Ångra",
   "command.session.undo.description": "Ångra det senaste meddelandet",
   "command.session.redo": "Gör om",
   "command.session.redo.description": "Gör om det senaste ångrade meddelandet",
   "command.session.compact": "Komprimera session",
-  "command.session.compact.description": "Sammanfatta sessionen för att minska kontextstorleken",
+  "command.session.compact.description":
+    "Sammanfatta sessionen för att minska kontextstorleken",
   "command.session.fork": "Förgrena från meddelande",
-  "command.session.fork.description": "Skapa en ny session från ett tidigare meddelande",
+  "command.session.fork.description":
+    "Skapa en ny session från ett tidigare meddelande",
   "command.session.share": "Dela session",
-  "command.session.share.description": "Dela den här sessionen och kopiera URL:en till urklipp",
+  "command.session.share.description":
+    "Dela den här sessionen och kopiera URL:en till urklipp",
   "command.session.unshare": "Sluta dela session",
   "command.session.unshare.description": "Sluta dela den här sessionen",
   "command.session.export": "Exportera session",
-  "command.session.export.description": "Exportera hela sessionsutskriften som JSON",
+  "command.session.export.description":
+    "Exportera hela sessionsutskriften som JSON",
 
   "palette.search.placeholder": "Sök efter filer, kommandon och sessioner",
   "palette.search.placeholder.home": "Sök bland kommandon och sessioner",
@@ -196,23 +222,33 @@ export const dict = {
   "dialog.provider.group.other": "Andra",
   "dialog.provider.custom.label": "Anpassad OpenAI-kompatibel leverantör",
   "dialog.provider.tag.recommended": "Rekommenderad",
-  "dialog.provider.opencode.note": "Kurerade modeller inklusive Claude, GPT, Gemini och mer",
+  "dialog.provider.opencode.note":
+    "Kurerade modeller inklusive Claude, GPT, Gemini och mer",
   "dialog.provider.opencode.tagline": "Pålitliga optimerade modeller",
   "dialog.provider.opencodeGo.tagline": "Lågprisprenumeration för alla",
-  "dialog.provider.anthropic.note": "Direkt tillgång till Claude-modeller, inklusive Pro och Max",
-  "dialog.provider.copilot.note": "AI-modeller för kodningshjälp via GitHub Copilot",
-  "dialog.provider.openai.note": "GPT-modeller för snabba, kapabla allmänna AI-uppgifter",
-  "dialog.provider.google.note": "Gemini-modeller för snabba, strukturerade svar",
-  "dialog.provider.openrouter.note": "Få tillgång till alla modeller som stöds från en leverantör",
-  "dialog.provider.vercel.note": "Enhetlig tillgång till AI-modeller med smart routing",
+  "dialog.provider.anthropic.note":
+    "Direkt tillgång till Claude-modeller, inklusive Pro och Max",
+  "dialog.provider.copilot.note":
+    "AI-modeller för kodningshjälp via GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT-modeller för snabba, kapabla allmänna AI-uppgifter",
+  "dialog.provider.google.note":
+    "Gemini-modeller för snabba, strukturerade svar",
+  "dialog.provider.openrouter.note":
+    "Få tillgång till alla modeller som stöds från en leverantör",
+  "dialog.provider.vercel.note":
+    "Enhetlig tillgång till AI-modeller med smart routing",
   "dialog.model.select.title": "Välj modell",
   "dialog.model.search.placeholder": "Sök efter modeller",
   "dialog.model.empty": "Inga modellresultat",
   "dialog.model.manage": "Hantera modeller",
-  "dialog.model.manage.description": "Anpassa vilka modeller som visas i modellväljaren.",
+  "dialog.model.manage.description":
+    "Anpassa vilka modeller som visas i modellväljaren.",
   "dialog.model.manage.provider.toggle": "Växla alla {{provider}}-modeller",
-  "dialog.model.unpaid.freeModels.title": "Gratis modeller tillhandahålls av OpenCode",
-  "dialog.model.unpaid.addMore.title": "Lägg till fler modeller från populära leverantörer",
+  "dialog.model.unpaid.freeModels.title":
+    "Gratis modeller tillhandahålls av OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Lägg till fler modeller från populära leverantörer",
   "dialog.model.unpaid.viewMoreProviders": "Se fler än 70 leverantörer",
   "dialog.provider.viewAll": "Visa fler leverantörer",
   "provider.connect.title": "Anslut {{provider}}",
@@ -250,22 +286,28 @@ export const dict = {
     " och ange koden nedan för att ansluta ditt konto och använda {{provider}}-modeller i OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Bekräftelsekod",
   "provider.connect.toast.connected.title": "{{provider}} ansluten",
-  "provider.connect.toast.connected.description": "{{provider}}-modeller är nu tillgängliga.",
+  "provider.connect.toast.connected.description":
+    "{{provider}}-modeller är nu tillgängliga.",
   "provider.custom.title": "Anpassad leverantör",
-  "provider.custom.unavailable": "Anpassade leverantörer är inte tillgängliga på den här servern",
-  "provider.custom.description.prefix": "Konfigurera en OpenAI-kompatibel leverantör. Se ",
-  "provider.custom.description.link": "dokumentationen om leverantörskonfiguration",
+  "provider.custom.unavailable":
+    "Anpassade leverantörer är inte tillgängliga på den här servern",
+  "provider.custom.description.prefix":
+    "Konfigurera en OpenAI-kompatibel leverantör. Se ",
+  "provider.custom.description.link":
+    "dokumentationen om leverantörskonfiguration",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Leverantörs-ID",
   "provider.custom.field.providerID.placeholder": "minleverantor",
-  "provider.custom.field.providerID.description": "Små bokstäver, siffror, bindestreck eller understreck",
+  "provider.custom.field.providerID.description":
+    "Små bokstäver, siffror, bindestreck eller understreck",
   "provider.custom.field.name.label": "Visningsnamn",
   "provider.custom.field.name.placeholder": "Min AI-leverantör",
   "provider.custom.field.baseURL.label": "Bas-URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API-nyckel",
   "provider.custom.field.apiKey.placeholder": "API-nyckel",
-  "provider.custom.field.apiKey.description": "Valfritt. Lämna tomt om du hanterar autentisering via HTTP-huvuden.",
+  "provider.custom.field.apiKey.description":
+    "Valfritt. Lämna tomt om du hanterar autentisering via HTTP-huvuden.",
   "provider.custom.models.label": "Modeller",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "modell-id",
@@ -281,15 +323,18 @@ export const dict = {
   "provider.custom.headers.remove": "Ta bort HTTP-huvud",
   "provider.custom.headers.add": "Lägg till HTTP-huvud",
   "provider.custom.error.providerID.required": "Leverantörs-ID krävs",
-  "provider.custom.error.providerID.format": "Använd små bokstäver, siffror, bindestreck eller understreck",
+  "provider.custom.error.providerID.format":
+    "Använd små bokstäver, siffror, bindestreck eller understreck",
   "provider.custom.error.providerID.exists": "Det leverantörs-ID:t finns redan",
   "provider.custom.error.name.required": "Visningsnamn krävs",
   "provider.custom.error.baseURL.required": "Bas-URL krävs",
-  "provider.custom.error.baseURL.format": "Måste börja med http:// eller https://",
+  "provider.custom.error.baseURL.format":
+    "Måste börja med http:// eller https://",
   "provider.custom.error.required": "Obligatoriskt",
   "provider.custom.error.duplicate": "Dubblett",
   "provider.disconnect.toast.disconnected.title": "{{provider}} frånkopplad",
-  "provider.disconnect.toast.disconnected.description": "{{provider}}-modeller är inte längre tillgängliga.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}}-modeller är inte längre tillgängliga.",
   "model.tag.free": "Gratis",
   "model.tag.latest": "Senaste",
   "model.provider.anthropic": "Anthropic",
@@ -335,7 +380,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Prompt",
   "prompt.mode.shell.exit": "esc för att avsluta",
-  "session.child.promptDisabled": "Det går inte att skicka promptar till underagentsessioner.",
+  "session.child.promptDisabled":
+    "Det går inte att skicka promptar till underagentsessioner.",
   "session.child.backToParent": "Tillbaka till huvudsessionen.",
   "prompt.example.1": "Fixa en TODO i kodbasen",
   "prompt.example.2": "Vad är den tekniska stacken i det här projektet?",
@@ -383,16 +429,21 @@ export const dict = {
   "prompt.action.send": "Skicka",
   "prompt.action.stop": "Stoppa",
   "prompt.toast.pasteUnsupported.title": "Bilaga som inte stöds",
-  "prompt.toast.pasteUnsupported.description": "Endast bilder, PDF-filer eller textfiler kan bifogas här.",
-  "prompt.toast.attachmentDuplicate.title": "Den här filen har redan laddats upp",
+  "prompt.toast.pasteUnsupported.description":
+    "Endast bilder, PDF-filer eller textfiler kan bifogas här.",
+  "prompt.toast.attachmentDuplicate.title":
+    "Den här filen har redan laddats upp",
   "prompt.toast.modelAgentRequired.title": "Välj en agent och modell",
-  "prompt.toast.modelAgentRequired.description": "Välj en agent och modell innan du skickar en prompt.",
+  "prompt.toast.modelAgentRequired.description":
+    "Välj en agent och modell innan du skickar en prompt.",
   "prompt.toast.worktreeCreateFailed.title": "Det gick inte att skapa worktree",
   "prompt.toast.sessionCreateFailed.title": "Det gick inte att skapa session",
-  "prompt.toast.shellSendFailed.title": "Det gick inte att skicka skalkommandot",
+  "prompt.toast.shellSendFailed.title":
+    "Det gick inte att skicka skalkommandot",
   "prompt.toast.commandSendFailed.title": "Det gick inte att skicka kommandot",
   "prompt.toast.promptSendFailed.title": "Det gick inte att skicka meddelandet",
-  "prompt.toast.promptSendFailed.description": "Det gick inte att hämta sessionen",
+  "prompt.toast.promptSendFailed.description":
+    "Det gick inte att hämta sessionen",
   "dialog.mcp.title": "MCP:er",
   "dialog.mcp.description": "{{enabled}} av {{total}} aktiverade",
   "dialog.mcp.empty": "Inga MCP:er konfigurerade",
@@ -415,7 +466,8 @@ export const dict = {
   "app.server.retrying": "Försöker igen automatiskt...",
   "app.server.otherServers": "Andra servrar",
   "dialog.server.title": "Servrar",
-  "dialog.server.description": "Växla vilken OpenCode-server som denna app ansluter till.",
+  "dialog.server.description":
+    "Växla vilken OpenCode-server som denna app ansluter till.",
   "dialog.server.search.placeholder": "Sök servrar",
   "dialog.server.empty": "Inga servrar ännu",
   "dialog.server.add.title": "Lägg till server",
@@ -453,7 +505,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Välj distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Kontrollerar WSL...",
-  "wsl.onboarding.restartRequired": "Windows behöver en omstart för att slutföra installationen av WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows behöver en omstart för att slutföra installationen av WSL.",
   "wsl.onboarding.ready": "WSL är redo.",
   "wsl.onboarding.required": "WSL krävs för att fortsätta.",
   "wsl.onboarding.checkingDistros": "Kontrollerar distributioner...",
@@ -462,7 +515,8 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Listar distributioner...",
   "wsl.onboarding.distroReady": "{{distro}} är klar.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} är inte installerad än.",
-  "wsl.onboarding.openDistroOnce": "Öppna {{distro}} en gång för att avsluta installationen.",
+  "wsl.onboarding.openDistroOnce":
+    "Öppna {{distro}} en gång för att avsluta installationen.",
   "wsl.onboarding.finishingDistro": "Slutför installationen för {{distro}}.",
   "wsl.onboarding.pickDistro": "Välj en distro eller installera en nedan.",
   "wsl.onboarding.checkingOpencode": "Kontrollerar OpenCode...",
@@ -486,18 +540,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Saknar bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Stöds inte · Använd WSL 2",
   "wsl.onboarding.needAnotherDistro": "Behöver du en annan distro?",
-  "wsl.onboarding.needAnotherDistroHint": "Installera en Linux-distribution från WSL-katalogen",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Installera en Linux-distribution från WSL-katalogen",
   "wsl.onboarding.wslNotInstalled.title": "WSL är inte installerat",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) krävs innan OpenCode kan lägga till en WSL-server",
   "wsl.onboarding.wslUnavailable.title": "WSL är inte tillgängligt",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode kunde inte verifiera WSL på den här maskinen.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode kunde inte verifiera WSL på den här maskinen.",
   "wsl.onboarding.installWsl": "Installera WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Starta om Windows för att slutföra installationen av WSL och öppna sedan OpenCode igen.",
   "wsl.onboarding.next": "Nästa",
   "wsl.onboarding.refresh": "Uppdatera",
-  "wsl.onboarding.allDistrosAdded": "Alla installerade distros har redan lagts till.",
+  "wsl.onboarding.allDistrosAdded":
+    "Alla installerade distros har redan lagts till.",
   "wsl.onboarding.noDistros": "Inga distros har upptäckts ännu.",
   "wsl.onboarding.install": "Installera",
   "wsl.onboarding.installing": "Installerar...",
@@ -511,12 +568,15 @@ export const dict = {
   "wsl.onboarding.version": "Version: {{version}}",
   "wsl.onboarding.unknown": "okänd",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Den installerade versionen matchar inte versionen av skrivbordsappen.",
+  "wsl.onboarding.versionMismatch":
+    "Den installerade versionen matchar inte versionen av skrivbordsappen.",
   "wsl.onboarding.adding": "Lägger till...",
-  "help.tabs.toast.ariaLabel": "Vi presenterar flikar. Ordna ditt arbete och dina aktiva sessioner med flikar",
+  "help.tabs.toast.ariaLabel":
+    "Vi presenterar flikar. Ordna ditt arbete och dina aktiva sessioner med flikar",
   "help.tabs.toast.dismiss": "Stäng informationen om flikar",
   "help.tabs.title": "Vi presenterar flikar",
-  "help.tabs.description": "Ordna ditt arbete och dina aktiva sessioner med flikar",
+  "help.tabs.description":
+    "Ordna ditt arbete och dina aktiva sessioner med flikar",
   "help.tabs.date": "14 juli",
   "help.tabs.introduction": "OpenCode Desktop är nu uppbyggt kring flikar.",
   "help.tabs.sessions":
@@ -525,7 +585,8 @@ export const dict = {
     "Genom att hålla några flikar öppna blir det enklare att ordna dina aktiva sessioner. Byt namn på flikarna till något du kommer ihåg om du tänker behålla dem.",
   "help.tabs.home":
     "Du hittar alla dina sessioner och projekt på den nya hemskärmen. När du väljer en session öppnas den på en flik.",
-  "help.tabs.persistence": "När du öppnar appen igen är dina flikar fortfarande öppna.",
+  "help.tabs.persistence":
+    "När du öppnar appen igen är dina flikar fortfarande öppna.",
   "help.tabs.worktrees":
     "Den nya designen stöder inte Git Worktrees ännu, men stöd kommer snart. Om du föredrar att fortsätta använda den tidigare layouten kan du därför växla mellan layouterna i Inställningar. Tänk bara på att den nya layouten blir permanent om några veckor.",
   "server.row.noUsername": "inget användarnamn",
@@ -538,7 +599,8 @@ export const dict = {
   "dialog.project.edit.color": "Färg",
   "dialog.project.edit.color.select": "Välj färgen {{color}}",
   "dialog.project.edit.worktree.startup": "Startskript för arbetsyta",
-  "dialog.project.edit.worktree.startup.description": "Körs efter att en ny arbetsyta (worktree) har skapats.",
+  "dialog.project.edit.worktree.startup.description":
+    "Körs efter att en ny arbetsyta (worktree) har skapats.",
   "dialog.project.edit.worktree.startup.placeholder": "t.ex. bun install",
   "dialog.releaseNotes.action.getStarted": "Kom igång",
   "dialog.releaseNotes.action.next": "Nästa",
@@ -602,50 +664,73 @@ export const dict = {
   "toast.theme.title": "Tema har bytts",
   "toast.scheme.title": "Färgschema",
   "toast.workspace.enabled.title": "Arbetsytor aktiverade",
-  "toast.workspace.enabled.description": "Flera worktrees visas nu i sidofältet",
+  "toast.workspace.enabled.description":
+    "Flera worktrees visas nu i sidofältet",
   "toast.workspace.disabled.title": "Arbetsytor inaktiverade",
-  "toast.workspace.disabled.description": "Endast huvudworktreen visas i sidofältet",
+  "toast.workspace.disabled.description":
+    "Endast huvudworktreen visas i sidofältet",
   "toast.permissions.autoaccept.on.title": "Autoaccepterar behörigheter",
-  "toast.permissions.autoaccept.on.description": "Behörighetsförfrågningar kommer att godkännas automatiskt",
-  "toast.permissions.autoaccept.off.title": "Slutade att automatiskt acceptera behörigheter",
-  "toast.permissions.autoaccept.off.description": "Behörighetsförfrågningar kommer att kräva godkännande",
+  "toast.permissions.autoaccept.on.description":
+    "Behörighetsförfrågningar kommer att godkännas automatiskt",
+  "toast.permissions.autoaccept.off.title":
+    "Slutade att automatiskt acceptera behörigheter",
+  "toast.permissions.autoaccept.off.description":
+    "Behörighetsförfrågningar kommer att kräva godkännande",
   "toast.model.none.title": "Ingen modell har valts",
-  "toast.model.none.description": "Anslut en leverantör för att sammanfatta denna session",
+  "toast.model.none.description":
+    "Anslut en leverantör för att sammanfatta denna session",
   "toast.file.loadFailed.title": "Det gick inte att ladda filen",
   "toast.file.listFailed.title": "Det gick inte att lista filer",
   "toast.context.noLineSelection.title": "Inget radval",
-  "toast.context.noLineSelection.description": "Välj ett radintervall på en filflik först.",
-  "toast.session.share.copyFailed.title": "Det gick inte att kopiera URL till urklipp",
+  "toast.context.noLineSelection.description":
+    "Välj ett radintervall på en filflik först.",
+  "toast.session.share.copyFailed.title":
+    "Det gick inte att kopiera URL till urklipp",
   "toast.session.share.success.title": "Sessionen har delats",
-  "toast.session.share.success.description": "Delningsadressen har kopierats till urklipp!",
+  "toast.session.share.success.description":
+    "Delningsadressen har kopierats till urklipp!",
   "toast.session.share.failed.title": "Det gick inte att dela sessionen",
-  "toast.session.share.failed.description": "Ett fel uppstod när sessionen delades",
+  "toast.session.share.failed.description":
+    "Ett fel uppstod när sessionen delades",
   "toast.session.unshare.success.title": "Sessionen delas inte längre",
-  "toast.session.unshare.success.description": "Delningen av sessionen har avslutats!",
+  "toast.session.unshare.success.description":
+    "Delningen av sessionen har avslutats!",
   "toast.session.unshare.failed.title": "Det gick inte att avsluta delningen",
-  "toast.session.unshare.failed.description": "Ett fel uppstod när delningen skulle avslutas",
+  "toast.session.unshare.failed.description":
+    "Ett fel uppstod när delningen skulle avslutas",
   "toast.session.export.success.title": "Session exporterad",
-  "toast.session.export.success.description": "Sessionen sparades i {{filename}}",
+  "toast.session.export.success.description":
+    "Sessionen sparades i {{filename}}",
   "toast.session.export.failed.title": "Det gick inte att exportera sessionen",
-  "toast.session.export.failed.description": "Ett fel uppstod när sessionen exporterades",
+  "toast.session.export.failed.description":
+    "Ett fel uppstod när sessionen exporterades",
 
-  "toast.session.listFailed.title": "Det gick inte att läsa in sessioner för {{project}}",
+  "toast.session.listFailed.title":
+    "Det gick inte att läsa in sessioner för {{project}}",
   "toast.project.reloadFailed.title": "Det gick inte att ladda om {{project}}",
   "toast.update.title": "Uppdatering tillgänglig",
-  "toast.update.description": "En ny version av OpenCode ({{version}}) är nu tillgänglig att installera.",
+  "toast.update.description":
+    "En ny version av OpenCode ({{version}}) är nu tillgänglig att installera.",
   "toast.update.action.installRestart": "Installera och starta om",
   "toast.update.action.notYet": "Inte än",
-  "disk.accessGuidance.macos": "Ge DiskLizard Fullständig diskåtkomst i Systeminställningar och skanna igen.",
-  "disk.accessGuidance.windows": "Använd ett konto med åtkomst till den här disken, eller skanna en mapp som ditt konto kan läsa.",
-  "disk.accessGuidance.linux": "Kontrollera behörigheterna för mappar och monteringar och skanna igen.",
-  "disk.accessGuidance.default": "Kontrollera åtkomsten till de här mapparna och skanna igen.",
-  "disk.accessGuidance.rescan": "Använd Skanna igen i fältet högst upp när du har ändrat åtkomst.",
+  "disk.accessGuidance.macos":
+    "Ge DiskLizard Fullständig diskåtkomst i Systeminställningar och skanna igen.",
+  "disk.accessGuidance.windows":
+    "Använd ett konto med åtkomst till den här disken, eller skanna en mapp som ditt konto kan läsa.",
+  "disk.accessGuidance.linux":
+    "Kontrollera behörigheterna för mappar och monteringar och skanna igen.",
+  "disk.accessGuidance.default":
+    "Kontrollera åtkomsten till de här mapparna och skanna igen.",
+  "disk.accessGuidance.rescan":
+    "Använd Skanna igen i fältet högst upp när du har ändrat åtkomst.",
   "disk.common.rescan": "Skanna igen",
-  "toast.update.installFailed.title": "Det gick inte att installera uppdateringen",
+  "toast.update.installFailed.title":
+    "Det gick inte att installera uppdateringen",
   "toast.update.installFailed.retry": "Försök igen",
   "error.page.title": "Något gick fel",
   "error.page.description": "Ett fel uppstod när programmet laddades.",
-  "error.page.description.localServerStartup": "Ett fel uppstod vid start av den lokala servern.",
+  "error.page.description.localServerStartup":
+    "Ett fel uppstod vid start av den lokala servern.",
   "error.page.details.label": "Feldetaljer",
   "error.page.action.restart": "Starta om",
   "error.page.action.report": "Rapportera fel",
@@ -660,12 +745,16 @@ export const dict = {
   "error.page.version": "Version: {{version}}",
   "error.dev.rootNotFound":
     "Rotelementet hittades inte. Har du glömt att lägga till det i din index.html? Eller kanske id-attributet är felstavat?",
-  "error.serverSync.connectFailed": "Kunde inte ansluta till servern. Körs det en server på `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Kunde inte ansluta till servern. Körs det en server på `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Ingen server tillgänglig",
   "error.serverSDK.serverNotAvailable": "Servern är inte tillgänglig",
-  "error.childStore.persistedCacheCreateFailed": "Det gick inte att skapa beständig cache",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Det gick inte att skapa beständig projektmetadata",
-  "error.childStore.persistedProjectIconCreateFailed": "Det gick inte att skapa en beständig projektikon",
+  "error.childStore.persistedCacheCreateFailed":
+    "Det gick inte att skapa beständig cache",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Det gick inte att skapa beständig projektmetadata",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Det gick inte att skapa en beständig projektikon",
   "error.childStore.storeCreateFailed": "Det gick inte att skapa lagring",
   "directory.error.invalidUrl": "Ogiltig katalog i URL.",
   "error.chain.unknown": "Okänt fel",
@@ -677,22 +766,31 @@ export const dict = {
   "error.chain.responseBody": "Svarstext:\n{{body}}",
   "error.chain.didYouMean": "Menade du: {{suggestions}}",
   "error.chain.modelNotFound": "Modellen hittades inte: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Kontrollera leverantörs- och modellnamnen i konfigurationen (opencode.json)",
-  "error.chain.mcpFailed": 'MCP-servern "{{name}}" misslyckades. Obs, OpenCode stöder inte MCP-autentisering ännu.',
-  "error.chain.providerAuthFailed": "Leverantörsautentisering misslyckades ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Kontrollera leverantörs- och modellnamnen i konfigurationen (opencode.json)",
+  "error.chain.mcpFailed":
+    'MCP-servern "{{name}}" misslyckades. Obs, OpenCode stöder inte MCP-autentisering ännu.',
+  "error.chain.providerAuthFailed":
+    "Leverantörsautentisering misslyckades ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Det gick inte att initiera leverantören "{{provider}}". Kontrollera autentiseringsuppgifter och konfiguration.',
-  "error.chain.configJsonInvalid": "Konfigurationsfilen på {{path}} är inte giltig JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurationsfilen på {{path}} är inte giltig JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfigurationsfilen på {{path}} är inte giltig JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurationsfilen på {{path}} är inte giltig JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Katalogen "{{dir}}" i {{path}} är inte giltig. Byt namn på katalogen till "{{suggestion}}" eller ta bort den. Detta är ett vanligt stavfel.',
-  "error.chain.configFrontmatterError": "Det gick inte att analysera frontmatter i {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Det gick inte att analysera frontmatter i {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Konfigurationsfilen på {{path}} är ogiltig",
-  "error.chain.configInvalidWithMessage": "Konfigurationsfilen på {{path}} är ogiltig: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigurationsfilen på {{path}} är ogiltig: {{message}}",
   "notification.permission.title": "Behörighet krävs",
-  "notification.permission.description": "{{sessionTitle}} i {{projectName}} behöver behörighet",
+  "notification.permission.description":
+    "{{sessionTitle}} i {{projectName}} behöver behörighet",
   "notification.question.title": "Fråga",
-  "notification.question.description": "{{sessionTitle}} i {{projectName}} har en fråga",
+  "notification.question.description":
+    "{{sessionTitle}} i {{projectName}} har en fråga",
   "notification.action.goToSession": "Gå till session",
   "notification.session.responseReady.title": "Svar redo",
   "notification.session.error.title": "Sessionsfel",
@@ -715,30 +813,36 @@ export const dict = {
   "home.sessions.group.today": "I dag",
   "home.sessions.group.yesterday": "I går",
   "home.sessions.group.older": "Äldre",
-  "home.providerTip": "Anslut till 75+ leverantörer för att använda andra modeller, inklusive Claude, GPT, Gemini, etc",
+  "home.providerTip":
+    "Anslut till 75+ leverantörer för att använda andra modeller, inklusive Claude, GPT, Gemini, etc",
   "session.tab.session": "Session",
   "session.tab.review": "Granskning",
   "session.tab.context": "Kontext",
   "session.tab.unknown": "Okänd session",
   "session.panel.reviewAndFiles": "Granskning och filer",
   "session.error.notFound": "Denna session kan inte hittas",
-  "session.error.notFound.description": "Den här fliken pekar på en session som inte längre finns på den här servern.",
+  "session.error.notFound.description":
+    "Den här fliken pekar på en session som inte längre finns på den här servern.",
   "session.error.notFound.closeTab": "Stäng flik",
-  "session.error.serverConnection": "Det går inte att ansluta till den här servern",
+  "session.error.serverConnection":
+    "Det går inte att ansluta till den här servern",
   "session.review.filesChanged": "Ändrade filer: {{count}}",
   "session.review.change.one": "Ändring",
   "session.review.change.other": "Ändringar",
   "session.review.loadingChanges": "Läser in ändringar...",
   "session.review.empty": "Inga ändringar i denna session ännu",
-  "session.review.noVcs": "Inget Git-versionskontrollsystem upptäcktes, ändringar visas inte",
+  "session.review.noVcs":
+    "Inget Git-versionskontrollsystem upptäcktes, ändringar visas inte",
   "session.review.noVcs.createGit.title": "Skapa ett Git-arkiv",
-  "session.review.noVcs.createGit.description": "Spåra, granska och ångra ändringar i det här projektet",
+  "session.review.noVcs.createGit.description":
+    "Spåra, granska och ångra ändringar i det här projektet",
   "session.review.noVcs.createGit.actionLoading": "Skapar Git-arkiv...",
   "session.review.noVcs.createGit.action": "Skapa Git-arkiv",
   "session.review.noSnapshot":
     "Spårning av ögonblicksbilder är inaktiverad i konfigurationen, så sessionsändringar är inte tillgängliga",
   "session.review.noChanges": "Inga ändringar",
-  "session.review.noUncommittedChanges": "Inga ändringar som inte har checkats in ännu",
+  "session.review.noUncommittedChanges":
+    "Inga ändringar som inte har checkats in ännu",
   "session.review.noBranchChanges": "Inga grenändringar ännu",
   "session.files.selectToOpen": "Välj en fil att öppna",
   "session.files.all": "Alla filer",
@@ -837,11 +941,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Stäng terminalen",
   "terminal.connectionLost.title": "Anslutning förlorad",
-  "terminal.connectionLost.abnormalClose": "WebSocket stängdes onormalt: {{code}}",
-  "terminal.connectionLost.description": "Terminalanslutningen avbröts. Detta kan hända när servern startar om.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket stängdes onormalt: {{code}}",
+  "terminal.connectionLost.description":
+    "Terminalanslutningen avbröts. Detta kan hända när servern startar om.",
   "terminal.connectTicket.csrfError":
     "PTY-anslutningsbiljetten avvisades vid ursprungs- eller CSRF-kontrollen. Kontrollera serverns CORS-konfiguration.",
-  "terminal.connectTicket.statusError": "PTY-anslutningsbiljetten misslyckades med status {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY-anslutningsbiljetten misslyckades med status {{status}}",
   "titlebar.update": "Uppdatera",
   "titlebar.updateVersion": "Uppdatera {{version}}",
   "common.closeTab": "Stäng fliken",
@@ -885,8 +992,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktivera arbetsytor",
   "sidebar.workspaces.disable": "Inaktivera arbetsytor",
   "sidebar.gettingStarted.title": "Kom igång",
-  "sidebar.gettingStarted.line1": "OpenCode innehåller gratis modeller så att du kan börja direkt.",
-  "sidebar.gettingStarted.line2": "Anslut valfri leverantör för att använda modeller, inkl. Claude, GPT, Gemini etc.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode innehåller gratis modeller så att du kan börja direkt.",
+  "sidebar.gettingStarted.line2":
+    "Anslut valfri leverantör för att använda modeller, inkl. Claude, GPT, Gemini etc.",
   "sidebar.project.recentSessions": "Senaste sessioner",
   "sidebar.project.viewAllSessions": "Se alla sessioner",
   "sidebar.project.clearNotifications": "Rensa aviseringar",
@@ -898,7 +1007,8 @@ export const dict = {
   "debugBar.nav.tip":
     "Senast slutförda ruttövergång som berör en sessionssida, mätt från routerns start till första bildrutans rendering efter att övergången har slutförts.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Rullande bilder per sekund under de senaste 5 sekunderna.",
+  "debugBar.fps.tip":
+    "Rullande bilder per sekund under de senaste 5 sekunderna.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Sämsta bildtid under de senaste 5 sekunderna.",
   "debugBar.jank.label": "JANK",
@@ -907,21 +1017,26 @@ export const dict = {
   "debugBar.long.tip":
     "Blockerad tid och antal långa uppgifter under de senaste 5 sekunderna. Längsta uppgift: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Längsta observerade inmatningsfördröjning under de senaste 5 sekunderna.",
+  "debugBar.delay.tip":
+    "Längsta observerade inmatningsfördröjning under de senaste 5 sekunderna.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Ungefärlig interaktionslängd under de senaste 5 sekunderna. Detta är INP-liknande, inte den officiella Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kumulativ layoutförskjutning för den aktuella appens livslängd.",
+  "debugBar.cls.tip":
+    "Kumulativ layoutförskjutning för den aktuella appens livslängd.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Använd JS-heap jämfört med heapgränsen. Endast Chromium.",
-  "debugBar.mem.tip": "Använd JS-heap jämfört med heapgränsen. {{used}} av {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Använd JS-heap jämfört med heapgränsen. Endast Chromium.",
+  "debugBar.mem.tip":
+    "Använd JS-heap jämfört med heapgränsen. {{used}} av {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Tvinga fram fokusstilar på alla interaktiva element",
   "debugBar.focus.on": "PÅ",
   "debugBar.focus.off": "AV",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Tvinga fram hela appens layoutriktning utan att ändra valt språk",
+  "debugBar.direction.tip":
+    "Tvinga fram hela appens layoutriktning utan att ändra valt språk",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -931,7 +1046,8 @@ export const dict = {
   "settings.tab.shortcuts": "Kortkommandon",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL-integration",
-  "settings.desktop.wsl.description": "Kör OpenCode-servern inuti WSL på Windows.",
+  "settings.desktop.wsl.description":
+    "Kör OpenCode-servern inuti WSL på Windows.",
   "settings.general.section.appearance": "Utseende",
   "settings.general.section.advanced": "Avancerat",
   "settings.general.section.notifications": "Systemaviseringar",
@@ -940,49 +1056,66 @@ export const dict = {
   "settings.general.section.feed": "Flöde",
   "settings.general.section.display": "Visning",
   "settings.general.row.language.title": "Språk",
-  "settings.general.row.language.description": "Ändra visningsspråket för OpenCode",
+  "settings.general.row.language.description":
+    "Ändra visningsspråket för OpenCode",
   "settings.general.row.shell.title": "Terminalskal",
-  "settings.general.row.shell.description": "Skal som används av terminalen och agentverktygen",
+  "settings.general.row.shell.description":
+    "Skal som används av terminalen och agentverktygen",
   "settings.general.row.shell.autoDefault": "Auto (standard)",
   "settings.general.row.shell.terminalOnly": "endast terminal",
   "settings.general.row.appearance.title": "Utseende",
-  "settings.general.row.appearance.description": "Anpassa hur OpenCode ser ut på din enhet",
+  "settings.general.row.appearance.description":
+    "Anpassa hur OpenCode ser ut på din enhet",
   "settings.general.row.colorScheme.title": "Färgschema",
-  "settings.general.row.colorScheme.description": "Välj om OpenCode följer system-, ljus- eller mörktemat",
+  "settings.general.row.colorScheme.description":
+    "Välj om OpenCode följer system-, ljus- eller mörktemat",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Anpassa OpenCodes tema.",
   "settings.general.row.font.title": "Kodtypsnitt",
-  "settings.general.row.font.description": "Anpassa teckensnittet som används i kodblock",
+  "settings.general.row.font.description":
+    "Anpassa teckensnittet som används i kodblock",
   "settings.general.row.terminalFont.title": "Terminaltypsnitt",
-  "settings.general.row.terminalFont.description": "Anpassa teckensnittet som används i terminalen",
+  "settings.general.row.terminalFont.description":
+    "Anpassa teckensnittet som används i terminalen",
   "settings.general.row.uiFont.title": "UI-teckensnitt",
-  "settings.general.row.uiFont.description": "Anpassa typsnittet som används i hela gränssnittet",
+  "settings.general.row.uiFont.description":
+    "Anpassa typsnittet som används i hela gränssnittet",
   "settings.general.row.followup.title": "Uppföljningsbeteende",
-  "settings.general.row.followup.description": "Välj om uppföljningsmeddelanden ska styra direkt eller vänta i kö",
+  "settings.general.row.followup.description":
+    "Välj om uppföljningsmeddelanden ska styra direkt eller vänta i kö",
   "settings.general.row.followup.option.queue": "Kö",
   "settings.general.row.followup.option.steer": "Styr",
   "settings.general.row.showFileTree.title": "Filträd",
-  "settings.general.row.showFileTree.description": "Visa filträdspanelen i sessioner",
+  "settings.general.row.showFileTree.description":
+    "Visa filträdspanelen i sessioner",
   "settings.general.row.showNavigation.title": "Navigationskontroller",
-  "settings.general.row.showNavigation.description": "Visa bakåt- och framåtknapparna i skrivbordets namnlist",
+  "settings.general.row.showNavigation.description":
+    "Visa bakåt- och framåtknapparna i skrivbordets namnlist",
   "settings.general.row.showSearch.title": "Kommandopalett",
-  "settings.general.row.showSearch.description": "Visa sök- och kommandopalettens knapp i namnlisten",
+  "settings.general.row.showSearch.description":
+    "Visa sök- och kommandopalettens knapp i namnlisten",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Visa terminalknappen i skrivbordets namnlist",
+  "settings.general.row.showTerminal.description":
+    "Visa terminalknappen i skrivbordets namnlist",
   "settings.general.row.showStatus.title": "Serverstatus",
-  "settings.general.row.showStatus.description": "Visa serverstatusknappen i namnlisten",
+  "settings.general.row.showStatus.description":
+    "Visa serverstatusknappen i namnlisten",
   "settings.general.row.mobileTitlebarBottom.title": "Bottennavigering",
   "settings.general.row.mobileTitlebarBottom.description":
     "Placera titelfältet och sessionsflikarna längst ned på skärmen på mobilen",
   "settings.general.row.showCustomAgents.title": "Visa agent",
   "settings.general.row.showCustomAgents.description":
     "Växla mellan agenter i inmatningsfältet. När alternativet är dolt används agenten Bygg som standard.",
-  "settings.general.row.reasoningSummaries.title": "Visa resonemangssammanfattningar",
-  "settings.general.row.reasoningSummaries.description": "Visa modellresonemangssammanfattningar i tidslinjen",
-  "settings.general.row.shellToolPartsExpanded.title": "Expandera skalverktygsdelar",
+  "settings.general.row.reasoningSummaries.title":
+    "Visa resonemangssammanfattningar",
+  "settings.general.row.reasoningSummaries.description":
+    "Visa modellresonemangssammanfattningar i tidslinjen",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Expandera skalverktygsdelar",
   "settings.general.row.shellToolPartsExpanded.description":
     "Visa skalverktygsdelar expanderade som standard på tidslinjen",
-  "settings.general.row.editToolPartsExpanded.title": "Fäll ut delar för redigeringsverktyg",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Fäll ut delar för redigeringsverktyg",
   "settings.general.row.editToolPartsExpanded.description":
     "Visa delar för redigerings-, skriv- och patchverktyg utfällda som standard i tidslinjen",
   "settings.general.row.newInterface.title": "Ny layout",
@@ -990,26 +1123,33 @@ export const dict = {
   "settings.general.row.newInterface.description":
     "Använd de nya flikarna och hemlayouten. Växla mellan layouter under en begränsad tid.",
   "settings.general.row.newInterfaceNotice.title": "Du använder nu ny layout",
-  "settings.general.row.newInterfaceNotice.description": "Den tidigare layouten är inte längre tillgänglig",
+  "settings.general.row.newInterfaceNotice.description":
+    "Den tidigare layouten är inte längre tillgänglig",
   "settings.general.row.newInterfaceNotice.dismiss": "Avfärda",
   "settings.general.row.pinchZoom.title": "Nyp för att zooma",
-  "settings.general.row.pinchZoom.description": "Tillåt nypgester på styrplattan och Ctrl-rullning för att zooma",
+  "settings.general.row.pinchZoom.description":
+    "Tillåt nypgester på styrplattan och Ctrl-rullning för att zooma",
   "settings.general.row.wayland.title": "Använd inbyggt Wayland-stöd",
-  "settings.general.row.wayland.description": "Inaktivera X11-reservläget på Wayland. Kräver omstart.",
+  "settings.general.row.wayland.description":
+    "Inaktivera X11-reservläget på Wayland. Kräver omstart.",
   "settings.general.row.wayland.tooltip":
     "På Linux med skärmar som har olika uppdateringsfrekvens kan inbyggt Wayland-stöd vara stabilare.",
   "settings.general.row.releaseNotes.title": "Versionsinformation",
-  "settings.general.row.releaseNotes.description": "Visa popup-fönster för vad som är nytt efter uppdateringar",
+  "settings.general.row.releaseNotes.description":
+    "Visa popup-fönster för vad som är nytt efter uppdateringar",
   "settings.updates.row.startup.title": "Sök efter uppdateringar vid start",
-  "settings.updates.row.startup.description": "Sök automatiskt efter uppdateringar när OpenCode startas",
+  "settings.updates.row.startup.description":
+    "Sök automatiskt efter uppdateringar när OpenCode startas",
   "settings.updates.row.check.title": "Sök efter uppdateringar",
-  "settings.updates.row.check.description": "Sök manuellt efter uppdateringar och installera dem om de är tillgängliga",
+  "settings.updates.row.check.description":
+    "Sök manuellt efter uppdateringar och installera dem om de är tillgängliga",
   "settings.updates.action.checkNow": "Kontrollera nu",
   "settings.updates.action.checking": "Kontrollerar...",
   "settings.updates.action.downloading": "Laddar ned...",
   "settings.updates.action.installing": "Installerar...",
   "settings.updates.toast.latest.title": "Du är uppdaterad",
-  "settings.updates.toast.latest.description": "Du kör den senaste versionen av OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Du kör den senaste versionen av OpenCode.",
   "sound.option.none": "Inget",
   "sound.option.alert01": "Varning 01",
   "sound.option.alert02": "Varning 02",
@@ -1060,21 +1200,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Visa en systemavisering när agenten är klar eller behöver uppmärksamhet",
   "settings.general.notifications.permissions.title": "Behörigheter",
-  "settings.general.notifications.permissions.description": "Visa systemavisering när en behörighet krävs",
+  "settings.general.notifications.permissions.description":
+    "Visa systemavisering när en behörighet krävs",
   "settings.general.notifications.errors.title": "Fel",
-  "settings.general.notifications.errors.description": "Visa systemavisering när ett fel uppstår",
+  "settings.general.notifications.errors.description":
+    "Visa systemavisering när ett fel uppstår",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Spela upp ett ljud när agenten är klar eller behöver uppmärksamhet",
+  "settings.general.sounds.agent.description":
+    "Spela upp ett ljud när agenten är klar eller behöver uppmärksamhet",
   "settings.general.sounds.permissions.title": "Behörigheter",
-  "settings.general.sounds.permissions.description": "Spela upp ett ljud när en behörighet krävs",
+  "settings.general.sounds.permissions.description":
+    "Spela upp ett ljud när en behörighet krävs",
   "settings.general.sounds.errors.title": "Fel",
-  "settings.general.sounds.errors.description": "Spela upp ljud när ett fel uppstår",
+  "settings.general.sounds.errors.description":
+    "Spela upp ljud när ett fel uppstår",
   "settings.shortcuts.title": "Kortkommandon",
   "settings.shortcuts.reset.button": "Återställ till standardinställningar",
   "settings.shortcuts.reset.toast.title": "Kortkommandon återställda",
-  "settings.shortcuts.reset.toast.description": "Kortkommandon har återställts till standardinställningarna.",
+  "settings.shortcuts.reset.toast.description":
+    "Kortkommandon har återställts till standardinställningarna.",
   "settings.shortcuts.conflict.title": "Kortkommandot används redan",
-  "settings.shortcuts.conflict.description": "{{keybind}} är redan tilldelat till {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} är redan tilldelat till {{titles}}.",
   "settings.shortcuts.unassigned": "Otilldelad",
   "settings.shortcuts.pressKeys": "Tryck på tangenter",
   "settings.shortcuts.search.placeholder": "Sök kortkommandon",
@@ -1086,39 +1233,51 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Prompt",
   "settings.providers.title": "Leverantörer",
-  "settings.providers.description": "Leverantörsinställningar kommer att kunna konfigureras här.",
+  "settings.providers.description":
+    "Leverantörsinställningar kommer att kunna konfigureras här.",
   "settings.providers.section.connected": "Anslutna leverantörer",
   "settings.providers.connected.empty": "Inga anslutna leverantörer",
-  "settings.providers.connected.environmentDescription": "Anslutna via dina miljövariabler",
+  "settings.providers.connected.environmentDescription":
+    "Anslutna via dina miljövariabler",
   "settings.providers.section.popular": "Populära leverantörer",
-  "settings.providers.custom.description": "Lägg till en OpenAI-kompatibel leverantör genom bas-URL.",
+  "settings.providers.custom.description":
+    "Lägg till en OpenAI-kompatibel leverantör genom bas-URL.",
   "settings.providers.tag.environment": "Miljö",
   "settings.providers.tag.config": "Konfiguration",
   "settings.providers.tag.custom": "Anpassad",
   "settings.providers.tag.other": "Övrigt",
   "settings.models.title": "Modeller",
-  "settings.models.description": "Modellinställningar kommer att kunna konfigureras här.",
+  "settings.models.description":
+    "Modellinställningar kommer att kunna konfigureras här.",
   "settings.agents.title": "Agenter",
-  "settings.agents.description": "Agentinställningar kommer att kunna konfigureras här.",
+  "settings.agents.description":
+    "Agentinställningar kommer att kunna konfigureras här.",
   "settings.commands.title": "Kommandon",
-  "settings.commands.description": "Kommandoinställningarna kommer att kunna konfigureras här.",
+  "settings.commands.description":
+    "Kommandoinställningarna kommer att kunna konfigureras här.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "MCP-inställningar kommer att kunna konfigureras här.",
+  "settings.mcp.description":
+    "MCP-inställningar kommer att kunna konfigureras här.",
   "settings.permissions.title": "Behörigheter",
-  "settings.permissions.description": "Kontrollera vilka verktyg servern kan använda som standard.",
+  "settings.permissions.description":
+    "Kontrollera vilka verktyg servern kan använda som standard.",
   "settings.permissions.section.tools": "Verktyg",
-  "settings.permissions.toast.updateFailed.title": "Det gick inte att uppdatera behörigheter",
+  "settings.permissions.toast.updateFailed.title":
+    "Det gick inte att uppdatera behörigheter",
   "settings.permissions.action.allow": "Tillåt",
   "settings.permissions.action.ask": "Fråga",
   "settings.permissions.action.deny": "Neka",
   "settings.permissions.tool.read.title": "Läs",
-  "settings.permissions.tool.read.description": "Läsa en fil (matchar filsökvägen)",
+  "settings.permissions.tool.read.description":
+    "Läsa en fil (matchar filsökvägen)",
   "settings.permissions.tool.edit.title": "Redigera",
-  "settings.permissions.tool.edit.description": "Ändra filer, inklusive redigeringar, skrivningar och patchar",
+  "settings.permissions.tool.edit.description":
+    "Ändra filer, inklusive redigeringar, skrivningar och patchar",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "Matcha filer med globmönster",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Sök filinnehåll med hjälp av reguljära uttryck",
+  "settings.permissions.tool.grep.description":
+    "Sök filinnehåll med hjälp av reguljära uttryck",
   "settings.permissions.tool.list.title": "Lista",
   "settings.permissions.tool.list.description": "Lista filer i en katalog",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1126,19 +1285,24 @@ export const dict = {
   "settings.permissions.tool.task.title": "Uppgift",
   "settings.permissions.tool.task.description": "Starta underagenter",
   "settings.permissions.tool.skill.title": "Färdighet",
-  "settings.permissions.tool.skill.description": "Ladda en färdighet efter namn",
+  "settings.permissions.tool.skill.description":
+    "Ladda en färdighet efter namn",
   "settings.permissions.tool.lsp.title": "LSP",
   "settings.permissions.tool.lsp.description": "Kör språkserverfrågor",
   "settings.permissions.tool.todowrite.title": "Skriv att göra-lista",
-  "settings.permissions.tool.todowrite.description": "Uppdatera att göra-listan",
+  "settings.permissions.tool.todowrite.description":
+    "Uppdatera att göra-listan",
   "settings.permissions.tool.webfetch.title": "Webbhämtning",
-  "settings.permissions.tool.webfetch.description": "Hämta innehåll från en URL",
+  "settings.permissions.tool.webfetch.description":
+    "Hämta innehåll från en URL",
   "settings.permissions.tool.websearch.title": "Webbsökning",
   "settings.permissions.tool.websearch.description": "Sök på webben",
   "settings.permissions.tool.external_directory.title": "Extern katalog",
-  "settings.permissions.tool.external_directory.description": "Få åtkomst till filer utanför projektkatalogen",
+  "settings.permissions.tool.external_directory.description":
+    "Få åtkomst till filer utanför projektkatalogen",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Upptäck upprepade verktygsanrop med identiska indata",
+  "settings.permissions.tool.doom_loop.description":
+    "Upptäck upprepade verktygsanrop med identiska indata",
   "session.delete.failed.title": "Det gick inte att ta bort sessionen",
   "session.delete.title": "Ta bort session",
   "session.delete.confirm": 'Ta bort session "{{name}}"?',
@@ -1152,20 +1316,24 @@ export const dict = {
   "workspace.resetting.description": "Detta kan ta en minut.",
   "workspace.reset.failed.title": "Det gick inte att återställa arbetsytan",
   "workspace.reset.success.title": "Arbetsytan har återställts",
-  "workspace.reset.success.description": "Arbetsytan matchar nu standardgrenen.",
+  "workspace.reset.success.description":
+    "Arbetsytan matchar nu standardgrenen.",
   "workspace.error.stillPreparing": "Arbetsytan förbereds fortfarande",
   "workspace.status.checking": "Söker efter osammanslagna ändringar...",
   "workspace.status.error": "Det gick inte att verifiera git-status.",
   "workspace.status.clean": "Inga osammanslagna ändringar upptäcktes.",
-  "workspace.status.dirty": "Osammanslagna ändringar upptäcktes i den här arbetsytan.",
+  "workspace.status.dirty":
+    "Osammanslagna ändringar upptäcktes i den här arbetsytan.",
   "workspace.delete.title": "Ta bort arbetsyta",
   "workspace.delete.confirm": 'Ta bort arbetsytan "{{name}}"?',
   "workspace.delete.button": "Ta bort arbetsyta",
   "workspace.reset.title": "Återställ arbetsytan",
   "workspace.reset.confirm": 'Återställa arbetsytan "{{name}}"?',
   "workspace.reset.button": "Återställ arbetsytan",
-  "workspace.reset.archived.none": "Inga aktiva sessioner kommer att arkiveras.",
+  "workspace.reset.archived.none":
+    "Inga aktiva sessioner kommer att arkiveras.",
   "workspace.reset.archived.one": "1 session kommer att arkiveras.",
   "workspace.reset.archived.many": "{{count}} sessioner kommer att arkiveras.",
-  "workspace.reset.note": "Detta kommer att återställa arbetsytan så att den matchar standardgrenen.",
+  "workspace.reset.note":
+    "Detta kommer att återställa arbetsytan så att den matchar standardgrenen.",
 }

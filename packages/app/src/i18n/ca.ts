@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Comparteix comentaris",
   "desktop.menu.reportBug": "Informar d'un error",
   "desktop.menu.ariaLabel": "menú OpenCode.",
-  "desktop.updater.dialog.checkFailed.message": "La comprovació d'actualització ha fallat.",
+  "desktop.updater.dialog.checkFailed.message":
+    "La comprovació d'actualització ha fallat.",
   "desktop.updater.dialog.checkFailed.title": "Error d'actualització",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Estàs al dia.",
   "desktop.updater.dialog.upToDate.title": "No hi ha actualitzacions",
-  "desktop.updater.dialog.ready.message": "Actualització {{version}} baixada. Reiniciar ara?",
+  "desktop.updater.dialog.ready.message":
+    "Actualització {{version}} baixada. Reiniciar ara?",
   "desktop.updater.dialog.ready.title": "Actualització llesta",
   "desktop.updater.dialog.restart": "Reinicieu",
   "desktop.updater.dialog.retry": "Retry",
@@ -60,11 +63,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "Seguiu esperant",
   "desktop.recovery.action.quit": "Surt",
   "desktop.recovery.loadFailed": "OpenCode no s'ha pogut carregar",
-  "desktop.recovery.terminated": "La finestra OpenCode s'ha acabat inesperadament",
+  "desktop.recovery.terminated":
+    "La finestra OpenCode s'ha acabat inesperadament",
   "desktop.recovery.unresponsive": "OpenCode no respon",
-  "desktop.recovery.unresponsive.detail": "Podeu reiniciar l'aplicació, obrir els registres o continuar esperant.",
-  "desktop.recovery.loadFailed.detail": "Finestra: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Finestra: {{window}}\nMotiu: {{reason}}\nCodi: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Podeu reiniciar l'aplicació, obrir els registres o continuar esperant.",
+  "desktop.recovery.loadFailed.detail":
+    "Finestra: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Finestra: {{window}}\nMotiu: {{reason}}\nCodi: {{code}}",
   "desktop.recovery.unknown": "<desconegut>",
   "desktop.dialog.chooseFolder": "Trieu una carpeta",
   "desktop.dialog.chooseFile": "Trieu un fitxer",
@@ -73,16 +80,23 @@ export const dict = {
   "desktop.server.local": "Servidor local",
   "desktop.wsl.error.windowsOnly": "WSL només està disponible a Windows",
   "desktop.wsl.error.unavailable": "WSL no està disponible",
-  "desktop.wsl.error.listInstalled": "No s'ha pogut llistar les WSL distribucions instal·lades",
-  "desktop.wsl.error.listOnline": "No s'han pogut enumerar WSL distribucions en línia",
-  "desktop.wsl.error.executeDistro": "No es poden executar ordres a la distribució",
+  "desktop.wsl.error.listInstalled":
+    "No s'ha pogut llistar les WSL distribucions instal·lades",
+  "desktop.wsl.error.listOnline":
+    "No s'han pogut enumerar WSL distribucions en línia",
+  "desktop.wsl.error.executeDistro":
+    "No es poden executar ordres a la distribució",
   "desktop.wsl.error.installWsl": "La instal·lació de WSL ha fallat",
-  "desktop.wsl.error.installDistro": "No s'ha pogut instal·lar la distribució: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "No s'ha pogut instal·lar la distribució: {{distro}}",
   "desktop.wsl.error.installOpencode": "La instal·lació de OpenCode ha fallat",
   "desktop.wsl.error.alreadyAdded": "{{distro}} ja està afegit",
-  "desktop.wsl.error.opencodeMissing": "opencode no està instal·lat en aquesta distribució",
-  "desktop.wsl.error.opencodeCannotRun": "opencode està instal·lat però no s'ha pogut executar",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode no està instal·lat a {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode no està instal·lat en aquesta distribució",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode està instal·lat però no s'ha pogut executar",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode no està instal·lat a {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode actualització acabada però {{distro}} encara informa {{installed}}; esperat {{expected}}",
   "desktop.wsl.error.noVersion": "cap versió",
@@ -92,10 +106,12 @@ export const dict = {
     "El servidor WSL s'ha tancat abans d'estar operatiu (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "S'ha esgotat el temps d'espera del sidecar per a {{distro}} comprovació de salut després de {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} s'ha esgotat després de {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} s'ha esgotat després de {{timeout}}ms",
   "desktop.wsl.error.failedPort": "No s'ha pogut obtenir el port",
   "desktop.picker.error.notSelected": "El selector no ha seleccionat el fitxer",
-  "desktop.picker.error.sizeLimit": "Els fitxers adjunts seleccionats superen el límit de {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Els fitxers adjunts seleccionats superen el límit de {{limit}} MB",
   "command.category.suggested": "Suggerit",
   "command.category.view": "Veure",
   "command.category.project": "Projecte",
@@ -142,7 +158,8 @@ export const dict = {
   "command.tab.close": "Tanca la pestanya",
   "command.tab.reopenClosed": "Torneu a obrir la pestanya tancada",
   "command.context.addSelection": "Afegeix la selecció al context",
-  "command.context.addSelection.description": "Afegeix les línies seleccionades del fitxer actual",
+  "command.context.addSelection.description":
+    "Afegeix les línies seleccionades del fitxer actual",
   "command.input.focus": "Entrada de focus",
   "command.terminal.toggle": "Canvia el terminal",
   "command.fileTree.toggle": "Commuta l'arbre de fitxers",
@@ -150,9 +167,11 @@ export const dict = {
   "command.terminal.new": "Nou terminal",
   "command.terminal.new.description": "Creeu una nova pestanya de terminal",
   "command.steps.toggle": "Commuta els passos",
-  "command.steps.toggle.description": "Mostra o amaga els passos del missatge actual",
+  "command.steps.toggle.description":
+    "Mostra o amaga els passos del missatge actual",
   "command.message.previous": "Missatge anterior",
-  "command.message.previous.description": "Aneu al missatge anterior de l'usuari",
+  "command.message.previous.description":
+    "Aneu al missatge anterior de l'usuari",
   "command.message.next": "Següent missatge",
   "command.message.next.description": "Aneu al següent missatge de l'usuari",
   "command.model.choose": "Tria el model",
@@ -164,27 +183,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Cicle l'agent cap enrere",
   "command.agent.cycle.reverse.description": "Canvia a l'agent anterior",
   "command.model.variant.cycle": "Esforç de pensar en cicle",
-  "command.model.variant.cycle.description": "Canvia al següent nivell d'esforç",
+  "command.model.variant.cycle.description":
+    "Canvia al següent nivell d'esforç",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Indicació",
   "command.permissions.autoaccept.enable": "Permisos d'acceptació automàtica",
-  "command.permissions.autoaccept.disable": "Atura l'acceptació automàtica de permisos",
+  "command.permissions.autoaccept.disable":
+    "Atura l'acceptació automàtica de permisos",
   "command.workspace.toggle": "Commuta els espais de treball",
-  "command.workspace.toggle.description": "Activa o desactiva diversos espais de treball a la barra lateral",
+  "command.workspace.toggle.description":
+    "Activa o desactiva diversos espais de treball a la barra lateral",
   "command.session.undo": "Desfer",
   "command.session.undo.description": "Desfer l'últim missatge",
   "command.session.redo": "Refer",
   "command.session.redo.description": "Torna a fer l'últim missatge desfet",
   "command.session.compact": "Sessió compacta",
-  "command.session.compact.description": "Resumeix la sessió per reduir la mida del context",
+  "command.session.compact.description":
+    "Resumeix la sessió per reduir la mida del context",
   "command.session.fork": "Bifurcació del missatge",
-  "command.session.fork.description": "Crea una sessió nova a partir d'un missatge anterior",
+  "command.session.fork.description":
+    "Crea una sessió nova a partir d'un missatge anterior",
   "command.session.share": "Compartir sessió",
-  "command.session.share.description": "Comparteix aquesta sessió i copia el URL al porta-retalls",
+  "command.session.share.description":
+    "Comparteix aquesta sessió i copia el URL al porta-retalls",
   "command.session.unshare": "Deixa de compartir la sessió",
   "command.session.unshare.description": "Deixa de compartir aquesta sessió",
   "command.session.export": "Sessió d'exportació",
-  "command.session.export.description": "Exporta la transcripció completa de la sessió com a JSON",
+  "command.session.export.description":
+    "Exporta la transcripció completa de la sessió com a JSON",
   "palette.search.placeholder": "Cerca fitxers, ordres i sessions",
   "palette.search.placeholder.home": "Cerca ordres i sessions",
   "palette.empty": "No s'han trobat resultats",
@@ -194,30 +220,42 @@ export const dict = {
   "dialog.provider.empty": "No s'han trobat proveïdors",
   "dialog.provider.group.popular": "Popular",
   "dialog.provider.group.other": "Altres",
-  "dialog.provider.custom.label": "Proveïdor personalitzat compatible amb OpenAI.",
+  "dialog.provider.custom.label":
+    "Proveïdor personalitzat compatible amb OpenAI.",
   "dialog.provider.tag.recommended": "Recomanat",
-  "dialog.provider.opencode.note": "Models seleccionats que inclouen Claude, GPT, Gemini i més",
+  "dialog.provider.opencode.note":
+    "Models seleccionats que inclouen Claude, GPT, Gemini i més",
   "dialog.provider.opencode.tagline": "Models optimitzats fiables",
   "dialog.provider.opencodeGo.tagline": "Subscripció de baix cost per a tothom",
-  "dialog.provider.anthropic.note": "Accés directe a Claude models, inclosos Pro i Max",
-  "dialog.provider.copilot.note": "Models d'IA per a l'assistència de codificació mitjançant GitHub Copilot",
-  "dialog.provider.openai.note": "GPT models per a tasques d'IA generals ràpides i capaces",
-  "dialog.provider.google.note": "Gemini models per a respostes ràpides i estructurades",
-  "dialog.provider.openrouter.note": "Accediu a tots els models compatibles des d'un proveïdor",
-  "dialog.provider.vercel.note": "Accés unificat als models d'IA amb enrutament intel·ligent",
+  "dialog.provider.anthropic.note":
+    "Accés directe a Claude models, inclosos Pro i Max",
+  "dialog.provider.copilot.note":
+    "Models d'IA per a l'assistència de codificació mitjançant GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT models per a tasques d'IA generals ràpides i capaces",
+  "dialog.provider.google.note":
+    "Gemini models per a respostes ràpides i estructurades",
+  "dialog.provider.openrouter.note":
+    "Accediu a tots els models compatibles des d'un proveïdor",
+  "dialog.provider.vercel.note":
+    "Accés unificat als models d'IA amb enrutament intel·ligent",
   "dialog.model.select.title": "Seleccioneu el model",
   "dialog.model.search.placeholder": "Cerca models",
   "dialog.model.empty": "No hi ha resultats del model",
   "dialog.model.manage": "Gestionar models",
-  "dialog.model.manage.description": "Personalitza quins models apareixen al selector de models.",
+  "dialog.model.manage.description":
+    "Personalitza quins models apareixen al selector de models.",
   "dialog.model.manage.provider.toggle": "Canvia tots els {{provider}} models",
-  "dialog.model.unpaid.freeModels.title": "Models gratuïts proporcionats per OpenCode",
-  "dialog.model.unpaid.addMore.title": "Afegiu més models de proveïdors populars",
+  "dialog.model.unpaid.freeModels.title":
+    "Models gratuïts proporcionats per OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Afegiu més models de proveïdors populars",
   "dialog.model.unpaid.viewMoreProviders": "Consulta més de 70 proveïdors més",
   "dialog.provider.viewAll": "Mostra més proveïdors",
   "provider.connect.title": "Connecta {{provider}}",
   "provider.connect.title.anthropicProMax": "Inicieu sessió amb Claude Pro/Max",
-  "provider.connect.selectMethod": "Seleccioneu el mètode d'inici de sessió per a {{provider}}.",
+  "provider.connect.selectMethod":
+    "Seleccioneu el mètode d'inici de sessió per a {{provider}}.",
   "provider.connect.method.apiKey": "tecla API.",
   "provider.connect.method.browser": "Navegador",
   "provider.connect.method.headless": "Sense cap",
@@ -235,7 +273,8 @@ export const dict = {
     "Amb una sola tecla API tindreu accés a models com ara Claude, GPT, Gemini, GLM i més.",
   "provider.connect.opencodeZen.visit.prefix": "Visita ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " per recollir la teva clau API.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " per recollir la teva clau API.",
   "provider.connect.oauth.code.visit.prefix": "Visita ",
   "provider.connect.oauth.code.visit.link": "aquest enllaç",
   "provider.connect.oauth.code.visit.suffix":
@@ -250,15 +289,19 @@ export const dict = {
     " i introduïu el codi següent per connectar el vostre compte i utilitzar {{provider}} models a OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Codi de confirmació",
   "provider.connect.toast.connected.title": "{{provider}} connectat",
-  "provider.connect.toast.connected.description": "{{provider}} ara es poden utilitzar models.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} ara es poden utilitzar models.",
   "provider.custom.title": "Proveïdor personalitzat",
-  "provider.custom.unavailable": "Els proveïdors personalitzats no estan disponibles en aquest servidor",
-  "provider.custom.description.prefix": "Configureu un proveïdor compatible amb OpenAI. Veure el ",
+  "provider.custom.unavailable":
+    "Els proveïdors personalitzats no estan disponibles en aquest servidor",
+  "provider.custom.description.prefix":
+    "Configureu un proveïdor compatible amb OpenAI. Veure el ",
   "provider.custom.description.link": "documents de configuració del proveïdor",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Proveïdor ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Lletres minúscules, números, guions o guions baixos",
+  "provider.custom.field.providerID.description":
+    "Lletres minúscules, números, guions o guions baixos",
   "provider.custom.field.name.label": "Nom de visualització",
   "provider.custom.field.name.placeholder": "El meu proveïdor d'IA",
   "provider.custom.field.baseURL.label": "URL base",
@@ -282,15 +325,19 @@ export const dict = {
   "provider.custom.headers.remove": "Elimina la capçalera",
   "provider.custom.headers.add": "Afegeix una capçalera",
   "provider.custom.error.providerID.required": "Es requereix el proveïdor ID.",
-  "provider.custom.error.providerID.format": "Utilitzeu lletres minúscules, números, guions o guions baixos",
+  "provider.custom.error.providerID.format":
+    "Utilitzeu lletres minúscules, números, guions o guions baixos",
   "provider.custom.error.providerID.exists": "Aquest proveïdor ID ja existeix",
-  "provider.custom.error.name.required": "El nom de visualització és obligatori",
+  "provider.custom.error.name.required":
+    "El nom de visualització és obligatori",
   "provider.custom.error.baseURL.required": "La base URL és necessària",
-  "provider.custom.error.baseURL.format": "Ha de començar per http:// o https://",
+  "provider.custom.error.baseURL.format":
+    "Ha de començar per http:// o https://",
   "provider.custom.error.required": "Obligatori",
   "provider.custom.error.duplicate": "Duplicat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} desconnectat",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} models ja no estan disponibles.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} models ja no estan disponibles.",
   "model.tag.free": "Gratuït",
   "model.tag.latest": "Última",
   "model.provider.anthropic": "Anthropic",
@@ -328,7 +375,8 @@ export const dict = {
   "common.saving": "S'està desant...",
   "common.default": "Per defecte",
   "common.attachment": "adjunt",
-  "prompt.placeholder.shell": "Introduïu una ordre de l'intèrpret d'ordres... {{example}}",
+  "prompt.placeholder.shell":
+    "Introduïu una ordre de l'intèrpret d'ordres... {{example}}",
   "prompt.placeholder.normal": 'Pregunta qualsevol cosa... "{{example}}"',
   "prompt.placeholder.simple": "Pregunta qualsevol cosa...",
   "prompt.placeholder.summarizeComments": "Resum dels comentaris...",
@@ -352,7 +400,8 @@ export const dict = {
   "prompt.example.12": "Afegiu la validació d'entrada",
   "prompt.example.13": "Crea un component nou per...",
   "prompt.example.14": "Com implemento aquest projecte?",
-  "prompt.example.15": "Revisa el meu codi per conèixer les pràctiques recomanades",
+  "prompt.example.15":
+    "Revisa el meu codi per conèixer les pràctiques recomanades",
   "prompt.example.16": "Afegiu la gestió d'errors a aquesta funció",
   "prompt.example.17": "Expliqueu aquest patró d'expressió regular",
   "prompt.example.18": "Converteix això a TypeScript",
@@ -384,20 +433,25 @@ export const dict = {
   "prompt.action.send": "Enviar",
   "prompt.action.stop": "Atureu-vos",
   "prompt.toast.pasteUnsupported.title": "Fitxer adjunt no compatible",
-  "prompt.toast.pasteUnsupported.description": "Aquí només es poden adjuntar imatges, PDFs o fitxers de text.",
+  "prompt.toast.pasteUnsupported.description":
+    "Aquí només es poden adjuntar imatges, PDFs o fitxers de text.",
   "prompt.toast.attachmentDuplicate.title": "Aquest fitxer ja s'ha penjat",
   "prompt.toast.modelAgentRequired.title": "Seleccioneu un agent i un model",
-  "prompt.toast.modelAgentRequired.description": "Trieu un agent i un model abans d'enviar una sol·licitud.",
-  "prompt.toast.worktreeCreateFailed.title": "No s'ha pogut crear l'arbre de treball",
+  "prompt.toast.modelAgentRequired.description":
+    "Trieu un agent i un model abans d'enviar una sol·licitud.",
+  "prompt.toast.worktreeCreateFailed.title":
+    "No s'ha pogut crear l'arbre de treball",
   "prompt.toast.sessionCreateFailed.title": "No s'ha pogut crear la sessió",
-  "prompt.toast.shellSendFailed.title": "No s'ha pogut enviar l'ordre del shell",
+  "prompt.toast.shellSendFailed.title":
+    "No s'ha pogut enviar l'ordre del shell",
   "prompt.toast.commandSendFailed.title": "No s'ha pogut enviar l'ordre",
   "prompt.toast.promptSendFailed.title": "No s'ha pogut enviar la sol·licitud",
   "prompt.toast.promptSendFailed.description": "No es pot recuperar la sessió",
   "dialog.mcp.title": "MCP",
   "dialog.mcp.description": "{{enabled}} de {{total}} activat",
   "dialog.mcp.empty": "No s'ha configurat cap MCP",
-  "dialog.lsp.empty": "Els LSP s'han detectat automàticament a partir dels tipus de fitxers",
+  "dialog.lsp.empty":
+    "Els LSP s'han detectat automàticament a partir dels tipus de fitxers",
   "dialog.plugins.empty": "Connectors configurats a opencode.json",
   "mcp.status.connected": "connectat",
   "mcp.status.failed": "fracassat",
@@ -416,7 +470,8 @@ export const dict = {
   "app.server.retrying": "S'està tornant a provar automàticament...",
   "app.server.otherServers": "Altres servidors",
   "dialog.server.title": "Servidors",
-  "dialog.server.description": "Canvia a quin OpenCode servidor es connecta aquesta aplicació.",
+  "dialog.server.description":
+    "Canvia a quin OpenCode servidor es connecta aquesta aplicació.",
   "dialog.server.search.placeholder": "Servidors de cerca",
   "dialog.server.empty": "Encara no hi ha servidors",
   "dialog.server.add.title": "Afegeix servidor",
@@ -436,7 +491,8 @@ export const dict = {
   "dialog.server.default.description":
     "Connecteu-vos a aquest servidor en iniciar l'aplicació en lloc d'iniciar un servidor local. Requereix reinici.",
   "dialog.server.default.none": "No s'ha seleccionat cap servidor",
-  "dialog.server.default.set": "Estableix el servidor actual com a predeterminat",
+  "dialog.server.default.set":
+    "Estableix el servidor actual com a predeterminat",
   "dialog.server.default.clear": "Clar",
   "dialog.server.action.remove": "Elimina el servidor",
   "dialog.server.menu.edit": "Edita",
@@ -454,7 +510,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Trieu la distribució",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "S'està comprovant WSL...",
-  "wsl.onboarding.restartRequired": "Windows necessita un reinici per acabar la instal·lació WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows necessita un reinici per acabar la instal·lació WSL.",
   "wsl.onboarding.ready": "WSL està llest.",
   "wsl.onboarding.required": "WSL és necessari per continuar.",
   "wsl.onboarding.checkingDistros": "S'estan comprovant les distribucions...",
@@ -463,13 +520,18 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Llistat de distribucions...",
   "wsl.onboarding.distroReady": "{{distro}} està llest.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} encara no està instal·lat.",
-  "wsl.onboarding.openDistroOnce": "Obriu {{distro}} una vegada per acabar la configuració.",
-  "wsl.onboarding.finishingDistro": "S'està acabant la configuració de {{distro}}.",
-  "wsl.onboarding.pickDistro": "Trieu una distribució o instal·leu-ne una a continuació.",
+  "wsl.onboarding.openDistroOnce":
+    "Obriu {{distro}} una vegada per acabar la configuració.",
+  "wsl.onboarding.finishingDistro":
+    "S'està acabant la configuració de {{distro}}.",
+  "wsl.onboarding.pickDistro":
+    "Trieu una distribució o instal·leu-ne una a continuació.",
   "wsl.onboarding.checkingOpencode": "S'està comprovant OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "S'està registrant OpenCode a {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "S'està registrant OpenCode a {{distro}}...",
   "wsl.onboarding.updatingOpencode": "S'està actualitzant OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "S'està actualitzant OpenCode a {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "S'està actualitzant OpenCode a {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Actualitza OpenCode a {{distro}}.",
   "wsl.onboarding.updateOpencode": "Actualització OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode està llest a {{distro}}.",
@@ -487,18 +549,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Falta bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "No s'admet · Utilitzeu WSL 2",
   "wsl.onboarding.needAnotherDistro": "Necessites una altra distribució?",
-  "wsl.onboarding.needAnotherDistroHint": "Instal·leu una distribució Linux del catàleg WSL.",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instal·leu una distribució Linux del catàleg WSL.",
   "wsl.onboarding.wslNotInstalled.title": "WSL no instal·lat",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsistema per a Linux) és necessari abans que OpenCode pugui afegir un WSL servidor",
   "wsl.onboarding.wslUnavailable.title": "WSL no disponible",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode no ha pogut verificar WSL en aquesta màquina.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode no ha pogut verificar WSL en aquesta màquina.",
   "wsl.onboarding.installWsl": "Instal·la WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Reinicieu Windows per acabar d'instal·lar WSL i, a continuació, torneu a obrir OpenCode.",
   "wsl.onboarding.next": "A continuació",
   "wsl.onboarding.refresh": "Actualitza",
-  "wsl.onboarding.allDistrosAdded": "Totes les distribucions instal·lades ja s'han afegit.",
+  "wsl.onboarding.allDistrosAdded":
+    "Totes les distribucions instal·lades ja s'han afegit.",
   "wsl.onboarding.noDistros": "Encara no s'ha detectat cap distribució.",
   "wsl.onboarding.install": "Instal·lar",
   "wsl.onboarding.installing": "S'està instal·lant...",
@@ -512,22 +577,26 @@ export const dict = {
   "wsl.onboarding.version": "Versió: {{version}}",
   "wsl.onboarding.unknown": "desconegut",
   "wsl.onboarding.desktopVersion": "escriptori {{version}}",
-  "wsl.onboarding.versionMismatch": "La versió instal·lada no coincideix amb la versió de l'aplicació d'escriptori.",
+  "wsl.onboarding.versionMismatch":
+    "La versió instal·lada no coincideix amb la versió de l'aplicació d'escriptori.",
   "wsl.onboarding.adding": "S'està afegint...",
   "help.tabs.toast.ariaLabel":
     "Presentació de les pestanyes. Organitza el teu treball i les sessions actives amb pestanyes",
   "help.tabs.toast.dismiss": "Ignora la informació de les pestanyes",
   "help.tabs.title": "Presentació de les pestanyes",
-  "help.tabs.description": "Organitza el teu treball i les sessions actives amb pestanyes",
+  "help.tabs.description":
+    "Organitza el teu treball i les sessions actives amb pestanyes",
   "help.tabs.date": "14 de juliol",
-  "help.tabs.introduction": "OpenCode L'escriptori ara està construït al voltant de pestanyes.",
+  "help.tabs.introduction":
+    "OpenCode L'escriptori ara està construït al voltant de pestanyes.",
   "help.tabs.sessions":
     "Inicieu una sessió nova en una pestanya o obriu una sessió existent des de qualsevol dels vostres projectes. Obre una pestanya nova quan comencis una cosa nova i tanca-la quan hagis acabat.",
   "help.tabs.organize":
     "Mantenir unes quantes pestanyes obertes facilita l'organització de les sessions actives. Canvieu el nom de les pestanyes a alguna cosa memorable si teniu previst mantenir-les.",
   "help.tabs.home":
     "Trobareu totes les sessions i els projectes a la nova pantalla d'inici. En seleccionar una sessió, s'obre en una pestanya.",
-  "help.tabs.persistence": "Quan torneu a obrir l'aplicació, les vostres pestanyes encara estan obertes.",
+  "help.tabs.persistence":
+    "Quan torneu a obrir l'aplicació, les vostres pestanyes encara estan obertes.",
   "help.tabs.worktrees":
     "El nou disseny encara no és compatible amb Git Worktrees, arribarà aviat. Per tant, si preferiu continuar utilitzant el disseny anterior, podeu canviar entre els dissenys a Configuració. Tingueu en compte que el nou disseny esdevindrà permanent d'aquí a unes setmanes.",
   "server.row.noUsername": "sense nom d'usuari",
@@ -539,8 +608,10 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Recomanat: 128x128px",
   "dialog.project.edit.color": "Color",
   "dialog.project.edit.color.select": "Seleccioneu el color {{color}}.",
-  "dialog.project.edit.worktree.startup": "Script d'inici de l'espai de treball",
-  "dialog.project.edit.worktree.startup.description": "S'executa després de crear un nou espai de treball (worktree).",
+  "dialog.project.edit.worktree.startup":
+    "Script d'inici de l'espai de treball",
+  "dialog.project.edit.worktree.startup.description":
+    "S'executa després de crear un nou espai de treball (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "p. ex. bun install",
   "dialog.releaseNotes.action.getStarted": "Comença",
   "dialog.releaseNotes.action.next": "A continuació",
@@ -601,49 +672,73 @@ export const dict = {
   "toast.theme.title": "S'ha canviat el tema",
   "toast.scheme.title": "Esquema de colors",
   "toast.workspace.enabled.title": "Espais de treball habilitats",
-  "toast.workspace.enabled.description": "Ara es mostren diversos arbres de treball a la barra lateral",
+  "toast.workspace.enabled.description":
+    "Ara es mostren diversos arbres de treball a la barra lateral",
   "toast.workspace.disabled.title": "Espais de treball desactivats",
-  "toast.workspace.disabled.description": "A la barra lateral només es mostra l'arbre de treball principal",
+  "toast.workspace.disabled.description":
+    "A la barra lateral només es mostra l'arbre de treball principal",
   "toast.permissions.autoaccept.on.title": "Permisos d'acceptació automàtica",
-  "toast.permissions.autoaccept.on.description": "Les sol·licituds de permís s'aprovaran automàticament",
-  "toast.permissions.autoaccept.off.title": "S'ha aturat l'acceptació automàtica de permisos",
-  "toast.permissions.autoaccept.off.description": "Les sol·licituds de permís requeriran aprovació",
+  "toast.permissions.autoaccept.on.description":
+    "Les sol·licituds de permís s'aprovaran automàticament",
+  "toast.permissions.autoaccept.off.title":
+    "S'ha aturat l'acceptació automàtica de permisos",
+  "toast.permissions.autoaccept.off.description":
+    "Les sol·licituds de permís requeriran aprovació",
   "toast.model.none.title": "No s'ha seleccionat cap model",
-  "toast.model.none.description": "Connecteu un proveïdor per resumir aquesta sessió",
+  "toast.model.none.description":
+    "Connecteu un proveïdor per resumir aquesta sessió",
   "toast.file.loadFailed.title": "No s'ha pogut carregar el fitxer",
   "toast.file.listFailed.title": "No s'han pogut llistar els fitxers",
   "toast.context.noLineSelection.title": "Sense selecció de línia",
-  "toast.context.noLineSelection.description": "Seleccioneu primer un interval de línies en una pestanya de fitxer.",
-  "toast.session.share.copyFailed.title": "No s'ha pogut copiar URL al porta-retalls",
+  "toast.context.noLineSelection.description":
+    "Seleccioneu primer un interval de línies en una pestanya de fitxer.",
+  "toast.session.share.copyFailed.title":
+    "No s'ha pogut copiar URL al porta-retalls",
   "toast.session.share.success.title": "Sessió compartida",
-  "toast.session.share.success.description": "Comparteix URL copiat al porta-retalls!",
+  "toast.session.share.success.description":
+    "Comparteix URL copiat al porta-retalls!",
   "toast.session.share.failed.title": "No s'ha pogut compartir la sessió",
-  "toast.session.share.failed.description": "S'ha produït un error en compartir la sessió",
+  "toast.session.share.failed.description":
+    "S'ha produït un error en compartir la sessió",
   "toast.session.unshare.success.title": "S'ha deixat de compartir la sessió",
-  "toast.session.unshare.success.description": "S'ha deixat de compartir la sessió correctament.",
-  "toast.session.unshare.failed.title": "No s'ha pogut deixar de compartir la sessió",
-  "toast.session.unshare.failed.description": "S'ha produït un error en deixar de compartir la sessió",
+  "toast.session.unshare.success.description":
+    "S'ha deixat de compartir la sessió correctament.",
+  "toast.session.unshare.failed.title":
+    "No s'ha pogut deixar de compartir la sessió",
+  "toast.session.unshare.failed.description":
+    "S'ha produït un error en deixar de compartir la sessió",
   "toast.session.export.success.title": "Sessió exportada",
   "toast.session.export.success.description": "Sessió desada a {{filename}}",
   "toast.session.export.failed.title": "No s'ha pogut exportar la sessió",
-  "toast.session.export.failed.description": "S'ha produït un error en exportar la sessió",
-  "toast.session.listFailed.title": "No s'han pogut carregar les sessions de {{project}}",
-  "toast.project.reloadFailed.title": "No s'ha pogut tornar a carregar {{project}}",
+  "toast.session.export.failed.description":
+    "S'ha produït un error en exportar la sessió",
+  "toast.session.listFailed.title":
+    "No s'han pogut carregar les sessions de {{project}}",
+  "toast.project.reloadFailed.title":
+    "No s'ha pogut tornar a carregar {{project}}",
   "toast.update.title": "Actualització disponible",
-  "toast.update.description": "Una nova versió de OpenCode ({{version}}) ja està disponible per instal·lar-la.",
+  "toast.update.description":
+    "Una nova versió de OpenCode ({{version}}) ja està disponible per instal·lar-la.",
   "toast.update.action.installRestart": "Instal·leu i reinicieu",
   "toast.update.action.notYet": "Encara no",
-  "disk.accessGuidance.macos": "Concedeix Accés complet al disc a DiskLizard a Ajustaments del sistema i torna a escanejar.",
-  "disk.accessGuidance.windows": "Fes servir un compte amb accés a aquesta unitat, o escaneja una carpeta que el teu compte pugui llegir.",
-  "disk.accessGuidance.linux": "Revisa els permisos de carpetes i muntatges i torna a escanejar.",
-  "disk.accessGuidance.default": "Revisa l'accés a aquestes carpetes i torna a escanejar.",
-  "disk.accessGuidance.rescan": "Després de canviar l'accés, utilitza Torna a escanejar a la barra superior.",
+  "disk.accessGuidance.macos":
+    "Concedeix Accés complet al disc a DiskLizard a Ajustaments del sistema i torna a escanejar.",
+  "disk.accessGuidance.windows":
+    "Fes servir un compte amb accés a aquesta unitat, o escaneja una carpeta que el teu compte pugui llegir.",
+  "disk.accessGuidance.linux":
+    "Revisa els permisos de carpetes i muntatges i torna a escanejar.",
+  "disk.accessGuidance.default":
+    "Revisa l'accés a aquestes carpetes i torna a escanejar.",
+  "disk.accessGuidance.rescan":
+    "Després de canviar l'accés, utilitza Torna a escanejar a la barra superior.",
   "disk.common.rescan": "Tornar a analitzar",
-  "toast.update.installFailed.title": "No s'ha pogut instal·lar l'actualització",
+  "toast.update.installFailed.title":
+    "No s'ha pogut instal·lar l'actualització",
   "toast.update.installFailed.retry": "Torna-ho a provar",
   "error.page.title": "Alguna cosa va fallar",
   "error.page.description": "S'ha produït un error en carregar l'aplicació.",
-  "error.page.description.localServerStartup": "S'ha produït un error en iniciar el servidor local.",
+  "error.page.description.localServerStartup":
+    "S'ha produït un error en iniciar el servidor local.",
   "error.page.details.label": "Detalls de l'error",
   "error.page.action.restart": "Reinicieu",
   "error.page.action.report": "Informa d'un error",
@@ -662,9 +757,12 @@ export const dict = {
     "No s'ha pogut connectar al servidor. Hi ha un servidor en funcionament a `{{url}}`?",
   "error.serverSDK.noServerAvailable": "No hi ha servidor disponible",
   "error.serverSDK.serverNotAvailable": "Servidor no disponible",
-  "error.childStore.persistedCacheCreateFailed": "No s'ha pogut crear la memòria cau persistent",
-  "error.childStore.persistedProjectMetadataCreateFailed": "No s'han pogut crear metadades del projecte persistents",
-  "error.childStore.persistedProjectIconCreateFailed": "No s'ha pogut crear la icona del projecte persistent",
+  "error.childStore.persistedCacheCreateFailed":
+    "No s'ha pogut crear la memòria cau persistent",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "No s'han pogut crear metadades del projecte persistents",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "No s'ha pogut crear la icona del projecte persistent",
   "error.childStore.storeCreateFailed": "No s'ha pogut crear la botiga",
   "directory.error.invalidUrl": "Directori no vàlid a URL.",
   "error.chain.unknown": "Error desconegut",
@@ -675,24 +773,34 @@ export const dict = {
   "error.chain.retryable": "Reintentable: {{retryable}}",
   "error.chain.responseBody": "Òrgan de resposta:\n{{body}}",
   "error.chain.didYouMean": "Volíeu dir: {{suggestions}}",
-  "error.chain.modelNotFound": "No s'ha trobat el model: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Comproveu els noms del vostre proveïdor/model de configuració (opencode.json).",
+  "error.chain.modelNotFound":
+    "No s'ha trobat el model: {{provider}}/{{model}}",
+  "error.chain.checkConfig":
+    "Comproveu els noms del vostre proveïdor/model de configuració (opencode.json).",
   "error.chain.mcpFailed":
     'El servidor MCP "{{name}}" ha fallat. Tingueu en compte que OpenCode encara no admet l\'autenticació MCP.',
-  "error.chain.providerAuthFailed": "L'autenticació del proveïdor ha fallat ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "L'autenticació del proveïdor ha fallat ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'No s\'ha pogut inicialitzar el proveïdor "{{provider}}". Comproveu les credencials i la configuració.',
-  "error.chain.configJsonInvalid": "El fitxer de configuració a {{path}} no és vàlid JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "El fitxer de configuració a {{path}} no és vàlid JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "El fitxer de configuració a {{path}} no és vàlid JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "El fitxer de configuració a {{path}} no és vàlid JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'El directori "{{dir}}" a {{path}} no és vàlid. Canvieu el nom del directori a "{{suggestion}}" o suprimiu-lo. Aquest és un error ortogràfic comú.',
-  "error.chain.configFrontmatterError": "No s'ha pogut analitzar frontmatter a {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "El fitxer de configuració a {{path}} no és vàlid",
-  "error.chain.configInvalidWithMessage": "El fitxer de configuració a {{path}} no és vàlid: {{message}}",
+  "error.chain.configFrontmatterError":
+    "No s'ha pogut analitzar frontmatter a {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "El fitxer de configuració a {{path}} no és vàlid",
+  "error.chain.configInvalidWithMessage":
+    "El fitxer de configuració a {{path}} no és vàlid: {{message}}",
   "notification.permission.title": "Cal permís",
-  "notification.permission.description": "{{sessionTitle}} a {{projectName}} necessita permís",
+  "notification.permission.description":
+    "{{sessionTitle}} a {{projectName}} necessita permís",
   "notification.question.title": "Pregunta",
-  "notification.question.description": "{{sessionTitle}} a {{projectName}} té una pregunta",
+  "notification.question.description":
+    "{{sessionTitle}} a {{projectName}} té una pregunta",
   "notification.action.goToSession": "Anar a sessió",
   "notification.session.responseReady.title": "Resposta a punt",
   "notification.session.error.title": "Error de sessió",
@@ -723,7 +831,8 @@ export const dict = {
   "session.tab.unknown": "Sessió desconeguda",
   "session.panel.reviewAndFiles": "Revisió i arxius",
   "session.error.notFound": "No es pot trobar aquesta sessió",
-  "session.error.notFound.description": "Aquesta pestanya apunta a una sessió que ja no existeix en aquest servidor.",
+  "session.error.notFound.description":
+    "Aquesta pestanya apunta a una sessió que ja no existeix en aquest servidor.",
   "session.error.notFound.closeTab": "Tanca la pestanya",
   "session.error.serverConnection": "No es pot connectar a aquest servidor",
   "session.review.filesChanged": "Fitxers canviats {{count}}",
@@ -731,20 +840,25 @@ export const dict = {
   "session.review.change.other": "Canvis",
   "session.review.loadingChanges": "S'estan carregant els canvis...",
   "session.review.empty": "Encara no hi ha canvis en aquesta sessió",
-  "session.review.noVcs": "No Git S'ha detectat el sistema de control de versions, els canvis no es mostren",
+  "session.review.noVcs":
+    "No Git S'ha detectat el sistema de control de versions, els canvis no es mostren",
   "session.review.noVcs.createGit.title": "Creeu un repositori Git.",
-  "session.review.noVcs.createGit.description": "Feu un seguiment, reviseu i desfer els canvis en aquest projecte",
-  "session.review.noVcs.createGit.actionLoading": "S'està creant un repositori Git...",
+  "session.review.noVcs.createGit.description":
+    "Feu un seguiment, reviseu i desfer els canvis en aquest projecte",
+  "session.review.noVcs.createGit.actionLoading":
+    "S'està creant un repositori Git...",
   "session.review.noVcs.createGit.action": "Crea un repositori Git",
   "session.review.noSnapshot":
     "El seguiment de la instantània està desactivat a la configuració, de manera que els canvis de sessió no estan disponibles",
   "session.review.noChanges": "Sense canvis",
-  "session.review.noUncommittedChanges": "Encara no hi ha canvis no compromesos",
+  "session.review.noUncommittedChanges":
+    "Encara no hi ha canvis no compromesos",
   "session.review.noBranchChanges": "Encara no hi ha canvis de branca",
   "session.files.selectToOpen": "Seleccioneu un fitxer per obrir",
   "session.files.all": "Tots els fitxers",
   "session.files.empty": "No hi ha fitxers",
-  "session.files.binaryContent": "Fitxer binari (el contingut no es pot mostrar)",
+  "session.files.binaryContent":
+    "Fitxer binari (el contingut no es pot mostrar)",
   "session.messages.renderEarlier": "Mostra missatges anteriors",
   "session.messages.loadingEarlier": "S'estan carregant missatges anteriors...",
   "session.messages.loadEarlier": "Carregueu missatges anteriors",
@@ -841,12 +955,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Tanca la terminal",
   "terminal.connectionLost.title": "Connexió perduda",
-  "terminal.connectionLost.abnormalClose": "WebSocket tancat anormalment: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket tancat anormalment: {{code}}",
   "terminal.connectionLost.description":
     "La connexió del terminal s'ha interromput. Això pot passar quan es reinicia el servidor.",
   "terminal.connectTicket.csrfError":
     "PTY bitllet de connexió rebutjat per origen o CSRF xecs. Comproveu la configuració del servidor CORS.",
-  "terminal.connectTicket.statusError": "PTY el bitllet de connexió ha fallat amb {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY el bitllet de connexió ha fallat amb {{status}}",
   "titlebar.update": "Actualització",
   "titlebar.updateVersion": "Actualització {{version}}",
   "common.closeTab": "Tanca la pestanya",
@@ -890,8 +1006,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Habilita els espais de treball",
   "sidebar.workspaces.disable": "Desactivar els espais de treball",
   "sidebar.gettingStarted.title": "Per començar",
-  "sidebar.gettingStarted.line1": "OpenCode inclou models gratuïts perquè pugueu començar immediatament.",
-  "sidebar.gettingStarted.line2": "Connecteu qualsevol proveïdor per utilitzar models, inc. Claude, GPT, Gemini etc.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode inclou models gratuïts perquè pugueu començar immediatament.",
+  "sidebar.gettingStarted.line2":
+    "Connecteu qualsevol proveïdor per utilitzar models, inc. Claude, GPT, Gemini etc.",
   "sidebar.project.recentSessions": "Sessions recents",
   "sidebar.project.viewAllSessions": "Veure totes les sessions",
   "sidebar.project.clearNotifications": "Esborra les notificacions",
@@ -903,29 +1021,37 @@ export const dict = {
   "debugBar.nav.tip":
     "L'última transició de ruta completada tocant una pàgina de sessió, mesurada des de l'inici de l'encaminador fins a la primera pintura després que s'instal·li.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Fotogrames en moviment per segon durant els darrers 5 segons.",
+  "debugBar.fps.tip":
+    "Fotogrames en moviment per segon durant els darrers 5 segons.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "El pitjor temps de fotograma dels darrers 5 segons.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Fotogrames de més de 32 ms en els últims 5 segons.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Temps bloquejat i recompte de tasques llargues en els últims 5 segons. Tasca màxima: {{max}}.",
+  "debugBar.long.tip":
+    "Temps bloquejat i recompte de tasques llargues en els últims 5 segons. Tasca màxima: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "El pitjor retard d'entrada observat en els últims 5 segons.",
+  "debugBar.delay.tip":
+    "El pitjor retard d'entrada observat en els últims 5 segons.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Durada aproximada de la interacció durant els darrers 5 segons. Això és semblant a INP, no el Web Vitals oficial INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Canvi de disseny acumulat per a la vida útil actual de l'aplicació.",
+  "debugBar.cls.tip":
+    "Canvi de disseny acumulat per a la vida útil actual de l'aplicació.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "S'ha utilitzat el límit d'emmagatzematge munt JS vs. Chromium només.",
-  "debugBar.mem.tip": "S'ha utilitzat el límit d'emmagatzematge munt JS vs. {{used}} de {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "S'ha utilitzat el límit d'emmagatzematge munt JS vs. Chromium només.",
+  "debugBar.mem.tip":
+    "S'ha utilitzat el límit d'emmagatzematge munt JS vs. {{used}} de {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Força els estils de focus en tots els elements interactius",
+  "debugBar.focus.tip":
+    "Força els estils de focus en tots els elements interactius",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Força la direcció completa del disseny de l'aplicació sense canviar l'idioma seleccionat",
+  "debugBar.direction.tip":
+    "Força la direcció completa del disseny de l'aplicació sense canviar l'idioma seleccionat",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Escriptori",
@@ -935,7 +1061,8 @@ export const dict = {
   "settings.tab.shortcuts": "Dreceres",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integració",
-  "settings.desktop.wsl.description": "Executeu el servidor OpenCode dins de WSL a Windows.",
+  "settings.desktop.wsl.description":
+    "Executeu el servidor OpenCode dins de WSL a Windows.",
   "settings.general.section.appearance": "Aparença",
   "settings.general.section.advanced": "Avançat",
   "settings.general.section.notifications": "Notificacions del sistema",
@@ -944,39 +1071,51 @@ export const dict = {
   "settings.general.section.feed": "Alimentació",
   "settings.general.section.display": "Mostra",
   "settings.general.row.language.title": "Llengua",
-  "settings.general.row.language.description": "Canvia l'idioma de visualització per a OpenCode",
+  "settings.general.row.language.description":
+    "Canvia l'idioma de visualització per a OpenCode",
   "settings.general.row.shell.title": "Carcassa terminal",
-  "settings.general.row.shell.description": "Shell utilitzat pel terminal i les eines d'agent",
+  "settings.general.row.shell.description":
+    "Shell utilitzat pel terminal i les eines d'agent",
   "settings.general.row.shell.autoDefault": "Automàtic (per defecte)",
   "settings.general.row.shell.terminalOnly": "només terminal",
   "settings.general.row.appearance.title": "Aparença",
-  "settings.general.row.appearance.description": "Personalitza com es veu OpenCode al teu dispositiu",
+  "settings.general.row.appearance.description":
+    "Personalitza com es veu OpenCode al teu dispositiu",
   "settings.general.row.colorScheme.title": "Esquema de colors",
-  "settings.general.row.colorScheme.description": "Trieu si OpenCode segueix el tema del sistema, clar o fosc",
+  "settings.general.row.colorScheme.description":
+    "Trieu si OpenCode segueix el tema del sistema, clar o fosc",
   "settings.general.row.theme.title": "Tema",
-  "settings.general.row.theme.description": "Personalitza la temàtica de OpenCode.",
+  "settings.general.row.theme.description":
+    "Personalitza la temàtica de OpenCode.",
   "settings.general.row.font.title": "Font del codi",
-  "settings.general.row.font.description": "Personalitzeu el tipus de lletra utilitzat als blocs de codi",
+  "settings.general.row.font.description":
+    "Personalitzeu el tipus de lletra utilitzat als blocs de codi",
   "settings.general.row.terminalFont.title": "Tipus de lletra terminal",
-  "settings.general.row.terminalFont.description": "Personalitzeu el tipus de lletra utilitzat al terminal",
+  "settings.general.row.terminalFont.description":
+    "Personalitzeu el tipus de lletra utilitzat al terminal",
   "settings.general.row.uiFont.title": "Tipus de lletra de la interfície",
-  "settings.general.row.uiFont.description": "Personalitzeu el tipus de lletra utilitzat a tota la interfície",
+  "settings.general.row.uiFont.description":
+    "Personalitzeu el tipus de lletra utilitzat a tota la interfície",
   "settings.general.row.followup.title": "Comportament de seguiment",
   "settings.general.row.followup.description":
     "Trieu si les indicacions de seguiment es dirigeixen immediatament o esperen en una cua",
   "settings.general.row.followup.option.queue": "Cua",
   "settings.general.row.followup.option.steer": "Dirigeix",
   "settings.general.row.showFileTree.title": "Arbre de fitxers",
-  "settings.general.row.showFileTree.description": "Mostra el tauler de l'arbre de fitxers a les sessions",
+  "settings.general.row.showFileTree.description":
+    "Mostra el tauler de l'arbre de fitxers a les sessions",
   "settings.general.row.showNavigation.title": "Controls de navegació",
   "settings.general.row.showNavigation.description":
     "Mostra els botons enrere i endavant a la barra de títol de l'escriptori",
   "settings.general.row.showSearch.title": "Paleta de comandaments",
-  "settings.general.row.showSearch.description": "Mostra el botó de cerca i paleta d'ordres a la barra de títol",
+  "settings.general.row.showSearch.description":
+    "Mostra el botó de cerca i paleta d'ordres a la barra de títol",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Mostra el botó del terminal a la barra de títol de l'escriptori",
+  "settings.general.row.showTerminal.description":
+    "Mostra el botó del terminal a la barra de títol de l'escriptori",
   "settings.general.row.showStatus.title": "Estat del servidor",
-  "settings.general.row.showStatus.description": "Mostra el botó d'estat del servidor a la barra de títol",
+  "settings.general.row.showStatus.description":
+    "Mostra el botó d'estat del servidor a la barra de títol",
   "settings.general.row.mobileTitlebarBottom.title": "Navegació inferior",
   "settings.general.row.mobileTitlebarBottom.description":
     "Col·loqueu la barra de títol i les pestanyes de sessió a la part inferior de la pantalla al mòbil",
@@ -984,31 +1123,38 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "Canvia entre agents del compositor. Quan s'amaga, el valor predeterminat és Build agent.",
   "settings.general.row.reasoningSummaries.title": "Mostra resums de raonament",
-  "settings.general.row.reasoningSummaries.description": "Mostra els resums de raonament del model a la línia de temps",
-  "settings.general.row.shellToolPartsExpanded.title": "Amplieu les peces de l'eina de closca",
+  "settings.general.row.reasoningSummaries.description":
+    "Mostra els resums de raonament del model a la línia de temps",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Amplieu les peces de l'eina de closca",
   "settings.general.row.shellToolPartsExpanded.description":
     "Mostra les parts de l'eina d'intèrpret d'ordres ampliades per defecte a la línia de temps",
-  "settings.general.row.editToolPartsExpanded.title": "Amplieu les parts d'eina d'edició",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Amplieu les parts d'eina d'edició",
   "settings.general.row.editToolPartsExpanded.description":
     "Mostra les parts de l'eina d'edició, escriptura i pedaç ampliades de manera predeterminada a la línia de temps",
   "settings.general.row.newInterface.title": "Nou disseny",
   "settings.general.row.newInterface.badge": "Nou",
   "settings.general.row.newInterface.description":
     "Utilitzeu les noves pestanyes i el disseny de la casa. Canvia entre dissenys durant un temps limitat.",
-  "settings.general.row.newInterfaceNotice.title": "Ara esteu utilitzant un disseny nou",
-  "settings.general.row.newInterfaceNotice.description": "El disseny anterior ja no està disponible",
+  "settings.general.row.newInterfaceNotice.title":
+    "Ara esteu utilitzant un disseny nou",
+  "settings.general.row.newInterfaceNotice.description":
+    "El disseny anterior ja no està disponible",
   "settings.general.row.newInterfaceNotice.dismiss": "Descartar",
   "settings.general.row.pinchZoom.title": "Pessigueu per fer zoom",
   "settings.general.row.pinchZoom.description":
     "Permet que els gestos de pessigar el ratolí tàctil i de desplaçament Ctrl s'ampliïn",
   "settings.general.row.wayland.title": "Utilitza el nadiu Wayland",
-  "settings.general.row.wayland.description": "Desactiveu la alternativa X11 a Wayland. Requereix reinici.",
+  "settings.general.row.wayland.description":
+    "Desactiveu la alternativa X11 a Wayland. Requereix reinici.",
   "settings.general.row.wayland.tooltip":
     "A Linux amb monitors de freqüència de refresc mixta, el nadiu Wayland pot ser més estable.",
   "settings.general.row.releaseNotes.title": "Notes de publicació",
   "settings.general.row.releaseNotes.description":
     "Mostra les finestres emergents Novetats després de les actualitzacions",
-  "settings.updates.row.startup.title": "Comproveu si hi ha actualitzacions a l'inici",
+  "settings.updates.row.startup.title":
+    "Comproveu si hi ha actualitzacions a l'inici",
   "settings.updates.row.startup.description":
     "Comprova automàticament si hi ha actualitzacions quan s'iniciï OpenCode.",
   "settings.updates.row.check.title": "Comproveu si hi ha actualitzacions",
@@ -1019,7 +1165,8 @@ export const dict = {
   "settings.updates.action.downloading": "S'està baixant...",
   "settings.updates.action.installing": "S'està instal·lant...",
   "settings.updates.toast.latest.title": "Estàs al dia",
-  "settings.updates.toast.latest.description": "Esteu executant la darrera versió de OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Esteu executant la darrera versió de OpenCode.",
   "sound.option.none": "Cap",
   "sound.option.alert01": "Alerta 01",
   "sound.option.alert02": "Alerta 02",
@@ -1073,19 +1220,25 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Mostra la notificació del sistema quan es requereix un permís",
   "settings.general.notifications.errors.title": "Errors",
-  "settings.general.notifications.errors.description": "Mostra la notificació del sistema quan es produeix un error",
+  "settings.general.notifications.errors.description":
+    "Mostra la notificació del sistema quan es produeix un error",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Reprodueix el so quan l'agent està complet o necessita atenció",
+  "settings.general.sounds.agent.description":
+    "Reprodueix el so quan l'agent està complet o necessita atenció",
   "settings.general.sounds.permissions.title": "Permisos",
-  "settings.general.sounds.permissions.description": "Reprodueix so quan es requereix un permís",
+  "settings.general.sounds.permissions.description":
+    "Reprodueix so quan es requereix un permís",
   "settings.general.sounds.errors.title": "Errors",
-  "settings.general.sounds.errors.description": "Reprodueix el so quan es produeix un error",
+  "settings.general.sounds.errors.description":
+    "Reprodueix el so quan es produeix un error",
   "settings.shortcuts.title": "Dreceres de teclat",
   "settings.shortcuts.reset.button": "Restableix els valors predeterminats",
   "settings.shortcuts.reset.toast.title": "Es restableixen les dreceres",
-  "settings.shortcuts.reset.toast.description": "Les dreceres de teclat s'han restablert als valors predeterminats.",
+  "settings.shortcuts.reset.toast.description":
+    "Les dreceres de teclat s'han restablert als valors predeterminats.",
   "settings.shortcuts.conflict.title": "La drecera ja està en ús",
-  "settings.shortcuts.conflict.description": "{{keybind}} ja està assignat a {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ja està assignat a {{titles}}.",
   "settings.shortcuts.unassigned": "Sense assignar",
   "settings.shortcuts.pressKeys": "Premeu les tecles",
   "settings.shortcuts.search.placeholder": "Cerca dreceres",
@@ -1097,60 +1250,78 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Indicació",
   "settings.providers.title": "Proveïdors",
-  "settings.providers.description": "La configuració del proveïdor es podrà configurar aquí.",
+  "settings.providers.description":
+    "La configuració del proveïdor es podrà configurar aquí.",
   "settings.providers.section.connected": "Proveïdors connectats",
   "settings.providers.connected.empty": "No hi ha proveïdors connectats",
-  "settings.providers.connected.environmentDescription": "Connectat des de les vostres variables d'entorn",
+  "settings.providers.connected.environmentDescription":
+    "Connectat des de les vostres variables d'entorn",
   "settings.providers.section.popular": "Proveïdors populars",
-  "settings.providers.custom.description": "Afegiu un proveïdor compatible amb OpenAI per base URL.",
+  "settings.providers.custom.description":
+    "Afegiu un proveïdor compatible amb OpenAI per base URL.",
   "settings.providers.tag.environment": "Medi ambient",
   "settings.providers.tag.config": "Config",
   "settings.providers.tag.custom": "Personalitzat",
   "settings.providers.tag.other": "Altres",
   "settings.models.title": "Models",
-  "settings.models.description": "La configuració del model es podrà configurar aquí.",
+  "settings.models.description":
+    "La configuració del model es podrà configurar aquí.",
   "settings.agents.title": "Agents",
-  "settings.agents.description": "La configuració de l'agent es podrà configurar aquí.",
+  "settings.agents.description":
+    "La configuració de l'agent es podrà configurar aquí.",
   "settings.commands.title": "Ordres",
-  "settings.commands.description": "La configuració de les ordres es podrà configurar aquí.",
+  "settings.commands.description":
+    "La configuració de les ordres es podrà configurar aquí.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "La configuració MCP es podrà configurar aquí.",
   "settings.permissions.title": "Permisos",
-  "settings.permissions.description": "Controleu quines eines pot utilitzar el servidor de manera predeterminada.",
+  "settings.permissions.description":
+    "Controleu quines eines pot utilitzar el servidor de manera predeterminada.",
   "settings.permissions.section.tools": "Eines",
-  "settings.permissions.toast.updateFailed.title": "No s'han pogut actualitzar els permisos",
+  "settings.permissions.toast.updateFailed.title":
+    "No s'han pogut actualitzar els permisos",
   "settings.permissions.action.allow": "Permetre",
   "settings.permissions.action.ask": "Pregunta",
   "settings.permissions.action.deny": "Negar",
   "settings.permissions.tool.read.title": "Llegeix",
-  "settings.permissions.tool.read.description": "Llegint un fitxer (coincideix amb la ruta del fitxer)",
+  "settings.permissions.tool.read.description":
+    "Llegint un fitxer (coincideix amb la ruta del fitxer)",
   "settings.permissions.tool.edit.title": "Edita",
   "settings.permissions.tool.edit.description":
     "Modifiqueu fitxers, incloses les edicions, les escriptures i els pedaços",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Relaciona fitxers amb patrons globus",
+  "settings.permissions.tool.glob.description":
+    "Relaciona fitxers amb patrons globus",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Cerca continguts de fitxers mitjançant expressions regulars",
+  "settings.permissions.tool.grep.description":
+    "Cerca continguts de fitxers mitjançant expressions regulars",
   "settings.permissions.tool.list.title": "Llista",
-  "settings.permissions.tool.list.description": "Llista els fitxers dins d'un directori",
+  "settings.permissions.tool.list.description":
+    "Llista els fitxers dins d'un directori",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Executeu ordres de shell",
   "settings.permissions.tool.task.title": "Tasca",
   "settings.permissions.tool.task.description": "Llançar subagents",
   "settings.permissions.tool.skill.title": "Habilitat",
-  "settings.permissions.tool.skill.description": "Carregueu una habilitat pel nom",
+  "settings.permissions.tool.skill.description":
+    "Carregueu una habilitat pel nom",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Executeu consultes del servidor d'idiomes",
+  "settings.permissions.tool.lsp.description":
+    "Executeu consultes del servidor d'idiomes",
   "settings.permissions.tool.todowrite.title": "Tot Escriure",
-  "settings.permissions.tool.todowrite.description": "Actualitzeu la llista de tasques",
+  "settings.permissions.tool.todowrite.description":
+    "Actualitzeu la llista de tasques",
   "settings.permissions.tool.webfetch.title": "Recollida web",
-  "settings.permissions.tool.webfetch.description": "Obteniu contingut d'un URL",
+  "settings.permissions.tool.webfetch.description":
+    "Obteniu contingut d'un URL",
   "settings.permissions.tool.websearch.title": "Cerca web",
   "settings.permissions.tool.websearch.description": "Cerca al web",
   "settings.permissions.tool.external_directory.title": "Directori extern",
-  "settings.permissions.tool.external_directory.description": "Accediu als fitxers fora del directori del projecte",
+  "settings.permissions.tool.external_directory.description":
+    "Accediu als fitxers fora del directori del projecte",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Detecteu trucades d'eines repetides amb entrada idèntica",
+  "settings.permissions.tool.doom_loop.description":
+    "Detecteu trucades d'eines repetides amb entrada idèntica",
   "session.delete.failed.title": "No s'ha pogut suprimir la sessió",
   "session.delete.title": "Suprimeix la sessió",
   "session.delete.confirm": 'Voleu suprimir la sessió "{{name}}"?',
@@ -1164,12 +1335,15 @@ export const dict = {
   "workspace.resetting.description": "Això pot trigar un minut.",
   "workspace.reset.failed.title": "No s'ha pogut restablir l'espai de treball",
   "workspace.reset.success.title": "Restabliment de l'espai de treball",
-  "workspace.reset.success.description": "L'espai de treball ara coincideix amb la branca predeterminada.",
-  "workspace.error.stillPreparing": "L'espai de treball encara s'està preparant",
+  "workspace.reset.success.description":
+    "L'espai de treball ara coincideix amb la branca predeterminada.",
+  "workspace.error.stillPreparing":
+    "L'espai de treball encara s'està preparant",
   "workspace.status.checking": "S'estan comprovant els canvis no combinats...",
   "workspace.status.error": "No es pot verificar l'estat de git.",
   "workspace.status.clean": "No s'han detectat canvis no combinats.",
-  "workspace.status.dirty": "S'han detectat canvis no combinats en aquest espai de treball.",
+  "workspace.status.dirty":
+    "S'han detectat canvis no combinats en aquest espai de treball.",
   "workspace.delete.title": "Suprimeix l'espai de treball",
   "workspace.delete.confirm": 'Voleu suprimir l\'espai de treball "{{name}}"?',
   "workspace.delete.button": "Suprimeix l'espai de treball",
@@ -1179,6 +1353,7 @@ export const dict = {
   "workspace.reset.archived.none": "No s'arxivarà cap sessió activa.",
   "workspace.reset.archived.one": "S'arxivarà 1 sessió.",
   "workspace.reset.archived.many": "{{count}} sessions s'arxivaran.",
-  "workspace.reset.note": "Això restablirà l'espai de treball perquè coincideixi amb la branca predeterminada.",
+  "workspace.reset.note":
+    "Això restablirà l'espai de treball perquè coincideixi amb la branca predeterminada.",
   "dialog.usageExceeded.dontShowAgain": "No ho tornis a mostrar",
 }

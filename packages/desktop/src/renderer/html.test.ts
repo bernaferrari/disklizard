@@ -64,6 +64,9 @@ describe("electron renderer html", () => {
 describe("electron vite publicDir", () => {
   test("configured publicDir resolves to a directory with oc-theme-preload.js", async () => {
     const config = await Bun.file(join(root, "electron.vite.config.ts")).text()
+    expect(config).toContain('host: "127.0.0.1"')
+    expect(config).toContain("strictPort: true")
+    expect(config).toContain('portAcceptsExclusiveBind(port, "0.0.0.0")')
     expect(config).toContain("../app/public")
     expect(existsSync(diskLizardPublicDir)).toBe(true)
     expect(existsSync(join(diskLizardPublicDir, "oc-theme-preload.js"))).toBe(true)

@@ -92,6 +92,10 @@ export type DiskLizardDeleteAuthorizationOutcome = {
   error?: string
 }
 
+export type DiskLizardPathAccess = {
+  state: "likely" | "denied" | "read-only" | "unknown"
+}
+
 export type DiskLizardStopWatchingOptions = {
   /** Preserve a main-produced focused subtree under its active trusted parent scan. */
   retainTrustedSubtree?: true
@@ -159,6 +163,7 @@ export type DiskLizardAPI = {
   cancelScan: (scanId?: string) => Promise<void>
   stopWatching: (scanId?: string, options?: DiskLizardStopWatchingOptions) => Promise<void>
   authorizeDeletePaths: (paths: readonly string[]) => Promise<DiskLizardDeleteAuthorizationOutcome[]>
+  checkDeleteAccess: (path: string) => Promise<DiskLizardPathAccess>
   deletePath: (path: string, options: DiskLizardDeleteOptions) => Promise<{ ok: true }>
   previewPath: (path: string) => Promise<DiskLizardFilePreview>
   systemPreviewPath: (path: string) => Promise<void>

@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode މެނޫ",
   "desktop.updater.dialog.checkFailed.message": "އަޕްޑޭޓް ޗެކް ފެއިލްވެއްޖެއެވެ.",
   "desktop.updater.dialog.checkFailed.title": "އަޕްޑޭޓް އެރަރ",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "ޔޫ އާ އަޕް ޓު ޑޭޓް.",
   "desktop.updater.dialog.upToDate.title": "ނޯ އަޕްޑޭޓްސް",
-  "desktop.updater.dialog.ready.message": "އަޕްޑޭޓް {{version}} ޑައުންލޯޑް ކޮށްފިއެވެ. މިހާރު ރީސްޓާޓް ކުރަންތަ؟",
+  "desktop.updater.dialog.ready.message":
+    "އަޕްޑޭޓް {{version}} ޑައުންލޯޑް ކޮށްފިއެވެ. މިހާރު ރީސްޓާޓް ކުރަންތަ؟",
   "desktop.updater.dialog.ready.title": "އަޕްޑޭޓް ރެޑީ",
   "desktop.updater.dialog.restart": "އަލުން ފަށާށެވެ",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode އިން ޖަވާބެއް ނުދެއެވެ",
   "desktop.recovery.unresponsive.detail":
     "އެޕް އަލުން ލޯންޗްކޮށް، ލޮގްތައް ހުޅުވައި، ނުވަތަ މަޑުކޮށްގެން ތިބެވޭނެ އެވެ.",
-  "desktop.recovery.loadFailed.detail": "ވިންޑޯ: {{window}}\nURL: {{url}}\nއެރަރ: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "ވިންޑޯ: {{window}}\nސަބަބު: {{reason}}\nކޯޑް: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "ވިންޑޯ: {{window}}\nURL: {{url}}\nއެރަރ: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "ވިންޑޯ: {{window}}\nސަބަބު: {{reason}}\nކޯޑް: {{code}}",
   "desktop.recovery.unknown": "<ނޭނގޭ>",
   "desktop.dialog.chooseFolder": "ފޯލްޑަރެއް ހޮވާށެވެ",
   "desktop.dialog.chooseFile": "ފައިލެއް ހޮވާށެވެ",
@@ -82,8 +86,10 @@ export const dict = {
   "desktop.wsl.error.installOpencode": "OpenCode އިންސްޓޯލް ކުރުން ނާކާމިޔާބުވެއްޖެ",
   "desktop.wsl.error.alreadyAdded": "{{distro}} މިހާރުވެސް އިތުރުކޮށްފައިވެއެވެ",
   "desktop.wsl.error.opencodeMissing": "މި ޑިސްޓްރޯގައި opencode އިންސްޓޯލްކޮށްފައެއް ނުވެއެވެ",
-  "desktop.wsl.error.opencodeCannotRun": "opencode އިންސްޓޯލް ކޮށްފައި އޮތް ނަމަވެސް ހިންގޭ ގޮތެއް ނުވިއެވެ",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode އަކީ {{distro}} ގައި އިންސްޓޯލް ކުރެވިފައިވާ އެއްޗެއް ނޫނެވެ",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode އިންސްޓޯލް ކޮށްފައި އޮތް ނަމަވެސް ހިންގޭ ގޮތެއް ނުވިއެވެ",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode އަކީ {{distro}} ގައި އިންސްޓޯލް ކުރެވިފައިވާ އެއްޗެއް ނޫނެވެ",
   "desktop.wsl.error.updateVersion":
     "OpenCode އަޕްޑޭޓް ނިމުނު ނަމަވެސް {{distro}} އަދިވެސް ރިޕޯޓް ކުރަނީ {{installed}}؛ ލަފާކުރެވޭ ގޮތުގައި {{expected}}",
   "desktop.wsl.error.noVersion": "އެއްވެސް ވަރޝަނެއް ނެތެވެ",
@@ -93,7 +99,8 @@ export const dict = {
     "WSL ސަރވަރ އިން ނުކުތީ ދުޅަހެޔޮ ސިއްހަތެއްގައި ހުރުމުގެ ކުރިން (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{distro}} ހެލްތު ޗެކް ކުރުމަށް ސައިޑްކާރ ޓައިމް އައުޓް ކޮށްފައިވަނީ {{timeout}}ms އަށް ފަހުގައެވެ",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} ޓައިމް އައުޓް ކޮށްފައިވަނީ {{timeout}}ms އަށް ފަހުގައެވެ",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} ޓައިމް އައުޓް ކޮށްފައިވަނީ {{timeout}}ms އަށް ފަހުގައެވެ",
   "desktop.wsl.error.failedPort": "ބަނދަރު ހޯދުމަށް ނާކާމިޔާބުވިއެވެ",
   "desktop.picker.error.notSelected": "ފައިލް ހޮވާފައިވަނީ ޕިކަރ އިން ނޫނެވެ",
   "desktop.picker.error.sizeLimit": "ހޮވާލެވޭ އެޓޭޗްމަންޓްތައް {{limit}} MB ލިމިޓަށްވުރެ މަތިވެއެވެ",
@@ -143,7 +150,8 @@ export const dict = {
   "command.tab.close": "ޓެބް ބަންދުކުރުން",
   "command.tab.reopenClosed": "ބަންދުކޮށްފައިވާ ޓެބް އަލުން ހުޅުވާލާށެވެ",
   "command.context.addSelection": "ކޮންޓެކްސްޓަށް ސެލެކްޝަން އިތުރުކުރުން",
-  "command.context.addSelection.description": "މިހާރު ހުރި ފައިލް އިން ހޮވާފައިވާ ލައިންތައް އިތުރުކުރުން",
+  "command.context.addSelection.description":
+    "މިހާރު ހުރި ފައިލް އިން ހޮވާފައިވާ ލައިންތައް އިތުރުކުރުން",
   "command.input.focus": "ފޯކަސް އިންޕުޓް",
   "command.terminal.toggle": "ޓޮގްލް ޓާމިނަލް",
   "command.fileTree.toggle": "ޓޮގްލް ފައިލް ޓްރީ",
@@ -171,7 +179,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "އޮޓޯ އެކްސެޕްޓް ހުއްދަތައް",
   "command.permissions.autoaccept.disable": "ހުއްދަތައް އޮޓޯ އެކްސެޕްޓްކުރުން ހުއްޓާލާށެވެ",
   "command.workspace.toggle": "ވޯކްސްޕޭސްތައް ޓޮގްލްކުރުން",
-  "command.workspace.toggle.description": "ސައިޑްބާރ ގައި ގިނަ ވޯކްސްޕޭސްތައް އެނެބަލް ނުވަތަ ޑިސެބަލް ކުރުން",
+  "command.workspace.toggle.description":
+    "ސައިޑްބާރ ގައި ގިނަ ވޯކްސްޕޭސްތައް އެނެބަލް ނުވަތަ ޑިސެބަލް ކުރުން",
   "command.session.undo": "އަންޑޯ",
   "command.session.undo.description": "އެންމެ ފަހު މެސެޖު އަންޑޯ ކުރާށެވެ",
   "command.session.redo": "ރީޑޯ",
@@ -201,7 +210,8 @@ export const dict = {
     "ކިއުރެޓް ކުރެވިފައިވާ މޮޑެލްތަކުގެ ތެރޭގައި Claude، GPT، Gemini އަދި އެހެނިހެން މޮޑެލްތައް ހިމެނެއެވެ",
   "dialog.provider.opencode.tagline": "އިތުބާރު ހުރި އޮޕްޓިމައިޒްޑް މޮޑެލްތަކެވެ",
   "dialog.provider.opencodeGo.tagline": "އެންމެންނަށް ކުޑަ އަގެއްގައި ސަބްސްކްރިޕްޝަން ދިނުމެވެ",
-  "dialog.provider.anthropic.note": "ޕްރޯ އަދި މެކްސް ހިމެނޭ ގޮތަށް Claude މޮޑެލްތަކަށް ސީދާ އެކްސެސް ލިބޭނެ އެވެ",
+  "dialog.provider.anthropic.note":
+    "ޕްރޯ އަދި މެކްސް ހިމެނޭ ގޮތަށް Claude މޮޑެލްތަކަށް ސީދާ އެކްސެސް ލިބޭނެ އެވެ",
   "dialog.provider.copilot.note": "GitHub Copilot މެދުވެރިކޮށް ކޯޑިންގ އެހީތެރިވުމަށް AI މޮޑެލްތައް",
   "dialog.provider.openai.note": "އަވަސް، ގާބިލް އާންމު AI ޓާސްކްތަކަށް GPT މޮޑެލްތަކެވެ",
   "dialog.provider.google.note": "އަވަސް، ސްޓްރަކްޗަރޑް ރެސްޕޮންސްތަކަށް Gemini މޮޑެލްތަކެވެ",
@@ -252,19 +262,23 @@ export const dict = {
     " އަދި ތިރީގައިވާ ކޯޑް ޖައްސަވައިގެން އެކައުންޓް ގުޅުވައި، OpenCode ގައި {{provider}} މޮޑެލްތައް ބޭނުން ކުރައްވާށެވެ.",
   "provider.connect.oauth.auto.confirmationCode": "ކޮންފަރމަންސް ކޯޑް",
   "provider.connect.toast.connected.title": "{{provider}} ގުޅިފައިވެއެވެ",
-  "provider.connect.toast.connected.description": "{{provider}} މޮޑެލްތައް މިހާރު ބޭނުންކުރެވޭނެ އެވެ.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} މޮޑެލްތައް މިހާރު ބޭނުންކުރެވޭނެ އެވެ.",
   "provider.custom.title": "ކަސްޓަމް ޕްރޮވައިޑަރެވެ",
   "provider.custom.unavailable": "މި ސަރވަރގައި ކަސްޓަމް ޕްރޮވައިޑަރުން ނުލިބެއެވެ",
-  "provider.custom.description.prefix": "OpenAI އާއި އެއްގޮތްވާ ޕްރޮވައިޑަރެއް ކޮންފިގްރޭޓްކުރުން. ބަލާށެވެ ",
+  "provider.custom.description.prefix":
+    "OpenAI އާއި އެއްގޮތްވާ ޕްރޮވައިޑަރެއް ކޮންފިގްރޭޓްކުރުން. ބަލާށެވެ ",
   "provider.custom.description.link": "ޕްރޮވައިޑަރ ކޮންފިގް ޑޮކްސް",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ޕްރޮވައިޑަރ ID",
   "provider.custom.field.providerID.placeholder": "myprovider އެވެ",
-  "provider.custom.field.providerID.description": "ކުދި އަކުރުތަކާއި، ނަންބަރުތަކާއި، ހައިފެން ނުވަތަ އަންޑަރސްކޯރސް",
+  "provider.custom.field.providerID.description":
+    "ކުދި އަކުރުތަކާއި، ނަންބަރުތަކާއި، ހައިފެން ނުވަތަ އަންޑަރސްކޯރސް",
   "provider.custom.field.name.label": "ނަން ދައްކާށެވެ",
   "provider.custom.field.name.placeholder": "އަހަރެންގެ AI ޕްރޮވައިޑަރ",
   "provider.custom.field.baseURL.label": "ބޭސް URL",
-  "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1 އެވެ",
+  "provider.custom.field.baseURL.placeholder":
+    "https://api.myprovider.com/v1 އެވެ",
   "provider.custom.field.apiKey.label": "API ކީ އެވެ",
   "provider.custom.field.apiKey.placeholder": "API ކީ އެވެ",
   "provider.custom.field.apiKey.description":
@@ -293,7 +307,8 @@ export const dict = {
   "provider.custom.error.required": "ބޭނުންވާ",
   "provider.custom.error.duplicate": "ޑަބިލިކޭޓް ކުރުން",
   "provider.disconnect.toast.disconnected.title": "{{provider}} ކަނެކްޓް ވެއްޖެއެވެ",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} މޮޑެލްތައް މިހާރު ލިބެން ނެތެވެ.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} މޮޑެލްތައް މިހާރު ލިބެން ނެތެވެ.",
   "model.tag.free": "ހިލޭ",
   "model.tag.latest": "އެންމެފަހުގެ",
   "model.provider.anthropic": "Anthropic އެވެ",
@@ -391,7 +406,8 @@ export const dict = {
     "މިތަނުގައި އެޓޭޗް ކުރެވޭނީ ހަމައެކަނި ތަސްވީރު، PDFs، ނުވަތަ ޓެކްސްޓް ފައިލްތަކެވެ.",
   "prompt.toast.attachmentDuplicate.title": "މި ފައިލް މިހާރު ވަނީ އަޕްލޯޑްކޮށްފައެވެ",
   "prompt.toast.modelAgentRequired.title": "އޭޖެންޓަކާއި މޮޑެލްއެއް ހޮވުން",
-  "prompt.toast.modelAgentRequired.description": "ޕްރޮމްޕްޓެއް ފޮނުވުމުގެ ކުރިން އޭޖެންޓަކާއި މޮޑެލްއެއް ހޮވުން.",
+  "prompt.toast.modelAgentRequired.description":
+    "ޕްރޮމްޕްޓެއް ފޮނުވުމުގެ ކުރިން އޭޖެންޓަކާއި މޮޑެލްއެއް ހޮވުން.",
   "prompt.toast.worktreeCreateFailed.title": "ވޯކްޓްރީ އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
   "prompt.toast.sessionCreateFailed.title": "ސެޝަން އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
   "prompt.toast.shellSendFailed.title": "ޝެލް ކޮމާންޑް ފޮނުވަން ނާކާމިޔާބުވިއެވެ",
@@ -496,7 +512,8 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "WSL އަށް WSL ސަރވަރ އެއް އިތުރު ކުރުމުގެ ކުރިން WSL (Windows Subsystem for Linux) ބޭނުންވެއެވެ",
   "wsl.onboarding.wslUnavailable.title": "WSL ލިބެން ނެތް",
-  "wsl.onboarding.wslUnavailable.description": "މި މެޝިނުގައި OpenCode އަށް WSL ޔަގީން ނުކުރެވުނެވެ.",
+  "wsl.onboarding.wslUnavailable.description":
+    "މި މެޝިނުގައި OpenCode އަށް WSL ޔަގީން ނުކުރެވުނެވެ.",
   "wsl.onboarding.installWsl": "WSL އިންސްޓޯލް ކުރާށެވެ",
   "wsl.onboarding.windowsRestartRequired":
     "WSL އިންސްޓޯލް ކުރުން ނިންމުމަށް Windows އަލުން ސްޓާޓްކޮށް، ދެން OpenCode އަލުން ހުޅުވާށެވެ.",
@@ -516,7 +533,8 @@ export const dict = {
   "wsl.onboarding.version": "ވަރޝަން: {{version}}",
   "wsl.onboarding.unknown": "ނޭނގޭ އެއްޗެއް",
   "wsl.onboarding.desktopVersion": "ޑެސްކްޓޮޕް {{version}} އެވެ",
-  "wsl.onboarding.versionMismatch": "އިންސްޓޯލް ކޮށްފައިވާ ވަރޝަން ޑެސްކްޓޮޕް އެޕް ވަރޝަން އާއި އެއްގޮތެއް ނުވެއެވެ.",
+  "wsl.onboarding.versionMismatch":
+    "އިންސްޓޯލް ކޮށްފައިވާ ވަރޝަން ޑެސްކްޓޮޕް އެޕް ވަރޝަން އާއި އެއްގޮތެއް ނުވެއެވެ.",
   "wsl.onboarding.adding": "އިތުރުކުރަނީ...",
   "help.tabs.toast.ariaLabel":
     "Tabs ތަޢާރަފްކުރުން. ޓެބްތަކާއެކު ތިމާގެ މަސައްކަތާއި އެކްޓިވް ސެޝަންތައް އިންތިޒާމުކުރުން",
@@ -544,7 +562,8 @@ export const dict = {
   "dialog.project.edit.color": "ކުލަ",
   "dialog.project.edit.color.select": "{{color}} ކުލަ ހޮވާށެވެ",
   "dialog.project.edit.worktree.startup": "ވޯކްސްޕޭސް ސްޓާޓްއަޕް ސްކްރިޕްޓް",
-  "dialog.project.edit.worktree.startup.description": "އާ ވޯކްސްޕޭސް (ވޯކްޓްރީ) އުފެއްދުމަށްފަހު ހިނގައެވެ.",
+  "dialog.project.edit.worktree.startup.description":
+    "އާ ވޯކްސްޕޭސް (ވޯކްޓްރީ) އުފެއްދުމަށްފަހު ހިނގައެވެ.",
   "dialog.project.edit.worktree.startup.placeholder": "މ. bun install އެވެ",
   "dialog.releaseNotes.action.getStarted": "ފަށާށެވެ",
   "dialog.releaseNotes.action.next": "ދެން",
@@ -609,9 +628,11 @@ export const dict = {
   "toast.workspace.disabled.title": "ވޯކްސްޕޭސްތައް ޑިސެބިލްކޮށްފައި",
   "toast.workspace.disabled.description": "ސައިޑްބާރގައި ދައްކާފައިވަނީ ހަމައެކަނި މައިގަނޑު ވޯކްޓްރީއެވެ",
   "toast.permissions.autoaccept.on.title": "އޮޓޯ އެކްސެޕްޓިންގ ހުއްދަތައް",
-  "toast.permissions.autoaccept.on.description": "ހުއްދައަށް އެދޭ ފަރާތްތަކުން އޮޓޮމެޓިކުން ފާސްކުރެވޭނެއެވެ",
+  "toast.permissions.autoaccept.on.description":
+    "ހުއްދައަށް އެދޭ ފަރާތްތަކުން އޮޓޮމެޓިކުން ފާސްކުރެވޭނެއެވެ",
   "toast.permissions.autoaccept.off.title": "ހުއްދަތައް އޮޓޯ އެކްސެޕްޓްކުރުން ހުއްޓާލިއެވެ",
-  "toast.permissions.autoaccept.off.description": "ހުއްދައަށް އެދޭ ފަރާތްތަކަށް ރުހުން ހޯދަން ޖެހޭނެއެވެ",
+  "toast.permissions.autoaccept.off.description":
+    "ހުއްދައަށް އެދޭ ފަރާތްތަކަށް ރުހުން ހޯދަން ޖެހޭނެއެވެ",
   "toast.model.none.title": "އެއްވެސް މޮޑެލްއެއް ހޮވިފައެއް ނުވެއެވެ",
   "toast.model.none.description": "މި ސެޝަން ޚުލާޞާ ކުރުމަށް ޕްރޮވައިޑަރަކާ ގުޅުވާށެވެ",
   "toast.file.loadFailed.title": "ފައިލް ލޯޑް ނުކުރެވުނެވެ",
@@ -634,10 +655,13 @@ export const dict = {
   "toast.session.listFailed.title": "{{project}} އަށް ސެޝަންތައް ލޯޑް ނުކުރެވިއްޖެއެވެ",
   "toast.project.reloadFailed.title": "{{project}} ރީލޯޑް ނުކުރެވިއްޖެއެވެ",
   "toast.update.title": "އަޕްޑޭޓް ލިބެން ހުރެއެވެ",
-  "toast.update.description": "OpenCode ({{version}}) ގެ އާ ވަރޝަނެއް މިހާރު އިންސްޓޯލް ކުރެވޭނެއެވެ.",
+  "toast.update.description":
+    "OpenCode ({{version}}) ގެ އާ ވަރޝަނެއް މިހާރު އިންސްޓޯލް ކުރެވޭނެއެވެ.",
   "toast.update.action.installRestart": "އިންސްޓޯލްކޮށް އަލުން ސްޓާޓްކުރުން",
-  "disk.accessGuidance.macos": "ސިސްޓަމް ސެޓިންގސްގައި DiskLizard އަށް ފުލް ޑިސްކް އެކްސެސް ދީ، ފަހުން އަލުން ސްކެން ކުރޭ.",
-  "disk.accessGuidance.windows": "މި ޑްރައިވަށް އެކްސެސް އޮތް އެކައުންތަކެއް ބޭނުން ކުރާ، ނުވަތަ ތިޔައިގެ އެކައުނަށް ވިދާޅުވޭ ފޯލްޑަރެއް ސްކެން ކުރޭ.",
+  "disk.accessGuidance.macos":
+    "ސިސްޓަމް ސެޓިންގސްގައި DiskLizard އަށް ފުލް ޑިސްކް އެކްސެސް ދީ، ފަހުން އަލުން ސްކެން ކުރޭ.",
+  "disk.accessGuidance.windows":
+    "މި ޑްރައިވަށް އެކްސެސް އޮތް އެކައުންތަކެއް ބޭނުން ކުރާ، ނުވަތަ ތިޔައިގެ އެކައުނަށް ވިދާޅުވޭ ފޯލްޑަރެއް ސްކެން ކުރޭ.",
   "disk.accessGuidance.linux": "ފޯލްޑަރު އަދި މައުންޓްގެ ޕަރމިޝަން ތަކެއް ބަލާ، ފަހުން އަލުން ސްކެން ކުރޭ.",
   "disk.accessGuidance.default": "މި ފޯލްޑަރުތަކަށް އެކްސެސް ބަލާ، ފަހުން އަލުން ސްކެން ކުރޭ.",
   "disk.accessGuidance.rescan": "އެކްސެސް ބަދަލުކުރުމުގެ ފަހުން މަތީ ބަރުގައިތިބި Rescan ބޭނުން ކުރޭ.",
@@ -647,7 +671,8 @@ export const dict = {
   "toast.update.installFailed.retry": "އަލުން މަސައްކަތް ކުރޭ",
   "error.page.title": "ކަމެއް ގޯސްވީއެވެ",
   "error.page.description": "އެޕްލިކޭޝަން ލޯޑް ކުރަމުން ދިޔައިރު ގޯހެއް ދިމާވިއެވެ.",
-  "error.page.description.localServerStartup": "ލޯކަލް ސަރވަރ ސްޓާޓް ކުރަމުން ދިޔައިރު ގޯހެއް ދިމާވިއެވެ.",
+  "error.page.description.localServerStartup":
+    "ލޯކަލް ސަރވަރ ސްޓާޓް ކުރަމުން ދިޔައިރު ގޯހެއް ދިމާވިއެވެ.",
   "error.page.details.label": "އެރަރ ޑީޓެއިލްސް",
   "error.page.action.restart": "އަލުން ފަށާށެވެ",
   "error.page.action.report": "ރިޕޯޓް އެރަރ",
@@ -669,7 +694,8 @@ export const dict = {
   "error.childStore.persistedCacheCreateFailed": "ޕަރސިސްޓެޑް ކެޝް އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
   "error.childStore.persistedProjectMetadataCreateFailed":
     "ޕަރސިސްޓެޑް ޕްރޮޖެކްޓް މެޓަޑޭޓާ އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
-  "error.childStore.persistedProjectIconCreateFailed": "ޕަރސިސްޓެޑް ޕްރޮޖެކްޓް އައިކޮން އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "ޕަރސިސްޓެޑް ޕްރޮޖެކްޓް އައިކޮން އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
   "error.childStore.storeCreateFailed": "ސްޓޯރ އުފެއްދުމަށް ނާކާމިޔާބުވިއެވެ",
   "directory.error.invalidUrl": "URL ގައި ސައްހަ ނޫން ޑައިރެކްޓަރީއެއް.",
   "error.chain.unknown": "ނޭނގޭ ގޯހެއް",
@@ -684,7 +710,8 @@ export const dict = {
   "error.chain.checkConfig": "ތިބާގެ ކޮންފިގް (opencode.json) ޕްރޮވައިޑަރ/މޮޑެލް ނަންތައް ޗެކްކުރުން",
   "error.chain.mcpFailed":
     'MCP ސަރވަރ "{{name}}" ފޭލްވެއްޖެއެވެ. ނޯޓް، OpenCode އިން އަދި MCP އޮތެންޓިކޭޝަން އަށް ސަޕޯޓް ނުކުރެއެވެ.',
-  "error.chain.providerAuthFailed": "ޕްރޮވައިޑަރ އޮތެންޓިކޭޝަން ފެއިލްވެއްޖެ ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "ޕްރޮވައިޑަރ އޮތެންޓިކޭޝަން ފެއިލްވެއްޖެ ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'ޕްރޮވައިޑަރ "{{provider}}" އިނިޝިއަލައިޒް ނުކުރެވުނެވެ. ކްރެޑެންޝިއަލްސް އަދި ކޮންފިގްރޭޝަން ޗެކްކުރުން.',
   "error.chain.configJsonInvalid": "{{path}} ގައި ކޮންފިގް ފައިލަކީ ސައްހަ JSON(C) އެއް ނޫނެވެ",
@@ -692,13 +719,17 @@ export const dict = {
     "{{path}} ގައި ކޮންފިގް ފައިލަކީ ސައްހަ ފައިލެއް ނޫން JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} ގައިވާ ޑައިރެކްޓަރީ "{{dir}}" އަކީ ސައްހަ އެއްޗެއް ނޫނެވެ. ޑައިރެކްޓަރީގެ ނަން "{{suggestion}}" އަށް ބަދަލުކޮށް ނުވަތަ ނައްތާލާށެވެ. މިއީ އާންމު ޓައިޕޯއެކެވެ.',
-  "error.chain.configFrontmatterError": "{{path}} ގައި ފްރޮންޓްމެޓަރ ޕާރސް ކުރަން ނާކާމިޔާބު:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} ގައި ފްރޮންޓްމެޓަރ ޕާރސް ކުރަން ނާކާމިޔާބު:\n{{message}}",
   "error.chain.configInvalid": "{{path}} ގައި ކޮންފިގް ފައިލް އަކީ ސައްހަ ފައިލްއެކެވެ",
-  "error.chain.configInvalidWithMessage": "{{path}} ގައި ކޮންފިގް ފައިލް ސައްހަ ނޫން: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} ގައި ކޮންފިގް ފައިލް ސައްހަ ނޫން: {{message}}",
   "notification.permission.title": "ހުއްދަ ބޭނުންވެއެވެ",
-  "notification.permission.description": "{{sessionTitle}} އިން {{projectName}} އަށް ހުއްދަ ބޭނުންވެއެވެ",
+  "notification.permission.description":
+    "{{sessionTitle}} އިން {{projectName}} އަށް ހުއްދަ ބޭނުންވެއެވެ",
   "notification.question.title": "ސުވާލު",
-  "notification.question.description": "{{sessionTitle}} އިން {{projectName}} ގައި ސުވާލެއް އެބައޮތެވެ",
+  "notification.question.description":
+    "{{sessionTitle}} އިން {{projectName}} ގައި ސުވާލެއް އެބައޮތެވެ",
   "notification.action.goToSession": "ސެޝަނަށް ދާށެވެ",
   "notification.session.responseReady.title": "ޖަވާބުދާރީވާން ތައްޔާރު",
   "notification.session.error.title": "ސެޝަން އެރަރ",
@@ -729,7 +760,8 @@ export const dict = {
   "session.tab.unknown": "ނޭނގޭ ސެޝަނެއް",
   "session.panel.reviewAndFiles": "ރިވިއުކޮށް ފައިލްކުރުން",
   "session.error.notFound": "މި ސެޝަން ހޯދިފައެއް ނުވެއެވެ",
-  "session.error.notFound.description": "މި ޓެބުން އިޝާރާތް ކުރަނީ މި ސަރވަރގައި މިހާރު ނެތް ސެޝަނަކަށެވެ.",
+  "session.error.notFound.description":
+    "މި ޓެބުން އިޝާރާތް ކުރަނީ މި ސަރވަރގައި މިހާރު ނެތް ސެޝަނަކަށެވެ.",
   "session.error.notFound.closeTab": "Tab ބަންދުކުރުން",
   "session.error.serverConnection": "މި ސަރވަރ އާއި ގުޅެވޭކަށް ނެތެވެ",
   "session.review.filesChanged": "ފައިލްތައް ބަދަލުވެއްޖެ {{count}}",
@@ -739,7 +771,8 @@ export const dict = {
   "session.review.empty": "މި ޖަލްސާއަށް އަދި ބަދަލެއް ނާދެއެވެ",
   "session.review.noVcs": "Git ވަރޝަން ކޮންޓްރޯލް ސިސްޓަމެއް ނުފެނި، ބަދަލުތައް ނުފެނެއެވެ",
   "session.review.noVcs.createGit.title": "Git ރިޕޮޒިޓަރީއެއް އުފެއްދުން",
-  "session.review.noVcs.createGit.description": "މި މަޝްރޫޢަށް އަންނަ ބަދަލުތައް ޓްރެކްކޮށް، ރިވިއުކޮށް، އަންޑޯކުރުން",
+  "session.review.noVcs.createGit.description":
+    "މި މަޝްރޫޢަށް އަންނަ ބަދަލުތައް ޓްރެކްކޮށް، ރިވިއުކޮށް، އަންޑޯކުރުން",
   "session.review.noVcs.createGit.actionLoading": "Git ރިޕޮޒިޓަރީ އުފެއްދުމުގެ މަސައްކަތް...",
   "session.review.noVcs.createGit.action": "Git ރިޕޮޒިޓަރީ އުފެއްދުން",
   "session.review.noSnapshot":
@@ -844,7 +877,8 @@ export const dict = {
   "terminal.title.numbered": "ޓާމިނަލް {{number}} އެވެ",
   "terminal.close": "ޓާމިނަލް ބަންދުކުރުން",
   "terminal.connectionLost.title": "ގުޅުން ގެއްލިއްޖެއެވެ",
-  "terminal.connectionLost.abnormalClose": "WebSocket އާދަޔާ ހިލާފަށް ބަންދުވެފައި: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket އާދަޔާ ހިލާފަށް ބަންދުވެފައި: {{code}}",
   "terminal.connectionLost.description":
     "ޓާމިނަލް ކަނެކްޝަން މެދުކެނޑުނެވެ. މިއީ ސަރވަރ އަލުން ސްޓާޓް ކުރުމުން ދިމާވެދާނެ ކަމެކެވެ.",
   "terminal.connectTicket.csrfError":
@@ -940,7 +974,8 @@ export const dict = {
   "settings.tab.shortcuts": "ޝޯޓްކާޓްސް",
   "settings.desktop.section.wsl": "WSL އެވެ",
   "settings.desktop.wsl.title": "WSL އިންޓަގްރޭޝަން",
-  "settings.desktop.wsl.description": "Windows ގައި WSL ގެ ތެރޭގައި OpenCode ސަރވަރ ހިންގާށެވެ.",
+  "settings.desktop.wsl.description":
+    "Windows ގައި WSL ގެ ތެރޭގައި OpenCode ސަރވަރ ހިންގާށެވެ.",
   "settings.general.section.appearance": "މަލަމަތި",
   "settings.general.section.advanced": "އެޑްވާންސްޑް",
   "settings.general.section.notifications": "ސިސްޓަމް ނޮޓިފިކޭޝަންސް",
@@ -955,7 +990,8 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "އޮޓޯ (ޑިފޯލްޓް)",
   "settings.general.row.shell.terminalOnly": "ޓާމިނަލް އެކަނި",
   "settings.general.row.appearance.title": "މަލަމަތި",
-  "settings.general.row.appearance.description": "ޑިވައިސްގައި OpenCode ފެންނަ ގޮތް ކަސްޓަމައިޒް ކުރާށެވެ",
+  "settings.general.row.appearance.description":
+    "ޑިވައިސްގައި OpenCode ފެންނަ ގޮތް ކަސްޓަމައިޒް ކުރާށެވެ",
   "settings.general.row.colorScheme.title": "ކުލަ ސްކީމް",
   "settings.general.row.colorScheme.description":
     "OpenCode އިން ސިސްޓަމް، ލައިޓް، ނުވަތަ ޑާކް ތީމް އަށް ތަބާވާތޯ ހޮވާށެވެ",
@@ -964,7 +1000,8 @@ export const dict = {
   "settings.general.row.font.title": "ކޯޑް ފޮންޓެވެ",
   "settings.general.row.font.description": "ކޯޑް ބްލޮކްތަކުގައި ބޭނުންކުރާ ފޮންޓް ކަސްޓަމައިޒް ކުރުން",
   "settings.general.row.terminalFont.title": "ޓާމިނަލް ފޮންޓެވެ",
-  "settings.general.row.terminalFont.description": "ޓާމިނަލްގައި ބޭނުންކުރާ ފޮންޓް ކަސްޓަމައިޒް ކުރުން",
+  "settings.general.row.terminalFont.description":
+    "ޓާމިނަލްގައި ބޭނުންކުރާ ފޮންޓް ކަސްޓަމައިޒް ކުރުން",
   "settings.general.row.uiFont.title": "UI ފޮންޓް",
   "settings.general.row.uiFont.description": "މުޅި އިންޓަރފޭސްގައި ބޭނުންކުރާ ފޮންޓް ކަސްޓަމައިޒް ކުރުން",
   "settings.general.row.followup.title": "ފޮލޯއަޕް ސުލޫކު",
@@ -975,13 +1012,17 @@ export const dict = {
   "settings.general.row.showFileTree.title": "ފައިލް ގަހެވެ",
   "settings.general.row.showFileTree.description": "ސެޝަންތަކުގައި ފައިލް ޓްރީ ޕެނަލް ދައްކާށެވެ",
   "settings.general.row.showNavigation.title": "ނޭވިގޭޝަން ކޮންޓްރޯލްތައް",
-  "settings.general.row.showNavigation.description": "ޑެސްކްޓޮޕް ޓައިޓަލް ބާރ ގައި ފަހަތާއި ކުރިއަށް ބަޓަން ދައްކާށެވެ",
+  "settings.general.row.showNavigation.description":
+    "ޑެސްކްޓޮޕް ޓައިޓަލް ބާރ ގައި ފަހަތާއި ކުރިއަށް ބަޓަން ދައްކާށެވެ",
   "settings.general.row.showSearch.title": "ކޮމާންޑް ޕެލެޓް",
-  "settings.general.row.showSearch.description": "ޓައިޓަލް ބާރ އިން ސަރޗް އެންޑް ކޮމާންޑް ޕެލެޓް ބަޓަން ދައްކާށެވެ",
+  "settings.general.row.showSearch.description":
+    "ޓައިޓަލް ބާރ އިން ސަރޗް އެންޑް ކޮމާންޑް ޕެލެޓް ބަޓަން ދައްކާށެވެ",
   "settings.general.row.showTerminal.title": "ޓާމިނަލް އެވެ",
-  "settings.general.row.showTerminal.description": "ޑެސްކްޓޮޕް ޓައިޓަލް ބާރ އިން ޓާރމިނަލް ބަޓަން ދައްކާށެވެ",
+  "settings.general.row.showTerminal.description":
+    "ޑެސްކްޓޮޕް ޓައިޓަލް ބާރ އިން ޓާރމިނަލް ބަޓަން ދައްކާށެވެ",
   "settings.general.row.showStatus.title": "ސަރވަރ ސްޓޭޓަސް",
-  "settings.general.row.showStatus.description": "ޓައިޓަލް ބާރ ގައި ސަރވަރ ސްޓޭޓަސް ބަޓަން ދައްކާށެވެ",
+  "settings.general.row.showStatus.description":
+    "ޓައިޓަލް ބާރ ގައި ސަރވަރ ސްޓޭޓަސް ބަޓަން ދައްކާށެވެ",
   "settings.general.row.mobileTitlebarBottom.title": "ތިރީގައި ދަތުރުކުރުން",
   "settings.general.row.mobileTitlebarBottom.description":
     "މޯބައިލްގައި ސްކްރީންގެ ތިރީގައި ޓައިޓަލް ބާރ އާއި ސެޝަން ޓެބްތައް ބަހައްޓާށެވެ",
@@ -989,7 +1030,8 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "ކޮމްޕޯސަރުގައި ތިބި އޭޖެންޓުންގެ މެދުގައި ބަދަލުވުން. ފޮރުވާއިރު، ޑިފޯލްޓް ވާނީ ބިލްޑް އޭޖެންޓަށެވެ.",
   "settings.general.row.reasoningSummaries.title": "ރިޒަނިންގ ސުމާރީސް ދައްކާށެވެ",
-  "settings.general.row.reasoningSummaries.description": "ޓައިމްލައިންގައި މޮޑެލް ރިޒަނިންގ ސުމާރީތައް ދައްކާލުން",
+  "settings.general.row.reasoningSummaries.description":
+    "ޓައިމްލައިންގައި މޮޑެލް ރިޒަނިންގ ސުމާރީތައް ދައްކާލުން",
   "settings.general.row.shellToolPartsExpanded.title": "ޝެލް ޓޫލް ބައިތައް ފުޅާކުރުން",
   "settings.general.row.shellToolPartsExpanded.description":
     "ޓައިމްލައިންގައި ޑިފޯލްޓްކޮށް ފުޅާކޮށްފައިވާ ޝެލް ޓޫލް ބައިތައް ދައްކާށެވެ",
@@ -1007,21 +1049,25 @@ export const dict = {
   "settings.general.row.pinchZoom.description":
     "ޓްރެކްޕެޑް ޕިންޗް އަދި Ctrl-ސްކްރޯލް ޖެޝަރސް ޒޫމް ކުރުމަށް ހުއްދަ ދިނުން",
   "settings.general.row.wayland.title": "ނެޓިވް Wayland ބޭނުން ކުރާށެވެ",
-  "settings.general.row.wayland.description": "Wayland ގައި X11 ފޯލްބެކް ޑިސެބަލް ކުރާށެވެ. ރީސްޓާޓް ކުރަން ޖެހެއެވެ.",
+  "settings.general.row.wayland.description":
+    "Wayland ގައި X11 ފޯލްބެކް ޑިސެބަލް ކުރާށެވެ. ރީސްޓާޓް ކުރަން ޖެހެއެވެ.",
   "settings.general.row.wayland.tooltip":
     "މިކްސްޑް ރިފްރެޝް-ރޭޓް މޮނިޓަރުތަކާއެކު Linux ގައި ނެޓިވް Wayland އަށް ވުރެ ސްޓޭބަލް ވެދާނެއެވެ.",
   "settings.general.row.releaseNotes.title": "ރިލީޒް ނޯޓްސް",
   "settings.general.row.releaseNotes.description": "އަޕްޑޭޓްތަކަށްފަހު އައު ޕޮޕްއަޕްތައް ދައްކާށެވެ",
   "settings.updates.row.startup.title": "ސްޓާޓްއަޕް ކުރުމުގައި އަޕްޑޭޓްތައް ހުރިތޯ ބަލާށެވެ",
-  "settings.updates.row.startup.description": "OpenCode ލޯންޗް ކުރާއިރު އޮޓޮމެޓިކުން އަޕްޑޭޓްތައް ހުރިތޯ ބަލާށެވެ",
+  "settings.updates.row.startup.description":
+    "OpenCode ލޯންޗް ކުރާއިރު އޮޓޮމެޓިކުން އަޕްޑޭޓްތައް ހުރިތޯ ބަލާށެވެ",
   "settings.updates.row.check.title": "އަޕްޑޭޓްތައް ހުރިތޯ ބަލާށެވެ",
-  "settings.updates.row.check.description": "އަޕްޑޭޓްތައް މެނުއަލްކޮށް ޗެކްކޮށް، ލިބޭނަމަ އިންސްޓޯލް ކުރާށެވެ",
+  "settings.updates.row.check.description":
+    "އަޕްޑޭޓްތައް މެނުއަލްކޮށް ޗެކްކޮށް، ލިބޭނަމަ އިންސްޓޯލް ކުރާށެވެ",
   "settings.updates.action.checkNow": "މިހާރު ޗެކް ކޮށްލައްވާ",
   "settings.updates.action.checking": "ޗެކް ކުރަމުން...",
   "settings.updates.action.downloading": "ޑައުންލޯޑް ކުރަމުން...",
   "settings.updates.action.installing": "އިންސްޓޯލް ކުރަމުން...",
   "settings.updates.toast.latest.title": "ޔޫ އާ އަޕް ޓު ޑޭޓް",
-  "settings.updates.toast.latest.description": "ތިޔަ ހިންގަނީ OpenCode ގެ އެންމެ ފަހުގެ ވަރޝަން އެވެ.",
+  "settings.updates.toast.latest.description":
+    "ތިޔަ ހިންގަނީ OpenCode ގެ އެންމެ ފަހުގެ ވަރޝަން އެވެ.",
   "sound.option.none": "އެއްޗެއްނޫން",
   "sound.option.alert01": "އެލާޓް 01",
   "sound.option.alert02": "އެލާޓް 02",
@@ -1075,20 +1121,24 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "ހުއްދައެއް ބޭނުންވާ ވަގުތު ސިސްޓަމް ނޮޓިފިކޭޝަން ދައްކާށެވެ",
   "settings.general.notifications.errors.title": "ގޯސްތައް",
-  "settings.general.notifications.errors.description": "ގޯހެއް ދިމާވުމުން ސިސްޓަމް ނޮޓިފިކޭޝަން ދައްކާށެވެ",
+  "settings.general.notifications.errors.description":
+    "ގޯހެއް ދިމާވުމުން ސިސްޓަމް ނޮޓިފިކޭޝަން ދައްކާށެވެ",
   "settings.general.sounds.agent.title": "އޭޖެންޓު",
   "settings.general.sounds.agent.description":
     "އޭޖެންޓް ފުރިހަމަވެފައި ނުވަތަ ސަމާލުކަން ބޭނުންވާ ވަގުތުތަކުގައި އަޑު ކުޅެން",
   "settings.general.sounds.permissions.title": "ހުއްދަތައް",
-  "settings.general.sounds.permissions.description": "ހުއްދައެއް ބޭނުންވާ ވަގުތުތަކުގައި އަޑު ކުޅެން",
+  "settings.general.sounds.permissions.description":
+    "ހުއްދައެއް ބޭނުންވާ ވަގުތުތަކުގައި އަޑު ކުޅެން",
   "settings.general.sounds.errors.title": "ގޯސްތައް",
   "settings.general.sounds.errors.description": "ގޯހެއް ދިމާވުމުން އަޑު ކުޅެން",
   "settings.shortcuts.title": "ކީބޯޑް ޝޯޓްކަޓްސް",
   "settings.shortcuts.reset.button": "ޑިފޯލްޓްތަކަށް ރީސެޓްކުރުން",
   "settings.shortcuts.reset.toast.title": "ޝޯޓްކަޓްސް ރީސެޓް ކުރުން",
-  "settings.shortcuts.reset.toast.description": "ކީބޯޑް ޝޯޓްކަޓްތައް ޑިފޯލްޓްތަކަށް ރީސެޓްކޮށްފައިވެއެވެ.",
+  "settings.shortcuts.reset.toast.description":
+    "ކީބޯޑް ޝޯޓްކަޓްތައް ޑިފޯލްޓްތަކަށް ރީސެޓްކޮށްފައިވެއެވެ.",
   "settings.shortcuts.conflict.title": "މިހާރުވެސް ބޭނުން ކުރަމުންދާ ޝޯޓްކަޓެވެ",
-  "settings.shortcuts.conflict.description": "{{keybind}} މިހާރުވެސް ޙަވާލުކުރެވިފައިވަނީ {{titles}} އަށެވެ.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} މިހާރުވެސް ޙަވާލުކުރެވިފައިވަނީ {{titles}} އަށެވެ.",
   "settings.shortcuts.unassigned": "ޙަވާލުނުކުރެވިގެންނެވެ",
   "settings.shortcuts.pressKeys": "ކީސް އަށް ފިތާލާށެވެ",
   "settings.shortcuts.search.placeholder": "ސަރޗް ޝޯޓްކަޓްސް",
@@ -1103,9 +1153,11 @@ export const dict = {
   "settings.providers.description": "ޕްރޮވައިޑަރ ސެޓިންގސް މިތަނުގައި ކޮންފިގްރޭޓް ކުރެވޭނެއެވެ.",
   "settings.providers.section.connected": "ގުޅިފައިވާ ޕްރޮވައިޑަރުންނެވެ",
   "settings.providers.connected.empty": "ގުޅިފައިވާ ޕްރޮވައިޑަރުންތަކެއް ނެތެވެ",
-  "settings.providers.connected.environmentDescription": "ތިބާގެ މާހައުލުގެ ވެރިއޭބަލްތަކުން ގުޅިފައިވެއެވެ",
+  "settings.providers.connected.environmentDescription":
+    "ތިބާގެ މާހައުލުގެ ވެރިއޭބަލްތަކުން ގުޅިފައިވެއެވެ",
   "settings.providers.section.popular": "މަޝްހޫރު ޕްރޮވައިޑަރުންނެވެ",
-  "settings.providers.custom.description": "ބޭސް URL އިން OpenAI އާއި އެއްގޮތްވާ ޕްރޮވައިޑަރެއް އިތުރުކުރުން.",
+  "settings.providers.custom.description":
+    "ބޭސް URL އިން OpenAI އާއި އެއްގޮތްވާ ޕްރޮވައިޑަރެއް އިތުރުކުރުން.",
   "settings.providers.tag.environment": "މާޙައުލު",
   "settings.providers.tag.config": "ކޮންފިގް",
   "settings.providers.tag.custom": "ސަޤާފަތް",
@@ -1119,7 +1171,8 @@ export const dict = {
   "settings.mcp.title": "MCP އެވެ",
   "settings.mcp.description": "MCP ސެޓިންގސް މިތަނުގައި ކޮންފިގްރޭޓް ކުރެވޭނެއެވެ.",
   "settings.permissions.title": "ހުއްދަތައް",
-  "settings.permissions.description": "ސަރވަރ އަށް ޑިފޯލްޓްކޮށް ބޭނުންކުރެވޭނީ ކޮން ޓޫލްތަކެއްކަން ކޮންޓްރޯލްކުރުން.",
+  "settings.permissions.description":
+    "ސަރވަރ އަށް ޑިފޯލްޓްކޮށް ބޭނުންކުރެވޭނީ ކޮން ޓޫލްތަކެއްކަން ކޮންޓްރޯލްކުރުން.",
   "settings.permissions.section.tools": "ސާމާނުތައް",
   "settings.permissions.toast.updateFailed.title": "ހުއްދަތައް އަޕްޑޭޓް ނުކުރެވުނެވެ",
   "settings.permissions.action.allow": "ހުއްދަ ދިނުން",
@@ -1133,7 +1186,8 @@ export const dict = {
   "settings.permissions.tool.glob.title": "ގްލޯބް އެވެ",
   "settings.permissions.tool.glob.description": "ގްލޯބް ޕެޓަރންސް ބޭނުންކޮށްގެން ފައިލްތައް މެޗްކުރުން",
   "settings.permissions.tool.grep.title": "ގްރެޕް އެވެ",
-  "settings.permissions.tool.grep.description": "ރެގިއުލާ އެކްސްޕްރެޝަންސް ބޭނުންކޮށްގެން ފައިލް ކޮންޓެންޓްސް ހޯދުން",
+  "settings.permissions.tool.grep.description":
+    "ރެގިއުލާ އެކްސްޕްރެޝަންސް ބޭނުންކޮށްގެން ފައިލް ކޮންޓެންޓްސް ހޯދުން",
   "settings.permissions.tool.list.title": "ލިސްޓް",
   "settings.permissions.tool.list.description": "ޑައިރެކްޓަރީއެއްގެ ތެރޭގައި ފައިލްތައް ލިސްޓްކުރުން",
   "settings.permissions.tool.bash.title": "ބާޝް",
@@ -1154,7 +1208,8 @@ export const dict = {
   "settings.permissions.tool.external_directory.description":
     "ޕްރޮޖެކްޓް ޑައިރެކްޓަރީން ބޭރުގައި ހުންނަ ފައިލްތަކަށް ވަދެވޭނެއެވެ",
   "settings.permissions.tool.doom_loop.title": "ޑޫމް ލޫޕް އެވެ",
-  "settings.permissions.tool.doom_loop.description": "އެއްގޮތް އިންޕުޓެއް އެކުލެވޭ ތަކުރާރުކޮށް ޓޫލް ކޯލްތައް ހޯދުން",
+  "settings.permissions.tool.doom_loop.description":
+    "އެއްގޮތް އިންޕުޓެއް އެކުލެވޭ ތަކުރާރުކޮށް ޓޫލް ކޯލްތައް ހޯދުން",
   "session.delete.failed.title": "ސެޝަން ޑިލީޓް ކުރަން ނާކާމިޔާބުވިއެވެ",
   "session.delete.title": "ސެޝަން ފުހެލުން",
   "session.delete.confirm": 'ސެޝަން "{{name}}" ފުހެލަންތަ؟',

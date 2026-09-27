@@ -10,12 +10,23 @@
  */
 
 import type { DiskScanNode } from "./types"
-import { developerArtifactFromInventoryNode, developerInventoryNode } from "./developer-inventory"
+import {
+  developerArtifactFromInventoryNode,
+  developerInventoryNode,
+} from "./developer-inventory"
 import { daysSinceChanged, isDormant } from "./format"
 import { diskLanguageText } from "./runtime"
 import type { DiskRecognitionLanguageKey } from "./recognition-language"
 
-export type Safety = "regenerable" | "cache" | "logs" | "trash" | "media" | "version-control" | "system" | "unknown"
+export type Safety =
+  | "regenerable"
+  | "cache"
+  | "logs"
+  | "trash"
+  | "media"
+  | "version-control"
+  | "system"
+  | "unknown"
 
 export type DeveloperCategory =
   | "dependencies"
@@ -59,7 +70,10 @@ export type ArtifactConfidence = "verified" | "likely" | "ambiguous"
  * preselected by Smart Cleanup; `review` remains visible but requires an
  * intentional individual decision.
  */
-export type DeveloperArtifactCleanupReadiness = "eligible" | "review" | "protected"
+export type DeveloperArtifactCleanupReadiness =
+  | "eligible"
+  | "review"
+  | "protected"
 
 /** Human labels are kept next to the stable filter values consumed by the UI. */
 export function artifactEcosystemLabel(ecosystem: ArtifactEcosystem): string {
@@ -95,6 +109,7 @@ export function artifactEcosystemLabel(ecosystem: ArtifactEcosystem): string {
     case "git":
       return diskLanguageText("Git")
   }
+  return diskLanguageText("Unclassified")
 }
 
 export type Recognition = {
@@ -292,7 +307,12 @@ const DIR_RULES: Rule[] = [
   },
 
   // — Logs —
-  { re: /^logs?$|^var\/log$|^log$/, safety: "logs", tag: "Log files", hint: "Usually safe to clear" },
+  {
+    re: /^logs?$|^var\/log$|^log$/,
+    safety: "logs",
+    tag: "Log files",
+    hint: "Usually safe to clear",
+  },
 
   // — Trash / Recycle Bin —
   {
@@ -414,22 +434,30 @@ const DIR_RULES: Rule[] = [
   },
 ]
 
-const RECLAIMABLE: ReadonlySet<Safety> = new Set(["regenerable", "cache", "logs"])
+const RECLAIMABLE: ReadonlySet<Safety> = new Set([
+  "regenerable",
+  "cache",
+  "logs",
+])
 
 const MEDIA_EXT: ReadonlySet<string> = expand(
   "mp4 mov m4v mkv avi webm wmv flv mpg mpeg 3gp",
   "mp3 wav flac aac ogg opus m4a wma aiff alac",
-  "png jpg jpeg gif webp heic heif tiff tif bmp svg ico raw cr2 nef arw psd",
+  "png jpg jpeg gif webp heic heif tiff tif bmp svg ico raw cr2 nef arw psd"
 )
-const ARCHIVE_EXT: ReadonlySet<string> = expand("zip tar gz tgz bz2 xz 7z rar dmg iso lz zst cab pkg deb rpm")
+const ARCHIVE_EXT: ReadonlySet<string> = expand(
+  "zip tar gz tgz bz2 xz 7z rar dmg iso lz zst cab pkg deb rpm"
+)
 const CODE_EXT: ReadonlySet<string> = expand(
   "ts tsx js jsx mjs cjs py rb rs go java kt scala c cpp cc h hpp cs php swift dart",
-  "vue svelte astro elm ex exs erl lua pl pm clj cljs hs ml nim zig v",
+  "vue svelte astro elm ex exs erl lua pl pm clj cljs hs ml nim zig v"
 )
 const DOC_EXT: ReadonlySet<string> = expand(
-  "pdf doc docx xls xlsx ppt pptx odt ods odp rtf pages key numbers epub mobi azw3",
+  "pdf doc docx xls xlsx ppt pptx odt ods odp rtf pages key numbers epub mobi azw3"
 )
-const DATA_EXT: ReadonlySet<string> = expand("json xml yaml yml csv tsv sql db sqlite sqlite3 parquet toml ini conf")
+const DATA_EXT: ReadonlySet<string> = expand(
+  "json xml yaml yml csv tsv sql db sqlite sqlite3 parquet toml ini conf"
+)
 
 function expand(...groups: string[]): ReadonlySet<string> {
   return new Set(groups.join(" ").split(/\s+/))
@@ -448,8 +476,37 @@ export function fileKind(ext: string): { kind: string; safety: Safety } {
 }
 
 function labelFor(ext: string): string {
-  if (["mp4", "mov", "m4v", "mkv", "avi", "webm", "wmv", "flv", "mpg", "mpeg", "3gp"].includes(ext)) return "video"
-  if (["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff", "alac"].includes(ext)) return "audio"
+  if (
+    [
+      "mp4",
+      "mov",
+      "m4v",
+      "mkv",
+      "avi",
+      "webm",
+      "wmv",
+      "flv",
+      "mpg",
+      "mpeg",
+      "3gp",
+    ].includes(ext)
+  )
+    return "video"
+  if (
+    [
+      "mp3",
+      "wav",
+      "flac",
+      "aac",
+      "ogg",
+      "opus",
+      "m4a",
+      "wma",
+      "aiff",
+      "alac",
+    ].includes(ext)
+  )
+    return "audio"
   return "image"
 }
 
@@ -579,7 +636,14 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       confidence: "verified",
     },
   },
-  { re: /\/Library\/Caches\b/i, r: { tag: "macOS caches", safety: "cache", hint: "Apps re-create as needed" } },
+  {
+    re: /\/Library\/Caches\b/i,
+    r: {
+      tag: "macOS caches",
+      safety: "cache",
+      hint: "Apps re-create as needed",
+    },
+  },
   {
     re: /\/\.Trash\b|\/\.Trashes\b/i,
     r: {
@@ -597,41 +661,42 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
  * descendant's otherwise-valid cache/dependency name. These paths stay in the
  * Developer lens as protected context; they never become cleanup candidates.
  */
-const PROTECTED_DEVELOPER_INVENTORY_ANCESTRY: { re: RegExp; r: Recognition }[] = [
-  {
-    re: /\/(?:\.codex|\.claude|\.opencode|\.cursor|\.continue|\.aider|\.windsurf|\.cline|\.roo)(?:\/|$)/i,
-    r: {
-      tag: "Coding agent data",
-      safety: "system",
-      hint: "Agent configuration, sessions, or managed checkouts — keep it out of cleanup",
-      developer: "agent-data",
-      ecosystem: "agent",
-      cleanup: "protected",
+const PROTECTED_DEVELOPER_INVENTORY_ANCESTRY: { re: RegExp; r: Recognition }[] =
+  [
+    {
+      re: /\/(?:\.codex|\.claude|\.opencode|\.cursor|\.continue|\.aider|\.windsurf|\.cline|\.roo)(?:\/|$)/i,
+      r: {
+        tag: "Coding agent data",
+        safety: "system",
+        hint: "Agent configuration, sessions, or managed checkouts — keep it out of cleanup",
+        developer: "agent-data",
+        ecosystem: "agent",
+        cleanup: "protected",
+      },
     },
-  },
-  {
-    re: /\/(?:\.git|\.hg|\.svn)(?:\/|$)/i,
-    r: {
-      tag: "Version-control data",
-      safety: "version-control",
-      hint: "Git or other VCS manages this data — keep it out of cleanup",
-      developer: "version-control",
-      ecosystem: "git",
-      cleanup: "protected",
+    {
+      re: /\/(?:\.git|\.hg|\.svn)(?:\/|$)/i,
+      r: {
+        tag: "Version-control data",
+        safety: "version-control",
+        hint: "Git or other VCS manages this data — keep it out of cleanup",
+        developer: "version-control",
+        ecosystem: "git",
+        cleanup: "protected",
+      },
     },
-  },
-  {
-    re: /(?:^|\/)(?:\.worktrees|worktrees)(?:\/|$)/i,
-    r: {
-      tag: "Managed worktree",
-      safety: "version-control",
-      hint: "Linked checkout data — remove it through Git or the owning agent",
-      developer: "worktree",
-      ecosystem: "git",
-      cleanup: "protected",
+    {
+      re: /(?:^|\/)(?:\.worktrees|worktrees)(?:\/|$)/i,
+      r: {
+        tag: "Managed worktree",
+        safety: "version-control",
+        hint: "Linked checkout data — remove it through Git or the owning agent",
+        developer: "worktree",
+        ecosystem: "git",
+        cleanup: "protected",
+      },
     },
-  },
-]
+  ]
 
 /** Add conservative defaults without letting ambiguous names enter bulk cleanup. */
 function finalizeDeveloperRecognition(recognition: Recognition): Recognition {
@@ -656,14 +721,25 @@ function finalizeDeveloperRecognition(recognition: Recognition): Recognition {
  * Protected hints win; precise known cache paths remain the deliberately
  * narrow exception elsewhere in a user's developer-data root.
  */
-function developerInventoryPathRecognition(path: string): Recognition | undefined {
+function developerInventoryPathRecognition(
+  path: string
+): Recognition | undefined {
   const normalizedPath = path.replaceAll("\\", "/")
-  const protectedHint = PATH_HINTS.find(({ re, r }) => r.cleanup === "protected" && re.test(normalizedPath))
+  const protectedHint = PATH_HINTS.find(
+    ({ re, r }) => r.cleanup === "protected" && re.test(normalizedPath)
+  )
   if (protectedHint) return finalizeDeveloperRecognition(protectedHint.r)
-  const protectedAncestor = PROTECTED_DEVELOPER_INVENTORY_ANCESTRY.find(({ re }) => re.test(normalizedPath))
-  if (protectedAncestor) return finalizeDeveloperRecognition(protectedAncestor.r)
-  const preciseCacheHint = PATH_HINTS.find(({ re, r }) => r.cleanup !== "protected" && re.test(normalizedPath))
-  return preciseCacheHint ? finalizeDeveloperRecognition(preciseCacheHint.r) : undefined
+  const protectedAncestor = PROTECTED_DEVELOPER_INVENTORY_ANCESTRY.find(
+    ({ re }) => re.test(normalizedPath)
+  )
+  if (protectedAncestor)
+    return finalizeDeveloperRecognition(protectedAncestor.r)
+  const preciseCacheHint = PATH_HINTS.find(
+    ({ re, r }) => r.cleanup !== "protected" && re.test(normalizedPath)
+  )
+  return preciseCacheHint
+    ? finalizeDeveloperRecognition(preciseCacheHint.r)
+    : undefined
 }
 
 /**
@@ -671,7 +747,9 @@ function developerInventoryPathRecognition(path: string): Recognition | undefine
  * name and local evidence. Preserve that verdict rather than making a second,
  * weaker decision from a synthetic node's basename.
  */
-function recognizeDeveloperInventoryArtifact(node: DiskScanNode): Recognition | undefined {
+function recognizeDeveloperInventoryArtifact(
+  node: DiskScanNode
+): Recognition | undefined {
   const artifact = developerArtifactFromInventoryNode(node)
   if (!artifact) return undefined
 
@@ -679,7 +757,11 @@ function recognizeDeveloperInventoryArtifact(node: DiskScanNode): Recognition | 
   if (pathRecognition) return pathRecognition
 
   const safeToPreselect = artifact.cleanup === "eligible"
-  const safety: Safety = safeToPreselect ? (artifact.kind === "toolchain-cache" ? "cache" : "regenerable") : "system"
+  const safety: Safety = safeToPreselect
+    ? artifact.kind === "toolchain-cache"
+      ? "cache"
+      : "regenerable"
+    : "system"
   const tag =
     artifact.kind === "dependencies"
       ? "Developer dependencies"
@@ -720,10 +802,17 @@ export function recognize(node: DiskScanNode): Recognition {
     return {
       safety: "system",
       tag: node.hardLink === "primary" ? "Hard-linked file" : "Shared link",
-      hint: node.hardLink === "primary" ? "Other paths may still reference these bytes" : "Counted at another path",
+      hint:
+        node.hardLink === "primary"
+          ? "Other paths may still reference these bytes"
+          : "Counted at another path",
     }
   }
-  if (node.cloneAccounting || node.clone?.state === "may-share-blocks" || node.clone?.state === "shares-all-blocks") {
+  if (
+    node.cloneAccounting ||
+    node.clone?.state === "may-share-blocks" ||
+    node.clone?.state === "shares-all-blocks"
+  ) {
     return {
       safety: "unknown",
       tag: node.cloneAccounting ? "APFS clone group" : "APFS shared blocks",
@@ -745,10 +834,22 @@ export function recognize(node: DiskScanNode): Recognition {
     }
     const k = fileKind(node.ext)
     return k.safety !== "unknown"
-      ? { safety: k.safety, tag: k.kind === "video" ? "Video" : k.kind === "audio" ? "Audio" : "Image" }
+      ? {
+          safety: k.safety,
+          tag:
+            k.kind === "video"
+              ? "Video"
+              : k.kind === "audio"
+                ? "Audio"
+                : "Image",
+        }
       : { safety: "unknown" }
   }
-  if (node.children?.some((child) => !child.isDir && child.name.toLowerCase() === ".git")) {
+  if (
+    node.children?.some(
+      (child) => !child.isDir && child.name.toLowerCase() === ".git"
+    )
+  ) {
     return finalizeDeveloperRecognition({
       safety: "version-control",
       tag: "Git worktree",
@@ -759,7 +860,8 @@ export function recognize(node: DiskScanNode): Recognition {
     })
   }
   const normalizedPath = node.path.replaceAll("\\", "/")
-  for (const { re, r } of PATH_HINTS) if (re.test(normalizedPath)) return finalizeDeveloperRecognition(r)
+  for (const { re, r } of PATH_HINTS)
+    if (re.test(normalizedPath)) return finalizeDeveloperRecognition(r)
   const base = node.name.toLowerCase()
   const hasRustMetadata = hasAnyChild(node, ".rustc_info.json")
   const hasRustOutput = hasAnyChild(node, "debug", "release")
@@ -783,7 +885,16 @@ export function recognize(node: DiskScanNode): Recognition {
       confidence: "likely",
     })
   }
-  if (base === "target" && hasAnyChild(node, "classes", "test-classes", "generated-sources", "surefire-reports")) {
+  if (
+    base === "target" &&
+    hasAnyChild(
+      node,
+      "classes",
+      "test-classes",
+      "generated-sources",
+      "surefire-reports"
+    )
+  ) {
     return finalizeDeveloperRecognition({
       safety: "regenerable",
       tag: "Maven build target",
@@ -793,7 +904,12 @@ export function recognize(node: DiskScanNode): Recognition {
       confidence: "likely",
     })
   }
-  const isCmakeBuild = hasAnyChild(node, "cmakefiles", "cmakecache.txt", "build.ninja")
+  const isCmakeBuild = hasAnyChild(
+    node,
+    "cmakefiles",
+    "cmakecache.txt",
+    "build.ninja"
+  )
   const generatedBuildChildCount = countNamedChildren(
     node,
     "classes",
@@ -803,7 +919,7 @@ export function recognize(node: DiskScanNode): Recognition {
     "resources",
     "reports",
     "libs",
-    "intermediates",
+    "intermediates"
   )
   if (base === "build" && (isCmakeBuild || generatedBuildChildCount >= 2)) {
     return finalizeDeveloperRecognition({
@@ -843,7 +959,7 @@ export function recognize(node: DiskScanNode): Recognition {
 /** Explain where a developer artifact belongs and the safest next decision, independent of path separators. */
 export function developerArtifactContext(
   node: DiskScanNode,
-  recognition: Recognition = recognize(node),
+  recognition: Recognition = recognize(node)
 ): DeveloperArtifactContext {
   const normalized = node.path.replaceAll("\\", "/").replace(/\/+$/, "")
   const lower = normalized.toLowerCase()
@@ -863,32 +979,51 @@ export function developerArtifactContext(
   let scope = project
   if (recognition.developer === "agent-data") {
     if (includesSegment(".codex")) scope = diskLanguageText("Codex agent home")
-    else if (includesSegment(".claude")) scope = diskLanguageText("Claude Code agent home")
-    else if (includesSegment(".opencode") || /\/(?:\.config|\.local\/(?:share|state))\/opencode(?:\/|$)/i.test(lower))
+    else if (includesSegment(".claude"))
+      scope = diskLanguageText("Claude Code agent home")
+    else if (
+      includesSegment(".opencode") ||
+      /\/(?:\.config|\.local\/(?:share|state))\/opencode(?:\/|$)/i.test(lower)
+    )
       scope = diskLanguageText("OpenCode agent home")
     else scope = diskLanguageText("Coding-agent data")
   } else if (recognition.developer === "worktree") {
-    if (includesSegment(".codex")) scope = diskLanguageText("Codex-managed checkout")
-    else if (includesSegment(".claude")) scope = diskLanguageText("Claude Code-managed checkout")
+    if (includesSegment(".codex"))
+      scope = diskLanguageText("Codex-managed checkout")
+    else if (includesSegment(".claude"))
+      scope = diskLanguageText("Claude Code-managed checkout")
     else scope = diskLanguageText("Git-managed checkout")
   } else if (recognition.developer === "toolchain-cache") {
     if (includesSegment(".gradle")) scope = diskLanguageText("Gradle user data")
     else if (includesSegment(".m2")) scope = diskLanguageText("Maven user data")
-    else if (includesSegment(".cargo")) scope = diskLanguageText("Cargo user data")
-    else if (includesSegment(".nuget")) scope = diskLanguageText("NuGet user data")
+    else if (includesSegment(".cargo"))
+      scope = diskLanguageText("Cargo user data")
+    else if (includesSegment(".nuget"))
+      scope = diskLanguageText("NuGet user data")
     else if (includesSegment(".bun")) scope = diskLanguageText("Bun user data")
-    else if (/\/go\/pkg\/mod(?:\/|$)/i.test(lower)) scope = diskLanguageText("Go module cache")
-    else if (/\/library\/developer\/xcode(?:\/|$)/i.test(lower)) scope = diskLanguageText("Xcode build data")
+    else if (/\/go\/pkg\/mod(?:\/|$)/i.test(lower))
+      scope = diskLanguageText("Go module cache")
+    else if (/\/library\/developer\/xcode(?:\/|$)/i.test(lower))
+      scope = diskLanguageText("Xcode build data")
   }
 
   let disposition: DeveloperArtifactContext["disposition"]
   if (recognition.safety === "regenerable") {
     disposition =
-      recognition.developer === "dependencies" ? diskLanguageText("Reinstallable") : diskLanguageText("Rebuildable")
-  } else if (recognition.safety === "cache") disposition = diskLanguageText("Redownloadable")
+      recognition.developer === "dependencies"
+        ? diskLanguageText("Reinstallable")
+        : diskLanguageText("Rebuildable")
+  } else if (recognition.safety === "cache")
+    disposition = diskLanguageText("Redownloadable")
   else if (recognition.safety === "version-control")
-    disposition = recognition.developer === "worktree" ? diskLanguageText("Manage with Git") : diskLanguageText("Keep")
-  else if (recognition.safety === "system" && recognition.developer === "agent-data")
+    disposition =
+      recognition.developer === "worktree"
+        ? diskLanguageText("Manage with Git")
+        : diskLanguageText("Keep")
+  else if (
+    recognition.safety === "system" &&
+    recognition.developer === "agent-data"
+  )
     disposition = diskLanguageText("Protected")
   else disposition = diskLanguageText("Review first")
 
@@ -902,12 +1037,16 @@ function hasAnyChild(node: DiskScanNode, ...names: string[]): boolean {
 
 function countNamedChildren(node: DiskScanNode, ...names: string[]): number {
   const expected = new Set(names)
-  return nodeEvidence(node).reduce((count, name) => count + Number(expected.has(name)), 0)
+  return nodeEvidence(node).reduce(
+    (count, name) => count + Number(expected.has(name)),
+    0
+  )
 }
 
 function nodeEvidence(node: DiskScanNode): string[] {
   const evidence = new Set(node.signatures ?? [])
-  for (const child of node.children ?? []) evidence.add(child.name.toLowerCase())
+  for (const child of node.children ?? [])
+    evidence.add(child.name.toLowerCase())
   return [...evidence]
 }
 
@@ -918,9 +1057,11 @@ export function isReclaimable(r: Recognition): boolean {
 /** Match a user-selected language/toolchain facet without special casing missing metadata in the UI. */
 export function matchesArtifactEcosystem(
   recognition: Recognition,
-  ecosystem: ArtifactEcosystemFilter | undefined,
+  ecosystem: ArtifactEcosystemFilter | undefined
 ): boolean {
-  return !ecosystem || ecosystem === "all" || recognition.ecosystem === ecosystem
+  return (
+    !ecosystem || ecosystem === "all" || recognition.ecosystem === ecosystem
+  )
 }
 
 /**
@@ -928,7 +1069,9 @@ export function matchesArtifactEcosystem(
  * intentionally stricter than `isReclaimable`: a generic or only-likely match
  * may be reviewed, but must never be selected automatically.
  */
-export function developerArtifactCleanupReadiness(recognition: Recognition): DeveloperArtifactCleanupReadiness {
+export function developerArtifactCleanupReadiness(
+  recognition: Recognition
+): DeveloperArtifactCleanupReadiness {
   if (!recognition.developer) return "protected"
   return finalizeDeveloperRecognition(recognition).cleanup ?? "protected"
 }
@@ -952,7 +1095,10 @@ export function containsSharedPhysicalStorage(node: DiskScanNode): boolean {
  * Whether Smart Cleanup may preselect this artifact. Callers still need to
  * apply their platform's protected-path policy before adding it to review.
  */
-export function isSmartCleanupEligible(node: DiskScanNode, recognition: Recognition = recognize(node)): boolean {
+export function isSmartCleanupEligible(
+  node: DiskScanNode,
+  recognition: Recognition = recognize(node)
+): boolean {
   return (
     !!recognition.developer &&
     developerArtifactCleanupReadiness(recognition) === "eligible" &&
@@ -981,7 +1127,11 @@ export type DeveloperBucket = {
   items: DeveloperItem[]
 }
 
-export type DeveloperItem = { node: DiskScanNode; recognition: Recognition; bytes: number }
+export type DeveloperItem = {
+  node: DiskScanNode
+  recognition: Recognition
+  bytes: number
+}
 
 /** Pure filter contract for the Smart Cleanup developer inventory. */
 export type DeveloperArtifactFilter = {
@@ -996,7 +1146,11 @@ export type DeveloperArtifactFilter = {
  * A modified-time filter, not a claim about last use. This remains explicit so
  * the UI can say “unchanged for 30 days”, rather than implying usage tracking.
  */
-export function isDeveloperArtifactOlderThan(node: DiskScanNode, minAgeDays: number, now = Date.now()): boolean {
+export function isDeveloperArtifactOlderThan(
+  node: DiskScanNode,
+  minAgeDays: number,
+  now = Date.now()
+): boolean {
   if (!Number.isFinite(minAgeDays) || minAgeDays < 0) return false
   const age = daysSinceChanged(node.modifiedAt, now)
   return age !== null && age >= Math.floor(minAgeDays)
@@ -1006,10 +1160,15 @@ export function isDeveloperArtifactOlderThan(node: DiskScanNode, minAgeDays: num
 export function matchesDeveloperArtifact(
   item: DeveloperItem,
   filter: DeveloperArtifactFilter = {},
-  now = Date.now(),
+  now = Date.now()
 ): boolean {
   const { recognition, node } = item
-  if (filter.category && filter.category !== "all" && recognition.developer !== filter.category) return false
+  if (
+    filter.category &&
+    filter.category !== "all" &&
+    recognition.developer !== filter.category
+  )
+    return false
   if (!matchesArtifactEcosystem(recognition, filter.ecosystem)) return false
   if (
     filter.readiness &&
@@ -1042,7 +1201,7 @@ export type DormantDeveloperSummary = {
  */
 export function computeDeveloperSummary(
   root: DiskScanNode | null,
-  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize
 ): DeveloperSummary {
   const buckets = new Map<DeveloperCategory, DeveloperBucket>()
 
@@ -1068,7 +1227,10 @@ export function computeDeveloperSummary(
         recognition.developer === "agent-data" ||
         recognition.developer === "version-control"
       ) {
-        const nested = (node.children ?? []).reduce((sum, child) => sum + walk(child), 0)
+        const nested = (node.children ?? []).reduce(
+          (sum, child) => sum + walk(child),
+          0
+        )
         add(node, recognition, Math.max(0, node.size - nested))
         return node.size
       }
@@ -1081,7 +1243,9 @@ export function computeDeveloperSummary(
   const totalBytes = root ? walk(root) : 0
   const list = [...buckets.values()].sort((a, b) => b.bytes - a.bytes)
   for (const bucket of list) bucket.items.sort((a, b) => b.bytes - a.bytes)
-  const items = list.flatMap((bucket) => bucket.items).sort((a, b) => b.bytes - a.bytes)
+  const items = list
+    .flatMap((bucket) => bucket.items)
+    .sort((a, b) => b.bytes - a.bytes)
   return {
     totalBytes,
     totalCount: list.reduce((sum, bucket) => sum + bucket.count, 0),
@@ -1119,7 +1283,10 @@ function developerPathTrie(): DeveloperPathTrie {
   return { children: new Map(), terminals: 0, terminal: false, eligible: false }
 }
 
-function insertDeveloperPath(root: DeveloperPathTrie, segments: readonly string[]) {
+function insertDeveloperPath(
+  root: DeveloperPathTrie,
+  segments: readonly string[]
+) {
   let node = root
   node.terminals++
   for (const segment of segments) {
@@ -1135,21 +1302,30 @@ function insertDeveloperPath(root: DeveloperPathTrie, segments: readonly string[
   return node
 }
 
-function developerPathNode(root: DeveloperPathTrie, segments: readonly string[]) {
+function developerPathNode(
+  root: DeveloperPathTrie,
+  segments: readonly string[]
+) {
   let node: DeveloperPathTrie | undefined = root
   for (const segment of segments) {
     node = node.children.get(segment)
-    if (!node) return
+    if (!node) return undefined
   }
   return node
 }
 
-function hasStrictDeveloperDescendant(root: DeveloperPathTrie, segments: readonly string[]) {
+function hasStrictDeveloperDescendant(
+  root: DeveloperPathTrie,
+  segments: readonly string[]
+) {
   const node = developerPathNode(root, segments)
   return !!node && node.terminals > (node.terminal ? 1 : 0)
 }
 
-function hasEligibleDeveloperAncestor(root: DeveloperPathTrie, segments: readonly string[]) {
+function hasEligibleDeveloperAncestor(
+  root: DeveloperPathTrie,
+  segments: readonly string[]
+) {
   let node: DeveloperPathTrie | undefined = root
   if (segments.length > 0 && node.eligible) return true
   for (let index = 0; index < segments.length; index++) {
@@ -1160,7 +1336,11 @@ function hasEligibleDeveloperAncestor(root: DeveloperPathTrie, segments: readonl
   return false
 }
 
-function insertAcceptedDeveloperPath(root: DeveloperPathTrie, segments: readonly string[], acceptedIndex: number) {
+function insertAcceptedDeveloperPath(
+  root: DeveloperPathTrie,
+  segments: readonly string[],
+  acceptedIndex: number
+) {
   let node = root
   let parentIndex = node.acceptedIndex
   for (const segment of segments) {
@@ -1184,22 +1364,28 @@ function insertAcceptedDeveloperPath(root: DeveloperPathTrie, segments: readonly
  */
 export function computeDeveloperSummaryWithInventory(
   root: DiskScanNode | null,
-  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize
 ): DeveloperSummary {
   const visible = computeDeveloperSummary(root, recognizeNode)
   const inventory = root?.developerArtifactInventory
   if (!inventory?.items.length) return visible
 
-  const visualCandidates: DeveloperSummaryCandidate[] = visible.items.map((item) => ({
-    item,
-    source: "visual",
-    path: normalizedDeveloperPath(item.node.path),
-    segments: developerPathSegments(normalizedDeveloperPath(item.node.path)),
-    canSplitAroundDescendants: developerArtifactCleanupReadiness(item.recognition) !== "eligible",
-  }))
-  const visualPaths = new Set(visualCandidates.map((candidate) => candidate.path))
+  const visualCandidates: DeveloperSummaryCandidate[] = visible.items.map(
+    (item) => ({
+      item,
+      source: "visual",
+      path: normalizedDeveloperPath(item.node.path),
+      segments: developerPathSegments(normalizedDeveloperPath(item.node.path)),
+      canSplitAroundDescendants:
+        developerArtifactCleanupReadiness(item.recognition) !== "eligible",
+    })
+  )
+  const visualPaths = new Set(
+    visualCandidates.map((candidate) => candidate.path)
+  )
   const visualPathTrie = developerPathTrie()
-  for (const candidate of visualCandidates) insertDeveloperPath(visualPathTrie, candidate.segments)
+  for (const candidate of visualCandidates)
+    insertDeveloperPath(visualPathTrie, candidate.segments)
   const inventoryCandidates: DeveloperSummaryCandidate[] = inventory.items
     .filter((artifact) => artifact.size > 0 && artifact.path.trim().length > 0)
     .map((artifact) => {
@@ -1211,34 +1397,39 @@ export function computeDeveloperSummaryWithInventory(
         source: "inventory" as const,
         path,
         segments: developerPathSegments(path),
-        canSplitAroundDescendants: developerArtifactCleanupReadiness(recognition) !== "eligible",
+        canSplitAroundDescendants:
+          developerArtifactCleanupReadiness(recognition) !== "eligible",
       }
     })
     // A materialized visible child is more useful than a synthetic ancestor:
     // it has navigable map context and may have richer direct evidence.
     .filter(
       (candidate) =>
-        !visualPaths.has(candidate.path) && !hasStrictDeveloperDescendant(visualPathTrie, candidate.segments),
+        !visualPaths.has(candidate.path) &&
+        !hasStrictDeveloperDescendant(visualPathTrie, candidate.segments)
     )
 
   const candidatesByPath = new Map<string, DeveloperSummaryCandidate>()
   // Register visible map entries first so an exact deep record cannot replace
   // the item already represented in the visual tree.
-  for (const candidate of visualCandidates) candidatesByPath.set(candidate.path, candidate)
+  for (const candidate of visualCandidates)
+    candidatesByPath.set(candidate.path, candidate)
   for (const candidate of inventoryCandidates) {
-    if (!candidatesByPath.has(candidate.path)) candidatesByPath.set(candidate.path, candidate)
+    if (!candidatesByPath.has(candidate.path))
+      candidatesByPath.set(candidate.path, candidate)
   }
 
   const candidates = [...candidatesByPath.values()].sort(
     (a, b) =>
       a.segments.length - b.segments.length ||
       (a.source === b.source ? 0 : a.source === "visual" ? -1 : 1) ||
-      b.item.bytes - a.item.bytes,
+      b.item.bytes - a.item.bytes
   )
   const accepted: DeveloperSummaryCandidate[] = []
   const eligiblePaths = developerPathTrie()
   for (const candidate of candidates) {
-    if (hasEligibleDeveloperAncestor(eligiblePaths, candidate.segments)) continue
+    if (hasEligibleDeveloperAncestor(eligiblePaths, candidate.segments))
+      continue
     accepted.push(candidate)
     if (!candidate.canSplitAroundDescendants) {
       insertDeveloperPath(eligiblePaths, candidate.segments).eligible = true
@@ -1247,9 +1438,9 @@ export function computeDeveloperSummaryWithInventory(
 
   const acceptedPaths = developerPathTrie()
   const acceptedParents = accepted.map((candidate, index) =>
-    insertAcceptedDeveloperPath(acceptedPaths, candidate.segments, index),
+    insertAcceptedDeveloperPath(acceptedPaths, candidate.segments, index)
   )
-  const nestedInventoryBytes = new Array<number>(accepted.length).fill(0)
+  const nestedInventoryBytes = Array.from({ length: accepted.length }, () => 0)
   for (let index = 0; index < accepted.length; index++) {
     const candidate = accepted[index]
     const parentIndex = acceptedParents[index]
@@ -1264,7 +1455,10 @@ export function computeDeveloperSummaryWithInventory(
       // `node.size` is the true aggregate of the nested pathname. The visual
       // summary may already be a remainder, so never let a subtraction go
       // below zero.
-      return { ...candidate.item, bytes: Math.max(0, candidate.item.bytes - nestedInventoryBytes[index]) }
+      return {
+        ...candidate.item,
+        bytes: Math.max(0, candidate.item.bytes - nestedInventoryBytes[index]),
+      }
     })
     .filter((item) => item.bytes > 0)
 
@@ -1283,7 +1477,9 @@ export function computeDeveloperSummaryWithInventory(
   }
   const list = [...buckets.values()].sort((a, b) => b.bytes - a.bytes)
   for (const bucket of list) bucket.items.sort((a, b) => b.bytes - a.bytes)
-  const items = list.flatMap((bucket) => bucket.items).sort((a, b) => b.bytes - a.bytes)
+  const items = list
+    .flatMap((bucket) => bucket.items)
+    .sort((a, b) => b.bytes - a.bytes)
   return {
     totalBytes: items.reduce((sum, item) => sum + item.bytes, 0),
     totalCount: items.length,
@@ -1292,9 +1488,18 @@ export function computeDeveloperSummaryWithInventory(
   }
 }
 
-export function computeDormantDeveloperSummary(summary: DeveloperSummary, now = Date.now()): DormantDeveloperSummary {
-  const items = summary.items.filter(({ node }) => isDormant(node.modifiedAt, now))
-  return { items, bytes: items.reduce((sum, item) => sum + item.bytes, 0), count: items.length }
+export function computeDormantDeveloperSummary(
+  summary: DeveloperSummary,
+  now = Date.now()
+): DormantDeveloperSummary {
+  const items = summary.items.filter(({ node }) =>
+    isDormant(node.modifiedAt, now)
+  )
+  return {
+    items,
+    bytes: items.reduce((sum, item) => sum + item.bytes, 0),
+    count: items.length,
+  }
 }
 
 /**
@@ -1303,7 +1508,7 @@ export function computeDormantDeveloperSummary(summary: DeveloperSummary, now = 
  */
 export function computeReclaim(
   root: DiskScanNode | null,
-  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize
 ): ReclaimSummary {
   const buckets = new Map<Safety, ReclaimBucket>()
   const bucket = (s: Safety): ReclaimBucket => {
@@ -1317,7 +1522,11 @@ export function computeReclaim(
 
   function walk(node: DiskScanNode) {
     const r = recognizeNode(node)
-    if (isReclaimable(r) && node.size > 0 && !containsSharedPhysicalStorage(node)) {
+    if (
+      isReclaimable(r) &&
+      node.size > 0 &&
+      !containsSharedPhysicalStorage(node)
+    ) {
       const b = bucket(r.safety)
       b.bytes += node.size
       b.count += 1
@@ -1352,7 +1561,7 @@ const SUMMARY_VISITS_PER_SLICE = 2000
  */
 export async function walkDiskTreeCooperatively(
   root: DiskScanNode | null,
-  visit: (node: DiskScanNode) => boolean | void,
+  visit: (node: DiskScanNode) => boolean | void
 ) {
   if (!root) return
   let budget = SUMMARY_VISITS_PER_SLICE
@@ -1380,7 +1589,7 @@ export async function walkDiskTreeCooperatively(
  */
 export async function computeDeveloperSummaryWithInventoryAsync(
   root: DiskScanNode | null,
-  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize
 ): Promise<DeveloperSummary> {
   let consulted = 0
   await walkDiskTreeCooperatively(root, (node) => {
@@ -1407,7 +1616,7 @@ export async function computeDeveloperSummaryWithInventoryAsync(
  */
 export async function computeReclaimAsync(
   root: DiskScanNode | null,
-  recognizeNode: (node: DiskScanNode) => Recognition = recognize,
+  recognizeNode: (node: DiskScanNode) => Recognition = recognize
 ): Promise<ReclaimSummary> {
   await walkDiskTreeCooperatively(root, (node) => {
     recognizeNode(node)

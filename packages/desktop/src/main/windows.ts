@@ -14,7 +14,7 @@ import { createWindowRegistry } from "./window-registry"
 import { safeWindowURL } from "./window-state"
 import { resolveExternalURL } from "./external-url"
 import { APP_PROTOCOL } from "./product-identity"
-import { RENDERER_CONTENT_SECURITY_POLICY } from "./renderer-security-policy"
+import { rendererContentSecurityPolicy } from "./renderer-security-policy"
 import { mainWindowMinimumSize } from "./main-window-layout"
 
 const root = dirname(fileURLToPath(import.meta.url))
@@ -452,9 +452,10 @@ function wireWindowRecovery(win: BrowserWindow, name: string) {
     writeLog("window", "renderer responsive", { window: name, currentURL: safeWindowURL(win) }, "error")
     sampler.stopAndFlush()
   })
-  win.webContents.on("console-message", (_event, level, message, line, sourceId) => {
+  win.webContents.on("console-message", (event) => {
+    const { level, message, lineNumber, sourceId } = event
     if (message.toLowerCase().includes("terminal") || sourceId.toLowerCase().includes("terminal")) {
-      writeLog("pty", "console", { window: name, level, message, line, sourceId })
+      writeLog("pty", "console", { window: name, level, message, line: lineNumber, sourceId })
     }
   })
   win.webContents.on("preload-error", (_event, preloadPath, error) => {
@@ -465,7 +466,7 @@ function wireWindowRecovery(win: BrowserWindow, name: string) {
 function addDocumentPolicy(response: Response, file: string) {
   if (!file.toLowerCase().endsWith(".html")) return response
   const headers = new Headers(response.headers)
-  headers.set(contentSecurityPolicyHeader, RENDERER_CONTENT_SECURITY_POLICY)
+  headers.set(contentSecurityPolicyHeader, rendererContentSecurityPolicy(false))
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
 }
 
@@ -492,7 +493,13 @@ function isTrustedRendererUrl(value?: string) {
 
 function addRendererHeaders(value: string, headers: Record<string, any>) {
   if (!isRendererUrl(value, true)) return
-  upsertKeyValue(headers, contentSecurityPolicyHeader, [RENDERER_CONTENT_SECURITY_POLICY])
+  upsertKeyValue(headers, contentSecurityPolicyHeader, [rendererContentSecurityPolicy(isDevServerRendererUrl(value))])
+}
+
+function isDevServerRendererUrl(value?: string) {
+  const devUrl = process.env.ELECTRON_RENDERER_URL
+  if (!value || !devUrl || !URL.canParse(value) || !URL.canParse(devUrl)) return false
+  return new URL(value).origin === new URL(devUrl).origin
 }
 
 function isRendererUrl(value?: string, html = false) {
@@ -500,9 +507,7 @@ function isRendererUrl(value?: string, html = false) {
   const url = new URL(value)
   if (html && !url.pathname.endsWith(".html")) return false
   if (url.protocol === `${rendererProtocol}:` && url.host === rendererHost) return true
-  const devUrl = process.env.ELECTRON_RENDERER_URL
-  if (!devUrl || !URL.canParse(devUrl)) return false
-  return url.origin === new URL(devUrl).origin
+  return isDevServerRendererUrl(value)
 }
 
 function wireZoom(win: BrowserWindow) {

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test"
-import { storageAccessGuidance, storageProviderLabel, shouldShowStorageDiagnostics } from "./StorageDiagnostics"
+import {
+  storageAccessGuidance,
+  storageProviderLabel,
+  shouldShowStorageDiagnostics,
+} from "./StorageDiagnostics"
 
 const wholeVolume = {
   capability: "not-applicable" as const,
@@ -29,7 +33,7 @@ describe("storage diagnostics presentation", () => {
           },
         },
         locations: [],
-      }),
+      })
     ).toBe(true)
     expect(
       shouldShowStorageDiagnostics({
@@ -40,11 +44,14 @@ describe("storage diagnostics presentation", () => {
             capability: "macos-full-disk-access",
             status: "limited",
             mapCoverage: "may-be-incomplete",
-            evidence: { source: "protected-directory-probes", probes: [{ name: "Mail", status: "denied" }] },
+            evidence: {
+              source: "protected-directory-probes",
+              probes: [{ name: "Mail", status: "denied" }],
+            },
           },
         },
         locations: [],
-      }),
+      })
     ).toBe(true)
     const macGuidance = storageAccessGuidance({
       access: {
@@ -60,14 +67,57 @@ describe("storage diagnostics presentation", () => {
       locations: [],
     })
     expect(macGuidance).toBeUndefined()
+
+    const ordinaryMacCheck = storageAccessGuidance({
+      access: {
+        status: "inconclusive",
+        probes: [{ name: "Mail", status: "readable" }],
+        wholeVolume: {
+          capability: "macos-full-disk-access",
+          status: "inconclusive",
+          mapCoverage: "unknown",
+          evidence: {
+            source: "protected-directory-probes",
+            probes: [{ name: "Mail", status: "readable" }],
+          },
+        },
+      },
+      locations: [],
+    })
+    expect(ordinaryMacCheck?.attention).toBe(false)
+
+    const deniedMacCheck = storageAccessGuidance({
+      access: {
+        status: "limited",
+        probes: [{ name: "Mail", status: "denied" }],
+        wholeVolume: {
+          capability: "macos-full-disk-access",
+          status: "limited",
+          mapCoverage: "may-be-incomplete",
+          evidence: {
+            source: "protected-directory-probes",
+            probes: [{ name: "Mail", status: "denied" }],
+          },
+        },
+      },
+      locations: [],
+    })
+    expect(deniedMacCheck?.attention).toBe(true)
   })
 
   it("still surfaces mounted locations when permission diagnostics do not apply", () => {
     expect(
       shouldShowStorageDiagnostics({
         access: { status: "not-applicable", probes: [], wholeVolume },
-        locations: [{ path: "/Volumes/Team", name: "Team", kind: "network", provider: "network" }],
-      }),
+        locations: [
+          {
+            path: "/Volumes/Team",
+            name: "Team",
+            kind: "network",
+            provider: "network",
+          },
+        ],
+      })
     ).toBe(true)
   })
 })

@@ -99,7 +99,7 @@ export class ViewMorph {
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     getCenter: () => { cx: number; cy: number; maxR: number },
-    reducedMotion: () => boolean,
+    reducedMotion: () => boolean
   ) {
     this.canvasEl = canvas
     this.drawCtx = ctx
@@ -131,13 +131,30 @@ export class ViewMorph {
     // One layout-free theme read per flight: a 500ms window tolerates a theme
     // flip mid-morph, while per-frame getComputedStyle would thrash layout.
     this.border =
-      getComputedStyle(this.canvasEl).getPropertyValue("--border-weaker-base").trim() || "#0c0c14"
+      getComputedStyle(this.canvasEl)
+        .getPropertyValue("--border-weaker-base")
+        .trim() || "#0c0c14"
     this.finished = done
-    this.duration = this.reducedMotion() ? 1 : dir === "toGrid" ? TO_GRID_MS : TO_MAP_MS
+    this.duration = this.reducedMotion()
+      ? 1
+      : dir === "toGrid"
+        ? TO_GRID_MS
+        : TO_MAP_MS
     const { cx, cy, maxR } = this.getCenter()
     this.plans = tiles.map((tile) => this.planFlight(tile))
     this.prepareGeometry(cx, cy, maxR)
-    this.colors = tiles.map((tile) => tile.node.isOther ? getComputedStyle(this.canvasEl).getPropertyValue("--surface-raised-strong").trim() : primarySegmentColor(tile.colorIndex, 1, tile.node.isDir, tile.depth ?? 0))
+    this.colors = tiles.map((tile) =>
+      tile.node.isOther
+        ? getComputedStyle(this.canvasEl)
+            .getPropertyValue("--surface-raised-strong")
+            .trim()
+        : primarySegmentColor(
+            tile.colorIndex,
+            1,
+            tile.node.isDir,
+            tile.depth ?? 0
+          )
+    )
     this._active = true
     const generation = ++this.generation
     this.startTime = performance.now()
@@ -172,7 +189,8 @@ export class ViewMorph {
     }
     if (!this._active) return
     this._active = false
-    if (!runCompletion) this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
+    if (!runCompletion)
+      this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
     const cb = runCompletion ? this.finished : null
     this.finished = null
     cb?.()
@@ -183,7 +201,10 @@ export class ViewMorph {
     // tracks the current flight's scheduled frame.
     if (!this._active || generation !== this.generation) return
     this.raf = null
-    const raw = this.duration > 0 ? Math.min(1, (now - this.startTime) / this.duration) : 1
+    const raw =
+      this.duration > 0
+        ? Math.min(1, (now - this.startTime) / this.duration)
+        : 1
     this.draw(raw)
     if (raw >= 1) {
       this.settle(true)
@@ -196,7 +217,8 @@ export class ViewMorph {
   private planFlight(tile: MorphTile): FlightPlan {
     const wedge = this.dir === "toGrid" ? tile.from.wedge : tile.to.wedge
     const rect = this.dir === "toGrid" ? tile.to.rect : tile.from.rect
-    const pointCount = 2 * (arcSegments(wedge.end - wedge.start, wedge.outer, MAX_SAGITTA) + 1)
+    const pointCount =
+      2 * (arcSegments(wedge.end - wedge.start, wedge.outer, MAX_SAGITTA) + 1)
     return {
       pointCount,
       rectPolygon: matchingRectPolygon(rect, pointCount),
@@ -205,12 +227,24 @@ export class ViewMorph {
   }
 
   /** The boundary this tile flies from, retessellated against the live center. */
-  private boundary(tile: MorphTile, index: number, cx: number, cy: number): Point[] {
+  private boundary(
+    tile: MorphTile,
+    index: number,
+    cx: number,
+    cy: number
+  ): Point[] {
     const plan = this.plans[index]
     if (!plan) return []
-    if (tile.from.shape === "rect") return matchingRectPolygon(tile.from.rect, plan.pointCount)
+    if (tile.from.shape === "rect")
+      return matchingRectPolygon(tile.from.rect, plan.pointCount)
     if (tile.from.shape === "arc" || this.dir === "toGrid") {
-      return sectorPolygon(tile.from.wedge, cx, cy, MAX_SAGITTA, plan.pointCount / 2 - 1)
+      return sectorPolygon(
+        tile.from.wedge,
+        cx,
+        cy,
+        MAX_SAGITTA,
+        plan.pointCount / 2 - 1
+      )
     }
     return plan.rectPolygon
   }
@@ -219,9 +253,18 @@ export class ViewMorph {
   private prepareGeometry(cx: number, cy: number, maxR: number) {
     this.geometryCenter = { cx, cy, maxR }
     this.sources = this.tiles.map((tile, i) => this.boundary(tile, i, cx, cy))
-    this.destinations = this.tiles.map((tile, i) => tile.to.shape === "rect" || (tile.to.shape !== "arc" && this.dir === "toGrid")
-      ? this.plans[i].rectPolygon
-      : sectorPolygon(tile.to.wedge, cx, cy, MAX_SAGITTA, this.plans[i].pointCount / 2 - 1))
+    this.destinations = this.tiles.map((tile, i) =>
+      tile.to.shape === "rect" ||
+      (tile.to.shape !== "arc" && this.dir === "toGrid")
+        ? this.plans[i].rectPolygon
+        : sectorPolygon(
+            tile.to.wedge,
+            cx,
+            cy,
+            MAX_SAGITTA,
+            this.plans[i].pointCount / 2 - 1
+          )
+    )
     this.points = this.sources.map((points) => points.map((): Point => [0, 0]))
   }
 
@@ -229,7 +272,11 @@ export class ViewMorph {
     const ctx = this.drawCtx
     const t = easeInOutCubic(raw)
     const { cx, cy, maxR } = this.getCenter()
-    if (cx !== this.geometryCenter.cx || cy !== this.geometryCenter.cy || maxR !== this.geometryCenter.maxR) {
+    if (
+      cx !== this.geometryCenter.cx ||
+      cy !== this.geometryCenter.cy ||
+      maxR !== this.geometryCenter.maxR
+    ) {
       this.prepareGeometry(cx, cy, maxR)
     }
     const dpr = Math.min(2, window.devicePixelRatio || 1)
@@ -241,11 +288,21 @@ export class ViewMorph {
       const destination = this.destinations[i]
       const pts = this.points[i]
       const tile = this.tiles[i]
-      const fromArc = tile.from.shape === "arc" || (tile.from.shape === undefined && this.dir === "toGrid")
-      const toArc = tile.to.shape === "arc" || (tile.to.shape === undefined && this.dir === "toMap")
+      const fromArc =
+        tile.from.shape === "arc" ||
+        (tile.from.shape === undefined && this.dir === "toGrid")
+      const toArc =
+        tile.to.shape === "arc" ||
+        (tile.to.shape === undefined && this.dir === "toMap")
       if (fromArc !== toArc) {
-        unwrapSector(pts, fromArc ? tile.from.wedge : tile.to.wedge,
-          fromArc ? tile.to.rect : tile.from.rect, cx, cy, fromArc ? t : 1 - t)
+        unwrapSector(
+          pts,
+          fromArc ? tile.from.wedge : tile.to.wedge,
+          fromArc ? tile.to.rect : tile.from.rect,
+          cx,
+          cy,
+          fromArc ? t : 1 - t
+        )
       } else {
         for (let j = 0; j < pts.length; j++) {
           pts[j][0] = source[j][0] + (destination[j][0] - source[j][0]) * t
@@ -253,10 +310,15 @@ export class ViewMorph {
         }
       }
       tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
-      ctx.globalAlpha = (tile.fromOpacity ?? 1) + ((tile.toOpacity ?? 1) - (tile.fromOpacity ?? 1)) * t
+      ctx.globalAlpha =
+        (tile.fromOpacity ?? 1) +
+        ((tile.toOpacity ?? 1) - (tile.fromOpacity ?? 1)) * t
       const fromColor = tile.fromColor ?? this.colors[i]
       const toColor = tile.toColor ?? this.colors[i]
-      ctx.fillStyle = fromColor === toColor ? fromColor : `color-mix(in oklab, ${fromColor} ${(1-t)*100}%, ${toColor})`
+      ctx.fillStyle =
+        fromColor === toColor
+          ? fromColor
+          : `color-mix(in oklab, ${fromColor} ${(1 - t) * 100}%, ${toColor})`
       ctx.fill()
       ctx.strokeStyle = this.border
       ctx.lineWidth = 0.8 * dpr
@@ -275,7 +337,7 @@ function tracePolygon(
   ctx: CanvasRenderingContext2D,
   pts: Point[],
   anchors: ReadonlySet<number>,
-  radius: number,
+  radius: number
 ) {
   if (pts.length < 3) return
   ctx.beginPath()
@@ -295,13 +357,16 @@ function tracePolygon(
     const inLength = Math.hypot(inDx, inDy) || 1
     const outLength = Math.hypot(outDx, outDy) || 1
     const trim = Math.min(radius, inLength / 2, outLength / 2)
-    ctx.lineTo(corner[0] + (inDx / inLength) * trim, corner[1] + (inDy / inLength) * trim)
+    ctx.lineTo(
+      corner[0] + (inDx / inLength) * trim,
+      corner[1] + (inDy / inLength) * trim
+    )
     ctx.arcTo(
       corner[0],
       corner[1],
       corner[0] + (outDx / outLength) * trim,
       corner[1] + (outDy / outLength) * trim,
-      trim,
+      trim
     )
   }
   ctx.closePath()

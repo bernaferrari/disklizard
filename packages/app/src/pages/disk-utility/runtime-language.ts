@@ -1,10 +1,14 @@
 import { DISK_RECOGNITION_LANGUAGE_TEXT } from "./recognition-language"
 import type { DiskAccessGuidanceKey } from "./types"
 export const DISK_ACCESS_GUIDANCE: Record<DiskAccessGuidanceKey, string> = {
-  "disk.accessGuidance.macos": "Grant Full Disk Access to DiskLizard in System Settings, then scan again.",
-  "disk.accessGuidance.windows": "Use an account with access to this drive, or scan a folder your account can read.",
-  "disk.accessGuidance.linux": "Review folder and mount permissions, then scan again.",
-  "disk.accessGuidance.default": "Review access to these folders, then scan again.",
+  "disk.accessGuidance.macos":
+    "These folders could not be read. Check their permissions; macOS privacy access may also apply.",
+  "disk.accessGuidance.windows":
+    "Use an account with access to this drive, or scan a folder your account can read.",
+  "disk.accessGuidance.linux":
+    "Review folder and mount permissions, then scan again.",
+  "disk.accessGuidance.default":
+    "Review access to these folders, then scan again.",
   "disk.accessGuidance.rescan": "Use File → Rescan after changing access.",
 }
 
@@ -13,18 +17,22 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.volume.actions": "Volume actions",
   "disk.volume.finder": "Show in Finder",
   "disk.volume.eject": "Eject {name}",
-  "disk.volume.ejectFailed": "The volume action couldn’t be completed. If ejecting, close files or apps using this volume and try again.",
+  "disk.volume.ejectFailed":
+    "The volume action couldn’t be completed. If ejecting, close files or apps using this volume and try again.",
   "disk.collection.unavailable": "This item is protected from cleanup",
   "disk.capacity.free": "Free space",
   "disk.capacity.available": "Free + reclaimable",
   "disk.capacity.details": "About these totals",
-  "disk.capacity.hiddenExplanation": "Hidden space is storage macOS reports as used that this scan could not assign to files. It can include inaccessible folders, snapshots, and filesystem data. It cannot be opened or collected as a folder.",
-  "disk.capacity.allocationExplanation": "File sizes and volume usage measure different things. Shared file storage can make scan totals larger than used space. Hidden space is shown only when used space exceeds the scan total; an absent hidden-space entry does not mean every location was readable.",
+  "disk.capacity.hiddenExplanation":
+    "Hidden space is storage macOS reports as used that this scan could not assign to files. It can include inaccessible folders, snapshots, and filesystem data. It cannot be opened or collected as a folder.",
+  "disk.capacity.allocationExplanation":
+    "File sizes and volume usage measure different things. Shared file storage can make scan totals larger than used space. Hidden space is shown only when used space exceeds the scan total; an absent hidden-space entry does not mean every location was readable.",
   ...DISK_ACCESS_GUIDANCE,
   "disk.navigation.parent": "Back to {name}",
   "disk.storage.accessDetails": "Access details",
   "disk.drive.availableSuffix": "available",
-  "disk.drive.availableDetails": "{free} free now · {reclaimable} reclaimable by macOS",
+  "disk.drive.availableDetails":
+    "{free} free now · {reclaimable} reclaimable by macOS",
   "disk.brand": "DiskLizard",
   "disk.common.scan": "Scan",
   "disk.common.rescan": "Rescan",
@@ -40,7 +48,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.showMore": "Show more",
   "disk.common.recommendations": "Recommendations",
   "disk.common.review": "Review",
-  "disk.smaller.summary": "These smaller items are grouped in the scan summary. Open their containing directory to explore further.",
+  "disk.smaller.summary":
+    "These smaller items are grouped in the scan summary. Open their containing directory to explore further.",
   "disk.common.back": "Back",
   "disk.common.net": "Net",
   "disk.common.complete": "Complete",
@@ -53,11 +62,13 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.icicle": "Layers",
   "disk.common.flame": "Flame",
   "disk.flame.label": "Directory depth by size",
-  "disk.flame.hint": "Width shows storage size. Each row goes one level deeper.",
+  "disk.flame.hint":
+    "Width shows storage size. Each row goes one level deeper.",
   "disk.flame.zoom": "Zoom",
 
   "disk.icicle.label": "Folder layers by size",
-  "disk.icicle.hint": "Each row is one level deeper. Open a folder to explore further.",
+  "disk.icicle.hint":
+    "Each row is one level deeper. Open a folder to explore further.",
   "disk.common.list": "List",
   "disk.common.all": "All",
   "disk.common.contents": "Contents",
@@ -84,9 +95,26 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.sort.key.type": "Type",
   "disk.sort.key.category": "Category",
   "disk.developer.group": "Group by category",
+  "disk.developer.groupLabel": "Group items",
+  "disk.developer.group.none": "Ungrouped",
+  "disk.developer.group.category": "Grouped by artifact type",
+  "disk.developer.group.project": "Grouped by project",
+  "disk.developer.metadataMatch": "Matches artifact type: {type}",
+  "disk.developer.ageUnknown": "Change date unknown",
   "disk.developer.reviewCategory": "Review verified items",
-  "disk.developer.sizeExplanation": "Sizes show files found in this scan. Space freed may differ because macOS can share storage between files.",
-  "disk.developer.meanings": "Rebuildable: generated again by your build tools. Reinstallable: restored by installing dependencies. Redownloadable: cached downloads. Review first: may contain data you need. Protected: excluded from cleanup.",
+  "disk.developer.sizeExplanation":
+    "Sizes show files found in this scan. Space freed may differ because macOS can share storage between files.",
+  "disk.developer.categoryContribution": "{size} in this category",
+  "disk.developer.operationSizeNote":
+    "Row size is the whole folder that would move to Trash; category totals avoid counting nested folders twice.",
+  "disk.dialog.collection.deepWarningSummary":
+    "Sizes are not reclaim estimates · map refreshes afterward",
+  "disk.developer.observedChange":
+    "Observed modification time: {date}. Age filters use this timestamp.",
+  "disk.developer.changeUnknown":
+    "Change time was not observed. This item is excluded from age filters.",
+  "disk.developer.meanings":
+    "Rebuildable: generated again by your build tools. Reinstallable: restored by installing dependencies. Redownloadable: cached downloads. Review first: may contain data you need. Protected: excluded from cleanup.",
   "disk.sort.direction.label": "Sort direction",
   "disk.sort.direction.ascending": "Ascending",
   "disk.sort.direction.descending": "Descending",
@@ -105,7 +133,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.history.results": "Matching storage changes",
   "disk.history.empty.title": "No live changes yet",
   "disk.history.empty.filtered": "No matching changes",
-  "disk.history.empty.body": "Changes detected while this map stays open will appear here.",
+  "disk.history.empty.body":
+    "Changes detected while this map stays open will appear here.",
   "disk.history.events": "events",
   "disk.history.changes": "changes",
   "disk.history.clear": "Clear history",
@@ -131,8 +160,10 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.top.rescan": "Rescan this location",
   "disk.top.openDesktop": "Open DiskLizard on desktop",
   "disk.top.scannerDisconnected": "Scanner disconnected",
-  "disk.top.desktopBody": "Reading storage requires the secure desktop scanner.",
-  "disk.top.disconnectedBody": "The secure desktop bridge is unavailable. Reopen DiskLizard to reconnect it.",
+  "disk.top.desktopBody":
+    "Reading storage requires the secure desktop scanner.",
+  "disk.top.disconnectedBody":
+    "The secure desktop bridge is unavailable. Reopen DiskLizard to reconnect it.",
   "disk.top.restart": "Restart DiskLizard",
   "disk.app.menu": "DiskLizard menu",
   "disk.app.about": "DiskLizard {version}",
@@ -149,34 +180,99 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.app.diagnosticsSaved": "Diagnostics exported",
   "disk.app.diagnosticsSavedBody": "Saved to {path}",
   "disk.app.diagnosticsFailed": "Could not export diagnostics",
-  "disk.map.label": "Storage map for {label}. Select an item to inspect it; use the results list to browse every item.",
+  "disk.map.label":
+    "Storage map for {label}. Select an item to inspect it; use the results list to browse every item.",
   "disk.map.role": "interactive storage map",
   "disk.map.instructions":
-    "Click a directory to open it, or click the center to go up one level. Drag a folder to the review area to select it. Use the Up and Down arrow keys to select an item, Home, End, or Page Up and Page Down to move through the list, Enter or Right Arrow to open a folder, Space to preview it, C to add it to review, and Escape or Left Arrow to move up one level. The results list contains an accessible entry for every item in this map.",
+    "Click a folder to open it, click a file to inspect it, or click the center to go up one level. Drag a folder to the review area to select it. Use the Up and Down arrow keys to select an item, Home, End, or Page Up and Page Down to move through the list, Enter or Right Arrow to open a folder, Space to preview it, C to add it to review, and Escape or Left Arrow to move up one level. The results list contains an accessible entry for every item in this map.",
   "disk.shortcuts.show": "Show keyboard shortcuts",
   "disk.shortcuts.heading": "Keyboard shortcuts",
-  "disk.shortcuts.navigation": "↑ / ↓ select · Shift+↑ / ↓ adds a range to review · Home / End and Pg↑ / Pg↓ jump",
+  "disk.shortcuts.navigation":
+    "↑ / ↓ select · Shift+↑ / ↓ selects a range · Home / End and Pg↑ / Pg↓ jump",
   "disk.shortcuts.history": "Alt+← / → moves through visited locations",
   "disk.shortcuts.open":
     "← / Escape goes up · → / Enter opens · Space previews · C selects for review · L protects from cleanup",
   "disk.shortcuts.openMac":
     "← / Escape goes up · → / Enter opens · Space previews with Quick Look · C selects for review · L protects from cleanup",
-  "disk.shortcuts.views": "1 Map · 2 Tiles · 3 Layers · {modifier}-click reveals",
+  "disk.shortcuts.views":
+    "1 Map · 2 Tiles · 3 Layers · Use Show in Finder or Explorer to reveal",
   "disk.explore.heading": "Explore this scan",
   "disk.explore.choose": "Choose what to show",
   "disk.explore.developerCategories": "Developer categories",
   "disk.explore.categoryDescription": "{label}. {description}. {size}",
   "disk.explore.fileSize": "file size",
-  "disk.explore.physicalUnverified": "physical allocation · shared blocks unverified",
+  "disk.explore.physicalUnverified":
+    "physical allocation · shared blocks unverified",
   "disk.explore.diskSpaceUsed": "disk space used",
   "disk.explore.physicalLabel": "Physical storage accounting is unverified",
   "disk.explore.physicalPaused": "Space freed can’t be estimated",
   "disk.explore.totalsLow": "Totals may be low",
+  "disk.review.partialWarning":
+    "This selection may contain files the scan could not inspect. Its displayed size is a lower bound, and moving the folder to Trash will also move those unseen files.",
+  "disk.review.partialAcknowledge":
+    "I understand that uninspected files may also move to Trash.",
+  "disk.review.includedWith": "Included with {name}",
+  "disk.review.queued": "Queued for review; scan measurements are unchanged",
+  "disk.review.parentReplaces":
+    "{name} includes {count} previously selected items",
+  "disk.dialog.collection.copyPath": "Copy path",
+  "disk.dialog.collection.copied": "Copied",
+  "disk.dialog.collection.copyFailed": "Could not copy path",
+  "disk.results.heading": "Cleanup results",
+  "disk.results.summary":
+    "{moved} moved to {trash} · {failed} could not be moved",
+  "disk.results.needsRecheck":
+    "This cleanup plan needs rechecking. The scan changed after these operations; rescan before selecting anything else. These results remain available for reference.",
+  "disk.results.moved": "Moved to {trash}",
+  "disk.results.accessDenied":
+    "Access denied. Review this location’s permissions.",
+  "disk.results.readOnly": "This location is read-only.",
+  "disk.results.changed":
+    "Changed since scanning. Scan again before reviewing it.",
+  "disk.results.trashUnavailable":
+    "The system bin is unavailable for this location.",
+  "disk.results.failed": "Could not move this item.",
+  "disk.results.technicalDetails": "Technical details",
+  "disk.results.reviewFailures": "Review remaining items",
+  "disk.results.reopen": "Cleanup results",
+  "disk.cleanup.showMap": "Show map",
+  "disk.cleanup.hideMap": "Hide map",
+  "disk.common.explore": "Explore",
+  "disk.common.activity": "Activity",
+  "disk.cleanup.category": "Cleanup category",
+  "disk.cleanup.developerArtifacts": "Developer artifacts",
+  "disk.cleanup.otherSuggestions": "Other suggestions",
+  "disk.cleanup.scopeEntireScan": "Entire scan · {path}",
+  "disk.map.measuredBasis": "Measured contents · {basis}",
+  "disk.map.colorMeaning":
+    "Colors identify folders; text explains cleanup safety",
+  "disk.cleanup.clearFilters": "Clear filters",
+  "disk.sort.active": "{group} · {order}",
+  "disk.sort.largestFirst": "Largest first",
+  "disk.sort.smallestFirst": "Smallest first",
+  "disk.sort.otherOrder": "Sort by {sort} ({direction})",
+  "disk.preview.inspect": "Inspect",
+  "disk.common.closePreview": "Close preview",
   "disk.explore.openPrivacy": "Open privacy settings",
-  "disk.explore.unreadableList": "Unreadable locations sampled during this scan",
+  "disk.explore.unreadableList":
+    "Unreadable locations sampled during this scan",
   "disk.explore.showingUnreadable": "Showing 5 of {count} locations",
   "disk.explore.selectTitle": "Select an item to inspect it",
-  "disk.explore.selectBody": "Select an item, then press C or drag it here to review it",
+  "disk.detail.protectedByYou": "Protected by you",
+  "disk.cleanup.summaryRestricted":
+    "Open this summary to inspect individual items",
+  "disk.cleanup.locationRestricted": "Protected location",
+  "disk.cleanup.needsFreshScan": "Needs a fresh scan",
+  "disk.cleanup.systemRestricted": "System location",
+  "disk.cleanup.managedRestricted": "Managed by another tool",
+  "disk.cleanup.accessDenied": "Access denied by the filesystem",
+  "disk.cleanup.readOnly": "Read-only location",
+  "disk.cleanup.accessChecking": "Checking filesystem access",
+  "disk.cleanup.accessLikely": "Filesystem access looks available",
+  "disk.cleanup.accessUnknown": "Filesystem access not verified",
+  "disk.cleanup.checkAgain": "Check access again",
+  "disk.explore.selectBody":
+    "Select an item, then press C or drag it here to review it",
   "disk.explore.unverifiedExcluded":
     "One or more summarized, excluded, or unreadable branches may hide shared storage. File sizes remain visible, but DiskLizard will not estimate reclaimable disk space.",
   "disk.explore.unverifiedRelationships":
@@ -191,7 +287,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.explore.recommendationsScan": "Recommendations across this scan",
   "disk.explore.folderContents": "Folder contents",
   "disk.explore.summary": "{count} · {basis}",
-  "disk.explore.reclaimWait": "Reclaim estimates wait for verified clone metadata.",
+  "disk.explore.reclaimWait":
+    "Reclaim estimates wait for verified clone metadata.",
   "disk.explore.allDeveloper": "All developer files",
   "disk.explore.inspectHint": "Inspect this folder before changing it",
   "disk.explore.nestedCategories": " · {size} including nested categories",
@@ -204,7 +301,18 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.changed.months": "Changed {count}mo ago",
   "disk.changed.years": "Changed {count}y ago",
   "disk.empty.search.title": "No matching files",
-  "disk.empty.search.body": "Try another name or path, or return to all contents.",
+  "disk.empty.queryTitle": "No results for “{query}”",
+  "disk.empty.ageTitle": "No artifacts unchanged for {days}+ days",
+  "disk.empty.ecosystemTitle": "No {ecosystem} artifacts match",
+  "disk.empty.categoryTitle": "No {category} artifacts match",
+  "disk.empty.ageBody":
+    "Try a shorter age range or review all observed artifacts.",
+  "disk.empty.clearAge": "Show any age",
+  "disk.empty.partialTitle": "No results in the inspected locations",
+  "disk.empty.partialBody":
+    "Some locations could not be inspected. Expand the partial-results notice to see the retained paths.",
+  "disk.empty.search.body":
+    "Try another name or path, or return to all contents.",
   "disk.empty.developer.title": "No developer storage found",
   "disk.empty.developer.body":
     "DiskLizard did not recognize build output, dependencies, toolchain caches, or other developer artifacts in this scan.",
@@ -212,7 +320,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.empty.recommendations.body":
     "DiskLizard only recommends items when it can explain and verify why they are recoverable.",
   "disk.empty.recent.title": "Nothing was modified today",
-  "disk.empty.recent.body": "No items in this scan have a modification date from today.",
+  "disk.empty.recent.body":
+    "No items in this scan have a modification date from today.",
   "disk.explore.removeReview": "Remove {name} from review",
   "disk.explore.selectReview": "Select {name} for review",
   "disk.explore.unreadable": "{count} unreadable {locations}",
@@ -228,10 +337,14 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.collection.release": "Release to select {name} for review",
   "disk.collection.drag": "Drag {name} here to select it",
   "disk.collection.none": "Select items to review",
-  "disk.collection.selectedRebuild": "{size} selected size · Full map rebuild after move",
-  "disk.collection.selectedApprove": "{size} · Nothing moves until you approve it",
-  "disk.collection.reviewTrash": "{size} · Review before moving anything to {trash}",
-  "disk.collection.instructions": "Press C, Shift+Arrow, or drag · Nothing moves until you approve it",
+  "disk.collection.selectedRebuild":
+    "{size} selected size · Full map rebuild after move",
+  "disk.collection.selectedApprove":
+    "{size} · Nothing moves until you approve it",
+  "disk.collection.reviewTrash":
+    "{size} · Review before moving anything to {trash}",
+  "disk.collection.instructions":
+    "Press C or drag · Nothing moves until you approve it",
   "disk.collection.clear": "Clear review",
   "disk.collection.reviewSelected": "Review selected",
   "disk.collection.shortcutC": "Keyboard shortcut C",
@@ -251,35 +364,42 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.developer.policy.toolchainLabel": "Language and toolchain",
   "disk.developer.policy.customPrefix": "Unchanged for at least",
   "disk.developer.policy.customLabel": "Custom unchanged time in days",
-  "disk.developer.policy.inventoryLabel": "Deep developer artifact inventory. {coverage}",
+  "disk.developer.policy.inventoryLabel":
+    "Deep developer artifact inventory. {coverage}",
   "disk.developer.policy.inventoryHeading": "Deep artifact inventory · {state}",
   "disk.developer.policy.coverageDetails": "Coverage details",
   "disk.developer.policy.cap":
     "Results are capped at {count} retained items. Matching continues for coverage accounting, but paths beyond the cap are not listed.",
   "disk.developer.policy.samplePaths": "{label} sampled paths",
   "disk.developer.policy.select": "Select eligible for review",
-  "disk.developer.policy.requiresVerified": "A verified storage map is required before bulk selection.",
+  "disk.developer.policy.requiresVerified":
+    "A verified storage map is required before bulk selection.",
   "disk.developer.policy.invalidAge": "Set a whole number from 1 to 3,650 days",
   "disk.developer.policy.anyDate": "Any modification date",
   "disk.developer.policy.ageLabel": "Unchanged for at least {count} days",
-  "disk.developer.policy.bulkWaits": "Bulk selection waits for a verified storage map.",
+  "disk.developer.policy.bulkWaits":
+    "Bulk selection waits for a verified storage map.",
   "disk.developer.policy.noneEligible":
     "No automatically eligible results in this policy. Other artifacts remain inspectable.",
-  "disk.developer.policy.noneMatch": "No developer artifacts match this policy.",
-  "disk.developer.policy.status": "{eligible} · {size}{excluded} · modified time is not last-used time",
+  "disk.developer.policy.noneMatch":
+    "No developer artifacts match this policy.",
+  "disk.developer.policy.status": "{eligible} · {size}{excluded}",
   "disk.developer.policy.excluded": " · {count} not auto-selected",
   "disk.developer.inventory.complete": "Complete · {observed}",
   "disk.developer.inventory.partial": "Partial · {observed}{gaps}",
   "disk.developer.inventory.observed": "{artifacts} found across {folders}",
-  "disk.developer.inventory.incomplete": " · scanner reported an incomplete scope",
+  "disk.developer.inventory.incomplete":
+    " · scanner reported an incomplete scope",
   "disk.developer.inventory.capGap": "kept {count} at the {max}-item cap",
   "disk.developer.inventory.unreadableGap": "{count} unreadable",
   "disk.developer.inventory.excludedGap": "{count} excluded",
   "disk.developer.inventory.issueUnreadable": "Unreadable folders",
   "disk.developer.inventory.issueExcluded": "Excluded folders",
   "disk.developer.inventory.issueSymlinks": "Skipped symlinks",
-  "disk.developer.inventory.issueFolders": "Skipped folders (other device, cycle, or unavailable identity)",
-  "disk.developer.inventory.issueRefresh": "Retained artifacts needing a fresh scan before Trash",
+  "disk.developer.inventory.issueFolders":
+    "Skipped folders (other device, cycle, or unavailable identity)",
+  "disk.developer.inventory.issueRefresh":
+    "Retained artifacts needing a fresh scan before Trash",
   "disk.detail.info": "Details",
   "disk.detail.more": "More",
   "disk.detail.moreFor": "More actions for {name}",
@@ -300,7 +420,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.collection.summary": "{size} across {count}",
   "disk.dialog.collection.selectedSizes": "Selected file sizes: {summary}",
   "disk.dialog.collection.itemsLabel": "Items selected for review",
-  "disk.dialog.collection.body": "Check every item before anything leaves its original location.",
+  "disk.dialog.collection.body":
+    "Check every item before anything leaves its original location.",
   "disk.dialog.collection.deepWarning":
     "A selected path changes data represented by the deep artifact inventory. It can move to {trash}, but its displayed size is not a reclaim estimate. DiskLizard will rebuild the full map afterward.",
   "disk.dialog.collection.sharedWarning":
@@ -318,7 +439,8 @@ export const DISK_LANGUAGE_TEXT = {
     "Items can be restored from {trash}. DiskLizard will rebuild the full map after the move.",
   "disk.dialog.restore.recompute":
     "Items can be restored from {trash}. Storage allocation will be recomputed after the move.",
-  "disk.dialog.restore.space": "Items can be restored from {trash}. Space is freed after you empty it.",
+  "disk.dialog.restore.space":
+    "Items can be restored from {trash}. Space is freed after you empty it.",
   "disk.dialog.reclaim.summary": "{count} worth reviewing",
   "disk.dialog.reclaim.itemsLabel": "Recommended items",
   "disk.dialog.reclaim.remove": "Remove {name} from review",
@@ -327,7 +449,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.reclaim.body":
     "DiskLizard thinks these can usually be recreated or downloaded again. They are recommendations, not permission—select only the items you want to review.",
   "disk.dialog.reclaim.close": "Close review",
-  "disk.dialog.reclaim.action": "{action} · Nothing moves until you review the selected items",
+  "disk.dialog.reclaim.action":
+    "{action} · Nothing moves until you review the selected items",
   "disk.dialog.reclaim.selectAll": "Select all for review",
   "disk.dialog.delete.heading": "Confirm removal",
   "disk.dialog.delete.prompt": "Move this item to {trash}?",
@@ -336,7 +459,8 @@ export const DISK_LANGUAGE_TEXT = {
     "You can restore it from {trash}. DiskLizard will rebuild the full map after the move.",
   "disk.dialog.delete.restoreRecompute":
     "You can restore it from {trash}. Storage allocation will be recomputed after the move.",
-  "disk.dialog.delete.restoreSpace": "You can restore it from {trash}. Space is freed after you empty it.",
+  "disk.dialog.delete.restoreSpace":
+    "You can restore it from {trash}. Space is freed after you empty it.",
   "disk.dialog.delete.deepWarning":
     "This path changes data represented by the deep artifact inventory. Moving it does not make its displayed size a reclaim promise; DiskLizard will rebuild the full map afterward.",
   "disk.dialog.delete.sharedWarning":
@@ -351,7 +475,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.preview.tooLarge.bodyDefault":
     "DiskLizard bounds embedded previews to keep inspection fast and memory use predictable. Open it in its default app instead.",
   "disk.preview.binary.title": "This file contains binary data",
-  "disk.preview.binary.body": "Open it in its default application to inspect it safely.",
+  "disk.preview.binary.body":
+    "Open it in its default application to inspect it safely.",
   "disk.preview.unsupported.title": "Preview is not available for this format",
   "disk.preview.unsupported.body":
     "DiskLizard previews common images, source code, configuration, logs, and plain-text files.",
@@ -360,7 +485,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.preview.loading": "Loading preview…",
   "disk.preview.readError": "DiskLizard could not read this file",
   "disk.preview.folderSummary": "Folder summary",
-  "disk.preview.folderCount": "{count} immediate {items} · {size} in this scanned folder.",
+  "disk.preview.folderCount":
+    "{count} immediate {items} · {size} in this scanned folder.",
   "disk.preview.folderBody":
     "This summary uses the current scan only. Open the folder to browse its map, or use Quick Look for the system view.",
   "disk.preview.largest": "Largest visible items",
@@ -392,15 +518,19 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.scan.building": "Building your storage map",
   "disk.scan.buildingBody":
     "DiskLizard is measuring every readable file and folder. The map opens when the scan finishes.",
-  "disk.scan.status": "Scanning {label}. {files} files scanned. Use Cancel scan to stop.",
+  "disk.scan.status":
+    "Scanning {label}. {files} files scanned. Use Cancel scan to stop.",
   "disk.scan.scanned": "scanned",
   "disk.scan.fileCount": "{count} files",
   "disk.scan.estimatedPercent": "About {percent}%",
   "disk.scan.progressLabel": "Scan progress for {label}",
-  "disk.scan.progressValue": "{percent}% · {bytes} scanned across {files} files",
-  "disk.scan.progressIndeterminate": "{bytes} scanned across {files} files · completion estimate unavailable",
+  "disk.scan.progressValue":
+    "{percent}% · {bytes} scanned across {files} files",
+  "disk.scan.progressIndeterminate":
+    "{bytes} scanned across {files} files · completion estimate unavailable",
   "disk.apfs.unnamed": "Unnamed APFS snapshot",
-  "disk.apfs.showing": "{count} APFS snapshots are present; showing {visible} read-only identities.",
+  "disk.apfs.showing":
+    "{count} APFS snapshots are present; showing {visible} read-only identities.",
   "disk.apfs.body":
     "macOS does not report reliable per-snapshot bytes when copy-on-write blocks are shared. These identities are read-only evidence, not a size estimate or a deletion action.",
   "disk.apfs.observed": "Observed APFS snapshots",
@@ -427,10 +557,12 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.accounting.cloneShares": "APFS clone shares blocks",
   "disk.accounting.cloneSharesCount":
     "The filesystem reports {count} full clones. Byte ownership stays explicit unless every member is present in this scan.",
-  "disk.accounting.cloneSharesDetail": "The filesystem reports that this file shares all of its blocks with a clone.",
+  "disk.accounting.cloneSharesDetail":
+    "The filesystem reports that this file shares all of its blocks with a clone.",
   "disk.storage.connected": "Connected storage",
   "disk.storage.mountedMac": "Available on this device",
-  "disk.storage.diagnosticsErrorTitle": "Storage coverage could not be verified",
+  "disk.storage.diagnosticsErrorTitle":
+    "Storage coverage could not be verified",
   "disk.storage.diagnosticsErrorBody":
     "Volumes are still available to scan, but DiskLizard could not check connected storage or permission coverage.",
   "disk.storage.retryDiagnostics": "Check again",
@@ -439,31 +571,36 @@ export const DISK_LANGUAGE_TEXT = {
     "DiskLizard observed an OS permission denial. Open privacy settings to review access, then rescan—access is never assumed.",
   "disk.storage.accessWindowsBody":
     "DiskLizard is not running with an elevated Windows token, so protected locations may be missing from whole-volume scans.",
-  "disk.storage.accessUnknownTitle": "Whole-volume access could not be verified",
+  "disk.storage.accessUnknownTitle": "About full-volume access",
   "disk.storage.accessUnknownBody":
-    "DiskLizard could not confirm whether permission-protected locations are readable. Scan results remain inspectable, but treat coverage as potentially incomplete.",
+    "macOS does not let DiskLizard confirm Full Disk Access in advance. No action is needed now. If a scan finds folders it cannot read, DiskLizard will identify them and explain what to do.",
   "disk.storage.scanLocation": "Scan {name}, {provider}",
   "disk.storage.provider.googleDrive": "Google Drive",
   "disk.storage.provider.icloud": "iCloud Drive",
   "disk.storage.provider.onedrive": "OneDrive",
   "disk.storage.provider.network": "Network location",
   "disk.storage.provider.other": "Cloud storage",
-  "disk.treemap.label": "Tile view of this folder. Small items remain available in the list.",
+  "disk.treemap.label":
+    "Tile view of this folder. Small items remain available in the list.",
   "disk.treemap.openList": "Open full list",
   "disk.treemap.moreLabel": "{name}, open the full list",
-  "disk.treemap.folderLabel": "{name}, select for details. Press Enter to open the folder.",
-  "disk.treemap.fileLabel": "{name}, select for details. Press Space to preview.",
+  "disk.treemap.folderLabel":
+    "{name}, select for details. Press Enter to open the folder.",
+  "disk.treemap.fileLabel":
+    "{name}, select for details. Press Space to preview.",
   "disk.virtual.entries": "Storage entries",
   "disk.drive.volumes": "Volumes",
   "disk.drive.protectedDirectories": "Protected directories",
   "disk.drive.protected": "Protected from cleanup",
-  "disk.drive.lockHint": "Protected folders stay visible but are never added to cleanup.",
+  "disk.drive.lockHint":
+    "Protected folders stay visible but are never added to cleanup.",
   "disk.drive.openMaps": "Open maps",
   "disk.drive.openMapsHint": "Kept live on this device",
   "disk.drive.closeMap": "Close map of {name}",
   "disk.drive.saved": "Saved locations",
   "disk.drive.deviceOnly": "This device only",
-  "disk.drive.savedEmpty": "Use Save location after scanning a folder to keep it here.",
+  "disk.drive.savedEmpty":
+    "Use Save location after scanning a folder to keep it here.",
   "disk.drive.freeSuffix": "free",
   "disk.drive.firstRun.title": "Scan any folder",
   "disk.drive.firstRun.body":
@@ -472,14 +609,17 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.drive.reading": "Reading volumes",
   "disk.drive.readFailed": "Volumes could not be read",
   "disk.drive.none": "No volumes yet",
-  "disk.drive.pickFolder": "Pick a folder and DiskLizard will map it without changing a thing.",
+  "disk.drive.pickFolder":
+    "Pick a folder and DiskLizard will map it without changing a thing.",
   "disk.drive.emptyFiltered": "Nothing matches this view",
   "disk.drive.emptyFolder": "This folder is empty",
-  "disk.drive.clearFilters": "Return to Contents to show every item in this folder.",
+  "disk.drive.clearFilters":
+    "Return to Contents to show every item in this folder.",
   "disk.drive.noItems": "There are no files or folders here.",
   "disk.drive.showEverything": "Show everything",
   "disk.drive.ofLevel": "of this level",
-  "disk.drive.inventoryOnly": "Deep inventory result · review it from the results list. It can’t be opened in the map.",
+  "disk.drive.inventoryOnly":
+    "Found while scanning developer folders. Show it in the file browser to inspect its contents.",
   "disk.drive.allowCleanup": "Allow cleanup in {name}",
   "disk.drive.action.cancel": "Cancel",
   "disk.drive.action.view": "View",
@@ -505,10 +645,12 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.toast.livePaused": "Live updates paused",
   "disk.toast.livePausedBody": "{message} Use Rescan to refresh this map now.",
   "disk.toast.listFailed": "Could not list drives",
-  "disk.toast.noPrivacy": "No privacy settings page is available on this platform",
+  "disk.toast.noPrivacy":
+    "No privacy settings page is available on this platform",
   "disk.toast.privacyFailed": "Could not open privacy settings",
   "disk.toast.scanLimit": "Three scans are already running",
-  "disk.toast.scanLimitBody": "Let one finish or cancel it before starting another.",
+  "disk.toast.scanLimitBody":
+    "Let one finish or cancel it before starting another.",
   "disk.toast.driveReady": "{name} is ready",
   "disk.toast.driveReadyBody": "Open its storage map when you’re ready.",
   "disk.toast.scanFailed": "Scan failed",
@@ -521,10 +663,13 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.toast.protectedFullBody": "Unlock a tree before protecting another.",
   "disk.toast.cleanupUnlocked": "Cleanup unlocked",
   "disk.toast.cleanupProtected": "Protected from cleanup",
-  "disk.toast.cleanupUnlockedBody": "{name} can be included in cleanup actions again.",
-  "disk.toast.cleanupProtectedBody": "{name} and everything inside it are excluded from cleanup actions.",
+  "disk.toast.cleanupUnlockedBody":
+    "{name} can be included in cleanup actions again.",
+  "disk.toast.cleanupProtectedBody":
+    "{name} and everything inside it are excluded from cleanup actions.",
   "disk.toast.cleanupUnlockedBodyLegacy": "{name} can be reviewed again.",
-  "disk.toast.cleanupProtectedBodyLegacy": "{name} stays on the map, but it will not go to review or Trash.",
+  "disk.toast.cleanupProtectedBodyLegacy":
+    "{name} stays on the map, but it will not go to review or Trash.",
   "disk.toast.revealFailed": "Could not reveal",
   "disk.toast.openFileFailed": "Could not open file",
   "disk.toast.quickLookFailed": "Could not open Quick Look",
@@ -541,12 +686,18 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.toast.listingDrives": "Listing drives",
   "disk.toast.checkingStorage": "Checking connected storage",
   "disk.toast.refreshingTotals": "Refreshing drive totals",
-  "disk.toast.folderChanged": "The folder changed while it was being scanned. Try opening it again.",
-  "disk.toast.moreLimit": "No more direct items can be shown from this summary.",
-  "disk.toast.authorizationMismatch": "Delete authorization did not match the reviewed item.",
-  "disk.toast.deepIdentity": "Deep inventory result requires a fresh directory identity before removal.",
-  "disk.toast.movedRebuild": "{name} moved. Rebuilding the full map before reporting disk space.",
-  "disk.toast.movedRecompute": "{name} moved. Recomputing storage allocation before reporting free space.",
+  "disk.toast.folderChanged":
+    "The folder changed while it was being scanned. Try opening it again.",
+  "disk.toast.moreLimit":
+    "No more direct items can be shown from this summary.",
+  "disk.toast.authorizationMismatch":
+    "Delete authorization did not match the reviewed item.",
+  "disk.toast.deepIdentity":
+    "Deep inventory result requires a fresh directory identity before removal.",
+  "disk.toast.movedRebuild":
+    "{name} moved. Rebuilding the full map before reporting disk space.",
+  "disk.toast.movedRecompute":
+    "{name} moved. Recomputing storage allocation before reporting free space.",
   "disk.toast.protectedBody":
     "DiskLizard protects system paths, configuration-bearing developer data, worktrees, and version history from direct removal.",
   "disk.toast.changedBody":
@@ -565,6 +716,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.error.timeout": "{operation} timed out after {milliseconds}ms",
   "disk.drive.performance": "{duration} · {rate}",
   "disk.treemap.hover": "{name} · {size}",
+  "disk.treemap.hoverPath": "{path} · {size}",
   "disk.recognition.projectScope": "Project · {name}",
   "disk.safety.regenerable": "regenerable",
   "disk.safety.cache": "cache",
@@ -580,12 +732,15 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.cleanup.protectionsLoading":
     "Review and Trash stay disabled until DiskLizard has loaded your saved protections.",
   "disk.cleanup.protectionsSavingTitle": "Saving cleanup protections",
-  "disk.cleanup.protectionsSaving": "Review and Trash stay disabled until the protection change has been saved.",
+  "disk.cleanup.protectionsSaving":
+    "Review and Trash stay disabled until the protection change has been saved.",
   "disk.cleanup.protectionsErrorTitle": "Cleanup is disabled",
   "disk.cleanup.protectionsError":
     "DiskLizard could not load saved protections. Try again after repairing or resetting DiskLizard's saved settings.",
-  "disk.cleanup.protectionsUnavailable": "Saved cleanup protections are not ready.",
-  "disk.cleanup.protectionsChanged": "Cleanup protections changed. Review this item again before moving it to Trash.",
+  "disk.cleanup.protectionsUnavailable":
+    "Saved cleanup protections are not ready.",
+  "disk.cleanup.protectionsChanged":
+    "Cleanup protections changed. Review this item again before moving it to Trash.",
   "disk.cleanup.retryProtections": "Try again",
   "disk.cleanup.resetProtections": "Reset saved protections",
   "disk.cleanup.resetHeading": "Protection recovery",
@@ -611,9 +766,11 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.node.hiddenSpace": "Hidden space",
   "disk.node.selectedFile": "Selected file",
   "disk.node.otherUnknown": "Other items",
-  "disk.node.inventoryAction": " Deep inventory result; it cannot be explored from the map.",
+  "disk.node.inventoryAction":
+    " Deep inventory result; it cannot be explored from the map.",
   "disk.node.moreAction": " Press Enter to show more items.",
-  "disk.node.aggregateDescription": "Scanner summary · open it to show more direct items",
+  "disk.node.aggregateDescription":
+    "Scanner summary · open it to show more direct items",
   "disk.node.exploreAction": " Press Enter to explore.",
   "disk.node.previewAction": " Press Space to preview.",
   "disk.node.reviewAction": " Press C to add it to review.",
@@ -622,19 +779,33 @@ export const DISK_LANGUAGE_TEXT = {
 } as const
 
 export const DISK_LANGUAGE_PLURALS = {
+  "disk.developer.unchangedDays": {
+    one: "Unchanged for {count} day",
+    other: "Unchanged for {count} days",
+  },
   "disk.count.event": { one: "{count} event", other: "{count} events" },
   "disk.count.change": { one: "{count} change", other: "{count} changes" },
   "disk.count.item": { one: "{count} item", other: "{count} items" },
   "disk.node.other": { one: "1 smaller item", other: "{count} smaller items" },
   "disk.count.itemNoun": { one: "item", other: "items" },
   "disk.drive.itemCount": { one: "1 item", other: "{formattedCount} items" },
-  "disk.count.itemSelected": { one: "{count} item selected for review", other: "{count} items selected for review" },
-  "disk.count.artifact": { one: "{count} artifact", other: "{count} artifacts" },
+  "disk.count.itemSelected": {
+    one: "{count} item selected for review",
+    other: "{count} items selected for review",
+  },
+  "disk.count.artifact": {
+    one: "{count} artifact",
+    other: "{count} artifacts",
+  },
   "disk.count.folder": { one: "{count} folder", other: "{count} folders" },
-  "disk.count.symlinkSkipped": { one: "{count} symlink skipped", other: "{count} symlinks skipped" },
+  "disk.count.symlinkSkipped": {
+    one: "{count} symlink skipped",
+    other: "{count} symlinks skipped",
+  },
   "disk.count.folderSkipped": {
     one: "{count} folder skipped (other device, cycle, or unavailable identity)",
-    other: "{count} folders skipped (other device, cycle, or unavailable identity)",
+    other:
+      "{count} folders skipped (other device, cycle, or unavailable identity)",
   },
   "disk.count.artifactRefresh": {
     one: "{count} retained artifact needs a fresh scan before Trash",
@@ -644,19 +815,39 @@ export const DISK_LANGUAGE_PLURALS = {
     one: "{count} item could not be removed",
     other: "{count} items could not be removed",
   },
-  "disk.count.recommendation": { one: "{count} recommendation", other: "{count} recommendations" },
+  "disk.count.recommendation": {
+    one: "{count} recommendation",
+    other: "{count} recommendations",
+  },
   "disk.count.locationNoun": { one: "location", other: "locations" },
-  "disk.apfs.purgeableCount": { one: "1 purgeable", other: "{count} purgeable" },
-  "disk.apfs.timeMachineCount": { one: "1 Time Machine", other: "{count} Time Machine" },
+  "disk.apfs.purgeableCount": {
+    one: "1 purgeable",
+    other: "{count} purgeable",
+  },
+  "disk.apfs.timeMachineCount": {
+    one: "1 Time Machine",
+    other: "{count} Time Machine",
+  },
   "disk.apfs.noIdentity": {
     one: "1 APFS snapshot is present; macOS did not provide an identity.",
-    other: "{count} APFS snapshots are present; macOS did not provide identities.",
+    other:
+      "{count} APFS snapshots are present; macOS did not provide identities.",
   },
-  "disk.apfs.present": { one: "1 APFS snapshot is present.", other: "{count} APFS snapshots are present." },
+  "disk.apfs.present": {
+    one: "1 APFS snapshot is present.",
+    other: "{count} APFS snapshots are present.",
+  },
 } as const
-
 
 export type DiskLanguageKey = keyof typeof DISK_LANGUAGE_TEXT
 export type DiskLanguagePluralKey = keyof typeof DISK_LANGUAGE_PLURALS
-export type DiskLanguagePluralCategory = "zero" | "one" | "two" | "few" | "many" | "other"
-export type DiskLanguageMessageKey = DiskLanguageKey | `${DiskLanguagePluralKey}.${DiskLanguagePluralCategory}`
+export type DiskLanguagePluralCategory =
+  | "zero"
+  | "one"
+  | "two"
+  | "few"
+  | "many"
+  | "other"
+export type DiskLanguageMessageKey =
+  | DiskLanguageKey
+  | `${DiskLanguagePluralKey}.${DiskLanguagePluralCategory}`

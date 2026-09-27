@@ -35,7 +35,7 @@ Codegen generates every endpoint in the `HttpApi` it receives. OpenCode owns the
 
 The existing public `generate(Api, { directory })` operation writes the rich Effect output and remains an Effect requiring `FileSystem`. The staged API uses pure `compile(Api)`, `emitEffect(contract)`, and `emitPromise(contract)` phases before `write(output, directory)`. Compiler tests inspect virtual files directly; writer tests use `FileSystem.makeNoop`.
 
-Generation formats TypeScript with Prettier before writing. Output paths are flat, unique, and checked against traversal, reserved manifest names, and existing symbolic links.
+Generation formats TypeScript with Oxfmt before writing. Output paths are flat, unique, and checked against traversal, reserved manifest names, and existing symbolic links.
 
 Portable Effect output uses one self-contained module per `HttpApiGroup`, plus root client and index modules. Promise output uses shared type and client modules, while imported Effect output keeps adapters in the root client module. Schema dependencies may be duplicated across portable Effect group modules. Cross-group schema partitioning is deferred until measured output or bundle cost requires it.
 

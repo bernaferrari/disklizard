@@ -28,7 +28,11 @@ describe("Windows titlebar safe area", () => {
 
   it("uses Electron's titlebar safe-area environment variable with a native-width fallback", () => {
     const fallback = `calc(100vw - ${WINDOWS_CAPTION_BUTTONS_INSET}px)`
-    expect(DISK_UTILITY_STYLES).toContain(`width: env(titlebar-area-width, ${fallback});`)
-    expect(DISK_UTILITY_STYLES).toContain(`max-width: env(titlebar-area-width, ${fallback});`)
+    expect(DISK_UTILITY_STYLES).toContain(
+      `width: env(titlebar-area-width, ${fallback});`
+    )
+    expect(DISK_UTILITY_STYLES).toContain(
+      `max-width: env(titlebar-area-width, ${fallback});`
+    )
   })
 })

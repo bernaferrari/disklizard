@@ -4,7 +4,12 @@ import { useEffect, useRef, useState } from "react"
  * Animate a number from `from` to `to` over `ms`, calling `onUpdate` each frame
  * with an eased value. Returns a cancel function. Great for count-up stats.
  */
-export function animateCount(from: number, to: number, ms: number, onUpdate: (v: number) => void) {
+export function animateCount(
+  from: number,
+  to: number,
+  ms: number,
+  onUpdate: (v: number) => void
+) {
   const start = performance.now()
   let raf = 0
   const step = (now: number) => {
@@ -35,7 +40,7 @@ const SURFACE_EXIT_MS = 160
  */
 function createSurfacePresenceStore(
   getOptions: () => SurfacePresenceOptions,
-  onPhase: (phase: SurfacePhase) => void,
+  onPhase: (phase: SurfacePhase) => void
 ): SurfacePresence {
   let phase: SurfacePhase = "closed"
   let frame: number | undefined
@@ -65,7 +70,8 @@ function createSurfacePresenceStore(
   }
 
   const reducedMotion = () =>
-    getOptions().reducedMotion?.() ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    getOptions().reducedMotion?.() ??
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
   const close = (callback?: () => void) => {
     if (phase === "closed") {
@@ -122,7 +128,10 @@ export interface SurfacePresence {
  * Framework-free surface machine with the v1 accessor surface. Pass an
  * `onPhase` observer to mirror transitions into external state.
  */
-export function createSurfacePresence(options: SurfacePresenceOptions = {}, onPhase: () => void = () => {}) {
+export function createSurfacePresence(
+  options: SurfacePresenceOptions = {},
+  onPhase: () => void = () => {}
+) {
   return createSurfacePresenceStore(() => options, onPhase)
 }
 
@@ -135,7 +144,9 @@ export function useSurfacePresence(options: SurfacePresenceOptions = {}) {
   const [phase, setPhase] = useState<SurfacePhase>("closed")
   const optionsRef = useRef(options)
   optionsRef.current = options
-  const [surface] = useState(() => createSurfacePresenceStore(() => optionsRef.current, setPhase))
+  const [surface] = useState(() =>
+    createSurfacePresenceStore(() => optionsRef.current, setPhase)
+  )
   useEffect(() => surface.dispose, [surface])
   return {
     phase,

@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Санал хүсэлтээ хуваалцах",
   "desktop.menu.reportBug": "Алдаа мэдээлэх",
   "desktop.menu.ariaLabel": "OpenCode цэс",
-  "desktop.updater.dialog.checkFailed.message": "Шинэчлэлтийг шалгаж чадсангүй.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Шинэчлэлтийг шалгаж чадсангүй.",
   "desktop.updater.dialog.checkFailed.title": "Шинэчлэлтийн алдаа",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Та шинэчлэгдсэн байна.",
   "desktop.updater.dialog.upToDate.title": "Шинэчлэлт байхгүй",
-  "desktop.updater.dialog.ready.message": "Шинэчлэлтийг {{version}} татсан. Одоо дахин эхлүүлэх үү?",
+  "desktop.updater.dialog.ready.message":
+    "Шинэчлэлтийг {{version}} татсан. Одоо дахин эхлүүлэх үү?",
   "desktop.updater.dialog.ready.title": "Шинэчлэлт бэлэн боллоо",
   "desktop.updater.dialog.restart": "Дахин эхлүүлэх",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +67,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode хариу өгөхгүй байна",
   "desktop.recovery.unresponsive.detail":
     "Та програмаа дахин ажиллуулж, бүртгэлийг нээж эсвэл үргэлжлүүлэн хүлээх боломжтой.",
-  "desktop.recovery.loadFailed.detail": "Цонх: {{window}}\nURL: {{url}}\nАлдаа: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Цонх: {{window}}\nШалтгаан: {{reason}}\nКод: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Цонх: {{window}}\nURL: {{url}}\nАлдаа: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Цонх: {{window}}\nШалтгаан: {{reason}}\nКод: {{code}}",
   "desktop.recovery.unknown": "<үл мэдэгдэх>",
   "desktop.dialog.chooseFolder": "Фолдер сонгоно уу",
   "desktop.dialog.chooseFile": "Файл сонгоно уу",
@@ -74,28 +79,37 @@ export const dict = {
   "desktop.server.local": "Орон нутгийн сервер",
   "desktop.wsl.error.windowsOnly": "WSL зөвхөн Windows дээр боломжтой",
   "desktop.wsl.error.unavailable": "WSL боломжгүй байна",
-  "desktop.wsl.error.listInstalled": "Суулгасан WSL түгээлтийн жагсаалтыг гаргаж чадсангүй",
-  "desktop.wsl.error.listOnline": "Онлайн WSL түгээлтийн жагсаалтыг гаргаж чадсангүй",
-  "desktop.wsl.error.executeDistro": "Дистро дахь тушаалуудыг гүйцэтгэх боломжгүй",
+  "desktop.wsl.error.listInstalled":
+    "Суулгасан WSL түгээлтийн жагсаалтыг гаргаж чадсангүй",
+  "desktop.wsl.error.listOnline":
+    "Онлайн WSL түгээлтийн жагсаалтыг гаргаж чадсангүй",
+  "desktop.wsl.error.executeDistro":
+    "Дистро дахь тушаалуудыг гүйцэтгэх боломжгүй",
   "desktop.wsl.error.installWsl": "WSL суулгаж чадсангүй",
   "desktop.wsl.error.installDistro": "Дистро суулгаж чадсангүй: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode суулгаж чадсангүй",
   "desktop.wsl.error.alreadyAdded": "{{distro}} аль хэдийн нэмэгдсэн байна",
-  "desktop.wsl.error.opencodeMissing": "opencode энэ түгээлтэд суулгаагүй байна",
-  "desktop.wsl.error.opencodeCannotRun": "opencode суулгасан боловч ажиллуулж чадсангүй",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode-г {{distro}}-д суулгаагүй байна",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode энэ түгээлтэд суулгаагүй байна",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode суулгасан боловч ажиллуулж чадсангүй",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode-г {{distro}}-д суулгаагүй байна",
   "desktop.wsl.error.updateVersion":
     "OpenCode шинэчлэлт дууссан боловч {{distro}} мэдээлсэн хэвээр {{installed}}; хүлээгдэж буй {{expected}}",
   "desktop.wsl.error.noVersion": "хувилбар байхгүй",
-  "desktop.wsl.error.serverExited": "WSL сервер эхлүүлсний дараа гарсан (код={{code}} дохио ={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL сервер эхлүүлсний дараа гарсан (код={{code}} дохио ={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL сервер эрүүл болохоосоо өмнө гарсан (код={{code}} дохио={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{distro}} эрүүл мэндийн үзлэгт хамрагдах хажуугийн машины хугацаа {{timeout}}мс дараа дууссан",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} хугацаа {{timeout}}мс дараа дууссан",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} хугацаа {{timeout}}мс дараа дууссан",
   "desktop.wsl.error.failedPort": "Портыг авч чадсангүй",
   "desktop.picker.error.notSelected": "Файлыг сонгогч сонгоогүй",
-  "desktop.picker.error.sizeLimit": "Сонгосон хавсралтууд {{limit}} МБ хязгаараас хэтэрсэн",
+  "desktop.picker.error.sizeLimit":
+    "Сонгосон хавсралтууд {{limit}} МБ хязгаараас хэтэрсэн",
   "command.category.suggested": "Санал болгосон",
   "command.category.view": "Харах",
   "command.category.project": "Төсөл",
@@ -142,7 +156,8 @@ export const dict = {
   "command.tab.close": "Табыг хаах",
   "command.tab.reopenClosed": "Хаагдсан табыг дахин нээнэ үү",
   "command.context.addSelection": "Контекст сонголт нэмэх",
-  "command.context.addSelection.description": "Одоогийн файлаас сонгосон мөрүүдийг нэмнэ үү",
+  "command.context.addSelection.description":
+    "Одоогийн файлаас сонгосон мөрүүдийг нэмнэ үү",
   "command.input.focus": "Фокус оруулах",
   "command.terminal.toggle": "Терминал сэлгэх",
   "command.fileTree.toggle": "Файлын модыг сэлгэх",
@@ -150,11 +165,14 @@ export const dict = {
   "command.terminal.new": "Шинэ терминал",
   "command.terminal.new.description": "Шинэ терминалын таб үүсгэ",
   "command.steps.toggle": "Алхам сэлгэх",
-  "command.steps.toggle.description": "Одоогийн мессежийн алхмуудыг харуулах эсвэл нуух",
+  "command.steps.toggle.description":
+    "Одоогийн мессежийн алхмуудыг харуулах эсвэл нуух",
   "command.message.previous": "Өмнөх зурвас",
-  "command.message.previous.description": "Өмнөх хэрэглэгчийн мессеж рүү очно уу",
+  "command.message.previous.description":
+    "Өмнөх хэрэглэгчийн мессеж рүү очно уу",
   "command.message.next": "Дараагийн зурвас",
-  "command.message.next.description": "Дараагийн хэрэглэгчийн мессеж рүү очно уу",
+  "command.message.next.description":
+    "Дараагийн хэрэглэгчийн мессеж рүү очно уу",
   "command.model.choose": "Загвар сонгох",
   "command.model.choose.description": "Өөр загвар сонгоно уу",
   "command.mcp.toggle": "MCPс сэлгэх",
@@ -164,28 +182,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Агентийг арагш эргүүлэх",
   "command.agent.cycle.reverse.description": "Өмнөх агент руу шилжих",
   "command.model.variant.cycle": "Цикл сэтгэх хүчин чармайлт",
-  "command.model.variant.cycle.description": "Дараагийн хүчин чармайлтын түвшинд шилжинэ",
+  "command.model.variant.cycle.description":
+    "Дараагийн хүчин чармайлтын түвшинд шилжинэ",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Промпт",
   "command.permissions.autoaccept.enable": "Зөвшөөрлийг автоматаар хүлээн авах",
-  "command.permissions.autoaccept.disable": "Зөвшөөрлийг автоматаар хүлээн авахаа зогсоо",
+  "command.permissions.autoaccept.disable":
+    "Зөвшөөрлийг автоматаар хүлээн авахаа зогсоо",
   "command.workspace.toggle": "Ажлын талбаруудыг сэлгэх",
   "command.workspace.toggle.description":
     "Хажуугийн самбар дээрх олон ажлын талбарыг идэвхжүүлэх эсвэл идэвхгүй болгох",
   "command.session.undo": "Буцаах",
   "command.session.undo.description": "Сүүлийн мессежийг буцаах",
   "command.session.redo": "Дахин хий",
-  "command.session.redo.description": "Сүүлийн буцаагдсан мессежийг дахин хийнэ үү",
+  "command.session.redo.description":
+    "Сүүлийн буцаагдсан мессежийг дахин хийнэ үү",
   "command.session.compact": "Компакт сесс",
-  "command.session.compact.description": "Контекстийн хэмжээг багасгахын тулд сессийг нэгтгэн дүгнэ",
+  "command.session.compact.description":
+    "Контекстийн хэмжээг багасгахын тулд сессийг нэгтгэн дүгнэ",
   "command.session.fork": "Зурвасаас салаалах",
   "command.session.fork.description": "Өмнөх зурвасаас шинэ сесс үүсгэнэ үү",
   "command.session.share": "Сеанс хуваалцах",
-  "command.session.share.description": "Энэ сессийг хуваалцаад URL-г санах ой руу хуулна уу",
+  "command.session.share.description":
+    "Энэ сессийг хуваалцаад URL-г санах ой руу хуулна уу",
   "command.session.unshare": "Сешн хуваалцахыг болиулах",
   "command.session.unshare.description": "Энэ сессийг хуваалцахаа боль",
   "command.session.export": "Экспортын сесс",
-  "command.session.export.description": "Бүтэн сессийн хуулбарыг JSON нэрээр экспортлох",
+  "command.session.export.description":
+    "Бүтэн сессийн хуулбарыг JSON нэрээр экспортлох",
   "palette.search.placeholder": "Файл, команд, сесс хайх",
   "palette.search.placeholder.home": "Командууд болон сешнүүдийг хайх",
   "palette.empty": "Илэрц олдсонгүй",
@@ -195,26 +219,38 @@ export const dict = {
   "dialog.provider.empty": "Үйлчилгээ үзүүлэгч олдсонгүй",
   "dialog.provider.group.popular": "Алдартай",
   "dialog.provider.group.other": "Бусад",
-  "dialog.provider.custom.label": "Захиалгат OpenAI-тохиромжтой үйлчилгээ үзүүлэгч",
+  "dialog.provider.custom.label":
+    "Захиалгат OpenAI-тохиромжтой үйлчилгээ үзүүлэгч",
   "dialog.provider.tag.recommended": "Санал болгож байна",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini болон бусад загваруудыг сонгон шалгаруулсан",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini болон бусад загваруудыг сонгон шалгаруулсан",
   "dialog.provider.opencode.tagline": "Найдвартай оновчтой загварууд",
-  "dialog.provider.opencodeGo.tagline": "Хүн бүрт зориулсан хямд өртөгтэй захиалга",
-  "dialog.provider.anthropic.note": "Pro болон Max зэрэг Claude загварт шууд хандах",
-  "dialog.provider.copilot.note": "GitHub Copilot-ээр дамжуулан кодлоход туслах хиймэл оюун ухааны загварууд",
-  "dialog.provider.openai.note": "GPT AI-ийн хурдан, чадвартай ерөнхий ажлуудад зориулсан загварууд",
-  "dialog.provider.google.note": "Gemini хурдан, бүтэцтэй хариулт өгөх загварууд",
-  "dialog.provider.openrouter.note": "Нэг үйлчилгээ үзүүлэгчээс дэмжигдсэн бүх загварт хандах",
-  "dialog.provider.vercel.note": "Ухаалаг чиглүүлэлт бүхий AI загваруудад нэгдсэн хандалт",
+  "dialog.provider.opencodeGo.tagline":
+    "Хүн бүрт зориулсан хямд өртөгтэй захиалга",
+  "dialog.provider.anthropic.note":
+    "Pro болон Max зэрэг Claude загварт шууд хандах",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot-ээр дамжуулан кодлоход туслах хиймэл оюун ухааны загварууд",
+  "dialog.provider.openai.note":
+    "GPT AI-ийн хурдан, чадвартай ерөнхий ажлуудад зориулсан загварууд",
+  "dialog.provider.google.note":
+    "Gemini хурдан, бүтэцтэй хариулт өгөх загварууд",
+  "dialog.provider.openrouter.note":
+    "Нэг үйлчилгээ үзүүлэгчээс дэмжигдсэн бүх загварт хандах",
+  "dialog.provider.vercel.note":
+    "Ухаалаг чиглүүлэлт бүхий AI загваруудад нэгдсэн хандалт",
   "dialog.model.select.title": "Загвар сонгох",
   "dialog.model.search.placeholder": "Загвар хайх",
   "dialog.model.empty": "Загварын үр дүн алга",
   "dialog.model.manage": "Загваруудыг удирдах",
-  "dialog.model.manage.description": "Загвар сонгогч дээр ямар загвар гарч ирэхийг тохируулна уу.",
+  "dialog.model.manage.description":
+    "Загвар сонгогч дээр ямар загвар гарч ирэхийг тохируулна уу.",
   "dialog.model.manage.provider.toggle": "Бүх {{provider}} загварыг сэлгэх",
   "dialog.model.unpaid.freeModels.title": "OpenCode өгсөн үнэгүй загварууд",
-  "dialog.model.unpaid.addMore.title": "Алдартай үйлчилгээ үзүүлэгчээс илүү олон загварыг нэмнэ үү",
-  "dialog.model.unpaid.viewMoreProviders": "Өөр 70 гаруй үйлчилгээ үзүүлэгчийг харна уу",
+  "dialog.model.unpaid.addMore.title":
+    "Алдартай үйлчилгээ үзүүлэгчээс илүү олон загварыг нэмнэ үү",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Өөр 70 гаруй үйлчилгээ үзүүлэгчийг харна уу",
   "dialog.provider.viewAll": "Илүү олон үйлчилгээ үзүүлэгчийг харуулах",
   "provider.connect.title": "Холбох {{provider}}",
   "provider.connect.title.anthropicProMax": "Claude Pro/Max-аар нэвтэрнэ үү",
@@ -251,15 +287,20 @@ export const dict = {
     "Доорх кодыг оруулаад бүртгэлээ холбож, OpenCode-д {{provider}} загварыг ашиглана уу.",
   "provider.connect.oauth.auto.confirmationCode": "Баталгаажуулах код",
   "provider.connect.toast.connected.title": "{{provider}} холбогдсон",
-  "provider.connect.toast.connected.description": "{{provider}} загваруудыг ашиглах боломжтой боллоо.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} загваруудыг ашиглах боломжтой боллоо.",
   "provider.custom.title": "Захиалгат үйлчилгээ үзүүлэгч",
-  "provider.custom.unavailable": "Тусгай үйлчилгээ үзүүлэгчид энэ сервер дээр боломжгүй байна",
-  "provider.custom.description.prefix": "OpenAI нийцтэй үйлчилгээ үзүүлэгчийг тохируулна уу. -г үзнэ үү",
-  "provider.custom.description.link": "үйлчилгээ үзүүлэгчийн тохиргооны баримтууд",
+  "provider.custom.unavailable":
+    "Тусгай үйлчилгээ үзүүлэгчид энэ сервер дээр боломжгүй байна",
+  "provider.custom.description.prefix":
+    "OpenAI нийцтэй үйлчилгээ үзүүлэгчийг тохируулна уу. -г үзнэ үү",
+  "provider.custom.description.link":
+    "үйлчилгээ үзүүлэгчийн тохиргооны баримтууд",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Үйлчилгээ үзүүлэгчийн ID",
   "provider.custom.field.providerID.placeholder": "миний үйлчилгээ үзүүлэгч",
-  "provider.custom.field.providerID.description": "Жижиг үсэг, тоо, зураас эсвэл доогуур зураас",
+  "provider.custom.field.providerID.description":
+    "Жижиг үсэг, тоо, зураас эсвэл доогуур зураас",
   "provider.custom.field.name.label": "Дэлгэцийн нэр",
   "provider.custom.field.name.placeholder": "Миний AI үйлчилгээ үзүүлэгч",
   "provider.custom.field.baseURL.label": "Үндсэн URL",
@@ -282,16 +323,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "үнэ цэнэ",
   "provider.custom.headers.remove": "Толгой хэсгийг арилгах",
   "provider.custom.headers.add": "Гарчиг нэмэх",
-  "provider.custom.error.providerID.required": "Үйлчилгээ үзүүлэгчийн ID шаардлагатай",
-  "provider.custom.error.providerID.format": "Жижиг үсэг, тоо, зураас эсвэл доогуур зураас ашиглана уу",
-  "provider.custom.error.providerID.exists": "Энэ үйлчилгээ үзүүлэгчийн ID аль хэдийн байна",
+  "provider.custom.error.providerID.required":
+    "Үйлчилгээ үзүүлэгчийн ID шаардлагатай",
+  "provider.custom.error.providerID.format":
+    "Жижиг үсэг, тоо, зураас эсвэл доогуур зураас ашиглана уу",
+  "provider.custom.error.providerID.exists":
+    "Энэ үйлчилгээ үзүүлэгчийн ID аль хэдийн байна",
   "provider.custom.error.name.required": "Дэлгэцийн нэр шаардлагатай",
   "provider.custom.error.baseURL.required": "URL суурь шаардлагатай",
-  "provider.custom.error.baseURL.format": "http:// эсвэл https:// гэж эхлэх ёстой",
+  "provider.custom.error.baseURL.format":
+    "http:// эсвэл https:// гэж эхлэх ёстой",
   "provider.custom.error.required": "Шаардлагатай",
   "provider.custom.error.duplicate": "Давхардсан",
   "provider.disconnect.toast.disconnected.title": "{{provider}} салгагдсан",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} загварууд байхгүй болсон.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} загварууд байхгүй болсон.",
   "model.tag.free": "Үнэгүй",
   "model.tag.latest": "Хамгийн сүүлийн үеийн",
   "model.provider.anthropic": "Anthropic",
@@ -345,7 +391,8 @@ export const dict = {
   "prompt.example.4": "Баталгаажуулалт хэрхэн ажилладагийг тайлбарлана уу",
   "prompt.example.5": "Аюулгүй байдлын сул талуудыг олж засварлах",
   "prompt.example.6": "Хэрэглэгчийн үйлчилгээний нэгжийн тестийг нэмнэ үү",
-  "prompt.example.7": "Уншихад хялбар болгохын тулд энэ функцийг дахин тохируулна уу",
+  "prompt.example.7":
+    "Уншихад хялбар болгохын тулд энэ функцийг дахин тохируулна уу",
   "prompt.example.8": "Энэ алдаа юу гэсэн үг вэ?",
   "prompt.example.9": "Энэ асуудлыг засахад тусална уу",
   "prompt.example.10": "API бичиг баримт үүсгэх",
@@ -385,10 +432,13 @@ export const dict = {
   "prompt.action.send": "Илгээх",
   "prompt.action.stop": "Зогс",
   "prompt.toast.pasteUnsupported.title": "Дэмжигдээгүй хавсралт",
-  "prompt.toast.pasteUnsupported.description": "Энд зөвхөн зураг, PDFс, эсвэл текст файлыг хавсаргах боломжтой.",
-  "prompt.toast.attachmentDuplicate.title": "Энэ файлыг аль хэдийн байршуулсан байна",
+  "prompt.toast.pasteUnsupported.description":
+    "Энд зөвхөн зураг, PDFс, эсвэл текст файлыг хавсаргах боломжтой.",
+  "prompt.toast.attachmentDuplicate.title":
+    "Энэ файлыг аль хэдийн байршуулсан байна",
   "prompt.toast.modelAgentRequired.title": "Агент болон загварыг сонгоно уу",
-  "prompt.toast.modelAgentRequired.description": "Промпт илгээхээсээ өмнө агент болон загварыг сонгоно уу.",
+  "prompt.toast.modelAgentRequired.description":
+    "Промпт илгээхээсээ өмнө агент болон загварыг сонгоно уу.",
   "prompt.toast.worktreeCreateFailed.title": "Git worktree үүсгэж чадсангүй",
   "prompt.toast.sessionCreateFailed.title": "Сесс үүсгэж чадсангүй",
   "prompt.toast.shellSendFailed.title": "shell тушаалыг илгээж чадсангүй",
@@ -417,7 +467,8 @@ export const dict = {
   "app.server.retrying": "Автоматаар дахин оролдож байна...",
   "app.server.otherServers": "Бусад серверүүд",
   "dialog.server.title": "Серверүүд",
-  "dialog.server.description": "Энэ апп аль OpenCode серверт холбогдохыг сэлгэнэ үү.",
+  "dialog.server.description":
+    "Энэ апп аль OpenCode серверт холбогдохыг сэлгэнэ үү.",
   "dialog.server.search.placeholder": "Хайлтын серверүүд",
   "dialog.server.empty": "Одоогоор сервер байхгүй байна",
   "dialog.server.add.title": "Сервер нэмэх",
@@ -437,7 +488,8 @@ export const dict = {
   "dialog.server.default.description":
     "Орон нутгийн серверийг эхлүүлэхийн оронд програм эхлүүлэх үед энэ сервертэй холбогдоно уу. Дахин эхлүүлэх шаардлагатай.",
   "dialog.server.default.none": "Ямар ч сервер сонгогдоогүй байна",
-  "dialog.server.default.set": "Одоогийн серверийг өгөгдмөл болгож тохируулна уу",
+  "dialog.server.default.set":
+    "Одоогийн серверийг өгөгдмөл болгож тохируулна уу",
   "dialog.server.default.clear": "Тодорхой",
   "dialog.server.action.remove": "Серверийг устгах",
   "dialog.server.menu.edit": "Засварлах",
@@ -455,7 +507,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Дистро сонгоно уу",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL-г шалгаж байна...",
-  "wsl.onboarding.restartRequired": "Windows-г WSL суулгаж дуусгахын тулд дахин эхлүүлэх шаардлагатай.",
+  "wsl.onboarding.restartRequired":
+    "Windows-г WSL суулгаж дуусгахын тулд дахин эхлүүлэх шаардлагатай.",
   "wsl.onboarding.ready": "WSL бэлэн боллоо.",
   "wsl.onboarding.required": "Үргэлжлүүлэхийн тулд WSL шаардлагатай.",
   "wsl.onboarding.checkingDistros": "Дистрог шалгаж байна...",
@@ -464,13 +517,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Жагсаалтын түгээлтүүд...",
   "wsl.onboarding.distroReady": "{{distro}} бэлэн боллоо.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} суулгаагүй байна.",
-  "wsl.onboarding.openDistroOnce": "Тохиргоог дуусгахын тулд {{distro}}-г нэг удаа нээнэ үү.",
+  "wsl.onboarding.openDistroOnce":
+    "Тохиргоог дуусгахын тулд {{distro}}-г нэг удаа нээнэ үү.",
   "wsl.onboarding.finishingDistro": "{{distro}}-н тохиргоог дуусгаж байна.",
-  "wsl.onboarding.pickDistro": "Дистро сонгох эсвэл доороос нэгийг суулгана уу.",
+  "wsl.onboarding.pickDistro":
+    "Дистро сонгох эсвэл доороос нэгийг суулгана уу.",
   "wsl.onboarding.checkingOpencode": "OpenCode-г шалгаж байна...",
-  "wsl.onboarding.checkingOpencodeIn": "{{distro}} дахь OpenCode-г шалгаж байна...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "{{distro}} дахь OpenCode-г шалгаж байна...",
   "wsl.onboarding.updatingOpencode": "Шинэчилж байна OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "{{distro}}-д OpenCode-г шинэчилж байна...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "{{distro}}-д OpenCode-г шинэчилж байна...",
   "wsl.onboarding.updateOpencodeIn": "OpenCode-г {{distro}}-д шинэчилнэ үү.",
   "wsl.onboarding.updateOpencode": "Шинэчлэх OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode {{distro}}-д бэлэн боллоо.",
@@ -488,18 +545,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "bash, curl алга",
   "wsl.onboarding.distroStatus.unsupported": "Дэмжигдээгүй · WSL 2 ашиглах",
   "wsl.onboarding.needAnotherDistro": "Өөр дистро хэрэгтэй байна уу?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL каталогоос Linux түгээлтийг суулгана уу",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL каталогоос Linux түгээлтийг суулгана уу",
   "wsl.onboarding.wslNotInstalled.title": "WSL суулгаагүй байна",
   "wsl.onboarding.wslNotInstalled.description":
     "OpenCode WSL сервер нэмэхийн өмнө WSL (Windows Subsystem for Linux) шаардлагатай",
   "wsl.onboarding.wslUnavailable.title": "WSL боломжгүй",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode энэ машин дээр WSL-г баталгаажуулж чадсангүй.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode энэ машин дээр WSL-г баталгаажуулж чадсангүй.",
   "wsl.onboarding.installWsl": "WSL суулгах",
   "wsl.onboarding.windowsRestartRequired":
     "WSL-г суулгаж дуусгахын тулд Windows-г дахин эхлүүлээд OpenCode-г дахин нээнэ үү.",
   "wsl.onboarding.next": "Дараа нь",
   "wsl.onboarding.refresh": "Сэргээх",
-  "wsl.onboarding.allDistrosAdded": "Бүх суулгасан түгээлтүүд аль хэдийн нэмэгдсэн байна.",
+  "wsl.onboarding.allDistrosAdded":
+    "Бүх суулгасан түгээлтүүд аль хэдийн нэмэгдсэн байна.",
   "wsl.onboarding.noDistros": "Одоогоор ямар ч түгээлт илрээгүй байна.",
   "wsl.onboarding.install": "Суулгах",
   "wsl.onboarding.installing": "Суулгаж байна...",
@@ -513,12 +573,15 @@ export const dict = {
   "wsl.onboarding.version": "Хувилбар: {{version}}",
   "wsl.onboarding.unknown": "үл мэдэгдэх",
   "wsl.onboarding.desktopVersion": "ширээний компьютер {{version}}",
-  "wsl.onboarding.versionMismatch": "Суулгасан хувилбар нь ширээний програмын хувилбартай таарахгүй байна.",
+  "wsl.onboarding.versionMismatch":
+    "Суулгасан хувилбар нь ширээний програмын хувилбартай таарахгүй байна.",
   "wsl.onboarding.adding": "Нэмэж байна...",
-  "help.tabs.toast.ariaLabel": "Табуудыг танилцуулж байна. Таб ашиглан ажил болон идэвхтэй сешнүүдийг зохион байгуул",
+  "help.tabs.toast.ariaLabel":
+    "Табуудыг танилцуулж байна. Таб ашиглан ажил болон идэвхтэй сешнүүдийг зохион байгуул",
   "help.tabs.toast.dismiss": "Табын мэдээллийг хаах",
   "help.tabs.title": "Табуудыг танилцуулж байна",
-  "help.tabs.description": "Таб ашиглан ажил болон идэвхтэй сешнүүдийг зохион байгуул",
+  "help.tabs.description":
+    "Таб ашиглан ажил болон идэвхтэй сешнүүдийг зохион байгуул",
   "help.tabs.date": "Долдугаар сарын 14",
   "help.tabs.introduction": "OpenCode Desktop одоо табуудыг тойрон бүтээгдсэн.",
   "help.tabs.sessions":
@@ -527,7 +590,8 @@ export const dict = {
     "Цөөн хэдэн табыг нээлттэй байлгах нь идэвхтэй сешнүүдийг зохион байгуулахад хялбар болгодог. Хэрэв та тэдгээрийг эргэн тойронд байлгахаар төлөвлөж байгаа бол табуудыг мартагдашгүй зүйл болгон өөрчил.",
   "help.tabs.home":
     "Та бүх сесс болон төслүүдээ шинэ үндсэн нүүрэн дээрээс олох болно. Сешн сонгох нь таб дээр нээгдэнэ.",
-  "help.tabs.persistence": "Таныг програмыг дахин нээхэд таны таб нээлттэй хэвээр байна.",
+  "help.tabs.persistence":
+    "Таныг програмыг дахин нээхэд таны таб нээлттэй хэвээр байна.",
   "help.tabs.worktrees":
     'Шинэ загвар нь одоохондоо Git Worktrees-г дэмждэггүй, удахгүй гарах болно. Хэрэв та өмнөх бүдүүвчийг үргэлжлүүлэн ашиглахыг хүсвэл "Тохиргоо" хэсэгт байрлуулалт хооронд сэлгэх боломжтой. Хэдэн долоо хоногийн дараа шинэ зохион байгуулалт байнгын болно гэдгийг санаарай.',
   "server.row.noUsername": "хэрэглэгчийн нэр байхгүй",
@@ -540,7 +604,8 @@ export const dict = {
   "dialog.project.edit.color": "Өнгө",
   "dialog.project.edit.color.select": "{{color}} өнгө сонгоно уу",
   "dialog.project.edit.worktree.startup": "Ажлын талбарыг эхлүүлэх скрипт",
-  "dialog.project.edit.worktree.startup.description": "Шинэ ажлын талбар (Git worktree) үүсгэсний дараа ажиллана.",
+  "dialog.project.edit.worktree.startup.description":
+    "Шинэ ажлын талбар (Git worktree) үүсгэсний дараа ажиллана.",
   "dialog.project.edit.worktree.startup.placeholder": "жишээ нь bun install",
   "dialog.releaseNotes.action.getStarted": "Эхлээрэй",
   "dialog.releaseNotes.action.next": "Дараа нь",
@@ -601,50 +666,68 @@ export const dict = {
   "toast.theme.title": "Загварыг өөрчилсөн",
   "toast.scheme.title": "Өнгөний схем",
   "toast.workspace.enabled.title": "Ажлын талбарыг идэвхжүүлсэн",
-  "toast.workspace.enabled.description": "Хэд хэдэн Git worktree-г хажуугийн мөрөнд харуулав",
+  "toast.workspace.enabled.description":
+    "Хэд хэдэн Git worktree-г хажуугийн мөрөнд харуулав",
   "toast.workspace.disabled.title": "Ажлын талбарыг идэвхгүй болгосон",
-  "toast.workspace.disabled.description": "Хажуугийн мөрөнд зөвхөн үндсэн Git worktree-г харуулав",
+  "toast.workspace.disabled.description":
+    "Хажуугийн мөрөнд зөвхөн үндсэн Git worktree-г харуулав",
   "toast.permissions.autoaccept.on.title": "Зөвшөөрлийг автоматаар хүлээн авах",
-  "toast.permissions.autoaccept.on.description": "Зөвшөөрлийн хүсэлт автоматаар батлагдах болно",
-  "toast.permissions.autoaccept.off.title": "Зөвшөөрлийг автоматаар хүлээн авахаа больсон",
-  "toast.permissions.autoaccept.off.description": "Зөвшөөрлийн хүсэлтэд зөвшөөрөл шаардлагатай",
+  "toast.permissions.autoaccept.on.description":
+    "Зөвшөөрлийн хүсэлт автоматаар батлагдах болно",
+  "toast.permissions.autoaccept.off.title":
+    "Зөвшөөрлийг автоматаар хүлээн авахаа больсон",
+  "toast.permissions.autoaccept.off.description":
+    "Зөвшөөрлийн хүсэлтэд зөвшөөрөл шаардлагатай",
   "toast.model.none.title": "Ямар ч загвар сонгогдоогүй байна",
-  "toast.model.none.description": "Энэ сессийг дүгнэхийн тулд үйлчилгээ үзүүлэгчийг холбоно уу",
+  "toast.model.none.description":
+    "Энэ сессийг дүгнэхийн тулд үйлчилгээ үзүүлэгчийг холбоно уу",
   "toast.file.loadFailed.title": "Файлыг ачаалж чадсангүй",
   "toast.file.listFailed.title": "Файлуудыг жагсааж чадсангүй",
   "toast.context.noLineSelection.title": "Шугамын сонголт байхгүй",
-  "toast.context.noLineSelection.description": "Эхлээд файлын табаас мөрийн мужийг сонгоно уу.",
+  "toast.context.noLineSelection.description":
+    "Эхлээд файлын табаас мөрийн мужийг сонгоно уу.",
   "toast.session.share.copyFailed.title": "URL-г санах ой руу хуулж чадсангүй",
   "toast.session.share.success.title": "Сесс хуваалцсан",
   "toast.session.share.success.description": "Хуваалцах URL санах ойд хуулсан!",
   "toast.session.share.failed.title": "Сешн хуваалцаж чадсангүй",
   "toast.session.share.failed.description": "Сешн хуваалцах явцад алдаа гарлаа",
   "toast.session.unshare.success.title": "Сешн хуваалцаагүй",
-  "toast.session.unshare.success.description": "Харилцан хуваалцалтыг амжилттай болиуллаа!",
+  "toast.session.unshare.success.description":
+    "Харилцан хуваалцалтыг амжилттай болиуллаа!",
   "toast.session.unshare.failed.title": "Сешн хуваалцахыг болиулж чадсангүй",
-  "toast.session.unshare.failed.description": "Сессийг хуваалцахгүй байхад алдаа гарлаа",
+  "toast.session.unshare.failed.description":
+    "Сессийг хуваалцахгүй байхад алдаа гарлаа",
   "toast.session.export.success.title": "Сешн экспортлогдсон",
-  "toast.session.export.success.description": "сессийг {{filename}}-д хадгалсан",
+  "toast.session.export.success.description":
+    "сессийг {{filename}}-д хадгалсан",
   "toast.session.export.failed.title": "Сешн экспорт хийж чадсангүй",
-  "toast.session.export.failed.description": "Сешн экспортлох явцад алдаа гарлаа",
+  "toast.session.export.failed.description":
+    "Сешн экспортлох явцад алдаа гарлаа",
   "toast.session.listFailed.title": "{{project}} сешнүүдийг ачаалж чадсангүй",
   "toast.project.reloadFailed.title": "{{project}}-г дахин ачаалж чадсангүй",
   "toast.update.title": "Шинэчлэлт боломжтой",
-  "toast.update.description": "OpenCode ({{version}}) шинэ хувилбарыг одоо суулгах боломжтой.",
+  "toast.update.description":
+    "OpenCode ({{version}}) шинэ хувилбарыг одоо суулгах боломжтой.",
   "toast.update.action.installRestart": "Суулгаад дахин эхлүүлнэ үү",
   "toast.update.action.notYet": "Одоохондоо үгүй",
   "toast.update.installFailed.title": "Шинэчлэлийг суулгаж чадсангүй",
   "toast.update.installFailed.retry": "Дахин оролдох",
 
-  "disk.accessGuidance.macos": "System Settings-д DiskLizard-д Full Disk Access зөвшөөрөл олгоод дахин шалгана уу.",
-  "disk.accessGuidance.windows": "Энэ дискэд хандалттай бүртгэл ашиглаарай, эсвэл танай бүртгэл уншиж чадах хавтаст шалгуулаарай.",
-  "disk.accessGuidance.linux": "Хавтас болон mount зөвшөөрлийг шалгаад дахин шалгана уу.",
-  "disk.accessGuidance.default": "Эдгээр хавтас руу хандах эрхийг шалгаад дахин шалгана уу.",
-  "disk.accessGuidance.rescan": "Хандалтыг өөрчилсний дараа дээд самбар дахь Rescan-ийг ашиглана уу.",
+  "disk.accessGuidance.macos":
+    "System Settings-д DiskLizard-д Full Disk Access зөвшөөрөл олгоод дахин шалгана уу.",
+  "disk.accessGuidance.windows":
+    "Энэ дискэд хандалттай бүртгэл ашиглаарай, эсвэл танай бүртгэл уншиж чадах хавтаст шалгуулаарай.",
+  "disk.accessGuidance.linux":
+    "Хавтас болон mount зөвшөөрлийг шалгаад дахин шалгана уу.",
+  "disk.accessGuidance.default":
+    "Эдгээр хавтас руу хандах эрхийг шалгаад дахин шалгана уу.",
+  "disk.accessGuidance.rescan":
+    "Хандалтыг өөрчилсний дараа дээд самбар дахь Rescan-ийг ашиглана уу.",
   "disk.common.rescan": "Дахин шинжлэх",
   "error.page.title": "Ямар нэг алдаа гарлаа",
   "error.page.description": "Програмыг ачаалах явцад алдаа гарлаа.",
-  "error.page.description.localServerStartup": "Дотоод серверийг эхлүүлэх явцад алдаа гарлаа.",
+  "error.page.description.localServerStartup":
+    "Дотоод серверийг эхлүүлэх явцад алдаа гарлаа.",
   "error.page.details.label": "Алдааны дэлгэрэнгүй мэдээлэл",
   "error.page.action.restart": "Дахин эхлүүлэх",
   "error.page.action.report": "Алдаа мэдээлэх",
@@ -659,12 +742,16 @@ export const dict = {
   "error.page.version": "Хувилбар: {{version}}",
   "error.dev.rootNotFound":
     "Үндэс элемент олдсонгүй. Та үүнийг index.html дээрээ нэмэхээ мартсан уу? Эсвэл id атрибутыг буруу бичсэн байж магадгүй юм уу?",
-  "error.serverSync.connectFailed": "Сервертэй холбогдож чадсангүй. `{{url}}` дээр ажиллаж байгаа сервер байна уу?",
+  "error.serverSync.connectFailed":
+    "Сервертэй холбогдож чадсангүй. `{{url}}` дээр ажиллаж байгаа сервер байна уу?",
   "error.serverSDK.noServerAvailable": "Сервер байхгүй байна",
   "error.serverSDK.serverNotAvailable": "Сервер байхгүй байна",
-  "error.childStore.persistedCacheCreateFailed": "Тогтвортой кэшийг үүсгэж чадсангүй",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Тогтвортой төслийн мета өгөгдлийг үүсгэж чадсангүй",
-  "error.childStore.persistedProjectIconCreateFailed": "Тогтвортой төслийн дүрсийг үүсгэж чадсангүй",
+  "error.childStore.persistedCacheCreateFailed":
+    "Тогтвортой кэшийг үүсгэж чадсангүй",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Тогтвортой төслийн мета өгөгдлийг үүсгэж чадсангүй",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Тогтвортой төслийн дүрсийг үүсгэж чадсангүй",
   "error.childStore.storeCreateFailed": "Дэлгүүр үүсгэж чадсангүй",
   "directory.error.invalidUrl": "URL дотор буруу лавлах.",
   "error.chain.unknown": "Үл мэдэгдэх алдаа",
@@ -676,24 +763,31 @@ export const dict = {
   "error.chain.responseBody": "Хариу өгөх байгууллага:\n{{body}}",
   "error.chain.didYouMean": "Та: {{suggestions}} гэсэн үг үү",
   "error.chain.modelNotFound": "Загвар олдсонгүй: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Өөрийн тохиргооны (opencode.json) үйлчилгээ үзүүлэгч/загварын нэрийг шалгана уу",
+  "error.chain.checkConfig":
+    "Өөрийн тохиргооны (opencode.json) үйлчилгээ үзүүлэгч/загварын нэрийг шалгана уу",
   "error.chain.mcpFailed":
     'MCP сервер "{{name}}" амжилтгүй боллоо. OpenCode нь MCP баталгаажуулалтыг хараахан дэмждэггүйг анхаарна уу.',
   "error.chain.providerAuthFailed":
     "Үйлчилгээ үзүүлэгчийн баталгаажуулалт амжилтгүй болсон ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" үйлчилгээ үзүүлэгчийг эхлүүлж чадсангүй. Итгэмжлэл болон тохиргоог шалгана уу.',
-  "error.chain.configJsonInvalid": "{{path}} дээрх тохиргооны файл хүчингүй байна JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} дээрх тохиргооны файл буруу байна JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "{{path}} дээрх тохиргооны файл хүчингүй байна JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} дээрх тохиргооны файл буруу байна JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} доторх "{{dir}}" лавлах хүчингүй байна. Лавлах нэрийг "{{suggestion}}" болгож өөрчлөх эсвэл устгана уу. Энэ бол нийтлэг үсгийн алдаа юм.',
-  "error.chain.configFrontmatterError": "{{path}} дахь frontmatter-г задлан шинжилж чадсангүй:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} дахь frontmatter-г задлан шинжилж чадсангүй:\n{{message}}",
   "error.chain.configInvalid": "{{path}} дээрх тохиргооны файл буруу байна",
-  "error.chain.configInvalidWithMessage": "{{path}} дээрх тохиргооны файл буруу байна: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} дээрх тохиргооны файл буруу байна: {{message}}",
   "notification.permission.title": "Зөвшөөрөл шаардлагатай",
-  "notification.permission.description": "{{projectName}} дахь {{sessionTitle}} зөвшөөрөл шаардлагатай",
+  "notification.permission.description":
+    "{{projectName}} дахь {{sessionTitle}} зөвшөөрөл шаардлагатай",
   "notification.question.title": "Асуулт",
-  "notification.question.description": "{{projectName}} дэх {{sessionTitle}} асуулт байна",
+  "notification.question.description":
+    "{{projectName}} дэх {{sessionTitle}} асуулт байна",
   "notification.action.goToSession": "Сесс рүү оч",
   "notification.session.responseReady.title": "Хариулт бэлэн",
   "notification.session.error.title": "Сешн алдаа",
@@ -724,7 +818,8 @@ export const dict = {
   "session.tab.unknown": "Үл мэдэгдэх сесс",
   "session.panel.reviewAndFiles": "Хяналт ба файлууд",
   "session.error.notFound": "Энэ сесс олдохгүй байна",
-  "session.error.notFound.description": "Энэ таб нь энэ сервер дээр байхгүй сессийг заадаг.",
+  "session.error.notFound.description":
+    "Энэ таб нь энэ сервер дээр байхгүй сессийг заадаг.",
   "session.error.notFound.closeTab": "Табыг хаах",
   "session.error.serverConnection": "Энэ серверт холбогдох боломжгүй байна",
   "session.review.filesChanged": "Файлууд өөрчлөгдсөн {{count}}",
@@ -732,15 +827,19 @@ export const dict = {
   "session.review.change.other": "Өөрчлөлтүүд",
   "session.review.loadingChanges": "Өөрчлөлтүүдийг ачаалж байна...",
   "session.review.empty": "Энэ хуралдаанд хараахан өөрчлөлт ороогүй байна",
-  "session.review.noVcs": "Git Хувилбарын хяналтын систем илрээгүй, өөрчлөлт харагдахгүй байна",
+  "session.review.noVcs":
+    "Git Хувилбарын хяналтын систем илрээгүй, өөрчлөлт харагдахгүй байна",
   "session.review.noVcs.createGit.title": "Git репозитор үүсгэх",
-  "session.review.noVcs.createGit.description": "Энэ төслийн өөрчлөлтийг хянах, хянах, буцаах",
-  "session.review.noVcs.createGit.actionLoading": "Git репозитор үүсгэж байна...",
+  "session.review.noVcs.createGit.description":
+    "Энэ төслийн өөрчлөлтийг хянах, хянах, буцаах",
+  "session.review.noVcs.createGit.actionLoading":
+    "Git репозитор үүсгэж байна...",
   "session.review.noVcs.createGit.action": "Git репозитор үүсгэх",
   "session.review.noSnapshot":
     "Тохиромжтой хэсэгт агшин зуурын зургийг хянахыг идэвхгүй болгосон тул сессийн өөрчлөлтийг хийх боломжгүй",
   "session.review.noChanges": "Өөрчлөлт байхгүй",
-  "session.review.noUncommittedChanges": "Одоохондоо шийдэгдээгүй өөрчлөлт байхгүй байна",
+  "session.review.noUncommittedChanges":
+    "Одоохондоо шийдэгдээгүй өөрчлөлт байхгүй байна",
   "session.review.noBranchChanges": "Одоогоор салбар өөрчлөлт ороогүй байна",
   "session.files.selectToOpen": "Нээх файлаа сонгоно уу",
   "session.files.all": "Бүх файлууд",
@@ -839,12 +938,14 @@ export const dict = {
   "terminal.title.numbered": "Терминал {{number}}",
   "terminal.close": "Терминалыг хаах",
   "terminal.connectionLost.title": "Холболт тасарсан",
-  "terminal.connectionLost.abnormalClose": "WebSocket хэвийн бус хаагдсан: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket хэвийн бус хаагдсан: {{code}}",
   "terminal.connectionLost.description":
     "Терминалын холболт тасалдсан. Энэ нь серверийг дахин эхлүүлэх үед тохиолдож болно.",
   "terminal.connectTicket.csrfError":
     "PTY холболтын тасалбарыг гарал үүсэл эсвэл CSRF шалгалтаар татгалзсан. Серверийн CORS тохиргоог шалгана уу.",
-  "terminal.connectTicket.statusError": "{{status}}-тэй PTY холбогдох тасалбар амжилтгүй боллоо",
+  "terminal.connectTicket.statusError":
+    "{{status}}-тэй PTY холбогдох тасалбар амжилтгүй боллоо",
   "titlebar.update": "Шинэчлэх",
   "titlebar.updateVersion": "Шинэчлэх {{version}}",
   "common.closeTab": "Табыг хаах",
@@ -888,7 +989,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Ажлын талбаруудыг идэвхжүүлэх",
   "sidebar.workspaces.disable": "Ажлын талбаруудыг идэвхгүй болгох",
   "sidebar.gettingStarted.title": "Эхлэх",
-  "sidebar.gettingStarted.line1": "OpenCode үнэ төлбөргүй загваруудыг багтаасан тул та шууд эхлэх боломжтой.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode үнэ төлбөргүй загваруудыг багтаасан тул та шууд эхлэх боломжтой.",
   "sidebar.gettingStarted.line2":
     "Models, inc ашиглахын тулд дурын үйлчилгээ үзүүлэгчийг холбоно уу. Claude, GPT, Gemini гэх мэт.",
   "sidebar.project.recentSessions": "Сүүлийн хуралдаанууд",
@@ -908,23 +1010,30 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Сүүлийн 5 секундын дотор 32 мс-ээс дээш фрэйм.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Сүүлийн 5 секундэд блоклогдсон цаг болон урт ажлын тоо. Хамгийн их даалгавар: {{max}}.",
+  "debugBar.long.tip":
+    "Сүүлийн 5 секундэд блоклогдсон цаг болон урт ажлын тоо. Хамгийн их даалгавар: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Сүүлийн 5 секундын хамгийн муу ажиглагдсан оролтын саатал.",
+  "debugBar.delay.tip":
+    "Сүүлийн 5 секундын хамгийн муу ажиглагдсан оролтын саатал.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Сүүлийн 5 секундын харилцан үйлчлэлийн ойролцоогоор үргэлжлэх хугацаа. Энэ нь албан ёсны Web Vitals INP биш INP төстэй юм.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Одоогийн програмын ашиглалтын хугацаанд хуримтлагдсан бүдүүвчийн шилжилт.",
+  "debugBar.cls.tip":
+    "Одоогийн програмын ашиглалтын хугацаанд хуримтлагдсан бүдүүвчийн шилжилт.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Ашигласан JS нуруулдан, нуруулдан хязгаар. Зөвхөн Chromium.",
-  "debugBar.mem.tip": "Ашигласан JS нуруулдан, нуруулдан хязгаар. {{limit}}-ийн {{used}}.",
+  "debugBar.mem.tipUnavailable":
+    "Ашигласан JS нуруулдан, нуруулдан хязгаар. Зөвхөн Chromium.",
+  "debugBar.mem.tip":
+    "Ашигласан JS нуруулдан, нуруулдан хязгаар. {{limit}}-ийн {{used}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Бүх интерактив элементүүд дээр анхаарлаа төвлөрүүлэх хэв маягийг хүчлэх",
+  "debugBar.focus.tip":
+    "Бүх интерактив элементүүд дээр анхаарлаа төвлөрүүлэх хэв маягийг хүчлэх",
   "debugBar.focus.on": "АСААЛТТАЙ",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Сонгосон хэлийг өөрчлөхгүйгээр програмын бүдүүвчийг бүхэлд нь чиглүүлэх",
+  "debugBar.direction.tip":
+    "Сонгосон хэлийг өөрчлөхгүйгээр програмын бүдүүвчийг бүхэлд нь чиглүүлэх",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -934,7 +1043,8 @@ export const dict = {
   "settings.tab.shortcuts": "Товчлолууд",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL нэгтгэх",
-  "settings.desktop.wsl.description": "Windows дээр WSL доторх OpenCode серверийг ажиллуулна уу.",
+  "settings.desktop.wsl.description":
+    "Windows дээр WSL доторх OpenCode серверийг ажиллуулна уу.",
   "settings.general.section.appearance": "Гадаад төрх",
   "settings.general.section.advanced": "Дэвшилтэт",
   "settings.general.section.notifications": "Системийн мэдэгдэл",
@@ -943,80 +1053,103 @@ export const dict = {
   "settings.general.section.feed": "Тэжээл",
   "settings.general.section.display": "Дэлгэц",
   "settings.general.row.language.title": "Хэл",
-  "settings.general.row.language.description": "OpenCode дэлгэцийн хэлийг өөрчлөх",
+  "settings.general.row.language.description":
+    "OpenCode дэлгэцийн хэлийг өөрчлөх",
   "settings.general.row.shell.title": "Терминал shell",
-  "settings.general.row.shell.description": "Shell нь терминал болон агентын хэрэгслүүдэд ашиглагддаг",
+  "settings.general.row.shell.description":
+    "Shell нь терминал болон агентын хэрэгслүүдэд ашиглагддаг",
   "settings.general.row.shell.autoDefault": "Автомат (Өгөгдмөл)",
   "settings.general.row.shell.terminalOnly": "зөвхөн терминал",
   "settings.general.row.appearance.title": "Гадаад төрх",
-  "settings.general.row.appearance.description": "OpenCode төхөөрөмж дээрээ хэрхэн харагдахыг тохируулна уу",
+  "settings.general.row.appearance.description":
+    "OpenCode төхөөрөмж дээрээ хэрхэн харагдахыг тохируулна уу",
   "settings.general.row.colorScheme.title": "Өнгөний схем",
   "settings.general.row.colorScheme.description":
     "OpenCode нь систем, цайвар эсвэл бараан загварт тохирох эсэхийг сонгоно уу",
   "settings.general.row.theme.title": "Сэдэв",
-  "settings.general.row.theme.description": "OpenCode-г хэрхэн загварчлахыг тохируулна уу.",
+  "settings.general.row.theme.description":
+    "OpenCode-г хэрхэн загварчлахыг тохируулна уу.",
   "settings.general.row.font.title": "Кодын фонт",
-  "settings.general.row.font.description": "Кодын блокуудад ашигладаг фонтыг тохируулна уу",
+  "settings.general.row.font.description":
+    "Кодын блокуудад ашигладаг фонтыг тохируулна уу",
   "settings.general.row.terminalFont.title": "Терминал фонт",
-  "settings.general.row.terminalFont.description": "Терминалд ашигласан фонтыг тохируулна уу",
+  "settings.general.row.terminalFont.description":
+    "Терминалд ашигласан фонтыг тохируулна уу",
   "settings.general.row.uiFont.title": "UI фонт",
-  "settings.general.row.uiFont.description": "Интерфэйс даяар ашигласан фонтыг тохируулна уу",
+  "settings.general.row.uiFont.description":
+    "Интерфэйс даяар ашигласан фонтыг тохируулна уу",
   "settings.general.row.followup.title": "Дагаж мөрдөх зан үйл",
   "settings.general.row.followup.description":
     "Дагах сануулгууд шууд чиглүүлэх үү эсвэл дараалалд хүлээх үү гэдгийг сонгоно уу",
   "settings.general.row.followup.option.queue": "Дараалал",
   "settings.general.row.followup.option.steer": "Удирдах",
   "settings.general.row.showFileTree.title": "Файлын мод",
-  "settings.general.row.showFileTree.description": "Файлын модны самбарыг сессээр харуул",
+  "settings.general.row.showFileTree.description":
+    "Файлын модны самбарыг сессээр харуул",
   "settings.general.row.showNavigation.title": "Навигацийн удирдлага",
   "settings.general.row.showNavigation.description":
     "Ширээний гарчгийн мөрөнд буцах болон урагшлах товчлууруудыг харуул",
   "settings.general.row.showSearch.title": "Командын палитр",
-  "settings.general.row.showSearch.description": "Гарчгийн мөрөнд хайлт болон командын палитр товчийг харуул",
+  "settings.general.row.showSearch.description":
+    "Гарчгийн мөрөнд хайлт болон командын палитр товчийг харуул",
   "settings.general.row.showTerminal.title": "Терминал",
-  "settings.general.row.showTerminal.description": "Ширээний гарчгийн мөрөнд терминалын товчлуурыг харуул",
+  "settings.general.row.showTerminal.description":
+    "Ширээний гарчгийн мөрөнд терминалын товчлуурыг харуул",
   "settings.general.row.showStatus.title": "Серверийн төлөв",
-  "settings.general.row.showStatus.description": "Гарчгийн мөрөнд серверийн статусын товчлуурыг харуул",
+  "settings.general.row.showStatus.description":
+    "Гарчгийн мөрөнд серверийн статусын товчлуурыг харуул",
   "settings.general.row.mobileTitlebarBottom.title": "Доод навигаци",
   "settings.general.row.mobileTitlebarBottom.description":
     "Гар утасны дэлгэцийн доод хэсэгт гарчгийн мөр болон сешн табуудыг байрлуул",
   "settings.general.row.showCustomAgents.title": "Агентийг харуулах",
   "settings.general.row.showCustomAgents.description":
     "Хөгжмийн зохиолч дахь агентуудын хооронд шилжих. Нуусан үед өгөгдмөл нь Build agent.",
-  "settings.general.row.reasoningSummaries.title": "Шалтгаануудын хураангуйг харуул",
-  "settings.general.row.reasoningSummaries.description": "Загварын үндэслэлийн хураангуйг цагийн хуваарьт харуул",
-  "settings.general.row.shellToolPartsExpanded.title": "shell хэрэгслийн хэсгүүдийг өргөжүүлэх",
+  "settings.general.row.reasoningSummaries.title":
+    "Шалтгаануудын хураангуйг харуул",
+  "settings.general.row.reasoningSummaries.description":
+    "Загварын үндэслэлийн хураангуйг цагийн хуваарьт харуул",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "shell хэрэгслийн хэсгүүдийг өргөжүүлэх",
   "settings.general.row.shellToolPartsExpanded.description":
     "Он цагийн хэлхээс дээр анхдагчаар өргөтгөсөн shell хэрэгслийн хэсгүүдийг харуул",
-  "settings.general.row.editToolPartsExpanded.title": "Засварлах хэрэгслийн хэсгүүдийг өргөжүүлэх",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Засварлах хэрэгслийн хэсгүүдийг өргөжүүлэх",
   "settings.general.row.editToolPartsExpanded.description":
     "Он цагийн хэлхээс дээр анхдагчаар өргөтгөсөн засварлах, бичих, засварлах хэрэгслийн хэсгүүдийг харуул",
   "settings.general.row.newInterface.title": "Шинэ зохион байгуулалт",
   "settings.general.row.newInterface.badge": "Шинэ",
   "settings.general.row.newInterface.description":
     "Шинэ таб болон гэрийн байршлыг ашиглана уу. Хязгаарлагдмал хугацаанд бүдүүвч хооронд шилжих.",
-  "settings.general.row.newInterfaceNotice.title": "Та одоо шинэ бүдүүвч ашиглаж байна",
-  "settings.general.row.newInterfaceNotice.description": "Өмнөх загвар байхгүй болсон",
+  "settings.general.row.newInterfaceNotice.title":
+    "Та одоо шинэ бүдүүвч ашиглаж байна",
+  "settings.general.row.newInterfaceNotice.description":
+    "Өмнөх загвар байхгүй болсон",
   "settings.general.row.newInterfaceNotice.dismiss": "Хаах",
   "settings.general.row.pinchZoom.title": "Томруулахын тулд чимхээрэй",
   "settings.general.row.pinchZoom.description":
     "Trackpad чимхэх, Ctrl-г гүйлгэх дохиог ашиглан томруулахыг зөвшөөрнө үү",
   "settings.general.row.wayland.title": "Эх хэлийг ашиглах Wayland",
-  "settings.general.row.wayland.description": "Wayland дээрх X11 нөөцийг идэвхгүй болгох. Дахин эхлүүлэх шаардлагатай.",
+  "settings.general.row.wayland.description":
+    "Wayland дээрх X11 нөөцийг идэвхгүй болгох. Дахин эхлүүлэх шаардлагатай.",
   "settings.general.row.wayland.tooltip":
     "Холимог сэргээх хурдтай монитортой Linux дээр эх Wayland илүү тогтвортой байж болно.",
   "settings.general.row.releaseNotes.title": "Гаргасан тэмдэглэл",
-  "settings.general.row.releaseNotes.description": 'Шинэчлэгдсэний дараа "Ямар шинэ зүйл" цонхыг харуул',
-  "settings.updates.row.startup.title": "Эхлэх үед шинэчлэлт байгаа эсэхийг шалгана уу",
-  "settings.updates.row.startup.description": "OpenCode эхлүүлэх үед шинэчлэлтүүдийг автоматаар шалгана уу",
+  "settings.general.row.releaseNotes.description":
+    'Шинэчлэгдсэний дараа "Ямар шинэ зүйл" цонхыг харуул',
+  "settings.updates.row.startup.title":
+    "Эхлэх үед шинэчлэлт байгаа эсэхийг шалгана уу",
+  "settings.updates.row.startup.description":
+    "OpenCode эхлүүлэх үед шинэчлэлтүүдийг автоматаар шалгана уу",
   "settings.updates.row.check.title": "Шинэчлэлт байгаа эсэхийг шалгана уу",
-  "settings.updates.row.check.description": "Шинэчлэлтүүдийг гараар шалгаж, боломжтой бол суулгана уу",
+  "settings.updates.row.check.description":
+    "Шинэчлэлтүүдийг гараар шалгаж, боломжтой бол суулгана уу",
   "settings.updates.action.checkNow": "Одоо шалгана уу",
   "settings.updates.action.checking": "Шалгаж байна...",
   "settings.updates.action.downloading": "Татаж авч байна...",
   "settings.updates.action.installing": "Суулгаж байна...",
   "settings.updates.toast.latest.title": "Та шинэчлэгдсэн байна",
-  "settings.updates.toast.latest.description": "Та OpenCode-н хамгийн сүүлийн хувилбарыг ажиллуулж байна.",
+  "settings.updates.toast.latest.description":
+    "Та OpenCode-н хамгийн сүүлийн хувилбарыг ажиллуулж байна.",
   "sound.option.none": "Байхгүй",
   "sound.option.alert01": "Анхааруулга 01",
   "sound.option.alert02": "Анхааруулга 02",
@@ -1067,22 +1200,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Агент бүрэн дууссан эсвэл анхаарал хандуулах шаардлагатай үед системийн мэдэгдлийг харуулах",
   "settings.general.notifications.permissions.title": "Зөвшөөрөл",
-  "settings.general.notifications.permissions.description": "Зөвшөөрөл шаардлагатай үед системийн мэдэгдлийг харуулах",
+  "settings.general.notifications.permissions.description":
+    "Зөвшөөрөл шаардлагатай үед системийн мэдэгдлийг харуулах",
   "settings.general.notifications.errors.title": "Алдаа",
-  "settings.general.notifications.errors.description": "Алдаа гарсан үед системийн мэдэгдлийг харуулах",
+  "settings.general.notifications.errors.description":
+    "Алдаа гарсан үед системийн мэдэгдлийг харуулах",
   "settings.general.sounds.agent.title": "Агент",
   "settings.general.sounds.agent.description":
     "Агент бүрэн дууссан эсвэл анхаарал хандуулах шаардлагатай үед дууг тоглуулаарай",
   "settings.general.sounds.permissions.title": "Зөвшөөрөл",
-  "settings.general.sounds.permissions.description": "Зөвшөөрөл шаардлагатай үед дуу тоглуулна",
+  "settings.general.sounds.permissions.description":
+    "Зөвшөөрөл шаардлагатай үед дуу тоглуулна",
   "settings.general.sounds.errors.title": "Алдаа",
   "settings.general.sounds.errors.description": "Алдаа гарсан үед дууг тоглуул",
   "settings.shortcuts.title": "Гарын товчлолууд",
   "settings.shortcuts.reset.button": "Өгөгдмөл рүү дахин тохируулах",
   "settings.shortcuts.reset.toast.title": "Товчлолуудыг дахин тохируулсан",
-  "settings.shortcuts.reset.toast.description": "Гарын товчлолыг өгөгдмөл рүү дахин тохируулсан.",
+  "settings.shortcuts.reset.toast.description":
+    "Гарын товчлолыг өгөгдмөл рүү дахин тохируулсан.",
   "settings.shortcuts.conflict.title": "Товчлолыг аль хэдийн ашиглаж байна",
-  "settings.shortcuts.conflict.description": "{{keybind}} аль хэдийн {{titles}}-д оноосон байна.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} аль хэдийн {{titles}}-д оноосон байна.",
   "settings.shortcuts.unassigned": "Оноогоогүй",
   "settings.shortcuts.pressKeys": "Товчлуурыг дар",
   "settings.shortcuts.search.placeholder": "Товчлол хайх",
@@ -1094,12 +1232,16 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Терминал",
   "settings.shortcuts.group.prompt": "Промпт",
   "settings.providers.title": "Үйлчилгээ үзүүлэгчид",
-  "settings.providers.description": "Үйлчилгээ үзүүлэгчийн тохиргоог энд хийх боломжтой.",
+  "settings.providers.description":
+    "Үйлчилгээ үзүүлэгчийн тохиргоог энд хийх боломжтой.",
   "settings.providers.section.connected": "Холбогдсон үйлчилгээ үзүүлэгчид",
-  "settings.providers.connected.empty": "Холбогдсон үйлчилгээ үзүүлэгч байхгүй байна",
-  "settings.providers.connected.environmentDescription": "Таны орчны хувьсагчдаас холбогдсон",
+  "settings.providers.connected.empty":
+    "Холбогдсон үйлчилгээ үзүүлэгч байхгүй байна",
+  "settings.providers.connected.environmentDescription":
+    "Таны орчны хувьсагчдаас холбогдсон",
   "settings.providers.section.popular": "Алдартай үйлчилгээ үзүүлэгчид",
-  "settings.providers.custom.description": "OpenAI нийцтэй үйлчилгээ үзүүлэгчийг URL үндсэн дээр нэмнэ үү.",
+  "settings.providers.custom.description":
+    "OpenAI нийцтэй үйлчилгээ үзүүлэгчийг URL үндсэн дээр нэмнэ үү.",
   "settings.providers.tag.environment": "Байгаль орчин",
   "settings.providers.tag.config": "Тохиргоо",
   "settings.providers.tag.custom": "Захиалгат",
@@ -1113,20 +1255,26 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP тохиргоог энд тохируулах боломжтой.",
   "settings.permissions.title": "Зөвшөөрөл",
-  "settings.permissions.description": "Анхдагчаар сервер ямар хэрэгслийг ашиглаж болохыг хянах.",
+  "settings.permissions.description":
+    "Анхдагчаар сервер ямар хэрэгслийг ашиглаж болохыг хянах.",
   "settings.permissions.section.tools": "Багаж хэрэгсэл",
-  "settings.permissions.toast.updateFailed.title": "Зөвшөөрлийг шинэчилж чадсангүй",
+  "settings.permissions.toast.updateFailed.title":
+    "Зөвшөөрлийг шинэчилж чадсангүй",
   "settings.permissions.action.allow": "Зөвшөөрөх",
   "settings.permissions.action.ask": "Асуу",
   "settings.permissions.action.deny": "Үгүйсгэх",
   "settings.permissions.tool.read.title": "Унших",
-  "settings.permissions.tool.read.description": "Файлыг уншиж байна (файлын замд таарч байна)",
+  "settings.permissions.tool.read.description":
+    "Файлыг уншиж байна (файлын замд таарч байна)",
   "settings.permissions.tool.edit.title": "Засварлах",
-  "settings.permissions.tool.edit.description": "Засвар, бичих, засвар оруулах зэрэг файлуудыг өөрчлөх",
+  "settings.permissions.tool.edit.description":
+    "Засвар, бичих, засвар оруулах зэрэг файлуудыг өөрчлөх",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Глоб загвар ашиглан файлуудыг тааруулах",
+  "settings.permissions.tool.glob.description":
+    "Глоб загвар ашиглан файлуудыг тааруулах",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Ердийн илэрхийлэл ашиглан файлын агуулгыг хайх",
+  "settings.permissions.tool.grep.description":
+    "Ердийн илэрхийлэл ашиглан файлын агуулгыг хайх",
   "settings.permissions.tool.list.title": "Жагсаалт",
   "settings.permissions.tool.list.description": "Сан доторх файлуудыг жагсаах",
   "settings.permissions.tool.bash.title": "Баш",
@@ -1134,19 +1282,24 @@ export const dict = {
   "settings.permissions.tool.task.title": "Даалгавар",
   "settings.permissions.tool.task.description": "Дэд агентуудыг ажиллуул",
   "settings.permissions.tool.skill.title": "Ур чадвар",
-  "settings.permissions.tool.skill.description": "Ур чадварыг нэрээр нь ачаална уу",
+  "settings.permissions.tool.skill.description":
+    "Ур чадварыг нэрээр нь ачаална уу",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Хэлний серверийн асуулга ажиллуулах",
+  "settings.permissions.tool.lsp.description":
+    "Хэлний серверийн асуулга ажиллуулах",
   "settings.permissions.tool.todowrite.title": "Бичих",
-  "settings.permissions.tool.todowrite.description": "Хийх ажлын жагсаалтыг шинэчил",
+  "settings.permissions.tool.todowrite.description":
+    "Хийх ажлын жагсаалтыг шинэчил",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
   "settings.permissions.tool.webfetch.description": "URL-аас контент татах",
   "settings.permissions.tool.websearch.title": "Вэб хайлт",
   "settings.permissions.tool.websearch.description": "Вэбээс хайх",
   "settings.permissions.tool.external_directory.title": "Гадаад лавлах",
-  "settings.permissions.tool.external_directory.description": "Төслийн лавлахаас гадуур файлд хандах",
+  "settings.permissions.tool.external_directory.description":
+    "Төслийн лавлахаас гадуур файлд хандах",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Ижил оролттой хэрэгслийн давтагдсан дуудлагыг илрүүлэх",
+  "settings.permissions.tool.doom_loop.description":
+    "Ижил оролттой хэрэгслийн давтагдсан дуудлагыг илрүүлэх",
   "session.delete.failed.title": "Сешн устгаж чадсангүй",
   "session.delete.title": "Сеанс устгах",
   "session.delete.confirm": '"{{name}}" сессийг устгах уу?',
@@ -1160,12 +1313,14 @@ export const dict = {
   "workspace.resetting.description": "Үүнд нэг минут зарцуулагдаж магадгүй.",
   "workspace.reset.failed.title": "Ажлын талбарыг дахин тохируулж чадсангүй",
   "workspace.reset.success.title": "Ажлын талбарыг дахин тохируулсан",
-  "workspace.reset.success.description": "Ажлын талбар нь одоо үндсэн салбартай таарч байна.",
+  "workspace.reset.success.description":
+    "Ажлын талбар нь одоо үндсэн салбартай таарч байна.",
   "workspace.error.stillPreparing": "Ажлын байраа бэлдэж байна",
   "workspace.status.checking": "Нэгтгээгүй өөрчлөлтүүдийг шалгаж байна...",
   "workspace.status.error": "Git статусыг шалгах боломжгүй байна.",
   "workspace.status.clean": "Нэгтгэсэн өөрчлөлт илрээгүй.",
-  "workspace.status.dirty": "Энэ ажлын талбарт нэгтгэгдээгүй өөрчлөлтүүд илэрсэн.",
+  "workspace.status.dirty":
+    "Энэ ажлын талбарт нэгтгэгдээгүй өөрчлөлтүүд илэрсэн.",
   "workspace.delete.title": "Ажлын талбарыг устгах",
   "workspace.delete.confirm": '"{{name}}" ажлын талбарыг устгах уу?',
   "workspace.delete.button": "Ажлын талбарыг устгах",
@@ -1175,6 +1330,7 @@ export const dict = {
   "workspace.reset.archived.none": "Идэвхтэй сессийг архивлахгүй.",
   "workspace.reset.archived.one": "1 сессийг архивлах болно.",
   "workspace.reset.archived.many": "{{count}} сессийг архивлах болно.",
-  "workspace.reset.note": "Энэ нь ажлын талбарыг анхдагч салбартай тааруулахын тулд дахин тохируулах болно.",
+  "workspace.reset.note":
+    "Энэ нь ажлын талбарыг анхдагч салбартай тааруулахын тулд дахин тохируулах болно.",
   "dialog.usageExceeded.dontShowAgain": "Дахин бүү харуул",
 }

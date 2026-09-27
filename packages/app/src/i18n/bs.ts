@@ -1,9 +1,14 @@
 export const dict = {
-  "disk.accessGuidance.macos": "Odobrite DiskLizardu Full Disk Access u System Settings, a zatim ponovo skenirajte.",
-  "disk.accessGuidance.windows": "Koristite račun s pristupom ovom disku ili skenirajte folder koji vaš račun može čitati.",
-  "disk.accessGuidance.linux": "Provjerite dozvole foldera i mount tačke, a zatim ponovo skenirajte.",
-  "disk.accessGuidance.default": "Provjerite pristup ovim folderima, a zatim ponovo skenirajte.",
-  "disk.accessGuidance.rescan": "Nakon promjene pristupa koristite Rescan u gornjoj traci.",
+  "disk.accessGuidance.macos":
+    "Odobrite DiskLizardu Full Disk Access u System Settings, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.windows":
+    "Koristite račun s pristupom ovom disku ili skenirajte folder koji vaš račun može čitati.",
+  "disk.accessGuidance.linux":
+    "Provjerite dozvole foldera i mount tačke, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.default":
+    "Provjerite pristup ovim folderima, a zatim ponovo skenirajte.",
+  "disk.accessGuidance.rescan":
+    "Nakon promjene pristupa koristite Rescan u gornjoj traci.",
   "disk.common.rescan": "Ponovo skeniraj",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Datoteka",
@@ -36,7 +41,8 @@ export const dict = {
   "desktop.menu.actualSize": "Stvarna veličina",
   "desktop.menu.zoomIn": "Uvećaj",
   "desktop.menu.zoomOut": "Umanji",
-  "desktop.menu.toggleFullScreen": "Prikaži ili sakrij prikaz preko cijelog ekrana",
+  "desktop.menu.toggleFullScreen":
+    "Prikaži ili sakrij prikaz preko cijelog ekrana",
   "desktop.menu.back": "Nazad",
   "desktop.menu.forward": "Naprijed",
   "desktop.menu.previousSession": "Prethodna sesija",
@@ -51,9 +57,11 @@ export const dict = {
   "desktop.menu.reportBug": "Prijavi grešku",
   "desktop.menu.ariaLabel": "OpenCode meni",
 
-  "desktop.updater.dialog.checkFailed.message": "Provjera ažuriranja nije uspjela.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Provjera ažuriranja nije uspjela.",
   "desktop.updater.dialog.checkFailed.title": "Greška pri ažuriranju",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Sve je ažurno.",
   "desktop.updater.dialog.upToDate.title": "Nema ažuriranja",
@@ -71,9 +79,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode se nije uspio učitati",
   "desktop.recovery.terminated": "Prozor OpenCode-a neočekivano je zatvoren",
   "desktop.recovery.unresponsive": "OpenCode ne reaguje",
-  "desktop.recovery.unresponsive.detail": "Možeš ponovo pokrenuti aplikaciju, otvoriti zapisnike ili nastaviti čekati.",
-  "desktop.recovery.loadFailed.detail": "Prozor: {{window}}\nURL: {{url}}\nGreška: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Prozor: {{window}}\nRazlog: {{reason}}\nKod: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Možeš ponovo pokrenuti aplikaciju, otvoriti zapisnike ili nastaviti čekati.",
+  "desktop.recovery.loadFailed.detail":
+    "Prozor: {{window}}\nURL: {{url}}\nGreška: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Prozor: {{window}}\nRazlog: {{reason}}\nKod: {{code}}",
   "desktop.recovery.unknown": "<nepoznato>",
 
   "desktop.dialog.chooseFolder": "Odaberi fasciklu",
@@ -84,29 +95,39 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL je dostupan samo u Windowsu",
   "desktop.wsl.error.unavailable": "WSL nije dostupan",
-  "desktop.wsl.error.listInstalled": "Nije uspjelo prikazivanje instaliranih WSL distribucija",
-  "desktop.wsl.error.listOnline": "Nije uspjelo prikazivanje dostupnih WSL distribucija",
-  "desktop.wsl.error.executeDistro": "Nije moguće izvršiti komande u distribuciji",
+  "desktop.wsl.error.listInstalled":
+    "Nije uspjelo prikazivanje instaliranih WSL distribucija",
+  "desktop.wsl.error.listOnline":
+    "Nije uspjelo prikazivanje dostupnih WSL distribucija",
+  "desktop.wsl.error.executeDistro":
+    "Nije moguće izvršiti komande u distribuciji",
   "desktop.wsl.error.installWsl": "Instalacija WSL-a nije uspjela",
-  "desktop.wsl.error.installDistro": "Instalacija distribucije nije uspjela: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Instalacija distribucije nije uspjela: {{distro}}",
   "desktop.wsl.error.installOpencode": "Instalacija OpenCode-a nije uspjela",
   "desktop.wsl.error.alreadyAdded": "Distribucija {{distro}} je već dodana",
-  "desktop.wsl.error.opencodeMissing": "opencode nije instaliran u ovoj distribuciji",
-  "desktop.wsl.error.opencodeCannotRun": "opencode je instaliran, ali se ne može pokrenuti",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode nije instaliran u distribuciji {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode nije instaliran u ovoj distribuciji",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode je instaliran, ali se ne može pokrenuti",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode nije instaliran u distribuciji {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Ažuriranje OpenCode-a je završeno, ali {{distro}} i dalje prijavljuje {{installed}}; očekivano je {{expected}}",
   "desktop.wsl.error.noVersion": "nema verzije",
-  "desktop.wsl.error.serverExited": "WSL server se zatvorio nakon pokretanja (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL server se zatvorio nakon pokretanja (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL server se zatvorio prije nego što je postao dostupan (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Isteklo je vrijeme provjere dostupnosti komponente Sidecar za {{distro}} nakon {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "Isteklo je vrijeme za {{command}} {{args}} nakon {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "Isteklo je vrijeme za {{command}} {{args}} nakon {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Nije uspjelo dohvaćanje porta",
 
   "desktop.picker.error.notSelected": "Datoteka nije odabrana u izborniku",
-  "desktop.picker.error.sizeLimit": "Odabrani prilozi premašuju ograničenje od {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Odabrani prilozi premašuju ograničenje od {{limit}} MB",
 
   "command.category.suggested": "Predloženo",
   "command.category.view": "Prikaz",
@@ -160,7 +181,8 @@ export const dict = {
   "command.tab.close": "Zatvori karticu",
   "command.tab.reopenClosed": "Ponovo otvori zatvorenu karticu",
   "command.context.addSelection": "Dodaj odabir u kontekst",
-  "command.context.addSelection.description": "Dodaj odabrane linije iz trenutne datoteke",
+  "command.context.addSelection.description":
+    "Dodaj odabrane linije iz trenutne datoteke",
   "command.input.focus": "Fokusiraj polje za unos",
   "command.terminal.toggle": "Prikaži/sakrij terminal",
   "command.fileTree.toggle": "Prikaži/sakrij stablo datoteka",
@@ -168,7 +190,8 @@ export const dict = {
   "command.terminal.new": "Novi terminal",
   "command.terminal.new.description": "Kreiraj novu karticu terminala",
   "command.steps.toggle": "Prikaži/sakrij korake",
-  "command.steps.toggle.description": "Prikaži ili sakrij korake za trenutnu poruku",
+  "command.steps.toggle.description":
+    "Prikaži ili sakrij korake za trenutnu poruku",
   "command.message.previous": "Prethodna poruka",
   "command.message.previous.description": "Idi na prethodnu korisničku poruku",
   "command.message.next": "Sljedeća poruka",
@@ -186,24 +209,29 @@ export const dict = {
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Automatski prihvati dozvole",
-  "command.permissions.autoaccept.disable": "Zaustavi automatsko prihvatanje dozvola",
+  "command.permissions.autoaccept.disable":
+    "Zaustavi automatsko prihvatanje dozvola",
   "command.workspace.toggle": "Prikaži/sakrij radne prostore",
-  "command.workspace.toggle.description": "Omogući ili onemogući više radnih prostora u bočnoj traci",
+  "command.workspace.toggle.description":
+    "Omogući ili onemogući više radnih prostora u bočnoj traci",
   "command.session.undo": "Poništi",
   "command.session.undo.description": "Poništi posljednju poruku",
   "command.session.redo": "Vrati",
   "command.session.redo.description": "Vrati posljednju poništenu poruku",
   "command.session.compact": "Sažmi sesiju",
-  "command.session.compact.description": "Sažmi sesiju kako bi se smanjio kontekst",
+  "command.session.compact.description":
+    "Sažmi sesiju kako bi se smanjio kontekst",
   "command.session.fork": "Fork iz poruke",
   "command.session.fork.description": "Kreiraj novu sesiju iz prethodne poruke",
   "command.session.share": "Podijeli sesiju",
-  "command.session.share.description": "Podijeli ovu sesiju i kopiraj URL u međuspremnik",
+  "command.session.share.description":
+    "Podijeli ovu sesiju i kopiraj URL u međuspremnik",
   "command.session.unshare": "Ukini dijeljenje sesije",
   "command.session.unshare.description": "Zaustavi dijeljenje ove sesije",
 
   "command.session.export": "Izvezi sesiju",
-  "command.session.export.description": "Izvezi cijeli zapis sesije u JSON formatu",
+  "command.session.export.description":
+    "Izvezi cijeli zapis sesije u JSON formatu",
 
   "palette.search.placeholder": "Pretraži datoteke, komande i sesije",
   "palette.search.placeholder.home": "Pretraži komande i sesije",
@@ -215,27 +243,39 @@ export const dict = {
   "dialog.provider.empty": "Nema pronađenih provajdera",
   "dialog.provider.group.popular": "Popularno",
   "dialog.provider.group.other": "Ostalo",
-  "dialog.provider.custom.label": "Prilagođeni provajder kompatibilan s OpenAI-jem",
+  "dialog.provider.custom.label":
+    "Prilagođeni provajder kompatibilan s OpenAI-jem",
   "dialog.provider.tag.recommended": "Preporučeno",
-  "dialog.provider.opencode.note": "Kurirani modeli uključujući Claude, GPT, Gemini i druge",
+  "dialog.provider.opencode.note":
+    "Kurirani modeli uključujući Claude, GPT, Gemini i druge",
   "dialog.provider.opencode.tagline": "Pouzdani optimizovani modeli",
   "dialog.provider.opencodeGo.tagline": "Povoljna pretplata za sve",
-  "dialog.provider.anthropic.note": "Direktan pristup Claude modelima, uključujući Pro i Max",
-  "dialog.provider.copilot.note": "AI modeli za pomoć pri kodiranju putem GitHub Copilot",
-  "dialog.provider.openai.note": "GPT modeli za brze, sposobne opšte AI zadatke",
-  "dialog.provider.google.note": "Gemini modeli za brze, strukturirane odgovore",
-  "dialog.provider.openrouter.note": "Pristup svim podržanim modelima preko jednog provajdera",
-  "dialog.provider.vercel.note": "Jedinstven pristup AI modelima uz pametno rutiranje",
+  "dialog.provider.anthropic.note":
+    "Direktan pristup Claude modelima, uključujući Pro i Max",
+  "dialog.provider.copilot.note":
+    "AI modeli za pomoć pri kodiranju putem GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT modeli za brze, sposobne opšte AI zadatke",
+  "dialog.provider.google.note":
+    "Gemini modeli za brze, strukturirane odgovore",
+  "dialog.provider.openrouter.note":
+    "Pristup svim podržanim modelima preko jednog provajdera",
+  "dialog.provider.vercel.note":
+    "Jedinstven pristup AI modelima uz pametno rutiranje",
 
   "dialog.model.select.title": "Odaberi model",
   "dialog.model.search.placeholder": "Pretraži modele",
   "dialog.model.empty": "Nema rezultata za modele",
   "dialog.model.manage": "Upravljaj modelima",
-  "dialog.model.manage.description": "Prilagodi koji se modeli prikazuju u izborniku modela.",
-  "dialog.model.manage.provider.toggle": "Uključi/isključi sve {{provider}} modele",
+  "dialog.model.manage.description":
+    "Prilagodi koji se modeli prikazuju u izborniku modela.",
+  "dialog.model.manage.provider.toggle":
+    "Uključi/isključi sve {{provider}} modele",
 
-  "dialog.model.unpaid.freeModels.title": "Besplatni modeli koje obezbjeđuje OpenCode",
-  "dialog.model.unpaid.addMore.title": "Dodaj još modela od popularnih provajdera",
+  "dialog.model.unpaid.freeModels.title":
+    "Besplatni modeli koje obezbjeđuje OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Dodaj još modela od popularnih provajdera",
   "dialog.model.unpaid.viewMoreProviders": "Pogledaj još više od 70 provajdera",
 
   "dialog.provider.viewAll": "Prikaži više provajdera",
@@ -275,20 +315,26 @@ export const dict = {
     " i unesi kod ispod da povežeš račun i koristiš {{provider}} modele u OpenCode-u.",
   "provider.connect.oauth.auto.confirmationCode": "Kod za potvrdu",
   "provider.connect.toast.connected.title": "{{provider}} povezan",
-  "provider.connect.toast.connected.description": "{{provider}} modeli su sada dostupni za korištenje.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} modeli su sada dostupni za korištenje.",
 
   "provider.custom.title": "Prilagođeni provajder",
-  "provider.custom.unavailable": "Prilagođeni provajderi nisu dostupni na ovom serveru",
-  "provider.custom.description.prefix": "Konfiguriši OpenAI-kompatibilnog provajdera. Pogledaj ",
-  "provider.custom.description.link": "dokumentaciju za konfiguraciju provajdera",
+  "provider.custom.unavailable":
+    "Prilagođeni provajderi nisu dostupni na ovom serveru",
+  "provider.custom.description.prefix":
+    "Konfiguriši OpenAI-kompatibilnog provajdera. Pogledaj ",
+  "provider.custom.description.link":
+    "dokumentaciju za konfiguraciju provajdera",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID provajdera",
   "provider.custom.field.providerID.placeholder": "mojprovajder",
-  "provider.custom.field.providerID.description": "Mala slova, brojevi, crtice ili donje crte",
+  "provider.custom.field.providerID.description":
+    "Mala slova, brojevi, crtice ili donje crte",
   "provider.custom.field.name.label": "Prikazano ime",
   "provider.custom.field.name.placeholder": "Moj AI Provajder",
   "provider.custom.field.baseURL.label": "Bazni URL",
-  "provider.custom.field.baseURL.placeholder": "https://api.mojprovajder.com/v1",
+  "provider.custom.field.baseURL.placeholder":
+    "https://api.mojprovajder.com/v1",
   "provider.custom.field.apiKey.label": "API ključ",
   "provider.custom.field.apiKey.placeholder": "API ključ",
   "provider.custom.field.apiKey.description":
@@ -308,7 +354,8 @@ export const dict = {
   "provider.custom.headers.remove": "Ukloni zaglavlje",
   "provider.custom.headers.add": "Dodaj zaglavlje",
   "provider.custom.error.providerID.required": "ID provajdera je obavezan",
-  "provider.custom.error.providerID.format": "Koristi mala slova, brojeve, crtice ili donje crte",
+  "provider.custom.error.providerID.format":
+    "Koristi mala slova, brojeve, crtice ili donje crte",
   "provider.custom.error.providerID.exists": "Taj ID provajdera već postoji",
   "provider.custom.error.name.required": "Prikazano ime je obavezno",
   "provider.custom.error.baseURL.required": "Bazni URL je obavezan",
@@ -317,7 +364,8 @@ export const dict = {
   "provider.custom.error.duplicate": "Duplikat",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} odspojen",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modeli više nisu dostupni.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modeli više nisu dostupni.",
 
   "model.tag.free": "Besplatno",
   "model.tag.latest": "Najnovije",
@@ -396,7 +444,8 @@ export const dict = {
 
   "prompt.popover.emptyResults": "Nema rezultata",
   "prompt.popover.emptyCommands": "Nema komandi",
-  "prompt.dropzone.label": "Ovdje prevuci slike, PDF-ove ili tekstualne datoteke",
+  "prompt.dropzone.label":
+    "Ovdje prevuci slike, PDF-ove ili tekstualne datoteke",
   "prompt.dropzone.file.label": "Spusti za @spominjanje datoteke",
   "prompt.slash.badge.custom": "prilagođeno",
   "prompt.slash.badge.skill": "skill",
@@ -417,9 +466,11 @@ export const dict = {
 
   "prompt.toast.pasteUnsupported.title": "Nepodržan prilog",
   "prompt.toast.attachmentDuplicate.title": "Ova datoteka je već učitana",
-  "prompt.toast.pasteUnsupported.description": "Ovdje se mogu priložiti samo slike, PDF-ovi ili tekstualne datoteke.",
+  "prompt.toast.pasteUnsupported.description":
+    "Ovdje se mogu priložiti samo slike, PDF-ovi ili tekstualne datoteke.",
   "prompt.toast.modelAgentRequired.title": "Odaberi agenta i model",
-  "prompt.toast.modelAgentRequired.description": "Odaberi agenta i model prije slanja upita.",
+  "prompt.toast.modelAgentRequired.description":
+    "Odaberi agenta i model prije slanja upita.",
   "prompt.toast.worktreeCreateFailed.title": "Neuspješno kreiranje worktree-a",
   "prompt.toast.sessionCreateFailed.title": "Neuspješno kreiranje sesije",
   "prompt.toast.shellSendFailed.title": "Neuspješno slanje shell naredbe",
@@ -451,7 +502,8 @@ export const dict = {
   "dialog.directory.readError": "Nije moguće pročitati ovu fasciklu",
 
   "dialog.server.title": "Serveri",
-  "dialog.server.description": "Promijeni na koji se OpenCode server ova aplikacija povezuje.",
+  "dialog.server.description":
+    "Promijeni na koji se OpenCode server ova aplikacija povezuje.",
   "dialog.server.search.placeholder": "Pretraži servere",
   "dialog.server.empty": "Još nema servera",
   "dialog.server.add.title": "Dodaj server",
@@ -488,7 +540,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Odaberi distribuciju",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Provjera WSL-a...",
-  "wsl.onboarding.restartRequired": "Potrebno je ponovo pokrenuti Windows da bi se završila instalacija WSL-a.",
+  "wsl.onboarding.restartRequired":
+    "Potrebno je ponovo pokrenuti Windows da bi se završila instalacija WSL-a.",
   "wsl.onboarding.ready": "WSL je spreman.",
   "wsl.onboarding.required": "WSL je potreban za nastavak.",
   "wsl.onboarding.checkingDistros": "Provjera distribucija...",
@@ -496,19 +549,27 @@ export const dict = {
   "wsl.onboarding.checkingDistro": "Provjera {{distro}}...",
   "wsl.onboarding.listingDistros": "Učitavanje liste distribucija...",
   "wsl.onboarding.distroReady": "Distribucija {{distro}} je spremna.",
-  "wsl.onboarding.distroNotInstalled": "Distribucija {{distro}} još nije instalirana.",
-  "wsl.onboarding.openDistroOnce": "Otvori {{distro}} jednom da završiš postavljanje.",
+  "wsl.onboarding.distroNotInstalled":
+    "Distribucija {{distro}} još nije instalirana.",
+  "wsl.onboarding.openDistroOnce":
+    "Otvori {{distro}} jednom da završiš postavljanje.",
   "wsl.onboarding.finishingDistro": "Završavanje postavljanja za {{distro}}.",
-  "wsl.onboarding.pickDistro": "Odaberi distribuciju ili instaliraj jednu ispod.",
+  "wsl.onboarding.pickDistro":
+    "Odaberi distribuciju ili instaliraj jednu ispod.",
   "wsl.onboarding.checkingOpencode": "Provjera OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "Provjera OpenCode u distribuciji {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "Provjera OpenCode u distribuciji {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Ažuriranje OpenCode...",
-  "wsl.onboarding.updatingOpencodeIn": "Ažuriranje OpenCode u distribuciji {{distro}}...",
-  "wsl.onboarding.updateOpencodeIn": "Ažuriraj OpenCode u distribuciji {{distro}}.",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Ažuriranje OpenCode u distribuciji {{distro}}...",
+  "wsl.onboarding.updateOpencodeIn":
+    "Ažuriraj OpenCode u distribuciji {{distro}}.",
   "wsl.onboarding.updateOpencode": "Ažuriraj OpenCode",
-  "wsl.onboarding.opencodeReadyIn": "OpenCode je spreman u distribuciji {{distro}}.",
+  "wsl.onboarding.opencodeReadyIn":
+    "OpenCode je spreman u distribuciji {{distro}}.",
   "wsl.onboarding.opencodeReady": "OpenCode je spreman.",
-  "wsl.onboarding.installOpencodeIn": "Instaliraj OpenCode u distribuciji {{distro}}.",
+  "wsl.onboarding.installOpencodeIn":
+    "Instaliraj OpenCode u distribuciji {{distro}}.",
   "wsl.onboarding.installOpencode": "Instaliraj OpenCode",
   "wsl.onboarding.chooseDistroFirst": "Prvo odaberi distribuciju.",
   "wsl.onboarding.loadFailed": "Nije uspjelo učitavanje WSL stanja.",
@@ -521,18 +582,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Nedostaju bash i curl",
   "wsl.onboarding.distroStatus.unsupported": "Nije podržano · Koristi WSL 2",
   "wsl.onboarding.needAnotherDistro": "Treba ti druga distribucija?",
-  "wsl.onboarding.needAnotherDistroHint": "Instaliraj Linux distribuciju iz WSL kataloga",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instaliraj Linux distribuciju iz WSL kataloga",
   "wsl.onboarding.wslNotInstalled.title": "WSL nije instaliran",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) je potreban da bi OpenCode mogao dodati WSL server",
   "wsl.onboarding.wslUnavailable.title": "WSL nije dostupan",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode nije mogao provjeriti WSL na ovom uređaju.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode nije mogao provjeriti WSL na ovom uređaju.",
   "wsl.onboarding.installWsl": "Instaliraj WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Ponovo pokreni Windows da završiš instalaciju WSL-a, zatim ponovo otvori OpenCode.",
   "wsl.onboarding.next": "Dalje",
   "wsl.onboarding.refresh": "Osvježi",
-  "wsl.onboarding.allDistrosAdded": "Sve instalirane distribucije su već dodane.",
+  "wsl.onboarding.allDistrosAdded":
+    "Sve instalirane distribucije su već dodane.",
   "wsl.onboarding.noDistros": "Još nema otkrivenih distribucija.",
   "wsl.onboarding.install": "Instaliraj",
   "wsl.onboarding.installing": "Instaliranje...",
@@ -546,10 +610,12 @@ export const dict = {
   "wsl.onboarding.version": "Verzija: {{version}}",
   "wsl.onboarding.unknown": "nepoznato",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Instalirana verzija ne odgovara verziji desktop aplikacije.",
+  "wsl.onboarding.versionMismatch":
+    "Instalirana verzija ne odgovara verziji desktop aplikacije.",
   "wsl.onboarding.adding": "Dodavanje...",
 
-  "help.tabs.toast.ariaLabel": "Predstavljamo kartice. Organizuj svoj rad i aktivne sesije pomoću kartica",
+  "help.tabs.toast.ariaLabel":
+    "Predstavljamo kartice. Organizuj svoj rad i aktivne sesije pomoću kartica",
   "help.tabs.toast.dismiss": "Odbaci informacije o karticama",
   "help.tabs.title": "Predstavljamo kartice",
   "help.tabs.description": "Organizuj svoj rad i aktivne sesije pomoću kartica",
@@ -561,7 +627,8 @@ export const dict = {
     "Nekoliko otvorenih kartica olakšava organizovanje aktivnih sesija. Preimenuj kartice tako da ih možeš lako prepoznati ako ih namjeravaš zadržati.",
   "help.tabs.home":
     "Sve svoje sesije i projekte pronaći ćeš na novom početnom ekranu. Odabirom sesije ona se otvara u kartici.",
-  "help.tabs.persistence": "Kada ponovo otvoriš aplikaciju, tvoje kartice ostaju otvorene.",
+  "help.tabs.persistence":
+    "Kada ponovo otvoriš aplikaciju, tvoje kartice ostaju otvorene.",
   "help.tabs.worktrees":
     "Novi dizajn još ne podržava Git Worktrees, ali podrška stiže uskoro. Ako želiš nastaviti koristiti prethodni raspored, možeš mijenjati rasporede u Postavkama. Imaj na umu da će novi raspored za nekoliko sedmica postati trajan.",
 
@@ -573,8 +640,10 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Preporučeno: 128x128px",
   "dialog.project.edit.color": "Boja",
   "dialog.project.edit.color.select": "Odaberi boju {{color}}",
-  "dialog.project.edit.worktree.startup": "Skripta za pokretanje radnog prostora",
-  "dialog.project.edit.worktree.startup.description": "Pokreće se nakon kreiranja novog radnog prostora (worktree).",
+  "dialog.project.edit.worktree.startup":
+    "Skripta za pokretanje radnog prostora",
+  "dialog.project.edit.worktree.startup.description":
+    "Pokreće se nakon kreiranja novog radnog prostora (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "npr. bun install",
 
   "dialog.usageExceeded.dontShowAgain": "Nemoj više prikazivati",
@@ -642,14 +711,19 @@ export const dict = {
   "toast.scheme.title": "Šema boja",
 
   "toast.workspace.enabled.title": "Radni prostori omogućeni",
-  "toast.workspace.enabled.description": "Više worktree-ova se sada prikazuje u bočnoj traci",
+  "toast.workspace.enabled.description":
+    "Više worktree-ova se sada prikazuje u bočnoj traci",
   "toast.workspace.disabled.title": "Radni prostori onemogućeni",
-  "toast.workspace.disabled.description": "Samo glavni worktree se prikazuje u bočnoj traci",
+  "toast.workspace.disabled.description":
+    "Samo glavni worktree se prikazuje u bočnoj traci",
 
   "toast.permissions.autoaccept.on.title": "Automatsko prihvatanje dozvola",
-  "toast.permissions.autoaccept.on.description": "Zahtjevi za dozvole će biti automatski odobreni",
-  "toast.permissions.autoaccept.off.title": "Zaustavljeno automatsko prihvatanje dozvola",
-  "toast.permissions.autoaccept.off.description": "Zahtjevi za dozvole će zahtijevati odobrenje",
+  "toast.permissions.autoaccept.on.description":
+    "Zahtjevi za dozvole će biti automatski odobreni",
+  "toast.permissions.autoaccept.off.title":
+    "Zaustavljeno automatsko prihvatanje dozvola",
+  "toast.permissions.autoaccept.off.description":
+    "Zahtjevi za dozvole će zahtijevati odobrenje",
 
   "toast.model.none.title": "Nije odabran model",
   "toast.model.none.description": "Poveži provajdera da sažmeš ovu sesiju",
@@ -658,36 +732,48 @@ export const dict = {
   "toast.file.listFailed.title": "Neuspješno listanje datoteka",
 
   "toast.context.noLineSelection.title": "Nema odabranih linija",
-  "toast.context.noLineSelection.description": "Prvo odaberi raspon linija u kartici datoteke.",
+  "toast.context.noLineSelection.description":
+    "Prvo odaberi raspon linija u kartici datoteke.",
 
-  "toast.session.share.copyFailed.title": "Neuspjelo kopiranje URL-a u međuspremnik",
+  "toast.session.share.copyFailed.title":
+    "Neuspjelo kopiranje URL-a u međuspremnik",
   "toast.session.share.success.title": "Sesija podijeljena",
-  "toast.session.share.success.description": "URL za dijeljenje je kopiran u međuspremnik!",
+  "toast.session.share.success.description":
+    "URL za dijeljenje je kopiran u međuspremnik!",
   "toast.session.share.failed.title": "Neuspjelo dijeljenje sesije",
-  "toast.session.share.failed.description": "Došlo je do greške prilikom dijeljenja sesije",
+  "toast.session.share.failed.description":
+    "Došlo je do greške prilikom dijeljenja sesije",
 
   "toast.session.unshare.success.title": "Dijeljenje sesije ukinuto",
-  "toast.session.unshare.success.description": "Dijeljenje sesije je uspješno ukinuto!",
+  "toast.session.unshare.success.description":
+    "Dijeljenje sesije je uspješno ukinuto!",
   "toast.session.unshare.failed.title": "Neuspjelo ukidanje dijeljenja",
-  "toast.session.unshare.failed.description": "Došlo je do greške prilikom ukidanja dijeljenja",
+  "toast.session.unshare.failed.description":
+    "Došlo je do greške prilikom ukidanja dijeljenja",
 
   "toast.session.export.success.title": "Sesija izvezena",
-  "toast.session.export.success.description": "Sesija je sačuvana kao {{filename}}",
+  "toast.session.export.success.description":
+    "Sesija je sačuvana kao {{filename}}",
   "toast.session.export.failed.title": "Izvoz sesije nije uspio",
-  "toast.session.export.failed.description": "Došlo je do greške prilikom izvoza sesije",
+  "toast.session.export.failed.description":
+    "Došlo je do greške prilikom izvoza sesije",
 
-  "toast.session.listFailed.title": "Neuspjelo učitavanje sesija za {{project}}",
+  "toast.session.listFailed.title":
+    "Neuspjelo učitavanje sesija za {{project}}",
 
   "toast.update.title": "Dostupno ažuriranje",
-  "toast.update.description": "Nova verzija OpenCode-a ({{version}}) je dostupna za instalaciju.",
+  "toast.update.description":
+    "Nova verzija OpenCode-a ({{version}}) je dostupna za instalaciju.",
   "toast.update.action.installRestart": "Instaliraj i ponovo pokreni",
   "toast.update.action.notYet": "Ne još",
   "toast.update.installFailed.title": "Ažuriranje nije moglo biti instalirano",
   "toast.update.installFailed.retry": "Pokušaj ponovo",
 
   "error.page.title": "Nešto je pošlo po zlu",
-  "error.page.description": "Došlo je do greške prilikom učitavanja aplikacije.",
-  "error.page.description.localServerStartup": "Došlo je do greške pri pokretanju lokalnog servera.",
+  "error.page.description":
+    "Došlo je do greške prilikom učitavanja aplikacije.",
+  "error.page.description.localServerStartup":
+    "Došlo je do greške pri pokretanju lokalnog servera.",
   "error.page.details.label": "Detalji greške",
   "error.page.action.restart": "Ponovo pokreni",
   "error.page.action.report": "Prijavi grešku",
@@ -703,7 +789,8 @@ export const dict = {
   "error.dev.rootNotFound":
     "Korijenski element nije pronađen. Da li si zaboravio da ga dodaš u index.html? Ili je možda id atribut pogrešno napisan?",
 
-  "error.serverSync.connectFailed": "Nije moguće povezati se na server. Da li server radi na `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Nije moguće povezati se na server. Da li server radi na `{{url}}`?",
   "directory.error.invalidUrl": "Nevažeći direktorij u URL-u.",
 
   "error.chain.unknown": "Nepoznata greška",
@@ -714,23 +801,33 @@ export const dict = {
   "error.chain.responseBody": "Tijelo odgovora:\n{{body}}",
   "error.chain.didYouMean": "Da li si mislio: {{suggestions}}",
   "error.chain.modelNotFound": "Model nije pronađen: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Provjeri nazive provajdera/modela u konfiguraciji (opencode.json)",
-  "error.chain.mcpFailed": 'MCP server "{{name}}" nije uspio. Napomena: OpenCode još ne podržava MCP autentifikaciju.',
-  "error.chain.providerAuthFailed": "Autentifikacija provajdera nije uspjela ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Provjeri nazive provajdera/modela u konfiguraciji (opencode.json)",
+  "error.chain.mcpFailed":
+    'MCP server "{{name}}" nije uspio. Napomena: OpenCode još ne podržava MCP autentifikaciju.',
+  "error.chain.providerAuthFailed":
+    "Autentifikacija provajdera nije uspjela ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Neuspjelo inicijalizovanje provajdera "{{provider}}". Provjeri kredencijale i konfiguraciju.',
-  "error.chain.configJsonInvalid": "Konfiguracijska datoteka na {{path}} nije važeći JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfiguracijska datoteka na {{path}} nije važeći JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfiguracijska datoteka na {{path}} nije važeći JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfiguracijska datoteka na {{path}} nije važeći JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Direktorij "{{dir}}" u {{path}} nije ispravan. Preimenuj direktorij u "{{suggestion}}" ili ga ukloni. Ovo je česta greška u kucanju.',
-  "error.chain.configFrontmatterError": "Neuspjelo parsiranje frontmatter-a u {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "Konfiguracijska datoteka na {{path}} nije ispravna",
-  "error.chain.configInvalidWithMessage": "Konfiguracijska datoteka na {{path}} nije ispravna: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Neuspjelo parsiranje frontmatter-a u {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "Konfiguracijska datoteka na {{path}} nije ispravna",
+  "error.chain.configInvalidWithMessage":
+    "Konfiguracijska datoteka na {{path}} nije ispravna: {{message}}",
 
   "notification.permission.title": "Potrebna dozvola",
-  "notification.permission.description": "{{sessionTitle}} u {{projectName}} traži dozvolu",
+  "notification.permission.description":
+    "{{sessionTitle}} u {{projectName}} traži dozvolu",
   "notification.question.title": "Pitanje",
-  "notification.question.description": "{{sessionTitle}} u {{projectName}} ima pitanje",
+  "notification.question.description":
+    "{{sessionTitle}} u {{projectName}} ima pitanje",
   "notification.action.goToSession": "Idi na sesiju",
 
   "notification.session.responseReady.title": "Odgovor je spreman",
@@ -764,7 +861,8 @@ export const dict = {
   "session.tab.unknown": "Nepoznata sesija",
   "session.panel.reviewAndFiles": "Pregled i datoteke",
   "session.error.notFound": "Ova sesija nije pronađena",
-  "session.error.notFound.description": "Ova kartica upućuje na sesiju koja više ne postoji na ovom serveru.",
+  "session.error.notFound.description":
+    "Ova kartica upućuje na sesiju koja više ne postoji na ovom serveru.",
   "session.error.notFound.closeTab": "Zatvori karticu",
   "session.error.serverConnection": "Nije moguće povezati se s ovim serverom",
   "session.review.filesChanged": "Izmijenjeno {{count}} datoteka",
@@ -772,17 +870,20 @@ export const dict = {
   "session.review.change.other": "Izmjene",
   "session.review.loadingChanges": "Učitavanje izmjena...",
   "session.review.empty": "Još nema izmjena u ovoj sesiji",
-  "session.review.noVcs": "Nije otkriven Git sistem za kontrolu verzija, pa se promjene ne prikazuju",
+  "session.review.noVcs":
+    "Nije otkriven Git sistem za kontrolu verzija, pa se promjene ne prikazuju",
   "session.review.noSnapshot":
     "Praćenje snimaka (snapshot) je onemogućeno u konfiguraciji, pa promjene sesije nisu dostupne",
   "session.review.noChanges": "Nema izmjena",
-  "session.review.noUncommittedChanges": "Još nema promjena koje nisu commitovane",
+  "session.review.noUncommittedChanges":
+    "Još nema promjena koje nisu commitovane",
   "session.review.noBranchChanges": "Još nema promjena na grani",
 
   "session.files.selectToOpen": "Odaberi datoteku za otvaranje",
   "session.files.all": "Sve datoteke",
   "session.files.empty": "Nema datoteka",
-  "session.files.binaryContent": "Binarna datoteka (sadržaj se ne može prikazati)",
+  "session.files.binaryContent":
+    "Binarna datoteka (sadržaj se ne može prikazati)",
 
   "session.messages.renderEarlier": "Prikaži ranije poruke",
   "session.messages.loadingEarlier": "Učitavanje ranijih poruka...",
@@ -844,8 +945,10 @@ export const dict = {
   "status.popover.action.manageServers": "Upravljaj serverima",
 
   "session.share.popover.title": "Objavi na webu",
-  "session.share.popover.description.shared": "Ova sesija je javna na webu. Dostupna je svima koji imaju link.",
-  "session.share.popover.description.unshared": "Podijeli sesiju javno na webu. Biće dostupna svima koji imaju link.",
+  "session.share.popover.description.shared":
+    "Ova sesija je javna na webu. Dostupna je svima koji imaju link.",
+  "session.share.popover.description.unshared":
+    "Podijeli sesiju javno na webu. Biće dostupna svima koji imaju link.",
   "session.share.action.share": "Podijeli",
   "session.share.action.publish": "Objavi",
   "session.share.action.publishing": "Objavljivanje...",
@@ -868,7 +971,8 @@ export const dict = {
     "Veza s terminalom je prekinuta. Ovo se može desiti kada se server ponovo pokrene.",
   "terminal.connectTicket.csrfError":
     "PTY tiket za povezivanje odbijen je zbog provjera porijekla ili CSRF-a. Provjeri CORS konfiguraciju servera.",
-  "terminal.connectTicket.statusError": "PTY tiket za povezivanje nije uspio sa statusom {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY tiket za povezivanje nije uspio sa statusom {{status}}",
 
   "titlebar.update": "Ažuriraj",
   "titlebar.updateVersion": "Ažuriraj {{version}}",
@@ -895,8 +999,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Omogući radne prostore",
   "sidebar.workspaces.disable": "Onemogući radne prostore",
   "sidebar.gettingStarted.title": "Početak",
-  "sidebar.gettingStarted.line1": "OpenCode uključuje besplatne modele, tako da možeš odmah početi.",
-  "sidebar.gettingStarted.line2": "Poveži bilo kojeg provajdera da koristiš modele, npr. Claude, GPT, Gemini itd.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode uključuje besplatne modele, tako da možeš odmah početi.",
+  "sidebar.gettingStarted.line2":
+    "Poveži bilo kojeg provajdera da koristiš modele, npr. Claude, GPT, Gemini itd.",
   "sidebar.project.recentSessions": "Nedavne sesije",
   "sidebar.project.viewAllSessions": "Prikaži sve sesije",
   "sidebar.project.clearNotifications": "Očisti obavijesti",
@@ -911,7 +1017,8 @@ export const dict = {
   "settings.tab.shortcuts": "Prečice",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integracija",
-  "settings.desktop.wsl.description": "Pokreni OpenCode server unutar WSL-a na Windowsu.",
+  "settings.desktop.wsl.description":
+    "Pokreni OpenCode server unutar WSL-a na Windowsu.",
 
   "settings.general.section.appearance": "Izgled",
   "settings.general.section.advanced": "Napredno",
@@ -922,59 +1029,77 @@ export const dict = {
   "settings.general.section.display": "Prikaz",
 
   "settings.general.row.language.title": "Jezik",
-  "settings.general.row.language.description": "Promijeni jezik prikaza u OpenCode-u",
+  "settings.general.row.language.description":
+    "Promijeni jezik prikaza u OpenCode-u",
   "settings.general.row.shell.title": "Shell terminala",
   "settings.general.row.shell.description":
     "Odaberi shell koji se koristi za terminal. Kompatibilni shellovi koriste se i za pozive alata agenta.",
   "settings.general.row.shell.autoDefault": "Automatski (podrazumijevano)",
   "settings.general.row.shell.terminalOnly": "samo terminal",
   "settings.general.row.appearance.title": "Izgled",
-  "settings.general.row.appearance.description": "Prilagodi kako OpenCode izgleda na tvom uređaju",
+  "settings.general.row.appearance.description":
+    "Prilagodi kako OpenCode izgleda na tvom uređaju",
   "settings.general.row.colorScheme.title": "Šema boja",
-  "settings.general.row.colorScheme.description": "Odaberi da li OpenCode prati sistemsku, svijetlu ili tamnu temu",
+  "settings.general.row.colorScheme.description":
+    "Odaberi da li OpenCode prati sistemsku, svijetlu ili tamnu temu",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Prilagodi temu OpenCode-a.",
   "settings.general.row.font.title": "Font za kod",
-  "settings.general.row.font.description": "Prilagodi font koji se koristi u blokovima koda",
+  "settings.general.row.font.description":
+    "Prilagodi font koji se koristi u blokovima koda",
   "settings.general.row.terminalFont.title": "Font terminala",
-  "settings.general.row.terminalFont.description": "Prilagodi font koji se koristi u terminalu",
+  "settings.general.row.terminalFont.description":
+    "Prilagodi font koji se koristi u terminalu",
   "settings.general.row.uiFont.title": "UI font",
-  "settings.general.row.uiFont.description": "Prilagodi font koji se koristi u cijelom interfejsu",
+  "settings.general.row.uiFont.description":
+    "Prilagodi font koji se koristi u cijelom interfejsu",
   "settings.general.row.followup.title": "Ponašanje nadovezivanja",
-  "settings.general.row.followup.description": "Odaberi da li upiti nadovezivanja usmjeravaju odmah ili čekaju u redu",
+  "settings.general.row.followup.description":
+    "Odaberi da li upiti nadovezivanja usmjeravaju odmah ili čekaju u redu",
   "settings.general.row.followup.option.queue": "Red čekanja",
   "settings.general.row.followup.option.steer": "Usmjeri",
   "settings.general.row.showFileTree.title": "Stablo datoteka",
-  "settings.general.row.showFileTree.description": "Prikaži stablo datoteka u sesijama",
+  "settings.general.row.showFileTree.description":
+    "Prikaži stablo datoteka u sesijama",
   "settings.general.row.showNavigation.title": "Kontrole navigacije",
   "settings.general.row.showNavigation.description":
     "Prikaži dugmad za nazad i naprijed u naslovnoj traci desktop aplikacije",
   "settings.general.row.showSearch.title": "Paleta komandi",
-  "settings.general.row.showSearch.description": "Prikaži dugme za pretragu i paletu komandi u naslovnoj traci",
+  "settings.general.row.showSearch.description":
+    "Prikaži dugme za pretragu i paletu komandi u naslovnoj traci",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Prikaži dugme terminala u naslovnoj traci desktop aplikacije",
+  "settings.general.row.showTerminal.description":
+    "Prikaži dugme terminala u naslovnoj traci desktop aplikacije",
   "settings.general.row.showStatus.title": "Status servera",
-  "settings.general.row.showStatus.description": "Prikaži dugme statusa servera u naslovnoj traci",
+  "settings.general.row.showStatus.description":
+    "Prikaži dugme statusa servera u naslovnoj traci",
   "settings.general.row.mobileTitlebarBottom.title": "Donja navigacija",
   "settings.general.row.mobileTitlebarBottom.description":
     "Postavi naslovnu traku i kartice sesije na dno ekrana na mobilnim uređajima",
   "settings.general.row.showCustomAgents.title": "Prilagođeni agenti",
-  "settings.general.row.showCustomAgents.description": "Prikaži izbor agenta u uređivaču poruke",
-  "settings.general.row.reasoningSummaries.title": "Prikaži sažetke rasuđivanja",
-  "settings.general.row.reasoningSummaries.description": "Prikaži sažetke rasuđivanja modela na vremenskoj traci",
+  "settings.general.row.showCustomAgents.description":
+    "Prikaži izbor agenta u uređivaču poruke",
+  "settings.general.row.reasoningSummaries.title":
+    "Prikaži sažetke rasuđivanja",
+  "settings.general.row.reasoningSummaries.description":
+    "Prikaži sažetke rasuđivanja modela na vremenskoj traci",
 
-  "settings.general.row.shellToolPartsExpanded.title": "Proširi dijelove shell alata",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Proširi dijelove shell alata",
   "settings.general.row.shellToolPartsExpanded.description":
     "Prikaži dijelove shell alata podrazumijevano proširene na vremenskoj traci",
-  "settings.general.row.editToolPartsExpanded.title": "Proširi dijelove alata za uređivanje",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Proširi dijelove alata za uređivanje",
   "settings.general.row.editToolPartsExpanded.description":
     "Prikaži dijelove alata za uređivanje, pisanje i patch podrazumijevano proširene na vremenskoj traci",
   "settings.general.row.newInterface.title": "Novi raspored",
   "settings.general.row.newInterface.badge": "Novo",
   "settings.general.row.newInterface.description":
     "Koristi nove kartice i raspored početne stranice. Ograničeno vrijeme možeš se prebacivati između rasporeda.",
-  "settings.general.row.newInterfaceNotice.title": "Sada koristiš novi raspored",
-  "settings.general.row.newInterfaceNotice.description": "Prethodni raspored više nije dostupan",
+  "settings.general.row.newInterfaceNotice.title":
+    "Sada koristiš novi raspored",
+  "settings.general.row.newInterfaceNotice.description":
+    "Prethodni raspored više nije dostupan",
   "settings.general.row.newInterfaceNotice.dismiss": "Odbaci",
   "settings.general.row.pinchZoom.title": "Zumiranje štipanjem",
   "settings.general.row.pinchZoom.description":
@@ -986,18 +1111,22 @@ export const dict = {
     "Na Linuxu sa monitorima miješanih stopa osvježavanja, nativni Wayland može biti stabilniji.",
 
   "settings.general.row.releaseNotes.title": "Bilješke o izdanju",
-  "settings.general.row.releaseNotes.description": 'Prikaži iskačuće prozore "Šta je novo" nakon ažuriranja',
+  "settings.general.row.releaseNotes.description":
+    'Prikaži iskačuće prozore "Šta je novo" nakon ažuriranja',
 
   "settings.updates.row.startup.title": "Provjeri ažuriranja pri pokretanju",
-  "settings.updates.row.startup.description": "Automatski provjerava ažuriranja kada se OpenCode pokrene",
+  "settings.updates.row.startup.description":
+    "Automatski provjerava ažuriranja kada se OpenCode pokrene",
   "settings.updates.row.check.title": "Provjeri ažuriranja",
-  "settings.updates.row.check.description": "Ručno provjeri ažuriranja i instaliraj ako su dostupna",
+  "settings.updates.row.check.description":
+    "Ručno provjeri ažuriranja i instaliraj ako su dostupna",
   "settings.updates.action.checkNow": "Provjeri sada",
   "settings.updates.action.checking": "Provjera...",
   "settings.updates.action.downloading": "Preuzimanje...",
   "settings.updates.action.installing": "Instaliranje...",
   "settings.updates.toast.latest.title": "Sve je ažurno",
-  "settings.updates.toast.latest.description": "Koristiš najnoviju verziju OpenCode-a.",
+  "settings.updates.toast.latest.description":
+    "Koristiš najnoviju verziju OpenCode-a.",
   "sound.option.none": "Nijedan",
   "sound.option.alert01": "Upozorenje 01",
   "sound.option.alert02": "Upozorenje 02",
@@ -1049,23 +1178,30 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Prikaži sistemsku obavijest kada agent završi ili zahtijeva pažnju",
   "settings.general.notifications.permissions.title": "Dozvole",
-  "settings.general.notifications.permissions.description": "Prikaži sistemsku obavijest kada je potrebna dozvola",
+  "settings.general.notifications.permissions.description":
+    "Prikaži sistemsku obavijest kada je potrebna dozvola",
   "settings.general.notifications.errors.title": "Greške",
-  "settings.general.notifications.errors.description": "Prikaži sistemsku obavijest kada dođe do greške",
+  "settings.general.notifications.errors.description":
+    "Prikaži sistemsku obavijest kada dođe do greške",
 
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Pusti zvuk kada agent završi ili zahtijeva pažnju",
+  "settings.general.sounds.agent.description":
+    "Pusti zvuk kada agent završi ili zahtijeva pažnju",
   "settings.general.sounds.permissions.title": "Dozvole",
-  "settings.general.sounds.permissions.description": "Pusti zvuk kada je potrebna dozvola",
+  "settings.general.sounds.permissions.description":
+    "Pusti zvuk kada je potrebna dozvola",
   "settings.general.sounds.errors.title": "Greške",
-  "settings.general.sounds.errors.description": "Pusti zvuk kada dođe do greške",
+  "settings.general.sounds.errors.description":
+    "Pusti zvuk kada dođe do greške",
 
   "settings.shortcuts.title": "Prečice na tastaturi",
   "settings.shortcuts.reset.button": "Vrati na podrazumijevano",
   "settings.shortcuts.reset.toast.title": "Prečice resetovane",
-  "settings.shortcuts.reset.toast.description": "Prečice na tastaturi su vraćene na podrazumijevane.",
+  "settings.shortcuts.reset.toast.description":
+    "Prečice na tastaturi su vraćene na podrazumijevane.",
   "settings.shortcuts.conflict.title": "Prečica je već u upotrebi",
-  "settings.shortcuts.conflict.description": "{{keybind}} je već dodijeljeno za {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} je već dodijeljeno za {{titles}}.",
   "settings.shortcuts.unassigned": "Nedodijeljeno",
   "settings.shortcuts.pressKeys": "Pritisni tastere",
   "settings.shortcuts.search.placeholder": "Pretraži prečice",
@@ -1079,7 +1215,8 @@ export const dict = {
   "settings.shortcuts.group.prompt": "Upit",
 
   "settings.providers.title": "Provajderi",
-  "settings.providers.description": "Postavke provajdera će se ovdje moći podešavati.",
+  "settings.providers.description":
+    "Postavke provajdera će se ovdje moći podešavati.",
   "settings.providers.section.connected": "Povezani provajderi",
   "settings.providers.connected.empty": "Nema povezanih provajdera",
   "settings.providers.section.popular": "Popularni provajderi",
@@ -1090,32 +1227,40 @@ export const dict = {
   "settings.models.title": "Modeli",
   "settings.models.description": "Postavke modela će se ovdje moći podešavati.",
   "settings.agents.title": "Agenti",
-  "settings.agents.description": "Postavke agenata će se ovdje moći podešavati.",
+  "settings.agents.description":
+    "Postavke agenata će se ovdje moći podešavati.",
   "settings.commands.title": "Komande",
-  "settings.commands.description": "Postavke komandi će se ovdje moći podešavati.",
+  "settings.commands.description":
+    "Postavke komandi će se ovdje moći podešavati.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP postavke će se ovdje moći podešavati.",
 
   "settings.permissions.title": "Dozvole",
-  "settings.permissions.description": "Kontroliši koje alate server smije koristiti zadano.",
+  "settings.permissions.description":
+    "Kontroliši koje alate server smije koristiti zadano.",
   "settings.permissions.section.tools": "Alati",
-  "settings.permissions.toast.updateFailed.title": "Neuspjelo ažuriranje dozvola",
+  "settings.permissions.toast.updateFailed.title":
+    "Neuspjelo ažuriranje dozvola",
 
   "settings.permissions.action.allow": "Dozvoli",
   "settings.permissions.action.ask": "Pitaj",
   "settings.permissions.action.deny": "Zabrani",
 
   "settings.permissions.tool.read.title": "Čitanje",
-  "settings.permissions.tool.read.description": "Čitanje datoteke (podudara se s putanjom datoteke)",
+  "settings.permissions.tool.read.description":
+    "Čitanje datoteke (podudara se s putanjom datoteke)",
   "settings.permissions.tool.edit.title": "Uređivanje",
   "settings.permissions.tool.edit.description":
     "Mijenjanje datoteka, uključujući uređivanje, pisanje, zakrpe i višestruke izmjene",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Podudaranje datoteka pomoću glob šablona",
+  "settings.permissions.tool.glob.description":
+    "Podudaranje datoteka pomoću glob šablona",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Pretraživanje sadržaja datoteka pomoću regularnih izraza",
+  "settings.permissions.tool.grep.description":
+    "Pretraživanje sadržaja datoteka pomoću regularnih izraza",
   "settings.permissions.tool.list.title": "Lista",
-  "settings.permissions.tool.list.description": "Listanje datoteka unutar direktorija",
+  "settings.permissions.tool.list.description":
+    "Listanje datoteka unutar direktorija",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Pokretanje shell komandi",
   "settings.permissions.tool.task.title": "Zadatak",
@@ -1131,9 +1276,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web pretraga",
   "settings.permissions.tool.websearch.description": "Pretražuj web",
   "settings.permissions.tool.external_directory.title": "Vanjski direktorij",
-  "settings.permissions.tool.external_directory.description": "Pristup datotekama izvan direktorija projekta",
+  "settings.permissions.tool.external_directory.description":
+    "Pristup datotekama izvan direktorija projekta",
   "settings.permissions.tool.doom_loop.title": "Beskonačna petlja",
-  "settings.permissions.tool.doom_loop.description": "Otkriva ponovljene pozive alata sa identičnim unosom",
+  "settings.permissions.tool.doom_loop.description":
+    "Otkriva ponovljene pozive alata sa identičnim unosom",
 
   "session.delete.failed.title": "Neuspjelo brisanje sesije",
   "session.delete.title": "Izbriši sesiju",
@@ -1147,38 +1294,47 @@ export const dict = {
   "workspace.delete.failed.title": "Neuspješno brisanje radnog prostora",
   "workspace.resetting.title": "Vraćanje radnog prostora na početno stanje",
   "workspace.resetting.description": "Ovo može potrajati minut.",
-  "workspace.reset.failed.title": "Neuspješno vraćanje radnog prostora na početno stanje",
+  "workspace.reset.failed.title":
+    "Neuspješno vraćanje radnog prostora na početno stanje",
   "workspace.reset.success.title": "Radni prostor vraćen na početno stanje",
-  "workspace.reset.success.description": "Radni prostor sada odgovara podrazumijevanoj grani.",
+  "workspace.reset.success.description":
+    "Radni prostor sada odgovara podrazumijevanoj grani.",
   "workspace.error.stillPreparing": "Radni prostor se još priprema",
   "workspace.status.checking": "Provjera promjena koje nisu commitovane...",
   "workspace.status.error": "Nije moguće provjeriti git status.",
   "workspace.status.clean": "Nisu pronađene promjene koje nisu commitovane.",
-  "workspace.status.dirty": "Pronađene su promjene koje nisu commitovane u ovom radnom prostoru.",
+  "workspace.status.dirty":
+    "Pronađene su promjene koje nisu commitovane u ovom radnom prostoru.",
   "workspace.delete.title": "Izbriši radni prostor",
   "workspace.delete.confirm": 'Izbriši radni prostor "{{name}}"?',
   "workspace.delete.button": "Izbriši radni prostor",
   "workspace.reset.title": "Vrati radni prostor na početno stanje",
-  "workspace.reset.confirm": 'Vrati radni prostor "{{name}}" na početno stanje?',
+  "workspace.reset.confirm":
+    'Vrati radni prostor "{{name}}" na početno stanje?',
   "workspace.reset.button": "Vrati radni prostor na početno stanje",
-  "workspace.reset.archived.none": "Nijedna aktivna sesija neće biti arhivirana.",
+  "workspace.reset.archived.none":
+    "Nijedna aktivna sesija neće biti arhivirana.",
   "workspace.reset.archived.one": "1 sesija će biti arhivirana.",
   "workspace.reset.archived.many": "Biće arhivirano {{count}} sesija.",
-  "workspace.reset.note": "Ovo će vratiti radni prostor na stanje podrazumijevane grane.",
+  "workspace.reset.note":
+    "Ovo će vratiti radni prostor na stanje podrazumijevane grane.",
   "common.open": "Otvori",
   "dialog.releaseNotes.action.getStarted": "Započni",
   "dialog.releaseNotes.action.next": "Sljedeće",
   "dialog.releaseNotes.action.hideFuture": "Ne prikazuj ovo u budućnosti",
   "dialog.releaseNotes.media.alt": "Pregled izdanja",
-  "toast.project.reloadFailed.title": "Nije uspjelo ponovno učitavanje {{project}}",
+  "toast.project.reloadFailed.title":
+    "Nije uspjelo ponovno učitavanje {{project}}",
   "error.server.invalidConfiguration": "Nevažeća konfiguracija",
   "common.moreCountSuffix": " (+{{count}} više)",
   "common.time.justNow": "Upravo sada",
   "common.time.minutesAgo.short": "prije {{count}} min",
   "common.time.hoursAgo.short": "prije {{count}} h",
   "common.time.daysAgo.short": "prije {{count}} d",
-  "settings.providers.connected.environmentDescription": "Povezano s tvojim varijablama okruženja",
-  "settings.providers.custom.description": "Dodaj provajdera kompatibilnog s OpenAI putem baznog URL-a.",
+  "settings.providers.connected.environmentDescription":
+    "Povezano s tvojim varijablama okruženja",
+  "settings.providers.custom.description":
+    "Dodaj provajdera kompatibilnog s OpenAI putem baznog URL-a.",
 
   "app.server.unreachable": "Nije moguće pristupiti {{server}}",
   "app.server.retrying": "Automatski ponovni pokušaj...",
@@ -1187,8 +1343,10 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "lozinka",
   "server.row.noUsername": "nema korisničkog imena",
   "session.review.noVcs.createGit.title": "Kreiraj Git repozitorij",
-  "session.review.noVcs.createGit.description": "Prati, pregledaj i poništi promjene u ovom projektu",
-  "session.review.noVcs.createGit.actionLoading": "Kreiranje Git repozitorija...",
+  "session.review.noVcs.createGit.description":
+    "Prati, pregledaj i poništi promjene u ovom projektu",
+  "session.review.noVcs.createGit.actionLoading":
+    "Kreiranje Git repozitorija...",
   "session.review.noVcs.createGit.action": "Kreiraj Git repozitorij",
   "session.todo.progress": "{{done}} od {{total}} zadataka završeno",
   "session.question.progress": "{{current}} od {{total}} pitanja",
@@ -1196,7 +1354,8 @@ export const dict = {
   "session.header.open.fileExplorer": "File Explorer",
   "session.header.reveal.finder": "Prikaži u Finderu",
   "session.header.reveal.fileExplorer": "Prikaži u File Exploreru",
-  "session.header.reveal.containingFolder": "Otvori fasciklu koja sadrži ovu stavku",
+  "session.header.reveal.containingFolder":
+    "Otvori fasciklu koja sadrži ovu stavku",
   "session.header.open.fileManager": "File Manager",
   "session.header.open.app.vscode": "VS Code",
   "session.header.open.app.cursor": "Cursor",
@@ -1223,23 +1382,30 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Kadrovi duži od 32ms u posljednjih 5 sekundi.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokirano vrijeme i broj dugih zadataka u posljednjih 5 sekundi. Maks zadatak: {{max}}.",
+  "debugBar.long.tip":
+    "Blokirano vrijeme i broj dugih zadataka u posljednjih 5 sekundi. Maks zadatak: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Najgore zabilježeno kašnjenje unosa u posljednjih 5 sekundi.",
+  "debugBar.delay.tip":
+    "Najgore zabilježeno kašnjenje unosa u posljednjih 5 sekundi.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Približno trajanje interakcije tokom posljednjih 5 sekundi. Ovo je slično INP-u, nije službeni Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kumulativni pomak rasporeda za trenutni životni vijek aplikacije.",
+  "debugBar.cls.tip":
+    "Kumulativni pomak rasporeda za trenutni životni vijek aplikacije.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Korišteni JS heap naspram limita heapa. Samo Chromium.",
-  "debugBar.mem.tip": "Korišteni JS heap naspram limita heapa. {{used}} od {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Korišteni JS heap naspram limita heapa. Samo Chromium.",
+  "debugBar.mem.tip":
+    "Korišteni JS heap naspram limita heapa. {{used}} od {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Prisilno primijeni stilove fokusa na sve interaktivne elemente",
+  "debugBar.focus.tip":
+    "Prisilno primijeni stilove fokusa na sve interaktivne elemente",
   "debugBar.focus.on": "UKLJUČENO",
   "debugBar.focus.off": "ISKLJUČENO",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Prisilno postavi smjer rasporeda cijele aplikacije bez promjene odabranog jezika",
+  "debugBar.direction.tip":
+    "Prisilno postavi smjer rasporeda cijele aplikacije bez promjene odabranog jezika",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "common.key.ctrl": "Ctrl",
@@ -1260,9 +1426,13 @@ export const dict = {
   "error.page.circular": "[Kružno]",
   "error.serverSDK.noServerAvailable": "Nema dostupnog servera",
   "error.serverSDK.serverNotAvailable": "Server nije dostupan",
-  "error.childStore.persistedCacheCreateFailed": "Nije uspjelo kreiranje trajnog keša",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Nije uspjelo kreiranje trajnih metapodataka projekta",
-  "error.childStore.persistedProjectIconCreateFailed": "Nije uspjelo kreiranje trajne ikone projekta",
+  "error.childStore.persistedCacheCreateFailed":
+    "Nije uspjelo kreiranje trajnog keša",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Nije uspjelo kreiranje trajnih metapodataka projekta",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Nije uspjelo kreiranje trajne ikone projekta",
   "error.childStore.storeCreateFailed": "Nije uspjelo kreiranje skladišta",
-  "terminal.connectionLost.abnormalClose": "WebSocket zatvoren nenormalno: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket zatvoren nenormalno: {{code}}",
 }

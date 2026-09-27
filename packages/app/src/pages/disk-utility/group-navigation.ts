@@ -4,36 +4,56 @@ import { diskNodeDisplayName } from "./node-display"
 
 /** Visual aggregates are browse destinations, never filesystem scan targets. */
 export function createGroupNavigation() {
-  const groups = new Map<string, { node: DiskScanNode; parentPath: string; root: DiskScanNode }>()
+  const groups = new Map<
+    string,
+    { node: DiskScanNode; parentPath: string; root: DiskScanNode }
+  >()
   function resolve(root: DiskScanNode, path: string): DiskScanNode | undefined {
     const entry = groups.get(path)
     if (!entry || entry.root.path !== root.path) return undefined
     if (entry.root === root) return entry.node
     // Keep the chosen membership stable while reconciling live sizes/deletions.
-    const wanted = new Set(entry.node.children.map(child => child.path))
+    const wanted = new Set(entry.node.children.map((child) => child.path))
     const children: DiskScanNode[] = []
     const visit = (node: DiskScanNode) => {
       if (!wanted.size) return
-      if (wanted.delete(node.path)) { children.push(node); return }
+      if (wanted.delete(node.path)) {
+        children.push(node)
+        return
+      }
       for (const child of node.children) visit(child)
     }
     visit(root)
-    if (!children.length) { groups.delete(path); return undefined }
-    entry.node = { ...entry.node, children, size: children.reduce((sum, child) => sum + child.size, 0), otherCount: children.length }
+    if (!children.length) {
+      groups.delete(path)
+      return undefined
+    }
+    entry.node = {
+      ...entry.node,
+      children,
+      size: children.reduce((sum, child) => sum + child.size, 0),
+      otherCount: children.length,
+    }
     entry.root = root
     return entry.node
   }
   return {
     resolve,
     open(root: DiskScanNode, parent: DiskScanNode, group: DiskScanNode) {
-      if (!group.isOther || !group.children.length || group.path === parent.path) return undefined
+      if (
+        !group.isOther ||
+        !group.children.length ||
+        group.path === parent.path
+      )
+        return undefined
       // Use the containing folder when the clicked aggregate is several rings deep.
       const childCrumbs = buildCrumbs(root, group.children[0])
-      const containing = childCrumbs.at(-2)?.path === group.path
-        ? childCrumbs.at(-3)?.node ?? parent
-        : childCrumbs.at(-2)?.node ?? parent
+      const containing =
+        childCrumbs.at(-2)?.path === group.path
+          ? (childCrumbs.at(-3)?.node ?? parent)
+          : (childCrumbs.at(-2)?.node ?? parent)
       const parentPath = parent.isOther ? parent.path : containing.path
-      groups.set(group.path, {node: group, parentPath, root})
+      groups.set(group.path, { node: group, parentPath, root })
       if (groups.size > 64) groups.delete(groups.keys().next().value!)
       return group
     },
@@ -47,9 +67,19 @@ export function createGroupNavigation() {
         const entry = groups.get(current.path)!
         trail.unshift(current)
         const parent = groups.get(entry.parentPath)?.node
-        if (parent) { current = parent; continue }
+        if (parent) {
+          current = parent
+          continue
+        }
         const chain = buildCrumbs(root, { ...root, path: entry.parentPath })
-        return [...chain, ...trail.map(node => ({node, path: node.path, name: diskNodeDisplayName(node)}))]
+        return [
+          ...chain,
+          ...trail.map((node) => ({
+            node,
+            path: node.path,
+            name: diskNodeDisplayName(node),
+          })),
+        ]
       }
       return buildCrumbs(root, view)
     },

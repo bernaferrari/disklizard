@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { Effect, FileSystem, Schema, SchemaAST, SchemaGetter } from "effect"
 import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiMiddleware, HttpApiSchema } from "effect/unstable/httpapi"
-import { format } from "prettier"
+import { format as formatWithOxfmt } from "oxfmt"
 import {
   compile as compileContract,
   emitEffect,
@@ -15,6 +15,12 @@ import {
 } from "../src"
 import { it } from "./effect"
 import { Api as FixtureApi, Missing } from "./fixture"
+
+async function formatTypescript(input: string) {
+  const result = await formatWithOxfmt("generated.ts", input, { semi: false, printWidth: 120 })
+  if (result.errors.length > 0) throw new Error(result.errors.map((error) => error.message).join("\n"))
+  return result.code
+}
 
 function api(endpoint: HttpApiEndpoint.Any) {
   return HttpApi.make("test").add(HttpApiGroup.make("session").add(endpoint))
@@ -616,7 +622,7 @@ describe("HttpApiCodegen.generate", () => {
         Effect.tryPromise(() =>
           Promise.all([
             Bun.file(new URL(`generated/${file.path}`, import.meta.url)).text(),
-            format(file.content, { parser: "typescript", semi: false, printWidth: 120 }),
+            formatTypescript(file.content),
           ]),
         ).pipe(Effect.map(([content, expected]) => expect(content).toBe(expected))),
       )

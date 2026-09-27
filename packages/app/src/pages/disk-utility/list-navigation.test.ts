@@ -1,5 +1,11 @@
 import { describe, expect, it } from "bun:test"
-import { clampedListIndex, inclusiveIndexRange, pagedListIndex, selectionAnchorIndex, wrappedListIndex } from "./list-navigation"
+import {
+  clampedListIndex,
+  inclusiveIndexRange,
+  pagedListIndex,
+  selectionAnchorIndex,
+  wrappedListIndex,
+} from "./list-navigation"
 
 describe("disk index keyboard navigation", () => {
   it("wraps single-item focus without producing an invalid virtual-list index", () => {

@@ -56,6 +56,14 @@ pub(crate) fn is_project_marker_name(name: &str) -> bool {
             | "uv.lock"
             | "go.mod"
             | "go.sum"
+            | "cargo.toml"
+            | "cargo.lock"
+            | "pom.xml"
+            | "build.gradle"
+            | "build.gradle.kts"
+            | "settings.gradle"
+            | "settings.gradle.kts"
+            | "cmakelists.txt"
             | "pubspec.yaml"
             | "pubspec.lock"
     )
@@ -81,6 +89,15 @@ const PYTHON_MARKERS: &[&str] = &[
     "uv.lock",
 ];
 const GO_MARKERS: &[&str] = &["go.mod", "go.sum"];
+const RUST_MARKERS: &[&str] = &["cargo.toml", "cargo.lock"];
+const JVM_MARKERS: &[&str] = &[
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "settings.gradle",
+    "settings.gradle.kts",
+];
+const CPP_MARKERS: &[&str] = &["cmakelists.txt"];
 const DART_MARKERS: &[&str] = &["pubspec.yaml", "pubspec.lock"];
 
 /// Matching markers in sorted order, mirroring the TypeScript fallback so the
@@ -88,10 +105,11 @@ const DART_MARKERS: &[&str] = &["pubspec.yaml", "pubspec.lock"];
 fn ecosystem_markers(markers: &[String], accepted: &[&str]) -> Vec<String> {
     let mut matched: Vec<String> = markers
         .iter()
+        .map(|marker| marker.to_lowercase())
         .filter(|marker| accepted.contains(&marker.as_str()))
-        .cloned()
         .collect();
     matched.sort();
+    matched.dedup();
     matched
 }
 
@@ -177,6 +195,9 @@ pub(crate) fn classify(
     let node_markers = ecosystem_markers(parent_markers, NODE_MARKERS);
     let python_markers = ecosystem_markers(parent_markers, PYTHON_MARKERS);
     let go_markers = ecosystem_markers(parent_markers, GO_MARKERS);
+    let rust_markers = ecosystem_markers(parent_markers, RUST_MARKERS);
+    let jvm_markers = ecosystem_markers(parent_markers, JVM_MARKERS);
+    let cpp_markers = ecosystem_markers(parent_markers, CPP_MARKERS);
     let dart_markers = ecosystem_markers(parent_markers, DART_MARKERS);
     match name.as_str() {
         // Basename-only matches stay `likely`: a conventional name justifies
@@ -350,7 +371,16 @@ pub(crate) fn classify(
                     DeveloperArtifactEcosystem::Rust,
                     &name,
                     &rust,
-                    &[],
+                    &rust_markers,
+                ));
+            }
+            if !rust.is_empty() && !rust_markers.is_empty() {
+                return Some(verified(
+                    DeveloperArtifactKind::BuildOutput,
+                    DeveloperArtifactEcosystem::Rust,
+                    &name,
+                    &rust,
+                    &rust_markers,
                 ));
             }
             if !rust.is_empty() {
@@ -371,6 +401,15 @@ pub(crate) fn classify(
                     "surefire-reports",
                 ],
             );
+            if !jvm.is_empty() && !jvm_markers.is_empty() {
+                return Some(verified(
+                    DeveloperArtifactKind::BuildOutput,
+                    DeveloperArtifactEcosystem::Jvm,
+                    &name,
+                    &jvm,
+                    &jvm_markers,
+                ));
+            }
             if !jvm.is_empty() {
                 return Some(likely(
                     DeveloperArtifactKind::BuildOutput,
@@ -391,11 +430,20 @@ pub(crate) fn classify(
                     DeveloperArtifactEcosystem::Cpp,
                     &name,
                     &cmake,
-                    &[],
+                    &cpp_markers,
                 ));
             }
             let jvm =
                 matching_signatures(signatures, &["classes", "intermediates", "outputs", "libs"]);
+            if !jvm.is_empty() && !jvm_markers.is_empty() {
+                return Some(verified(
+                    DeveloperArtifactKind::BuildOutput,
+                    DeveloperArtifactEcosystem::Jvm,
+                    &name,
+                    &jvm,
+                    &jvm_markers,
+                ));
+            }
             if !jvm.is_empty() {
                 return Some(likely(
                     DeveloperArtifactKind::BuildOutput,

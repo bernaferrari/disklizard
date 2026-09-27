@@ -2,7 +2,7 @@ import { isAbsolute, join } from "node:path"
 import { Effect, FileSystem, PlatformError, Schema, SchemaAST, SchemaRepresentation } from "effect"
 import { HttpMethod, type HttpRouter } from "effect/unstable/http"
 import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from "effect/unstable/httpapi"
-import { format } from "prettier"
+import { format as formatWithOxfmt } from "oxfmt"
 
 export type InputField = {
   readonly name: string
@@ -72,6 +72,12 @@ const resolveHttpApiEncoding = SchemaAST.resolveAt<HttpApiSchema.Encoding>("~htt
 const resolveContentSchema = SchemaAST.resolveAt<SchemaAST.AST>("contentSchema")
 const Manifest = Schema.fromJsonString(Schema.Array(Schema.String))
 const manifestName = ".httpapi-codegen.json"
+
+async function formatTypescript(fileName: string, input: string) {
+  const result = await formatWithOxfmt(fileName, input, { semi: false, printWidth: 120 })
+  if (result.errors.length > 0) throw new Error(result.errors.map((error) => error.message).join("\n"))
+  return result.code
+}
 
 export function compile<Id extends string, Groups extends HttpApiGroup.Any>(
   api: HttpApi.HttpApi<Id, Groups>,
@@ -755,7 +761,7 @@ export function write(
       output.files,
       (file) =>
         Effect.tryPromise({
-          try: () => format(file.content, { filepath: file.path, parser: "typescript", semi: false, printWidth: 120 }),
+          try: () => formatTypescript(file.path, file.content),
           catch: (error) => new GenerationError({ reason: `Failed to format ${file.path}: ${String(error)}` }),
         }).pipe(Effect.flatMap((content) => fs.writeFileString(join(directory, file.path), content))),
       { concurrency: 8, discard: true },

@@ -27,7 +27,7 @@ describe("persisted filesystem paths", () => {
         { path: "\\\\server", label: "missing share" },
         { path: "/work/project/", label: "  Project  " },
       ],
-      { limit: PINNED_LOCATION_LIMIT },
+      { limit: PINNED_LOCATION_LIMIT }
     )
 
     expect(result).toEqual([{ path: "/work/project", label: "Project" }])
@@ -41,8 +41,8 @@ describe("persisted filesystem paths", () => {
           { path: "C:\\", label: "  " },
           { path: "\\\\server\\share\\folder\\", label: "Network" },
         ],
-        { limit: PINNED_LOCATION_LIMIT },
-      ),
+        { limit: PINNED_LOCATION_LIMIT }
+      )
     ).toEqual([
       { path: "/", label: "/" },
       { path: "C:/", label: "C:/" },
@@ -59,7 +59,10 @@ describe("persisted filesystem paths", () => {
         label: `${index}`,
       })),
     ]
-    const result = sanitizeSavedPaths(locks, { limit: CLEANUP_LOCK_LIMIT, foldWindowsCase: true })
+    const result = sanitizeSavedPaths(locks, {
+      limit: CLEANUP_LOCK_LIMIT,
+      foldWindowsCase: true,
+    })
 
     expect(result).toHaveLength(CLEANUP_LOCK_LIMIT)
     expect(result[0]).toEqual({ path: "C:/Work/App", label: "First" })
@@ -73,8 +76,8 @@ describe("persisted filesystem paths", () => {
           { path: "C:\\Work\\App", label: "Upper" },
           { path: "c:\\work\\app", label: "Lower" },
         ],
-        { limit: PINNED_LOCATION_LIMIT },
-      ),
+        { limit: PINNED_LOCATION_LIMIT }
+      )
     ).toEqual([
       { path: "C:/Work/App", label: "Upper" },
       { path: "c:/work/app", label: "Lower" },
@@ -90,8 +93,8 @@ describe("persisted filesystem paths", () => {
           { path: "//srv/share", label: "Leading separators" },
           { path: "/srv/../private", label: "Traversal" },
         ],
-        { limit: 12, os: "linux" },
-      ),
+        { limit: 12, os: "linux" }
+      )
     ).toEqual([
       { path: "/srv/name\\with\\slashes", label: "Literal backslashes" },
       { path: "/srv/project", label: "Repeated separators" },
@@ -107,15 +110,20 @@ describe("persisted filesystem paths", () => {
           { path: "/srv/project", label: "POSIX" },
           { path: "\\\\?\\C:\\device", label: "Device namespace" },
         ],
-        { limit: 12, os: "windows" },
-      ),
+        { limit: 12, os: "windows" }
+      )
     ).toEqual([{ path: "C:/Work/App", label: "Windows" }])
   })
 
   test("fails closed for non-finite or unsafe limits", () => {
-    const values = Array.from({ length: 30 }, (_, index) => ({ path: `/work/${index}`, label: `${index}` }))
+    const values = Array.from({ length: 30 }, (_, index) => ({
+      path: `/work/${index}`,
+      label: `${index}`,
+    }))
     expect(sanitizeSavedPaths(values, { limit: Number.NaN })).toEqual([])
-    expect(sanitizeSavedPaths(values, { limit: Number.POSITIVE_INFINITY })).toEqual([])
+    expect(
+      sanitizeSavedPaths(values, { limit: Number.POSITIVE_INFINITY })
+    ).toEqual([])
     expect(sanitizeSavedPaths(values, { limit: 1.5 })).toEqual([])
   })
 
@@ -123,9 +131,16 @@ describe("persisted filesystem paths", () => {
     expect(parseSavedPaths("not json", { limit: 12 })).toBeUndefined()
     expect(parseSavedPaths('{"path":"/work"}', { limit: 12 })).toBeUndefined()
     expect(parseSavedPaths(undefined, { limit: 12 })).toBeUndefined()
-    expect(decodeSavedPaths(undefined, { limit: 12 })).toEqual({ status: "missing" })
-    expect(decodeSavedPaths("not json", { limit: 12 })).toEqual({ status: "invalid" })
-    expect(decodeSavedPaths("[]", { limit: 12 })).toEqual({ status: "valid", value: [] })
+    expect(decodeSavedPaths(undefined, { limit: 12 })).toEqual({
+      status: "missing",
+    })
+    expect(decodeSavedPaths("not json", { limit: 12 })).toEqual({
+      status: "invalid",
+    })
+    expect(decodeSavedPaths("[]", { limit: 12 })).toEqual({
+      status: "valid",
+      value: [],
+    })
   })
 
   test("strict cleanup-protection decoding rejects every discarded entry", () => {
@@ -140,15 +155,21 @@ describe("persisted filesystem paths", () => {
         decodeSavedPaths(JSON.stringify(value), {
           limit: value.at(-1)?.path === "/work/second" ? 1 : CLEANUP_LOCK_LIMIT,
           rejectDiscardedEntries: true,
-        }),
+        })
       ).toEqual({ status: "invalid" })
     }
 
     expect(
-      decodeSavedPaths(JSON.stringify([{ path: "/work/protected/", label: " Protected " }]), {
-        limit: CLEANUP_LOCK_LIMIT,
-        rejectDiscardedEntries: true,
-      }),
-    ).toEqual({ status: "valid", value: [{ path: "/work/protected", label: "Protected" }] })
+      decodeSavedPaths(
+        JSON.stringify([{ path: "/work/protected/", label: " Protected " }]),
+        {
+          limit: CLEANUP_LOCK_LIMIT,
+          rejectDiscardedEntries: true,
+        }
+      )
+    ).toEqual({
+      status: "valid",
+      value: [{ path: "/work/protected", label: "Protected" }],
+    })
   })
 })

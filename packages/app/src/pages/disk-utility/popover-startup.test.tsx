@@ -9,10 +9,16 @@ test("an inline volume-details popover mounts without crashing the home screen",
   const host = document.createElement("div")
   document.body.append(host)
   const errors: unknown[] = []
-  const root = createRoot(host, { onUncaughtError: (error) => errors.push(error) })
+  const root = createRoot(host, {
+    onUncaughtError: (error) => errors.push(error),
+  })
   try {
     await act(async () => {
-      root.render(<Popover portal={false} trigger="Volume details">Storage details</Popover>)
+      root.render(
+        <Popover portal={false} trigger="Volume details">
+          Storage details
+        </Popover>
+      )
     })
     expect(errors).toEqual([])
     expect(host.textContent).toContain("Volume details")

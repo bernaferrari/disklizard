@@ -36,7 +36,7 @@ export function canvasFrameFor(
   container: { left: number; top: number },
   canvas: { left: number; top: number; width: number; height: number },
   canvasWidth: number,
-  canvasHeight: number,
+  canvasHeight: number
 ): CanvasFrame {
   const scaleX = canvasWidth / Math.max(1, canvas.width)
   const scaleY = canvasHeight / Math.max(1, canvas.height)
@@ -67,7 +67,7 @@ export function arcSegments(
   angle: number,
   outerRadius: number,
   maxSagitta: number,
-  maxSegments = 96,
+  maxSegments = 96
 ): number {
   const radius = Math.max(1, outerRadius)
   const ratio = Math.min(0.5, Math.max(1e-6, maxSagitta / radius))
@@ -89,9 +89,11 @@ export function sectorPolygon(
   cx: number,
   cy: number,
   maxSagitta = 0.5,
-  segments = arcSegments(wedge.end - wedge.start, wedge.outer, maxSagitta),
+  segments = arcSegments(wedge.end - wedge.start, wedge.outer, maxSagitta)
 ): Point[] {
-  const inner = [wedge.inner, wedge.outer].reduce((a, b) => Math.max(1, Math.min(a, b)))
+  const inner = [wedge.inner, wedge.outer].reduce((a, b) =>
+    Math.max(1, Math.min(a, b))
+  )
   const outer = Math.max(inner, wedge.outer)
   const polygon: Point[] = []
   for (let i = 0; i <= segments; i++) {
@@ -111,7 +113,10 @@ export function sectorPolygon(
  * TL→TR) and the bottom edge carries the outer arc's reversed points
  * (end→start, BR→BL). The radial sector edges map to the rect's side edges.
  */
-export function matchingRectPolygon(rect: Rect, sectorPointCount: number): Point[] {
+export function matchingRectPolygon(
+  rect: Rect,
+  sectorPointCount: number
+): Point[] {
   const perEdge = Math.max(2, Math.floor(sectorPointCount / 2))
   const polygon: Point[] = []
   for (let i = 0; i < perEdge; i++) {
@@ -129,7 +134,9 @@ export function matchingRectPolygon(rect: Rect, sectorPointCount: number): Point
  * Semantic corner indices shared by both boundary representations: inner@start
  * (TL), inner@end (TR), outer@end (BR), outer@start (BL).
  */
-export function anchorIndices(polygonLength: number): [number, number, number, number] {
+export function anchorIndices(
+  polygonLength: number
+): [number, number, number, number] {
   const perEdge = Math.max(2, Math.floor(polygonLength / 2))
   return [0, perEdge - 1, perEdge, polygonLength - 1]
 }
@@ -152,7 +159,7 @@ export function rectCorners(rect: Rect): [Point, Point, Point, Point] {
 export function wedgeCorners(
   wedge: Wedge,
   cx: number,
-  cy: number,
+  cy: number
 ): [Point, Point, Point, Point] {
   const cosA = Math.cos(wedge.start)
   const sinA = Math.sin(wedge.start)
@@ -188,27 +195,44 @@ export function polygonArea(polygon: readonly Point[]): number {
 
 /** Unbend an annular ribbon without folding its opposing edges through each
  * other. Reuses the caller's point buffer; thickness stays positive throughout. */
-export function unwrapSector(points: Point[], wedge: Wedge, rect: Rect, cx: number, cy: number, t: number) {
+export function unwrapSector(
+  points: Point[],
+  wedge: Wedge,
+  rect: Rect,
+  cx: number,
+  cy: number,
+  t: number
+) {
   const middle = (wedge.start + wedge.end) / 2
   const radius = (wedge.inner + wedge.outer) / 2
   const span = wedge.end - wedge.start
   const bend = span * (1 - t)
   const length = radius * span * (1 - t) + rect.w * t
   const thickness = (wedge.outer - wedge.inner) * (1 - t) + rect.h * t
-  const turn = Math.atan2(Math.sin(-Math.PI / 2 - middle), Math.cos(-Math.PI / 2 - middle))
+  const turn = Math.atan2(
+    Math.sin(-Math.PI / 2 - middle),
+    Math.cos(-Math.PI / 2 - middle)
+  )
   const orientation = middle + turn * t
-  const cos = Math.cos(orientation), sin = Math.sin(orientation)
-  const centerX = (cx + Math.cos(middle) * radius) * (1 - t) + (rect.x + rect.w / 2) * t
-  const centerY = (cy + Math.sin(middle) * radius) * (1 - t) + (rect.y + rect.h / 2) * t
+  const cos = Math.cos(orientation),
+    sin = Math.sin(orientation)
+  const centerX =
+    (cx + Math.cos(middle) * radius) * (1 - t) + (rect.x + rect.w / 2) * t
+  const centerY =
+    (cy + Math.sin(middle) * radius) * (1 - t) + (rect.y + rect.h / 2) * t
   const perEdge = points.length / 2
   for (let i = 0; i < points.length; i++) {
     const inner = i < perEdge
-    const u = inner ? i / (perEdge - 1) : (points.length - 1 - i) / (perEdge - 1)
+    const u = inner
+      ? i / (perEdge - 1)
+      : (points.length - 1 - i) / (perEdge - 1)
     const angle = (u - 0.5) * bend
-    const offset = (inner ? -1 : 1) * thickness / 2
+    const offset = ((inner ? -1 : 1) * thickness) / 2
     const r = bend > 0.00001 ? length / bend : 0
     const x = r ? (r + offset) * Math.sin(angle) : (u - 0.5) * length
-    const y = r ? -2 * r * Math.sin(angle / 2) ** 2 + offset * Math.cos(angle) : offset
+    const y = r
+      ? -2 * r * Math.sin(angle / 2) ** 2 + offset * Math.cos(angle)
+      : offset
     points[i][0] = centerX - sin * x + cos * y
     points[i][1] = centerY + cos * x + sin * y
   }

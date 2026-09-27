@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "منوی OpenCode",
   "desktop.updater.dialog.checkFailed.message": "بررسی به‌روزرسانی انجام نشد.",
   "desktop.updater.dialog.checkFailed.title": "خطای آپدیت",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "شما به روز هستید.",
   "desktop.updater.dialog.upToDate.title": "بدون به روز رسانی",
-  "desktop.updater.dialog.ready.message": "به روز رسانی {{version}} دانلود شد. اکنون دوباره راه اندازی شود؟",
+  "desktop.updater.dialog.ready.message":
+    "به روز رسانی {{version}} دانلود شد. اکنون دوباره راه اندازی شود؟",
   "desktop.updater.dialog.ready.title": "به روز رسانی آماده است",
   "desktop.updater.dialog.restart": "راه اندازی مجدد",
   "desktop.updater.dialog.retry": "Retry",
@@ -60,12 +62,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "منتظر باشید",
   "desktop.recovery.action.quit": "ترک کنید",
   "desktop.recovery.loadFailed": "OpenCode بارگیری نشد",
-  "desktop.recovery.terminated": "پنجره OpenCode به طور غیرمنتظره ای خاتمه یافت",
+  "desktop.recovery.terminated":
+    "پنجره OpenCode به طور غیرمنتظره ای خاتمه یافت",
   "desktop.recovery.unresponsive": "OpenCode پاسخ نمی دهد",
   "desktop.recovery.unresponsive.detail":
     "می‌توانید برنامه را دوباره راه‌اندازی کنید، گزارش‌ها را باز کنید یا منتظر بمانید.",
-  "desktop.recovery.loadFailed.detail": "پنجره: {{window}}\nURL: {{url}}\nخطا: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "پنجره: {{window}}\nدلیل: {{reason}}\nکد: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "پنجره: {{window}}\nURL: {{url}}\nخطا: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "پنجره: {{window}}\nدلیل: {{reason}}\nکد: {{code}}",
   "desktop.recovery.unknown": "<ناشناخته>",
   "desktop.dialog.chooseFolder": "یک پوشه را انتخاب کنید",
   "desktop.dialog.chooseFile": "یک فایل را انتخاب کنید",
@@ -82,19 +87,25 @@ export const dict = {
   "desktop.wsl.error.installOpencode": "نصب OpenCode انجام نشد",
   "desktop.wsl.error.alreadyAdded": "{{distro}} قبلاً اضافه شده است",
   "desktop.wsl.error.opencodeMissing": "opencode در این توزیع نصب نشده است",
-  "desktop.wsl.error.opencodeCannotRun": "opencode نصب شده است اما اجرا نمی شود",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode در {{distro}} نصب نشده است",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode نصب شده است اما اجرا نمی شود",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode در {{distro}} نصب نشده است",
   "desktop.wsl.error.updateVersion":
     "به‌روزرسانی OpenCode به پایان رسید، اما {{distro}} همچنان {{installed}} را گزارش می‌کند. مورد انتظار {{expected}}",
   "desktop.wsl.error.noVersion": "بدون نسخه",
-  "desktop.wsl.error.serverExited": "سرور WSL پس از راه اندازی خارج شد (کد={{code}} سیگنال={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "سرور WSL پس از راه اندازی خارج شد (کد={{code}} سیگنال={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "سرور WSL قبل از سالم شدن خارج شد (کد={{code}} سیگنال={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar برای بررسی سلامت {{distro}} پس از {{timeout}}ms به پایان رسید",
-  "desktop.wsl.error.commandTimeout": "زمان {{command}} {{args}} پس از {{timeout}}ms تمام شد",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar برای بررسی سلامت {{distro}} پس از {{timeout}}ms به پایان رسید",
+  "desktop.wsl.error.commandTimeout":
+    "زمان {{command}} {{args}} پس از {{timeout}}ms تمام شد",
   "desktop.wsl.error.failedPort": "پورت دریافت نشد",
   "desktop.picker.error.notSelected": "فایل توسط انتخاب کننده انتخاب نشده است",
-  "desktop.picker.error.sizeLimit": "پیوست های انتخابی بیش از حد مجاز {{limit}} مگابایت است",
+  "desktop.picker.error.sizeLimit":
+    "پیوست های انتخابی بیش از حد مجاز {{limit}} مگابایت است",
   "command.category.suggested": "پیشنهاد شده است",
   "command.category.view": "مشاهده کنید",
   "command.category.project": "پروژه",
@@ -141,7 +152,8 @@ export const dict = {
   "command.tab.close": "بستن برگه",
   "command.tab.reopenClosed": "برگه بسته را دوباره باز کنید",
   "command.context.addSelection": "انتخاب را به متن اضافه کنید",
-  "command.context.addSelection.description": "خطوط انتخاب شده را از فایل فعلی اضافه کنید",
+  "command.context.addSelection.description":
+    "خطوط انتخاب شده را از فایل فعلی اضافه کنید",
   "command.input.focus": "فوکوس ورودی",
   "command.terminal.toggle": "ترمینال را تغییر دهید",
   "command.fileTree.toggle": "درخت فایل را تغییر دهید",
@@ -149,7 +161,8 @@ export const dict = {
   "command.terminal.new": "ترمینال جدید",
   "command.terminal.new.description": "یک تب ترمینال جدید ایجاد کنید",
   "command.steps.toggle": "جابجایی مراحل",
-  "command.steps.toggle.description": "نمایش یا پنهان کردن مراحل برای پیام فعلی",
+  "command.steps.toggle.description":
+    "نمایش یا پنهان کردن مراحل برای پیام فعلی",
   "command.message.previous": "پیام قبلی",
   "command.message.previous.description": "به پیام کاربر قبلی بروید",
   "command.message.next": "پیام بعدی",
@@ -169,21 +182,25 @@ export const dict = {
   "command.permissions.autoaccept.enable": "پذیرش خودکار مجوزها",
   "command.permissions.autoaccept.disable": "پذیرش خودکار مجوزها را متوقف کنید",
   "command.workspace.toggle": "جابجایی فضاهای کاری",
-  "command.workspace.toggle.description": "چندین فضای کاری را در نوار کناری فعال یا غیرفعال کنید",
+  "command.workspace.toggle.description":
+    "چندین فضای کاری را در نوار کناری فعال یا غیرفعال کنید",
   "command.session.undo": "واگرد",
   "command.session.undo.description": "لغو آخرین پیام",
   "command.session.redo": "دوباره انجام دهید",
   "command.session.redo.description": "آخرین پیام لغو شده را دوباره انجام دهید",
   "command.session.compact": "جلسه فشرده",
-  "command.session.compact.description": "برای کاهش اندازه زمینه، جلسه را خلاصه کنید",
+  "command.session.compact.description":
+    "برای کاهش اندازه زمینه، جلسه را خلاصه کنید",
   "command.session.fork": "فورک از پیام",
   "command.session.fork.description": "یک جلسه جدید از پیام قبلی ایجاد کنید",
   "command.session.share": "جلسه را به اشتراک بگذارید",
-  "command.session.share.description": "این جلسه را به اشتراک بگذارید و URL را در کلیپ بورد کپی کنید",
+  "command.session.share.description":
+    "این جلسه را به اشتراک بگذارید و URL را در کلیپ بورد کپی کنید",
   "command.session.unshare": "لغو اشتراک‌گذاری جلسه",
   "command.session.unshare.description": "اشتراک‌گذاری این جلسه را متوقف کنید",
   "command.session.export": "جلسه صادرات",
-  "command.session.export.description": "رونوشت کامل جلسه را به عنوان JSON صادر کنید",
+  "command.session.export.description":
+    "رونوشت کامل جلسه را به عنوان JSON صادر کنید",
   "palette.search.placeholder": "فایل ها، دستورات و جلسات را جستجو کنید",
   "palette.search.placeholder.home": "دستورات و جلسات را جستجو کنید",
   "palette.empty": "هیچ نتیجه ای یافت نشد",
@@ -195,23 +212,34 @@ export const dict = {
   "dialog.provider.group.other": "دیگر",
   "dialog.provider.custom.label": "ارائه دهنده سفارشی سازگار با OpenAI",
   "dialog.provider.tag.recommended": "توصیه می شود",
-  "dialog.provider.opencode.note": "مدل های انتخاب شده از جمله Claude، GPT، Gemini و موارد دیگر",
+  "dialog.provider.opencode.note":
+    "مدل های انتخاب شده از جمله Claude، GPT، Gemini و موارد دیگر",
   "dialog.provider.opencode.tagline": "مدل های بهینه شده قابل اعتماد",
   "dialog.provider.opencodeGo.tagline": "اشتراک کم هزینه برای همه",
-  "dialog.provider.anthropic.note": "دسترسی مستقیم به مدل های Claude، از جمله Pro و Max",
-  "dialog.provider.copilot.note": "مدل های AI برای کمک به کدنویسی از طریق GitHub Copilot",
-  "dialog.provider.openai.note": "مدل های GPT برای کارهای عمومی سریع و با قابلیت AI",
-  "dialog.provider.google.note": "مدل های Gemini برای پاسخ های سریع و ساختاریافته",
-  "dialog.provider.openrouter.note": "به تمام مدل های پشتیبانی شده از یک ارائه دهنده دسترسی داشته باشید",
-  "dialog.provider.vercel.note": "دسترسی یکپارچه به مدل های AI با مسیریابی هوشمند",
+  "dialog.provider.anthropic.note":
+    "دسترسی مستقیم به مدل های Claude، از جمله Pro و Max",
+  "dialog.provider.copilot.note":
+    "مدل های AI برای کمک به کدنویسی از طریق GitHub Copilot",
+  "dialog.provider.openai.note":
+    "مدل های GPT برای کارهای عمومی سریع و با قابلیت AI",
+  "dialog.provider.google.note":
+    "مدل های Gemini برای پاسخ های سریع و ساختاریافته",
+  "dialog.provider.openrouter.note":
+    "به تمام مدل های پشتیبانی شده از یک ارائه دهنده دسترسی داشته باشید",
+  "dialog.provider.vercel.note":
+    "دسترسی یکپارچه به مدل های AI با مسیریابی هوشمند",
   "dialog.model.select.title": "مدل را انتخاب کنید",
   "dialog.model.search.placeholder": "جستجوی مدل ها",
   "dialog.model.empty": "نتیجه مدلی وجود ندارد",
   "dialog.model.manage": "مدل ها را مدیریت کنید",
-  "dialog.model.manage.description": "مدل‌هایی که در انتخابگر مدل ظاهر می‌شوند را سفارشی کنید.",
-  "dialog.model.manage.provider.toggle": "همه مدل‌های {{provider}} را تغییر دهید",
-  "dialog.model.unpaid.freeModels.title": "مدل های رایگان ارائه شده توسط OpenCode",
-  "dialog.model.unpaid.addMore.title": "مدل های بیشتری از ارائه دهندگان محبوب اضافه کنید",
+  "dialog.model.manage.description":
+    "مدل‌هایی که در انتخابگر مدل ظاهر می‌شوند را سفارشی کنید.",
+  "dialog.model.manage.provider.toggle":
+    "همه مدل‌های {{provider}} را تغییر دهید",
+  "dialog.model.unpaid.freeModels.title":
+    "مدل های رایگان ارائه شده توسط OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "مدل های بیشتری از ارائه دهندگان محبوب اضافه کنید",
   "dialog.model.unpaid.viewMoreProviders": "70+ ارائه‌دهنده دیگر را ببینید",
   "dialog.provider.viewAll": "نمایش ارائه دهندگان بیشتر",
   "provider.connect.title": "{{provider}} را وصل کنید",
@@ -249,22 +277,27 @@ export const dict = {
     " و کد زیر را برای اتصال اکانت خود وارد کنید و از مدل های {{provider}} در OpenCode استفاده کنید.",
   "provider.connect.oauth.auto.confirmationCode": "کد تایید",
   "provider.connect.toast.connected.title": "{{provider}} متصل است",
-  "provider.connect.toast.connected.description": "مدل های {{provider}} اکنون برای استفاده در دسترس هستند.",
+  "provider.connect.toast.connected.description":
+    "مدل های {{provider}} اکنون برای استفاده در دسترس هستند.",
   "provider.custom.title": "ارائه دهنده سفارشی",
-  "provider.custom.unavailable": "ارائه دهندگان سفارشی در این سرور در دسترس نیستند",
-  "provider.custom.description.prefix": "یک ارائه دهنده سازگار با OpenAI را پیکربندی کنید. را ببینید ",
+  "provider.custom.unavailable":
+    "ارائه دهندگان سفارشی در این سرور در دسترس نیستند",
+  "provider.custom.description.prefix":
+    "یک ارائه دهنده سازگار با OpenAI را پیکربندی کنید. را ببینید ",
   "provider.custom.description.link": "اسناد پیکربندی ارائه دهنده",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ارائه دهنده ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "حروف کوچک، اعداد، خط فاصله یا زیرخط",
+  "provider.custom.field.providerID.description":
+    "حروف کوچک، اعداد، خط فاصله یا زیرخط",
   "provider.custom.field.name.label": "نام نمایشی",
   "provider.custom.field.name.placeholder": "ارائه دهنده من AI",
   "provider.custom.field.baseURL.label": "پایه URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "کلید API",
   "provider.custom.field.apiKey.placeholder": "کلید API",
-  "provider.custom.field.apiKey.description": "اختیاری. اگر تأیید اعتبار را از طریق هدر مدیریت می کنید، خالی بگذارید.",
+  "provider.custom.field.apiKey.description":
+    "اختیاری. اگر تأیید اعتبار را از طریق هدر مدیریت می کنید، خالی بگذارید.",
   "provider.custom.models.label": "مدل ها",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -280,15 +313,19 @@ export const dict = {
   "provider.custom.headers.remove": "هدر را حذف کنید",
   "provider.custom.headers.add": "هدر اضافه کنید",
   "provider.custom.error.providerID.required": "ارائه دهنده ID مورد نیاز است",
-  "provider.custom.error.providerID.format": "از حروف کوچک، اعداد، خط فاصله یا زیرخط استفاده کنید",
-  "provider.custom.error.providerID.exists": "آن ارائه دهنده ID از قبل وجود دارد",
+  "provider.custom.error.providerID.format":
+    "از حروف کوچک، اعداد، خط فاصله یا زیرخط استفاده کنید",
+  "provider.custom.error.providerID.exists":
+    "آن ارائه دهنده ID از قبل وجود دارد",
   "provider.custom.error.name.required": "نام نمایشی الزامی است",
   "provider.custom.error.baseURL.required": "پایه URL مورد نیاز است",
-  "provider.custom.error.baseURL.format": "باید با http:// یا https:// شروع شود",
+  "provider.custom.error.baseURL.format":
+    "باید با http:// یا https:// شروع شود",
   "provider.custom.error.required": "مورد نیاز",
   "provider.custom.error.duplicate": "تکراری",
   "provider.disconnect.toast.disconnected.title": "{{provider}} قطع شد",
-  "provider.disconnect.toast.disconnected.description": "مدل های {{provider}} دیگر در دسترس نیستند.",
+  "provider.disconnect.toast.disconnected.description":
+    "مدل های {{provider}} دیگر در دسترس نیستند.",
   "model.tag.free": "رایگان",
   "model.tag.latest": "آخرین",
   "model.provider.anthropic": "Anthropic",
@@ -382,10 +419,12 @@ export const dict = {
   "prompt.action.send": "ارسال کنید",
   "prompt.action.stop": "توقف کنید",
   "prompt.toast.pasteUnsupported.title": "پیوست پشتیبانی نشده است",
-  "prompt.toast.pasteUnsupported.description": "فقط تصاویر، PDFs، یا فایل های متنی را می توان در اینجا پیوست کرد.",
+  "prompt.toast.pasteUnsupported.description":
+    "فقط تصاویر، PDFs، یا فایل های متنی را می توان در اینجا پیوست کرد.",
   "prompt.toast.attachmentDuplicate.title": "این فایل قبلا آپلود شده است",
   "prompt.toast.modelAgentRequired.title": "یک عامل و مدل را انتخاب کنید",
-  "prompt.toast.modelAgentRequired.description": "قبل از ارسال درخواست، یک عامل و مدل را انتخاب کنید.",
+  "prompt.toast.modelAgentRequired.description":
+    "قبل از ارسال درخواست، یک عامل و مدل را انتخاب کنید.",
   "prompt.toast.worktreeCreateFailed.title": "ورک‌تری ایجاد نشد",
   "prompt.toast.sessionCreateFailed.title": "جلسه ایجاد نشد",
   "prompt.toast.shellSendFailed.title": "فرمان پوسته ارسال نشد",
@@ -414,7 +453,8 @@ export const dict = {
   "app.server.retrying": "تلاش مجدد به صورت خودکار...",
   "app.server.otherServers": "سرورهای دیگر",
   "dialog.server.title": "سرورها",
-  "dialog.server.description": "این برنامه به کدام سرور OpenCode متصل است، تغییر دهید.",
+  "dialog.server.description":
+    "این برنامه به کدام سرور OpenCode متصل است، تغییر دهید.",
   "dialog.server.search.placeholder": "جستجو در سرورها",
   "dialog.server.empty": "هنوز سروری وجود ندارد",
   "dialog.server.add.title": "سرور اضافه کنید",
@@ -452,7 +492,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "توزیع را انتخاب کنید",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "در حال بررسی WSL...",
-  "wsl.onboarding.restartRequired": "Windows برای اتمام نصب WSL به راه اندازی مجدد نیاز دارد.",
+  "wsl.onboarding.restartRequired":
+    "Windows برای اتمام نصب WSL به راه اندازی مجدد نیاز دارد.",
   "wsl.onboarding.ready": "WSL آماده است.",
   "wsl.onboarding.required": "WSL برای ادامه مورد نیاز است.",
   "wsl.onboarding.checkingDistros": "در حال بررسی توزیع‌ها...",
@@ -461,9 +502,11 @@ export const dict = {
   "wsl.onboarding.listingDistros": "فهرست توزیع‌ها...",
   "wsl.onboarding.distroReady": "{{distro}} آماده است.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} هنوز نصب نشده است.",
-  "wsl.onboarding.openDistroOnce": "{{distro}} را یک بار باز کنید تا راه‌اندازی تمام شود.",
+  "wsl.onboarding.openDistroOnce":
+    "{{distro}} را یک بار باز کنید تا راه‌اندازی تمام شود.",
   "wsl.onboarding.finishingDistro": "تکمیل راه اندازی برای {{distro}}.",
-  "wsl.onboarding.pickDistro": "یک توزیع را انتخاب کنید یا یکی را در زیر نصب کنید.",
+  "wsl.onboarding.pickDistro":
+    "یک توزیع را انتخاب کنید یا یکی را در زیر نصب کنید.",
   "wsl.onboarding.checkingOpencode": "در حال بررسی OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "بررسی OpenCode در {{distro}}...",
   "wsl.onboarding.updatingOpencode": "در حال به روز رسانی OpenCode...",
@@ -483,14 +526,17 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "در حال بررسی...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode نصب نشده است",
   "wsl.onboarding.distroStatus.missingTools": "bash، curl وجود ندارد",
-  "wsl.onboarding.distroStatus.unsupported": "پشتیبانی نشده · از WSL 2 استفاده کنید",
+  "wsl.onboarding.distroStatus.unsupported":
+    "پشتیبانی نشده · از WSL 2 استفاده کنید",
   "wsl.onboarding.needAnotherDistro": "به توزیع دیگری نیاز دارید؟",
-  "wsl.onboarding.needAnotherDistroHint": "توزیع Linux را از کاتالوگ WSL نصب کنید",
+  "wsl.onboarding.needAnotherDistroHint":
+    "توزیع Linux را از کاتالوگ WSL نصب کنید",
   "wsl.onboarding.wslNotInstalled.title": "WSL نصب نشده است",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (زیر سیستم Windows برای Linux) قبل از اینکه OpenCode بتواند یک سرور WSL اضافه کند لازم است",
   "wsl.onboarding.wslUnavailable.title": "WSL در دسترس نیست",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode نتوانست WSL را در این دستگاه تأیید کند.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode نتوانست WSL را در این دستگاه تأیید کند.",
   "wsl.onboarding.installWsl": "WSL را نصب کنید",
   "wsl.onboarding.windowsRestartRequired":
     "Windows را مجددا راه اندازی کنید تا نصب WSL به پایان برسد، سپس OpenCode را دوباره باز کنید.",
@@ -510,21 +556,25 @@ export const dict = {
   "wsl.onboarding.version": "نسخه: {{version}}",
   "wsl.onboarding.unknown": "ناشناخته",
   "wsl.onboarding.desktopVersion": "دسکتاپ {{version}}",
-  "wsl.onboarding.versionMismatch": "نسخه نصب شده با نسخه برنامه دسکتاپ مطابقت ندارد.",
+  "wsl.onboarding.versionMismatch":
+    "نسخه نصب شده با نسخه برنامه دسکتاپ مطابقت ندارد.",
   "wsl.onboarding.adding": "در حال افزودن...",
-  "help.tabs.toast.ariaLabel": "معرفی Tabs. جلسات کاری و فعال خود را با برگه ها سازماندهی کنید",
+  "help.tabs.toast.ariaLabel":
+    "معرفی Tabs. جلسات کاری و فعال خود را با برگه ها سازماندهی کنید",
   "help.tabs.toast.dismiss": "نادیده گرفتن اطلاعات Tabs",
   "help.tabs.title": "معرفی Tabs",
   "help.tabs.description": "جلسات کاری و فعال خود را با برگه ها سازماندهی کنید",
   "help.tabs.date": "14 جولای",
-  "help.tabs.introduction": "OpenCode Desktop اکنون در اطراف زبانه ها ساخته شده است.",
+  "help.tabs.introduction":
+    "OpenCode Desktop اکنون در اطراف زبانه ها ساخته شده است.",
   "help.tabs.sessions":
     "یک جلسه جدید در یک برگه شروع کنید یا یک جلسه موجود را از هر یک از پروژه های خود باز کنید. وقتی کار جدیدی را شروع می کنید یک برگه جدید باز کنید و وقتی کارتان تمام شد آن را ببندید.",
   "help.tabs.organize":
     "باز نگه داشتن چند برگه، سازماندهی جلسات فعال خود را آسان تر می کند. اگر قصد دارید برگه‌ها را به چیزی به یاد ماندنی تغییر دهید.",
   "help.tabs.home":
     "همه جلسه‌ها و پروژه‌های خود را در صفحه خانه جدید خواهید دید. با انتخاب هر جلسه، آن جلسه در یک زبانه باز می‌شود.",
-  "help.tabs.persistence": "وقتی برنامه را دوباره باز می‌کنید، برگه‌های شما همچنان باز هستند.",
+  "help.tabs.persistence":
+    "وقتی برنامه را دوباره باز می‌کنید، برگه‌های شما همچنان باز هستند.",
   "help.tabs.worktrees":
     "طراحی جدید هنوز از Git Worktrees پشتیبانی نمی کند، به زودی ارائه می شود. بنابراین اگر ترجیح می‌دهید به استفاده از طرح‌بندی قبلی ادامه دهید، می‌توانید بین طرح‌بندی‌ها در تنظیمات جابجا شوید. فقط به خاطر داشته باشید که طرح جدید تا چند هفته دیگر دائمی می شود.",
   "server.row.noUsername": "بدون نام کاربری",
@@ -537,14 +587,17 @@ export const dict = {
   "dialog.project.edit.color": "رنگ",
   "dialog.project.edit.color.select": "رنگ {{color}} را انتخاب کنید",
   "dialog.project.edit.worktree.startup": "اسکریپت راه اندازی فضای کاری",
-  "dialog.project.edit.worktree.startup.description": "پس از ایجاد یک فضای کاری جدید (ورک‌تری) اجرا می شود.",
-  "dialog.project.edit.worktree.startup.placeholder": "به عنوان مثال bun install",
+  "dialog.project.edit.worktree.startup.description":
+    "پس از ایجاد یک فضای کاری جدید (ورک‌تری) اجرا می شود.",
+  "dialog.project.edit.worktree.startup.placeholder":
+    "به عنوان مثال bun install",
   "dialog.releaseNotes.action.getStarted": "شروع کنید",
   "dialog.releaseNotes.action.next": "بعدی",
   "dialog.releaseNotes.action.hideFuture": "اینها را در آینده نشان ندهید",
   "dialog.releaseNotes.media.alt": "پیش نمایش انتشار",
   "context.breakdown.title": "تفکیک زمینه",
-  "context.breakdown.note": 'تفکیک تقریبی نشانه های ورودی "سایر" شامل تعاریف ابزار و سربار است.',
+  "context.breakdown.note":
+    'تفکیک تقریبی نشانه های ورودی "سایر" شامل تعاریف ابزار و سربار است.',
   "context.breakdown.system": "سیستم",
   "context.breakdown.user": "کاربر",
   "context.breakdown.assistant": "دستیار",
@@ -597,49 +650,67 @@ export const dict = {
   "toast.theme.title": "تم عوض شد",
   "toast.scheme.title": "طرح رنگ",
   "toast.workspace.enabled.title": "فضاهای کاری فعال شد",
-  "toast.workspace.enabled.description": "اکنون چندین ورک‌تری در نوار کناری نشان داده شده است",
+  "toast.workspace.enabled.description":
+    "اکنون چندین ورک‌تری در نوار کناری نشان داده شده است",
   "toast.workspace.disabled.title": "فضاهای کاری غیرفعال است",
-  "toast.workspace.disabled.description": "فقط ورک‌تری اصلی در نوار کناری نشان داده شده است",
+  "toast.workspace.disabled.description":
+    "فقط ورک‌تری اصلی در نوار کناری نشان داده شده است",
   "toast.permissions.autoaccept.on.title": "پذیرش خودکار مجوزها",
-  "toast.permissions.autoaccept.on.description": "درخواست‌های مجوز به‌طور خودکار تأیید می‌شوند",
+  "toast.permissions.autoaccept.on.description":
+    "درخواست‌های مجوز به‌طور خودکار تأیید می‌شوند",
   "toast.permissions.autoaccept.off.title": "پذیرش خودکار مجوزها متوقف شد",
-  "toast.permissions.autoaccept.off.description": "درخواست های مجوز نیاز به تایید دارند",
+  "toast.permissions.autoaccept.off.description":
+    "درخواست های مجوز نیاز به تایید دارند",
   "toast.model.none.title": "هیچ مدلی انتخاب نشده است",
-  "toast.model.none.description": "برای خلاصه کردن این جلسه یک ارائه دهنده را وصل کنید",
+  "toast.model.none.description":
+    "برای خلاصه کردن این جلسه یک ارائه دهنده را وصل کنید",
   "toast.file.loadFailed.title": "فایل بارگیری نشد",
   "toast.file.listFailed.title": "لیست کردن فایل ها انجام نشد",
   "toast.context.noLineSelection.title": "بدون انتخاب خط",
-  "toast.context.noLineSelection.description": "ابتدا یک محدوده خط را در یک برگه فایل انتخاب کنید.",
+  "toast.context.noLineSelection.description":
+    "ابتدا یک محدوده خط را در یک برگه فایل انتخاب کنید.",
   "toast.session.share.copyFailed.title": "URL در کلیپ بورد کپی نشد",
   "toast.session.share.success.title": "جلسه به اشتراک گذاشته شد",
-  "toast.session.share.success.description": "اشتراک گذاری URL کپی شده در کلیپ بورد!",
+  "toast.session.share.success.description":
+    "اشتراک گذاری URL کپی شده در کلیپ بورد!",
   "toast.session.share.failed.title": "جلسه اشتراک گذاری نشد",
-  "toast.session.share.failed.description": "هنگام اشتراک‌گذاری جلسه خطایی روی داد",
+  "toast.session.share.failed.description":
+    "هنگام اشتراک‌گذاری جلسه خطایی روی داد",
   "toast.session.unshare.success.title": "جلسه لغو اشتراک‌گذاری شد",
-  "toast.session.unshare.success.description": "جلسه با موفقیت لغو اشتراک گذاری شد!",
+  "toast.session.unshare.success.description":
+    "جلسه با موفقیت لغو اشتراک گذاری شد!",
   "toast.session.unshare.failed.title": "لغو اشتراک‌گذاری جلسه انجام نشد",
-  "toast.session.unshare.failed.description": "هنگام لغو اشتراک‌گذاری جلسه، خطایی روی داد",
+  "toast.session.unshare.failed.description":
+    "هنگام لغو اشتراک‌گذاری جلسه، خطایی روی داد",
   "toast.session.export.success.title": "جلسه صادر شد",
   "toast.session.export.success.description": "جلسه در {{filename}} ذخیره شد",
   "toast.session.export.failed.title": "جلسه صادر نشد",
-  "toast.session.export.failed.description": "هنگام صادر کردن جلسه خطایی روی داد",
+  "toast.session.export.failed.description":
+    "هنگام صادر کردن جلسه خطایی روی داد",
   "toast.session.listFailed.title": "جلسات برای {{project}} بارگیری نشد",
   "toast.project.reloadFailed.title": "بارگیری مجدد {{project}} انجام نشد",
   "toast.update.title": "به روز رسانی موجود است",
-  "toast.update.description": "نسخه جدیدی از OpenCode ({{version}}) اکنون برای نصب در دسترس است.",
+  "toast.update.description":
+    "نسخه جدیدی از OpenCode ({{version}}) اکنون برای نصب در دسترس است.",
   "toast.update.action.installRestart": "نصب و راه اندازی مجدد",
-  "disk.accessGuidance.macos": "در تنظیمات سیستم به DiskLizard دسترسی Full Disk Access بدهید، سپس دوباره اسکن کنید.",
-  "disk.accessGuidance.windows": "از حسابی استفاده کنید که به این درایو دسترسی دارد، یا پوشه‌ای را اسکن کنید که حساب شما می‌تواند بخواند.",
-  "disk.accessGuidance.linux": "مجوزهای پوشه‌ها و نقاط اتصال را بررسی کنید، سپس دوباره اسکن کنید.",
-  "disk.accessGuidance.default": "دسترسی به این پوشه‌ها را بررسی کنید، سپس دوباره اسکن کنید.",
-  "disk.accessGuidance.rescan": "پس از تغییر دسترسی، از گزینه Rescan در نوار بالا استفاده کنید.",
+  "disk.accessGuidance.macos":
+    "در تنظیمات سیستم به DiskLizard دسترسی Full Disk Access بدهید، سپس دوباره اسکن کنید.",
+  "disk.accessGuidance.windows":
+    "از حسابی استفاده کنید که به این درایو دسترسی دارد، یا پوشه‌ای را اسکن کنید که حساب شما می‌تواند بخواند.",
+  "disk.accessGuidance.linux":
+    "مجوزهای پوشه‌ها و نقاط اتصال را بررسی کنید، سپس دوباره اسکن کنید.",
+  "disk.accessGuidance.default":
+    "دسترسی به این پوشه‌ها را بررسی کنید، سپس دوباره اسکن کنید.",
+  "disk.accessGuidance.rescan":
+    "پس از تغییر دسترسی، از گزینه Rescan در نوار بالا استفاده کنید.",
   "disk.common.rescan": "اسکن مجدد",
   "toast.update.action.notYet": "هنوز نه",
   "toast.update.installFailed.title": "نصب به‌روزرسانی ممکن نشد",
   "toast.update.installFailed.retry": "تلاش دوباره",
   "error.page.title": "مشکلی پیش آمد",
   "error.page.description": "هنگام بارگیری برنامه خطایی روی داد.",
-  "error.page.description.localServerStartup": "هنگام راه اندازی سرور محلی خطایی روی داد.",
+  "error.page.description.localServerStartup":
+    "هنگام راه اندازی سرور محلی خطایی روی داد.",
   "error.page.details.label": "جزئیات خطا",
   "error.page.action.restart": "راه اندازی مجدد",
   "error.page.action.report": "گزارش خطا",
@@ -654,12 +725,16 @@ export const dict = {
   "error.page.version": "نسخه: {{version}}",
   "error.dev.rootNotFound":
     "عنصر ریشه یافت نشد. آیا فراموش کرده اید که آن را به index.html خود اضافه کنید؟ یا شاید ویژگی id اشتباه املایی داشته باشد؟",
-  "error.serverSync.connectFailed": "اتصال به سرور ممکن نشد. آیا سروری در `{{url}}` در حال اجراست؟",
+  "error.serverSync.connectFailed":
+    "اتصال به سرور ممکن نشد. آیا سروری در `{{url}}` در حال اجراست؟",
   "error.serverSDK.noServerAvailable": "هیچ سروری در دسترس نیست",
   "error.serverSDK.serverNotAvailable": "سرور در دسترس نیست",
-  "error.childStore.persistedCacheCreateFailed": "ایجاد حافظه پنهان ماندگار ناموفق بود",
-  "error.childStore.persistedProjectMetadataCreateFailed": "ایجاد فراداده پروژه ادامه دار انجام نشد",
-  "error.childStore.persistedProjectIconCreateFailed": "نماد پروژه پایدار ایجاد نشد",
+  "error.childStore.persistedCacheCreateFailed":
+    "ایجاد حافظه پنهان ماندگار ناموفق بود",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "ایجاد فراداده پروژه ادامه دار انجام نشد",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "نماد پروژه پایدار ایجاد نشد",
   "error.childStore.storeCreateFailed": "فروشگاه ایجاد نشد",
   "directory.error.invalidUrl": "دایرکتوری نامعتبر در URL.",
   "error.chain.unknown": "خطای ناشناخته",
@@ -671,22 +746,31 @@ export const dict = {
   "error.chain.responseBody": "بدنه پاسخگویی:\n{{body}}",
   "error.chain.didYouMean": "آیا منظورتان این بود: {{suggestions}}",
   "error.chain.modelNotFound": "مدل پیدا نشد: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "نام ارائه دهنده/مدل پیکربندی (opencode.json) خود را بررسی کنید",
+  "error.chain.checkConfig":
+    "نام ارائه دهنده/مدل پیکربندی (opencode.json) خود را بررسی کنید",
   "error.chain.mcpFailed":
     'سرور MCP "{{name}}" ناموفق بود. توجه داشته باشید، OpenCode هنوز از احراز هویت MCP پشتیبانی نمی کند.',
-  "error.chain.providerAuthFailed": "احراز هویت ارائه دهنده ناموفق بود ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'ارائه دهنده "{{provider}}" راه اندازی نشد. اعتبار و پیکربندی را بررسی کنید.',
-  "error.chain.configJsonInvalid": "فایل پیکربندی در {{path}} JSON(C) معتبر نیست",
-  "error.chain.configJsonInvalidWithMessage": "فایل پیکربندی در {{path}} معتبر نیست JSON(C): {{message}}",
+  "error.chain.providerAuthFailed":
+    "احراز هویت ارائه دهنده ناموفق بود ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'ارائه دهنده "{{provider}}" راه اندازی نشد. اعتبار و پیکربندی را بررسی کنید.',
+  "error.chain.configJsonInvalid":
+    "فایل پیکربندی در {{path}} JSON(C) معتبر نیست",
+  "error.chain.configJsonInvalidWithMessage":
+    "فایل پیکربندی در {{path}} معتبر نیست JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'دایرکتوری "{{dir}}" در {{path}} معتبر نیست. نام دایرکتوری را به "{{suggestion}}" تغییر دهید یا آن را حذف کنید. این یک اشتباه تایپی رایج است.',
-  "error.chain.configFrontmatterError": "تجزیه عنصر اصلی در {{path}} انجام نشد:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "تجزیه عنصر اصلی در {{path}} انجام نشد:\n{{message}}",
   "error.chain.configInvalid": "فایل پیکربندی در {{path}} نامعتبر است",
-  "error.chain.configInvalidWithMessage": "فایل پیکربندی در {{path}} نامعتبر است: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "فایل پیکربندی در {{path}} نامعتبر است: {{message}}",
   "notification.permission.title": "مجوز لازم است",
-  "notification.permission.description": "{{sessionTitle}} در {{projectName}} به مجوز نیاز دارد",
+  "notification.permission.description":
+    "{{sessionTitle}} در {{projectName}} به مجوز نیاز دارد",
   "notification.question.title": "سوال",
-  "notification.question.description": "{{sessionTitle}} در {{projectName}} یک سوال دارد",
+  "notification.question.description":
+    "{{sessionTitle}} در {{projectName}} یک سوال دارد",
   "notification.action.goToSession": "به جلسه بروید",
   "notification.session.responseReady.title": "پاسخ آماده است",
   "notification.session.error.title": "خطای جلسه",
@@ -717,7 +801,8 @@ export const dict = {
   "session.tab.unknown": "جلسه ناشناخته",
   "session.panel.reviewAndFiles": "بررسی و فایل ها",
   "session.error.notFound": "این جلسه یافت نمی شود",
-  "session.error.notFound.description": "این تب به جلسه ای اشاره می کند که دیگر در این سرور وجود ندارد.",
+  "session.error.notFound.description":
+    "این تب به جلسه ای اشاره می کند که دیگر در این سرور وجود ندارد.",
   "session.error.notFound.closeTab": "Tab را ببندید",
   "session.error.serverConnection": "نمی توان به این سرور متصل شد",
   "session.review.filesChanged": "فایل ها تغییر کردند {{count}}",
@@ -725,12 +810,15 @@ export const dict = {
   "session.review.change.other": "تغییرات",
   "session.review.loadingChanges": "در حال بارگیری تغییرات...",
   "session.review.empty": "هنوز هیچ تغییری در این جلسه وجود ندارد",
-  "session.review.noVcs": "هیچ سیستم کنترل نسخه Git شناسایی نشد، تغییرات نمایش داده نمی شود",
+  "session.review.noVcs":
+    "هیچ سیستم کنترل نسخه Git شناسایی نشد، تغییرات نمایش داده نمی شود",
   "session.review.noVcs.createGit.title": "یک مخزن Git ایجاد کنید",
-  "session.review.noVcs.createGit.description": "ردیابی، بررسی، و لغو تغییرات در این پروژه",
+  "session.review.noVcs.createGit.description":
+    "ردیابی، بررسی، و لغو تغییرات در این پروژه",
   "session.review.noVcs.createGit.actionLoading": "ایجاد مخزن Git...",
   "session.review.noVcs.createGit.action": "مخزن Git ایجاد کنید",
-  "session.review.noSnapshot": "ردیابی عکس فوری در پیکربندی غیرفعال است، بنابراین تغییرات جلسه در دسترس نیست",
+  "session.review.noSnapshot":
+    "ردیابی عکس فوری در پیکربندی غیرفعال است، بنابراین تغییرات جلسه در دسترس نیست",
   "session.review.noChanges": "بدون تغییر",
   "session.review.noUncommittedChanges": "هنوز هیچ تغییری انجام نشده است",
   "session.review.noBranchChanges": "هنوز شعبه ای تغییر نکرده است",
@@ -831,11 +919,14 @@ export const dict = {
   "terminal.title.numbered": "ترمینال {{number}}",
   "terminal.close": "ترمینال را ببندید",
   "terminal.connectionLost.title": "اتصال قطع شد",
-  "terminal.connectionLost.abnormalClose": "WebSocket به طور غیر عادی بسته شد: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket به طور غیر عادی بسته شد: {{code}}",
   "terminal.connectionLost.description":
     "اتصال ترمینال قطع شد. این ممکن است زمانی اتفاق بیفتد که سرور راه اندازی مجدد شود.",
-  "terminal.connectTicket.csrfError": "بلیط اتصال PTY رد شده توسط مبدا یا چک CSRF. پیکربندی سرور CORS را بررسی کنید.",
-  "terminal.connectTicket.statusError": "بلیت اتصال PTY با {{status}} ناموفق بود",
+  "terminal.connectTicket.csrfError":
+    "بلیط اتصال PTY رد شده توسط مبدا یا چک CSRF. پیکربندی سرور CORS را بررسی کنید.",
+  "terminal.connectTicket.statusError":
+    "بلیت اتصال PTY با {{status}} ناموفق بود",
   "titlebar.update": "به روز رسانی",
   "titlebar.updateVersion": "{{version}} را به روز کنید",
   "common.closeTab": "بستن برگه",
@@ -879,8 +970,10 @@ export const dict = {
   "sidebar.workspaces.enable": "فضاهای کاری را فعال کنید",
   "sidebar.workspaces.disable": "غیرفعال کردن فضاهای کاری",
   "sidebar.gettingStarted.title": "شروع کردن",
-  "sidebar.gettingStarted.line1": "OpenCode شامل مدل های رایگان است، بنابراین می توانید بلافاصله شروع کنید.",
-  "sidebar.gettingStarted.line2": "هر ارائه دهنده ای را برای استفاده از مدل ها وصل کنید. Claude، GPT، Gemini و غیره",
+  "sidebar.gettingStarted.line1":
+    "OpenCode شامل مدل های رایگان است، بنابراین می توانید بلافاصله شروع کنید.",
+  "sidebar.gettingStarted.line2":
+    "هر ارائه دهنده ای را برای استفاده از مدل ها وصل کنید. Claude، GPT، Gemini و غیره",
   "sidebar.project.recentSessions": "جلسات اخیر",
   "sidebar.project.viewAllSessions": "مشاهده تمام جلسات",
   "sidebar.project.clearNotifications": "پرامپت ها را پاک کنید",
@@ -898,22 +991,27 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "فریم های بیش از 32 میلی ثانیه در 5 ثانیه گذشته.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "زمان مسدود شده و تعداد کارهای طولانی در 5 ثانیه گذشته. حداکثر وظیفه: {{max}}.",
+  "debugBar.long.tip":
+    "زمان مسدود شده و تعداد کارهای طولانی در 5 ثانیه گذشته. حداکثر وظیفه: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "بدترین تاخیر ورودی مشاهده شده در 5 ثانیه گذشته.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "مدت تقریبی تعامل در 5 ثانیه گذشته. این شبیه به INP است، نه Web Vitals رسمی INP.",
+  "debugBar.inp.tip":
+    "مدت تقریبی تعامل در 5 ثانیه گذشته. این شبیه به INP است، نه Web Vitals رسمی INP.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "تغییر چیدمان تجمعی برای طول عمر برنامه فعلی.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "هیپ JS استفاده شده در مقابل محدودیت هیپ. فقط Chromium.",
-  "debugBar.mem.tip": "هیپ JS استفاده شده در مقابل محدودیت هیپ. {{used}} از {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "هیپ JS استفاده شده در مقابل محدودیت هیپ. فقط Chromium.",
+  "debugBar.mem.tip":
+    "هیپ JS استفاده شده در مقابل محدودیت هیپ. {{used}} از {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "سبک های فوکوس اجباری بر روی تمام عناصر تعاملی",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "مدیر",
-  "debugBar.direction.tip": "بدون تغییر زبان انتخابی، جهت طرح بندی کامل برنامه را اجباری کنید",
+  "debugBar.direction.tip":
+    "بدون تغییر زبان انتخابی، جهت طرح بندی کامل برنامه را اجباری کنید",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -923,7 +1021,8 @@ export const dict = {
   "settings.tab.shortcuts": "میانبرها",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "ادغام WSL",
-  "settings.desktop.wsl.description": "سرور OpenCode را در داخل WSL روی Windows اجرا کنید.",
+  "settings.desktop.wsl.description":
+    "سرور OpenCode را در داخل WSL روی Windows اجرا کنید.",
   "settings.general.section.appearance": "ظاهر",
   "settings.general.section.advanced": "پیشرفته",
   "settings.general.section.notifications": "اطلاعیه های سیستم",
@@ -932,38 +1031,51 @@ export const dict = {
   "settings.general.section.feed": "خوراک",
   "settings.general.section.display": "نمایش",
   "settings.general.row.language.title": "زبان",
-  "settings.general.row.language.description": "زبان نمایش را برای OpenCode تغییر دهید",
+  "settings.general.row.language.description":
+    "زبان نمایش را برای OpenCode تغییر دهید",
   "settings.general.row.shell.title": "پوسته ترمینال",
-  "settings.general.row.shell.description": "پوسته مورد استفاده ترمینال و ابزار عامل",
+  "settings.general.row.shell.description":
+    "پوسته مورد استفاده ترمینال و ابزار عامل",
   "settings.general.row.shell.autoDefault": "خودکار (پیش‌فرض)",
   "settings.general.row.shell.terminalOnly": "فقط ترمینال",
   "settings.general.row.appearance.title": "ظاهر",
-  "settings.general.row.appearance.description": "نحوه ظاهر OpenCode را در دستگاه خود سفارشی کنید",
+  "settings.general.row.appearance.description":
+    "نحوه ظاهر OpenCode را در دستگاه خود سفارشی کنید",
   "settings.general.row.colorScheme.title": "طرح رنگ",
-  "settings.general.row.colorScheme.description": "انتخاب کنید که آیا OpenCode از تم سیستمی، روشن یا تیره پیروی می کند",
+  "settings.general.row.colorScheme.description":
+    "انتخاب کنید که آیا OpenCode از تم سیستمی، روشن یا تیره پیروی می کند",
   "settings.general.row.theme.title": "موضوع",
-  "settings.general.row.theme.description": "نحوه مضمون سازی OpenCode را سفارشی کنید.",
+  "settings.general.row.theme.description":
+    "نحوه مضمون سازی OpenCode را سفارشی کنید.",
   "settings.general.row.font.title": "فونت کد",
-  "settings.general.row.font.description": "فونت مورد استفاده در بلوک های کد را سفارشی کنید",
+  "settings.general.row.font.description":
+    "فونت مورد استفاده در بلوک های کد را سفارشی کنید",
   "settings.general.row.terminalFont.title": "فونت ترمینال",
-  "settings.general.row.terminalFont.description": "فونت مورد استفاده در ترمینال را سفارشی کنید",
+  "settings.general.row.terminalFont.description":
+    "فونت مورد استفاده در ترمینال را سفارشی کنید",
   "settings.general.row.uiFont.title": "قلم UI",
-  "settings.general.row.uiFont.description": "فونت مورد استفاده در سراسر رابط را سفارشی کنید",
+  "settings.general.row.uiFont.description":
+    "فونت مورد استفاده در سراسر رابط را سفارشی کنید",
   "settings.general.row.followup.title": "رفتار پیگیری",
   "settings.general.row.followup.description":
     "انتخاب کنید که آیا درخواست پیگیری فوراً هدایت می شود یا در یک صف منتظر می ماند",
   "settings.general.row.followup.option.queue": "صف",
   "settings.general.row.followup.option.steer": "هدایت کنید",
   "settings.general.row.showFileTree.title": "درخت فایل",
-  "settings.general.row.showFileTree.description": "پانل درخت فایل را در جلسات نمایش دهید",
+  "settings.general.row.showFileTree.description":
+    "پانل درخت فایل را در جلسات نمایش دهید",
   "settings.general.row.showNavigation.title": "کنترل های ناوبری",
-  "settings.general.row.showNavigation.description": "دکمه های عقب و جلو را در نوار عنوان دسکتاپ نشان دهید",
+  "settings.general.row.showNavigation.description":
+    "دکمه های عقب و جلو را در نوار عنوان دسکتاپ نشان دهید",
   "settings.general.row.showSearch.title": "پالت فرمان",
-  "settings.general.row.showSearch.description": "دکمه پالت جستجو و فرمان را در نوار عنوان نشان دهید",
+  "settings.general.row.showSearch.description":
+    "دکمه پالت جستجو و فرمان را در نوار عنوان نشان دهید",
   "settings.general.row.showTerminal.title": "ترمینال",
-  "settings.general.row.showTerminal.description": "دکمه ترمینال را در نوار عنوان دسکتاپ نشان دهید",
+  "settings.general.row.showTerminal.description":
+    "دکمه ترمینال را در نوار عنوان دسکتاپ نشان دهید",
   "settings.general.row.showStatus.title": "وضعیت سرور",
-  "settings.general.row.showStatus.description": "دکمه وضعیت سرور را در نوار عنوان نشان دهید",
+  "settings.general.row.showStatus.description":
+    "دکمه وضعیت سرور را در نوار عنوان نشان دهید",
   "settings.general.row.mobileTitlebarBottom.title": "ناوبری پایین",
   "settings.general.row.mobileTitlebarBottom.description":
     "نوار عنوان و برگه‌های جلسه را در پایین صفحه در تلفن همراه قرار دهید",
@@ -971,39 +1083,50 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "بین عوامل در آهنگساز جابجا شوید. هنگامی که مخفی می شود، به طور پیش فرض بر روی Build agent قرار می گیرد.",
   "settings.general.row.reasoningSummaries.title": "نمایش خلاصه های استدلال",
-  "settings.general.row.reasoningSummaries.description": "نمایش خلاصه های استدلال مدل در جدول زمانی",
-  "settings.general.row.shellToolPartsExpanded.title": "قطعات ابزار پوسته را گسترش دهید",
+  "settings.general.row.reasoningSummaries.description":
+    "نمایش خلاصه های استدلال مدل در جدول زمانی",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "قطعات ابزار پوسته را گسترش دهید",
   "settings.general.row.shellToolPartsExpanded.description":
     "نمایش قطعات ابزار پوسته که به طور پیش‌فرض در تایم لاین گسترش یافته‌اند",
-  "settings.general.row.editToolPartsExpanded.title": "بخش‌های ابزار ویرایش را گسترش دهید",
+  "settings.general.row.editToolPartsExpanded.title":
+    "بخش‌های ابزار ویرایش را گسترش دهید",
   "settings.general.row.editToolPartsExpanded.description":
     "بخش‌های ابزار ویرایش، نوشتن و وصله را که به‌طور پیش‌فرض در جدول زمانی گسترش یافته‌اند، نمایش دهید",
   "settings.general.row.newInterface.title": "چیدمان جدید",
   "settings.general.row.newInterface.badge": "جدید",
   "settings.general.row.newInterface.description":
     "از برگه ها و طرح خانه جدید استفاده کنید. برای مدت زمان محدودی بین طرح‌بندی‌ها جابه‌جا شوید.",
-  "settings.general.row.newInterfaceNotice.title": "اکنون در حال استفاده از طرح بندی جدید هستید",
-  "settings.general.row.newInterfaceNotice.description": "طرح قبلی دیگر در دسترس نیست",
+  "settings.general.row.newInterfaceNotice.title":
+    "اکنون در حال استفاده از طرح بندی جدید هستید",
+  "settings.general.row.newInterfaceNotice.description":
+    "طرح قبلی دیگر در دسترس نیست",
   "settings.general.row.newInterfaceNotice.dismiss": "رد کردن",
   "settings.general.row.pinchZoom.title": "برای بزرگنمایی، خرج کردن",
-  "settings.general.row.pinchZoom.description": "به ژست‌های پیمایشی Ctrl و حرکت‌های پد لمسی اجازه بزرگ‌نمایی بدهید",
+  "settings.general.row.pinchZoom.description":
+    "به ژست‌های پیمایشی Ctrl و حرکت‌های پد لمسی اجازه بزرگ‌نمایی بدهید",
   "settings.general.row.wayland.title": "از Wayland بومی استفاده کنید",
   "settings.general.row.wayland.description":
     "بازگشت مجدد X11 را در Wayland غیرفعال کنید. نیاز به راه اندازی مجدد دارد.",
   "settings.general.row.wayland.tooltip":
     "در Linux با مانیتورهای با نرخ تازه سازی ترکیبی، Wayland بومی می تواند پایدارتر باشد.",
   "settings.general.row.releaseNotes.title": "یادداشت های انتشار",
-  "settings.general.row.releaseNotes.description": "نمایش پنجره های بازشو What's New بعد از به روز رسانی",
-  "settings.updates.row.startup.title": "به روز رسانی در راه اندازی را بررسی کنید",
-  "settings.updates.row.startup.description": "هنگام راه‌اندازی OpenCode، به‌روزرسانی‌ها را به‌طور خودکار بررسی کنید",
+  "settings.general.row.releaseNotes.description":
+    "نمایش پنجره های بازشو What's New بعد از به روز رسانی",
+  "settings.updates.row.startup.title":
+    "به روز رسانی در راه اندازی را بررسی کنید",
+  "settings.updates.row.startup.description":
+    "هنگام راه‌اندازی OpenCode، به‌روزرسانی‌ها را به‌طور خودکار بررسی کنید",
   "settings.updates.row.check.title": "به روز رسانی را بررسی کنید",
-  "settings.updates.row.check.description": "به‌روزرسانی‌ها را به‌صورت دستی بررسی کنید و در صورت وجود نصب کنید",
+  "settings.updates.row.check.description":
+    "به‌روزرسانی‌ها را به‌صورت دستی بررسی کنید و در صورت وجود نصب کنید",
   "settings.updates.action.checkNow": "اکنون بررسی کنید",
   "settings.updates.action.checking": "در حال بررسی...",
   "settings.updates.action.downloading": "در حال دانلود...",
   "settings.updates.action.installing": "در حال نصب...",
   "settings.updates.toast.latest.title": "شما به روز هستید",
-  "settings.updates.toast.latest.description": "شما آخرین نسخه OpenCode را اجرا می کنید.",
+  "settings.updates.toast.latest.description":
+    "شما آخرین نسخه OpenCode را اجرا می کنید.",
   "sound.option.none": "هیچ کدام",
   "sound.option.alert01": "هشدار 01",
   "sound.option.alert02": "هشدار 02",
@@ -1054,21 +1177,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "زمانی که عامل کامل است یا نیاز به توجه دارد، پرامپت سیستم را نشان دهید",
   "settings.general.notifications.permissions.title": "مجوزها",
-  "settings.general.notifications.permissions.description": "نمایش پرامپت سیستم در صورت نیاز به مجوز",
+  "settings.general.notifications.permissions.description":
+    "نمایش پرامپت سیستم در صورت نیاز به مجوز",
   "settings.general.notifications.errors.title": "خطاها",
-  "settings.general.notifications.errors.description": "نمایش پرامپت سیستم در صورت بروز خطا",
+  "settings.general.notifications.errors.description":
+    "نمایش پرامپت سیستم در صورت بروز خطا",
   "settings.general.sounds.agent.title": "عامل",
-  "settings.general.sounds.agent.description": "هنگامی که عامل کامل است یا نیاز به توجه دارد، صدا را پخش کنید",
+  "settings.general.sounds.agent.description":
+    "هنگامی که عامل کامل است یا نیاز به توجه دارد، صدا را پخش کنید",
   "settings.general.sounds.permissions.title": "مجوزها",
-  "settings.general.sounds.permissions.description": "پخش صدا در صورت نیاز به مجوز",
+  "settings.general.sounds.permissions.description":
+    "پخش صدا در صورت نیاز به مجوز",
   "settings.general.sounds.errors.title": "خطاها",
   "settings.general.sounds.errors.description": "پخش صدا در صورت بروز خطا",
   "settings.shortcuts.title": "میانبرهای صفحه کلید",
   "settings.shortcuts.reset.button": "به حالت پیش فرض بازنشانی کنید",
   "settings.shortcuts.reset.toast.title": "میانبرها بازنشانی می شوند",
-  "settings.shortcuts.reset.toast.description": "میانبرهای صفحه کلید به حالت پیش فرض بازنشانی شده است.",
+  "settings.shortcuts.reset.toast.description":
+    "میانبرهای صفحه کلید به حالت پیش فرض بازنشانی شده است.",
   "settings.shortcuts.conflict.title": "میانبر در حال حاضر استفاده شده است",
-  "settings.shortcuts.conflict.description": "{{keybind}} قبلاً به {{titles}} اختصاص داده شده است.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} قبلاً به {{titles}} اختصاص داده شده است.",
   "settings.shortcuts.unassigned": "واگذار نشده است",
   "settings.shortcuts.pressKeys": "کلیدها را فشار دهید",
   "settings.shortcuts.search.placeholder": "میانبرهای جستجو",
@@ -1080,12 +1209,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "ترمینال",
   "settings.shortcuts.group.prompt": "پرامپت",
   "settings.providers.title": "ارائه دهندگان",
-  "settings.providers.description": "تنظیمات ارائه دهنده در اینجا قابل تنظیم خواهد بود.",
+  "settings.providers.description":
+    "تنظیمات ارائه دهنده در اینجا قابل تنظیم خواهد بود.",
   "settings.providers.section.connected": "ارائه دهندگان متصل",
   "settings.providers.connected.empty": "هیچ ارائه دهنده متصلی وجود ندارد",
-  "settings.providers.connected.environmentDescription": "از متغیرهای محیط شما متصل شده است",
+  "settings.providers.connected.environmentDescription":
+    "از متغیرهای محیط شما متصل شده است",
   "settings.providers.section.popular": "ارائه دهندگان محبوب",
-  "settings.providers.custom.description": "یک ارائه دهنده سازگار با OpenAI توسط پایه URL اضافه کنید.",
+  "settings.providers.custom.description":
+    "یک ارائه دهنده سازگار با OpenAI توسط پایه URL اضافه کنید.",
   "settings.providers.tag.environment": "محیط زیست",
   "settings.providers.tag.config": "پیکربندی",
   "settings.providers.tag.custom": "سفارشی",
@@ -1095,44 +1227,57 @@ export const dict = {
   "settings.agents.title": "عوامل",
   "settings.agents.description": "تنظیمات عامل در اینجا قابل تنظیم خواهد بود.",
   "settings.commands.title": "دستورات",
-  "settings.commands.description": "تنظیمات فرمان در اینجا قابل تنظیم خواهد بود.",
+  "settings.commands.description":
+    "تنظیمات فرمان در اینجا قابل تنظیم خواهد بود.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "تنظیمات MCP در اینجا قابل تنظیم خواهند بود.",
   "settings.permissions.title": "مجوزها",
-  "settings.permissions.description": "کنترل کنید که سرور به طور پیش فرض از چه ابزارهایی می تواند استفاده کند.",
+  "settings.permissions.description":
+    "کنترل کنید که سرور به طور پیش فرض از چه ابزارهایی می تواند استفاده کند.",
   "settings.permissions.section.tools": "ابزار",
   "settings.permissions.toast.updateFailed.title": "مجوزها به روز نشد",
   "settings.permissions.action.allow": "اجازه دهید",
   "settings.permissions.action.ask": "بپرسید",
   "settings.permissions.action.deny": "تکذیب کنید",
   "settings.permissions.tool.read.title": "بخوانید",
-  "settings.permissions.tool.read.description": "خواندن یک فایل (منطبق با مسیر فایل)",
+  "settings.permissions.tool.read.description":
+    "خواندن یک فایل (منطبق با مسیر فایل)",
   "settings.permissions.tool.edit.title": "ویرایش کنید",
-  "settings.permissions.tool.edit.description": "فایل‌ها، از جمله ویرایش‌ها، نوشته‌ها و وصله‌ها را تغییر دهید",
+  "settings.permissions.tool.edit.description":
+    "فایل‌ها، از جمله ویرایش‌ها، نوشته‌ها و وصله‌ها را تغییر دهید",
   "settings.permissions.tool.glob.title": "گلوب",
-  "settings.permissions.tool.glob.description": "مطابقت فایل ها با استفاده از الگوهای glob",
+  "settings.permissions.tool.glob.description":
+    "مطابقت فایل ها با استفاده از الگوهای glob",
   "settings.permissions.tool.grep.title": "گرپ",
-  "settings.permissions.tool.grep.description": "محتویات فایل را با استفاده از عبارات منظم جستجو کنید",
+  "settings.permissions.tool.grep.description":
+    "محتویات فایل را با استفاده از عبارات منظم جستجو کنید",
   "settings.permissions.tool.list.title": "فهرست کنید",
-  "settings.permissions.tool.list.description": "فهرست کردن فایل ها در یک دایرکتوری",
+  "settings.permissions.tool.list.description":
+    "فهرست کردن فایل ها در یک دایرکتوری",
   "settings.permissions.tool.bash.title": "ضربه شدید",
   "settings.permissions.tool.bash.description": "دستورات شل را اجرا کنید",
   "settings.permissions.tool.task.title": "وظیفه",
   "settings.permissions.tool.task.description": "عوامل فرعی را راه اندازی کنید",
   "settings.permissions.tool.skill.title": "مهارت",
-  "settings.permissions.tool.skill.description": "یک مهارت را با نام بارگیری کنید",
+  "settings.permissions.tool.skill.description":
+    "یک مهارت را با نام بارگیری کنید",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "درخواست های سرور زبان را اجرا کنید",
+  "settings.permissions.tool.lsp.description":
+    "درخواست های سرور زبان را اجرا کنید",
   "settings.permissions.tool.todowrite.title": "Todo Write",
-  "settings.permissions.tool.todowrite.description": "لیست کارها را به روز کنید",
+  "settings.permissions.tool.todowrite.description":
+    "لیست کارها را به روز کنید",
   "settings.permissions.tool.webfetch.title": "واکشی وب",
-  "settings.permissions.tool.webfetch.description": "محتوا را از یک URL واکشی کنید",
+  "settings.permissions.tool.webfetch.description":
+    "محتوا را از یک URL واکشی کنید",
   "settings.permissions.tool.websearch.title": "جستجوی وب",
   "settings.permissions.tool.websearch.description": "جستجو در وب",
   "settings.permissions.tool.external_directory.title": "دایرکتوری خارجی",
-  "settings.permissions.tool.external_directory.description": "دسترسی به فایل های خارج از فهرست پروژه",
+  "settings.permissions.tool.external_directory.description":
+    "دسترسی به فایل های خارج از فهرست پروژه",
   "settings.permissions.tool.doom_loop.title": "حلقه عذاب",
-  "settings.permissions.tool.doom_loop.description": "تماس های مکرر ابزار را با ورودی یکسان تشخیص دهید",
+  "settings.permissions.tool.doom_loop.description":
+    "تماس های مکرر ابزار را با ورودی یکسان تشخیص دهید",
   "session.delete.failed.title": "جلسه حذف نشد",
   "session.delete.title": "حذف جلسه",
   "session.delete.confirm": "جلسه «{{name}}» حذف شود؟",
@@ -1146,7 +1291,8 @@ export const dict = {
   "workspace.resetting.description": "این ممکن است یک دقیقه طول بکشد.",
   "workspace.reset.failed.title": "بازنشانی فضای کاری انجام نشد",
   "workspace.reset.success.title": "بازنشانی فضای کاری",
-  "workspace.reset.success.description": "اکنون فضای کاری با شاخه پیش‌فرض مطابقت دارد.",
+  "workspace.reset.success.description":
+    "اکنون فضای کاری با شاخه پیش‌فرض مطابقت دارد.",
   "workspace.error.stillPreparing": "فضای کاری همچنان در حال آماده سازی است",
   "workspace.status.checking": "در حال بررسی تغییرات ادغام نشده...",
   "workspace.status.error": "تأیید وضعیت git ممکن نیست.",
@@ -1161,6 +1307,7 @@ export const dict = {
   "workspace.reset.archived.none": "هیچ جلسه فعالی بایگانی نخواهد شد.",
   "workspace.reset.archived.one": "1 جلسه بایگانی خواهد شد.",
   "workspace.reset.archived.many": "جلسات {{count}} بایگانی خواهد شد.",
-  "workspace.reset.note": "این کار فضای کاری را برای مطابقت با شاخه پیش فرض بازنشانی می کند.",
+  "workspace.reset.note":
+    "این کار فضای کاری را برای مطابقت با شاخه پیش فرض بازنشانی می کند.",
   "dialog.usageExceeded.dontShowAgain": "دیگر نشان نده",
 }

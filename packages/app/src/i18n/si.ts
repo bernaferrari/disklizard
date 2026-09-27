@@ -46,11 +46,13 @@ export const dict: Record<string, string> = {
   "desktop.menu.ariaLabel": "OpenCode මෙනුව",
   "desktop.updater.dialog.checkFailed.message": "යාවත්කාලීන පරීක්ෂාව අසාර්ථක විය.",
   "desktop.updater.dialog.checkFailed.title": "යාවත්කාලීන දෝෂයකි",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "ඔබ යාවත්කාලීනයි.",
   "desktop.updater.dialog.upToDate.title": "යාවත්කාලීන නැත",
-  "desktop.updater.dialog.ready.message": "යාවත්කාලීන {{version}} බාගන්නා ලදී. දැන් නැවත ආරම්භ කරන්නද?",
+  "desktop.updater.dialog.ready.message":
+    "යාවත්කාලීන {{version}} බාගන්නා ලදී. දැන් නැවත ආරම්භ කරන්නද?",
   "desktop.updater.dialog.ready.title": "යාවත්කාලීනය සූදානම්",
   "desktop.updater.dialog.restart": "යළි අරඹන්න",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +64,12 @@ export const dict: Record<string, string> = {
   "desktop.recovery.loadFailed": "OpenCode පූරණය කිරීමට අසමත් විය",
   "desktop.recovery.terminated": "OpenCode කවුළුව අනපේක්ෂිත ලෙස අවසන් විය",
   "desktop.recovery.unresponsive": "OpenCode ප්‍රතිචාර නොදක්වයි",
-  "desktop.recovery.unresponsive.detail": "ඔබට යෙදුම නැවත දියත් කිරීමට, ලඝු-සටහන් විවෘත කිරීමට හෝ රැඳී සිටීමට හැකිය.",
-  "desktop.recovery.loadFailed.detail": "කවුළුව: {{window}}\nURL: {{url}}\nදෝෂය: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "කවුළුව: {{window}}\nහේතුව: {{reason}}\nකේතය: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "ඔබට යෙදුම නැවත දියත් කිරීමට, ලඝු-සටහන් විවෘත කිරීමට හෝ රැඳී සිටීමට හැකිය.",
+  "desktop.recovery.loadFailed.detail":
+    "කවුළුව: {{window}}\nURL: {{url}}\nදෝෂය: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "කවුළුව: {{window}}\nහේතුව: {{reason}}\nකේතය: {{code}}",
   "desktop.recovery.unknown": "<නොදන්නා>",
   "desktop.dialog.chooseFolder": "ෆෝල්ඩරයක් තෝරන්න",
   "desktop.dialog.chooseFile": "ගොනුවක් තෝරන්න",
@@ -81,16 +86,21 @@ export const dict: Record<string, string> = {
   "desktop.wsl.error.installOpencode": "OpenCode ස්ථාපනය අසාර්ථක විය",
   "desktop.wsl.error.alreadyAdded": "{{distro}} දැනටමත් එක් කර ඇත",
   "desktop.wsl.error.opencodeMissing": "මෙම distro හි opencode ස්ථාපනය කර නොමැත",
-  "desktop.wsl.error.opencodeCannotRun": "opencode ස්ථාපනය කර ඇති නමුත් ධාවනය කල නොහැක",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode {{distro}} හි ස්ථාපනය කර නැත",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode ස්ථාපනය කර ඇති නමුත් ධාවනය කල නොහැක",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode {{distro}} හි ස්ථාපනය කර නැත",
   "desktop.wsl.error.updateVersion":
     "OpenCode යාවත්කාලීන කිරීම අවසන් නමුත් {{distro}} තවමත් වාර්තා කරන්නේ {{installed}}; අපේක්ෂිත {{expected}}",
   "desktop.wsl.error.noVersion": "අනුවාදයක් නැත",
-  "desktop.wsl.error.serverExited": "WSL සේවාදායකය ආරම්භයෙන් පසු ඉවත් විය (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL සේවාදායකය ආරම්භයෙන් පසු ඉවත් විය (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL සේවාදායකය නිරෝගී වීමට පෙර ඉවත් විය (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} සෞඛ්‍ය පරීක්‍ෂාව සඳහා සයිඩ්කාර් {{timeout}}ms ට පසුව කල් ඉකුත් විය",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}msට පසුව කාලය අවසන් විය",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} සෞඛ්‍ය පරීක්‍ෂාව සඳහා සයිඩ්කාර් {{timeout}}ms ට පසුව කල් ඉකුත් විය",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}msට පසුව කාලය අවසන් විය",
   "desktop.wsl.error.failedPort": "වරාය ලබා ගැනීමට අසමත් විය",
   "desktop.picker.error.notSelected": "ගොනුව තෝරන්නා විසින් තෝරාගෙන නොමැත",
   "desktop.picker.error.sizeLimit": "තෝරාගත් ඇමුණුම් {{limit}} MB සීමාව ඉක්මවයි",
@@ -168,7 +178,8 @@ export const dict: Record<string, string> = {
   "command.permissions.autoaccept.enable": "අවසර ස්වයංක්‍රීයව පිළිගන්න",
   "command.permissions.autoaccept.disable": "අවසර ස්වයංක්‍රීයව පිළිගැනීම නවත්වන්න",
   "command.workspace.toggle": "වැඩබිම් ටොගල් කරන්න",
-  "command.workspace.toggle.description": "පැති තීරුවේ වැඩබිම් කිහිපයක් සබල හෝ අබල කරන්න",
+  "command.workspace.toggle.description":
+    "පැති තීරුවේ වැඩබිම් කිහිපයක් සබල හෝ අබල කරන්න",
   "command.session.undo": "අහෝසි කරන්න",
   "command.session.undo.description": "අවසාන පණිවිඩය අහෝසි කරන්න",
   "command.session.redo": "නැවත කරන්න",
@@ -178,7 +189,8 @@ export const dict: Record<string, string> = {
   "command.session.fork": "පණිවිඩයෙන් දෙබලක",
   "command.session.fork.description": "පෙර පණිවිඩයකින් නව සැසියක් සාදන්න",
   "command.session.share": "සැසිය බෙදා ගන්න",
-  "command.session.share.description": "මෙම සැසිය බෙදාගෙන URL පසුරු පුවරුවට පිටපත් කරන්න",
+  "command.session.share.description":
+    "මෙම සැසිය බෙදාගෙන URL පසුරු පුවරුවට පිටපත් කරන්න",
   "command.session.unshare": "සැසිය බෙදා නොගන්න",
   "command.session.unshare.description": "මෙම සැසිය බෙදා ගැනීම නවත්වන්න",
   "command.session.export": "අපනයන සැසිය",
@@ -194,14 +206,16 @@ export const dict: Record<string, string> = {
   "dialog.provider.group.other": "වෙනත්",
   "dialog.provider.custom.label": "අභිරුචි OpenAI-අනුකූල සැපයුම්කරු",
   "dialog.provider.tag.recommended": "නිර්දේශ කර ඇත",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini සහ තවත් දේ ඇතුළුව සංවෘත ආකෘති",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini සහ තවත් දේ ඇතුළුව සංවෘත ආකෘති",
   "dialog.provider.opencode.tagline": "විශ්වසනීය ප්රශස්ත මාදිලි",
   "dialog.provider.opencodeGo.tagline": "සෑම කෙනෙකුටම අඩු වියදම් දායකත්වයක්",
   "dialog.provider.anthropic.note": "Pro සහ Max ඇතුළුව Claude මාදිලි වෙත සෘජු ප්‍රවේශය",
   "dialog.provider.copilot.note": "GitHub Copilot හරහා කේතීකරණ සහාය සඳහා AI ආකෘති",
   "dialog.provider.openai.note": "වේගවත්, හැකියාව ඇති සාමාන්‍ය AI කාර්යයන් සඳහා GPT මාදිලි",
   "dialog.provider.google.note": "වේගවත්, ව්‍යුහගත ප්‍රතිචාර සඳහා Gemini ආකෘති",
-  "dialog.provider.openrouter.note": "එක් සැපයුම්කරුවෙකුගෙන් සියලුම සහාය දක්වන මාදිලි වෙත ප්‍රවේශ වන්න",
+  "dialog.provider.openrouter.note":
+    "එක් සැපයුම්කරුවෙකුගෙන් සියලුම සහාය දක්වන මාදිලි වෙත ප්‍රවේශ වන්න",
   "dialog.provider.vercel.note": "ස්මාර්ට් රවුටින් සමඟ AI මාදිලි සඳහා ඒකාබද්ධ ප්‍රවේශය",
   "dialog.model.select.title": "ආකෘතිය තෝරන්න",
   "dialog.model.search.placeholder": "සෙවුම් ආකෘති",
@@ -248,10 +262,12 @@ export const dict: Record<string, string> = {
     "සහ ඔබගේ ගිණුම සම්බන්ධ කිරීමට පහත කේතය ඇතුළු කර {{provider}} මාදිලි OpenCode තුළ භාවිතා කරන්න.",
   "provider.connect.oauth.auto.confirmationCode": "තහවුරු කිරීමේ කේතය",
   "provider.connect.toast.connected.title": "{{provider}} සම්බන්ධයි",
-  "provider.connect.toast.connected.description": "{{provider}} මාදිලි දැන් භාවිතා කිරීමට තිබේ.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} මාදිලි දැන් භාවිතා කිරීමට තිබේ.",
   "provider.custom.title": "අභිරුචි සපයන්නා",
   "provider.custom.unavailable": "අභිරුචි සපයන්නන් මෙම සේවාදායකයේ නොමැත",
-  "provider.custom.description.prefix": "OpenAI-අනුකූල සැපයුම්කරුවෙකු වින්‍යාස කරන්න. බලන්න",
+  "provider.custom.description.prefix":
+    "OpenAI-අනුකූල සැපයුම්කරුවෙකු වින්‍යාස කරන්න. බලන්න",
   "provider.custom.description.link": "සපයන්නාගේ වින්‍යාස ලේඛන",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "සපයන්නාගේ හැඳුනුම්පත",
@@ -263,7 +279,8 @@ export const dict: Record<string, string> = {
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API යතුර",
   "provider.custom.field.apiKey.placeholder": "API යතුර",
-  "provider.custom.field.apiKey.description": "විකල්ප. ඔබ ශීර්ෂ හරහා සත්‍යාපනය කළමනාකරණය කරන්නේ නම් හිස්ව තබන්න.",
+  "provider.custom.field.apiKey.description":
+    "විකල්ප. ඔබ ශීර්ෂ හරහා සත්‍යාපනය කළමනාකරණය කරන්නේ නම් හිස්ව තබන්න.",
   "provider.custom.models.label": "ආකෘති",
   "provider.custom.models.id.label": "හැඳුනුම්පත",
   "provider.custom.models.id.placeholder": "ආදර්ශ-id",
@@ -279,15 +296,18 @@ export const dict: Record<string, string> = {
   "provider.custom.headers.remove": "ශීර්ෂකය ඉවත් කරන්න",
   "provider.custom.headers.add": "ශීර්ෂකය එක් කරන්න",
   "provider.custom.error.providerID.required": "සපයන්නාගේ හැඳුනුම්පත අවශ්‍යයි",
-  "provider.custom.error.providerID.format": "කුඩා අකුරු, ඉලක්කම්, ඉරි, හෝ යටි ඉරි භාවිතා කරන්න",
+  "provider.custom.error.providerID.format":
+    "කුඩා අකුරු, ඉලක්කම්, ඉරි, හෝ යටි ඉරි භාවිතා කරන්න",
   "provider.custom.error.providerID.exists": "එම සැපයුම්කරු හැඳුනුම්පත දැනටමත් පවතී",
   "provider.custom.error.name.required": "සංදර්ශක නම අවශ්ය වේ",
   "provider.custom.error.baseURL.required": "පදනම URL අවශ්‍යයි",
-  "provider.custom.error.baseURL.format": "http:// හෝ https:// සමඟින් ආරම්භ කළ යුතුය",
+  "provider.custom.error.baseURL.format":
+    "http:// හෝ https:// සමඟින් ආරම්භ කළ යුතුය",
   "provider.custom.error.required": "අවශ්යයි",
   "provider.custom.error.duplicate": "අනුපිටපත් කරන්න",
   "provider.disconnect.toast.disconnected.title": "{{provider}} විසන්ධි විය",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} මාදිලි තවදුරටත් නොමැත.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} මාදිලි තවදුරටත් නොමැත.",
   "model.tag.free": "නොමිලේ",
   "model.tag.latest": "නවතම",
   "model.provider.anthropic": "Anthropic",
@@ -381,10 +401,12 @@ export const dict: Record<string, string> = {
   "prompt.action.send": "යවන්න",
   "prompt.action.stop": "නවත්වන්න",
   "prompt.toast.pasteUnsupported.title": "සහාය නොදක්වන ඇමුණුම",
-  "prompt.toast.pasteUnsupported.description": "පින්තූර, PDF හෝ පෙළ ගොනු පමණක් මෙහි ඇමිණිය හැක.",
+  "prompt.toast.pasteUnsupported.description":
+    "පින්තූර, PDF හෝ පෙළ ගොනු පමණක් මෙහි ඇමිණිය හැක.",
   "prompt.toast.attachmentDuplicate.title": "මෙම ගොනුව දැනටමත් උඩුගත කර ඇත",
   "prompt.toast.modelAgentRequired.title": "නියෝජිතයෙකු සහ ආකෘතියක් තෝරන්න",
-  "prompt.toast.modelAgentRequired.description": "ප්‍රොම්ප්ට් එකක් යැවීමට පෙර නියෝජිතයෙකු සහ ආකෘතියක් තෝරන්න.",
+  "prompt.toast.modelAgentRequired.description":
+    "ප්‍රොම්ප්ට් එකක් යැවීමට පෙර නියෝජිතයෙකු සහ ආකෘතියක් තෝරන්න.",
   "prompt.toast.worktreeCreateFailed.title": "Git වර්ක්ට්‍රී එකක් සෑදීමට අසමත් විය",
   "prompt.toast.sessionCreateFailed.title": "සැසිය සෑදීමට අසමත් විය",
   "prompt.toast.shellSendFailed.title": "ෂෙල් විධානය යැවීමට අසමත් විය",
@@ -413,7 +435,8 @@ export const dict: Record<string, string> = {
   "app.server.retrying": "ස්වයංක්‍රීයව නැවත උත්සාහ කරමින්...",
   "app.server.otherServers": "වෙනත් සේවාදායකයන්",
   "dialog.server.title": "සේවාදායකයන්",
-  "dialog.server.description": "මෙම යෙදුම සම්බන්ධ වන්නේ කුමන OpenCode සේවාදායකයටද යන්න මාරු කරන්න.",
+  "dialog.server.description":
+    "මෙම යෙදුම සම්බන්ධ වන්නේ කුමන OpenCode සේවාදායකයටද යන්න මාරු කරන්න.",
   "dialog.server.search.placeholder": "සර්වර් සොයන්න",
   "dialog.server.empty": "තවමත් සේවාදායකයන් නොමැත",
   "dialog.server.add.title": "සේවාදායකය එක් කරන්න",
@@ -451,7 +474,8 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.step.distro": "ඩිස්ට්‍රෝ තෝරන්න",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL පරීක්ෂා කරමින්...",
-  "wsl.onboarding.restartRequired": "WSL ස්ථාපනය අවසන් කිරීමට Windows හට නැවත ආරම්භයක් අවශ්‍ය වේ.",
+  "wsl.onboarding.restartRequired":
+    "WSL ස්ථාපනය අවසන් කිරීමට Windows හට නැවත ආරම්භයක් අවශ්‍ය වේ.",
   "wsl.onboarding.ready": "WSL සූදානම්.",
   "wsl.onboarding.required": "දිගටම කරගෙන යාමට WSL අවශ්‍යයි.",
   "wsl.onboarding.checkingDistros": "බෙදාහැරීම් පරීක්ෂා කරමින්...",
@@ -484,12 +508,14 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.distroStatus.missingTools": "නැති bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "සහාය නොදක්වයි · WSL 2 භාවිතා කරන්න",
   "wsl.onboarding.needAnotherDistro": "තවත් බෙදාහැරීමක් අවශ්‍යද?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL නාමාවලියෙන් Linux බෙදාහැරීමක් ස්ථාපනය කරන්න",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL නාමාවලියෙන් Linux බෙදාහැරීමක් ස්ථාපනය කරන්න",
   "wsl.onboarding.wslNotInstalled.title": "WSL ස්ථාපනය කර නැත",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Linux සඳහා උප පද්ධතිය) OpenCode WSL සේවාදායකයක් එක් කිරීමට පෙර අවශ්‍ය වේ",
   "wsl.onboarding.wslUnavailable.title": "WSL නොමැත",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode හට මෙම යන්ත්‍රයේ WSL සත්‍යාපනය කළ නොහැක.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode හට මෙම යන්ත්‍රයේ WSL සත්‍යාපනය කළ නොහැක.",
   "wsl.onboarding.installWsl": "WSL ස්ථාපනය කරන්න",
   "wsl.onboarding.windowsRestartRequired":
     "WSL ස්ථාපනය අවසන් කිරීමට Windows නැවත අරඹන්න, පසුව OpenCode නැවත විවෘත කරන්න.",
@@ -511,7 +537,8 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.desktopVersion": "ඩෙස්ක්ටොප් {{version}}",
   "wsl.onboarding.versionMismatch": "ස්ථාපිත අනුවාදය ඩෙස්ක්ටොප් යෙදුම් අනුවාදයට නොගැලපේ.",
   "wsl.onboarding.adding": "එකතු කරමින්...",
-  "help.tabs.toast.ariaLabel": "ටැබ් හඳුන්වා දීම. ටැබ් සමඟ ඔබේ වැඩ සහ සක්‍රිය සැසි සංවිධානය කරන්න",
+  "help.tabs.toast.ariaLabel":
+    "ටැබ් හඳුන්වා දීම. ටැබ් සමඟ ඔබේ වැඩ සහ සක්‍රිය සැසි සංවිධානය කරන්න",
   "help.tabs.toast.dismiss": "ටැබ් තොරතුරු ඉවතලන්න",
   "help.tabs.title": "ටැබ් හඳුන්වා දීම",
   "help.tabs.description": "ටැබ් සමඟ ඔබේ වැඩ සහ සක්‍රිය සැසි සංවිධානය කරන්න",
@@ -536,14 +563,16 @@ export const dict: Record<string, string> = {
   "dialog.project.edit.color": "වර්ණය",
   "dialog.project.edit.color.select": "{{color}} වර්ණය තෝරන්න",
   "dialog.project.edit.worktree.startup": "වැඩබිම් ආරම්භක ස්ක්‍රිප්ට්",
-  "dialog.project.edit.worktree.startup.description": "නව වැඩබිමක් (Git වර්ක්ට්‍රී) සෑදීමෙන් පසු ධාවනය වේ.",
+  "dialog.project.edit.worktree.startup.description":
+    "නව වැඩබිමක් (Git වර්ක්ට්‍රී) සෑදීමෙන් පසු ධාවනය වේ.",
   "dialog.project.edit.worktree.startup.placeholder": "උදා. බන් ස්ථාපනය",
   "dialog.releaseNotes.action.getStarted": "පටන් ගන්න",
   "dialog.releaseNotes.action.next": "ඊළඟ",
   "dialog.releaseNotes.action.hideFuture": "මේවා ඉස්සරහට පෙන්නන්න එපා",
   "dialog.releaseNotes.media.alt": "පෙරදසුන නිකුත් කරන්න",
   "context.breakdown.title": "සන්දර්භය බිඳවැටීම",
-  "context.breakdown.note": 'ආදාන ටෝකනවල ආසන්න බිඳවැටීම. "වෙනත්" යන්නෙහි මෙවලම් අර්ථ දැක්වීම් සහ පොදු කාර්ය ඇතුළත් වේ.',
+  "context.breakdown.note":
+    'ආදාන ටෝකනවල ආසන්න බිඳවැටීම. "වෙනත්" යන්නෙහි මෙවලම් අර්ථ දැක්වීම් සහ පොදු කාර්ය ඇතුළත් වේ.',
   "context.breakdown.system": "පද්ධතිය",
   "context.breakdown.user": "පරිශීලක",
   "context.breakdown.assistant": "සහකාර",
@@ -598,17 +627,20 @@ export const dict: Record<string, string> = {
   "toast.workspace.enabled.title": "වැඩබිම් සබල කර ඇත",
   "toast.workspace.enabled.description": "Git වර්ක්ට්‍රී කිහිපයක් දැන් පැති තීරුවේ පෙන්වයි",
   "toast.workspace.disabled.title": "වැඩබිම් අබල කර ඇත",
-  "toast.workspace.disabled.description": "පැති තීරුවේ ප්‍රධාන Git වර්ක්ට්‍රී එක පමණක් පෙන්වයි",
+  "toast.workspace.disabled.description":
+    "පැති තීරුවේ ප්‍රධාන Git වර්ක්ට්‍රී එක පමණක් පෙන්වයි",
   "toast.permissions.autoaccept.on.title": "ස්වයං-පිළිගැනීමේ අවසර",
   "toast.permissions.autoaccept.on.description": "අවසර ඉල්ලීම් ස්වයංක්‍රීයව අනුමත වේ",
   "toast.permissions.autoaccept.off.title": "අවසර ස්වයංක්‍රීයව පිළිගැනීම නතර විය",
-  "toast.permissions.autoaccept.off.description": "අවසර ඉල්ලීම් සඳහා අනුමැතිය අවශ්‍ය වනු ඇත",
+  "toast.permissions.autoaccept.off.description":
+    "අවසර ඉල්ලීම් සඳහා අනුමැතිය අවශ්‍ය වනු ඇත",
   "toast.model.none.title": "ආකෘතියක් තෝරා නැත",
   "toast.model.none.description": "මෙම සැසිය සාරාංශ කිරීමට සැපයුම්කරුවෙකු සම්බන්ධ කරන්න",
   "toast.file.loadFailed.title": "ගොනුව පූරණය කිරීමට අසමත් විය",
   "toast.file.listFailed.title": "ගොනු ලැයිස්තුගත කිරීමට අසමත් විය",
   "toast.context.noLineSelection.title": "රේඛා තේරීමක් නැත",
-  "toast.context.noLineSelection.description": "පළමුව ගොනු පටිත්තක රේඛා පරාසයක් තෝරන්න.",
+  "toast.context.noLineSelection.description":
+    "පළමුව ගොනු පටිත්තක රේඛා පරාසයක් තෝරන්න.",
   "toast.session.share.copyFailed.title": "පසුරු පුවරුවට URL පිටපත් කිරීමට අසමත් විය",
   "toast.session.share.success.title": "සැසිය බෙදා ගත්තා",
   "toast.session.share.success.description": "බෙදාගන්න URL පසුරු පුවරුවට පිටපත් කර ඇත!",
@@ -625,21 +657,28 @@ export const dict: Record<string, string> = {
   "toast.session.listFailed.title": "{{project}} සඳහා සැසි පූරණය කිරීමට අසමත් විය",
   "toast.project.reloadFailed.title": "{{project}} නැවත පූරණය කිරීමට අසමත් විය",
   "toast.update.title": "යාවත්කාලීන ලබා ගත හැක",
-  "toast.update.description": "OpenCode හි නව අනුවාදයක් ({{version}}) ස්ථාපනය කිරීමට දැන් තිබේ.",
+  "toast.update.description":
+    "OpenCode හි නව අනුවාදයක් ({{version}}) ස්ථාපනය කිරීමට දැන් තිබේ.",
   "toast.update.action.installRestart": "ස්ථාපනය කර නැවත ආරම්භ කරන්න",
   "toast.update.action.notYet": "තවමත් නෑ",
   "toast.update.installFailed.title": "යාවත්කාලීනය ස්ථාපනය කළ නොහැකි විය",
   "toast.update.installFailed.retry": "නැවත උත්සාහ කරන්න",
 
-  "disk.accessGuidance.macos": "System Settings තුළ DiskLizard සඳහා Full Disk Access ලබා දී, අනතුරුව නැවත සුපිරික්සන්න.",
-  "disk.accessGuidance.windows": "මෙම ඩ්‍රයිව් එකට ප්‍රවේශය ඇති ගිණුමක් භාවිත කරන්න, නැතහොත් ඔබේ ගිණුමට කියවිය හැකි ෆෝල්ඩරයක් සුපිරික්සන්න.",
-  "disk.accessGuidance.linux": "ෆෝල්ඩර සහ mount අවසරයන් සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
-  "disk.accessGuidance.default": "මෙම ෆෝල්ඩර වෙත ප්‍රවේශය සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
-  "disk.accessGuidance.rescan": "ප්‍රවේශය වෙනස් කිරීමෙන් පසු ඉහළ තීරුවේ Rescan භාවිත කරන්න.",
+  "disk.accessGuidance.macos":
+    "System Settings තුළ DiskLizard සඳහා Full Disk Access ලබා දී, අනතුරුව නැවත සුපිරික්සන්න.",
+  "disk.accessGuidance.windows":
+    "මෙම ඩ්‍රයිව් එකට ප්‍රවේශය ඇති ගිණුමක් භාවිත කරන්න, නැතහොත් ඔබේ ගිණුමට කියවිය හැකි ෆෝල්ඩරයක් සුපිරික්සන්න.",
+  "disk.accessGuidance.linux":
+    "ෆෝල්ඩර සහ mount අවසරයන් සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
+  "disk.accessGuidance.default":
+    "මෙම ෆෝල්ඩර වෙත ප්‍රවේශය සමාලෝචනය කර, අනතුරුව නැවත සුපිරික්සන්න.",
+  "disk.accessGuidance.rescan":
+    "ප්‍රවේශය වෙනස් කිරීමෙන් පසු ඉහළ තීරුවේ Rescan භාවිත කරන්න.",
   "disk.common.rescan": "නැවත ස්කෑන් කරන්න",
   "error.page.title": "යමක් වැරදී ඇත",
   "error.page.description": "යෙදුම පූරණය කිරීමේදී දෝෂයක් ඇති විය.",
-  "error.page.description.localServerStartup": "දේශීය සේවාදායකය ආරම්භ කිරීමේදී දෝෂයක් ඇති විය.",
+  "error.page.description.localServerStartup":
+    "දේශීය සේවාදායකය ආරම්භ කිරීමේදී දෝෂයක් ඇති විය.",
   "error.page.details.label": "දෝෂ විස්තර",
   "error.page.action.restart": "යළි අරඹන්න",
   "error.page.action.report": "දෝෂය වාර්තා කරන්න",
@@ -654,12 +693,16 @@ export const dict: Record<string, string> = {
   "error.page.version": "අනුවාදය: {{version}}",
   "error.dev.rootNotFound":
     "මූල මූලද්රව්යය හමු නොවීය. ඔබට එය ඔබගේ index.html වෙත එක් කිරීමට අමතකද? එසේත් නැතිනම් හැඳුනුම්පත වැරදි ලෙස සටහන් වී තිබේද?",
-  "error.serverSync.connectFailed": "සේවාදායකයට සම්බන්ධ වීමට නොහැකි විය. `{{url}}` හි ධාවනය වන සේවාදායකයක් තිබේද?",
+  "error.serverSync.connectFailed":
+    "සේවාදායකයට සම්බන්ධ වීමට නොහැකි විය. `{{url}}` හි ධාවනය වන සේවාදායකයක් තිබේද?",
   "error.serverSDK.noServerAvailable": "සේවාදායකයක් නොමැත",
   "error.serverSDK.serverNotAvailable": "සේවාදායකය නොමැත",
-  "error.childStore.persistedCacheCreateFailed": "නොනැසී පවතින හැඹිලිය සෑදීමට අසමත් විය",
-  "error.childStore.persistedProjectMetadataCreateFailed": "අඛණ්ඩ ව්‍යාපෘති පාර-දත්ත නිර්මාණය කිරීමට අසමත් විය",
-  "error.childStore.persistedProjectIconCreateFailed": "නොනැසී පවතින ව්‍යාපෘති නිරූපකය සෑදීමට අසමත් විය",
+  "error.childStore.persistedCacheCreateFailed":
+    "නොනැසී පවතින හැඹිලිය සෑදීමට අසමත් විය",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "අඛණ්ඩ ව්‍යාපෘති පාර-දත්ත නිර්මාණය කිරීමට අසමත් විය",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "නොනැසී පවතින ව්‍යාපෘති නිරූපකය සෑදීමට අසමත් විය",
   "error.childStore.storeCreateFailed": "ගබඩාව සෑදීමට අසමත් විය",
   "directory.error.invalidUrl": "URL හි වලංගු නොවන නාමාවලිය.",
   "error.chain.unknown": "නොදන්නා දෝෂයකි",
@@ -671,22 +714,30 @@ export const dict: Record<string, string> = {
   "error.chain.responseBody": "ප්‍රතිචාර අන්තර්ගතය:\n{{body}}",
   "error.chain.didYouMean": "ඔබ අදහස් කළේ: {{suggestions}}",
   "error.chain.modelNotFound": "ආකෘතිය හමු නොවීය: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "ඔබගේ වින්‍යාසය (opencode.json) සපයන්නා/ආදර්ශ නම් පරීක්ෂා කරන්න",
-  "error.chain.mcpFailed": 'MCP සේවාදායකය "{{name}}" අසාර්ථක විය. සටහන, OpenCode තවමත් MCP සත්‍යාපනයට සහය නොදක්වයි.',
-  "error.chain.providerAuthFailed": "සැපයුම්කරු සත්‍යාපනය අසාර්ථක විය ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "ඔබගේ වින්‍යාසය (opencode.json) සපයන්නා/ආදර්ශ නම් පරීක්ෂා කරන්න",
+  "error.chain.mcpFailed":
+    'MCP සේවාදායකය "{{name}}" අසාර්ථක විය. සටහන, OpenCode තවමත් MCP සත්‍යාපනයට සහය නොදක්වයි.',
+  "error.chain.providerAuthFailed":
+    "සැපයුම්කරු සත්‍යාපනය අසාර්ථක විය ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" සපයන්නා ආරම්භ කිරීමට අසමත් විය. අක්තපත්ර සහ වින්යාසය පරීක්ෂා කරන්න.',
   "error.chain.configJsonInvalid": "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} හි "{{dir}}" නාමාවලිය වලංගු නොවේ. නාමාවලිය "{{suggestion}}" ලෙස නැවත නම් කරන්න හෝ එය ඉවත් කරන්න. මෙය පොදු අක්ෂර වින්‍යාසයකි.',
-  "error.chain.configFrontmatterError": "{{path}}:\n{{message}} හි මූලික කරුණු විග්‍රහ කිරීමට අසමත් විය",
+  "error.chain.configFrontmatterError":
+    "{{path}}:\n{{message}} හි මූලික කරුණු විග්‍රහ කිරීමට අසමත් විය",
   "error.chain.configInvalid": "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ",
-  "error.chain.configInvalidWithMessage": "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} හි වින්‍යාස ගොනුව වලංගු නොවේ: {{message}}",
   "notification.permission.title": "අවසරය අවශ්‍යයි",
-  "notification.permission.description": "{{projectName}} හි {{sessionTitle}} හට අවසර අවශ්‍යයි",
+  "notification.permission.description":
+    "{{projectName}} හි {{sessionTitle}} හට අවසර අවශ්‍යයි",
   "notification.question.title": "ප්රශ්නය",
-  "notification.question.description": "{{projectName}} හි {{sessionTitle}} හට ප්‍රශ්නයක් ඇත",
+  "notification.question.description":
+    "{{projectName}} හි {{sessionTitle}} හට ප්‍රශ්නයක් ඇත",
   "notification.action.goToSession": "සැසිය වෙත යන්න",
   "notification.session.responseReady.title": "ප්‍රතිචාරය සූදානම්",
   "notification.session.error.title": "සැසි දෝෂය",
@@ -709,14 +760,16 @@ export const dict: Record<string, string> = {
   "home.sessions.group.today": "අද",
   "home.sessions.group.yesterday": "ඊයේ",
   "home.sessions.group.older": "වැඩිහිටි",
-  "home.providerTip": "Claude, GPT, Gemini, ආදිය ඇතුළුව අනෙකුත් මාදිලි භාවිතා කිරීමට 75+ සපයන්නන් වෙත සම්බන්ධ වන්න",
+  "home.providerTip":
+    "Claude, GPT, Gemini, ආදිය ඇතුළුව අනෙකුත් මාදිලි භාවිතා කිරීමට 75+ සපයන්නන් වෙත සම්බන්ධ වන්න",
   "session.tab.session": "සැසිය",
   "session.tab.review": "සමාලෝචනය කරන්න",
   "session.tab.context": "සන්දර්භය",
   "session.tab.unknown": "නොදන්නා සැසිය",
   "session.panel.reviewAndFiles": "සමාලෝචනය සහ ගොනු",
   "session.error.notFound": "මෙම සැසිය සොයාගත නොහැක",
-  "session.error.notFound.description": "මෙම පටිත්ත මෙම සේවාදායකයේ තවදුරටත් නොපවතින සැසියක් වෙත යොමු කරයි.",
+  "session.error.notFound.description":
+    "මෙම පටිත්ත මෙම සේවාදායකයේ තවදුරටත් නොපවතින සැසියක් වෙත යොමු කරයි.",
   "session.error.notFound.closeTab": "ටැබය වසන්න",
   "session.error.serverConnection": "මෙම සේවාදායකයට සම්බන්ධ විය නොහැක",
   "session.review.filesChanged": "ගොනු {{count}} වෙනස් කරන ලදී",
@@ -726,10 +779,12 @@ export const dict: Record<string, string> = {
   "session.review.empty": "මෙම සැසියේ තවමත් වෙනස්කම් නොමැත",
   "session.review.noVcs": "Git අනුවාද පාලන පද්ධතියක් අනාවරණය වී නැත, වෙනස්කම් දර්ශනය නොවේ",
   "session.review.noVcs.createGit.title": "Git ගබඩාවක් සාදන්න",
-  "session.review.noVcs.createGit.description": "මෙම ව්‍යාපෘතියේ වෙනස්කම් හඹා යන්න, සමාලෝචනය කරන්න, සහ පසුගමනය කරන්න",
+  "session.review.noVcs.createGit.description":
+    "මෙම ව්‍යාපෘතියේ වෙනස්කම් හඹා යන්න, සමාලෝචනය කරන්න, සහ පසුගමනය කරන්න",
   "session.review.noVcs.createGit.actionLoading": "Git ගබඩාව නිර්මාණය කරමින්...",
   "session.review.noVcs.createGit.action": "Git ගබඩාවක් සාදන්න",
-  "session.review.noSnapshot": "Snapshot ලුහුබැඳීම වින්‍යාසය තුළ අබල කර ඇත, එබැවින් සැසි වෙනස්කම් නොමැත",
+  "session.review.noSnapshot":
+    "Snapshot ලුහුබැඳීම වින්‍යාසය තුළ අබල කර ඇත, එබැවින් සැසි වෙනස්කම් නොමැත",
   "session.review.noChanges": "වෙනස්කම් නොමැත",
   "session.review.noUncommittedChanges": "තවමත් කැප නොකළ වෙනස්කම් නොමැත",
   "session.review.noBranchChanges": "තවම ශාඛාවේ වෙනසක් නැත",
@@ -810,7 +865,8 @@ export const dict: Record<string, string> = {
   "status.popover.tab.plugins": "ප්ලගීන",
   "status.popover.action.manageServers": "සේවාදායකයන් කළමනාකරණය කරන්න",
   "session.share.popover.title": "වෙබයේ පළ කරන්න",
-  "session.share.popover.description.shared": "මෙම සැසිය වෙබයේ පොදු වේ. සබැඳිය ඇති ඕනෑම කෙනෙකුට එය ප්‍රවේශ විය හැකිය.",
+  "session.share.popover.description.shared":
+    "මෙම සැසිය වෙබයේ පොදු වේ. සබැඳිය ඇති ඕනෑම කෙනෙකුට එය ප්‍රවේශ විය හැකිය.",
   "session.share.popover.description.unshared":
     "වෙබයේ ප්‍රසිද්ධියේ සැසිය බෙදා ගන්න. සබැඳිය ඇති ඕනෑම කෙනෙකුට එය ප්‍රවේශ විය හැකිය.",
   "session.share.action.share": "බෙදාගන්න",
@@ -829,12 +885,14 @@ export const dict: Record<string, string> = {
   "terminal.title.numbered": "පර්යන්තය {{number}}",
   "terminal.close": "පර්යන්තය වසන්න",
   "terminal.connectionLost.title": "සම්බන්ධතාවය නැති විය",
-  "terminal.connectionLost.abnormalClose": "WebSocket අසාමාන්‍ය ලෙස වසා ඇත: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket අසාමාන්‍ය ලෙස වසා ඇත: {{code}}",
   "terminal.connectionLost.description":
     "පර්යන්ත සම්බන්ධතාවයට බාධා ඇති විය. සේවාදායකය නැවත ආරම්භ වන විට මෙය සිදු විය හැක.",
   "terminal.connectTicket.csrfError":
     "PTY සම්බන්ධක ටිකට් පත සම්භවය හෝ CSRF චෙක්පත් මගින් ප්‍රතික්ෂේප විය. සේවාදායකය CORS වින්‍යාසය පරීක්ෂා කරන්න.",
-  "terminal.connectTicket.statusError": "{{status}} සමඟ PTY සම්බන්ධක ප්‍රවේශපත්‍රය අසාර්ථක විය",
+  "terminal.connectTicket.statusError":
+    "{{status}} සමඟ PTY සම්බන්ධක ප්‍රවේශපත්‍රය අසාර්ථක විය",
   "titlebar.update": "යාවත්කාලීන කරන්න",
   "titlebar.updateVersion": "{{version}} යාවත්කාලීන කරන්න",
   "common.closeTab": "ටැබ් එක වසන්න",
@@ -878,7 +936,8 @@ export const dict: Record<string, string> = {
   "sidebar.workspaces.enable": "වැඩබිම් සබල කරන්න",
   "sidebar.workspaces.disable": "වැඩබිම් අබල කරන්න",
   "sidebar.gettingStarted.title": "ඇරඹේ",
-  "sidebar.gettingStarted.line1": "OpenCode නොමිලේ ආකෘති ඇතුළත් වන නිසා ඔබට වහාම ආරම්භ කළ හැක.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode නොමිලේ ආකෘති ඇතුළත් වන නිසා ඔබට වහාම ආරම්භ කළ හැක.",
   "sidebar.gettingStarted.line2":
     "ආකෘති භාවිතා කිරීමට ඕනෑම සැපයුම්කරුවෙකු සම්බන්ධ කරන්න, inc. Claude, GPT, Gemini ආදිය.",
   "sidebar.project.recentSessions": "මෑත සැසි",
@@ -898,22 +957,27 @@ export const dict: Record<string, string> = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "අවසන් තත්පර 5 තුළ 32ms ට වැඩි රාමු.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "අවසාන තත්පර 5 තුළ අවහිර කළ කාලය සහ දිගු කාර්ය ගණන. උපරිම කාර්යය: {{max}}.",
+  "debugBar.long.tip":
+    "අවසාන තත්පර 5 තුළ අවහිර කළ කාලය සහ දිගු කාර්ය ගණන. උපරිම කාර්යය: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "පසුගිය තත්පර 5 තුළ නරකම නිරීක්ෂණය කළ ආදාන ප්‍රමාදය.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "පසුගිය තත්පර 5 තුළ ආසන්න අන්තර්ක්‍රියා කාලය. මෙය INP-වැනි, නිල Web Vitals INP නොවේ.",
+  "debugBar.inp.tip":
+    "පසුගිය තත්පර 5 තුළ ආසන්න අන්තර්ක්‍රියා කාලය. මෙය INP-වැනි, නිල Web Vitals INP නොවේ.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "වත්මන් යෙදුම් ආයු කාලය සඳහා සමුච්චිත පිරිසැලසුම් මාරුව.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "භාවිතා කරන ලද JS heap එදිරිව ගොඩ සීමාව. Chromium පමණි.",
+  "debugBar.mem.tipUnavailable":
+    "භාවිතා කරන ලද JS heap එදිරිව ගොඩ සීමාව. Chromium පමණි.",
   "debugBar.mem.tip": "භාවිතා කරන ලද JS heap එදිරිව ගොඩ සීමාව. {{limit}} හි {{used}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "සියලු අන්තර්ක්‍රියාකාරී මූලද්‍රව්‍ය කෙරෙහි අවධානය යොමු කිරීමේ ශෛලීන් බල කරන්න",
+  "debugBar.focus.tip":
+    "සියලු අන්තර්ක්‍රියාකාරී මූලද්‍රව්‍ය කෙරෙහි අවධානය යොමු කිරීමේ ශෛලීන් බල කරන්න",
   "debugBar.focus.on": "ක්‍රියාත්මකයි",
   "debugBar.focus.off": "අක්රියයි",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "තෝරාගත් භාෂාව වෙනස් නොකර සම්පූර්ණ යෙදුම් පිරිසැලසුම් දිශාව බල කරන්න",
+  "debugBar.direction.tip":
+    "තෝරාගත් භාෂාව වෙනස් නොකර සම්පූර්ණ යෙදුම් පිරිසැලසුම් දිශාව බල කරන්න",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode ඩෙස්ක්ටොප්",
@@ -923,7 +987,8 @@ export const dict: Record<string, string> = {
   "settings.tab.shortcuts": "කෙටිමං",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ඒකාබද්ධ කිරීම",
-  "settings.desktop.wsl.description": "Windows හි WSL තුළ OpenCode සේවාදායකය ධාවනය කරන්න.",
+  "settings.desktop.wsl.description":
+    "Windows හි WSL තුළ OpenCode සේවාදායකය ධාවනය කරන්න.",
   "settings.general.section.appearance": "පෙනුම",
   "settings.general.section.advanced": "උසස්",
   "settings.general.section.notifications": "පද්ධති දැනුම්දීම්",
@@ -932,23 +997,30 @@ export const dict: Record<string, string> = {
   "settings.general.section.feed": "පෝෂණය කරන්න",
   "settings.general.section.display": "ප්රදර්ශනය කරන්න",
   "settings.general.row.language.title": "භාෂාව",
-  "settings.general.row.language.description": "OpenCode සඳහා සංදර්ශක භාෂාව වෙනස් කරන්න",
+  "settings.general.row.language.description":
+    "OpenCode සඳහා සංදර්ශක භාෂාව වෙනස් කරන්න",
   "settings.general.row.shell.title": "පර්යන්ත ෂෙල්",
   "settings.general.row.shell.description": "පර්යන්තය සහ නියෝජිත මෙවලම් භාවිතා කරන ෂෙල්",
   "settings.general.row.shell.autoDefault": "ස්වයංක්‍රීය (පෙරනිමි)",
   "settings.general.row.shell.terminalOnly": "පර්යන්තය පමණි",
   "settings.general.row.appearance.title": "පෙනුම",
-  "settings.general.row.appearance.description": "ඔබගේ උපාංගයේ OpenCode පෙනෙන ආකාරය අභිරුචිකරණය කරන්න",
+  "settings.general.row.appearance.description":
+    "ඔබගේ උපාංගයේ OpenCode පෙනෙන ආකාරය අභිරුචිකරණය කරන්න",
   "settings.general.row.colorScheme.title": "වර්ණ පටිපාටිය",
-  "settings.general.row.colorScheme.description": "OpenCode පද්ධතිය, ආලෝකය හෝ අඳුරු තේමාව අනුගමනය කරන්නේද යන්න තෝරන්න",
+  "settings.general.row.colorScheme.description":
+    "OpenCode පද්ධතිය, ආලෝකය හෝ අඳුරු තේමාව අනුගමනය කරන්නේද යන්න තෝරන්න",
   "settings.general.row.theme.title": "තේමාව",
-  "settings.general.row.theme.description": "OpenCode තේමා කර ඇති ආකාරය අභිරුචිකරණය කරන්න.",
+  "settings.general.row.theme.description":
+    "OpenCode තේමා කර ඇති ආකාරය අභිරුචිකරණය කරන්න.",
   "settings.general.row.font.title": "කේත අකුරු",
-  "settings.general.row.font.description": "කේත බ්ලොක් වල භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
+  "settings.general.row.font.description":
+    "කේත බ්ලොක් වල භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
   "settings.general.row.terminalFont.title": "ටර්මිනල් අකුරු",
-  "settings.general.row.terminalFont.description": "ටර්මිනලයේ භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
+  "settings.general.row.terminalFont.description":
+    "ටර්මිනලයේ භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
   "settings.general.row.uiFont.title": "UI අකුරු",
-  "settings.general.row.uiFont.description": "අතුරු මුහුණත පුරා භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
+  "settings.general.row.uiFont.description":
+    "අතුරු මුහුණත පුරා භාවිතා කරන අකුරු අභිරුචිකරණය කරන්න",
   "settings.general.row.followup.title": "පසු විපරම් හැසිරීම",
   "settings.general.row.followup.description":
     "පසු විපරම් ප්‍රේරක ක්ෂණිකව ගමන් කරනවාද නැතිනම් පෝලිමක රැඳී සිටිනවාද යන්න තෝරන්න",
@@ -957,24 +1029,32 @@ export const dict: Record<string, string> = {
   "settings.general.row.showFileTree.title": "ගොනු ගස",
   "settings.general.row.showFileTree.description": "සැසි තුළ ගොනු ගස් පැනලය පෙන්වන්න",
   "settings.general.row.showNavigation.title": "සංචාලන පාලන",
-  "settings.general.row.showNavigation.description": "ඩෙස්ක්ටොප් මාතෘකා තීරුවේ පසුපස සහ ඉදිරි බොත්තම් පෙන්වන්න",
+  "settings.general.row.showNavigation.description":
+    "ඩෙස්ක්ටොප් මාතෘකා තීරුවේ පසුපස සහ ඉදිරි බොත්තම් පෙන්වන්න",
   "settings.general.row.showSearch.title": "විධාන පුවරුව",
-  "settings.general.row.showSearch.description": "මාතෘකා තීරුවේ සෙවුම් සහ විධාන පුවරුවේ බොත්තම පෙන්වන්න",
+  "settings.general.row.showSearch.description":
+    "මාතෘකා තීරුවේ සෙවුම් සහ විධාන පුවරුවේ බොත්තම පෙන්වන්න",
   "settings.general.row.showTerminal.title": "පර්යන්තය",
-  "settings.general.row.showTerminal.description": "ඩෙස්ක්ටොප් මාතෘකා තීරුවේ ටර්මිනල් බොත්තම පෙන්වන්න",
+  "settings.general.row.showTerminal.description":
+    "ඩෙස්ක්ටොප් මාතෘකා තීරුවේ ටර්මිනල් බොත්තම පෙන්වන්න",
   "settings.general.row.showStatus.title": "සේවාදායක තත්ත්වය",
-  "settings.general.row.showStatus.description": "මාතෘකා තීරුවේ සේවාදායක තත්ව බොත්තම පෙන්වන්න",
+  "settings.general.row.showStatus.description":
+    "මාතෘකා තීරුවේ සේවාදායක තත්ව බොත්තම පෙන්වන්න",
   "settings.general.row.mobileTitlebarBottom.title": "පහළ සංචලනය",
-  "settings.general.row.mobileTitlebarBottom.description": "මාතෘකා තීරුව සහ සැසි ටැබ් ජංගම දුරකථනයේ තිරයේ පතුලේ තබන්න",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "මාතෘකා තීරුව සහ සැසි ටැබ් ජංගම දුරකථනයේ තිරයේ පතුලේ තබන්න",
   "settings.general.row.showCustomAgents.title": "නියෝජිතයා පෙන්වන්න",
   "settings.general.row.showCustomAgents.description":
     "නිර්මාපකයේ නියෝජිතයන් අතර මාරු වන්න. සැඟවුණු විට, බිල්ඩ් ඒජන්ත වෙත පෙරනිමි වේ.",
   "settings.general.row.reasoningSummaries.title": "තර්ක සාරාංශ පෙන්වන්න",
-  "settings.general.row.reasoningSummaries.description": "කාලරේඛාව තුළ ආකෘති තර්ක සාරාංශ සංදර්ශන කරන්න",
-  "settings.general.row.shellToolPartsExpanded.title": "ෂෙල් මෙවලම් කොටස් පුළුල් කරන්න",
+  "settings.general.row.reasoningSummaries.description":
+    "කාලරේඛාව තුළ ආකෘති තර්ක සාරාංශ සංදර්ශන කරන්න",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "ෂෙල් මෙවලම් කොටස් පුළුල් කරන්න",
   "settings.general.row.shellToolPartsExpanded.description":
     "කාලරේඛාව තුළ පෙරනිමියෙන් පුළුල් කළ ෂෙල් මෙවලම් කොටස් පෙන්වන්න",
-  "settings.general.row.editToolPartsExpanded.title": "සංස්කරණ මෙවලම් කොටස් පුළුල් කරන්න",
+  "settings.general.row.editToolPartsExpanded.title":
+    "සංස්කරණ මෙවලම් කොටස් පුළුල් කරන්න",
   "settings.general.row.editToolPartsExpanded.description":
     "කාලරේඛාව තුළ පෙරනිමියෙන් පුළුල් කරන ලද සංස්කරණය, ලිවීම සහ පැච් මෙවලම් කොටස් පෙන්වන්න",
   "settings.general.row.newInterface.title": "නව පිරිසැලසුම",
@@ -982,27 +1062,33 @@ export const dict: Record<string, string> = {
   "settings.general.row.newInterface.description":
     "නව ටැබ් සහ නිවසේ පිරිසැලසුම භාවිතා කරන්න. සීමිත කාලයක් සඳහා පිරිසැලසුම් අතර මාරු වන්න.",
   "settings.general.row.newInterfaceNotice.title": "ඔබ දැන් නව පිරිසැලසුමක් භාවිතා කරයි",
-  "settings.general.row.newInterfaceNotice.description": "පෙර පිරිසැලසුම තවදුරටත් නොමැත",
+  "settings.general.row.newInterfaceNotice.description":
+    "පෙර පිරිසැලසුම තවදුරටත් නොමැත",
   "settings.general.row.newInterfaceNotice.dismiss": "අස් කරන්න",
   "settings.general.row.pinchZoom.title": "විශාලනය කිරීමට පින්ච් කරන්න",
   "settings.general.row.pinchZoom.description":
     "විශාලනය කිරීමට ට්‍රැක්පෑඩ් පින්ච් කිරීමට සහ Ctrl-අනුචලන අභිනයන්ට ඉඩ දෙන්න",
   "settings.general.row.wayland.title": "දේශීය Wayland භාවිත කරන්න",
-  "settings.general.row.wayland.description": "Wayland හි X11 ආපසු හැරීම අක්‍රීය කරන්න. නැවත ආරම්භ කිරීම අවශ්‍ය වේ.",
+  "settings.general.row.wayland.description":
+    "Wayland හි X11 ආපසු හැරීම අක්‍රීය කරන්න. නැවත ආරම්භ කිරීම අවශ්‍ය වේ.",
   "settings.general.row.wayland.tooltip":
     "මිශ්‍ර නැවුම් අනුපාත මොනිටර සහිත Linux මත, ස්වදේශික Wayland වඩා ස්ථායී විය හැක.",
   "settings.general.row.releaseNotes.title": "නිකුත් කිරීමේ සටහන්",
-  "settings.general.row.releaseNotes.description": "යාවත්කාලීන කිරීමෙන් පසු නව උත්පතන මොනවාදැයි පෙන්වන්න",
+  "settings.general.row.releaseNotes.description":
+    "යාවත්කාලීන කිරීමෙන් පසු නව උත්පතන මොනවාදැයි පෙන්වන්න",
   "settings.updates.row.startup.title": "ආරම්භය පිළිබඳ යාවත්කාලීන සඳහා පරීක්ෂා කරන්න",
-  "settings.updates.row.startup.description": "OpenCode දියත් කරන විට යාවත්කාලීන සඳහා ස්වයංක්‍රීයව පරීක්ෂා කරන්න",
+  "settings.updates.row.startup.description":
+    "OpenCode දියත් කරන විට යාවත්කාලීන සඳහා ස්වයංක්‍රීයව පරීක්ෂා කරන්න",
   "settings.updates.row.check.title": "යාවත්කාලීන සඳහා පරීක්ෂා කරන්න",
-  "settings.updates.row.check.description": "යාවත්කාලීන සඳහා හස්තීයව පරීක්ෂා කර තිබේ නම් ස්ථාපනය කරන්න",
+  "settings.updates.row.check.description":
+    "යාවත්කාලීන සඳහා හස්තීයව පරීක්ෂා කර තිබේ නම් ස්ථාපනය කරන්න",
   "settings.updates.action.checkNow": "දැන් පරීක්ෂා කරන්න",
   "settings.updates.action.checking": "පරීක්ෂා කරමින්...",
   "settings.updates.action.downloading": "බාගනිමින්...",
   "settings.updates.action.installing": "ස්ථාපනය කරමින්...",
   "settings.updates.toast.latest.title": "ඔබ යාවත්කාලීනයි",
-  "settings.updates.toast.latest.description": "ඔබ OpenCode හි නවතම අනුවාදය ධාවනය කරයි.",
+  "settings.updates.toast.latest.description":
+    "ඔබ OpenCode හි නවතම අනුවාදය ධාවනය කරයි.",
   "sound.option.none": "කිසිවක් නැත",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1053,21 +1139,27 @@ export const dict: Record<string, string> = {
   "settings.general.notifications.agent.description":
     "නියෝජිතයා සම්පූර්ණ වූ විට හෝ අවධානය අවශ්‍ය වූ විට පද්ධති දැනුම්දීම පෙන්වන්න",
   "settings.general.notifications.permissions.title": "අවසර",
-  "settings.general.notifications.permissions.description": "අවසරයක් අවශ්‍ය වූ විට පද්ධති දැනුම්දීම පෙන්වන්න",
+  "settings.general.notifications.permissions.description":
+    "අවසරයක් අවශ්‍ය වූ විට පද්ධති දැනුම්දීම පෙන්වන්න",
   "settings.general.notifications.errors.title": "දෝෂ",
-  "settings.general.notifications.errors.description": "දෝෂයක් ඇති වූ විට පද්ධති දැනුම්දීම පෙන්වන්න",
+  "settings.general.notifications.errors.description":
+    "දෝෂයක් ඇති වූ විට පද්ධති දැනුම්දීම පෙන්වන්න",
   "settings.general.sounds.agent.title": "නියෝජිතයා",
-  "settings.general.sounds.agent.description": "නියෝජිතයා සම්පූර්ණ වූ විට හෝ අවධානය අවශ්‍ය වූ විට ශබ්දය වාදනය කරන්න",
+  "settings.general.sounds.agent.description":
+    "නියෝජිතයා සම්පූර්ණ වූ විට හෝ අවධානය අවශ්‍ය වූ විට ශබ්දය වාදනය කරන්න",
   "settings.general.sounds.permissions.title": "අවසර",
-  "settings.general.sounds.permissions.description": "අවසරයක් අවශ්‍ය විට ශබ්දය වාදනය කරන්න",
+  "settings.general.sounds.permissions.description":
+    "අවසරයක් අවශ්‍ය විට ශබ්දය වාදනය කරන්න",
   "settings.general.sounds.errors.title": "දෝෂ",
   "settings.general.sounds.errors.description": "දෝෂයක් ඇති වූ විට ශබ්දය වාදනය කරන්න",
   "settings.shortcuts.title": "යතුරුපුවරු කෙටිමං",
   "settings.shortcuts.reset.button": "පෙරනිමියට යළි පිහිටුවන්න",
   "settings.shortcuts.reset.toast.title": "කෙටිමං යළි පිහිටුවීම",
-  "settings.shortcuts.reset.toast.description": "යතුරුපුවරු කෙටිමං පෙරනිමියට යළි සකසා ඇත.",
+  "settings.shortcuts.reset.toast.description":
+    "යතුරුපුවරු කෙටිමං පෙරනිමියට යළි සකසා ඇත.",
   "settings.shortcuts.conflict.title": "කෙටිමඟ දැනටමත් භාවිතයේ ඇත",
-  "settings.shortcuts.conflict.description": "{{keybind}} දැනටමත් {{titles}} වෙත පවරා ඇත.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} දැනටමත් {{titles}} වෙත පවරා ඇත.",
   "settings.shortcuts.unassigned": "පැවරීම නොකළ",
   "settings.shortcuts.pressKeys": "යතුරු ඔබන්න",
   "settings.shortcuts.search.placeholder": "කෙටිමං සොයන්න",
@@ -1082,9 +1174,11 @@ export const dict: Record<string, string> = {
   "settings.providers.description": "සපයන්නාගේ සිටුවම් මෙහි වින්‍යාස කළ හැක.",
   "settings.providers.section.connected": "සම්බන්ධිත සැපයුම්කරුවන්",
   "settings.providers.connected.empty": "සම්බන්ධිත සපයන්නන් නැත",
-  "settings.providers.connected.environmentDescription": "ඔබගේ පරිසර විචල්‍ය වලින් සම්බන්ධ කර ඇත",
+  "settings.providers.connected.environmentDescription":
+    "ඔබගේ පරිසර විචල්‍ය වලින් සම්බන්ධ කර ඇත",
   "settings.providers.section.popular": "ජනප්‍රිය සැපයුම්කරුවන්",
-  "settings.providers.custom.description": "URL පදනම අනුව OpenAI-අනුකූල සැපයුම්කරුවෙකු එක් කරන්න.",
+  "settings.providers.custom.description":
+    "URL පදනම අනුව OpenAI-අනුකූල සැපයුම්කරුවෙකු එක් කරන්න.",
   "settings.providers.tag.environment": "පරිසරය",
   "settings.providers.tag.config": "වින්යාසය",
   "settings.providers.tag.custom": "අභිරුචි",
@@ -1098,7 +1192,8 @@ export const dict: Record<string, string> = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP සැකසීම් මෙහි වින්‍යාස කළ හැක.",
   "settings.permissions.title": "අවසර",
-  "settings.permissions.description": "පෙරනිමියෙන් සේවාදායකයට භාවිතා කළ හැකි මෙවලම් පාලනය කරන්න.",
+  "settings.permissions.description":
+    "පෙරනිමියෙන් සේවාදායකයට භාවිතා කළ හැකි මෙවලම් පාලනය කරන්න.",
   "settings.permissions.section.tools": "මෙවලම්",
   "settings.permissions.toast.updateFailed.title": "අවසර යාවත්කාලීන කිරීමට අසමත් විය",
   "settings.permissions.action.allow": "ඉඩ දෙන්න",
@@ -1107,11 +1202,13 @@ export const dict: Record<string, string> = {
   "settings.permissions.tool.read.title": "කියවන්න",
   "settings.permissions.tool.read.description": "ගොනුවක් කියවීම (ගොනු මාර්ගයට ගැලපේ)",
   "settings.permissions.tool.edit.title": "සංස්කරණය කරන්න",
-  "settings.permissions.tool.edit.description": "සංස්කරණය කිරීම්, ලිවීම් සහ පැච් ඇතුළු ගොනු වෙනස් කරන්න",
+  "settings.permissions.tool.edit.description":
+    "සංස්කරණය කිරීම්, ලිවීම් සහ පැච් ඇතුළු ගොනු වෙනස් කරන්න",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "ග්ලෝබ් රටා භාවිතයෙන් ගොනු ගලපන්න",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "සාමාන්‍ය ප්‍රකාශන භාවිතයෙන් ගොනු අන්තර්ගතය සොයන්න",
+  "settings.permissions.tool.grep.description":
+    "සාමාන්‍ය ප්‍රකාශන භාවිතයෙන් ගොනු අන්තර්ගතය සොයන්න",
   "settings.permissions.tool.list.title": "ලැයිස්තුව",
   "settings.permissions.tool.list.description": "නාමාවලියක් තුළ ගොනු ලැයිස්තුගත කරන්න",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1129,9 +1226,11 @@ export const dict: Record<string, string> = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "වෙබයේ සොයන්න",
   "settings.permissions.tool.external_directory.title": "බාහිර නාමාවලිය",
-  "settings.permissions.tool.external_directory.description": "ව්‍යාපෘති නාමාවලියෙන් පිටත ගොනු වෙත ප්‍රවේශ වන්න",
+  "settings.permissions.tool.external_directory.description":
+    "ව්‍යාපෘති නාමාවලියෙන් පිටත ගොනු වෙත ප්‍රවේශ වන්න",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "සමාන ආදානයක් සමඟ නැවත නැවතත් මෙවලම් ඇමතුම් හඳුනා ගන්න",
+  "settings.permissions.tool.doom_loop.description":
+    "සමාන ආදානයක් සමඟ නැවත නැවතත් මෙවලම් ඇමතුම් හඳුනා ගන්න",
   "session.delete.failed.title": "සැසිය මැකීමට අසමත් විය",
   "session.delete.title": "සැසිය මකන්න",
   "session.delete.confirm": '"{{name}}" සැසිය මකන්නද?',

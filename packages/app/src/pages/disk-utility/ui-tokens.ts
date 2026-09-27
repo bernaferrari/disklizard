@@ -55,7 +55,9 @@ const RING_LIGHT = "oklch(0.52 0.14 252)"
 const RING_DARK = "oklch(0.84 0.1 252)"
 
 export function surfaceRing(): string {
-  return document.documentElement.dataset.colorScheme === "dark" ? RING_DARK : RING_LIGHT
+  return document.documentElement.dataset.colorScheme === "dark"
+    ? RING_DARK
+    : RING_LIGHT
 }
 
 /** Usage stroke color (OKLCH) for SVG donut rings. */

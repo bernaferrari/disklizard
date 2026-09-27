@@ -46,11 +46,13 @@ export const dict: Record<string, string> = {
   "desktop.menu.ariaLabel": "OpenCode དཀར་ཆག།",
   "desktop.updater.dialog.checkFailed.message": "དུས་མཐུན་ཞིབ་དཔྱད་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "desktop.updater.dialog.checkFailed.title": "དུས་མཐུན་འཛོལ་བ།",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "ཁྱོད་དུས་དང་བསྟུན།",
   "desktop.updater.dialog.upToDate.title": "དུས་མཐུན་མེད།",
-  "desktop.updater.dialog.ready.message": "དུས་མཐུན་ {{version}} ཕབ་ལེན་འབད་ཡོདཔ། ད་ལྟོ་ལོག་འགོ་བཙུགས?",
+  "desktop.updater.dialog.ready.message":
+    "དུས་མཐུན་ {{version}} ཕབ་ལེན་འབད་ཡོདཔ། ད་ལྟོ་ལོག་འགོ་བཙུགས?",
   "desktop.updater.dialog.ready.title": "དུས་མཐུན་བཟོ་ནི་གྲ་སྒྲིག།",
   "desktop.updater.dialog.restart": "ལོག་འགོ་བཙུགས།",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict: Record<string, string> = {
   "desktop.recovery.unresponsive": "OpenCodeགིས་ ལན་གསལ་འབད་མི་བཏུབ།",
   "desktop.recovery.unresponsive.detail":
     "ཁྱོད་ཀྱིས་གློག་རིམ་འདི་ལོག་སྟེ་འགོ་བཙུགས་ཚུགས། དྲན་ཐོ་ཚུ་ཁ་ཕྱེ་ཚུགས། ཡང་ན་བསྒུག་སྡོད་ཚུགས།",
-  "desktop.recovery.loadFailed.detail": "སྒོ་སྒྲིག་: {{window}}\nURL: {{url}}\nའཛོལ་བ་: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "སྒོ་སྒྲིག་: {{window}}\nརྒྱུ་མཚན་: {{reason}}\nཨང་རྟགས་: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "སྒོ་སྒྲིག་: {{window}}\nURL: {{url}}\nའཛོལ་བ་: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "སྒོ་སྒྲིག་: {{window}}\nརྒྱུ་མཚན་: {{reason}}\nཨང་རྟགས་: {{code}}",
   "desktop.recovery.unknown": "<མ་ཤེས་པ>",
   "desktop.dialog.chooseFolder": "སྣོད་འཛིན་ཅིག་གདམ་ཁ་རྐྱབས།",
   "desktop.dialog.chooseFile": "ཡིག་སྣོད་གདམ་ཁ་རྐྱབས།",
@@ -74,16 +78,21 @@ export const dict: Record<string, string> = {
   "desktop.server.local": "ཉེ་གནས་སར་བར།",
   "desktop.wsl.error.windowsOnly": "WSLའདི་ Windowsནང་རྐྱངམ་ཅིག་འཐོབ་ཚུགས།",
   "desktop.wsl.error.unavailable": "WSL ཐོབ་མི་ཚུགས།",
-  "desktop.wsl.error.listInstalled": "གཞི་བཙུགས་འབད་ཡོད་མི་ WSL ཌིསི་ཊོ་ཚུ་ཐོ་ཡིག་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "desktop.wsl.error.listOnline": "ཡོངས་འབྲེལ་ཐོག་ལས་ WSL ཌིསི་ཊོ་ཚུ་ཐོ་བཀོད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "desktop.wsl.error.listInstalled":
+    "གཞི་བཙུགས་འབད་ཡོད་མི་ WSL ཌིསི་ཊོ་ཚུ་ཐོ་ཡིག་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "desktop.wsl.error.listOnline":
+    "ཡོངས་འབྲེལ་ཐོག་ལས་ WSL ཌིསི་ཊོ་ཚུ་ཐོ་བཀོད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "desktop.wsl.error.executeDistro": "ཌིསི་ཊོ་ནང་བརྡ་བཀོད་ཚུ་ལག་ལེན་འཐབ་མི་ཚུགས།",
   "desktop.wsl.error.installWsl": "WSLགཞི་བཙུགས་འཐུས་ཤོར་བྱུང་ཡོདཔ།",
-  "desktop.wsl.error.installDistro": "ཌིསི་ཊོ་གཞི་བཙུགས་འབད་ནི་ལུ་འཐུས་ཤོར་བྱུང་ཡོདཔ།: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "ཌིསི་ཊོ་གཞི་བཙུགས་འབད་ནི་ལུ་འཐུས་ཤོར་བྱུང་ཡོདཔ།: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCodeགཞི་བཙུགས་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "desktop.wsl.error.alreadyAdded": "{{distro}} འདི་ ཧེ་མ་ལས་རང་ཁ་སྐོང་བརྐྱབ་ཟིན།",
   "desktop.wsl.error.opencodeMissing": "ཌིསི་ཊོ་འདི་ནང་ opencode གཞི་བཙུགས་མ་འབད་བས།",
-  "desktop.wsl.error.opencodeCannotRun": "opencode འདི་གཞི་བཙུགས་འབད་ཡོད་རུང་ གཡོག་བཀོལ་མ་ཚུགས།",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode འདི་ {{distro}} ནང་གཞི་བཙུགས་མ་འབད་བས།",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode འདི་གཞི་བཙུགས་འབད་ཡོད་རུང་ གཡོག་བཀོལ་མ་ཚུགས།",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode འདི་ {{distro}} ནང་གཞི་བཙུགས་མ་འབད་བས།",
   "desktop.wsl.error.updateVersion":
     "OpenCode དུས་མཐུན་བཟོ་ཚར་ཡི་ དེ་འབདཝ་ད་ {{distro}}གིས་ ད་ལྟོ་ཡང་ {{installed}} སྙན་ཞུ་འབདཝ་ཨིན། རེ་བ་བསྐྱེད་པའི་ {{expected}}",
   "desktop.wsl.error.noVersion": "ཐོན་རིམ་མེད།",
@@ -93,10 +102,13 @@ export const dict: Record<string, string> = {
     "WSL སར་བར་འདི་ གསོ་བའི་ཧེ་མ་ ཕྱིར་འཐོན་འབད་ཡོདཔ་ཨིན་ (ཨང་རྟགས་={{code}} བརྡ་རྟགས་={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{timeout}}ms གི་ཤུལ་ལས་ {{distro}} གི་དོན་ལུ་ ཟུར་འཁོར་འདི་ གསོ་བའི་བརྟག་དཔྱད་དུས་ཚོད་རྫོགས་སོངཔ་ཨིན།",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms གི་ཤུལ་ལས་ དུས་ཚོད་རྫོགས་སོང།",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms གི་ཤུལ་ལས་ དུས་ཚོད་རྫོགས་སོང།",
   "desktop.wsl.error.failedPort": "འདྲེན་ལམ་ཐོབ་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "desktop.picker.error.notSelected": "ཡིག་སྣོད་འདི་ སེལ་འཐུ་འབད་མི་གིས་ སེལ་འཐུ་མ་འབད་བས།",
-  "desktop.picker.error.sizeLimit": "སེལ་འཐུ་འབད་ཡོད་པའི་མཉམ་སྦྲགས་ཚུ་གིས་ {{limit}} ཨེམ་བི་ཚད་ལས་བརྒལཝ་ཨིན།",
+  "desktop.picker.error.notSelected":
+    "ཡིག་སྣོད་འདི་ སེལ་འཐུ་འབད་མི་གིས་ སེལ་འཐུ་མ་འབད་བས།",
+  "desktop.picker.error.sizeLimit":
+    "སེལ་འཐུ་འབད་ཡོད་པའི་མཉམ་སྦྲགས་ཚུ་གིས་ {{limit}} ཨེམ་བི་ཚད་ལས་བརྒལཝ་ཨིན།",
   "command.category.suggested": "བསམ་འཆར།",
   "command.category.view": "བསམ༌འཆར",
   "command.category.project": "ལས༌འགུལ",
@@ -143,7 +155,8 @@ export const dict: Record<string, string> = {
   "command.tab.close": "མཆོང་ལྡེ་ཁ་བསྡམས།",
   "command.tab.reopenClosed": "ཁ་བསྡམས་ཡོད་པའི་མཆོང་ལྡེ་ལོག་ཁ་ཕྱེ།",
   "command.context.addSelection": "སྐབས་དོན་ལུ་སེལ་འཐུ་ཁ་སྐོང་རྐྱབས།",
-  "command.context.addSelection.description": "ད་ལྟོའི་ཡིག་སྣོད་ལས་སེལ་འཐུ་འབད་ཡོད་པའི་གྲལ་ཐིག་ཚུ་ཁ་སྐོང་རྐྱབས།",
+  "command.context.addSelection.description":
+    "ད་ལྟོའི་ཡིག་སྣོད་ལས་སེལ་འཐུ་འབད་ཡོད་པའི་གྲལ་ཐིག་ཚུ་ཁ་སྐོང་རྐྱབས།",
   "command.input.focus": "ཆེད་དམིགས་ཨིན་པུཊི།",
   "command.terminal.toggle": "ཊར་མི་ནཱལ་སོར་བསྒྱུར་འབད།",
   "command.fileTree.toggle": "ཡིག་སྣོད་ཤིང་སོར་སྟོན་འབད།",
@@ -165,27 +178,34 @@ export const dict: Record<string, string> = {
   "command.agent.cycle.reverse": "རྐང་འཁོར་ལས་ཚབ་རྒྱབ་ལུ་བསྒྱུར།",
   "command.agent.cycle.reverse.description": "ཧེ་མའི་ལས་ཚབ་ལུ་སོར་བསྒྱུར་འབད།",
   "command.model.variant.cycle": "འཁོར་སྐྱོད་བསམ་བློའི་འབད་བརྩོན།",
-  "command.model.variant.cycle.description": "འབད་བརྩོན་གནས་རིམ་ཤུལ་མམ་ལུ་སོར་བསྒྱུར་འབད།",
+  "command.model.variant.cycle.description":
+    "འབད་བརྩོན་གནས་རིམ་ཤུལ་མམ་ལུ་སོར་བསྒྱུར་འབད།",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "འདི་འཕྲོ་ལས",
   "command.permissions.autoaccept.enable": "རང་བཞིན་ངོས་ལེན་གནང་བ་ཚུ།",
   "command.permissions.autoaccept.disable": "རང་བཞིན་དང་ལེན་གནང་བ་ཚུ་བཀག།",
   "command.workspace.toggle": "ལཱ་གི་ས་སྒོ་ཚུ་སོར་སྟོན་འབད།",
-  "command.workspace.toggle.description": "ཟུར་ཁའི་ཕྲ་རིང་ནང་ལཱ་གི་ས་སྒོ་སྣ་མང་ལྕོགས་ཅན་ཡང་ན་ལྕོགས་མིན་བཟོ།",
+  "command.workspace.toggle.description":
+    "ཟུར་ཁའི་ཕྲ་རིང་ནང་ལཱ་གི་ས་སྒོ་སྣ་མང་ལྕོགས་ཅན་ཡང་ན་ལྕོགས་མིན་བཟོ།",
   "command.session.undo": "འབད་བཤོལ་འབད།",
   "command.session.undo.description": "མཇུག་གི་འཕྲིན་དོན་ རྒྱབ་བཤུད་འབད།",
   "command.session.redo": "ཡང་བསྐྱར་འབད།",
-  "command.session.redo.description": "མཐའ་མཇུག་གི་འབད་བཤོལ་འབད་ཡོད་པའི་འཕྲིན་དོན་འདི་ལོག་འབད།",
+  "command.session.redo.description":
+    "མཐའ་མཇུག་གི་འབད་བཤོལ་འབད་ཡོད་པའི་འཕྲིན་དོན་འདི་ལོག་འབད།",
   "command.session.compact": "ལཱ་ཡུན་བསྡུ་སྒྲིག་འབད་ནི།",
-  "command.session.compact.description": "སྐབས་དོན་གྱི་ཚད་མར་ཕབ་འབད་ནིའི་དོན་ལུ་ ལཱ་ཡུན་བཅུད་བསྡུས།",
+  "command.session.compact.description":
+    "སྐབས་དོན་གྱི་ཚད་མར་ཕབ་འབད་ནིའི་དོན་ལུ་ ལཱ་ཡུན་བཅུད་བསྡུས།",
   "command.session.fork": "འཕྲིན་དོན་ལས་ཕོརཀ།",
-  "command.session.fork.description": "ཧེ་མའི་འཕྲིན་དོན་ལས་ ལཱ་ཡུན་གསརཔ་ཅིག་གསར་བསྐྲུན་འབད།",
+  "command.session.fork.description":
+    "ཧེ་མའི་འཕྲིན་དོན་ལས་ ལཱ་ཡུན་གསརཔ་ཅིག་གསར་བསྐྲུན་འབད།",
   "command.session.share": "བརྗེ་སོར་གྱི་ལཱ་ཡུན།",
-  "command.session.share.description": "ལཱ་ཡུན་འདི་རུབ་སྤྱོད་འབད་ཞིནམ་ལས་ URLའདི་འཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབས།",
+  "command.session.share.description":
+    "ལཱ་ཡུན་འདི་རུབ་སྤྱོད་འབད་ཞིནམ་ལས་ URLའདི་འཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབས།",
   "command.session.unshare": "ལཱ་ཡུན་བགོ་བཤའ་རྐྱབ།",
   "command.session.unshare.description": "ལཱ་ཡུན་འདི་བརྗེ་སོར་འབད་ནི་འདི་བཀག།",
   "command.session.export": "ལཱ་ཡུན་ཕྱིར་འདྲེན་འབད་ནི།",
-  "command.session.export.description": "ལཱ་ཡུན་ཡིག་བསྒྱུར་ཆ་ཚང་འདི་ JSON སྦེ་ཕྱིར་འདྲེན་འབད།",
+  "command.session.export.description":
+    "ལཱ་ཡུན་ཡིག་བསྒྱུར་ཆ་ཚང་འདི་ JSON སྦེ་ཕྱིར་འདྲེན་འབད།",
   "palette.search.placeholder": "ཡིག་སྣོད་དང་བརྡ་བཀོད་ དེ་ལས་ལཱ་ཡུན་ཚུ་འཚོལ་ཞིབ་འབད།",
   "palette.search.placeholder.home": "བརྡ་བཀོད་དང་ལཱ་ཡུན་ཚུ་འཚོལ་ཞིབ་འབད།",
   "palette.empty": "གྲུབ་འབྲས་གང་ཡང་མ་ཐོབ།",
@@ -197,29 +217,40 @@ export const dict: Record<string, string> = {
   "dialog.provider.group.other": "གཞན",
   "dialog.provider.custom.label": "སྲོལ་སྒྲིག OpenAI-མཐུན་འགྱུར་སྤྲོད་མཁན།",
   "dialog.provider.tag.recommended": "རྒྱབ་སྣོན་འབད་ཡི",
-  "dialog.provider.opencode.note": "Claude དང་ GPT དེ་ལས་ Gemini དང་དེ་ལས་ལྷག་སྟེ་ བཀོད་སྒྲིག་འབད་ཡོད་པའི་དཔེ་ཚད།",
+  "dialog.provider.opencode.note":
+    "Claude དང་ GPT དེ་ལས་ Gemini དང་དེ་ལས་ལྷག་སྟེ་ བཀོད་སྒྲིག་འབད་ཡོད་པའི་དཔེ་ཚད།",
   "dialog.provider.opencode.tagline": "བློ་གཏད་ཅན་གྱི་ཡར་རྒྱས་ཅན་གྱི་དཔེ་ཚད་ཚུ།",
-  "dialog.provider.opencodeGo.tagline": "མི་ཚང་མའི་དོན་ལུ་ གོང་ཚད་དམའ་བའི་ མཁོ་མངགས་འབད་ནི།",
-  "dialog.provider.anthropic.note": "པྲོ་དང་མེགསི་ཚུ་རྩིས་ཏེ་ Claudeདཔེ་ཚད་ཚུ་ལུ་ཐད་ཀར་དུ་འཛུལ་སྤྱོད།",
-  "dialog.provider.copilot.note": "GitHub Copilot བརྒྱུད་དེ་ ཀོ་ཌིང་གྲོགས་རམ་གྱི་དོན་ལུ་ AI དཔེ་ཚད།",
-  "dialog.provider.openai.note": "GPT མགྱོགས་དྲགས་དང་ལྕོགས་གྲུབ་ཅན་གྱི་སྤྱིར་བཏང་ཨེ་ཨའི་ལས་འགན་ཚུ་གི་དོན་ལུ་དཔེ་ཚད།",
-  "dialog.provider.google.note": "Gemini མགྱོགས་དྲགས་དང་སྒྲིག་བཀོད་ཅན་གྱི་ལན་འདེབས་ཀྱི་དཔེ་ཚད།",
-  "dialog.provider.openrouter.note": "བྱིན་མི་གཅིག་ལས་ རྒྱབ་སྐྱོར་འབད་ཡོད་པའི་དཔེ་ཚད་ཚུ་ཆ་མཉམ་འཛུལ་སྤྱོད་འབད།",
+  "dialog.provider.opencodeGo.tagline":
+    "མི་ཚང་མའི་དོན་ལུ་ གོང་ཚད་དམའ་བའི་ མཁོ་མངགས་འབད་ནི།",
+  "dialog.provider.anthropic.note":
+    "པྲོ་དང་མེགསི་ཚུ་རྩིས་ཏེ་ Claudeདཔེ་ཚད་ཚུ་ལུ་ཐད་ཀར་དུ་འཛུལ་སྤྱོད།",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot བརྒྱུད་དེ་ ཀོ་ཌིང་གྲོགས་རམ་གྱི་དོན་ལུ་ AI དཔེ་ཚད།",
+  "dialog.provider.openai.note":
+    "GPT མགྱོགས་དྲགས་དང་ལྕོགས་གྲུབ་ཅན་གྱི་སྤྱིར་བཏང་ཨེ་ཨའི་ལས་འགན་ཚུ་གི་དོན་ལུ་དཔེ་ཚད།",
+  "dialog.provider.google.note":
+    "Gemini མགྱོགས་དྲགས་དང་སྒྲིག་བཀོད་ཅན་གྱི་ལན་འདེབས་ཀྱི་དཔེ་ཚད།",
+  "dialog.provider.openrouter.note":
+    "བྱིན་མི་གཅིག་ལས་ རྒྱབ་སྐྱོར་འབད་ཡོད་པའི་དཔེ་ཚད་ཚུ་ཆ་མཉམ་འཛུལ་སྤྱོད་འབད།",
   "dialog.provider.vercel.note":
     "རིག་རྩལ་ཅན་གྱི་འགྲུལ་ལམ་དང་གཅིག་ཁར་ བཅོས་མའི་བློ་རིག་དཔེ་ཚད་ཚུ་ལུ་ མཉམ་བསྡོམས་འཛུལ་སྤྱོད་འབད་ནི།",
   "dialog.model.select.title": "དཔེ་ཚད་སེལ་འཐུ་འབད།",
   "dialog.model.search.placeholder": "དཔེ་ཚད་འཚོལ་ཞིབ་འབད།",
   "dialog.model.empty": "དཔེ་ཚད་གྲུབ་འབྲས་མེད།",
   "dialog.model.manage": "དཔེ་ཚད་ཚུ་འཛིན་སྐྱོང་འཐབ།",
-  "dialog.model.manage.description": "དཔེ་ཚད་སེལ་འཐུ་འབད་མི་ནང་ དཔེ་ཚད་ག་འདི་འབྱུངམ་ཨིན་ན་ སྲོལ་སྒྲིག་འབད།",
-  "dialog.model.manage.provider.toggle": "{{provider}} དཔེ་ཚད་ཚུ་ཆ་མཉམ་སོར་སྟོན་འབད།",
+  "dialog.model.manage.description":
+    "དཔེ་ཚད་སེལ་འཐུ་འབད་མི་ནང་ དཔེ་ཚད་ག་འདི་འབྱུངམ་ཨིན་ན་ སྲོལ་སྒྲིག་འབད།",
+  "dialog.model.manage.provider.toggle":
+    "{{provider}} དཔེ་ཚད་ཚུ་ཆ་མཉམ་སོར་སྟོན་འབད།",
   "dialog.model.unpaid.freeModels.title": "OpenCodeགིས་བྱིན་མི་རིན་མེད་དཔེ་ཚད་ཚུ།",
-  "dialog.model.unpaid.addMore.title": "ཡོངས་གྲགས་ཅན་གྱི་བྱིན་མི་ཚུ་ལས་ དཔེ་ཚད་མངམ་ཁ་སྐོང་བརྐྱབ།",
+  "dialog.model.unpaid.addMore.title":
+    "ཡོངས་གྲགས་ཅན་གྱི་བྱིན་མི་ཚུ་ལས་ དཔེ་ཚད་མངམ་ཁ་སྐོང་བརྐྱབ།",
   "dialog.model.unpaid.viewMoreProviders": "70+ མཁོ་སྤྲོད་འབད་མི་ཚུ་བལྟ།",
   "dialog.provider.viewAll": "བྱིན་མི་མངམ་སྟོན།",
   "provider.connect.title": "{{provider}}མཐུད།",
   "provider.connect.title.anthropicProMax": "Claude Pro/Max དང་ཅིག་ཁར་ནང་བསྐྱོན།",
-  "provider.connect.selectMethod": "{{provider}}གི་དོན་ལུ་ ནང་བསྐྱོད་ཐབས་ལམ་སེལ་འཐུ་འབད།",
+  "provider.connect.selectMethod":
+    "{{provider}}གི་དོན་ལུ་ ནང་བསྐྱོད་ཐབས་ལམ་སེལ་འཐུ་འབད།",
   "provider.connect.method.apiKey": "APIལྡེ་མིག།",
   "provider.connect.method.browser": "བརའུ་ཟར།",
   "provider.connect.method.headless": "མགོ་མེད་པ།",
@@ -237,7 +268,8 @@ export const dict: Record<string, string> = {
     "API ལྡེ་མིག་རྐྱང་པ་གཅིག་གིས་ ཁྱོད་ཀྱིས་ Claude དང་ GPT དེ་ལས་ Gemini དང་ GLM དེ་ལས་མངམ་བཟུམ་གྱི་དཔེ་ཚད་ཚུ་ལུ་འཛུལ་སྤྱོད་འབད་ཚུགས།",
   "provider.connect.opencodeZen.visit.prefix": "འགྱོ་ནི",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": "ཁྱོད་རའི་ API ལྡེ་མིག་བསྡུ་ལེན་འབད་ནིའི་དོན་ལུ།",
+  "provider.connect.opencodeZen.visit.suffix":
+    "ཁྱོད་རའི་ API ལྡེ་མིག་བསྡུ་ལེན་འབད་ནིའི་དོན་ལུ།",
   "provider.connect.oauth.code.visit.prefix": "འགྱོ་ནི",
   "provider.connect.oauth.code.visit.link": "འབྲེལ་མཐུད་འདི།",
   "provider.connect.oauth.code.visit.suffix":
@@ -252,15 +284,18 @@ export const dict: Record<string, string> = {
     "དེ་ལས་ ཁྱོད་རའི་རྩིས་ཐོ་མཐུད་ནི་དང་ OpenCode ནང་ལུ་ {{provider}} དཔེ་ཚད་ཚུ་ལག་ལེན་འཐབ།",
   "provider.connect.oauth.auto.confirmationCode": "ངེས་གཏན་ཨང་རྟགས།",
   "provider.connect.toast.connected.title": "{{provider}}མཐུད་ཡོད།",
-  "provider.connect.toast.connected.description": "{{provider}} དཔེ་ཚད་ཚུ་ད་ལག་ལེན་འཐབ་བཏུབ་ཨིན།",
+  "provider.connect.toast.connected.description":
+    "{{provider}} དཔེ་ཚད་ཚུ་ད་ལག་ལེན་འཐབ་བཏུབ་ཨིན།",
   "provider.custom.title": "སྲོལ་སྒྲིག་བྱིན་མི།",
   "provider.custom.unavailable": "སྲོལ་སྒྲིག་བྱིན་མི་ཚུ་ སར་བར་འདི་གུ་འཐོབ་མི་ཚུགས།",
-  "provider.custom.description.prefix": "OpenAI-མཐུན་འགྱུར་ཅན་གྱི་བྱིན་མི་ཅིག་རིམ་སྒྲིག་འབད། བལྟ།",
+  "provider.custom.description.prefix":
+    "OpenAI-མཐུན་འགྱུར་ཅན་གྱི་བྱིན་མི་ཅིག་རིམ་སྒྲིག་འབད། བལྟ།",
   "provider.custom.description.link": "བྱིན་མི་རིམ་སྒྲིག་ཡིག་ཆ།",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "བྱིན་མི་ཨའི་ཌི།",
   "provider.custom.field.providerID.placeholder": "ངེ་གི་བྱིན་མི།",
-  "provider.custom.field.providerID.description": "ཆུང་ཡིག་གི་ཡི་གུ་ ཨང་གྲངས་ སྦྲེལ་རྟགས་ ཡང་ན་ འོག་ཐིག་ཚུ།",
+  "provider.custom.field.providerID.description":
+    "ཆུང་ཡིག་གི་ཡི་གུ་ ཨང་གྲངས་ སྦྲེལ་རྟགས་ ཡང་ན་ འོག་ཐིག་ཚུ།",
   "provider.custom.field.name.label": "བཀྲམ་སྟོན་མིང་།",
   "provider.custom.field.name.placeholder": "ངའི་ཨེ་ཨའི་སྤྲོད་མཁན།",
   "provider.custom.field.baseURL.label": "གཞི་རྟེན་ URL།",
@@ -284,15 +319,18 @@ export const dict: Record<string, string> = {
   "provider.custom.headers.remove": "མགོ་ཡིག་རྩ་བསྐྲད་གཏང་།",
   "provider.custom.headers.add": "མགོ་ཡིག་ཁ་སྐོང་འབད།",
   "provider.custom.error.providerID.required": "བྱིན་མི་ཨའི་ཌི་དགོཔ་ཨིན།",
-  "provider.custom.error.providerID.format": "ཆུང་ཡིག་ཡི་གུ་ ཨང་གྲངས་ སྦྲེལ་རྟགས་ ཡང་ན་ འོག་ཐིག་ཚུ་ལག་ལེན་འཐབ།",
+  "provider.custom.error.providerID.format":
+    "ཆུང་ཡིག་ཡི་གུ་ ཨང་གྲངས་ སྦྲེལ་རྟགས་ ཡང་ན་ འོག་ཐིག་ཚུ་ལག་ལེན་འཐབ།",
   "provider.custom.error.providerID.exists": "བྱིན་མི་ཨའི་ཌི་དེ་ཧེ་མ་ལས་རང་ཡོདཔ་ཨིན།",
   "provider.custom.error.name.required": "བཀྲམ་སྟོན་མིང་དགོཔ་ཨིན།",
   "provider.custom.error.baseURL.required": "གཞི་རྟེན་ URLའདི་དགོཔ་ཨིན།",
-  "provider.custom.error.baseURL.format": "http:// ཡང་ན་ https:// ལས་འགོ་བཙུགས་དགོ།",
+  "provider.custom.error.baseURL.format":
+    "http:// ཡང་ན་ https:// ལས་འགོ་བཙུགས་དགོ།",
   "provider.custom.error.required": "དགོས་མཁོ",
   "provider.custom.error.duplicate": "འདྲ་བཤུས།",
   "provider.disconnect.toast.disconnected.title": "{{provider}} མཐུད་ལམ་ཆད་ཡོདཔ།",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} དཔེ་ཚད་ཚུ་ད་ལས་ཕར་འཐོབ་མི་ཚུགས།",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} དཔེ་ཚད་ཚུ་ད་ལས་ཕར་འཐོབ་མི་ཚུགས།",
   "model.tag.free": "རིན་མེད་སྟོང་པ",
   "model.tag.latest": "ད༌རེས༌ནངས༌པ",
   "model.provider.anthropic": "Anthropic",
@@ -367,7 +405,8 @@ export const dict: Record<string, string> = {
   "prompt.example.25": "མཐའ་འཁོར་འགྱུར་ཅན་ཚུ་ནཱ་ལུ་ག་དེ་སྦེ་ལཱ་འབདཝ་ཨིན་ན།",
   "prompt.popover.emptyResults": "མཐུན་པའི་གྲུབ་འབྲས་མེད།",
   "prompt.popover.emptyCommands": "མཐུན་སྒྲིག་བརྡ་བཀོད་མེད།",
-  "prompt.dropzone.label": "པར་རིས་ཚུ་དང་ པི་ཌི་ཨེཕ་ཚུ་ ཡང་ན་ ཚིག་ཡིག་ཡིག་སྣོད་ཚུ་ ནཱ་ལུ་བཀོག་བཞག།",
+  "prompt.dropzone.label":
+    "པར་རིས་ཚུ་དང་ པི་ཌི་ཨེཕ་ཚུ་ ཡང་ན་ ཚིག་ཡིག་ཡིག་སྣོད་ཚུ་ ནཱ་ལུ་བཀོག་བཞག།",
   "prompt.dropzone.file.label": "@mention ཡིག་སྣོད་ལུ་བཀོག་བཞག།",
   "prompt.slash.badge.custom": "ལུགས་སྲོལ་",
   "prompt.slash.badge.skill": "རིག་རྩལ་",
@@ -390,9 +429,11 @@ export const dict: Record<string, string> = {
     "པར་རིས་དང་པི་ཌི་ཨེཕ་ ཡང་ན་ ཚིག་ཡིག་ཡིག་སྣོད་ཚུ་རྐྱངམ་ཅིག་ ནཱ་ལུ་མཉམ་སྦྲགས་འབད་བཏུབ།",
   "prompt.toast.attachmentDuplicate.title": "ཡིག་སྣོད་འདི་ཧེ་མ་ལས་སྐྱེལ་བཙུགས་འབད་ཡི།",
   "prompt.toast.modelAgentRequired.title": "ལས་ཚབ་དང་དཔེ་ཚད་ཅིག་སེལ་འཐུ་འབད།",
-  "prompt.toast.modelAgentRequired.description": "བརྡ་སྟོན་མ་གཏང་པའི་ཧེ་མ་ ལས་ཚབ་དང་དཔེ་ཚད་གདམ་ཁ་རྐྱབས།",
+  "prompt.toast.modelAgentRequired.description":
+    "བརྡ་སྟོན་མ་གཏང་པའི་ཧེ་མ་ ལས་ཚབ་དང་དཔེ་ཚད་གདམ་ཁ་རྐྱབས།",
   "prompt.toast.worktreeCreateFailed.title": "Git worktree གསར་བསྐྲུན་འབད་མ་ཚུགས།",
-  "prompt.toast.sessionCreateFailed.title": "ལཱ་ཡུན་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "prompt.toast.sessionCreateFailed.title":
+    "ལཱ་ཡུན་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "prompt.toast.shellSendFailed.title": "Shell བརྡ་བཀོད་གཏང་མ་ཚུགས།",
   "prompt.toast.commandSendFailed.title": "བརྡ་བཀོད་གཏང་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "prompt.toast.promptSendFailed.title": "བརྡ་སྟོན་གཏང་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
@@ -419,7 +460,8 @@ export const dict: Record<string, string> = {
   "app.server.retrying": "རང་བཞིན་གྱིས་ལོག་འབད་རྩོལ་བསྐྱེད་དོ།",
   "app.server.otherServers": "སར་བར་གཞན་ཚུ།",
   "dialog.server.title": "སར་བར་ཚུ།",
-  "dialog.server.description": "གློག་རིམ་འདི་གིས་OpenCodeསར་བར་ག་ལུ་མཐུདཔ་ཨིན་ན་སོར་བསྒྱུར་འབད།",
+  "dialog.server.description":
+    "གློག་རིམ་འདི་གིས་OpenCodeསར་བར་ག་ལུ་མཐུདཔ་ཨིན་ན་སོར་བསྒྱུར་འབད།",
   "dialog.server.search.placeholder": "སར་བར་ཚུ་འཚོལ་ཞིབ་འབད།",
   "dialog.server.empty": "ད་ལྟོ་སར་བར་ཚུ་མེད།",
   "dialog.server.add.title": "སར་བར་ཁ་སྐོང་འབད།",
@@ -457,7 +499,8 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.step.distro": "བཀྲམ་སྤེལ་གདམ་ཁ་རྐྱབས།",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "ཞིབ་དཔྱད་འབད་དོ WSL...",
-  "wsl.onboarding.restartRequired": "Windowsལུ་ WSLགཞི་བཙུགས་མཇུག་བསྡུ་ནིའི་དོན་ལུ་ ལོག་འགོ་བཙུགས་དགོཔ་ཨིན།",
+  "wsl.onboarding.restartRequired":
+    "Windowsལུ་ WSLགཞི་བཙུགས་མཇུག་བསྡུ་ནིའི་དོན་ལུ་ ལོག་འགོ་བཙུགས་དགོཔ་ཨིན།",
   "wsl.onboarding.ready": "WSL གྲ་སྒྲིག་ཡོད།",
   "wsl.onboarding.required": "WSL འདི་འཕྲོ་མཐུད་འབད་དགོཔ་ཨིན།",
   "wsl.onboarding.checkingDistros": "བཀྲམ་སྤེལ་ཚུ་ཞིབ་དཔྱད་འབད་དོ།",
@@ -466,18 +509,21 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.listingDistros": "ཐོ་བཀོད་འབད་ནི།",
   "wsl.onboarding.distroReady": "{{distro}} གྲ་སྒྲིག་ཡོད།",
   "wsl.onboarding.distroNotInstalled": "{{distro}} ད་ལྟོ་གཞི་བཙུགས་མ་འབད་བས།",
-  "wsl.onboarding.openDistroOnce": "གཞི་སྒྲིག་མཇུག་བསྡུ་ནིའི་དོན་ལུ་ {{distro}} ཚར་གཅིག་ཁ་ཕྱེ།",
+  "wsl.onboarding.openDistroOnce":
+    "གཞི་སྒྲིག་མཇུག་བསྡུ་ནིའི་དོན་ལུ་ {{distro}} ཚར་གཅིག་ཁ་ཕྱེ།",
   "wsl.onboarding.finishingDistro": "{{distro}}གི་དོན་ལུ་གཞི་སྒྲིག་མཇུག་བསྡུ་དོ།",
   "wsl.onboarding.pickDistro": "ཌིསི་ཊོ་ཅིག་གདམ་ཁ་རྐྱབ་ནི་ཡང་ན་ འོག་ལུ་གཅིག་གཞི་བཙུགས་འབད།",
   "wsl.onboarding.checkingOpencode": "OpenCodeཞིབ་དཔྱད་འབད་དོ།...",
-  "wsl.onboarding.checkingOpencodeIn": "{{distro}}ནང་ OpenCode ཞིབ་དཔྱད་འབད་དོ།...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "{{distro}}ནང་ OpenCode ཞིབ་དཔྱད་འབད་དོ།...",
   "wsl.onboarding.updatingOpencode": "OpenCodeདུས་མཐུན་བཟོ་དོ།...",
   "wsl.onboarding.updatingOpencodeIn": "{{distro}}ནང་ OpenCodeདུས་མཐུན་བཟོ་དོ།...",
   "wsl.onboarding.updateOpencodeIn": "OpenCodeའདི་ {{distro}}ནང་དུས་མཐུན་བཟོ།",
   "wsl.onboarding.updateOpencode": "OpenCodeདུས་མཐུན་བཟོ།",
   "wsl.onboarding.opencodeReadyIn": "OpenCode འདི་ {{distro}} ནང་ལུ་གྲ་སྒྲིག་ཡོདཔ་ཨིན།",
   "wsl.onboarding.opencodeReady": "OpenCode གྲ་སྒྲིག་ཡོད།",
-  "wsl.onboarding.installOpencodeIn": "OpenCode འདི་ {{distro}} ནང་ལུ་གཞི་བཙུགས་འབད།",
+  "wsl.onboarding.installOpencodeIn":
+    "OpenCode འདི་ {{distro}} ནང་ལུ་གཞི་བཙུགས་འབད།",
   "wsl.onboarding.installOpencode": "OpenCodeགཞི་བཙུགས་འབད།",
   "wsl.onboarding.chooseDistroFirst": "དང་པ་ བཀྲམ་སྤེལ་ཅིག་གདམ་ཁ་རྐྱབས།",
   "wsl.onboarding.loadFailed": "WSL གནས་སྟངས་མངོན་གསལ་འབད་ནི་ལུ་འཐུས་ཤོར་བྱུང་ཡོདཔ།",
@@ -490,18 +536,21 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.distroStatus.missingTools": "བཱཤ་, ཀརལ་བརླག་སྟོར་ཞུགསཔ་ཨིན།",
   "wsl.onboarding.distroStatus.unsupported": "རྒྱབ་སྐྱོར་མ་འབད་བ · WSL 2 ལག་ལེན་འཐབ།",
   "wsl.onboarding.needAnotherDistro": "གཞན་མི་ཌི་སི་ཊོ་དགོཔ་ཨིན་ན?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL ཐོ་གཞུང་ལས་ Linux བགོ་བཀྲམ་ཅིག་གཞི་བཙུགས་འབད།",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL ཐོ་གཞུང་ལས་ Linux བགོ་བཀྲམ་ཅིག་གཞི་བཙུགས་འབད།",
   "wsl.onboarding.wslNotInstalled.title": "WSL གཞི་བཙུགས་མ་འབད་བས།",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (WindowsLinuxཡན་ལག་རིམ་ལུགས་)འདི་ OpenCodeགིས་ WSLསར་བར་ཁ་སྐོང་མ་འབད་བའི་ཧེ་མ་དགོཔ་ཨིན།",
   "wsl.onboarding.wslUnavailable.title": "WSL ཐོབ་མི་ཚུགས།",
-  "wsl.onboarding.wslUnavailable.description": "OpenCodeགིས་ འཕྲུལ་ཆས་འདི་གུ་ WSL བདེན་སྦྱོར་འབད་མ་ཚུགས།",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCodeགིས་ འཕྲུལ་ཆས་འདི་གུ་ WSL བདེན་སྦྱོར་འབད་མ་ཚུགས།",
   "wsl.onboarding.installWsl": "WSLགཞི་བཙུགས་འབད།",
   "wsl.onboarding.windowsRestartRequired":
     "WSL གཞི་བཙུགས་འབད་ནི་མཇུག་བསྡུ་ནིའི་དོན་ལུ་ Windows ལོག་འགོ་བཙུགསཔ་དང་ དེ་ལས་ OpenCode ལོག་ཁ་ཕྱེ།",
   "wsl.onboarding.next": "ཤུལ༌མའི",
   "wsl.onboarding.refresh": "གསརཔ་བཟོ།",
-  "wsl.onboarding.allDistrosAdded": "གཞི་བཙུགས་འབད་ཡོད་པའི་ཌིསི་ཊོ་ཚུ་ཆ་མཉམ་ཧེ་མ་ལས་ཁ་སྐོང་བརྐྱབ་ཡོདཔ་ཨིན།",
+  "wsl.onboarding.allDistrosAdded":
+    "གཞི་བཙུགས་འབད་ཡོད་པའི་ཌིསི་ཊོ་ཚུ་ཆ་མཉམ་ཧེ་མ་ལས་ཁ་སྐོང་བརྐྱབ་ཡོདཔ་ཨིན།",
   "wsl.onboarding.noDistros": "ད་ལྟོ་ཡང་ བཀྲམ་སྤེལ་འབད་མི་ཚུ་ ཤེས་རྟོགས་མ་བྱུང་པས།",
   "wsl.onboarding.install": "བཙུགས་ནི",
   "wsl.onboarding.installing": "གཞི་བཙུགས་འབད་དོ།",
@@ -515,15 +564,18 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.version": "ཐོན་རིམ: {{version}}",
   "wsl.onboarding.unknown": "མ་ཤེསཔ་",
   "wsl.onboarding.desktopVersion": "ཌེཀསི་ཊོཔ་ {{version}}",
-  "wsl.onboarding.versionMismatch": "གཞི་བཙུགས་འབད་ཡོད་པའི་ཐོན་རིམ་འདི་ ཌེཀསི་ཊོཔ་ཨེཔ་ཐོན་རིམ་དང་མཐུན་སྒྲིག་མི་འབད།",
+  "wsl.onboarding.versionMismatch":
+    "གཞི་བཙུགས་འབད་ཡོད་པའི་ཐོན་རིམ་འདི་ ཌེཀསི་ཊོཔ་ཨེཔ་ཐོན་རིམ་དང་མཐུན་སྒྲིག་མི་འབད།",
   "wsl.onboarding.adding": "ཁ་སྐོང་བརྐྱབ་དོ།",
   "help.tabs.toast.ariaLabel":
     "མཆོང་ལྡེ་ཚུ་ངོ་སྤྲོད་འབད་དོ། མཆོང་ལྡེ་ཚུ་དང་གཅིག་ཁར་ ཁྱོད་རའི་ལཱ་དང་ ཤུགས་ལྡན་ལཱ་ཡུན་ཚུ་ གོ་སྒྲིག་འབད།",
   "help.tabs.toast.dismiss": "མཆོང་ལྡེ་བརྡ་དོན་བཏོན་གཏང་།",
   "help.tabs.title": "མཆོང་ལྡེ་ངོ་སྤྲོད་འབད་དོ།",
-  "help.tabs.description": "མཆོང་ལྡེ་ཚུ་དང་གཅིག་ཁར་ ཁྱོད་རའི་ལཱ་དང་ ཤུགས་ལྡན་ལཱ་ཡུན་ཚུ་ གོ་སྒྲིག་འབད།",
+  "help.tabs.description":
+    "མཆོང་ལྡེ་ཚུ་དང་གཅིག་ཁར་ ཁྱོད་རའི་ལཱ་དང་ ཤུགས་ལྡན་ལཱ་ཡུན་ཚུ་ གོ་སྒྲིག་འབད།",
   "help.tabs.date": "སྤྱི་ཟླ་༧ པའི་ཚེས་༡༤།",
-  "help.tabs.introduction": "OpenCode ཌེཀསི་ཊོཔ་འདི་ད་ལྟོ་མཆོང་ལྡེ་ཚུ་གི་མཐའ་འཁོར་ལུ་བཟོ་བསྐྲུན་འབད་ཡོདཔ་ཨིན།",
+  "help.tabs.introduction":
+    "OpenCode ཌེཀསི་ཊོཔ་འདི་ད་ལྟོ་མཆོང་ལྡེ་ཚུ་གི་མཐའ་འཁོར་ལུ་བཟོ་བསྐྲུན་འབད་ཡོདཔ་ཨིན།",
   "help.tabs.sessions":
     "མཆོང་ལྡེ་ཅིག་ནང་ལཱ་ཡུན་གསརཔ་འགོ་བཙུགས་ ཡང་ན་ ཁྱོད་རའི་ལས་འགུལ་གང་རུང་ཅིག་ལས་ ད་ལྟོ་ཡོད་པའི་ལཱ་ཡུན་ཅིག་ཁ་ཕྱེ། ཁྱོད་ཀྱིས་ག་ཅི་ཡང་གསརཔ་འགོ་བཙུགས་པའི་སྐབས་ མཆོང་ལྡེ་གསརཔ་ཅིག་ཁ་ཕྱེ་ཞིནམ་ལས་ ཁྱོད་ཀྱིས་འབད་ཚརཝ་ད་ ཁ་བསྡམས།",
   "help.tabs.organize":
@@ -606,49 +658,71 @@ export const dict: Record<string, string> = {
   "toast.theme.title": "བརྗོད་དོན་སོར་བསྒྱུར་འབད་ཡོདཔ།",
   "toast.scheme.title": "ཚོས་གཞིའི་འཆར་གཞི།",
   "toast.workspace.enabled.title": "ལཱ་གི་ས་སྒོ་ཚུ་ལྕོགས་ཅན་བཟོ་ཡོདཔ།",
-  "toast.workspace.enabled.description": "Git worktree སྣ་མང་ད་ལྟོ་ཟུར་ཁའི་ཕྲ་རིང་ནང་སྟོནམ་ཨིན།",
+  "toast.workspace.enabled.description":
+    "Git worktree སྣ་མང་ད་ལྟོ་ཟུར་ཁའི་ཕྲ་རིང་ནང་སྟོནམ་ཨིན།",
   "toast.workspace.disabled.title": "ལཱ་གི་ས་སྒོ་ཚུ་ ལྕོགས་མིན་བཟོ་ཡོདཔ།",
-  "toast.workspace.disabled.description": "ཟུར་ཁའི་ཕྲ་རིང་ནང་ Git worktree ངོ་མ་རྐྱངམ་ཅིག་སྟོནམ་ཨིན།",
+  "toast.workspace.disabled.description":
+    "ཟུར་ཁའི་ཕྲ་རིང་ནང་ Git worktree ངོ་མ་རྐྱངམ་ཅིག་སྟོནམ་ཨིན།",
   "toast.permissions.autoaccept.on.title": "རང་བཞིན་དང་ལེན་གནང་བ་ཚུ།",
-  "toast.permissions.autoaccept.on.description": "གནང་བ་ཞུ་བ་ཚུ་ རང་བཞིན་གྱིས་ ཆ་འཇོག་འབད་འོང་།",
-  "toast.permissions.autoaccept.off.title": "རང་བཞིན་དང་ལེན་གནང་བ་ཚུ་ བཀག་བཞག་ཡོདཔ།",
-  "toast.permissions.autoaccept.off.description": "གནང་བ་ཞུ་བ་ཚུ་ལུ་ ཆ་འཇོག་དགོཔ་ཨིན།",
+  "toast.permissions.autoaccept.on.description":
+    "གནང་བ་ཞུ་བ་ཚུ་ རང་བཞིན་གྱིས་ ཆ་འཇོག་འབད་འོང་།",
+  "toast.permissions.autoaccept.off.title":
+    "རང་བཞིན་དང་ལེན་གནང་བ་ཚུ་ བཀག་བཞག་ཡོདཔ།",
+  "toast.permissions.autoaccept.off.description":
+    "གནང་བ་ཞུ་བ་ཚུ་ལུ་ ཆ་འཇོག་དགོཔ་ཨིན།",
   "toast.model.none.title": "དཔེ་ཚད་སེལ་འཐུ་མ་འབད་བས།",
   "toast.model.none.description": "ལཱ་ཡུན་འདི་བཅུད་བསྡུས་འབད་ནིའི་དོན་ལུ་ བྱིན་མི་ཅིག་མཐུད།",
   "toast.file.loadFailed.title": "ཡིག་སྣོད་མངོན་གསལ་འབད་ནི་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "toast.file.listFailed.title": "ཡིག་སྣོད་ཚུ་ཐོ་བཀོད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "toast.context.noLineSelection.title": "གྲལ་ཐིག་སེལ་འཐུ་མེད།",
-  "toast.context.noLineSelection.description": "དང་པ་རང་ ཡིག་སྣོད་མཆོང་ལྡེ་ཅིག་ནང་གྲལ་ཐིག་ཁྱབ་ཚད་ཅིག་སེལ་འཐུ་འབད།",
-  "toast.session.share.copyFailed.title": "URLའདི་འཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབ་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "toast.context.noLineSelection.description":
+    "དང་པ་རང་ ཡིག་སྣོད་མཆོང་ལྡེ་ཅིག་ནང་གྲལ་ཐིག་ཁྱབ་ཚད་ཅིག་སེལ་འཐུ་འབད།",
+  "toast.session.share.copyFailed.title":
+    "URLའདི་འཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབ་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "toast.session.share.success.title": "ལཱ་ཡུན་བརྗེ་སོར་འབད་ཡོདཔ།",
-  "toast.session.share.success.description": "བརྗེ་སོར་ URLའཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབས་ནུག་!",
+  "toast.session.share.success.description":
+    "བརྗེ་སོར་ URLའཛིན་པང་ལུ་འདྲ་བཤུས་རྐྱབས་ནུག་!",
   "toast.session.share.failed.title": "ལཱ་ཡུན་རུབ་སྤྱོད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "toast.session.share.failed.description": "ལཱ་ཡུན་བརྗེ་སོར་འབད་བའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ཡོདཔ།",
+  "toast.session.share.failed.description":
+    "ལཱ་ཡུན་བརྗེ་སོར་འབད་བའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ཡོདཔ།",
   "toast.session.unshare.success.title": "ལཱ་ཡུན་བརྗེ་སོར་མ་འབད་བ།",
-  "toast.session.unshare.success.description": "ལཱ་ཡུན་འདི་ མཐར་འཁྱོལ་ཅན་སྦེ་ བརྗེ་སོར་མ་འབད་བས།",
+  "toast.session.unshare.success.description":
+    "ལཱ་ཡུན་འདི་ མཐར་འཁྱོལ་ཅན་སྦེ་ བརྗེ་སོར་མ་འབད་བས།",
   "toast.session.unshare.failed.title": "ལཱ་ཡུན་བགོ་བཤའ་རྐྱབ་ནི་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "toast.session.unshare.failed.description": "ལཱ་ཡུན་བརྗེ་སོར་བཤོལ་བའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ཡོདཔ།",
+  "toast.session.unshare.failed.description":
+    "ལཱ་ཡུན་བརྗེ་སོར་བཤོལ་བའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ཡོདཔ།",
   "toast.session.export.success.title": "ལཱ་ཡུན་ཕྱིར་འདྲེན་འབད་ཡོདཔ།",
-  "toast.session.export.success.description": "{{filename}} ལུ་སྲུང་བཞག་འབད་ཡོད་པའི་ལཱ་ཡུན་འདི་ཨིན།",
+  "toast.session.export.success.description":
+    "{{filename}} ལུ་སྲུང་བཞག་འབད་ཡོད་པའི་ལཱ་ཡུན་འདི་ཨིན།",
   "toast.session.export.failed.title": "ལཱ་ཡུན་ཕྱིར་འདྲེན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "toast.session.export.failed.description": "ལཱ་ཡུན་ཕྱིར་འདྲེན་འབད་བའི་སྐབས་འཛོལ་བ་བྱུང་ཡོདཔ།",
-  "toast.session.listFailed.title": "{{project}}གི་དོན་ལུ་ལཱ་ཡུན་ཚུ་མངོན་གསལ་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "toast.project.reloadFailed.title": "{{project}}ཡང་བསྐྱར་མངོན་གསལ་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "toast.session.export.failed.description":
+    "ལཱ་ཡུན་ཕྱིར་འདྲེན་འབད་བའི་སྐབས་འཛོལ་བ་བྱུང་ཡོདཔ།",
+  "toast.session.listFailed.title":
+    "{{project}}གི་དོན་ལུ་ལཱ་ཡུན་ཚུ་མངོན་གསལ་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "toast.project.reloadFailed.title":
+    "{{project}}ཡང་བསྐྱར་མངོན་གསལ་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "toast.update.title": "དུས་མཐུན་བཟོ་ཚུགས།",
-  "toast.update.description": "OpenCode ({{version}}) གི་ཐོན་རིམ་གསརཔ་ཅིག་ ད་ལྟོ་གཞི་བཙུགས་འབད་ནི་ལུ་འཐོབ་ཚུགས།",
+  "toast.update.description":
+    "OpenCode ({{version}}) གི་ཐོན་རིམ་གསརཔ་ཅིག་ ད་ལྟོ་གཞི་བཙུགས་འབད་ནི་ལུ་འཐོབ་ཚུགས།",
   "toast.update.action.installRestart": "གཞི་བཙུགས་དང་ལོག་འགོ་བཙུགས།",
-  "disk.accessGuidance.macos": "རིམ་ལུགས་ཀྱི་སྒྲིག་སྟངས་ནང་ DiskLizard ལུ་ Full Disk Access གནང་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབདཝ་ཨིན།",
-  "disk.accessGuidance.windows": "ཌི་རཱིབ་འདི་ལུ་འཛུལ་སྤྱོད་ཡོད་པའི་རྩིས་ཐོ་ཅིག་ལག་ལེན་འཐབ་ ཡང་ན་ ཁྱོད་རའི་རྩིས་ཐོ་གི་ལྟ་ཚུགས་པའི་ཡིག་སྣོད་ཅིག་སིཀེན་འབད།",
-  "disk.accessGuidance.linux": "ཡིག་སྣོད་དང་ mount གི་ཆོག་མཆན་ཚུ་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
-  "disk.accessGuidance.default": "ཡིག་སྣོད་འདི་ཚུ་ལུ་འཛུལ་སྤྱོད་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
-  "disk.accessGuidance.rescan": "འཛུལ་སྤྱོད་བསྒྱུར་བཅོས་འབད་ཚུལས་ཚར་ གོང་གི་ཕྲེང་ནང་ Rescan ལག་ལེན་འཐབ།",
+  "disk.accessGuidance.macos":
+    "རིམ་ལུགས་ཀྱི་སྒྲིག་སྟངས་ནང་ DiskLizard ལུ་ Full Disk Access གནང་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབདཝ་ཨིན།",
+  "disk.accessGuidance.windows":
+    "ཌི་རཱིབ་འདི་ལུ་འཛུལ་སྤྱོད་ཡོད་པའི་རྩིས་ཐོ་ཅིག་ལག་ལེན་འཐབ་ ཡང་ན་ ཁྱོད་རའི་རྩིས་ཐོ་གི་ལྟ་ཚུགས་པའི་ཡིག་སྣོད་ཅིག་སིཀེན་འབད།",
+  "disk.accessGuidance.linux":
+    "ཡིག་སྣོད་དང་ mount གི་ཆོག་མཆན་ཚུ་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
+  "disk.accessGuidance.default":
+    "ཡིག་སྣོད་འདི་ཚུ་ལུ་འཛུལ་སྤྱོད་ལྟ་ཞིབ་འབད་ཞིནམ་ལས་ཚར་ ཡང་སྐྱར་སིཀེན་འབད།",
+  "disk.accessGuidance.rescan":
+    "འཛུལ་སྤྱོད་བསྒྱུར་བཅོས་འབད་ཚུལས་ཚར་ གོང་གི་ཕྲེང་ནང་ Rescan ལག་ལེན་འཐབ།",
   "disk.common.rescan": "ཡང་བསྐྱར་ཞིབ་དཔྱད།",
   "toast.update.action.notYet": "ད༌ལྟོ༌མེན༌པའི",
   "toast.update.installFailed.title": "གསར་བསྒྱུར་གཞི་བཙུགས་འབད་མ་ཚུགས།",
   "toast.update.installFailed.retry": "ཡང་སྐྱར་འབད་བཅུམ།",
   "error.page.title": "ག་ཅི་ཅིག་འཛོལ་སོང་ནུག།",
   "error.page.description": "གློག་རིམ་མངོན་གསལ་འབད་བའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ནུག།",
-  "error.page.description.localServerStartup": "ཉེ་གནས་སར་བར་ འགོ་བཙུགས་པའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ནུག།",
+  "error.page.description.localServerStartup":
+    "ཉེ་གནས་སར་བར་ འགོ་བཙུགས་པའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ནུག།",
   "error.page.details.label": "འཛོལ་བའི་ཁ་གསལ།",
   "error.page.action.restart": "ལོག་འགོ་བཙུགས།",
   "error.page.action.report": "འཛོལ་བ་སྙན་ཞུ།",
@@ -663,15 +737,18 @@ export const dict: Record<string, string> = {
   "error.page.version": "ཐོན་རིམ: {{version}}",
   "error.dev.rootNotFound":
     "རྩ་བའི་ཆ་ཤས་འཚོལ་མ་ཐོབ། ཁྱོད་ཀྱི་ index.html ལུ་ཁ་སྐོང་འབད་ནི་བརྗེད་སོང་ག? ཡང་ན་ id ཁྱད་ཆོས་འདི་ཡིག་སྡེབ་འཛོལ་བ་འོང་ག?",
-  "error.serverSync.connectFailed": "སར་བར་ལུ་མཐུད་མ་ཚུགས། `{{url}}`ལུ་ སར་བར་གཡོག་བཀོལ་དོ་ཡོདཔ་ཨིན་ན?",
+  "error.serverSync.connectFailed":
+    "སར་བར་ལུ་མཐུད་མ་ཚུགས། `{{url}}`ལུ་ སར་བར་གཡོག་བཀོལ་དོ་ཡོདཔ་ཨིན་ན?",
   "error.serverSDK.noServerAvailable": "སར་བར་ཐོབ་མི་ཚུགས།",
   "error.serverSDK.serverNotAvailable": "སར་བར་འཐོབ་མི་ཚུགས།",
-  "error.childStore.persistedCacheCreateFailed": "རྟག་བརྟན་འདྲ་མཛོད་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "error.childStore.persistedCacheCreateFailed":
+    "རྟག་བརྟན་འདྲ་མཛོད་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "error.childStore.persistedProjectMetadataCreateFailed":
     "ཡུན་བརྟན་ལས་འགུལ་མེ་ཊ་གནད་སྡུད་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "error.childStore.persistedProjectIconCreateFailed":
     "རྟག་བརྟན་ལས་འགུལ་གྱི་ངོས་དཔར་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
-  "error.childStore.storeCreateFailed": "མཛོད་ཁང་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "error.childStore.storeCreateFailed":
+    "མཛོད་ཁང་གསར་བསྐྲུན་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "directory.error.invalidUrl": "URLནང་གི་སྣོད་ཐོ་ནུས་མེད་ཨིན།",
   "error.chain.unknown": "མ་ཤེས་པའི་འཛོལ་བ།",
   "error.server.invalidConfiguration": "ནུས་མེད་རིམ་སྒྲིག།",
@@ -682,24 +759,31 @@ export const dict: Record<string, string> = {
   "error.chain.responseBody": "ལན་འདེབས་ཕུང་པོ།:\n{{body}}",
   "error.chain.didYouMean": "ཁྱོད་ཀྱིས་: {{suggestions}} ཟེར་སླབ་དགོཔ་ཨིན་ན?",
   "error.chain.modelNotFound": "དཔེ་ཚད་འཚོལ་མ་ཐོབ།: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "ཁྱོད་ཀྱི་རིམ་སྒྲིག་ (opencode.json) བྱིན་མི་/དཔེ་ཚད་མིང་ཚུ་ཞིབ་དཔྱད་འབད།",
+  "error.chain.checkConfig":
+    "ཁྱོད་ཀྱི་རིམ་སྒྲིག་ (opencode.json) བྱིན་མི་/དཔེ་ཚད་མིང་ཚུ་ཞིབ་དཔྱད་འབད།",
   "error.chain.mcpFailed":
     'MCP སར་བར་ "{{name}}" འཐུས་ཤོར་བྱུང་ཡོདཔ། དྲན་འཛིན་ OpenCode གིས་ ད་ལྟོ་ཡང་ MCP བདེན་བཤད་ལུ་རྒྱབ་སྐྱོར་མི་འབད།',
-  "error.chain.providerAuthFailed": "བྱིན་མི་བདེན་བཤད་འཐུས་ཤོར་བྱུང་ཡོདཔ།({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "བྱིན་མི་བདེན་བཤད་འཐུས་ཤོར་བྱུང་ཡོདཔ།({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'བྱིན་མི་ "{{provider}}" འགོ་བཙུགས་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ། ངོ་རྟགས་དང་རིམ་སྒྲིག་ཞིབ་དཔྱད་འབད།',
-  "error.chain.configJsonInvalid": "{{path}} ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ JSON(C)ནུས་ཅན་མེན།",
+  "error.chain.configJsonInvalid":
+    "{{path}} ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ JSON(C)ནུས་ཅན་མེན།",
   "error.chain.configJsonInvalidWithMessage":
     "{{path}} ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ JSON(C): {{message}} ལུ་ནུས་ཅན་མེན།",
   "error.chain.configDirectoryTypo":
     '{{path}} ནང་གི་སྣོད་ཐོ་ "{{dir}}" ནུས་ཅན་མིན་འདུག། སྣོད་ཐོ་འདི་ "{{suggestion}}" ལུ་བསྐྱར་མིང་བཏགས་ ཡང་ན་ རྩ་བསྐྲད་གཏང་། འདི་སྤྱིར་བཏང་གི་ཡིག་ནོར་ཅིག་ཨིན།',
-  "error.chain.configFrontmatterError": "{{path}}:\n{{message}} ནང་གདོང་དོན་མིང་དཔྱད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "error.chain.configFrontmatterError":
+    "{{path}}:\n{{message}} ནང་གདོང་དོན་མིང་དཔྱད་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "error.chain.configInvalid": "{{path}}ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ནུས་མེད་ཨིན།",
-  "error.chain.configInvalidWithMessage": "{{path}} ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ནུས་མེད་ཨིན་: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} ལུ་ཡོད་པའི་རིམ་སྒྲིག་ཡིག་སྣོད་འདི་ནུས་མེད་ཨིན་: {{message}}",
   "notification.permission.title": "གནང་བ་དགོཔ།",
-  "notification.permission.description": "{{sessionTitle}}ནང་ {{projectName}}ལུ་གནང་བ་དགོཔ་ཨིན།",
+  "notification.permission.description":
+    "{{sessionTitle}}ནང་ {{projectName}}ལུ་གནང་བ་དགོཔ་ཨིན།",
   "notification.question.title": "དྲི་བ",
-  "notification.question.description": "{{sessionTitle}} ནང་{{projectName}}ནང་དྲི་བ་ཅིག་ཡོད།",
+  "notification.question.description":
+    "{{sessionTitle}} ནང་{{projectName}}ནང་དྲི་བ་ཅིག་ཡོད།",
   "notification.action.goToSession": "ལཱ་ཡུན་ལུ་འགྱོ།",
   "notification.session.responseReady.title": "ལན་འདེབས་གྲ་སྒྲིག།",
   "notification.session.error.title": "ལཱ་ཡུན་འཛོལ་བ།",
@@ -722,14 +806,16 @@ export const dict: Record<string, string> = {
   "home.sessions.group.today": "ད་རེས",
   "home.sessions.group.yesterday": "ཁ༌ཙ",
   "home.sessions.group.older": "རྒས་ཤོས།",
-  "home.providerTip": "Claude, GPT, Gemini, ལ་སོགས་པ་ཚུ་རྩིས་ཏེ་ དཔེ་ཚད་གཞན་ལག་ལེན་འཐབ་ནི་ལུ་ ༧༥+ བྱིན་མི་ལུ་མཐུད།",
+  "home.providerTip":
+    "Claude, GPT, Gemini, ལ་སོགས་པ་ཚུ་རྩིས་ཏེ་ དཔེ་ཚད་གཞན་ལག་ལེན་འཐབ་ནི་ལུ་ ༧༥+ བྱིན་མི་ལུ་མཐུད།",
   "session.tab.session": "ལཱ་ཡུན།",
   "session.tab.review": "བསྐྱར་ཞིབ",
   "session.tab.context": "སྐབས་དོན།",
   "session.tab.unknown": "མ་ཤེས་པའི་ལཱ་ཡུན།",
   "session.panel.reviewAndFiles": "བསྐྱར་ཞིབ་དང་ཡིག་སྣོད།",
   "session.error.notFound": "ལཱ་ཡུན་འདི་འཚོལ་མ་ཐོབ།",
-  "session.error.notFound.description": "མཆོང་ལྡེ་འདི་གིས་ སར་བར་འདི་གུ་ད་ལས་ཕར་མེད་པའི་ལཱ་ཡུན་ཅིག་ལུ་དཔག་འབདཝ་ཨིན།",
+  "session.error.notFound.description":
+    "མཆོང་ལྡེ་འདི་གིས་ སར་བར་འདི་གུ་ད་ལས་ཕར་མེད་པའི་ལཱ་ཡུན་ཅིག་ལུ་དཔག་འབདཝ་ཨིན།",
   "session.error.notFound.closeTab": "མཆོང་ལྡེ་ཁ་བསྡམས།",
   "session.error.serverConnection": "སར་བར་འདི་ལུ་མཐུད་མི་ཚུགས།",
   "session.review.filesChanged": "ཡིག་སྣོད་ཚུ་བསྒྱུར་བཅོས་འབད་ཡོདཔ། {{count}}",
@@ -737,11 +823,13 @@ export const dict: Record<string, string> = {
   "session.review.change.other": "བསྒྱུར་བཅོས་ཚུ།",
   "session.review.loadingChanges": "བསྒྱུར་བཅོས་ཚུ་མངོན་གསལ་འབད་དོ...",
   "session.review.empty": "ལཱ་ཡུན་འདི་ནང་ བསྒྱུར་བཅོས་ག་ནི་ཡང་མེདཔ།",
-  "session.review.noVcs": "མེན་ Git ཐོན་རིམ་ཚད་འཛིན་རིམ་ལུགས་སྐྱོན་འཛིན་འབད་ནུག བསྒྱུར་བཅོས་ཚུ་བཀྲམ་སྟོན་མ་འབད་བས།",
+  "session.review.noVcs":
+    "མེན་ Git ཐོན་རིམ་ཚད་འཛིན་རིམ་ལུགས་སྐྱོན་འཛིན་འབད་ནུག བསྒྱུར་བཅོས་ཚུ་བཀྲམ་སྟོན་མ་འབད་བས།",
   "session.review.noVcs.createGit.title": "Gitམཛོད་ཅིག་གསར་བསྐྲུན་འབད།",
   "session.review.noVcs.createGit.description":
     "ལས་འགུལ་འདི་ནང་ བསྒྱུར་བཅོས་ཚུ་ བརྟག་ཞིབ་འབད་ནི་དང་ བསྐྱར་ཞིབ་འབད་ནི་ དེ་ལས་ འབད་བཤོལ་འབད་ནི།",
-  "session.review.noVcs.createGit.actionLoading": "Git མཛོད་ཁང་གསར་བསྐྲུན་འབད་དོ།...",
+  "session.review.noVcs.createGit.actionLoading":
+    "Git མཛོད་ཁང་གསར་བསྐྲུན་འབད་དོ།...",
   "session.review.noVcs.createGit.action": "Gitམཛོད་ཁང་གསར་བསྐྲུན་འབད།",
   "session.review.noSnapshot":
     "རིམ་སྒྲིག་ནང་ལུ་ པར་རིས་རྗེས་འདེད་འབད་ནི་འདི་ལྕོགས་མིན་བཟོ་ཡོདཔ་ལས་ ལཱ་ཡུན་བསྒྱུར་བཅོས་ཚུ་འཐོབ་མི་ཚུགས།",
@@ -845,12 +933,14 @@ export const dict: Record<string, string> = {
   "terminal.title.numbered": "ཊར་མི་ནཱལ་ {{number}}།",
   "terminal.close": "ཊར་མི་ནཱལ་ཁ་བསྡམས།",
   "terminal.connectionLost.title": "མཐུད་ལམ་བརླག་སྟོར་ཞུགས་ཡོདཔ།",
-  "terminal.connectionLost.abnormalClose": "WebSocket སྤྱིར་བཏང་མེན་པར་ཁ་བསྡམས: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket སྤྱིར་བཏང་མེན་པར་ཁ་བསྡམས: {{code}}",
   "terminal.connectionLost.description":
     "ཊར་མི་ནཱལ་མཐུད་ལམ་འདི་ བར་ཆད་བྱུང་ནུག། སར་བར་འདི་ལོག་འགོ་བཙུགས་པའི་སྐབས་ལུ་འདི་འབྱུང་འོང་།",
   "terminal.connectTicket.csrfError":
     "PTY མཐུད་ལམ་ཤོག་བྱང་འདི་ འབྱུང་ཁུངས་དང་ ཡང་ན་ CSRF ཞིབ་དཔྱད་ཚུ་གིས་ ངོས་ལེན་མ་འབད་བས། སར་བར་ CORS རིམ་སྒྲིག་ཞིབ་དཔྱད་འབད།",
-  "terminal.connectTicket.statusError": "PTY མཐུད་ལམ་ཤོག་བྱང་འདི་ {{status}}དང་གཅིག་ཁར་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "terminal.connectTicket.statusError":
+    "PTY མཐུད་ལམ་ཤོག་བྱང་འདི་ {{status}}དང་གཅིག་ཁར་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "titlebar.update": "དུས༌མཐུན༌བཟོ༌ནི",
   "titlebar.updateVersion": "{{version}} དུས་མཐུན་བཟོ།",
   "common.closeTab": "མཆོང་ལྡེ་ཁ་བསྡམས།",
@@ -894,7 +984,8 @@ export const dict: Record<string, string> = {
   "sidebar.workspaces.enable": "ལཱ་གི་ས་སྒོ་ཚུ་ལྕོགས་ཅན་བཟོ།",
   "sidebar.workspaces.disable": "ལཱ་གི་ས་སྒོ་ཚུ་ལྕོགས་མིན་བཟོ།",
   "sidebar.gettingStarted.title": "འགོ་བཙུགས་དོ།",
-  "sidebar.gettingStarted.line1": "OpenCode ནང་རིན་མེད་དཔེ་ཚད་ཚུ་ཚུད་དེ་ཡོདཔ་ལས་ཁྱོད་ཀྱིས་དེ་འཕྲལ་ལས་འགོ་བཙུགས་བཏུབ།",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ནང་རིན་མེད་དཔེ་ཚད་ཚུ་ཚུད་དེ་ཡོདཔ་ལས་ཁྱོད་ཀྱིས་དེ་འཕྲལ་ལས་འགོ་བཙུགས་བཏུབ།",
   "sidebar.gettingStarted.line2":
     "དཔེ་ཚད་ཚུ་ལག་ལེན་འཐབ་ནི་ལུ་ བྱིན་མི་གང་རུང་ཅིག་མཐུད།, inc. Claude དང་ GPT Gemini སོགས།",
   "sidebar.project.recentSessions": "འཕྲལ་གྱི་ལཱ་ཡུན་ཚུ།",
@@ -914,7 +1005,8 @@ export const dict: Record<string, string> = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "མཇུག་གི་སྐར་ཆ་༥ ནང་ ༣༢ཨེམ་ཨེསི་ལས་ལྷག་སྟེ་ གཞི་ཁྲམ་ཚུ།",
   "debugBar.long.label": "LONG།",
-  "debugBar.long.tip": "མཇུག་གི་སྐར་ཆ་༥ ནང་ བཀག་ཆ་འབད་ཡོད་པའི་དུས་ཚོད་དང་ ལས་འགན་རིངམོ་གྱངས་ཁ། མཐོ་ཤོས་ལས་ཀ: {{max}}.",
+  "debugBar.long.tip":
+    "མཇུག་གི་སྐར་ཆ་༥ ནང་ བཀག་ཆ་འབད་ཡོད་པའི་དུས་ཚོད་དང་ ལས་འགན་རིངམོ་གྱངས་ཁ། མཐོ་ཤོས་ལས་ཀ: {{max}}.",
   "debugBar.delay.label": "DELAY།",
   "debugBar.delay.tip": "མཇུག་གི་སྐར་ཆ་༥ ནང་ བལྟ་རྟོག་འབད་མི་ ཨིན་པུཊི་ཕྱིར་འགྱངས་སྡུག་ཤོས།",
   "debugBar.inp.label": "INP།",
@@ -923,10 +1015,13 @@ export const dict: Record<string, string> = {
   "debugBar.cls.label": "CLS།",
   "debugBar.cls.tip": "ད་ལྟོའི་གློག་རིམ་གྱི་མི་ཚེ་གི་དོན་ལུ་ བསྡོམས་རྩིས་སྒྲིག་བཀོད་སོར་བསྒྱུར་འབད།",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "ལག་ལེན་འཐབ་ཡོད་པའི་ JS བང་རིམ་ vs བང་རིམ་ཚད་གཞི། Chromium རྐྱངམ་གཅིག།",
-  "debugBar.mem.tip": "ལག་ལེན་འཐབ་ཡོད་པའི་ JS བང་རིམ་ vs བང་རིམ་ཚད་གཞི། {{used}} གི་ {{limit}} གི་ཨིན།",
+  "debugBar.mem.tipUnavailable":
+    "ལག་ལེན་འཐབ་ཡོད་པའི་ JS བང་རིམ་ vs བང་རིམ་ཚད་གཞི། Chromium རྐྱངམ་གཅིག།",
+  "debugBar.mem.tip":
+    "ལག་ལེན་འཐབ་ཡོད་པའི་ JS བང་རིམ་ vs བང་རིམ་ཚད་གཞི། {{used}} གི་ {{limit}} གི་ཨིན།",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "ཕན་ཚུན་འབྲེལ་བའི་ཆ་ཤས་ཚུ་ཆ་མཉམ་ལུ་ ཆེད་དམིགས་བཟོ་རྣམ་ཚུ་ བཙན་ཤུགས་འབད།",
+  "debugBar.focus.tip":
+    "ཕན་ཚུན་འབྲེལ་བའི་ཆ་ཤས་ཚུ་ཆ་མཉམ་ལུ་ ཆེད་དམིགས་བཟོ་རྣམ་ཚུ་ བཙན་ཤུགས་འབད།",
   "debugBar.focus.on": "ཐོག༌ཁར",
   "debugBar.focus.off": "ཡལ་བ",
   "debugBar.direction.label": "DIR།",
@@ -941,7 +1036,8 @@ export const dict: Record<string, string> = {
   "settings.tab.shortcuts": "མགྱོགས་ཐབས།",
   "settings.desktop.section.wsl": "WSL།",
   "settings.desktop.wsl.title": "WSL མཉམ་སྡེབ།",
-  "settings.desktop.wsl.description": "Windowsགུ་ WSLནང་ན་ OpenCodeསར་བར་གཡོག་བཀོལ།",
+  "settings.desktop.wsl.description":
+    "Windowsགུ་ WSLནང་ན་ OpenCodeསར་བར་གཡོག་བཀོལ།",
   "settings.general.section.appearance": "བཟོ་དབྱིབས",
   "settings.general.section.advanced": "ཡར་རྒྱས་འགྱོ་ཡོདཔ",
   "settings.general.section.notifications": "རིམ་ལུགས་བརྡ་བསྐུལ་ཚུ།",
@@ -950,9 +1046,11 @@ export const dict: Record<string, string> = {
   "settings.general.section.feed": "བྱིན་ནི",
   "settings.general.section.display": "གསལ༌སྟོན",
   "settings.general.row.language.title": "སྐད༌ཡིག",
-  "settings.general.row.language.description": "OpenCodeགི་དོན་ལུ་ བཀྲམ་སྟོན་སྐད་ཡིག་བསྒྱུར་བཅོས་འབད།",
+  "settings.general.row.language.description":
+    "OpenCodeགི་དོན་ལུ་ བཀྲམ་སྟོན་སྐད་ཡིག་བསྒྱུར་བཅོས་འབད།",
   "settings.general.row.shell.title": "ཊར་མི་ནཱལ་ Shell",
-  "settings.general.row.shell.description": "ཊར་མི་ནཱལ་དང་ལས་ཚབ་ལག་ཆས་ཚུ་གིས་ལག་ལེན་འཐབ་མི་ Shell",
+  "settings.general.row.shell.description":
+    "ཊར་མི་ནཱལ་དང་ལས་ཚབ་ལག་ཆས་ཚུ་གིས་ལག་ལེན་འཐབ་མི་ Shell",
   "settings.general.row.shell.autoDefault": "རང་བཞིན་ (སྔོན་སྒྲིག)",
   "settings.general.row.shell.terminalOnly": "ཊར་མི་ནཱལ་རྐྱངམ་ཅིག།",
   "settings.general.row.appearance.title": "བཟོ་དབྱིབས",
@@ -962,29 +1060,37 @@ export const dict: Record<string, string> = {
   "settings.general.row.colorScheme.description":
     "OpenCode གིས་ རིམ་ལུགས་དང་ འོད་ ཡང་ན་ གནགཔོ་གི་བརྗོད་དོན་ལུ་ རྗེས་སུ་འཇུག་ནི་ཨིན་ན་ གདམ་ཁ་རྐྱབས།",
   "settings.general.row.theme.title": "བརྗོད༌དོན",
-  "settings.general.row.theme.description": "OpenCodeའདི་བརྗོད་དོན་ག་དེ་སྦེ་ཡོདཔ་ཨིན་ན་སྲོལ་སྒྲིག་འབད།",
+  "settings.general.row.theme.description":
+    "OpenCodeའདི་བརྗོད་དོན་ག་དེ་སྦེ་ཡོདཔ་ཨིན་ན་སྲོལ་སྒྲིག་འབད།",
   "settings.general.row.font.title": "ཨང་རྟགས་ཡིག་གཟུགས།",
-  "settings.general.row.font.description": "གསང་གྲངས་སྡེབ་ཚན་ཚུ་ནང་ལག་ལེན་འཐབ་མི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
+  "settings.general.row.font.description":
+    "གསང་གྲངས་སྡེབ་ཚན་ཚུ་ནང་ལག་ལེན་འཐབ་མི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
   "settings.general.row.terminalFont.title": "ཊར་མི་ནཱལ་ཡིག་གཟུགས།",
-  "settings.general.row.terminalFont.description": "ཊར་མི་ནཱལ་ནང་ལག་ལེན་འཐབ་ཡོད་པའི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
+  "settings.general.row.terminalFont.description":
+    "ཊར་མི་ནཱལ་ནང་ལག་ལེན་འཐབ་ཡོད་པའི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
   "settings.general.row.uiFont.title": "ཡུ་ཨའི་ཡིག་གཟུགས།",
-  "settings.general.row.uiFont.description": "ངོས་འདྲ་བ་ཆ་མཉམ་ལུ་ལག་ལེན་འཐབ་ཡོད་པའི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
+  "settings.general.row.uiFont.description":
+    "ངོས་འདྲ་བ་ཆ་མཉམ་ལུ་ལག་ལེན་འཐབ་ཡོད་པའི་ཡིག་གཟུགས་སྲོལ་སྒྲིག་འབད།",
   "settings.general.row.followup.title": "རྗེས་སུ་འབྲངས་པའི་སྤྱོད་ལམ།",
   "settings.general.row.followup.description":
     "རྗེས་འཇུག་འབོད་བརྡ་ཚུ་ དེ་འཕྲོ་ལས་ སྒུལ་ནི་ཨིན་ན་ ཡང་ན་ གྱལ་ནང་བསྒུག་སྡོད་ནི་ཨིན་ན་ གདམ་ཁ་རྐྱབས།",
   "settings.general.row.followup.option.queue": "གྱལ",
   "settings.general.row.followup.option.steer": "སྒུལ་ཤུགས།",
   "settings.general.row.showFileTree.title": "ཡིག་སྣོད་ཤིང་།",
-  "settings.general.row.showFileTree.description": "ལཱ་ཡུན་ཚུ་ནང་ཡིག་སྣོད་ཤིང་གི་པེ་ནཱལ་སྟོན།",
+  "settings.general.row.showFileTree.description":
+    "ལཱ་ཡུན་ཚུ་ནང་ཡིག་སྣོད་ཤིང་གི་པེ་ནཱལ་སྟོན།",
   "settings.general.row.showNavigation.title": "འགྲུལ་བསྐྱོད་ཚད་འཛིན་ཚུ།",
   "settings.general.row.showNavigation.description":
     "ཌེཀསི་ཊོཔ་ཁ་ཡིག་ཕྲ་རིང་ནང་ རྒྱབ་བསྐྱོད་དང་གདོང་བསྐྱོད་ཨེབ་རྟ་ཚུ་སྟོན།",
   "settings.general.row.showSearch.title": "བརྡ་བཀོད་པེ་ལེཊི།",
-  "settings.general.row.showSearch.description": "ཁ་ཡིག་ཕྲ་རིང་ནང་ འཚོལ་ཞིབ་དང་བརྡ་བཀོད་པེ་ལེཊི་ཨེབ་རྟ་སྟོན།",
+  "settings.general.row.showSearch.description":
+    "ཁ་ཡིག་ཕྲ་རིང་ནང་ འཚོལ་ཞིབ་དང་བརྡ་བཀོད་པེ་ལེཊི་ཨེབ་རྟ་སྟོན།",
   "settings.general.row.showTerminal.title": "ཊར་མི་ནཱལ།",
-  "settings.general.row.showTerminal.description": "ཌེཀསི་ཊོཔ་མགོ་མིང་ཕྲ་རིང་ནང་ ཊར་མི་ནཱལ་ཨེབ་རྟ་སྟོན།",
+  "settings.general.row.showTerminal.description":
+    "ཌེཀསི་ཊོཔ་མགོ་མིང་ཕྲ་རིང་ནང་ ཊར་མི་ནཱལ་ཨེབ་རྟ་སྟོན།",
   "settings.general.row.showStatus.title": "སར་བར་གནས་ཚད།",
-  "settings.general.row.showStatus.description": "མགོ་མིང་ཕྲ་རིང་ནང་ སར་བར་གནས་ཚད་ཨེབ་རྟ་སྟོན།",
+  "settings.general.row.showStatus.description":
+    "མགོ་མིང་ཕྲ་རིང་ནང་ སར་བར་གནས་ཚད་ཨེབ་རྟ་སྟོན།",
   "settings.general.row.mobileTitlebarBottom.title": "འོག་གི་འགྲུལ་བསྐྱོད།",
   "settings.general.row.mobileTitlebarBottom.description":
     "མོ་བཱ་ཡེལ་གུ་ གསལ་གཞི་གི་མཇུག་ལུ་ མགོ་མིང་ཕྲ་རིང་དང་ ལཱ་ཡུན་མཆོང་ལྡེ་ཚུ་བཙུགས།",
@@ -994,29 +1100,37 @@ export const dict: Record<string, string> = {
   "settings.general.row.reasoningSummaries.title": "རྒྱུ་མཚན་བཅུད་བསྡུས་ཚུ་སྟོན།",
   "settings.general.row.reasoningSummaries.description":
     "དུས་ཚོད་གྲལ་ཐིག་ནང་དཔེ་ཚད་དོན་དག་བཅུད་བསྡུས་ཚུ་བཀྲམ་སྟོན་འབད།",
-  "settings.general.row.shellToolPartsExpanded.title": "Shell ལག་ཆས་ཆ་ཤས་ཚུ་རྒྱ་བསྐྱེད་འབད།",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Shell ལག་ཆས་ཆ་ཤས་ཚུ་རྒྱ་བསྐྱེད་འབད།",
   "settings.general.row.shellToolPartsExpanded.description":
     "དུས་ཚོད་གྲལ་ཐིག་ནང་སྔོན་སྒྲིག་གིས་རྒྱ་བསྐྱེད་འབད་ཡོད་མི་ Shell ལག་ཆས་ཆ་ཤས་ཚུ་སྟོན།",
-  "settings.general.row.editToolPartsExpanded.title": "ཞུན་དག་ལག་ཆས་ཆ་ཤས་ཚུ་རྒྱ་བསྐྱེད་འབད།",
+  "settings.general.row.editToolPartsExpanded.title":
+    "ཞུན་དག་ལག་ཆས་ཆ་ཤས་ཚུ་རྒྱ་བསྐྱེད་འབད།",
   "settings.general.row.editToolPartsExpanded.description":
     "དུས་ཚོད་གྲལ་ཐིག་ནང་སྔོན་སྒྲིག་གིས་རྒྱ་བསྐྱེད་འབད་ཡོད་པའི་ཞུན་དག་དང་འབྲི་ནི་ དེ་ལས་ཐབས་འཕྲུལ་གྱི་ལག་ཆས་ཆ་ཤས་ཚུ་སྟོན།",
   "settings.general.row.newInterface.title": "བཀོད་སྒྲིག་གསརཔ།",
   "settings.general.row.newInterface.badge": "གསརཔ",
   "settings.general.row.newInterface.description":
     "མཆོང་ལྡེ་གསརཔ་ཚུ་དང་ཁྱིམ་སྒྲིག་བཀོད་ཚུ་ལག་ལེན་འཐབ། དུས་ཚོད་ཚད་ཅིག་གི་དོན་ལུ་ སྒྲིག་བཀོད་ཚུ་གི་བར་ན་ སོར་བསྒྱུར་འབད།",
-  "settings.general.row.newInterfaceNotice.title": "ད་ཁྱོད་ཀྱིས་སྒྲིག་བཀོད་གསརཔ་ལག་ལེན་འཐབ་དོ།",
-  "settings.general.row.newInterfaceNotice.description": "ཧེ་མའི་སྒྲིག་བཀོད་འདི་ ད་ལས་ཕར་འཐོབ་མི་ཚུགས།",
+  "settings.general.row.newInterfaceNotice.title":
+    "ད་ཁྱོད་ཀྱིས་སྒྲིག་བཀོད་གསརཔ་ལག་ལེན་འཐབ་དོ།",
+  "settings.general.row.newInterfaceNotice.description":
+    "ཧེ་མའི་སྒྲིག་བཀོད་འདི་ ད་ལས་ཕར་འཐོབ་མི་ཚུགས།",
   "settings.general.row.newInterfaceNotice.dismiss": "ཁུངས༌མེད༌བརྩི༌ནི",
   "settings.general.row.pinchZoom.title": "རྒྱས་ཟུམ་འབད་ནི་ལུ་ ཨེབ་གཏང་།",
-  "settings.general.row.pinchZoom.description": "ཊེག་པེཌི་པིནཆི་དང་ Ctrl-བཤུད་སྒྲིལ་བརྡ་མཚོན་ཚུ་རྒྱས་ཟུམ་འབད་བཅུག།",
+  "settings.general.row.pinchZoom.description":
+    "ཊེག་པེཌི་པིནཆི་དང་ Ctrl-བཤུད་སྒྲིལ་བརྡ་མཚོན་ཚུ་རྒྱས་ཟུམ་འབད་བཅུག།",
   "settings.general.row.wayland.title": "ས་གནས་ཀྱི་ Waylandལག་ལེན་འཐབ།",
-  "settings.general.row.wayland.description": "Waylandགུ་ཨེགསི་༡༡ ཕོལབེཀ་ལྕོགས་མིན་བཟོ། ལོག་འགོ་བཙུགས་དགོཔ་ཨིན།",
+  "settings.general.row.wayland.description":
+    "Waylandགུ་ཨེགསི་༡༡ ཕོལབེཀ་ལྕོགས་མིན་བཟོ། ལོག་འགོ་བཙུགས་དགོཔ་ཨིན།",
   "settings.general.row.wayland.tooltip":
     "Linuxགུ་ སླ་བསྲེ་གསར་བསྐྲུན་-ཚད་བལྟ་རྟོག་པ་ཚུ་དང་གཅིག་ཁར་ ནེ་ཊིབ་ Wayland འདི་ཧེང་སྐལ་བརྟན་ཏོག་ཏོ་འོང་།",
   "settings.general.row.releaseNotes.title": "འགྲེམ་སྤེལ་དྲན་ཐོ།",
-  "settings.general.row.releaseNotes.description": "དུས་མཐུན་བཟོ་ཚར་བའི་ཤུལ་ལས་ པོཔ་ཨཔ་གསརཔ་ག་ཅི་ཡོདཔ་ཨིན་ན་སྟོན།",
+  "settings.general.row.releaseNotes.description":
+    "དུས་མཐུན་བཟོ་ཚར་བའི་ཤུལ་ལས་ པོཔ་ཨཔ་གསརཔ་ག་ཅི་ཡོདཔ་ཨིན་ན་སྟོན།",
   "settings.updates.row.startup.title": "འགོ་བཙུགས་གུ་དུས་མཐུན་ཚུ་ཞིབ་དཔྱད་འབད།",
-  "settings.updates.row.startup.description": "OpenCode འགོ་བཙུགསཔ་ད་ རང་བཞིན་གྱིས་དུས་མཐུན་ཚུ་ཞིབ་དཔྱད་འབད།",
+  "settings.updates.row.startup.description":
+    "OpenCode འགོ་བཙུགསཔ་ད་ རང་བཞིན་གྱིས་དུས་མཐུན་ཚུ་ཞིབ་དཔྱད་འབད།",
   "settings.updates.row.check.title": "དུས་མཐུན་ཚུ་ཞིབ་དཔྱད་འབད།",
   "settings.updates.row.check.description":
     "ལག་ཐོག་ལས་དུས་མཐུན་ཚུ་ཞིབ་དཔྱད་འབད་ཞིནམ་ལས་ འཐོབ་ཚུགས་པ་ཅིན་གཞི་བཙུགས་འབད།",
@@ -1025,7 +1139,8 @@ export const dict: Record<string, string> = {
   "settings.updates.action.downloading": "ཕབ་ལེན་འབད་དོ།",
   "settings.updates.action.installing": "གཞི་བཙུགས་འབད་དོ།",
   "settings.updates.toast.latest.title": "ཁྱོད་དུས་དང་བསྟུན།",
-  "settings.updates.toast.latest.description": "ཁྱོད་ཀྱིས་ OpenCodeགི་ཐོན་རིམ་གསརཔ་འདི་གཡོག་བཀོལ་དོ།",
+  "settings.updates.toast.latest.description":
+    "ཁྱོད་ཀྱིས་ OpenCodeགི་ཐོན་རིམ་གསརཔ་འདི་གཡོག་བཀོལ་དོ།",
   "sound.option.none": "ག་ནི་ཡང་མེདཔ།",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1076,11 +1191,14 @@ export const dict: Record<string, string> = {
   "settings.general.notifications.agent.description":
     "ལས་ཚབ་འདི་མཇུག་བསྡུ་ཡོདཔ་ ཡང་ན་ དོ་སྣང་དགོཔ་ད་ རིམ་ལུགས་བརྡ་བསྐུལ་སྟོན།",
   "settings.general.notifications.permissions.title": "གནང་བ་ཚུ།",
-  "settings.general.notifications.permissions.description": "གནང་བ་ཅིག་དགོ་པའི་སྐབས་ རིམ་ལུགས་བརྡ་བསྐུལ་སྟོན།",
+  "settings.general.notifications.permissions.description":
+    "གནང་བ་ཅིག་དགོ་པའི་སྐབས་ རིམ་ལུགས་བརྡ་བསྐུལ་སྟོན།",
   "settings.general.notifications.errors.title": "འཛོལ་བ།",
-  "settings.general.notifications.errors.description": "འཛོལ་བ་བྱུངམ་ད་ རིམ་ལུགས་བརྡ་བསྐུལ་སྟོན།",
+  "settings.general.notifications.errors.description":
+    "འཛོལ་བ་བྱུངམ་ད་ རིམ་ལུགས་བརྡ་བསྐུལ་སྟོན།",
   "settings.general.sounds.agent.title": "ལས་ཚབ།",
-  "settings.general.sounds.agent.description": "ལས་ཚབ་འདི་མཇུག་བསྡུ་བའི་སྐབས་ཡང་ན་དོ་སྣང་དགོ་པའི་སྐབས་སྒྲ་གཏང་།",
+  "settings.general.sounds.agent.description":
+    "ལས་ཚབ་འདི་མཇུག་བསྡུ་བའི་སྐབས་ཡང་ན་དོ་སྣང་དགོ་པའི་སྐབས་སྒྲ་གཏང་།",
   "settings.general.sounds.permissions.title": "གནང་བ་ཚུ།",
   "settings.general.sounds.permissions.description": "གནང་བ་དགོཔ་ད་ སྒྲ་སྐད་གཏང་ནི།",
   "settings.general.sounds.errors.title": "འཛོལ་བ།",
@@ -1091,7 +1209,8 @@ export const dict: Record<string, string> = {
   "settings.shortcuts.reset.toast.description":
     "ལྡེ་སྒྲོམ་གྱི་མགྱོགས་ཐབས་ཚུ་ སྔོན་སྒྲིག་ཚུ་ལུ་ སླར་སྒྲིག་འབད་ཡོདཔ་ཨིན།",
   "settings.shortcuts.conflict.title": "མགྱོགས་ཐབས་ཧེ་མ་ལས་ལག་ལེན་འཐབ་དོ།",
-  "settings.shortcuts.conflict.description": "{{keybind}} འདི་ ཧེ་མ་ལས་རང་ {{titles}} ལུ་འགན་སྤྲོད་འབད་ཡོདཔ་ཨིན།",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} འདི་ ཧེ་མ་ལས་རང་ {{titles}} ལུ་འགན་སྤྲོད་འབད་ཡོདཔ་ཨིན།",
   "settings.shortcuts.unassigned": "འགན་སྤྲོད་མ་འབད་བ།",
   "settings.shortcuts.pressKeys": "ལྡེ་མིག་ཨེབ།",
   "settings.shortcuts.search.placeholder": "འཚོལ་ཞིབ་མགྱོགས་ཐབས་ཚུ།",
@@ -1106,9 +1225,11 @@ export const dict: Record<string, string> = {
   "settings.providers.description": "བྱིན་མི་སྒྲིག་སྟངས་ཚུ་ ནཱ་ལུ་རིམ་སྒྲིག་འབད་བཏུབ།",
   "settings.providers.section.connected": "མཐུད་ཡོད་པའི་བྱིན་མི་ཚུ།",
   "settings.providers.connected.empty": "མཐུད་ཡོད་པའི་བྱིན་མི་མེད།",
-  "settings.providers.connected.environmentDescription": "ཁྱོད་ཀྱི་མཐའ་འཁོར་འགྱུར་ཅན་ཚུ་ལས་མཐུད་ཡོདཔ།",
+  "settings.providers.connected.environmentDescription":
+    "ཁྱོད་ཀྱི་མཐའ་འཁོར་འགྱུར་ཅན་ཚུ་ལས་མཐུད་ཡོདཔ།",
   "settings.providers.section.popular": "ཡོངས་གྲགས་ཅན་གྱི་བྱིན་མི་ཚུ།",
-  "settings.providers.custom.description": "གཞི་རྟེན་ URLགིས་ OpenAI-མཐུན་འགྱུར་བྱིན་མི་ཅིག་ཁ་སྐོང་བརྐྱབ།",
+  "settings.providers.custom.description":
+    "གཞི་རྟེན་ URLགིས་ OpenAI-མཐུན་འགྱུར་བྱིན་མི་ཅིག་ཁ་སྐོང་བརྐྱབ།",
   "settings.providers.tag.environment": "མཐའ་འཁོར",
   "settings.providers.tag.config": "རིམ་སྒྲིག།",
   "settings.providers.tag.custom": "ལུགས་སྲོལ",
@@ -1122,24 +1243,29 @@ export const dict: Record<string, string> = {
   "settings.mcp.title": "MCP།",
   "settings.mcp.description": "MCP སྒྲིག་སྟངས་ཚུ་ ནཱ་ལུ་རིམ་སྒྲིག་འབད་བཏུབ་འོང་།",
   "settings.permissions.title": "གནང་བ་ཚུ།",
-  "settings.permissions.description": "སར་བར་གྱིས་སྔོན་སྒྲིག་གིས་ལག་ཆས་ག་ཅི་ལག་ལེན་འཐབ་ཚུགསཔ་ཨིན་ན་ཚད་འཛིན་འབད།",
+  "settings.permissions.description":
+    "སར་བར་གྱིས་སྔོན་སྒྲིག་གིས་ལག་ཆས་ག་ཅི་ལག་ལེན་འཐབ་ཚུགསཔ་ཨིན་ན་ཚད་འཛིན་འབད།",
   "settings.permissions.section.tools": "ཐབས༌ཤེས",
-  "settings.permissions.toast.updateFailed.title": "གནང་བ་ཚུ་དུས་མཐུན་བཟོ་ནི་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
+  "settings.permissions.toast.updateFailed.title":
+    "གནང་བ་ཚུ་དུས་མཐུན་བཟོ་ནི་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "settings.permissions.action.allow": "བྱིན་ནི",
   "settings.permissions.action.ask": "དྲི་ནི",
   "settings.permissions.action.deny": "ཁས༌མི༌ལེན",
   "settings.permissions.tool.read.title": "ལྸག་ནི",
-  "settings.permissions.tool.read.description": "ཡིག་སྣོད་ཅིག་ལྷག་དོ(ཡིག་སྣོད་འགྲུལ་ལམ་མཐུན་སྒྲིག་འབདཝ་ཨིན།)",
+  "settings.permissions.tool.read.description":
+    "ཡིག་སྣོད་ཅིག་ལྷག་དོ(ཡིག་སྣོད་འགྲུལ་ལམ་མཐུན་སྒྲིག་འབདཝ་ཨིན།)",
   "settings.permissions.tool.edit.title": "ཞུན༌དག",
   "settings.permissions.tool.edit.description":
     "ཞུན་དག་དང་འབྲི་ནི་ དེ་ལས་ཐབས་འཕྲུལ་ཚུ་གྲངས་སུ་བཙུགས་ཏེ་ཡིག་སྣོད་ཚུ་ལེགས་བཅོས་འབད།",
   "settings.permissions.tool.glob.title": "Glob།",
-  "settings.permissions.tool.glob.description": "གོ་ལོབ་དཔེ་གཞི་ཚུ་ལག་ལེན་འཐབ་ཐོག་ལས་ཡིག་སྣོད་ཚུ་མཐུན་སྒྲིག་འབད།",
+  "settings.permissions.tool.glob.description":
+    "གོ་ལོབ་དཔེ་གཞི་ཚུ་ལག་ལེན་འཐབ་ཐོག་ལས་ཡིག་སྣོད་ཚུ་མཐུན་སྒྲིག་འབད།",
   "settings.permissions.tool.grep.title": "Grep།",
   "settings.permissions.tool.grep.description":
     "དུས་རྒྱུན་གསལ་བརྗོད་ཚུ་ལག་ལེན་འཐབ་ཐོག་ཡིག་སྣོད་ནང་དོན་ཚུ་འཚོལ་ཞིབ་འབད།",
   "settings.permissions.tool.list.title": "ཐོ",
-  "settings.permissions.tool.list.description": "སྣོད་ཐོ་ཅིག་གི་ནང་འཁོད་ཡིག་སྣོད་ཚུ་ཐོ་བཀོད་འབད།",
+  "settings.permissions.tool.list.description":
+    "སྣོད་ཐོ་ཅིག་གི་ནང་འཁོད་ཡིག་སྣོད་ཚུ་ཐོ་བཀོད་འབད།",
   "settings.permissions.tool.bash.title": "Bash།",
   "settings.permissions.tool.bash.description": "ཤལ་བརྡ་བཀོད་ཚུ་གཡོག་བཀོལ།",
   "settings.permissions.tool.task.title": "ལཱ",
@@ -1147,15 +1273,18 @@ export const dict: Record<string, string> = {
   "settings.permissions.tool.skill.title": "རིག་རྩལ",
   "settings.permissions.tool.skill.description": "མིང་གིས་རིག་རྩལ་ཅིག་མངོན་གསལ་འབད།",
   "settings.permissions.tool.lsp.title": "LSP།",
-  "settings.permissions.tool.lsp.description": "སྐད་ཡིག་སར་བར་གྱི་འདྲི་དཔྱད་ཚུ་གཡོག་བཀོལ།",
+  "settings.permissions.tool.lsp.description":
+    "སྐད་ཡིག་སར་བར་གྱི་འདྲི་དཔྱད་ཚུ་གཡོག་བཀོལ།",
   "settings.permissions.tool.todowrite.title": "Todo Write།",
-  "settings.permissions.tool.todowrite.description": "འབད་དགོ་པའི་ཐོ་ཡིག་དུས་མཐུན་བཟོ།",
+  "settings.permissions.tool.todowrite.description":
+    "འབད་དགོ་པའི་ཐོ་ཡིག་དུས་མཐུན་བཟོ།",
   "settings.permissions.tool.webfetch.title": "Web Fetch།",
   "settings.permissions.tool.webfetch.description": "URLནང་ལས་ནང་དོན་ལེན།",
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "ཝེབ་འཚོལ་ཞིབ།",
   "settings.permissions.tool.external_directory.title": "ཕྱིའི་སྣོད་ཐོ།",
-  "settings.permissions.tool.external_directory.description": "ལས་འགུལ་སྣོད་ཐོའི་ཕྱི་ཁར་ཡིག་སྣོད་ཚུ་འཛུལ་སྤྱོད་འབད།",
+  "settings.permissions.tool.external_directory.description":
+    "ལས་འགུལ་སྣོད་ཐོའི་ཕྱི་ཁར་ཡིག་སྣོད་ཚུ་འཛུལ་སྤྱོད་འབད།",
   "settings.permissions.tool.doom_loop.title": "Doom Loop།",
   "settings.permissions.tool.doom_loop.description":
     "ཅོག་འཐདཔ་ཨིན་པུཊི་གཅིག་ཁར་ ལག་ཆས་འབོད་བརྡ་ཚུ་ཡང་བསྐྱར་སྐྱོན་འཛིན་འབད།",
@@ -1172,12 +1301,14 @@ export const dict: Record<string, string> = {
   "workspace.resetting.description": "འདི་སྐར་མ་གཅིག་འགོར་འོང་།",
   "workspace.reset.failed.title": "ལཱ་གི་ས་སྒོ་སླར་སྒྲིག་འབད་ནི་ལུ་འཐུས་ཤོར་འབྱུང་ཡོདཔ།",
   "workspace.reset.success.title": "ལཱ་གི་ས་སྒོ་སླར་སྒྲིག་འབད།",
-  "workspace.reset.success.description": "ལཱ་གི་ས་སྒོ་འདི་ད་ལྟོ་སྔོན་སྒྲིག་ཡན་ལག་ལུ་མཐུན་སྒྲིག་འབདཝ་ཨིན།",
+  "workspace.reset.success.description":
+    "ལཱ་གི་ས་སྒོ་འདི་ད་ལྟོ་སྔོན་སྒྲིག་ཡན་ལག་ལུ་མཐུན་སྒྲིག་འབདཝ་ཨིན།",
   "workspace.error.stillPreparing": "ལཱ་གི་ས་སྒོ་འདི་ ད་ལྟོ་ཡང་གྲ་སྒྲིག་འབད་དོ།",
   "workspace.status.checking": "མཉམ་བསྡོམས་མ་འབད་བའི་བསྒྱུར་བཅོས་ཚུ་ཞིབ་དཔྱད་འབད་དོ...",
   "workspace.status.error": "ཇིཊི་གནས་ཚད་བདེན་སྦྱོར་འབད་མ་ཚུགས།",
   "workspace.status.clean": "མཉམ་བསྡོམས་མ་འབད་བའི་བསྒྱུར་བཅོས་ཚུ་ སྐྱོན་འཛིན་མ་འབད་བས།",
-  "workspace.status.dirty": "ལཱ་གི་ས་སྒོ་འདི་ནང་མཉམ་བསྡོམས་མ་འབད་བའི་བསྒྱུར་བཅོས་ཚུ་སྐྱོན་འཛིན་འབད་ཡོདཔ།",
+  "workspace.status.dirty":
+    "ལཱ་གི་ས་སྒོ་འདི་ནང་མཉམ་བསྡོམས་མ་འབད་བའི་བསྒྱུར་བཅོས་ཚུ་སྐྱོན་འཛིན་འབད་ཡོདཔ།",
   "workspace.delete.title": "ལཱ་གི་ས་སྒོ་བཏོན་གཏང་།",
   "workspace.delete.confirm": 'ལཱ་གི་ས་སྒོ་ "{{name}}" བཏོན་གཏང་ནི་ཨིན་ན?',
   "workspace.delete.button": "ལཱ་གི་ས་སྒོ་བཏོན་གཏང་།",
@@ -1187,6 +1318,7 @@ export const dict: Record<string, string> = {
   "workspace.reset.archived.none": "ཤུགས་ལྡན་ལཱ་ཡུན་ཚུ་གཏན་མཛོད་མི་འབད།",
   "workspace.reset.archived.one": "ལཱ་ཡུན་ ༡ གཏན་མཛོད་ནང་བཞག་འོང་།",
   "workspace.reset.archived.many": "{{count}} ལཱ་ཡུན་ཚུ་ཡིག་མཛོད་ནང་བཞག་འོང་།",
-  "workspace.reset.note": "འདི་གིས་ སྔོན་སྒྲིག་ཡན་ལག་མཐུན་སྒྲིག་འབད་ནི་ལུ་ ལཱ་གི་ས་སྒོ་འདི་སླར་སྒྲིག་འབད་འོང་།",
+  "workspace.reset.note":
+    "འདི་གིས་ སྔོན་སྒྲིག་ཡན་ལག་མཐུན་སྒྲིག་འབད་ནི་ལུ་ ལཱ་གི་ས་སྒོ་འདི་སླར་སྒྲིག་འབད་འོང་།",
   "dialog.usageExceeded.dontShowAgain": "ལོག་སྟེ་མ་སྟོན།",
 }

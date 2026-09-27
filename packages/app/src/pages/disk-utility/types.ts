@@ -38,7 +38,10 @@ export type DiskDeveloperArtifactDeletePrecondition = {
   kind: "developer-artifact"
   /** Required by desktop cleanup; absence means rescan, never shape-only Trash. */
   directoryIdentity?: DeveloperArtifactDirectoryIdentity
-  artifact: Pick<DeveloperArtifact, "name" | "kind" | "ecosystem" | "confidence" | "cleanup">
+  artifact: Pick<
+    DeveloperArtifact,
+    "name" | "kind" | "ecosystem" | "confidence" | "cleanup"
+  >
 }
 
 export type DiskDeleteOptions = {
@@ -53,12 +56,24 @@ export type DiskDeleteAuthorizationOutcome = {
   error?: string
 }
 
+/** Best-effort filesystem check; the final Trash operation still revalidates. */
+export type DiskPathAccess = {
+  state: "likely" | "denied" | "read-only" | "unknown"
+}
+
 /** Already-mounted storage roots discovered locally; no account or remote service is queried. */
 export type DiskStorageLocation = {
   path: string
   name: string
   kind: "cloud" | "network"
-  provider: "box" | "dropbox" | "google-drive" | "icloud" | "network" | "onedrive" | "other"
+  provider:
+    | "box"
+    | "dropbox"
+    | "google-drive"
+    | "icloud"
+    | "network"
+    | "onedrive"
+    | "other"
 }
 
 /** Evidence from conservative local probes, never a claim that an OS permission has been granted. */
@@ -69,9 +84,16 @@ export type DiskAccessDiagnostic = {
     status: "denied" | "missing" | "readable" | "unavailable"
   }>
   wholeVolume: {
-    capability: "macos-full-disk-access" | "windows-elevated-token" | "not-applicable"
+    capability:
+      | "macos-full-disk-access"
+      | "windows-elevated-token"
+      | "not-applicable"
     status: "granted" | "limited" | "inconclusive" | "not-applicable"
-    mapCoverage: "not-known-to-be-permission-limited" | "may-be-incomplete" | "unknown" | "not-applicable"
+    mapCoverage:
+      | "not-known-to-be-permission-limited"
+      | "may-be-incomplete"
+      | "unknown"
+      | "not-applicable"
     evidence:
       | {
           source: "protected-directory-probes"
@@ -82,7 +104,13 @@ export type DiskAccessDiagnostic = {
         }
       | {
           source: "windows-token-groups"
-          integrityLevel: "low" | "medium" | "high" | "system" | "protected" | "unknown"
+          integrityLevel:
+            | "low"
+            | "medium"
+            | "high"
+            | "system"
+            | "protected"
+            | "unknown"
           administratorsGroup: "present" | "absent" | "unknown"
         }
       | { source: "none" }
@@ -133,7 +161,10 @@ export type DiskScanProgress = {
   dirsScanned?: number
   currentPath: string
   size: number
-  discovery?: Pick<DiskScanNode, "name" | "path" | "size" | "modifiedAt" | "isDir">
+  discovery?: Pick<
+    DiskScanNode,
+    "name" | "path" | "size" | "modifiedAt" | "isDir"
+  >
   done?: boolean
   /** Completion provenance; only `scan` represents a new full traversal. */
   source?: "scan" | "snapshot" | "delta"
@@ -157,10 +188,16 @@ export type DiskFilePreview =
   | { kind: "image"; mime: string; dataUrl: string; bytes: number }
   | { kind: "pdf"; dataUrl: string; bytes: number }
   | { kind: "text"; text: string; bytes: number; truncated: boolean }
-  | { kind: "unsupported"; bytes: number; reason: "binary" | "directory" | "format" | "too-large" }
+  | {
+      kind: "unsupported"
+      bytes: number
+      reason: "binary" | "directory" | "format" | "too-large"
+    }
 
 export type DiskUtilityAPI = {
-  getVolumeInfo?(path: string): Promise<{ icon?: string; canEject: boolean } | null>
+  getVolumeInfo?(
+    path: string
+  ): Promise<{ icon?: string; canEject: boolean } | null>
   revealVolume?(path: string): Promise<boolean>
   ejectVolume?(path: string): Promise<boolean>
   getDrives(): Promise<DiskDriveInfo[]>
@@ -182,11 +219,17 @@ export type DiskUtilityAPI = {
       signatureNames?: string[]
       developerArtifactInventory?: boolean | DeveloperArtifactInventoryOptions
     },
-    scanId?: string,
+    scanId?: string
   ): Promise<DiskScanNode | null>
   cancelScan(scanId?: string): Promise<void>
-  stopWatching(scanId?: string, options?: { retainTrustedSubtree: true }): Promise<void>
-  authorizeDeletePaths(paths: readonly string[]): Promise<DiskDeleteAuthorizationOutcome[]>
+  stopWatching(
+    scanId?: string,
+    options?: { retainTrustedSubtree: true }
+  ): Promise<void>
+  authorizeDeletePaths(
+    paths: readonly string[]
+  ): Promise<DiskDeleteAuthorizationOutcome[]>
+  checkDeleteAccess?(path: string): Promise<DiskPathAccess>
   deletePath(path: string, options: DiskDeleteOptions): Promise<{ ok: true }>
   previewPath(path: string): Promise<DiskFilePreview>
   systemPreviewPath(path: string): Promise<void>

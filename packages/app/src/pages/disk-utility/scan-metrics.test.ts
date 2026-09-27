@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test"
-import { formatScanDuration, formatScanRate, scanPerformance } from "./scan-metrics"
+import {
+  formatScanDuration,
+  formatScanRate,
+  scanPerformance,
+} from "./scan-metrics"
 
 describe("scan performance", () => {
   it("derives a truthful rate only from a positive elapsed interval", () => {

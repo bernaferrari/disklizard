@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "ម៉ឺនុយ OpenCode",
   "desktop.updater.dialog.checkFailed.message": "ការត្រួតពិនិត្យការអាប់ដេតបានបរាជ័យ។",
   "desktop.updater.dialog.checkFailed.title": "កំហុសក្នុងការអាប់ដេត",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "អ្នកទាន់សម័យហើយ។",
   "desktop.updater.dialog.upToDate.title": "គ្មានការអាប់ដេតទេ។",
-  "desktop.updater.dialog.ready.message": "អាប់ដេត {{version}} ត្រូវបានទាញយក។ ចាប់ផ្តើមឡើងវិញឥឡូវនេះ?",
+  "desktop.updater.dialog.ready.message":
+    "អាប់ដេត {{version}} ត្រូវបានទាញយក។ ចាប់ផ្តើមឡើងវិញឥឡូវនេះ?",
   "desktop.updater.dialog.ready.title": "ធ្វើបច្ចុប្បន្នភាពរួចរាល់",
   "desktop.updater.dialog.restart": "ចាប់ផ្ដើមឡើងវិញ",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +64,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode បានបរាជ័យក្នុងការផ្ទុក",
   "desktop.recovery.terminated": "បង្អួច OpenCode ត្រូវបានបញ្ចប់ដោយមិននឹកស្មានដល់",
   "desktop.recovery.unresponsive": "OpenCode មិនឆ្លើយតបទេ។",
-  "desktop.recovery.unresponsive.detail": "អ្នកអាចបើកកម្មវិធីឡើងវិញ បើកកំណត់ហេតុ ឬបន្តរង់ចាំ។",
-  "desktop.recovery.loadFailed.detail": "បង្អួច៖ {{window}}\nURL៖ {{url}}\nកំហុស៖ {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "បង្អួច៖ {{window}}\nហេតុផល៖ {{reason}}\nលេខកូដ៖ {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "អ្នកអាចបើកកម្មវិធីឡើងវិញ បើកកំណត់ហេតុ ឬបន្តរង់ចាំ។",
+  "desktop.recovery.loadFailed.detail":
+    "បង្អួច៖ {{window}}\nURL៖ {{url}}\nកំហុស៖ {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "បង្អួច៖ {{window}}\nហេតុផល៖ {{reason}}\nលេខកូដ៖ {{code}}",
   "desktop.recovery.unknown": "<មិនស្គាល់>",
   "desktop.dialog.chooseFolder": "ជ្រើសរើសថតឯកសារ",
   "desktop.dialog.chooseFile": "ជ្រើសរើសឯកសារ",
@@ -73,27 +78,35 @@ export const dict = {
   "desktop.server.local": "ម៉ាស៊ីនមេក្នុងស្រុក",
   "desktop.wsl.error.windowsOnly": "WSL មាននៅលើ Windows ប៉ុណ្ណោះ។",
   "desktop.wsl.error.unavailable": "WSL មិនអាចប្រើបានទេ។",
-  "desktop.wsl.error.listInstalled": "បានបរាជ័យក្នុងការរាយបញ្ជីការចែកចាយ WSL ដែលបានដំឡើង",
+  "desktop.wsl.error.listInstalled":
+    "បានបរាជ័យក្នុងការរាយបញ្ជីការចែកចាយ WSL ដែលបានដំឡើង",
   "desktop.wsl.error.listOnline": "បានបរាជ័យក្នុងការរាយបញ្ជីការចែកចាយ WSL តាមអ៊ីនធឺណិត",
   "desktop.wsl.error.executeDistro": "មិនអាចប្រតិបត្តិពាក្យបញ្ជានៅក្នុង distro បានទេ។",
   "desktop.wsl.error.installWsl": "ការដំឡើង WSL បានបរាជ័យ",
   "desktop.wsl.error.installDistro": "បរាជ័យក្នុងការដំឡើង distro៖ {{distro}}",
   "desktop.wsl.error.installOpencode": "ការដំឡើង OpenCode បានបរាជ័យ",
   "desktop.wsl.error.alreadyAdded": "{{distro}} ត្រូវបានបន្ថែមរួចហើយ",
-  "desktop.wsl.error.opencodeMissing": "opencode មិនត្រូវបានដំឡើងនៅក្នុង distro នេះទេ។",
-  "desktop.wsl.error.opencodeCannotRun": "opencode ត្រូវបានដំឡើង ប៉ុន្តែមិនអាចដំណើរការបានទេ។",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode មិនត្រូវបានដំឡើងនៅក្នុង {{distro}} ទេ។",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode មិនត្រូវបានដំឡើងនៅក្នុង distro នេះទេ។",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode ត្រូវបានដំឡើង ប៉ុន្តែមិនអាចដំណើរការបានទេ។",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode មិនត្រូវបានដំឡើងនៅក្នុង {{distro}} ទេ។",
   "desktop.wsl.error.updateVersion":
     "ការធ្វើបច្ចុប្បន្នភាព OpenCode បានបញ្ចប់ ប៉ុន្តែ {{distro}} នៅតែរាយការណ៍ {{installed}}; {{expected}} រំពឹងទុក",
   "desktop.wsl.error.noVersion": "គ្មានកំណែ",
-  "desktop.wsl.error.serverExited": "ម៉ាស៊ីនមេ WSL បានចាកចេញបន្ទាប់ពីការចាប់ផ្ដើម (កូដ={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "ម៉ាស៊ីនមេ WSL បានចាកចេញបន្ទាប់ពីការចាប់ផ្ដើម (កូដ={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "ម៉ាស៊ីនមេ WSL បានចេញមុនពេលមានសុខភាពល្អ (កូដ={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar សម្រាប់ការពិនិត្យសុខភាព {{distro}} អស់ពេលបន្ទាប់ពី {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} អស់ពេលបន្ទាប់ពី {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar សម្រាប់ការពិនិត្យសុខភាព {{distro}} អស់ពេលបន្ទាប់ពី {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} អស់ពេលបន្ទាប់ពី {{timeout}}ms",
   "desktop.wsl.error.failedPort": "បរាជ័យក្នុងការទទួលបានច្រក",
   "desktop.picker.error.notSelected": "ឯកសារមិនត្រូវបានជ្រើសរើសដោយអ្នកជ្រើសរើសទេ។",
-  "desktop.picker.error.sizeLimit": "ឯកសារភ្ជាប់ដែលបានជ្រើសរើសលើសពីដែនកំណត់ {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "ឯកសារភ្ជាប់ដែលបានជ្រើសរើសលើសពីដែនកំណត់ {{limit}} MB",
   "command.category.suggested": "បានស្នើ",
   "command.category.view": "មើល",
   "command.category.project": "គម្រោង",
@@ -140,7 +153,8 @@ export const dict = {
   "command.tab.close": "បិទផ្ទាំង",
   "command.tab.reopenClosed": "បើកផ្ទាំងបិទឡើងវិញ",
   "command.context.addSelection": "បន្ថែមការជ្រើសរើសទៅបរិបទ",
-  "command.context.addSelection.description": "បន្ថែមបន្ទាត់ដែលបានជ្រើសរើសពីឯកសារបច្ចុប្បន្ន",
+  "command.context.addSelection.description":
+    "បន្ថែមបន្ទាត់ដែលបានជ្រើសរើសពីឯកសារបច្ចុប្បន្ន",
   "command.input.focus": "ការបញ្ចូលការផ្តោតអារម្មណ៍",
   "command.terminal.toggle": "បិទ/បើកស្ថានីយ",
   "command.fileTree.toggle": "បិទបើកមែកធាងឯកសារ",
@@ -194,15 +208,20 @@ export const dict = {
   "dialog.provider.group.other": "ផ្សេងទៀត។",
   "dialog.provider.custom.label": "អ្នកផ្តល់សេវាដែលត្រូវគ្នានឹង OpenAI ផ្ទាល់ខ្លួន",
   "dialog.provider.tag.recommended": "បានណែនាំ",
-  "dialog.provider.opencode.note": "ម៉ូដែលដែលបានជ្រើសរើសរួមមាន Claude, GPT, Gemini និងច្រើនទៀត",
+  "dialog.provider.opencode.note":
+    "ម៉ូដែលដែលបានជ្រើសរើសរួមមាន Claude, GPT, Gemini និងច្រើនទៀត",
   "dialog.provider.opencode.tagline": "ម៉ូដែលដែលបានកែលម្អដែលអាចទុកចិត្តបាន។",
   "dialog.provider.opencodeGo.tagline": "ការជាវតម្លៃទាបសម្រាប់អ្នករាល់គ្នា",
-  "dialog.provider.anthropic.note": "ការចូលប្រើដោយផ្ទាល់ទៅកាន់ម៉ូដែល Claude រួមទាំង Pro និង Max",
-  "dialog.provider.copilot.note": "ម៉ូដែល AI សម្រាប់ជំនួយការសរសេរកូដតាមរយៈ GitHub Copilot",
-  "dialog.provider.openai.note": "ម៉ូដែល GPT សម្រាប់កិច្ចការ AI ទូទៅដែលមានល្បឿនលឿន និងមានសមត្ថភាព",
+  "dialog.provider.anthropic.note":
+    "ការចូលប្រើដោយផ្ទាល់ទៅកាន់ម៉ូដែល Claude រួមទាំង Pro និង Max",
+  "dialog.provider.copilot.note":
+    "ម៉ូដែល AI សម្រាប់ជំនួយការសរសេរកូដតាមរយៈ GitHub Copilot",
+  "dialog.provider.openai.note":
+    "ម៉ូដែល GPT សម្រាប់កិច្ចការ AI ទូទៅដែលមានល្បឿនលឿន និងមានសមត្ថភាព",
   "dialog.provider.google.note": "ម៉ូដែល Gemini សម្រាប់ការឆ្លើយតបរហ័ស និងមានរចនាសម្ព័ន្ធ",
   "dialog.provider.openrouter.note": "ចូលប្រើម៉ូដែលដែលបានគាំទ្រទាំងអស់ពីអ្នកផ្តល់សេវាមួយ។",
-  "dialog.provider.vercel.note": "ការចូលប្រើប្រាស់រួមទៅកាន់ម៉ូដែល AI ជាមួយនឹងការកំណត់ផ្លូវឆ្លាតវៃ",
+  "dialog.provider.vercel.note":
+    "ការចូលប្រើប្រាស់រួមទៅកាន់ម៉ូដែល AI ជាមួយនឹងការកំណត់ផ្លូវឆ្លាតវៃ",
   "dialog.model.select.title": "ជ្រើសរើសម៉ូដែល",
   "dialog.model.search.placeholder": "ស្វែងរកម៉ូដែល",
   "dialog.model.empty": "រកមិនឃើញម៉ូដែល",
@@ -248,10 +267,12 @@ export const dict = {
     "ហើយបញ្ចូលលេខកូដខាងក្រោមដើម្បីភ្ជាប់គណនីរបស់អ្នក ហើយប្រើម៉ូដែល {{provider}} នៅក្នុង OpenCode។",
   "provider.connect.oauth.auto.confirmationCode": "លេខកូដបញ្ជាក់",
   "provider.connect.toast.connected.title": "{{provider}} បានភ្ជាប់",
-  "provider.connect.toast.connected.description": "ម៉ូដែល {{provider}} ឥឡូវអាចប្រើបាន។",
+  "provider.connect.toast.connected.description":
+    "ម៉ូដែល {{provider}} ឥឡូវអាចប្រើបាន។",
   "provider.custom.title": "អ្នកផ្តល់សេវាផ្ទាល់ខ្លួន",
   "provider.custom.unavailable": "អ្នកផ្តល់សេវាផ្ទាល់ខ្លួនមិនមាននៅលើម៉ាស៊ីនមេនេះទេ។",
-  "provider.custom.description.prefix": "កំណត់រចនាសម្ព័ន្ធអ្នកផ្តល់សេវាដែលត្រូវគ្នាជាមួយ OpenAI ។ សូមមើល",
+  "provider.custom.description.prefix":
+    "កំណត់រចនាសម្ព័ន្ធអ្នកផ្តល់សេវាដែលត្រូវគ្នាជាមួយ OpenAI ។ សូមមើល",
   "provider.custom.description.link": "ឯកសារកំណត់រចនាសម្ព័ន្ធអ្នកផ្តល់សេវា",
   "provider.custom.description.suffix": "។",
   "provider.custom.field.providerID.label": "លេខសម្គាល់អ្នកផ្តល់សេវា",
@@ -263,7 +284,8 @@ export const dict = {
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "សោ API",
   "provider.custom.field.apiKey.placeholder": "សោ API",
-  "provider.custom.field.apiKey.description": "ស្រេចចិត្ត។ ទុកឱ្យទទេប្រសិនបើអ្នកគ្រប់គ្រងការផ្ទៀងផ្ទាត់តាមរយៈបឋមកថា។",
+  "provider.custom.field.apiKey.description":
+    "ស្រេចចិត្ត។ ទុកឱ្យទទេប្រសិនបើអ្នកគ្រប់គ្រងការផ្ទៀងផ្ទាត់តាមរយៈបឋមកថា។",
   "provider.custom.models.label": "ម៉ូដែល",
   "provider.custom.models.id.label": "លេខសម្គាល់",
   "provider.custom.models.id.placeholder": "model-id",
@@ -287,7 +309,8 @@ export const dict = {
   "provider.custom.error.required": "ទាមទារ",
   "provider.custom.error.duplicate": "ស្ទួន",
   "provider.disconnect.toast.disconnected.title": "{{provider}} ត្រូវបានផ្តាច់",
-  "provider.disconnect.toast.disconnected.description": "ម៉ូដែល {{provider}} លែងមានទៀតហើយ។",
+  "provider.disconnect.toast.disconnected.description":
+    "ម៉ូដែល {{provider}} លែងមានទៀតហើយ។",
   "model.tag.free": "ឥតគិតថ្លៃ",
   "model.tag.latest": "ចុងក្រោយ",
   "model.provider.anthropic": "Anthropic",
@@ -381,10 +404,12 @@ export const dict = {
   "prompt.action.send": "ផ្ញើ",
   "prompt.action.stop": "ឈប់",
   "prompt.toast.pasteUnsupported.title": "ឯកសារភ្ជាប់ដែលមិនគាំទ្រ",
-  "prompt.toast.pasteUnsupported.description": "មានតែរូបភាព PDF ឬឯកសារអត្ថបទប៉ុណ្ណោះដែលអាចភ្ជាប់មកទីនេះបាន។",
+  "prompt.toast.pasteUnsupported.description":
+    "មានតែរូបភាព PDF ឬឯកសារអត្ថបទប៉ុណ្ណោះដែលអាចភ្ជាប់មកទីនេះបាន។",
   "prompt.toast.attachmentDuplicate.title": "ឯកសារនេះត្រូវបានផ្ទុកឡើងរួចហើយ",
   "prompt.toast.modelAgentRequired.title": "ជ្រើសរើសភ្នាក់ងារ និងម៉ូដែល",
-  "prompt.toast.modelAgentRequired.description": "ជ្រើសរើសភ្នាក់ងារ និងម៉ូដែលមុនពេលផ្ញើប្រអប់បញ្ចូល។",
+  "prompt.toast.modelAgentRequired.description":
+    "ជ្រើសរើសភ្នាក់ងារ និងម៉ូដែលមុនពេលផ្ញើប្រអប់បញ្ចូល។",
   "prompt.toast.worktreeCreateFailed.title": "បរាជ័យក្នុងការបង្កើត Git worktree",
   "prompt.toast.sessionCreateFailed.title": "បរាជ័យក្នុងការបង្កើតសម័យ",
   "prompt.toast.shellSendFailed.title": "បរាជ័យក្នុងការផ្ញើពាក្យបញ្ជាសែល",
@@ -451,7 +476,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "ជ្រើសរើស distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "កំពុងពិនិត្យ WSL...",
-  "wsl.onboarding.restartRequired": "វីនដូត្រូវការការចាប់ផ្តើមឡើងវិញដើម្បីបញ្ចប់ការដំឡើង WSL ។",
+  "wsl.onboarding.restartRequired":
+    "វីនដូត្រូវការការចាប់ផ្តើមឡើងវិញដើម្បីបញ្ចប់ការដំឡើង WSL ។",
   "wsl.onboarding.ready": "WSL រួចរាល់ហើយ។",
   "wsl.onboarding.required": "WSL ត្រូវបានទាមទារដើម្បីបន្ត។",
   "wsl.onboarding.checkingDistros": "កំពុងពិនិត្យមើលការចែកចាយ...",
@@ -489,7 +515,8 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (ប្រព័ន្ធរងវីនដូសម្រាប់លីនុច) ត្រូវបានទាមទារ មុនពេល OpenCode អាចបន្ថែមម៉ាស៊ីនមេ WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL មិនអាចប្រើបានទេ។",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode មិនអាចផ្ទៀងផ្ទាត់ WSL នៅលើម៉ាស៊ីននេះបានទេ។",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode មិនអាចផ្ទៀងផ្ទាត់ WSL នៅលើម៉ាស៊ីននេះបានទេ។",
   "wsl.onboarding.installWsl": "ដំឡើង WSL",
   "wsl.onboarding.windowsRestartRequired":
     "ចាប់ផ្ដើម Windows ឡើងវិញ ដើម្បីបញ្ចប់ការដំឡើង WSL បន្ទាប់មកបើក OpenCode ឡើងវិញ។",
@@ -536,14 +563,16 @@ export const dict = {
   "dialog.project.edit.color": "ពណ៌",
   "dialog.project.edit.color.select": "ជ្រើសរើសពណ៌ {{color}}",
   "dialog.project.edit.worktree.startup": "ស្គ្រីបចាប់ផ្តើមកន្លែងធ្វើការ",
-  "dialog.project.edit.worktree.startup.description": "ដំណើរការបន្ទាប់ពីបង្កើតកន្លែងធ្វើការថ្មី (Git worktree)។",
+  "dialog.project.edit.worktree.startup.description":
+    "ដំណើរការបន្ទាប់ពីបង្កើតកន្លែងធ្វើការថ្មី (Git worktree)។",
   "dialog.project.edit.worktree.startup.placeholder": "ឧ. ដំឡើងប៊ុន",
   "dialog.releaseNotes.action.getStarted": "ចាប់ផ្តើម",
   "dialog.releaseNotes.action.next": "បន្ទាប់",
   "dialog.releaseNotes.action.hideFuture": "កុំបង្ហាញទាំងនេះនៅពេលអនាគត",
   "dialog.releaseNotes.media.alt": "ចេញផ្សាយការមើលជាមុន",
   "context.breakdown.title": "ការបំបែកបរិបទ",
-  "context.breakdown.note": 'ការបំបែកប្រហាក់ប្រហែលនៃនិមិត្តសញ្ញាបញ្ចូល។ "ផ្សេងទៀត" រួមបញ្ចូលនិយមន័យឧបករណ៍ និងតម្លៃលើស។',
+  "context.breakdown.note":
+    'ការបំបែកប្រហាក់ប្រហែលនៃនិមិត្តសញ្ញាបញ្ចូល។ "ផ្សេងទៀត" រួមបញ្ចូលនិយមន័យឧបករណ៍ និងតម្លៃលើស។',
   "context.breakdown.system": "ប្រព័ន្ធ",
   "context.breakdown.user": "អ្នកប្រើប្រាស់",
   "context.breakdown.assistant": "ជំនួយការ",
@@ -596,13 +625,17 @@ export const dict = {
   "toast.theme.title": "បានប្តូររូបរាង",
   "toast.scheme.title": "ពណ៌ចម្រុះ",
   "toast.workspace.enabled.title": "បានបើកកន្លែងធ្វើការ",
-  "toast.workspace.enabled.description": "ឥឡូវនេះ Git worktree ជាច្រើនត្រូវបានបង្ហាញក្នុងរបារចំហៀង",
+  "toast.workspace.enabled.description":
+    "ឥឡូវនេះ Git worktree ជាច្រើនត្រូវបានបង្ហាញក្នុងរបារចំហៀង",
   "toast.workspace.disabled.title": "កន្លែងធ្វើការត្រូវបានបិទ",
-  "toast.workspace.disabled.description": "មានតែ Git worktree ចម្បងប៉ុណ្ណោះដែលត្រូវបានបង្ហាញក្នុងរបារចំហៀង",
+  "toast.workspace.disabled.description":
+    "មានតែ Git worktree ចម្បងប៉ុណ្ណោះដែលត្រូវបានបង្ហាញក្នុងរបារចំហៀង",
   "toast.permissions.autoaccept.on.title": "ការអនុញ្ញាតដោយស្វ័យប្រវត្តិ",
-  "toast.permissions.autoaccept.on.description": "សំណើការអនុញ្ញាតនឹងត្រូវបានអនុម័តដោយស្វ័យប្រវត្តិ",
+  "toast.permissions.autoaccept.on.description":
+    "សំណើការអនុញ្ញាតនឹងត្រូវបានអនុម័តដោយស្វ័យប្រវត្តិ",
   "toast.permissions.autoaccept.off.title": "បានបញ្ឈប់ការអនុញ្ញាតដោយស្វ័យប្រវត្តិ",
-  "toast.permissions.autoaccept.off.description": "សំណើសុំការអនុញ្ញាតនឹងទាមទារការយល់ព្រម",
+  "toast.permissions.autoaccept.off.description":
+    "សំណើសុំការអនុញ្ញាតនឹងទាមទារការយល់ព្រម",
   "toast.model.none.title": "មិនបានជ្រើសរើសម៉ូដែលទេ។",
   "toast.model.none.description": "ភ្ជាប់អ្នកផ្តល់សេវាដើម្បីសង្ខេបសម័យនេះ។",
   "toast.file.loadFailed.title": "បរាជ័យក្នុងការផ្ទុកឯកសារ",
@@ -611,13 +644,15 @@ export const dict = {
   "toast.context.noLineSelection.description": "ជ្រើសរើសជួរបន្ទាត់ក្នុងផ្ទាំងឯកសារជាមុនសិន។",
   "toast.session.share.copyFailed.title": "បរាជ័យក្នុងការចម្លង URL ទៅក្ដារតម្បៀតខ្ទាស់",
   "toast.session.share.success.title": "សម័យដែលបានចែករំលែក",
-  "toast.session.share.success.description": "ចែករំលែក URL ដែលបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់!",
+  "toast.session.share.success.description":
+    "ចែករំលែក URL ដែលបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់!",
   "toast.session.share.failed.title": "បរាជ័យក្នុងការចែករំលែកសម័យ",
   "toast.session.share.failed.description": "កំហុសបានកើតឡើងខណៈពេលចែករំលែកសម័យ",
   "toast.session.unshare.success.title": "សម័យមិនត្រូវបានចែករំលែក",
   "toast.session.unshare.success.description": "សម័យបានឈប់ចែករំលែកដោយជោគជ័យ!",
   "toast.session.unshare.failed.title": "បានបរាជ័យក្នុងការឈប់ចែករំលែកសម័យ",
-  "toast.session.unshare.failed.description": "កំហុសបានកើតឡើងខណៈពេលដែលមិនចែករំលែកសម័យ",
+  "toast.session.unshare.failed.description":
+    "កំហុសបានកើតឡើងខណៈពេលដែលមិនចែករំលែកសម័យ",
   "toast.session.export.success.title": "បាននាំចេញសម័យ",
   "toast.session.export.success.description": "បានរក្សាទុកសម័យទៅ {{filename}}",
   "toast.session.export.failed.title": "បរាជ័យក្នុងការនាំចេញសម័យ",
@@ -625,10 +660,13 @@ export const dict = {
   "toast.session.listFailed.title": "បានបរាជ័យក្នុងការផ្ទុកសម័យសម្រាប់ {{project}}",
   "toast.project.reloadFailed.title": "បានបរាជ័យក្នុងការផ្ទុក {{project}} ឡើងវិញ",
   "toast.update.title": "មានបច្ចុប្បន្នភាព",
-  "toast.update.description": "កំណែថ្មីនៃ OpenCode ({{version}}) ឥឡូវនេះមានសម្រាប់ដំឡើងហើយ។",
+  "toast.update.description":
+    "កំណែថ្មីនៃ OpenCode ({{version}}) ឥឡូវនេះមានសម្រាប់ដំឡើងហើយ។",
   "toast.update.action.installRestart": "ដំឡើង និងចាប់ផ្តើមឡើងវិញ",
-  "disk.accessGuidance.macos": "ផ្តល់សិទ្ធិ Full Disk Access ដល់ DiskLizard ក្នុងការកំណត់ប្រព័ន្ធ បន្ទាប់មកស្កេនម្តងទៀត។",
-  "disk.accessGuidance.windows": "ប្រើគណនីដែលមានសិទ្ធិចូលទៅកាន់ដ្រាវនេះ ឬស្កេនថតដែលគណនីរបស់អ្នកអាចអានបាន។",
+  "disk.accessGuidance.macos":
+    "ផ្តល់សិទ្ធិ Full Disk Access ដល់ DiskLizard ក្នុងការកំណត់ប្រព័ន្ធ បន្ទាប់មកស្កេនម្តងទៀត។",
+  "disk.accessGuidance.windows":
+    "ប្រើគណនីដែលមានសិទ្ធិចូលទៅកាន់ដ្រាវនេះ ឬស្កេនថតដែលគណនីរបស់អ្នកអាចអានបាន។",
   "disk.accessGuidance.linux": "ពិនិត្យសិទ្ធិថត និងចំណុចម៉ោន បន្ទាប់មកស្កេនម្តងទៀត។",
   "disk.accessGuidance.default": "ពិនិត្យសិទ្ធិចូលទៅកាន់ថតទាំងនេះ បន្ទាប់មកស្កេនម្តងទៀត។",
   "disk.accessGuidance.rescan": "បន្ទាប់ពីផ្លាស់ប្តូរសិទ្ធិ សូមប្រើ Rescan នៅរបារខាងលើ។",
@@ -638,7 +676,8 @@ export const dict = {
   "toast.update.installFailed.retry": "ព្យាយាមម្តងទៀត",
   "error.page.title": "មានអ្វីមួយខុសប្រក្រតី",
   "error.page.description": "កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ទុកកម្មវិធី។",
-  "error.page.description.localServerStartup": "កំហុសបានកើតឡើងខណៈពេលចាប់ផ្តើមម៉ាស៊ីនមេមូលដ្ឋាន។",
+  "error.page.description.localServerStartup":
+    "កំហុសបានកើតឡើងខណៈពេលចាប់ផ្តើមម៉ាស៊ីនមេមូលដ្ឋាន។",
   "error.page.details.label": "ព័ត៌មានលម្អិតអំពីកំហុស",
   "error.page.action.restart": "ចាប់ផ្ដើមឡើងវិញ",
   "error.page.action.report": "រាយការណ៍កំហុស",
@@ -653,12 +692,16 @@ export const dict = {
   "error.page.version": "កំណែ៖ {{version}}",
   "error.dev.rootNotFound":
     "រកមិនឃើញធាតុឫសទេ។ តើអ្នកភ្លេចបន្ថែមវាទៅ index.html របស់អ្នកទេ? ឬប្រហែលជាគុណលក្ខណៈលេខសម្គាល់ត្រូវបានសរសេរខុស?",
-  "error.serverSync.connectFailed": "មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេបានទេ។ តើមានម៉ាស៊ីនមេដែលកំពុងដំណើរការនៅ `{{url}}` ទេ?",
+  "error.serverSync.connectFailed":
+    "មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេបានទេ។ តើមានម៉ាស៊ីនមេដែលកំពុងដំណើរការនៅ `{{url}}` ទេ?",
   "error.serverSDK.noServerAvailable": "មិនមានម៉ាស៊ីនមេទេ។",
   "error.serverSDK.serverNotAvailable": "ម៉ាស៊ីនមេមិនមានទេ។",
-  "error.childStore.persistedCacheCreateFailed": "បានបរាជ័យក្នុងការបង្កើតឃ្លាំងសម្ងាត់ដែលបន្ត",
-  "error.childStore.persistedProjectMetadataCreateFailed": "បានបរាជ័យក្នុងការបង្កើតទិន្នន័យមេតាគម្រោងដែលជាប់",
-  "error.childStore.persistedProjectIconCreateFailed": "បានបរាជ័យក្នុងការបង្កើតរូបតំណាងគម្រោងដែលបន្ត",
+  "error.childStore.persistedCacheCreateFailed":
+    "បានបរាជ័យក្នុងការបង្កើតឃ្លាំងសម្ងាត់ដែលបន្ត",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "បានបរាជ័យក្នុងការបង្កើតទិន្នន័យមេតាគម្រោងដែលជាប់",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "បានបរាជ័យក្នុងការបង្កើតរូបតំណាងគម្រោងដែលបន្ត",
   "error.childStore.storeCreateFailed": "បរាជ័យក្នុងការបង្កើតហាង",
   "directory.error.invalidUrl": "ថតមិនត្រឹមត្រូវនៅក្នុង URL ។",
   "error.chain.unknown": "កំហុសមិនស្គាល់",
@@ -670,22 +713,31 @@ export const dict = {
   "error.chain.responseBody": "តួការឆ្លើយតប៖\n{{body}}",
   "error.chain.didYouMean": "តើអ្នកមានន័យថា៖ {{suggestions}}",
   "error.chain.modelNotFound": "រកមិនឃើញម៉ូដែល៖ {{provider}}/{{model}}",
-  "error.chain.checkConfig": "ពិនិត្យការកំណត់រចនាសម្ព័ន្ធរបស់អ្នក (opencode.json) អ្នកផ្តល់សេវា/ឈ្មោះម៉ូដែល",
-  "error.chain.mcpFailed": 'ម៉ាស៊ីនមេ MCP "{{name}}" បានបរាជ័យ។ ចំណាំ OpenCode មិនគាំទ្រការផ្ទៀងផ្ទាត់ MCP នៅឡើយទេ។',
-  "error.chain.providerAuthFailed": "ការផ្ទៀងផ្ទាត់អ្នកផ្តល់សេវាបានបរាជ័យ ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "ពិនិត្យការកំណត់រចនាសម្ព័ន្ធរបស់អ្នក (opencode.json) អ្នកផ្តល់សេវា/ឈ្មោះម៉ូដែល",
+  "error.chain.mcpFailed":
+    'ម៉ាស៊ីនមេ MCP "{{name}}" បានបរាជ័យ។ ចំណាំ OpenCode មិនគាំទ្រការផ្ទៀងផ្ទាត់ MCP នៅឡើយទេ។',
+  "error.chain.providerAuthFailed":
+    "ការផ្ទៀងផ្ទាត់អ្នកផ្តល់សេវាបានបរាជ័យ ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'បានបរាជ័យក្នុងការចាប់ផ្តើមអ្នកផ្តល់សេវា "{{provider}}" ។ ពិនិត្យអត្តសញ្ញាណ និងការកំណត់រចនាសម្ព័ន្ធ។',
-  "error.chain.configJsonInvalid": "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវ JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវទេ JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវ JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវទេ JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'ថត "{{dir}}" នៅក្នុង {{path}} មិនត្រឹមត្រូវទេ។ ប្តូរឈ្មោះថតទៅជា "{{suggestion}}" ឬលុបវាចេញ។ នេះ​ជា​ការ​វាយ​ខុស​ធម្មតា។',
-  "error.chain.configFrontmatterError": "បរាជ័យក្នុងការញែកបញ្ហាមុខនៅក្នុង {{path}}៖\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "បរាជ័យក្នុងការញែកបញ្ហាមុខនៅក្នុង {{path}}៖\n{{message}}",
   "error.chain.configInvalid": "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវទេ។",
-  "error.chain.configInvalidWithMessage": "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវទេ៖ {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "ឯកសារកំណត់រចនាសម្ព័ន្ធនៅ {{path}} មិនត្រឹមត្រូវទេ៖ {{message}}",
   "notification.permission.title": "ទាមទារការអនុញ្ញាត",
-  "notification.permission.description": "{{sessionTitle}} ក្នុង {{projectName}} ត្រូវការការអនុញ្ញាត",
+  "notification.permission.description":
+    "{{sessionTitle}} ក្នុង {{projectName}} ត្រូវការការអនុញ្ញាត",
   "notification.question.title": "សំណួរ",
-  "notification.question.description": "{{sessionTitle}} នៅក្នុង {{projectName}} មានសំណួរមួយ។",
+  "notification.question.description":
+    "{{sessionTitle}} នៅក្នុង {{projectName}} មានសំណួរមួយ។",
   "notification.action.goToSession": "ចូលទៅកាន់សម័យ",
   "notification.session.responseReady.title": "ការឆ្លើយតបរួចរាល់",
   "notification.session.error.title": "កំហុសសម័យ",
@@ -708,7 +760,8 @@ export const dict = {
   "home.sessions.group.today": "ថ្ងៃនេះ",
   "home.sessions.group.yesterday": "ម្សិលមិញ",
   "home.sessions.group.older": "ចាស់ជាង",
-  "home.providerTip": "ភ្ជាប់ជាមួយអ្នកផ្តល់សេវា 75+ ដើម្បីប្រើម៉ូដែលផ្សេងទៀត រួមទាំង Claude, GPT, Gemini ជាដើម។",
+  "home.providerTip":
+    "ភ្ជាប់ជាមួយអ្នកផ្តល់សេវា 75+ ដើម្បីប្រើម៉ូដែលផ្សេងទៀត រួមទាំង Claude, GPT, Gemini ជាដើម។",
   "session.tab.session": "សម័យ",
   "session.tab.review": "ពិនិត្យ",
   "session.tab.context": "បរិបទ",
@@ -723,12 +776,15 @@ export const dict = {
   "session.review.change.other": "ការផ្លាស់ប្តូរ",
   "session.review.loadingChanges": "កំពុងផ្ទុកការផ្លាស់ប្តូរ...",
   "session.review.empty": "មិនមានការផ្លាស់ប្តូរនៅក្នុងសម័យនេះនៅឡើយទេ",
-  "session.review.noVcs": "គ្មានប្រព័ន្ធគ្រប់គ្រងកំណែ Git ត្រូវបានរកឃើញទេ ការផ្លាស់ប្តូរមិនត្រូវបានបង្ហាញទេ។",
+  "session.review.noVcs":
+    "គ្មានប្រព័ន្ធគ្រប់គ្រងកំណែ Git ត្រូវបានរកឃើញទេ ការផ្លាស់ប្តូរមិនត្រូវបានបង្ហាញទេ។",
   "session.review.noVcs.createGit.title": "បង្កើតឃ្លាំង Git",
-  "session.review.noVcs.createGit.description": "តាមដាន ពិនិត្យ និងបោះបង់ការផ្លាស់ប្ដូរនៅក្នុងគម្រោងនេះ។",
+  "session.review.noVcs.createGit.description":
+    "តាមដាន ពិនិត្យ និងបោះបង់ការផ្លាស់ប្ដូរនៅក្នុងគម្រោងនេះ។",
   "session.review.noVcs.createGit.actionLoading": "ការបង្កើតឃ្លាំង Git...",
   "session.review.noVcs.createGit.action": "បង្កើតឃ្លាំង Git",
-  "session.review.noSnapshot": "ការតាមដានរូបថតត្រូវបានបិទនៅក្នុងការកំណត់ ដូច្នេះការផ្លាស់ប្តូរវេនមិនអាចប្រើបានទេ",
+  "session.review.noSnapshot":
+    "ការតាមដានរូបថតត្រូវបានបិទនៅក្នុងការកំណត់ ដូច្នេះការផ្លាស់ប្តូរវេនមិនអាចប្រើបានទេ",
   "session.review.noChanges": "គ្មានការផ្លាស់ប្តូរទេ។",
   "session.review.noUncommittedChanges": "មិនទាន់មានការផ្លាស់ប្តូរដែលមិនទាន់បានកំណត់នៅឡើយ",
   "session.review.noBranchChanges": "មិនទាន់មានការផ្លាស់ប្តូរសាខានៅឡើយទេ",
@@ -830,7 +886,8 @@ export const dict = {
   "terminal.close": "បិទស្ថានីយ",
   "terminal.connectionLost.title": "ការតភ្ជាប់បាត់",
   "terminal.connectionLost.abnormalClose": "WebSocket បានបិទមិនធម្មតា៖ {{code}}",
-  "terminal.connectionLost.description": "ការតភ្ជាប់ស្ថានីយត្រូវបានរំខាន។ វាអាចកើតឡើងនៅពេលដែលម៉ាស៊ីនមេចាប់ផ្តើមឡើងវិញ។",
+  "terminal.connectionLost.description":
+    "ការតភ្ជាប់ស្ថានីយត្រូវបានរំខាន។ វាអាចកើតឡើងនៅពេលដែលម៉ាស៊ីនមេចាប់ផ្តើមឡើងវិញ។",
   "terminal.connectTicket.csrfError":
     "សំបុត្រភ្ជាប់ PTY ត្រូវបានបដិសេធដោយប្រភពដើម ឬការត្រួតពិនិត្យ CSRF ។ ពិនិត្យការកំណត់រចនាសម្ព័ន្ធ CORS ម៉ាស៊ីនមេ។",
   "terminal.connectTicket.statusError": "សំបុត្រភ្ជាប់ PTY បានបរាជ័យជាមួយ {{status}}",
@@ -877,8 +934,10 @@ export const dict = {
   "sidebar.workspaces.enable": "បើកកន្លែងធ្វើការ",
   "sidebar.workspaces.disable": "បិទកន្លែងធ្វើការ",
   "sidebar.gettingStarted.title": "ការចាប់ផ្តើម",
-  "sidebar.gettingStarted.line1": "OpenCode រួមបញ្ចូលម៉ូដែលឥតគិតថ្លៃ ដូច្នេះអ្នកអាចចាប់ផ្តើមភ្លាមៗ។",
-  "sidebar.gettingStarted.line2": "ភ្ជាប់អ្នកផ្តល់សេវាណាមួយដើម្បីប្រើម៉ូដែល, inc ។ Claude, GPT, Gemini ជាដើម។",
+  "sidebar.gettingStarted.line1":
+    "OpenCode រួមបញ្ចូលម៉ូដែលឥតគិតថ្លៃ ដូច្នេះអ្នកអាចចាប់ផ្តើមភ្លាមៗ។",
+  "sidebar.gettingStarted.line2":
+    "ភ្ជាប់អ្នកផ្តល់សេវាណាមួយដើម្បីប្រើម៉ូដែល, inc ។ Claude, GPT, Gemini ជាដើម។",
   "sidebar.project.recentSessions": "សម័យថ្មីៗ",
   "sidebar.project.viewAllSessions": "មើលសម័យទាំងអស់។",
   "sidebar.project.clearNotifications": "ជម្រះការជូនដំណឹង",
@@ -899,15 +958,18 @@ export const dict = {
   "debugBar.long.tip":
     "ពេលវេលាដែលបានទប់ស្កាត់ និងចំនួនកិច្ចការយូរក្នុងរយៈពេល 5 វិនាទីចុងក្រោយ។ ភារកិច្ចអតិបរមា៖ {{max}} ។",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "ការពន្យាពេលបញ្ចូលដែលបានសង្កេតឃើញអាក្រក់បំផុតក្នុងរយៈពេល 5 វិនាទីចុងក្រោយ។",
+  "debugBar.delay.tip":
+    "ការពន្យាពេលបញ្ចូលដែលបានសង្កេតឃើញអាក្រក់បំផុតក្នុងរយៈពេល 5 វិនាទីចុងក្រោយ។",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "រយៈពេលអន្តរកម្មប្រហាក់ប្រហែលក្នុងរយៈពេល 5 វិនាទីចុងក្រោយ។ នេះគឺដូច INP មិនមែន Web Vitals INP ផ្លូវការទេ។",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "ការផ្លាស់ប្តូរប្លង់សរុបសម្រាប់អាយុកាលកម្មវិធីបច្ចុប្បន្ន។",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "បានប្រើ JS heap ទល់នឹង heap limit ។ Chromium តែប៉ុណ្ណោះ។",
-  "debugBar.mem.tip": "បានប្រើ JS heap ទល់នឹង heap limit ។ {{used}} នៃ {{limit}} ។",
+  "debugBar.mem.tipUnavailable":
+    "បានប្រើ JS heap ទល់នឹង heap limit ។ Chromium តែប៉ុណ្ណោះ។",
+  "debugBar.mem.tip":
+    "បានប្រើ JS heap ទល់នឹង heap limit ។ {{used}} នៃ {{limit}} ។",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "បង្ខំរចនាប័ទ្មផ្តោតទៅលើធាតុអន្តរកម្មទាំងអស់។",
   "debugBar.focus.on": "ON",
@@ -923,7 +985,8 @@ export const dict = {
   "settings.tab.shortcuts": "ផ្លូវកាត់",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "ការរួមបញ្ចូល WSL",
-  "settings.desktop.wsl.description": "ដំណើរការម៉ាស៊ីនមេ OpenCode នៅខាងក្នុង WSL នៅលើ Windows ។",
+  "settings.desktop.wsl.description":
+    "ដំណើរការម៉ាស៊ីនមេ OpenCode នៅខាងក្នុង WSL នៅលើ Windows ។",
   "settings.general.section.appearance": "រូបរាង",
   "settings.general.section.advanced": "កម្រិតខ្ពស់",
   "settings.general.section.notifications": "ការជូនដំណឹងប្រព័ន្ធ",
@@ -938,38 +1001,49 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "ស្វ័យប្រវត្តិ (លំនាំដើម)\nស្ថានីយ",
   "settings.general.row.shell.terminalOnly": "ប៉ុណ្ណោះ។",
   "settings.general.row.appearance.title": "រូបរាង",
-  "settings.general.row.appearance.description": "ប្ដូរតាមបំណងពីរបៀបដែល OpenCode មើលទៅលើឧបករណ៍របស់អ្នក។",
+  "settings.general.row.appearance.description":
+    "ប្ដូរតាមបំណងពីរបៀបដែល OpenCode មើលទៅលើឧបករណ៍របស់អ្នក។",
   "settings.general.row.colorScheme.title": "ពណ៌ចម្រុះ",
-  "settings.general.row.colorScheme.description": "ជ្រើសរើសថាតើ OpenCode ធ្វើតាមប្រព័ន្ធ ពន្លឺ ឬរូបរាងងងឹត",
+  "settings.general.row.colorScheme.description":
+    "ជ្រើសរើសថាតើ OpenCode ធ្វើតាមប្រព័ន្ធ ពន្លឺ ឬរូបរាងងងឹត",
   "settings.general.row.theme.title": "ស្បែក",
-  "settings.general.row.theme.description": "ប្ដូរតាមបំណងពីរបៀបដែល OpenCode មានប្រធានបទ។",
+  "settings.general.row.theme.description":
+    "ប្ដូរតាមបំណងពីរបៀបដែល OpenCode មានប្រធានបទ។",
   "settings.general.row.font.title": "ពុម្ពអក្សរកូដ",
   "settings.general.row.font.description": "ប្ដូរពុម្ពអក្សរដែលប្រើក្នុងប្លុកកូដតាមបំណង",
   "settings.general.row.terminalFont.title": "ពុម្ពអក្សរស្ថានីយ",
   "settings.general.row.terminalFont.description": "ប្ដូរពុម្ពអក្សរដែលប្រើក្នុងស្ថានីយតាមបំណង",
   "settings.general.row.uiFont.title": "ពុម្ពអក្សរ UI",
-  "settings.general.row.uiFont.description": "ប្ដូរពុម្ពអក្សរតាមបំណងដែលបានប្រើទូទាំងចំណុចប្រទាក់",
+  "settings.general.row.uiFont.description":
+    "ប្ដូរពុម្ពអក្សរតាមបំណងដែលបានប្រើទូទាំងចំណុចប្រទាក់",
   "settings.general.row.followup.title": "ឥរិយាបថតាមដាន",
-  "settings.general.row.followup.description": "ជ្រើសរើសថាតើការតាមដានជំរុញភ្លាមៗ ឬរង់ចាំជាជួរ",
+  "settings.general.row.followup.description":
+    "ជ្រើសរើសថាតើការតាមដានជំរុញភ្លាមៗ ឬរង់ចាំជាជួរ",
   "settings.general.row.followup.option.queue": "ជួរ",
   "settings.general.row.followup.option.steer": "ចង្កូត",
   "settings.general.row.showFileTree.title": "មែកធាងឯកសារ",
   "settings.general.row.showFileTree.description": "បង្ហាញបន្ទះមែកធាងឯកសារនៅក្នុងសម័យ",
   "settings.general.row.showNavigation.title": "ការគ្រប់គ្រងការរុករក",
-  "settings.general.row.showNavigation.description": "បង្ហាញប៊ូតុងថយក្រោយ និងបញ្ជូនបន្តនៅក្នុងរបារចំណងជើងផ្ទៃតុ",
+  "settings.general.row.showNavigation.description":
+    "បង្ហាញប៊ូតុងថយក្រោយ និងបញ្ជូនបន្តនៅក្នុងរបារចំណងជើងផ្ទៃតុ",
   "settings.general.row.showSearch.title": "ក្ដារលាយពាក្យបញ្ជា",
-  "settings.general.row.showSearch.description": "បង្ហាញប៊ូតុងស្វែងរក និងក្ដារលាយពាក្យបញ្ជានៅក្នុងរបារចំណងជើង",
+  "settings.general.row.showSearch.description":
+    "បង្ហាញប៊ូតុងស្វែងរក និងក្ដារលាយពាក្យបញ្ជានៅក្នុងរបារចំណងជើង",
   "settings.general.row.showTerminal.title": "ស្ថានីយ",
-  "settings.general.row.showTerminal.description": "បង្ហាញប៊ូតុងស្ថានីយនៅក្នុងរបារចំណងជើងផ្ទៃតុ",
+  "settings.general.row.showTerminal.description":
+    "បង្ហាញប៊ូតុងស្ថានីយនៅក្នុងរបារចំណងជើងផ្ទៃតុ",
   "settings.general.row.showStatus.title": "ស្ថានភាពម៉ាស៊ីនមេ",
-  "settings.general.row.showStatus.description": "បង្ហាញប៊ូតុងស្ថានភាពម៉ាស៊ីនមេនៅក្នុងរបារចំណងជើង",
+  "settings.general.row.showStatus.description":
+    "បង្ហាញប៊ូតុងស្ថានភាពម៉ាស៊ីនមេនៅក្នុងរបារចំណងជើង",
   "settings.general.row.mobileTitlebarBottom.title": "ការរុករកខាងក្រោម",
-  "settings.general.row.mobileTitlebarBottom.description": "ដាក់របារចំណងជើង និងផ្ទាំងសម័យនៅខាងក្រោមអេក្រង់នៅលើទូរសព្ទ",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "ដាក់របារចំណងជើង និងផ្ទាំងសម័យនៅខាងក្រោមអេក្រង់នៅលើទូរសព្ទ",
   "settings.general.row.showCustomAgents.title": "បង្ហាញភ្នាក់ងារ",
   "settings.general.row.showCustomAgents.description":
     "ប្តូររវាងភ្នាក់ងារនៅក្នុងកម្មវិធីតែង។ នៅពេលលាក់ វាកំណត់លំនាំដើមទៅភ្នាក់ងារបង្កើត។",
   "settings.general.row.reasoningSummaries.title": "បង្ហាញការសង្ខេបហេតុផល",
-  "settings.general.row.reasoningSummaries.description": "បង្ហាញសេចក្តីសង្ខេបហេតុផលរបស់ម៉ូដែលក្នុងបន្ទាត់ពេលវេលា",
+  "settings.general.row.reasoningSummaries.description":
+    "បង្ហាញសេចក្តីសង្ខេបហេតុផលរបស់ម៉ូដែលក្នុងបន្ទាត់ពេលវេលា",
   "settings.general.row.shellToolPartsExpanded.title": "ពង្រីកផ្នែកឧបករណ៍សែល",
   "settings.general.row.shellToolPartsExpanded.description":
     "បង្ហាញផ្នែកឧបករណ៍សែលដែលបានពង្រីកតាមលំនាំដើមនៅក្នុងបន្ទាត់ពេលវេលា",
@@ -978,28 +1052,35 @@ export const dict = {
     "បង្ហាញការកែសម្រួល សរសេរ និងផ្នែកឧបករណ៍បំណះដែលបានពង្រីកតាមលំនាំដើមនៅក្នុងបន្ទាត់ពេលវេលា",
   "settings.general.row.newInterface.title": "ប្លង់ថ្មី។",
   "settings.general.row.newInterface.badge": "ថ្មី។",
-  "settings.general.row.newInterface.description": "ប្រើផ្ទាំងថ្មី និងប្លង់ផ្ទះ។ ប្តូររវាងប្លង់សម្រាប់រយៈពេលកំណត់។",
+  "settings.general.row.newInterface.description":
+    "ប្រើផ្ទាំងថ្មី និងប្លង់ផ្ទះ។ ប្តូររវាងប្លង់សម្រាប់រយៈពេលកំណត់។",
   "settings.general.row.newInterfaceNotice.title": "ឥឡូវនេះ អ្នកកំពុងប្រើប្លង់ថ្មី។",
   "settings.general.row.newInterfaceNotice.description": "ប្លង់ពីមុនលែងមានទៀតហើយ",
   "settings.general.row.newInterfaceNotice.dismiss": "ច្រានចោល",
   "settings.general.row.pinchZoom.title": "ខ្ទាស់ដើម្បីពង្រីក",
-  "settings.general.row.pinchZoom.description": "អនុញ្ញាត​ឱ្យ​ចុច​បន្ទះ​បន្ទះ​និង​កាយវិការ​បញ្ជា​-​រមូរ​ដើម្បី​ពង្រីក",
+  "settings.general.row.pinchZoom.description":
+    "អនុញ្ញាត​ឱ្យ​ចុច​បន្ទះ​បន្ទះ​និង​កាយវិការ​បញ្ជា​-​រមូរ​ដើម្បី​ពង្រីក",
   "settings.general.row.wayland.title": "ប្រើ Wayland ដើម",
-  "settings.general.row.wayland.description": "បិទដំណើរការ X11 fallback នៅលើ Wayland។ ទាមទារការចាប់ផ្តើមឡើងវិញ។",
+  "settings.general.row.wayland.description":
+    "បិទដំណើរការ X11 fallback នៅលើ Wayland។ ទាមទារការចាប់ផ្តើមឡើងវិញ។",
   "settings.general.row.wayland.tooltip":
     "នៅលើលីនុចដែលមានម៉ូនីទ័រអត្រាធ្វើឱ្យស្រស់ចម្រុះ វេយលែនដើមអាចមានស្ថេរភាពជាងមុន។",
   "settings.general.row.releaseNotes.title": "កំណត់ចំណាំចេញផ្សាយ",
-  "settings.general.row.releaseNotes.description": "បង្ហាញអ្វីដែលថ្មីលេចឡើងបន្ទាប់ពីការអាប់ដេត",
+  "settings.general.row.releaseNotes.description":
+    "បង្ហាញអ្វីដែលថ្មីលេចឡើងបន្ទាប់ពីការអាប់ដេត",
   "settings.updates.row.startup.title": "ពិនិត្យមើលការអាប់ដេតនៅពេលចាប់ផ្តើម",
-  "settings.updates.row.startup.description": "ពិនិត្យមើលការអាប់ដេតដោយស្វ័យប្រវត្តិនៅពេលដែល OpenCode ចាប់ផ្តើម",
+  "settings.updates.row.startup.description":
+    "ពិនិត្យមើលការអាប់ដេតដោយស្វ័យប្រវត្តិនៅពេលដែល OpenCode ចាប់ផ្តើម",
   "settings.updates.row.check.title": "ពិនិត្យមើលបច្ចុប្បន្នភាព",
-  "settings.updates.row.check.description": "ពិនិត្យមើលបច្ចុប្បន្នភាពដោយដៃ ហើយដំឡើងប្រសិនបើមាន",
+  "settings.updates.row.check.description":
+    "ពិនិត្យមើលបច្ចុប្បន្នភាពដោយដៃ ហើយដំឡើងប្រសិនបើមាន",
   "settings.updates.action.checkNow": "ពិនិត្យឥឡូវនេះ",
   "settings.updates.action.checking": "កំពុងពិនិត្យ...",
   "settings.updates.action.downloading": "កំពុងទាញយក...",
   "settings.updates.action.installing": "កំពុងដំឡើង...",
   "settings.updates.toast.latest.title": "អ្នកទាន់សម័យហើយ។",
-  "settings.updates.toast.latest.description": "អ្នកកំពុងដំណើរការកំណែចុងក្រោយបំផុតនៃ OpenCode ។",
+  "settings.updates.toast.latest.description":
+    "អ្នកកំពុងដំណើរការកំណែចុងក្រោយបំផុតនៃ OpenCode ។",
   "sound.option.none": "គ្មានទេ។",
   "sound.option.alert01": "ដាស់តឿន ០១",
   "sound.option.alert02": "ដាស់តឿន ០២",
@@ -1050,21 +1131,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "បង្ហាញការជូនដំណឹងប្រព័ន្ធ នៅពេលដែលភ្នាក់ងារបញ្ចប់ ឬត្រូវការការយកចិត្តទុកដាក់",
   "settings.general.notifications.permissions.title": "ការអនុញ្ញាត",
-  "settings.general.notifications.permissions.description": "បង្ហាញការជូនដំណឹងប្រព័ន្ធនៅពេលដែលត្រូវការការអនុញ្ញាត",
+  "settings.general.notifications.permissions.description":
+    "បង្ហាញការជូនដំណឹងប្រព័ន្ធនៅពេលដែលត្រូវការការអនុញ្ញាត",
   "settings.general.notifications.errors.title": "កំហុស",
-  "settings.general.notifications.errors.description": "បង្ហាញការជូនដំណឹងប្រព័ន្ធនៅពេលដែលមានកំហុសកើតឡើង",
+  "settings.general.notifications.errors.description":
+    "បង្ហាញការជូនដំណឹងប្រព័ន្ធនៅពេលដែលមានកំហុសកើតឡើង",
   "settings.general.sounds.agent.title": "ភ្នាក់ងារ",
-  "settings.general.sounds.agent.description": "ចាក់សំឡេងនៅពេលដែលភ្នាក់ងារបញ្ចប់ ឬត្រូវការការយកចិត្តទុកដាក់",
+  "settings.general.sounds.agent.description":
+    "ចាក់សំឡេងនៅពេលដែលភ្នាក់ងារបញ្ចប់ ឬត្រូវការការយកចិត្តទុកដាក់",
   "settings.general.sounds.permissions.title": "ការអនុញ្ញាត",
-  "settings.general.sounds.permissions.description": "ចាក់សំឡេងនៅពេលដែលត្រូវការការអនុញ្ញាត",
+  "settings.general.sounds.permissions.description":
+    "ចាក់សំឡេងនៅពេលដែលត្រូវការការអនុញ្ញាត",
   "settings.general.sounds.errors.title": "កំហុស",
   "settings.general.sounds.errors.description": "ចាក់សំឡេងនៅពេលមានកំហុសកើតឡើង",
   "settings.shortcuts.title": "ផ្លូវកាត់ក្តារចុច",
   "settings.shortcuts.reset.button": "កំណត់ឡើងវិញទៅលំនាំដើម",
   "settings.shortcuts.reset.toast.title": "កំណត់ផ្លូវកាត់ឡើងវិញ",
-  "settings.shortcuts.reset.toast.description": "ផ្លូវកាត់ក្តារចុចត្រូវបានកំណត់ឡើងវិញទៅលំនាំដើម។",
+  "settings.shortcuts.reset.toast.description":
+    "ផ្លូវកាត់ក្តារចុចត្រូវបានកំណត់ឡើងវិញទៅលំនាំដើម។",
   "settings.shortcuts.conflict.title": "ផ្លូវកាត់ត្រូវបានប្រើប្រាស់រួចហើយ",
-  "settings.shortcuts.conflict.description": "{{keybind}} ត្រូវបានចាត់ឱ្យទៅ {{titles}} រួចហើយ។",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ត្រូវបានចាត់ឱ្យទៅ {{titles}} រួចហើយ។",
   "settings.shortcuts.unassigned": "មិនបានកំណត់",
   "settings.shortcuts.pressKeys": "ចុចគ្រាប់ចុច",
   "settings.shortcuts.search.placeholder": "ផ្លូវកាត់ស្វែងរក",
@@ -1079,9 +1166,11 @@ export const dict = {
   "settings.providers.description": "ការកំណត់អ្នកផ្តល់សេវានឹងអាចកំណត់បាននៅទីនេះ។",
   "settings.providers.section.connected": "អ្នកផ្តល់សេវាដែលបានភ្ជាប់",
   "settings.providers.connected.empty": "គ្មានអ្នកផ្តល់សេវាដែលបានតភ្ជាប់ទេ។",
-  "settings.providers.connected.environmentDescription": "បានភ្ជាប់ពីអថេរបរិស្ថានរបស់អ្នក។",
+  "settings.providers.connected.environmentDescription":
+    "បានភ្ជាប់ពីអថេរបរិស្ថានរបស់អ្នក។",
   "settings.providers.section.popular": "អ្នកផ្តល់សេវាពេញនិយម",
-  "settings.providers.custom.description": "បន្ថែមអ្នកផ្តល់សេវាដែលត្រូវគ្នាជាមួយ OpenAI ដោយ URL មូលដ្ឋាន។",
+  "settings.providers.custom.description":
+    "បន្ថែមអ្នកផ្តល់សេវាដែលត្រូវគ្នាជាមួយ OpenAI ដោយ URL មូលដ្ឋាន។",
   "settings.providers.tag.environment": "បរិស្ថាន",
   "settings.providers.tag.config": "កំណត់រចនាសម្ព័ន្ធ",
   "settings.providers.tag.custom": "ផ្ទាល់ខ្លួន",
@@ -1097,18 +1186,21 @@ export const dict = {
   "settings.permissions.title": "ការអនុញ្ញាត",
   "settings.permissions.description": "គ្រប់គ្រងឧបករណ៍អ្វីដែលម៉ាស៊ីនមេអាចប្រើតាមលំនាំដើម។",
   "settings.permissions.section.tools": "ឧបករណ៍",
-  "settings.permissions.toast.updateFailed.title": "បរាជ័យក្នុងការធ្វើបច្ចុប្បន្នភាពការអនុញ្ញាត",
+  "settings.permissions.toast.updateFailed.title":
+    "បរាជ័យក្នុងការធ្វើបច្ចុប្បន្នភាពការអនុញ្ញាត",
   "settings.permissions.action.allow": "អនុញ្ញាត",
   "settings.permissions.action.ask": "សួរ",
   "settings.permissions.action.deny": "បដិសេធ",
   "settings.permissions.tool.read.title": "អាន",
   "settings.permissions.tool.read.description": "ការអានឯកសារ (ត្រូវនឹងផ្លូវឯកសារ)",
   "settings.permissions.tool.edit.title": "កែសម្រួល",
-  "settings.permissions.tool.edit.description": "កែប្រែឯកសារ រួមទាំងការកែសម្រួល សរសេរ និងបំណះ",
+  "settings.permissions.tool.edit.description":
+    "កែប្រែឯកសារ រួមទាំងការកែសម្រួល សរសេរ និងបំណះ",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "ផ្គូផ្គងឯកសារដោយប្រើលំនាំ glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "ស្វែងរកមាតិកាឯកសារដោយប្រើកន្សោមធម្មតា។",
+  "settings.permissions.tool.grep.description":
+    "ស្វែងរកមាតិកាឯកសារដោយប្រើកន្សោមធម្មតា។",
   "settings.permissions.tool.list.title": "បញ្ជី",
   "settings.permissions.tool.list.description": "រាយបញ្ជីឯកសារនៅក្នុងថតមួយ។",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1126,9 +1218,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "ការស្វែងរកតាមអ៊ីនធឺណិត",
   "settings.permissions.tool.websearch.description": "ស្វែងរកគេហទំព័រ",
   "settings.permissions.tool.external_directory.title": "ថតខាងក្រៅ",
-  "settings.permissions.tool.external_directory.description": "ចូលប្រើឯកសារនៅខាងក្រៅថតគម្រោង",
+  "settings.permissions.tool.external_directory.description":
+    "ចូលប្រើឯកសារនៅខាងក្រៅថតគម្រោង",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "រកឃើញការហៅឧបករណ៍ម្តងហើយម្តងទៀតជាមួយនឹងការបញ្ចូលដូចគ្នា។",
+  "settings.permissions.tool.doom_loop.description":
+    "រកឃើញការហៅឧបករណ៍ម្តងហើយម្តងទៀតជាមួយនឹងការបញ្ចូលដូចគ្នា។",
   "session.delete.failed.title": "បរាជ័យក្នុងការលុបសម័យ",
   "session.delete.title": "លុបសម័យ",
   "session.delete.confirm": 'លុបសម័យ "{{name}}"?',

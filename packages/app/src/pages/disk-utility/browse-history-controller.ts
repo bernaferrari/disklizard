@@ -27,19 +27,30 @@ export function createDiskBrowseHistoryController(options: {
   let history: DiskBrowseHistory = EMPTY_DISK_BROWSE_HISTORY
 
   function replace(next: DiskBrowseHistory) {
-    history = { past: [...next.past], current: next.current, future: [...next.future] }
-    for (const listener of [...listeners]) listener()
+    history = {
+      past: [...next.past],
+      current: next.current,
+      future: [...next.future],
+    }
+    for (const listener of listeners) listener()
   }
 
   function reset(path?: string) {
     replace(
-      transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, { type: "reset", ...(path ? { path } : {}) }),
+      transitionDiskBrowseHistory(EMPTY_DISK_BROWSE_HISTORY, {
+        type: "reset",
+        ...(path ? { path } : {}),
+      })
     )
   }
 
   function visit(path: string) {
     const current = history
-    const next = transitionDiskBrowseHistory(current, { type: "visit", path }, { equals: options.equals })
+    const next = transitionDiskBrowseHistory(
+      current,
+      { type: "visit", path },
+      { equals: options.equals }
+    )
     if (next !== current) replace(next)
   }
 
@@ -47,20 +58,27 @@ export function createDiskBrowseHistoryController(options: {
     const current = history
     return {
       current,
-      next: resolveDiskBrowseHistoryMove(current, direction, (path) => !!options.resolve(path)),
+      next: resolveDiskBrowseHistoryMove(
+        current,
+        direction,
+        (path) => !!options.resolve(path)
+      ),
     }
   }
 
   function canMove(direction: DiskBrowseDirection) {
     const { current, next } = resolvedMove(direction)
-    return !!next.current && !options.equals(next.current, current.current ?? "")
+    return (
+      !!next.current && !options.equals(next.current, current.current ?? "")
+    )
   }
 
   function move(direction: DiskBrowseDirection) {
     if (options.blocked?.()) return
     const { current, next } = resolvedMove(direction)
     if (next !== current) replace(next)
-    if (!next.current || options.equals(next.current, current.current ?? "")) return
+    if (!next.current || options.equals(next.current, current.current ?? ""))
+      return
     const node = options.resolve(next.current)
     if (node) options.onMove(node)
   }

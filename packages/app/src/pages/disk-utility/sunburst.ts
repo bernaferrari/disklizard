@@ -1,6 +1,11 @@
 import { withoutCollected } from "./collection-map"
 import { createBranchIdentity } from "./tile-identity"
-import { STORAGE_HUES, storageTone } from "./visual-palette"
+import {
+  STORAGE_HUES,
+  storageMapHue,
+  storageMapTone,
+  storageTone,
+} from "./visual-palette"
 /**
  * DiskLizard Sunburst — the visual centerpiece.
  *
@@ -63,7 +68,6 @@ export type SunburstOptions = {
   onHover?: (seg: Segment | null) => void
   onClick?: (seg: Segment) => void
   onMetaClick?: (seg: Segment) => void
-  onDoubleClick?: (seg: Segment) => void
   onCenterClick?: () => void
   /** Whether a segment can be dragged into the cleanup basket. */
   canDrag?: (node: SunNode) => boolean
@@ -73,12 +77,20 @@ export type SunburstTransitionMode = "enter" | "drill" | "up" | "update"
 export type SunburstEntryIntent = "scan-complete" | "pointer" | "keyboard"
 
 /** Reserve the expressive reveal for scan completion; repeated mode switches must feel immediate. */
-export function sunburstEntryDuration(intent: SunburstEntryIntent, navigationMs = 240, revealMs = 560) {
+export function sunburstEntryDuration(
+  intent: SunburstEntryIntent,
+  navigationMs = 240,
+  revealMs = 560
+) {
   if (intent === "keyboard") return 1
   return intent === "pointer" ? navigationMs : revealMs
 }
 
-export function shouldPulseSunburstEntry(mode: SunburstTransitionMode, reducedMotion: boolean, instant: boolean) {
+export function shouldPulseSunburstEntry(
+  mode: SunburstTransitionMode,
+  reducedMotion: boolean,
+  instant: boolean
+) {
   return mode === "enter" && !reducedMotion && !instant
 }
 
@@ -87,7 +99,7 @@ export function sunburstTransitionDuration(
   reducedMotion: boolean,
   navigationMs = 240,
   enterMs = 560,
-  instant = false,
+  instant = false
 ) {
   if (reducedMotion || instant) return 1
   return mode === "enter" ? enterMs : navigationMs
@@ -120,13 +132,21 @@ export function safeCanvasRadius(value: number) {
 const START_ANGLE = -Math.PI / 2
 const FULL_CIRCLE = Math.PI * 2
 function projectAngle(angle: number, start: number, end: number) {
-  return START_ANGLE + Math.max(0, Math.min(1, (angle - start) / Math.max(0.0001, end - start))) * FULL_CIRCLE
+  return (
+    START_ANGLE +
+    Math.max(0, Math.min(1, (angle - start) / Math.max(0.0001, end - start))) *
+      FULL_CIRCLE
+  )
 }
 
 /** Smaller arcs become hard to distinguish and target in a normal-size window. */
 export const MIN_VISIBLE_SEGMENT_ANGLE = 0.008
 
-function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: number): SunNode[] {
+function collapseVisualChildren(
+  node: SunNode,
+  maxChildren: number,
+  parentSpan: number
+): SunNode[] {
   const children = (node.children ?? []).filter((child) => child.size > 0)
   if (maxChildren < 2) {
     return [
@@ -146,7 +166,9 @@ function collapseVisualChildren(node: SunNode, maxChildren: number, parentSpan: 
   const total = sorted.reduce((sum, child) => sum + child.size, 0)
   const kept = sorted
     .slice(0, maxChildren - 1)
-    .filter((child) => parentSpan * (child.size / total) >= MIN_VISIBLE_SEGMENT_ANGLE)
+    .filter(
+      (child) => parentSpan * (child.size / total) >= MIN_VISIBLE_SEGMENT_ANGLE
+    )
   const keptPaths = new Set(kept.map((child) => child.path))
   const remainder = sorted.filter((child) => !keptPaths.has(child.path))
   if (!remainder.length) return kept
@@ -183,10 +205,18 @@ function layoutTree(
   endAngle: number,
   out: LayoutSeg[],
   rings: number,
-  maxSegments: number,
+  maxSegments: number
 ) {
-  type Parent = { node: SunNode; depth: number; start: number; end: number; hue: number }
-  let level: Parent[] = [{ node, depth: 0, start: startAngle, end: endAngle, hue: 0 }]
+  type Parent = {
+    node: SunNode
+    depth: number
+    start: number
+    end: number
+    hue: number
+  }
+  let level: Parent[] = [
+    { node, depth: 0, start: startAngle, end: endAngle, hue: 0 },
+  ]
 
   // Breadth-first layout guarantees that every visible parent ring is complete
   // before detail is spent on a deeper ring. The hard budget keeps canvas paint
@@ -198,14 +228,18 @@ function layoutTree(
       // A storage map should reveal hierarchy, not reproduce every inode as a
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
-      const perBranchLimit = parent.depth === 0 ? 24 : parent.depth === 1 ? 12 : 8
+      const perBranchLimit =
+        parent.depth === 0 ? 24 : parent.depth === 1 ? 12 : 8
       const children = collapseVisualChildren(
         parent.node,
         Math.min(perBranchLimit, remainingBudget),
-        parent.end - parent.start,
+        parent.end - parent.start
       )
       if (!children?.length) continue
-      const total = children.reduce((sum, child) => sum + Math.max(0, child.size || 0), 0)
+      const total = children.reduce(
+        (sum, child) => sum + Math.max(0, child.size || 0),
+        0
+      )
       if (total === 0) continue
 
       const span = parent.end - parent.start
@@ -231,8 +265,19 @@ function layoutTree(
           path: child.path,
         })
 
-        if (parent.depth < rings - 1 && child.isDir && !child.isOther && child.children?.length) {
-          next.push({ node: child, depth: parent.depth + 1, start: segmentStart, end: angle, hue })
+        if (
+          parent.depth < rings - 1 &&
+          child.isDir &&
+          !child.isOther &&
+          child.children?.length
+        ) {
+          next.push({
+            node: child,
+            depth: parent.depth + 1,
+            start: segmentStart,
+            end: angle,
+            hue,
+          })
         }
       }
     }
@@ -240,7 +285,11 @@ function layoutTree(
   }
 }
 
-export function layoutSunburstSegments(node: SunNode, rings = 6, maxSegments = 720): LayoutSeg[] {
+export function layoutSunburstSegments(
+  node: SunNode,
+  rings = 6,
+  maxSegments = 720
+): LayoutSeg[] {
   const result: LayoutSeg[] = []
   layoutTree(node, -Math.PI / 2, Math.PI * 1.5, result, rings, maxSegments)
   return result
@@ -250,7 +299,9 @@ const PRIMARY_HUES = STORAGE_HUES
 
 /** A curated spectral sequence keeps large neighboring branches vivid and distinguishable. */
 export function primaryHueForIndex(i: number): number {
-  return PRIMARY_HUES[((i % PRIMARY_HUES.length) + PRIMARY_HUES.length) % PRIMARY_HUES.length]
+  return PRIMARY_HUES[
+    ((i % PRIMARY_HUES.length) + PRIMARY_HUES.length) % PRIMARY_HUES.length
+  ]
 }
 
 /**
@@ -258,13 +309,20 @@ export function primaryHueForIndex(i: number): number {
  * desaturated tint of their branch hue so the map keeps its chroma while
  * hierarchy still reads before decoration.
  */
-export function primarySegmentColor(i: number, alpha = 1, isDir = true, depth = 0): string {
+export function primarySegmentColor(
+  i: number,
+  alpha = 1,
+  isDir = true,
+  depth = 0
+): string {
   const hue = primaryHueForIndex(i)
   const { L, C } = storageTone(hue, depth, isDir)
-  return alpha >= 1 ? `oklch(${L} ${C} ${hue.toFixed(1)})` : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
+  return alpha >= 1
+    ? `oklch(${L} ${C} ${hue.toFixed(1)})`
+    : `oklch(${L} ${C} ${hue.toFixed(1)} / ${alpha})`
 }
 /** Text paired with the segment fills; both branches meet normal-text AA contrast. */
-export function primarySegmentForeground(isDir = true): string {
+export function primarySegmentForeground(_isDir = true): string {
   return "oklch(0.18 0.015 255)"
 }
 
@@ -274,7 +332,15 @@ export class Sunburst {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   options: Required<
-    Pick<SunburstOptions, "rings" | "maxSegments" | "padAngle" | "ringGap" | "animMs" | "enterAnimMs">
+    Pick<
+      SunburstOptions,
+      | "rings"
+      | "maxSegments"
+      | "padAngle"
+      | "ringGap"
+      | "animMs"
+      | "enterAnimMs"
+    >
   > &
     SunburstOptions
 
@@ -285,6 +351,7 @@ export class Sunburst {
   segments: Segment[] = []
   hovered: Segment | null = null
   selectedPath: string | null = null
+  queuedPaths = new Set<string>()
   highlightPath: string | null = null
 
   animT = 1
@@ -293,6 +360,8 @@ export class Sunburst {
   animating = false
   entering = false
   pulseT = 0
+  hoverPulseStart = 0
+  hoverPulseT = 1
   /** True while a full-reveal (mode "enter") transition is in flight. */
   private enterMode = false
   lastFrame = 0
@@ -302,6 +371,7 @@ export class Sunburst {
   cy = 0
   maxR = 0
   innerHole = 0
+  activeRings = 6
   raf: number | null = null
   ro: ResizeObserver | null = null
   themeObserver: MutationObserver | null = null
@@ -340,7 +410,6 @@ export class Sunburst {
     canvas.addEventListener("pointermove", this._onMouseMove)
     canvas.addEventListener("pointerleave", this._onMouseLeave)
     canvas.addEventListener("click", this._onClick)
-    canvas.addEventListener("dblclick", this._onDoubleClick)
     window.addEventListener("scroll", this._onScroll, { passive: true })
     this.ro = new ResizeObserver(this._onResize)
     this.ro.observe(canvas)
@@ -373,17 +442,28 @@ export class Sunburst {
   _resize() {
     const rect = this.canvas.getBoundingClientRect()
     this.rect = rect
-    this.dpr = Math.min(2, window.devicePixelRatio || 1)
+    this.dpr = Math.min(
+      2,
+      typeof window === "undefined" ? 1 : window.devicePixelRatio || 1
+    )
     this.canvas.width = Math.max(1, Math.round(rect.width * this.dpr))
     this.canvas.height = Math.max(1, Math.round(rect.height * this.dpr))
     this.cx = this.canvas.width / 2
     this.cy = this.canvas.height / 2
-    this.maxR = (Math.min(this.canvas.width, this.canvas.height) / 2) * 0.80
-    this.innerHole = this.maxR * INNER_HOLE_RATIO
+    this._setRadialScale()
     this._applyRadiiToTargets()
     // Resizing clears the backing store. Native live resize may pause RAF,
     // so restore the current map before returning to the compositor.
     this._draw()
+  }
+
+  _setRadialScale() {
+    if (!this.canvas) return
+    const rings = this.activeRings ?? this.options.rings
+    const half = Math.min(this.canvas.width, this.canvas.height) / 2
+    this.maxR = half * (rings === 1 ? 0.65 : rings === 2 ? 0.76 : 0.8)
+    this.innerHole =
+      this.maxR * (rings === 1 ? 0.48 : rings === 2 ? 0.36 : INNER_HOLE_RATIO)
   }
 
   private _onResize = () => {
@@ -400,6 +480,8 @@ export class Sunburst {
     if (event.matches) {
       this.activeAnimMs = 1
       this.entering = false
+      this.hoverPulseStart = 0
+      this.hoverPulseT = 1
       if (this.animating) this.animStart = performance.now() - 1
       for (const segment of this.segments) segment.hover = segment.targetHover
     }
@@ -407,14 +489,17 @@ export class Sunburst {
   }
 
   _radiiForDepth(depth: number) {
-    const rings = this.options.rings
+    const rings = this.activeRings ?? this.options.rings
     const gap = this.options.ringGap * this.maxR
     const usable = this.maxR - this.innerHole - gap * (rings - 1)
     // Taper the outer detail rings while preserving the full radial extent.
     const weights = Array.from({ length: rings }, (_, i) => Math.pow(0.86, i))
     const unit = usable / weights.reduce((sum, weight) => sum + weight, 0)
     const d = Math.min(depth, rings - 1)
-    const inner = this.innerHole + unit * weights.slice(0, d).reduce((sum, weight) => sum + weight, 0) + d * gap
+    const inner =
+      this.innerHole +
+      unit * weights.slice(0, d).reduce((sum, weight) => sum + weight, 0) +
+      d * gap
     return { inner, outer: inner + weights[d] * unit }
   }
 
@@ -433,7 +518,11 @@ export class Sunburst {
   }
 
   setExcludedPaths(paths: ReadonlySet<string>) {
-    if (this.excludedPaths?.size === paths.size && [...paths].every(path => this.excludedPaths.has(path))) return
+    if (
+      this.excludedPaths?.size === paths.size &&
+      [...paths].every((path) => this.excludedPaths.has(path))
+    )
+      return
     this.excludedPaths = new Set(paths)
     if (this.viewNode) this._transitionTo(this.viewNode, "update")
   }
@@ -456,9 +545,12 @@ export class Sunburst {
   navigateTo(node: SunNode, instant = false) {
     if (!node) return
     const previousPath = this.viewNode?.path
-    const parentPrefix = node.path.replaceAll("\\", "/").replace(/\/+$/, "") + "/"
-    const goingUp = !!node.children?.some(child => child.path === previousPath) ||
-      !!previousPath?.replaceAll("\\", "/").startsWith(parentPrefix)
+    const parentPrefix =
+      node.path.replaceAll("\\", "/").replace(/\/+$/, "") + "/"
+    const goingUp =
+      (node.children?.some((child) => child.path === previousPath) ?? false) ||
+      (previousPath !== undefined &&
+        previousPath.replaceAll("\\", "/").startsWith(parentPrefix))
     this.viewNode = node
     this.hovered = null
     this.selectedPath = null
@@ -487,12 +579,20 @@ export class Sunburst {
   }
 
   setHighlight(path: string | null) {
+    if (this.highlightPath === path) return
     this.highlightPath = path
+    this.hoverPulseStart = path && !this.reducedMotion ? performance.now() : 0
+    this.hoverPulseT = this.hoverPulseStart ? 0 : 1
     this.requestFrame()
   }
 
   setSelected(path: string | null) {
     this.selectedPath = path
+    this.requestFrame()
+  }
+
+  setQueuedPaths(paths: readonly string[]) {
+    this.queuedPaths = new Set(paths)
     this.requestFrame()
   }
 
@@ -504,18 +604,42 @@ export class Sunburst {
    * Preserve the visible pose by path, opening the clicked angular domain.
    * Unmatched detail enters at the rim; siblings close toward the domain edges.
    */
-  _transitionTo(node: SunNode, mode: SunburstTransitionMode, instant = false, previousPath?: string) {
+  _transitionTo(
+    node: SunNode,
+    mode: SunburstTransitionMode,
+    instant = false,
+    previousPath?: string
+  ) {
     const identity = createBranchIdentity(this.root)
-    const layout = layoutSunburstSegments(withoutCollected(node, this.excludedPaths ?? new Set()), this.options.rings, this.options.maxSegments)
+    const layout = layoutSunburstSegments(
+      withoutCollected(node, this.excludedPaths ?? new Set()),
+      this.options.rings,
+      this.options.maxSegments
+    )
+    // Shallow scans should use the available canvas instead of reserving
+    // several empty rings that make the only visible level look tiny.
+    this.activeRings = Math.max(
+      1,
+      ...layout.map((segment) => segment.depth + 1)
+    )
+    this._setRadialScale()
     for (const segment of layout) {
       const branch = identity(segment.path)
       if (branch) segment.hue = primaryHueForIndex(branch.index)
     }
 
-    const focus = mode === "drill" ? this.segments.find(s => s.path === node.path && s.toOpacity > 0) : undefined
-    const destination = mode === "up" ? layout.find(s => s.path === previousPath) : undefined
+    const focus =
+      mode === "drill"
+        ? this.segments.find((s) => s.path === node.path && s.toOpacity > 0)
+        : undefined
+    const destination =
+      mode === "up" ? layout.find((s) => s.path === previousPath) : undefined
     // Include still-visible exits when interrupted; keep their actual painted pose.
-    const prevById = new Map(this.segments.filter(s => s.opacity > 0.008 || s.toOpacity > 0).map(s => [s.id, s]))
+    const prevById = new Map(
+      this.segments
+        .filter((s) => s.opacity > 0.008 || s.toOpacity > 0)
+        .map((s) => [s.id, s])
+    )
     const next: Segment[] = []
 
     for (const L of layout) {
@@ -540,8 +664,8 @@ export class Sunburst {
       } else if (mode === "drill" && focus) {
         // Newly revealed detail grows out of the clicked branch's outer edge.
         const span = focus.end - focus.start
-        fromStart = focus.start + (L.start - START_ANGLE) / FULL_CIRCLE * span
-        fromEnd = focus.start + (L.end - START_ANGLE) / FULL_CIRCLE * span
+        fromStart = focus.start + ((L.start - START_ANGLE) / FULL_CIRCLE) * span
+        fromEnd = focus.start + ((L.end - START_ANGLE) / FULL_CIRCLE) * span
         fromInner = this.maxR
         fromOuter = this.maxR
         fromOp = 0
@@ -560,8 +684,13 @@ export class Sunburst {
         fromOp = 0
       }
 
-      const base = storageTone(L.hue, identity(L.path)?.depth ?? L.depth, L.node.isDir)
-      const toTone = { ...base, C: L.node.isOther ? 0.012 : base.C, h: L.hue }
+      const colorDepth = identity(L.path)?.depth ?? L.depth
+      const base = storageMapTone(L.hue, colorDepth, L.node.isDir)
+      const toTone = {
+        ...base,
+        C: L.node.isOther ? base.C * 0.25 : base.C,
+        h: storageMapHue(L.hue, colorDepth),
+      }
       const fromTone = prev?.tone ?? focus?.tone ?? toTone
       next.push({
         tone: { ...fromTone },
@@ -595,15 +724,27 @@ export class Sunburst {
     }
 
     // Close outgoing siblings around the focus, keeping their radial structure.
-    const exits = [...prevById.values()].sort((a, b) => b.opacity - a.opacity).slice(0, this.options.maxSegments)
+    const exits = [...prevById.values()]
+      .sort((a, b) => b.opacity - a.opacity)
+      .slice(0, this.options.maxSegments)
     for (const prev of exits) {
       if (prev.depth > 0 && prev.toOpacity < 0.3) continue
       const mid = (prev.start + prev.end) / 2
       const focusedParent = focus?.path === prev.path
-      const toStart = focus ? projectAngle(prev.start, focus.start, focus.end)
-        : destination ? destination.start + (prev.start - START_ANGLE) / FULL_CIRCLE * (destination.end - destination.start) : mid
-      const toEnd = focus ? projectAngle(prev.end, focus.start, focus.end)
-        : destination ? destination.start + (prev.end - START_ANGLE) / FULL_CIRCLE * (destination.end - destination.start) : mid
+      const toStart = focus
+        ? projectAngle(prev.start, focus.start, focus.end)
+        : destination
+          ? destination.start +
+            ((prev.start - START_ANGLE) / FULL_CIRCLE) *
+              (destination.end - destination.start)
+          : mid
+      const toEnd = focus
+        ? projectAngle(prev.end, focus.start, focus.end)
+        : destination
+          ? destination.start +
+            ((prev.end - START_ANGLE) / FULL_CIRCLE) *
+              (destination.end - destination.start)
+          : mid
       next.push({
         ...prev,
         fromTone: prev.tone ? { ...prev.tone } : undefined,
@@ -617,7 +758,11 @@ export class Sunburst {
         toStart,
         toEnd,
         toInner: focusedParent ? 0 : destination ? this.maxR : prev.inner,
-        toOuter: focusedParent ? this.innerHole * 0.92 : destination ? this.maxR : prev.outer,
+        toOuter: focusedParent
+          ? this.innerHole * 0.92
+          : destination
+            ? this.maxR
+            : prev.outer,
         toOpacity: 0,
         start: prev.start,
         end: prev.end,
@@ -636,7 +781,7 @@ export class Sunburst {
       this.reducedMotion,
       this.options.animMs,
       this.options.enterAnimMs,
-      instant,
+      instant
     )
     this.animT = 0
     this.animating = true
@@ -647,7 +792,9 @@ export class Sunburst {
   }
 
   _tick(now: number) {
-    const dt = this.lastFrame ? Math.min(0.05, (now - this.lastFrame) / 1000) : 1 / 60
+    const dt = this.lastFrame
+      ? Math.min(0.05, (now - this.lastFrame) / 1000)
+      : 1 / 60
     this.lastFrame = now
     if (this.animating) {
       this.animT = Math.min(1, (now - this.animStart) / this.activeAnimMs)
@@ -655,7 +802,10 @@ export class Sunburst {
       const staggered = this.enterMode && !this.reducedMotion
       for (const s of this.segments) {
         const t = staggered
-          ? Math.min(1, Math.max(0, (now - this.animStart - s.delay) / this.activeAnimMs))
+          ? Math.min(
+              1,
+              Math.max(0, (now - this.animStart - s.delay) / this.activeAnimMs)
+            )
           : this.animT
         if (t <= 0) {
           s.opacity = 0
@@ -699,12 +849,20 @@ export class Sunburst {
       if (this.pulseT >= 1 && !this.animating) this.entering = false
     }
 
+    if (this.hoverPulseStart) {
+      this.hoverPulseT = Math.min(1, (now - this.hoverPulseStart) / 280)
+      if (this.hoverPulseT >= 1) this.hoverPulseStart = 0
+    }
+
     // Every visible ring is inspectable; depth is information, not decoration.
     const hoverBlend = 1 - Math.exp(-dt / 0.07)
     for (const s of this.segments) {
-      const target = this.highlightPath === s.path || this.hovered?.path === s.path ? 1 : 0
+      const target =
+        this.highlightPath === s.path || this.hovered?.path === s.path ? 1 : 0
       s.targetHover = target
-      s.hover = this.reducedMotion ? target : lerp(s.hover, s.targetHover, hoverBlend)
+      s.hover = this.reducedMotion
+        ? target
+        : lerp(s.hover, s.targetHover, hoverBlend)
     }
   }
 
@@ -731,7 +889,7 @@ export class Sunburst {
 
   /** True when there is animation, an enter pulse, or an unsettled hover spring. */
   private _needsFrame(): boolean {
-    if (this.animating || this.entering) return true
+    if (this.animating || this.entering || this.hoverPulseStart > 0) return true
     for (const s of this.segments) {
       if (Math.abs(s.hover - s.targetHover) > 0.001) return true
     }
@@ -746,7 +904,13 @@ export class Sunburst {
     ctx.clearRect(0, 0, w, h)
     if (this.centerHovered) {
       ctx.beginPath()
-      ctx.arc(this.cx, this.cy, safeCanvasRadius(this.innerHole * 0.94), 0, Math.PI * 2)
+      ctx.arc(
+        this.cx,
+        this.cy,
+        safeCanvasRadius(this.innerHole * 0.94),
+        0,
+        Math.PI * 2
+      )
       ctx.fillStyle = "rgba(127,127,127,0.14)"
       ctx.fill()
     }
@@ -761,7 +925,13 @@ export class Sunburst {
     if (this.entering && this.pulseT < 1) {
       const p = easeOutCubic(this.pulseT)
       ctx.beginPath()
-      ctx.arc(this.cx, this.cy, safeCanvasRadius(lerp(this.innerHole * 0.4, this.maxR * 1.02, p)), 0, Math.PI * 2)
+      ctx.arc(
+        this.cx,
+        this.cy,
+        safeCanvasRadius(lerp(this.innerHole * 0.4, this.maxR * 1.02, p)),
+        0,
+        Math.PI * 2
+      )
       ctx.strokeStyle = oklchCss(0.78, 0.11, 252, 1 - p)
       ctx.lineWidth = (4 * (1 - p) + 1) * this.dpr
       ctx.stroke()
@@ -770,27 +940,30 @@ export class Sunburst {
 
   _drawSegment(s: Segment) {
     const ctx = this.ctx
-    const pad = this.options.padAngle
+    const pad = Math.min(
+      this.options.padAngle * (s.depth === 0 ? 5 : s.depth === 1 ? 2.5 : 1),
+      (s.end - s.start) * 0.22
+    )
     const start = s.start + pad
     const end = s.end - pad
     if (end - start < 0.0008) return
 
-    const base = s.tone ?? storageTone(s.hue, s.depth, s.node.isDir)
+    const base = s.tone ?? storageMapTone(s.hue, s.depth, s.node.isDir)
     const isPrimary = s.depth === 0
-    const isHi = s.hover > 0.02
-    const L = base.L + (isHi ? 0.025 : 0)
-    const C = s.node.isOther ? 0.012 : base.C
+    const breath =
+      this.highlightPath === s.path && !this.reducedMotion
+        ? Math.sin(Math.PI * this.hoverPulseT)
+        : 0
+    const L = base.L + s.hover * 0.022 + breath * s.hover * 0.003
+    const C = s.node.isOther ? base.C * 0.25 : base.C
     const isSel = this.selectedPath === s.path
-    const dimOthers = this.hovered && this.hovered.path !== s.path && !this.highlightPath
-    const dimHi = this.highlightPath && this.highlightPath !== s.path
 
-    const lift = s.hover * (isPrimary ? 6 : 3) * this.dpr
+    const lift = s.hover * (isPrimary ? 2.5 : 1.5) * this.dpr
     const inner = safeCanvasRadius(s.inner - lift * 0.25)
     const outer = safeCanvasRadius(s.outer + lift)
-    const alpha = s.opacity * (dimOthers ? 0.9 : dimHi ? 0.9 : 1)
 
     ctx.save()
-    ctx.globalAlpha = alpha
+    ctx.globalAlpha = s.opacity
 
     ctx.beginPath()
     ctx.arc(this.cx, this.cy, outer, start, end)
@@ -799,23 +972,36 @@ export class Sunburst {
     ctx.fillStyle = oklchCss(L, C, s.tone?.h ?? s.hue)
     ctx.fill()
 
-    // A true separator, not a glow: storage branches stay readable at high density.
-    ctx.strokeStyle = this.theme.border
-    ctx.lineWidth = 0.55 * this.dpr
-    ctx.stroke()
+    // Leave the canvas visible between branches; this keeps small segments
+    // distinct without outlining every ring like a technical chart.
 
-    if (isPrimary) {
-      ctx.beginPath()
-      ctx.arc(this.cx, this.cy, safeCanvasRadius(outer - 0.5 * this.dpr), start, end)
-      ctx.strokeStyle = `rgba(255,255,255,${0.1 + s.hover * 0.3})`
-      ctx.lineWidth = (1 + s.hover) * this.dpr
+    const normalizedSegmentPath = s.path.replaceAll("\\", "/")
+    const queued = [...(this.queuedPaths ?? [])].some((path) => {
+      const normalizedPath = path.replaceAll("\\", "/").replace(/\/+$/, "")
+      return (
+        normalizedSegmentPath === normalizedPath ||
+        normalizedSegmentPath.startsWith(normalizedPath + "/")
+      )
+    })
+    if (queued && !isSel) {
+      ctx.save()
+      ctx.strokeStyle = this.theme.ring
+      ctx.lineWidth = 2 * this.dpr
+      ctx.setLineDash([4 * this.dpr, 3 * this.dpr])
       ctx.stroke()
+      ctx.restore()
     }
 
     if (isSel) {
       ctx.save()
       ctx.beginPath()
-      ctx.arc(this.cx, this.cy, safeCanvasRadius(outer + 2.5 * this.dpr), start, end)
+      ctx.arc(
+        this.cx,
+        this.cy,
+        safeCanvasRadius(outer + 2.5 * this.dpr),
+        start,
+        end
+      )
       ctx.shadowColor = this.theme.ring
       ctx.shadowBlur = 6 * this.dpr
       ctx.strokeStyle = this.theme.ring
@@ -829,7 +1015,8 @@ export class Sunburst {
 
   _refreshTheme() {
     const style = getComputedStyle(document.documentElement)
-    const background = style.getPropertyValue("--background-base").trim() || "#0c0c14"
+    const background =
+      style.getPropertyValue("--background-base").trim() || "#0c0c14"
     this.theme = {
       background,
       surface:
@@ -838,7 +1025,9 @@ export class Sunburst {
         background,
       // Accent ring in the shell's blue family — visible on both themes, never a hard monochrome arc.
       ring: surfaceRing(),
-      border: style.getPropertyValue("--border-weaker-base").trim() || "rgba(127,127,127,0.16)",
+      border:
+        style.getPropertyValue("--border-weaker-base").trim() ||
+        "rgba(127,127,127,0.16)",
     }
   }
 
@@ -855,13 +1044,20 @@ export class Sunburst {
 
     const angle = Math.atan2(dy, dx)
     for (const s of this.segments) {
-      if (s.toOpacity === 0 || s.opacity <= 0.25 || dist < s.inner - 3 * this.dpr || dist > s.outer + 4 * this.dpr) continue
+      if (
+        s.toOpacity === 0 ||
+        s.opacity <= 0.25 ||
+        dist < s.inner - 3 * this.dpr ||
+        dist > s.outer + 4 * this.dpr
+      )
+        continue
       let a = angle
       let start = s.start
       let end = s.end
       if (end < start) end += Math.PI * 2
       if (a < start) a += Math.PI * 2
-      if (a >= start && a <= end) return { type: "segment" as const, segment: s }
+      if (a >= start && a <= end)
+        return { type: "segment" as const, segment: s }
     }
     return null
   }
@@ -881,7 +1077,7 @@ export class Sunburst {
       if (prev) this.options.onHover?.(null)
     } else {
       this.hovered = hit.segment
-      cursor = this.options.canDrag?.(hit.segment.node) ? "grab" : hit.segment.node.isDir ? "pointer" : "default"
+      cursor = "pointer"
       if (prev?.path !== hit.segment.path) this.options.onHover?.(hit.segment)
     }
     // One style write + one frame request per move instead of scattered writes.
@@ -898,7 +1094,11 @@ export class Sunburst {
   }
 
   _canGoUp() {
-    return !!(this.viewNode && this.root && this.viewNode.path !== this.root.path)
+    return !!(
+      this.viewNode &&
+      this.root &&
+      this.viewNode.path !== this.root.path
+    )
   }
 
   private _onClick = (e: MouseEvent) => {
@@ -910,21 +1110,9 @@ export class Sunburst {
       this.options.onCenterClick?.()
       return
     }
-    if (e.metaKey || e.ctrlKey) {
-      this.options.onMetaClick?.(hit.segment)
-      return
-    }
     this.selectedPath = hit.segment.path
     this.options.onClick?.(hit.segment)
     this.requestFrame()
-  }
-
-  private _onDoubleClick = (e: MouseEvent) => {
-    if (this.morphing) return
-    if (performance.now() < this.suppressClickUntil) return
-    const hit = this._hitTest(e.clientX, e.clientY)
-    if (!hit || hit.type === "center") return
-    this.options.onDoubleClick?.(hit.segment)
   }
 
   /** Resolve the direct branch under a desktop pointer for native drag-to-collect. */
@@ -938,7 +1126,9 @@ export class Sunburst {
   }
 
   getPrimarySegments(): Segment[] {
-    return this.segments.filter((s) => s.depth === 0 && s.toOpacity > 0.5).sort((a, b) => b.node.size - a.node.size)
+    return this.segments
+      .filter((s) => s.depth === 0 && s.toOpacity > 0.5)
+      .sort((a, b) => b.node.size - a.node.size)
   }
 
   /** Depth-0 wedges visible enough to morph into treemap tiles. */

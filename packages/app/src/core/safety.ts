@@ -84,26 +84,33 @@ function normalize(targetPath: string, platform: DiskPlatform) {
     platform === "win32" && withSlashes.startsWith("//")
       ? `//${withSlashes.slice(2).replace(/\/+/g, "/")}`
       : withSlashes.replace(/\/+/g, "/")
-  const withoutTrailing = collapsed.length > 1 ? collapsed.replace(/\/+$/, "") : collapsed
+  const withoutTrailing =
+    collapsed.length > 1 ? collapsed.replace(/\/+$/, "") : collapsed
   return platform === "win32" ? withoutTrailing.toLowerCase() : withoutTrailing
 }
 
 function containsOrEquals(candidate: string, protectedPath: string) {
-  return candidate === protectedPath || candidate.startsWith(`${protectedPath}/`)
+  return (
+    candidate === protectedPath || candidate.startsWith(`${protectedPath}/`)
+  )
 }
 
 export function deletionBlockReason(
   targetPath: string,
   platform: DiskPlatform,
-  options: { homePath?: string; mountRoots?: readonly string[] } = {},
+  options: { homePath?: string; mountRoots?: readonly string[] } = {}
 ): string | undefined {
-  if (!targetPath.trim() || targetPath.includes("\0")) return "The deletion path is invalid."
+  if (!targetPath.trim() || targetPath.includes("\0"))
+    return "The deletion path is invalid."
   const candidate = normalize(targetPath, platform)
   if (candidate.split("/").some((part) => part === "." || part === ".."))
     return "Relative deletion paths are not allowed."
 
   if (platform === "win32") {
-    if (/^\/\/[?.]\//.test(candidate) || (!/^[a-z]:\//i.test(candidate) && !/^\/\/[^/]+\/[^/]+/i.test(candidate))) {
+    if (
+      /^\/\/[?.]\//.test(candidate) ||
+      (!/^[a-z]:\//i.test(candidate) && !/^\/\/[^/]+\/[^/]+/i.test(candidate))
+    ) {
       return "The deletion path must be absolute."
     }
     if (/^[a-z]:$/i.test(candidate) || /^\/\/[^/]+\/[^/]+$/i.test(candidate)) {
@@ -111,11 +118,17 @@ export function deletionBlockReason(
     }
     const drive = /^[a-z]:/i.exec(candidate)?.[0] ?? ""
     for (const suffix of PROTECTED.win32) {
-      if (containsOrEquals(candidate, normalize(`${drive}${suffix}`, platform))) {
+      if (
+        containsOrEquals(candidate, normalize(`${drive}${suffix}`, platform))
+      ) {
         return "Windows system and application directories are protected."
       }
     }
-    if (PROTECTED_EXACT.win32.some((suffix) => candidate === normalize(`${drive}${suffix}`, platform))) {
+    if (
+      PROTECTED_EXACT.win32.some(
+        (suffix) => candidate === normalize(`${drive}${suffix}`, platform)
+      )
+    ) {
       return "The user-profile container cannot be removed."
     }
     if (/^[a-z]:\/users\/[^/]+$/i.test(candidate)) {
@@ -125,9 +138,11 @@ export function deletionBlockReason(
     if (!candidate.startsWith("/")) return "The deletion path must be absolute."
     if (candidate === "/") return "The filesystem root cannot be removed."
     for (const protectedPath of PROTECTED[platform]) {
-      if (containsOrEquals(candidate, protectedPath)) return "Operating-system files are protected."
+      if (containsOrEquals(candidate, protectedPath))
+        return "Operating-system files are protected."
     }
-    if (PROTECTED_EXACT[platform].includes(candidate)) return "This operating-system container cannot be removed."
+    if (PROTECTED_EXACT[platform].includes(candidate))
+      return "This operating-system container cannot be removed."
     if (
       (platform === "darwin" && /^\/Users\/[^/]+$/.test(candidate)) ||
       (platform === "linux" && /^\/home\/[^/]+$/.test(candidate))
@@ -136,14 +151,20 @@ export function deletionBlockReason(
     }
   }
 
-  if (candidate.split("/").some((part) => PROTECTED_DEVELOPER_COMPONENTS.has(part.toLowerCase()))) {
+  if (
+    candidate
+      .split("/")
+      .some((part) => PROTECTED_DEVELOPER_COMPONENTS.has(part.toLowerCase()))
+  ) {
     return "Version-control, worktree, and coding-agent data must be managed by their owning tool."
   }
 
   if (options.homePath && candidate === normalize(options.homePath, platform)) {
     return "Your home directory cannot be removed as a single item."
   }
-  if (options.mountRoots?.some((root) => candidate === normalize(root, platform))) {
+  if (
+    options.mountRoots?.some((root) => candidate === normalize(root, platform))
+  ) {
     return "A mounted volume cannot be removed."
   }
   return undefined

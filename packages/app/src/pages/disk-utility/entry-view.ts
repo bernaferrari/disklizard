@@ -1,10 +1,20 @@
 import type { DiskScanNode } from "./types"
 
-export type DiskEntrySortKey = "size" | "name" | "modified" | "type" | "category"
+export type DiskEntrySortKey =
+  | "size"
+  | "name"
+  | "modified"
+  | "type"
+  | "category"
 export type DiskEntrySortDirection = "ascending" | "descending"
 
 export function diskEntrySortKey(value: string): DiskEntrySortKey {
-  return value === "name" || value === "modified" || value === "type" || value === "category" ? value : "size"
+  return value === "name" ||
+    value === "modified" ||
+    value === "type" ||
+    value === "category"
+    ? value
+    : "size"
 }
 
 export function diskEntrySortDirection(value: string): DiskEntrySortDirection {
@@ -25,6 +35,43 @@ export type SortableDiskEntry = {
   sourceIndex: number
 }
 
+/** Keep tiny, already-retained files one click away without scanning again. */
+export function groupSmallEntryTail<
+  T extends {
+    node: DiskScanNode
+    displaySize: number
+    colorIndex: number
+    sourceIndex: number
+  },
+>(entries: readonly T[], parentPath: string, parentSize: number): T[] {
+  if (entries.length < 10) return [...entries]
+  const threshold = Math.max(16 * 1024, parentSize * 0.001)
+  let start = entries.length
+  while (start > 5) {
+    const entry = entries[start - 1]
+    if (entry.node.isDir || entry.node.isOther || entry.displaySize > threshold)
+      break
+    start--
+  }
+  if (entries.length - start < 4) return [...entries]
+  const tail = entries.slice(start)
+  const size = tail.reduce((sum, entry) => sum + entry.displaySize, 0)
+  const group: DiskScanNode = {
+    name: "",
+    path: `disklizard:list-more:${parentPath}`,
+    size,
+    isDir: true,
+    isOther: true,
+    otherCount: tail.length,
+    children: tail.map((entry) => entry.node),
+    ext: "",
+  }
+  return [
+    ...entries.slice(0, start),
+    { ...tail[0], node: group, displaySize: size },
+  ]
+}
+
 function normalizedSearchText(value: string) {
   return value.trim().toLocaleLowerCase()
 }
@@ -43,13 +90,17 @@ export function diskEntrySearchText(node: DiskScanNode, extra = "") {
 export function rankedDiskChildren(parent: DiskScanNode) {
   return (parent.children ?? [])
     .map((node, originalIndex) => ({ node, originalIndex }))
-    .toSorted((left, right) => right.node.size - left.node.size || left.originalIndex - right.originalIndex)
+    .toSorted(
+      (left, right) =>
+        right.node.size - left.node.size ||
+        left.originalIndex - right.originalIndex
+    )
 }
 
 /** Depth-first retained-tree walk in shared color-rank order. */
 export function walkRankedDiskTree(
   root: DiskScanNode | null | undefined,
-  visit: (node: DiskScanNode, colorIndex: number, sourceIndex: number) => void,
+  visit: (node: DiskScanNode, colorIndex: number, sourceIndex: number) => void
 ) {
   if (!root) return
   let sourceIndex = 0
@@ -72,7 +123,7 @@ export function walkRankedDiskTree(
  */
 export function indexRetainedDiskTree(
   root: DiskScanNode | null | undefined,
-  extraSearchText: (node: DiskScanNode) => string | undefined = () => undefined,
+  extraSearchText: (node: DiskScanNode) => string | undefined = () => undefined
 ): IndexedDiskEntry[] {
   const indexed: IndexedDiskEntry[] = []
   walkRankedDiskTree(root, (node, colorIndex, sourceIndex) => {
@@ -86,14 +137,20 @@ export function indexRetainedDiskTree(
   return indexed
 }
 
-export function filterIndexedDiskEntries(entries: readonly IndexedDiskEntry[], query: string) {
+export function filterIndexedDiskEntries(
+  entries: readonly IndexedDiskEntry[],
+  query: string
+) {
   const normalized = normalizedSearchText(query)
   if (!normalized) return [...entries]
   return entries.filter((entry) => entry.searchText.includes(normalized))
 }
 
 function compareText(left: string, right: string) {
-  return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" })
+  return left.localeCompare(right, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  })
 }
 
 function diskEntryType(node: DiskScanNode) {
@@ -102,7 +159,10 @@ function diskEntryType(node: DiskScanNode) {
   return `1:${extension || "file"}`
 }
 
-function compareDefinedNumbers(left: number | undefined, right: number | undefined) {
+function compareDefinedNumbers(
+  left: number | undefined,
+  right: number | undefined
+) {
   if (left === undefined && right === undefined) return 0
   if (left === undefined) return 1
   if (right === undefined) return -1
@@ -113,27 +173,39 @@ function compareDefinedNumbers(left: number | undefined, right: number | undefin
 export function sortDiskEntries<T extends SortableDiskEntry>(
   entries: readonly T[],
   key: DiskEntrySortKey,
-  direction: DiskEntrySortDirection,
+  direction: DiskEntrySortDirection
 ): T[] {
   const factor = direction === "ascending" ? 1 : -1
   return entries.toSorted((left, right) => {
     // A combined remainder is a summary, not an individual ranked entry.
-    const remainderOrder = Number(!!left.node.isOther) - Number(!!right.node.isOther)
+    const remainderOrder =
+      Number(!!left.node.isOther) - Number(!!right.node.isOther)
     if (remainderOrder) return remainderOrder
     const comparison =
       key === "category"
-        ? compareText(left.category ?? "", right.category ?? "") || right.displaySize - left.displaySize
+        ? compareText(left.category ?? "", right.category ?? "") ||
+          right.displaySize - left.displaySize
         : key === "size"
           ? left.displaySize - right.displaySize
           : key === "name"
-          ? compareText(left.node.name, right.node.name)
-          : key === "modified"
-            ? compareDefinedNumbers(left.node.modifiedAt, right.node.modifiedAt)
-            : compareText(diskEntryType(left.node), diskEntryType(right.node)) ||
-              compareText(left.node.name, right.node.name)
+            ? compareText(left.node.name, right.node.name)
+            : key === "modified"
+              ? compareDefinedNumbers(
+                  left.node.modifiedAt,
+                  right.node.modifiedAt
+                )
+              : compareText(
+                  diskEntryType(left.node),
+                  diskEntryType(right.node)
+                ) || compareText(left.node.name, right.node.name)
     // Unknown modification dates stay last in either direction.
     const missingModified =
-      key === "modified" && (left.node.modifiedAt === undefined || right.node.modifiedAt === undefined)
-    return (missingModified ? comparison : comparison * factor) || left.sourceIndex - right.sourceIndex
+      key === "modified" &&
+      (left.node.modifiedAt === undefined ||
+        right.node.modifiedAt === undefined)
+    return (
+      (missingModified ? comparison : comparison * factor) ||
+      left.sourceIndex - right.sourceIndex
+    )
   })
 }

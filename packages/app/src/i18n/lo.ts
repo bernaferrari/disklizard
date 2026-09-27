@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "ເມນູ OpenCode",
   "desktop.updater.dialog.checkFailed.message": "ກວດສອບການອັບເດດບໍ່ສຳເລັດ.",
   "desktop.updater.dialog.checkFailed.title": "ອັບເດດຜິດພາດ",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "ທ່ານອັບເດດແລ້ວ.",
   "desktop.updater.dialog.upToDate.title": "ບໍ່ມີການອັບເດດ",
-  "desktop.updater.dialog.ready.message": "ດາວໂຫຼດອັບເດດ {{version}} ແລ້ວ. ຣີສະຕາດດຽວນີ້ບໍ?",
+  "desktop.updater.dialog.ready.message":
+    "ດາວໂຫຼດອັບເດດ {{version}} ແລ້ວ. ຣີສະຕາດດຽວນີ້ບໍ?",
   "desktop.updater.dialog.ready.title": "ອັບເດດພ້ອມແລ້ວ",
   "desktop.updater.dialog.restart": "ຣີສະຕາດ",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +64,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode ລົ້ມເຫລວໃນການໂຫລດ",
   "desktop.recovery.terminated": "ປ່ອງຢ້ຽມ OpenCode ຖືກປິດໂດຍບໍ່ຄາດຄິດ",
   "desktop.recovery.unresponsive": "OpenCode ບໍ່ຕອບສະໜອງ",
-  "desktop.recovery.unresponsive.detail": "ທ່ານສາມາດເປີດແອັບຄືນໃໝ່, ເປີດບັນທຶກ, ຫຼືລໍຖ້າຕໍ່ໄປ.",
-  "desktop.recovery.loadFailed.detail": "ປ່ອງຢ້ຽມ: {{window}}\nURL: {{url}}\nຂໍ້ຜິດພາດ: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "ປ່ອງຢ້ຽມ: {{window}}\nເຫດຜົນ: {{reason}}\nລະຫັດ: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "ທ່ານສາມາດເປີດແອັບຄືນໃໝ່, ເປີດບັນທຶກ, ຫຼືລໍຖ້າຕໍ່ໄປ.",
+  "desktop.recovery.loadFailed.detail":
+    "ປ່ອງຢ້ຽມ: {{window}}\nURL: {{url}}\nຂໍ້ຜິດພາດ: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "ປ່ອງຢ້ຽມ: {{window}}\nເຫດຜົນ: {{reason}}\nລະຫັດ: {{code}}",
   "desktop.recovery.unknown": "<ບໍ່ຮູ້ຈັກ>",
   "desktop.dialog.chooseFolder": "ເລືອກໂຟນເດີ",
   "desktop.dialog.chooseFile": "ເລືອກໄຟລ໌",
@@ -86,11 +91,14 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "ການປັບປຸງ OpenCode ສໍາເລັດແລ້ວແຕ່ {{distro}} ຍັງລາຍງານ {{installed}}; ຄາດວ່າ {{expected}}",
   "desktop.wsl.error.noVersion": "ບໍ່ມີສະບັບ",
-  "desktop.wsl.error.serverExited": "ເຊີບເວີ WSL ອອກຈາກການເລີ່ມຕົ້ນ (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "ເຊີບເວີ WSL ອອກຈາກການເລີ່ມຕົ້ນ (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "ເຊີບເວີ WSL ອອກກ່ອນທີ່ຈະມີສຸຂະພາບດີ (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar ສໍາລັບການກວດສອບສຸຂະພາບ {{distro}} ໝົດເວລາຫຼັງຈາກ {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} ໝົດເວລາຫຼັງຈາກ {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar ສໍາລັບການກວດສອບສຸຂະພາບ {{distro}} ໝົດເວລາຫຼັງຈາກ {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} ໝົດເວລາຫຼັງຈາກ {{timeout}}ms",
   "desktop.wsl.error.failedPort": "ລົ້ມເຫລວໃນການເອົາພອດ",
   "desktop.picker.error.notSelected": "ໄຟລ໌ບໍ່ໄດ້ຖືກເລືອກໂດຍຕົວເລືອກ",
   "desktop.picker.error.sizeLimit": "ໄຟລ໌ແນບທີ່ເລືອກເກີນຂີດຈຳກັດ {{limit}} MB",
@@ -197,12 +205,15 @@ export const dict = {
   "dialog.provider.opencode.note": "ແບບທີ່ຄັດສັນມາລວມທັງ Claude, GPT, Gemini ແລະອື່ນໆ",
   "dialog.provider.opencode.tagline": "ຮູບແບບການເພີ່ມປະສິດທິພາບທີ່ເຊື່ອຖືໄດ້",
   "dialog.provider.opencodeGo.tagline": "ການສະໝັກໃຊ້ລາຄາຕໍ່າສຳລັບທຸກຄົນ",
-  "dialog.provider.anthropic.note": "ເຂົ້າເຖິງຕົວແບບ Claude ໂດຍກົງ, ລວມທັງ Pro ແລະ Max",
-  "dialog.provider.copilot.note": "ຮູບແບບ AI ສໍາລັບການຊ່ວຍເຫຼືອການເຂົ້າລະຫັດຜ່ານ GitHub Copilot",
+  "dialog.provider.anthropic.note":
+    "ເຂົ້າເຖິງຕົວແບບ Claude ໂດຍກົງ, ລວມທັງ Pro ແລະ Max",
+  "dialog.provider.copilot.note":
+    "ຮູບແບບ AI ສໍາລັບການຊ່ວຍເຫຼືອການເຂົ້າລະຫັດຜ່ານ GitHub Copilot",
   "dialog.provider.openai.note": "ແບບ GPT ສໍາລັບວຽກງານ AI ທົ່ວໄປທີ່ໄວ, ມີຄວາມສາມາດ",
   "dialog.provider.google.note": "ແບບ Gemini ສໍາລັບການຕອບສະຫນອງໄວ, ມີໂຄງສ້າງ",
   "dialog.provider.openrouter.note": "ເຂົ້າເຖິງທຸກຮູບແບບທີ່ຮອງຮັບຈາກຜູ້ໃຫ້ບໍລິການດຽວ",
-  "dialog.provider.vercel.note": "ການເຂົ້າເຖິງແບບຮວມຕົວແບບ AI ດ້ວຍການກຳນົດເສັ້ນທາງອັດສະລິຍະ",
+  "dialog.provider.vercel.note":
+    "ການເຂົ້າເຖິງແບບຮວມຕົວແບບ AI ດ້ວຍການກຳນົດເສັ້ນທາງອັດສະລິຍະ",
   "dialog.model.select.title": "ເລືອກຕົວແບບ",
   "dialog.model.search.placeholder": "ຄົ້ນຫາຕົວແບບ",
   "dialog.model.empty": "ບໍ່ພົບຕົວແບບ",
@@ -256,14 +267,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ລະຫັດຜູ້ໃຫ້ບໍລິການ",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "ໂຕພິມນ້ອຍ, ຕົວເລກ, ຂີດຫຍໍ້, ຫຼືຂີດກ້ອງ",
+  "provider.custom.field.providerID.description":
+    "ໂຕພິມນ້ອຍ, ຕົວເລກ, ຂີດຫຍໍ້, ຫຼືຂີດກ້ອງ",
   "provider.custom.field.name.label": "ຊື່ສະແດງ",
   "provider.custom.field.name.placeholder": "ຜູ້ໃຫ້ບໍລິການ AI ຂອງຂ້ອຍ",
   "provider.custom.field.baseURL.label": "URL ພື້ນຖານ",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "ລະຫັດ API",
   "provider.custom.field.apiKey.placeholder": "ລະຫັດ API",
-  "provider.custom.field.apiKey.description": "ທາງເລືອກ. ປ່ອຍຫວ່າງໄວ້ຖ້າທ່ານຈັດການການກວດສອບຜ່ານສ່ວນຫົວ.",
+  "provider.custom.field.apiKey.description":
+    "ທາງເລືອກ. ປ່ອຍຫວ່າງໄວ້ຖ້າທ່ານຈັດການການກວດສອບຜ່ານສ່ວນຫົວ.",
   "provider.custom.models.label": "ແບບ",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -287,7 +300,8 @@ export const dict = {
   "provider.custom.error.required": "ຕ້ອງການ",
   "provider.custom.error.duplicate": "ຊໍ້າກັນ",
   "provider.disconnect.toast.disconnected.title": "{{provider}} ຕັດການເຊື່ອມຕໍ່ແລ້ວ",
-  "provider.disconnect.toast.disconnected.description": "ໂມເດວ {{provider}} ບໍ່ມີແລ້ວ.",
+  "provider.disconnect.toast.disconnected.description":
+    "ໂມເດວ {{provider}} ບໍ່ມີແລ້ວ.",
   "model.tag.free": "ຟຣີ",
   "model.tag.latest": "ຫຼ້າສຸດ",
   "model.provider.anthropic": "Anthropic",
@@ -381,10 +395,12 @@ export const dict = {
   "prompt.action.send": "ສົ່ງ",
   "prompt.action.stop": "ຢຸດ",
   "prompt.toast.pasteUnsupported.title": "ບໍ່ຮອງຮັບໄຟລ໌ແນບ",
-  "prompt.toast.pasteUnsupported.description": "ພຽງແຕ່ຮູບພາບ, PDFs, ຫຼືໄຟລ໌ຂໍ້ຄວາມສາມາດຕິດຢູ່ນີ້.",
+  "prompt.toast.pasteUnsupported.description":
+    "ພຽງແຕ່ຮູບພາບ, PDFs, ຫຼືໄຟລ໌ຂໍ້ຄວາມສາມາດຕິດຢູ່ນີ້.",
   "prompt.toast.attachmentDuplicate.title": "ໄຟລ໌ນີ້ໄດ້ຖືກອັບໂຫລດໄປກ່ອນແລ້ວ",
   "prompt.toast.modelAgentRequired.title": "ເລືອກຕົວແທນ ແລະຕົວແບບ",
-  "prompt.toast.modelAgentRequired.description": "ເລືອກຕົວແທນ ແລະຕົວແບບກ່ອນສົ່ງ prompt.",
+  "prompt.toast.modelAgentRequired.description":
+    "ເລືອກຕົວແທນ ແລະຕົວແບບກ່ອນສົ່ງ prompt.",
   "prompt.toast.worktreeCreateFailed.title": "ສ້າງ Git worktree ບໍ່ສຳເລັດ",
   "prompt.toast.sessionCreateFailed.title": "ລົ້ມເຫລວໃນການສ້າງເຊດຊັນ",
   "prompt.toast.shellSendFailed.title": "ລົ້ມເຫລວໃນການສົ່ງຄໍາສັ່ງ shell",
@@ -489,9 +505,11 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (ລະບົບຍ່ອຍຂອງ Windows ສໍາລັບ Linux) ກ່ອນທີ່ OpenCode ສາມາດເພີ່ມເຄື່ອງແມ່ຂ່າຍ WSL ໄດ້",
   "wsl.onboarding.wslUnavailable.title": "WSL ບໍ່ສາມາດໃຊ້ໄດ້",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ບໍ່ສາມາດກວດສອບ WSL ໃນເຄື່ອງນີ້ໄດ້.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ບໍ່ສາມາດກວດສອບ WSL ໃນເຄື່ອງນີ້ໄດ້.",
   "wsl.onboarding.installWsl": "ຕິດຕັ້ງ WSL",
-  "wsl.onboarding.windowsRestartRequired": "ຣີສະຕາດ Windows ເພື່ອສຳເລັດການຕິດຕັ້ງ WSL, ຈາກນັ້ນເປີດ OpenCode ຄືນໃໝ່.",
+  "wsl.onboarding.windowsRestartRequired":
+    "ຣີສະຕາດ Windows ເພື່ອສຳເລັດການຕິດຕັ້ງ WSL, ຈາກນັ້ນເປີດ OpenCode ຄືນໃໝ່.",
   "wsl.onboarding.next": "ຕໍ່ໄປ",
   "wsl.onboarding.refresh": "ໂຫຼດຂໍ້ມູນຄືນໃໝ່",
   "wsl.onboarding.allDistrosAdded": "ການຕິດຕັ້ງທັງໝົດຖືກເພີ່ມແລ້ວ.",
@@ -510,7 +528,8 @@ export const dict = {
   "wsl.onboarding.desktopVersion": "ເດັສທັອບ {{version}}",
   "wsl.onboarding.versionMismatch": "ເວີຊັນທີ່ຕິດຕັ້ງບໍ່ກົງກັບເວີຊັນຂອງແອັບ desktop.",
   "wsl.onboarding.adding": "ກຳລັງເພີ່ມ...",
-  "help.tabs.toast.ariaLabel": "ແນະນຳແຖບ. ຈັດລະບຽບການເຮັດວຽກແລະກອງປະຊຸມການເຄື່ອນໄຫວຂອງທ່ານດ້ວຍແຖບ",
+  "help.tabs.toast.ariaLabel":
+    "ແນະນຳແຖບ. ຈັດລະບຽບການເຮັດວຽກແລະກອງປະຊຸມການເຄື່ອນໄຫວຂອງທ່ານດ້ວຍແຖບ",
   "help.tabs.toast.dismiss": "ປິດຂໍ້ມູນແຖບ",
   "help.tabs.title": "ແນະນຳແຖບ",
   "help.tabs.description": "ຈັດກອງປະຊຸມການເຮັດວຽກ ແລະການເຄື່ອນໄຫວຂອງທ່ານດ້ວຍແຖບ",
@@ -520,7 +539,8 @@ export const dict = {
     "ເລີ່ມເຊດຊັນໃໝ່ໃນແຖບໃດໜຶ່ງ, ຫຼືເປີດເຊດຊັນທີ່ມີຢູ່ແລ້ວຈາກໂຄງການໃດໆກໍຕາມຂອງເຈົ້າ. ເປີດແຖບໃໝ່ເມື່ອທ່ານເລີ່ມອັນໃໝ່, ແລະປິດມັນເມື່ອທ່ານສຳເລັດ.",
   "help.tabs.organize":
     "ການເປີດບາງແຖບເຮັດໃຫ້ມັນງ່າຍຂຶ້ນໃນການຈັດກອງປະຊຸມທີ່ມີການເຄື່ອນໄຫວຂອງທ່ານ. ປ່ຽນຊື່ແຖບເປັນສິ່ງທີ່ໜ້າຈົດຈຳ ຖ້າທ່ານວາງແຜນທີ່ຈະຮັກສາພວກມັນໄວ້.",
-  "help.tabs.home": "ທ່ານຈະພົບເຫັນເຊດຊັນ ແລະໂຄງການທັງໝົດຂອງທ່ານໃນໜ້າຈໍຫຼັກໃໝ່. ການເລືອກເຊດຊັນຈະເປີດມັນຢູ່ໃນແຖບ.",
+  "help.tabs.home":
+    "ທ່ານຈະພົບເຫັນເຊດຊັນ ແລະໂຄງການທັງໝົດຂອງທ່ານໃນໜ້າຈໍຫຼັກໃໝ່. ການເລືອກເຊດຊັນຈະເປີດມັນຢູ່ໃນແຖບ.",
   "help.tabs.persistence": "ເມື່ອທ່ານເປີດແອັບຄືນໃໝ່, ແຖບຂອງທ່ານຍັງເປີດຢູ່.",
   "help.tabs.worktrees":
     "ການອອກແບບໃໝ່ຍັງບໍ່ຮອງຮັບ Git Worktrees ເທື່ອ, ມັນຈະມາໃນໄວໆນີ້. ສະນັ້ນຖ້າທ່ານຕ້ອງການສືບຕໍ່ໃຊ້ໂຄງຮ່າງກ່ອນໜ້າ, ທ່ານສາມາດສະຫຼັບລະຫວ່າງການຈັດວາງໃນການຕັ້ງຄ່າ. ພຽງແຕ່ຈື່ໄວ້ວ່າຮູບແບບໃຫມ່ຈະກາຍເປັນຖາວອນໃນສອງສາມອາທິດ.",
@@ -534,14 +554,16 @@ export const dict = {
   "dialog.project.edit.color": "ສີ",
   "dialog.project.edit.color.select": "ເລືອກສີ {{color}}",
   "dialog.project.edit.worktree.startup": "ສະຄຣິບເລີ່ມຕົ້ນພື້ນທີ່ເຮັດວຽກ",
-  "dialog.project.edit.worktree.startup.description": "ເຮັດວຽກຫຼັງຈາກສ້າງພື້ນທີ່ເຮັດວຽກໃໝ່ (Git worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "ເຮັດວຽກຫຼັງຈາກສ້າງພື້ນທີ່ເຮັດວຽກໃໝ່ (Git worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "ຕົວຢ່າງ: bun ຕິດຕັ້ງ",
   "dialog.releaseNotes.action.getStarted": "ເລີ່ມຕົ້ນ",
   "dialog.releaseNotes.action.next": "ຕໍ່ໄປ",
   "dialog.releaseNotes.action.hideFuture": "ຢ່າສະແດງສິ່ງເຫຼົ່ານີ້ໃນອະນາຄົດ",
   "dialog.releaseNotes.media.alt": "ປ່ອຍຕົວຢ່າງ",
   "context.breakdown.title": "ການແບ່ງບໍລິບົດ",
-  "context.breakdown.note": 'ການແບ່ງຕົວໂດຍປະມານຂອງໂທເຄັນການປ້ອນຂໍ້ມູນ. "ອື່ນໆ" ປະກອບມີຄໍານິຍາມເຄື່ອງມືແລະ overhead.',
+  "context.breakdown.note":
+    'ການແບ່ງຕົວໂດຍປະມານຂອງໂທເຄັນການປ້ອນຂໍ້ມູນ. "ອື່ນໆ" ປະກອບມີຄໍານິຍາມເຄື່ອງມືແລະ overhead.',
   "context.breakdown.system": "ລະບົບ",
   "context.breakdown.user": "ຜູ້ໃຊ້",
   "context.breakdown.assistant": "ຜູ້ຊ່ວຍ",
@@ -594,13 +616,17 @@ export const dict = {
   "toast.theme.title": "ປ່ຽນຮູບແບບສີສັນແລ້ວ",
   "toast.scheme.title": "ຮູບແບບສີ",
   "toast.workspace.enabled.title": "ພື້ນທີ່ເຮັດວຽກຖືກເປີດໃຊ້",
-  "toast.workspace.enabled.description": "ດຽວນີ້ Git worktree ຫຼາຍອັນສະແດງຢູ່ໃນແຖບດ້ານຂ້າງ",
+  "toast.workspace.enabled.description":
+    "ດຽວນີ້ Git worktree ຫຼາຍອັນສະແດງຢູ່ໃນແຖບດ້ານຂ້າງ",
   "toast.workspace.disabled.title": "ພື້ນທີ່ເຮັດວຽກຖືກປິດໄວ້",
-  "toast.workspace.disabled.description": "ສະແດງສະເພາະ Git worktree ຫຼັກໃນແຖບດ້ານຂ້າງ",
+  "toast.workspace.disabled.description":
+    "ສະແດງສະເພາະ Git worktree ຫຼັກໃນແຖບດ້ານຂ້າງ",
   "toast.permissions.autoaccept.on.title": "ການອະນຸຍາດອັດຕະໂນມັດ",
-  "toast.permissions.autoaccept.on.description": "ການຮ້ອງຂໍການອະນຸຍາດຈະຖືກອະນຸມັດໂດຍອັດຕະໂນມັດ",
+  "toast.permissions.autoaccept.on.description":
+    "ການຮ້ອງຂໍການອະນຸຍາດຈະຖືກອະນຸມັດໂດຍອັດຕະໂນມັດ",
   "toast.permissions.autoaccept.off.title": "ຢຸດການອະນຸຍາດອັດຕະໂນມັດ",
-  "toast.permissions.autoaccept.off.description": "ການຮ້ອງຂໍການອະນຸຍາດຈະຕ້ອງມີການອະນຸມັດ",
+  "toast.permissions.autoaccept.off.description":
+    "ການຮ້ອງຂໍການອະນຸຍາດຈະຕ້ອງມີການອະນຸມັດ",
   "toast.model.none.title": "ບໍ່ໄດ້ເລືອກຕົວແບບ",
   "toast.model.none.description": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການເພື່ອສະຫຼຸບກອງປະຊຸມນີ້",
   "toast.file.loadFailed.title": "ລົ້ມເຫລວໃນການໂຫຼດໄຟລ໌",
@@ -615,7 +641,8 @@ export const dict = {
   "toast.session.unshare.success.title": "ເຊົາແບ່ງປັນເຊດຊັນແລ້ວ",
   "toast.session.unshare.success.description": "ເຊົາແບ່ງປັນເຊດຊັນສຳເລັດແລ້ວ!",
   "toast.session.unshare.failed.title": "ຍົກເລີກການແບ່ງປັນເຊດຊັນບໍ່ສຳເລັດ",
-  "toast.session.unshare.failed.description": "ເກີດຄວາມຜິດພາດໃນຂະນະທີ່ຍົກເລີກການແບ່ງປັນເຊດຊັນ",
+  "toast.session.unshare.failed.description":
+    "ເກີດຄວາມຜິດພາດໃນຂະນະທີ່ຍົກເລີກການແບ່ງປັນເຊດຊັນ",
   "toast.session.export.success.title": "ສົ່ງອອກເຊດຊັນແລ້ວ",
   "toast.session.export.success.description": "ບັນທຶກເຊດຊັນໃສ່ {{filename}}",
   "toast.session.export.failed.title": "ລົ້ມເຫລວໃນການສົ່ງອອກເຊດຊັນ",
@@ -625,8 +652,10 @@ export const dict = {
   "toast.update.title": "ມີອັບເດດ",
   "toast.update.description": "ເວີຊັນໃໝ່ຂອງ OpenCode ({{version}}) ມີໃຫ້ຕິດຕັ້ງແລ້ວ.",
   "toast.update.action.installRestart": "ຕິດຕັ້ງ ແລະປິດເປີດໃໝ່",
-  "disk.accessGuidance.macos": "ອະນຸຍາດ Full Disk Access ໃຫ້ DiskLizard ໃນການຕັ້ງຄ່າລະບົບ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
-  "disk.accessGuidance.windows": "ໃຊ້ບັນຊີທີ່ມີສິດເຂົ້າເຖິງດິສກ໌ນີ້ ຫຼື ສະແກນໂຟນເດີທີ່ບັນຊີຂອງທ່ານອ່ານໄດ້.",
+  "disk.accessGuidance.macos":
+    "ອະນຸຍາດ Full Disk Access ໃຫ້ DiskLizard ໃນການຕັ້ງຄ່າລະບົບ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
+  "disk.accessGuidance.windows":
+    "ໃຊ້ບັນຊີທີ່ມີສິດເຂົ້າເຖິງດິສກ໌ນີ້ ຫຼື ສະແກນໂຟນເດີທີ່ບັນຊີຂອງທ່ານອ່ານໄດ້.",
   "disk.accessGuidance.linux": "ກວດເບິ່ງສິດຂອງໂຟນເດີ ແລະ ຈຸດເຊື່ອມຕໍ່ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
   "disk.accessGuidance.default": "ກວດເບິ່ງການເຂົ້າເຖິງໂຟນເດີເຫຼົ່ານີ້ ຈາກນັ້ນສະແກນຄືນໃໝ່.",
   "disk.accessGuidance.rescan": "ຫຼັງຈາກປ່ຽນການເຂົ້າເຖິງ ໃຫ້ໃຊ້ Rescan ໃນແຖບເທິງ.",
@@ -636,7 +665,8 @@ export const dict = {
   "toast.update.installFailed.retry": "ລອງໃໝ່",
   "error.page.title": "ມີບາງຢ່າງຜິດພາດ",
   "error.page.description": "ເກີດຄວາມຜິດພາດໃນລະຫວ່າງການໂຫລດແອັບພລິເຄຊັນ.",
-  "error.page.description.localServerStartup": "ເກີດຄວາມຜິດພາດຂຶ້ນໃນຂະນະທີ່ເລີ່ມເຊີບເວີທ້ອງຖິ່ນ.",
+  "error.page.description.localServerStartup":
+    "ເກີດຄວາມຜິດພາດຂຶ້ນໃນຂະນະທີ່ເລີ່ມເຊີບເວີທ້ອງຖິ່ນ.",
   "error.page.details.label": "ລາຍລະອຽດຂໍ້ຜິດພາດ",
   "error.page.action.restart": "ຣີສະຕາດ",
   "error.page.action.report": "ລາຍງານຄວາມຜິດພາດ",
@@ -651,12 +681,15 @@ export const dict = {
   "error.page.version": "ລຸ້ນ: {{version}}",
   "error.dev.rootNotFound":
     "ບໍ່ພົບອົງປະກອບຮາກ. ທ່ານລືມເພີ່ມມັນໃສ່ index.html ຂອງທ່ານບໍ? ຫຼືບາງທີຄຸນສົມບັດ id ມີການສະກົດຜິດ?",
-  "error.serverSync.connectFailed": "ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບເຊີບເວີໄດ້. ມີເຊີບເວີທີ່ເຮັດວຽກຢູ່ `{{url}}` ບໍ?",
+  "error.serverSync.connectFailed":
+    "ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບເຊີບເວີໄດ້. ມີເຊີບເວີທີ່ເຮັດວຽກຢູ່ `{{url}}` ບໍ?",
   "error.serverSDK.noServerAvailable": "ບໍ່ມີເຊີບເວີ",
   "error.serverSDK.serverNotAvailable": "ບໍ່ມີເຊີບເວີ",
   "error.childStore.persistedCacheCreateFailed": "ລົ້ມເຫລວໃນການສ້າງແຄດທີ່ຍັງຄົງຄ້າງ",
-  "error.childStore.persistedProjectMetadataCreateFailed": "ລົ້ມເຫລວໃນການສ້າງ metadata ຂອງໂຄງການທີ່ຍັງຄົງຄ້າງ",
-  "error.childStore.persistedProjectIconCreateFailed": "ລົ້ມເຫລວໃນການສ້າງໄອຄອນໂຄງການທີ່ຍັງຄົງຄ້າງ",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "ລົ້ມເຫລວໃນການສ້າງ metadata ຂອງໂຄງການທີ່ຍັງຄົງຄ້າງ",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "ລົ້ມເຫລວໃນການສ້າງໄອຄອນໂຄງການທີ່ຍັງຄົງຄ້າງ",
   "error.childStore.storeCreateFailed": "ລົ້ມເຫລວໃນການສ້າງຮ້ານ",
   "directory.error.invalidUrl": "ໄດເລກະທໍລີບໍ່ຖືກຕ້ອງໃນ URL.",
   "error.chain.unknown": "ຄວາມຜິດພາດທີ່ບໍ່ຮູ້ຈັກ",
@@ -668,22 +701,30 @@ export const dict = {
   "error.chain.responseBody": "ເນື້ອໃນການຕອບສະໜອງ:\n{{body}}",
   "error.chain.didYouMean": "ເຈົ້າຫມາຍຄວາມວ່າ: {{suggestions}}",
   "error.chain.modelNotFound": "ບໍ່ພົບໂມເດວ: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "ກວດເບິ່ງການຕັ້ງຄ່າ (opencode.json) ຜູ້ໃຫ້ບໍລິການ/ຊື່ແບບຈໍາລອງຂອງທ່ານ",
-  "error.chain.mcpFailed": 'ເຊີບເວີ MCP "{{name}}" ລົ້ມເຫລວ. ໝາຍເຫດ, OpenCode ບໍ່ຮອງຮັບການພິສູດຢືນຢັນ MCP ເທື່ອ.',
-  "error.chain.providerAuthFailed": "ການພິສູດຢືນຢັນຜູ້ໃຫ້ບໍລິການລົ້ມເຫລວ ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "ກວດເບິ່ງການຕັ້ງຄ່າ (opencode.json) ຜູ້ໃຫ້ບໍລິການ/ຊື່ແບບຈໍາລອງຂອງທ່ານ",
+  "error.chain.mcpFailed":
+    'ເຊີບເວີ MCP "{{name}}" ລົ້ມເຫລວ. ໝາຍເຫດ, OpenCode ບໍ່ຮອງຮັບການພິສູດຢືນຢັນ MCP ເທື່ອ.',
+  "error.chain.providerAuthFailed":
+    "ການພິສູດຢືນຢັນຜູ້ໃຫ້ບໍລິການລົ້ມເຫລວ ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'ລົ້ມເຫລວໃນການເລີ່ມຕົ້ນຜູ້ໃຫ້ບໍລິການ "{{provider}}". ກວດເບິ່ງຂໍ້ມູນປະຈໍາຕົວແລະການຕັ້ງຄ່າ.',
   "error.chain.configJsonInvalid": "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Directory "{{dir}}" ໃນ {{path}} ບໍ່ຖືກຕ້ອງ. ປ່ຽນຊື່ໄດເລກະທໍລີເປັນ "{{suggestion}}" ຫຼືເອົາມັນອອກ. ນີ້ແມ່ນການພິມຜິດທົ່ວໄປ.',
-  "error.chain.configFrontmatterError": "ລົ້ມເຫລວໃນການວິເຄາະເລື່ອງໜ້າໃນ {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "ລົ້ມເຫລວໃນການວິເຄາະເລື່ອງໜ້າໃນ {{path}}:\n{{message}}",
   "error.chain.configInvalid": "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ",
-  "error.chain.configInvalidWithMessage": "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "ໄຟລ໌ Config ຢູ່ {{path}} ບໍ່ຖືກຕ້ອງ: {{message}}",
   "notification.permission.title": "ຕ້ອງມີການອະນຸຍາດ",
-  "notification.permission.description": "{{sessionTitle}} ໃນ {{projectName}} ຕ້ອງການການອະນຸຍາດ",
+  "notification.permission.description":
+    "{{sessionTitle}} ໃນ {{projectName}} ຕ້ອງການການອະນຸຍາດ",
   "notification.question.title": "ຄໍາຖາມ",
-  "notification.question.description": "{{sessionTitle}} ໃນ {{projectName}} ມີຄໍາຖາມ",
+  "notification.question.description":
+    "{{sessionTitle}} ໃນ {{projectName}} ມີຄໍາຖາມ",
   "notification.action.goToSession": "ໄປທີ່ເຊດຊັນ",
   "notification.session.responseReady.title": "ການຕອບສະໜອງພ້ອມແລ້ວ",
   "notification.session.error.title": "ເຊດຊັນຜິດພາດ",
@@ -706,7 +747,8 @@ export const dict = {
   "home.sessions.group.today": "ມື້ນີ້",
   "home.sessions.group.yesterday": "ມື້ວານນີ້",
   "home.sessions.group.older": "ເກົ່າ",
-  "home.providerTip": "ເຊື່ອມຕໍ່ກັບຜູ້ໃຫ້ບໍລິການ 75+ ເພື່ອໃຊ້ຮູບແບບອື່ນໆ, ລວມທັງ Claude, GPT, Gemini, ແລະອື່ນໆ.",
+  "home.providerTip":
+    "ເຊື່ອມຕໍ່ກັບຜູ້ໃຫ້ບໍລິການ 75+ ເພື່ອໃຊ້ຮູບແບບອື່ນໆ, ລວມທັງ Claude, GPT, Gemini, ແລະອື່ນໆ.",
   "session.tab.session": "ເຊດຊັນ",
   "session.tab.review": "ການທົບທວນຄືນ",
   "session.tab.context": "ບໍລິບົດ",
@@ -723,10 +765,12 @@ export const dict = {
   "session.review.empty": "ບໍ່ມີການປ່ຽນແປງໃນເຊດຊັນນີ້ເທື່ອ",
   "session.review.noVcs": "ບໍ່ພົບລະບົບການຄວບຄຸມເວີຊັນ Git, ການປ່ຽນແປງບໍ່ສະແດງ",
   "session.review.noVcs.createGit.title": "ສ້າງບ່ອນເກັບຂໍ້ມູນ Git",
-  "session.review.noVcs.createGit.description": "ຕິດຕາມ, ທົບທວນ, ແລະຍົກເລີກການປ່ຽນແປງໃນໂຄງການນີ້",
+  "session.review.noVcs.createGit.description":
+    "ຕິດຕາມ, ທົບທວນ, ແລະຍົກເລີກການປ່ຽນແປງໃນໂຄງການນີ້",
   "session.review.noVcs.createGit.actionLoading": "ກຳລັງສ້າງບ່ອນເກັບຂໍ້ມູນ Git...",
   "session.review.noVcs.createGit.action": "ສ້າງບ່ອນເກັບຂໍ້ມູນ Git",
-  "session.review.noSnapshot": "ການຕິດຕາມພາບຖ່າຍຖືກປິດໃຊ້ງານຢູ່ໃນການຕັ້ງຄ່າ, ດັ່ງນັ້ນການປ່ຽນແປງເຊດຊັນບໍ່ສາມາດໃຊ້ໄດ້",
+  "session.review.noSnapshot":
+    "ການຕິດຕາມພາບຖ່າຍຖືກປິດໃຊ້ງານຢູ່ໃນການຕັ້ງຄ່າ, ດັ່ງນັ້ນການປ່ຽນແປງເຊດຊັນບໍ່ສາມາດໃຊ້ໄດ້",
   "session.review.noChanges": "ບໍ່ມີການປ່ຽນແປງ",
   "session.review.noUncommittedChanges": "ບໍ່ມີການປ່ຽນແປງທີ່ບໍ່ໄດ້ຕົກລົງເທື່ອ",
   "session.review.noBranchChanges": "ບໍ່ມີການປ່ຽນແປງສາຂາເທື່ອ",
@@ -807,7 +851,8 @@ export const dict = {
   "status.popover.tab.plugins": "ປລັກອິນ",
   "status.popover.action.manageServers": "ຈັດການເຊີບເວີ",
   "session.share.popover.title": "ເຜີຍແຜ່ໃນເວັບ",
-  "session.share.popover.description.shared": "ເຊດຊັນນີ້ແມ່ນສາທາລະນະໃນເວັບ. ມັນສາມາດເຂົ້າເຖິງທຸກຄົນທີ່ມີການເຊື່ອມຕໍ່.",
+  "session.share.popover.description.shared":
+    "ເຊດຊັນນີ້ແມ່ນສາທາລະນະໃນເວັບ. ມັນສາມາດເຂົ້າເຖິງທຸກຄົນທີ່ມີການເຊື່ອມຕໍ່.",
   "session.share.popover.description.unshared":
     "ແບ່ງປັນເຊດຊັນສາທາລະນະໃນເວັບ. ມັນຈະສາມາດເຂົ້າເຖິງທຸກຄົນທີ່ມີການເຊື່ອມຕໍ່.",
   "session.share.action.share": "ແບ່ງປັນ",
@@ -875,8 +920,10 @@ export const dict = {
   "sidebar.workspaces.enable": "ເປີດໃຊ້ພື້ນທີ່ເຮັດວຽກ",
   "sidebar.workspaces.disable": "ປິດການໃຊ້ງານພື້ນທີ່ເຮັດວຽກ",
   "sidebar.gettingStarted.title": "ການເລີ່ມຕົ້ນ",
-  "sidebar.gettingStarted.line1": "OpenCode ປະກອບມີຮູບແບບຟຣີເພື່ອໃຫ້ທ່ານສາມາດເລີ່ມຕົ້ນໄດ້ທັນທີ.",
-  "sidebar.gettingStarted.line2": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການໃດນຶ່ງເພື່ອໃຊ້ແບບຈໍາລອງ, inc. Claude, GPT, Gemini ແລະອື່ນໆ.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ປະກອບມີຮູບແບບຟຣີເພື່ອໃຫ້ທ່ານສາມາດເລີ່ມຕົ້ນໄດ້ທັນທີ.",
+  "sidebar.gettingStarted.line2":
+    "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການໃດນຶ່ງເພື່ອໃຊ້ແບບຈໍາລອງ, inc. Claude, GPT, Gemini ແລະອື່ນໆ.",
   "sidebar.project.recentSessions": "ເຊດຊັນທີ່ຜ່ານມາ",
   "sidebar.project.viewAllSessions": "ເບິ່ງເຊດຊັນທັງໝົດ",
   "sidebar.project.clearNotifications": "ລຶບການແຈ້ງເຕືອນ",
@@ -894,7 +941,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "ເຟຣມຫຼາຍກວ່າ 32ms ໃນ 5 ວິນາທີສຸດທ້າຍ.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "ເວລາທີ່ຖືກບລັອກ ແລະນັບວຽກຍາວໃນ 5 ວິນາທີສຸດທ້າຍ. ໜ້າວຽກສູງສຸດ: {{max}}.",
+  "debugBar.long.tip":
+    "ເວລາທີ່ຖືກບລັອກ ແລະນັບວຽກຍາວໃນ 5 ວິນາທີສຸດທ້າຍ. ໜ້າວຽກສູງສຸດ: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "ການຊັກຊ້າການປ້ອນຂໍ້ມູນທີ່ສັງເກດເຫັນຮ້າຍແຮງທີ່ສຸດໃນ 5 ວິນາທີທີ່ຜ່ານມາ.",
   "debugBar.inp.label": "INP",
@@ -935,39 +983,49 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "ອັດຕະໂນມັດ (ຄ່າເລີ່ມຕົ້ນ)",
   "settings.general.row.shell.terminalOnly": "terminal ເທົ່ານັ້ນ",
   "settings.general.row.appearance.title": "ຮູບລັກສະນະ",
-  "settings.general.row.appearance.description": "ປັບແຕ່ງວິທີ OpenCode ເບິ່ງຢູ່ໃນອຸປະກອນຂອງທ່ານ",
+  "settings.general.row.appearance.description":
+    "ປັບແຕ່ງວິທີ OpenCode ເບິ່ງຢູ່ໃນອຸປະກອນຂອງທ່ານ",
   "settings.general.row.colorScheme.title": "ຮູບແບບສີ",
-  "settings.general.row.colorScheme.description": "ເລືອກວ່າ OpenCode ປະຕິບັດຕາມລະບົບ, ແສງສະຫວ່າງ, ຫຼືຮູບແບບຊ້ໍາ",
+  "settings.general.row.colorScheme.description":
+    "ເລືອກວ່າ OpenCode ປະຕິບັດຕາມລະບົບ, ແສງສະຫວ່າງ, ຫຼືຮູບແບບຊ້ໍາ",
   "settings.general.row.theme.title": "ຫົວຂໍ້",
   "settings.general.row.theme.description": "ປັບແຕ່ງວິທີ OpenCode ເປັນຫົວຂໍ້.",
   "settings.general.row.font.title": "ຕົວອັກສອນລະຫັດ",
   "settings.general.row.font.description": "ປັບແຕ່ງຕົວອັກສອນທີ່ໃຊ້ໃນບລັອກລະຫັດ",
   "settings.general.row.terminalFont.title": "ຕົວອັກສອນປາຍ",
-  "settings.general.row.terminalFont.description": "ປັບແຕ່ງຟອນທີ່ໃຊ້ຢູ່ໃນເຄື່ອງໝາຍປາຍທາງ",
+  "settings.general.row.terminalFont.description":
+    "ປັບແຕ່ງຟອນທີ່ໃຊ້ຢູ່ໃນເຄື່ອງໝາຍປາຍທາງ",
   "settings.general.row.uiFont.title": "ຟອນ UI",
   "settings.general.row.uiFont.description": "ປັບແຕ່ງຟອນທີ່ໃຊ້ໃນທົ່ວອິນເຕີເຟດ",
   "settings.general.row.followup.title": "ພຶດຕິກໍາການຕິດຕາມ",
-  "settings.general.row.followup.description": "ເລືອກວ່າການຕິດຕາມການກະຕຸ້ນເຕືອນທັນທີຫຼືລໍຖ້າຢູ່ໃນຄິວ",
+  "settings.general.row.followup.description":
+    "ເລືອກວ່າການຕິດຕາມການກະຕຸ້ນເຕືອນທັນທີຫຼືລໍຖ້າຢູ່ໃນຄິວ",
   "settings.general.row.followup.option.queue": "ຄິວ",
   "settings.general.row.followup.option.steer": "ຊີ້ນໍາ",
   "settings.general.row.showFileTree.title": "ຕົ້ນໄມ້ໄຟລ໌",
   "settings.general.row.showFileTree.description": "ສະແດງແຖບຕົ້ນໄມ້ໄຟລ໌ໃນເຊດຊັນຕ່າງໆ",
   "settings.general.row.showNavigation.title": "ການຄວບຄຸມການນໍາທາງ",
-  "settings.general.row.showNavigation.description": "ສະແດງປຸ່ມກັບຄືນ ແລະສົ່ງຕໍ່ໃນແຖບຫົວຂໍ້ desktop",
+  "settings.general.row.showNavigation.description":
+    "ສະແດງປຸ່ມກັບຄືນ ແລະສົ່ງຕໍ່ໃນແຖບຫົວຂໍ້ desktop",
   "settings.general.row.showSearch.title": "ແຖບຄໍາສັ່ງ",
-  "settings.general.row.showSearch.description": "ສະແດງປຸ່ມ palette ຄົ້ນຫາ ແລະຄໍາສັ່ງຢູ່ໃນແຖບຫົວຂໍ້",
+  "settings.general.row.showSearch.description":
+    "ສະແດງປຸ່ມ palette ຄົ້ນຫາ ແລະຄໍາສັ່ງຢູ່ໃນແຖບຫົວຂໍ້",
   "settings.general.row.showTerminal.title": "ສະຖານີ",
-  "settings.general.row.showTerminal.description": "ສະແດງປຸ່ມ terminal ໃນແຖບຫົວຂໍ້ desktop",
+  "settings.general.row.showTerminal.description":
+    "ສະແດງປຸ່ມ terminal ໃນແຖບຫົວຂໍ້ desktop",
   "settings.general.row.showStatus.title": "ສະຖານະເຊີບເວີ",
   "settings.general.row.showStatus.description": "ສະແດງປຸ່ມສະຖານະເຊີບເວີໃນແຖບຫົວຂໍ້",
   "settings.general.row.mobileTitlebarBottom.title": "ການນໍາທາງລຸ່ມ",
-  "settings.general.row.mobileTitlebarBottom.description": "ວາງແຖບຫົວຂໍ້ ແລະແຖບເຊດຊັນຢູ່ລຸ່ມສຸດຂອງໜ້າຈໍໃນມືຖື",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "ວາງແຖບຫົວຂໍ້ ແລະແຖບເຊດຊັນຢູ່ລຸ່ມສຸດຂອງໜ້າຈໍໃນມືຖື",
   "settings.general.row.showCustomAgents.title": "ສະແດງຕົວແທນ",
   "settings.general.row.showCustomAgents.description":
     "ສະຫຼັບລະຫວ່າງຕົວແທນໃນຕົວປະກອບ. ເມື່ອຖືກເຊື່ອງໄວ້, ເລີ່ມຕົ້ນທີ່ຈະສ້າງຕົວແທນ.",
   "settings.general.row.reasoningSummaries.title": "ສະແດງການສັງລວມເຫດຜົນ",
-  "settings.general.row.reasoningSummaries.description": "ສະແດງສະຫຼຸບເຫດຜົນຂອງຕົວແບບໃນທາມລາຍ",
-  "settings.general.row.shellToolPartsExpanded.title": "ຂະຫຍາຍສ່ວນຂອງເຄື່ອງມື Shell",
+  "settings.general.row.reasoningSummaries.description":
+    "ສະແດງສະຫຼຸບເຫດຜົນຂອງຕົວແບບໃນທາມລາຍ",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "ຂະຫຍາຍສ່ວນຂອງເຄື່ອງມື Shell",
   "settings.general.row.shellToolPartsExpanded.description":
     "ສະແດງສ່ວນຂອງເຄື່ອງມື Shell ແບບຂະຫຍາຍເປັນຄ່າເລີ່ມຕົ້ນໃນໄທມ໌ລາຍ",
   "settings.general.row.editToolPartsExpanded.title": "ຂະຫຍາຍພາກສ່ວນເຄື່ອງມືແກ້ໄຂ",
@@ -975,20 +1033,25 @@ export const dict = {
     "ສະ​ແດງ​ການ​ແກ້​ໄຂ, ຂຽນ, ແລະ​ການ​ແກ້​ໄຂ​ສ່ວນ​ເຄື່ອງ​ມື​ທີ່​ຂະ​ຫຍາຍ​ໂດຍ​ຄ່າ​ເລີ່ມ​ຕົ້ນ​ໃນ​ໄລ​ຍະ​ເວ​ລາ",
   "settings.general.row.newInterface.title": "ໂຄງຮ່າງໃໝ່",
   "settings.general.row.newInterface.badge": "ໃໝ່",
-  "settings.general.row.newInterface.description": "ໃຊ້ແຖບໃໝ່ ແລະຮູບແບບໜ້າຫຼັກ. ສະຫຼັບລະຫວ່າງໂຄງຮ່າງເປັນເວລາຈຳກັດ.",
+  "settings.general.row.newInterface.description":
+    "ໃຊ້ແຖບໃໝ່ ແລະຮູບແບບໜ້າຫຼັກ. ສະຫຼັບລະຫວ່າງໂຄງຮ່າງເປັນເວລາຈຳກັດ.",
   "settings.general.row.newInterfaceNotice.title": "ຕອນນີ້ທ່ານກຳລັງໃຊ້ໂຄງຮ່າງໃໝ່",
   "settings.general.row.newInterfaceNotice.description": "ຮູບແບບກ່ອນໜ້ານີ້ບໍ່ມີແລ້ວ",
   "settings.general.row.newInterfaceNotice.dismiss": "ປິດ",
   "settings.general.row.pinchZoom.title": "ບີບເພື່ອຊູມ",
-  "settings.general.row.pinchZoom.description": "ອະ​ນຸ​ຍາດ​ໃຫ້​ການ pinch trackpad ແລະ gestures Ctrl-scroll ເພື່ອຊູມ",
+  "settings.general.row.pinchZoom.description":
+    "ອະ​ນຸ​ຍາດ​ໃຫ້​ການ pinch trackpad ແລະ gestures Ctrl-scroll ເພື່ອຊູມ",
   "settings.general.row.wayland.title": "ໃຊ້ Wayland ພື້ນເມືອງ",
-  "settings.general.row.wayland.description": "ປິດການໃຊ້ງານ X11 fallback ໃນ Wayland. ຕ້ອງການຣີສະຕາດ.",
+  "settings.general.row.wayland.description":
+    "ປິດການໃຊ້ງານ X11 fallback ໃນ Wayland. ຕ້ອງການຣີສະຕາດ.",
   "settings.general.row.wayland.tooltip":
     "ໃນ Linux ທີ່ມີຈໍພາບອັດຕາການໂຫຼດຫນ້າຈໍຄືນແບບປະສົມ, Wayland ພື້ນເມືອງສາມາດມີຄວາມຫມັ້ນຄົງຫຼາຍ.",
   "settings.general.row.releaseNotes.title": "ບັນທຶກການປ່ອຍ",
-  "settings.general.row.releaseNotes.description": "ສະແດງປັອບອັບໃໝ່ແມ່ນຫຍັງຫຼັງຈາກອັບເດດ",
+  "settings.general.row.releaseNotes.description":
+    "ສະແດງປັອບອັບໃໝ່ແມ່ນຫຍັງຫຼັງຈາກອັບເດດ",
   "settings.updates.row.startup.title": "ກວດເບິ່ງການອັບເດດກ່ຽວກັບການເລີ່ມຕົ້ນ",
-  "settings.updates.row.startup.description": "ກວດສອບການອັບເດດໂດຍອັດຕະໂນມັດເມື່ອ OpenCode ເປີດ",
+  "settings.updates.row.startup.description":
+    "ກວດສອບການອັບເດດໂດຍອັດຕະໂນມັດເມື່ອ OpenCode ເປີດ",
   "settings.updates.row.check.title": "ກວດສອບການອັບເດດ",
   "settings.updates.row.check.description": "ກວດສອບການອັບເດດດ້ວຍຕົນເອງ ແລະຕິດຕັ້ງຖ້າມີ",
   "settings.updates.action.checkNow": "ກວດເບິ່ງດຽວນີ້",
@@ -1047,11 +1110,14 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອຕົວແທນຄົບຖ້ວນສົມບູນ ຫຼືຕ້ອງການຄວາມສົນໃຈ",
   "settings.general.notifications.permissions.title": "ການອະນຸຍາດ",
-  "settings.general.notifications.permissions.description": "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອຕ້ອງການການອະນຸຍາດ",
+  "settings.general.notifications.permissions.description":
+    "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອຕ້ອງການການອະນຸຍາດ",
   "settings.general.notifications.errors.title": "ຄວາມຜິດພາດ",
-  "settings.general.notifications.errors.description": "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອມີຂໍ້ຜິດພາດເກີດຂຶ້ນ",
+  "settings.general.notifications.errors.description":
+    "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອມີຂໍ້ຜິດພາດເກີດຂຶ້ນ",
   "settings.general.sounds.agent.title": "ຕົວແທນ",
-  "settings.general.sounds.agent.description": "ຫຼິ້ນສຽງເມື່ອຕົວແທນສົມບູນ ຫຼືຕ້ອງການຄວາມສົນໃຈ",
+  "settings.general.sounds.agent.description":
+    "ຫຼິ້ນສຽງເມື່ອຕົວແທນສົມບູນ ຫຼືຕ້ອງການຄວາມສົນໃຈ",
   "settings.general.sounds.permissions.title": "ການອະນຸຍາດ",
   "settings.general.sounds.permissions.description": "ຫຼິ້ນສຽງເມື່ອຕ້ອງການການອະນຸຍາດ",
   "settings.general.sounds.errors.title": "ຄວາມຜິດພາດ",
@@ -1061,7 +1127,8 @@ export const dict = {
   "settings.shortcuts.reset.toast.title": "ຣີເຊັດທາງລັດ",
   "settings.shortcuts.reset.toast.description": "ປຸ່ມລັດຖືກຕັ້ງຄືນເປັນຄ່າເລີ່ມຕົ້ນ.",
   "settings.shortcuts.conflict.title": "ທາງລັດໃຊ້ຢູ່ແລ້ວ",
-  "settings.shortcuts.conflict.description": "{{keybind}} ຖືກມອບໝາຍໃຫ້ {{titles}} ແລ້ວ.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ຖືກມອບໝາຍໃຫ້ {{titles}} ແລ້ວ.",
   "settings.shortcuts.unassigned": "ບໍ່ໄດ້ມອບໝາຍ",
   "settings.shortcuts.pressKeys": "ກົດປຸ່ມ",
   "settings.shortcuts.search.placeholder": "ທາງລັດຄົ້ນຫາ",
@@ -1076,9 +1143,11 @@ export const dict = {
   "settings.providers.description": "ການຕັ້ງຄ່າຜູ້ໃຫ້ບໍລິການຈະຖືກຕັ້ງຄ່າໄດ້ທີ່ນີ້.",
   "settings.providers.section.connected": "ຜູ້ໃຫ້ບໍລິການເຊື່ອມຕໍ່",
   "settings.providers.connected.empty": "ບໍ່ມີຜູ້ໃຫ້ບໍລິການເຊື່ອມຕໍ່",
-  "settings.providers.connected.environmentDescription": "ເຊື່ອມຕໍ່ຈາກຕົວແປສະພາບແວດລ້ອມຂອງທ່ານ",
+  "settings.providers.connected.environmentDescription":
+    "ເຊື່ອມຕໍ່ຈາກຕົວແປສະພາບແວດລ້ອມຂອງທ່ານ",
   "settings.providers.section.popular": "ຜູ້ໃຫ້ບໍລິການທີ່ນິຍົມ",
-  "settings.providers.custom.description": "ເພີ່ມຜູ້ໃຫ້ບໍລິການທີ່ເຂົ້າກັນໄດ້ກັບ OpenAI ໂດຍ URL ພື້ນຖານ.",
+  "settings.providers.custom.description":
+    "ເພີ່ມຜູ້ໃຫ້ບໍລິການທີ່ເຂົ້າກັນໄດ້ກັບ OpenAI ໂດຍ URL ພື້ນຖານ.",
   "settings.providers.tag.environment": "ສະພາບແວດລ້ອມ",
   "settings.providers.tag.config": "ການຕັ້ງຄ່າ",
   "settings.providers.tag.custom": "ກຳນົດເອງ",
@@ -1101,11 +1170,13 @@ export const dict = {
   "settings.permissions.tool.read.title": "ອ່ານ",
   "settings.permissions.tool.read.description": "ການອ່ານໄຟລ໌ (ກົງກັບເສັ້ນທາງໄຟລ໌)",
   "settings.permissions.tool.edit.title": "ແກ້ໄຂ",
-  "settings.permissions.tool.edit.description": "ແກ້ໄຂໄຟລ໌, ລວມທັງການແກ້ໄຂ, ຂຽນ, ແລະແກ້ໄຂ",
+  "settings.permissions.tool.edit.description":
+    "ແກ້ໄຂໄຟລ໌, ລວມທັງການແກ້ໄຂ, ຂຽນ, ແລະແກ້ໄຂ",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "ຈັບຄູ່ໄຟລ໌ໂດຍໃຊ້ຮູບແບບ glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "ຄົ້ນ​ຫາ​ເນື້ອ​ຫາ​ຂອງ​ໄຟລ​໌​ໂດຍ​ນໍາ​ໃຊ້​ສໍາ​ນວນ​ປົກ​ກະ​ຕິ​",
+  "settings.permissions.tool.grep.description":
+    "ຄົ້ນ​ຫາ​ເນື້ອ​ຫາ​ຂອງ​ໄຟລ​໌​ໂດຍ​ນໍາ​ໃຊ້​ສໍາ​ນວນ​ປົກ​ກະ​ຕິ​",
   "settings.permissions.tool.list.title": "ລາຍການ",
   "settings.permissions.tool.list.description": "ລາຍຊື່ໄຟລ໌ພາຍໃນໄດເລກະທໍລີ",
   "settings.permissions.tool.bash.title": "ບາຊ",
@@ -1123,9 +1194,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "ຄົ້ນຫາເວັບ",
   "settings.permissions.tool.websearch.description": "ຊອກຫາເວັບ",
   "settings.permissions.tool.external_directory.title": "ໄດເລກະທໍລີພາຍນອກ",
-  "settings.permissions.tool.external_directory.description": "ເຂົ້າເຖິງໄຟລ໌ນອກໄດເລກະທໍລີໂຄງການ",
+  "settings.permissions.tool.external_directory.description":
+    "ເຂົ້າເຖິງໄຟລ໌ນອກໄດເລກະທໍລີໂຄງການ",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "ກວດພົບການໂທດ້ວຍເຄື່ອງມືຊ້ຳໆດ້ວຍການປ້ອນຂໍ້ມູນຄືກັນ",
+  "settings.permissions.tool.doom_loop.description":
+    "ກວດພົບການໂທດ້ວຍເຄື່ອງມືຊ້ຳໆດ້ວຍການປ້ອນຂໍ້ມູນຄືກັນ",
   "session.delete.failed.title": "ລົ້ມເຫລວໃນການລຶບເຊດຊັນ",
   "session.delete.title": "ລຶບເຊດຊັນ",
   "session.delete.confirm": 'ລຶບເຊດຊັນ "{{name}}" ບໍ?',

@@ -511,13 +511,9 @@ export class DiskDeleteAuthorizationManager {
       group.tokens.add(authorization)
       outcomes.set(path, { path, authorization })
     }
-    // Keep the historical contract when nothing survived: a caller that
-    // authorized a single item still gets a rejection, while a genuinely
-    // mixed batch surfaces per-item outcomes additively.
+    // Preserve the identity of every rejected item, including an all-failed
+    // batch. The renderer can then report the reason beside each path.
     const results = unique.map((path) => outcomes.get(path)!)
-    if (results.every((outcome) => outcome.error)) {
-      throw new Error(results[0]!.error ?? UNSCANNED_DELETE_TARGET_ERROR)
-    }
     return results
   }
 

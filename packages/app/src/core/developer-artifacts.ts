@@ -15,12 +15,17 @@ export type NormalizedDeveloperArtifactInventoryOptions = {
 }
 
 export function normalizeDeveloperArtifactInventoryOptions(
-  option: boolean | DeveloperArtifactInventoryOptions | undefined,
+  option: boolean | DeveloperArtifactInventoryOptions | undefined
 ): NormalizedDeveloperArtifactInventoryOptions | undefined {
   if (!option) return undefined
   const requested = typeof option === "object" ? option.maxItems : undefined
   const maxItems = Number.isFinite(requested)
-    ? Math.floor(Math.max(1, Math.min(MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS, requested!)))
+    ? Math.floor(
+        Math.max(
+          1,
+          Math.min(MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS, requested!)
+        )
+      )
     : DEFAULT_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS
   return { maxItems }
 }
@@ -73,11 +78,22 @@ export const DEVELOPER_PROJECT_MARKER_NAMES = new Set([
   "uv.lock",
   "go.mod",
   "go.sum",
+  "cargo.toml",
+  "cargo.lock",
+  "pom.xml",
+  "build.gradle",
+  "build.gradle.kts",
+  "settings.gradle",
+  "settings.gradle.kts",
+  "cmakelists.txt",
   "pubspec.yaml",
   "pubspec.lock",
 ])
 
-const ECOSYSTEM_MARKERS: Record<"node" | "python" | "go" | "dart", readonly string[]> = {
+const ECOSYSTEM_MARKERS: Record<
+  "node" | "python" | "go" | "rust" | "jvm" | "cpp" | "dart",
+  readonly string[]
+> = {
   node: [
     "package.json",
     "package-lock.json",
@@ -98,13 +114,23 @@ const ECOSYSTEM_MARKERS: Record<"node" | "python" | "go" | "dart", readonly stri
     "uv.lock",
   ],
   go: ["go.mod", "go.sum"],
+  rust: ["cargo.toml", "cargo.lock"],
+  jvm: [
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "settings.gradle",
+    "settings.gradle.kts",
+  ],
+  cpp: ["cmakelists.txt"],
   dart: ["pubspec.yaml", "pubspec.lock"],
 }
 
 /** Lowercased sibling names that carry project evidence, sorted and deduped. */
 export function developerProjectMarkers(names: Iterable<string>): string[] {
-  const markers = [...new Set([...names].map((value) => value.toLowerCase()))]
-    .filter((value) => DEVELOPER_PROJECT_MARKER_NAMES.has(value))
+  const markers = [
+    ...new Set([...names].map((value) => value.toLowerCase())),
+  ].filter((value) => DEVELOPER_PROJECT_MARKER_NAMES.has(value))
   markers.sort()
   return markers
 }
@@ -120,7 +146,7 @@ export type DeveloperArtifactClassification = {
 function directEvidence(
   name: string,
   signatures: readonly string[],
-  parentMarkers: readonly string[] = [],
+  parentMarkers: readonly string[] = []
 ) {
   const evidence = [`name:${name}`]
   for (const signature of signatures) evidence.push(`contains:${signature}`)
@@ -133,7 +159,7 @@ function verified(
   ecosystem: DeveloperArtifactEcosystem,
   name: string,
   signatures: readonly string[] = [],
-  parentMarkers: readonly string[] = [],
+  parentMarkers: readonly string[] = []
 ): DeveloperArtifactClassification {
   return {
     kind,
@@ -149,7 +175,7 @@ function likely(
   ecosystem: DeveloperArtifactEcosystem,
   name: string,
   signatures: readonly string[] = [],
-  parentMarkers: readonly string[] = [],
+  parentMarkers: readonly string[] = []
 ): DeveloperArtifactClassification {
   return {
     kind,
@@ -166,7 +192,7 @@ function likely(
 function review(
   kind: DeveloperArtifactKind,
   name: string,
-  signatures: readonly string[] = [],
+  signatures: readonly string[] = []
 ): DeveloperArtifactClassification {
   return {
     kind,
@@ -188,20 +214,30 @@ export function classifyDeveloperArtifact(
   rawName: string,
   rawParentName: string | undefined,
   directSignatures: readonly string[],
-  rawParentMarkers: readonly string[] = [],
+  rawParentMarkers: readonly string[] = []
 ): DeveloperArtifactClassification | undefined {
   const name = rawName.toLowerCase()
   const parentName = rawParentName?.toLowerCase()
-  const signatures = [...new Set(directSignatures.map((value) => value.toLowerCase()))].sort()
+  const signatures = [
+    ...new Set(directSignatures.map((value) => value.toLowerCase())),
+  ].sort()
   const has = (value: string) => signatures.includes(value)
-  const parentMarkers = [...new Set(rawParentMarkers.map((value) => value.toLowerCase()))].sort()
+  const parentMarkers = [
+    ...new Set(rawParentMarkers.map((value) => value.toLowerCase())),
+  ].sort()
   const markersFor = (ecosystem: keyof typeof ECOSYSTEM_MARKERS) =>
-    ECOSYSTEM_MARKERS[ecosystem].filter((value) => parentMarkers.includes(value)).sort()
+    ECOSYSTEM_MARKERS[ecosystem]
+      .filter((value) => parentMarkers.includes(value))
+      .sort()
   const nodeMarkers = markersFor("node")
   const pythonMarkers = markersFor("python")
   const goMarkers = markersFor("go")
+  const rustMarkers = markersFor("rust")
+  const jvmMarkers = markersFor("jvm")
+  const cppMarkers = markersFor("cpp")
   const dartMarkers = markersFor("dart")
-  const hasMarker = (ecosystem: keyof typeof ECOSYSTEM_MARKERS) => markersFor(ecosystem).length > 0
+  const hasMarker = (ecosystem: keyof typeof ECOSYSTEM_MARKERS) =>
+    markersFor(ecosystem).length > 0
 
   switch (name) {
     // A conventional basename alone justifies discovery, never verified
@@ -260,27 +296,52 @@ export function classifyDeveloperArtifact(
         ? verified("toolchain-cache", "go", name, [], goMarkers)
         : likely("toolchain-cache", "go", name)
     case "target": {
-      const rust = signatures.filter((value) => [".rustc_info.json", "debug", "release"].includes(value))
-      if (has(".rustc_info.json")) return verified("build-output", "rust", name, rust)
+      const rust = signatures.filter((value) =>
+        [".rustc_info.json", "debug", "release"].includes(value)
+      )
+      if (has(".rustc_info.json"))
+        return verified("build-output", "rust", name, rust, rustMarkers)
+      if (rust.length > 0 && hasMarker("rust"))
+        return verified("build-output", "rust", name, rust, rustMarkers)
       if (rust.length > 0) return likely("build-output", "rust", name, rust)
-      const jvm = signatures.filter((value) => ["classes", "test-classes", "generated-sources", "surefire-reports"].includes(value))
+      const jvm = signatures.filter((value) =>
+        [
+          "classes",
+          "test-classes",
+          "generated-sources",
+          "surefire-reports",
+        ].includes(value)
+      )
+      if (jvm.length > 0 && hasMarker("jvm"))
+        return verified("build-output", "jvm", name, jvm, jvmMarkers)
       if (jvm.length > 0) return likely("build-output", "jvm", name, jvm)
       return review("build-output", name)
     }
     case "build": {
-      const cmake = signatures.filter((value) => ["cmakecache.txt", "cmakefiles", "build.ninja"].includes(value))
-      if (cmake.length > 0) return verified("build-output", "cpp", name, cmake)
-      const jvm = signatures.filter((value) => ["classes", "intermediates", "outputs", "libs"].includes(value))
+      const cmake = signatures.filter((value) =>
+        ["cmakecache.txt", "cmakefiles", "build.ninja"].includes(value)
+      )
+      if (cmake.length > 0)
+        return verified("build-output", "cpp", name, cmake, cppMarkers)
+      const jvm = signatures.filter((value) =>
+        ["classes", "intermediates", "outputs", "libs"].includes(value)
+      )
+      if (jvm.length > 0 && hasMarker("jvm"))
+        return verified("build-output", "jvm", name, jvm, jvmMarkers)
       if (jvm.length > 0) return likely("build-output", "jvm", name, jvm)
-      const dotnet = signatures.filter((value) => ["bin", "obj"].includes(value))
-      if (dotnet.length > 0) return likely("build-output", "dotnet", name, dotnet)
+      const dotnet = signatures.filter((value) =>
+        ["bin", "obj"].includes(value)
+      )
+      if (dotnet.length > 0)
+        return likely("build-output", "dotnet", name, dotnet)
       return review("build-output", name)
     }
     case "dist":
     case "out":
       return review("build-output", name)
     case "caches":
-      if (parentName === ".gradle") return verified("toolchain-cache", "jvm", name)
+      if (parentName === ".gradle")
+        return verified("toolchain-cache", "jvm", name)
       return undefined
     case "repository":
       // Identity is not recoverability: a Maven local repository also holds
@@ -290,10 +351,12 @@ export function classifyDeveloperArtifact(
       return undefined
     case "registry":
     case "git":
-      if (parentName === ".cargo") return verified("toolchain-cache", "rust", name)
+      if (parentName === ".cargo")
+        return verified("toolchain-cache", "rust", name)
       return undefined
     case "packages":
-      if (parentName === ".nuget") return verified("toolchain-cache", "dotnet", name)
+      if (parentName === ".nuget")
+        return verified("toolchain-cache", "dotnet", name)
       return undefined
     case "mod":
       if (parentName === "pkg") return likely("dependencies", "go", name)

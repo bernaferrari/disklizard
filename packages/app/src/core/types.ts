@@ -92,7 +92,10 @@ export type DeveloperArtifactEcosystem =
   | "git"
 
 /** Broad cleanup grouping, deliberately smaller than the UI's full taxonomy. */
-export type DeveloperArtifactKind = "dependencies" | "build-output" | "toolchain-cache"
+export type DeveloperArtifactKind =
+  | "dependencies"
+  | "build-output"
+  | "toolchain-cache"
 
 /** Strength of recognition derived from a name and direct child evidence. */
 export type DeveloperArtifactConfidence = "verified" | "likely" | "ambiguous"
@@ -333,7 +336,10 @@ export type ScanProgress = {
   done?: boolean
 }
 
-export type ScanDiscovery = Pick<DiskNode, "name" | "path" | "size" | "modifiedAt" | "isDir">
+export type ScanDiscovery = Pick<
+  DiskNode,
+  "name" | "path" | "size" | "modifiedAt" | "isDir"
+>
 
 export type ScanOptions = {
   onProgress?: (p: ScanProgress) => void

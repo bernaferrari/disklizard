@@ -10,7 +10,9 @@
   --color-base: var(--base);
   --color-surface-base-hover: var(--surface-base-hover);
   --color-surface-base-active: var(--surface-base-active);
-  --color-surface-base-interactive-active: var(--surface-base-interactive-active);
+  --color-surface-base-interactive-active: var(
+    --surface-base-interactive-active
+  );
   --color-base2: var(--base2);
   --color-base3: var(--base3);
   --color-surface-inset-base: var(--surface-inset-base);
@@ -29,7 +31,9 @@
   --color-surface-weak: var(--surface-weak);
   --color-surface-weaker: var(--surface-weaker);
   --color-surface-strong: var(--surface-strong);
-  --color-surface-raised-stronger-non-alpha: var(--surface-raised-stronger-non-alpha);
+  --color-surface-raised-stronger-non-alpha: var(
+    --surface-raised-stronger-non-alpha
+  );
   --color-surface-brand-base: var(--surface-brand-base);
   --color-surface-brand-hover: var(--surface-brand-hover);
   --color-surface-interactive-base: var(--surface-interactive-base);
@@ -239,7 +243,9 @@
   --color-v2-background-bg-layer-04: var(--v2-background-bg-layer-04);
   --color-v2-background-bg-inverse: var(--v2-background-bg-inverse);
   --color-v2-background-bg-contrast: var(--v2-background-bg-contrast);
-  --color-v2-background-bg-button-neutral: var(--v2-background-bg-button-neutral);
+  --color-v2-background-bg-button-neutral: var(
+    --v2-background-bg-button-neutral
+  );
   --color-v2-background-bg-accent: var(--v2-background-bg-accent);
   --color-v2-text-text-base: var(--v2-text-text-base);
   --color-v2-text-text-muted: var(--v2-text-text-muted);
@@ -260,15 +266,33 @@
   --color-v2-border-border-strong: var(--v2-border-border-strong);
   --color-v2-border-border-inverse: var(--v2-border-border-inverse);
   --color-v2-border-border-focus: var(--v2-border-border-focus);
-  --color-v2-overlay-simple-overlay-hover: var(--v2-overlay-simple-overlay-hover);
-  --color-v2-overlay-simple-overlay-pressed: var(--v2-overlay-simple-overlay-pressed);
-  --color-v2-overlay-simple-overlay-contrast-hover: var(--v2-overlay-simple-overlay-contrast-hover);
-  --color-v2-overlay-simple-overlay-contrast-pressed: var(--v2-overlay-simple-overlay-contrast-pressed);
-  --color-v2-overlay-simple-overlay-scrim: var(--v2-overlay-simple-overlay-scrim);
-  --color-v2-overlay-gradient-depth-overlay-depth-top: var(--v2-overlay-gradient-depth-overlay-depth-top);
-  --color-v2-overlay-gradient-depth-overlay-depth-bot: var(--v2-overlay-gradient-depth-overlay-depth-bot);
-  --color-v2-overlay-simple-tab-active-scrim: var(--v2-overlay-simple-tab-active-scrim);
-  --color-v2-overlay-simple-tab-hover-scrim: var(--v2-overlay-simple-tab-hover-scrim);
+  --color-v2-overlay-simple-overlay-hover: var(
+    --v2-overlay-simple-overlay-hover
+  );
+  --color-v2-overlay-simple-overlay-pressed: var(
+    --v2-overlay-simple-overlay-pressed
+  );
+  --color-v2-overlay-simple-overlay-contrast-hover: var(
+    --v2-overlay-simple-overlay-contrast-hover
+  );
+  --color-v2-overlay-simple-overlay-contrast-pressed: var(
+    --v2-overlay-simple-overlay-contrast-pressed
+  );
+  --color-v2-overlay-simple-overlay-scrim: var(
+    --v2-overlay-simple-overlay-scrim
+  );
+  --color-v2-overlay-gradient-depth-overlay-depth-top: var(
+    --v2-overlay-gradient-depth-overlay-depth-top
+  );
+  --color-v2-overlay-gradient-depth-overlay-depth-bot: var(
+    --v2-overlay-gradient-depth-overlay-depth-bot
+  );
+  --color-v2-overlay-simple-tab-active-scrim: var(
+    --v2-overlay-simple-tab-active-scrim
+  );
+  --color-v2-overlay-simple-tab-hover-scrim: var(
+    --v2-overlay-simple-tab-hover-scrim
+  );
   --color-v2-overlay-simple-tab-scrim: var(--v2-overlay-simple-tab-scrim);
   --color-v2-state-bg-success: var(--v2-state-bg-success);
   --color-v2-state-fg-success: var(--v2-state-fg-success);

@@ -165,9 +165,125 @@ const journeyScanTree: DiskScanNode = {
   ],
 }
 
+// A browser-only QA journey with duplicate project names, a recent project,
+// ambiguous output, and one simulated permission failure during a batch move.
+const cleanupScenario =
+  new URLSearchParams(window.location.search).get("fixture") === "cleanup"
+const cleanupScenarioPaths = {
+  work: "/Users/alex/Projects/web/node_modules",
+  archive: "/Users/alex/Archive/web/node_modules",
+  active: "/Users/alex/Projects/active/node_modules",
+  ambiguous: "/Users/alex/Projects/notes/target",
+}
+const cleanupScenarioTree: DiskScanNode = {
+  ...journeyScanTree,
+  size: 320 * MIB,
+  logicalSize: 320 * MIB,
+  children: [
+    {
+      name: "node_modules",
+      path: cleanupScenarioPaths.work,
+      size: 120 * MIB,
+      logicalSize: 120 * MIB,
+      modifiedAt: Date.UTC(2025, 1, 4),
+      isDir: true,
+      ext: "",
+      children: [],
+    },
+    {
+      name: "node_modules",
+      path: cleanupScenarioPaths.archive,
+      size: 96 * MIB,
+      logicalSize: 96 * MIB,
+      modifiedAt: Date.UTC(2025, 0, 2),
+      isDir: true,
+      ext: "",
+      children: [],
+    },
+    {
+      name: "node_modules",
+      path: cleanupScenarioPaths.active,
+      size: 80 * MIB,
+      logicalSize: 80 * MIB,
+      modifiedAt: Date.UTC(2026, 8, 25),
+      isDir: true,
+      ext: "",
+      children: [],
+    },
+    {
+      name: "target",
+      path: cleanupScenarioPaths.ambiguous,
+      size: 24 * MIB,
+      logicalSize: 24 * MIB,
+      modifiedAt: Date.UTC(2024, 3, 1),
+      isDir: true,
+      ext: "",
+      children: [],
+    },
+  ],
+  developerArtifactInventory: {
+    items: [
+      ...[
+        cleanupScenarioPaths.work,
+        cleanupScenarioPaths.archive,
+        cleanupScenarioPaths.active,
+      ].map((path) => ({
+        name: "node_modules",
+        path,
+        size:
+          path === cleanupScenarioPaths.work
+            ? 120 * MIB
+            : path === cleanupScenarioPaths.archive
+              ? 96 * MIB
+              : 80 * MIB,
+        isDir: true as const,
+        kind: "dependencies" as const,
+        ecosystem: "node" as const,
+        confidence: "verified" as const,
+        cleanup: "eligible" as const,
+        evidence: ["name:node_modules", "parent:package.json"],
+        inventoryOnly: true as const,
+        modifiedAt:
+          path === cleanupScenarioPaths.active
+            ? Date.UTC(2026, 8, 25)
+            : Date.UTC(2025, 0, 2),
+      })),
+      {
+        name: "target",
+        path: cleanupScenarioPaths.ambiguous,
+        size: 24 * MIB,
+        isDir: true,
+        kind: "build-output",
+        ecosystem: "generic",
+        confidence: "ambiguous",
+        cleanup: "review",
+        evidence: ["name:target"],
+        inventoryOnly: true,
+        modifiedAt: Date.UTC(2024, 3, 1),
+      },
+    ],
+    status: {
+      state: "complete",
+      maxItems: 2000,
+      scannedDirectories: 16,
+      matchedDirectories: 4,
+      truncated: false,
+      unreadableCount: 0,
+      unreadableSamplePaths: [],
+      skippedSymlinkCount: 0,
+      skippedSymlinkSamplePaths: [],
+      excludedCount: 0,
+      excludedSamplePaths: [],
+    },
+  },
+}
+
 function expandedJourneyTree() {
   const root = structuredClone(journeyScanTree)
-  root.children = [...root.children.filter((node) => !node.isOther), ...structuredClone(denseFiles)]
+  root.children = [
+    ...root.children.filter((node) => !node.isOther),
+    ...structuredClone(denseFiles),
+  ]
   return root
 }
 
@@ -253,15 +369,16 @@ window.diskLizardFixture = fixture
 
 export const diskUtilityFixture: DiskUtilityAPI = {
   async getDrives() {
-    const total = Math.max(1024 * MIB, Math.ceil(journeyScanTree.size * 1.25))
+    const source = cleanupScenario ? cleanupScenarioTree : journeyScanTree
+    const total = Math.max(1024 * MIB, Math.ceil(source.size * 1.25))
     return [
       {
         path: "/Users/alex",
         name: "Test volume",
         label: "Test volume",
         total,
-        used: journeyScanTree.size,
-        free: total - journeyScanTree.size,
+        used: source.size,
+        free: total - source.size,
         type: "local",
         filesystem: "apfs",
       },
@@ -291,9 +408,19 @@ export const diskUtilityFixture: DiskUtilityAPI = {
   async scanPath(path, options, scanId = "fixture-scan") {
     if (!scanId.startsWith("expand-")) primaryScanId = scanId
     fixture.scans.push(path)
-    fixture.scanRequests.push({ path, scanId, ...(options?.maxChildren ? { maxChildren: options.maxChildren } : {}) })
+    fixture.scanRequests.push({
+      path,
+      scanId,
+      ...(options?.maxChildren ? { maxChildren: options.maxChildren } : {}),
+    })
     progressListeners.forEach((listener) =>
-      listener({ scanId, filesScanned: 1, dirsScanned: 1, currentPath: `${path}/Projects`, size: 360 * MIB }),
+      listener({
+        scanId,
+        filesScanned: 1,
+        dirsScanned: 1,
+        currentPath: `${path}/Projects`,
+        size: 360 * MIB,
+      })
     )
     await Promise.resolve()
     progressListeners.forEach((listener) =>
@@ -302,10 +429,10 @@ export const diskUtilityFixture: DiskUtilityAPI = {
         filesScanned: 2,
         dirsScanned: 2,
         currentPath: path,
-        size: journeyScanTree.size,
+        size: cleanupScenario ? cleanupScenarioTree.size : journeyScanTree.size,
         done: true,
         source: "scan",
-      }),
+      })
     )
     const source =
       path === nestedWorkspacePath
@@ -314,13 +441,17 @@ export const diskUtilityFixture: DiskUtilityAPI = {
           ? nestedPayloadTree
           : path === journeyScanTree.path && options?.maxChildren
             ? expandedJourneyTree()
-            : journeyScanTree
+            : cleanupScenario
+              ? cleanupScenarioTree
+              : journeyScanTree
     return structuredClone(source)
   },
   async cancelScan() {},
   async stopWatching(scanId, options) {
     if (options?.retainTrustedSubtree && !scanId) {
-      throw new Error("A focused scan ID is required to retain trusted subtree authority")
+      throw new Error(
+        "A focused scan ID is required to retain trusted subtree authority"
+      )
     }
     fixture.stopWatchingRequests.push({
       ...(scanId ? { scanId } : {}),
@@ -330,9 +461,14 @@ export const diskUtilityFixture: DiskUtilityAPI = {
   async authorizeDeletePaths(paths) {
     const requested = [...paths]
     fixture.authorizationRequests.push(requested)
-    return requested.map((path, index) => ({ path, authorization: `fixture-authorization-${index}` }))
+    return requested.map((path, index) => ({
+      path,
+      authorization: `fixture-authorization-${index}`,
+    }))
   },
   async deletePath(path, options) {
+    if (cleanupScenario && path === cleanupScenarioPaths.archive)
+      throw new Error("EACCES: access denied for this location")
     fixture.deleted.push({ path, options: structuredClone(options) })
     return { ok: true }
   },

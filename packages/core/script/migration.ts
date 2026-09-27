@@ -6,6 +6,7 @@ import os from "os"
 import path from "path"
 import { pathToFileURL } from "url"
 import { parseArgs } from "util"
+import { format as formatWithOxfmt } from "oxfmt"
 
 const root = path.resolve(import.meta.dirname, "../../..")
 const snapshot = path.join(root, "packages/core/schema.json")
@@ -173,15 +174,9 @@ function escapeTemplate(line: string) {
 }
 
 async function formatTypescript(input: string) {
-  const prettier = await import("prettier")
-  const typescript = await import("prettier/plugins/typescript")
-  const estree = await import("prettier/plugins/estree")
-  return prettier.format(input, {
-    parser: "typescript",
-    plugins: [typescript.default, estree.default],
-    semi: false,
-    printWidth: 120,
-  })
+  const result = await formatWithOxfmt("migration.ts", input, { semi: false, printWidth: 120 })
+  if (result.errors.length > 0) throw new Error(result.errors.map((error) => error.message).join("\n"))
+  return result.code
 }
 
 function renderRegistry(names: string[]) {

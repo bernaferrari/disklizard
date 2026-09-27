@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode မီနူး",
   "desktop.updater.dialog.checkFailed.message": "အပ်ဒိတ်စစ်ဆေးမှု မအောင်မြင်ပါ။",
   "desktop.updater.dialog.checkFailed.title": "အပ်ဒိတ် အမှား",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "သင်သည် ခေတ်မီနေပါသည်။",
   "desktop.updater.dialog.upToDate.title": "အပ်ဒိတ်များမရှိပါ။",
-  "desktop.updater.dialog.ready.message": "{{version}} အပ်ဒိတ်ကို ဒေါင်းလုဒ်လုပ်ထားသည်။ ယခု ပြန်စမလား။",
+  "desktop.updater.dialog.ready.message":
+    "{{version}} အပ်ဒိတ်ကို ဒေါင်းလုဒ်လုပ်ထားသည်။ ယခု ပြန်စမလား။",
   "desktop.updater.dialog.ready.title": "အပ်ဒိတ်အဆင်သင့်ဖြစ်ပါပြီ။",
   "desktop.updater.dialog.restart": "ပြန်လည်စတင်ပါ။",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode သည် တုံ့ပြန်ခြင်းမရှိပါ။",
   "desktop.recovery.unresponsive.detail":
     "သင်သည် အက်ပ်ကို ပြန်လည်စတင်နိုင်သည်၊ မှတ်တမ်းများကို ဖွင့်နိုင်သည် သို့မဟုတ် ဆက်လက်စောင့်ဆိုင်းနိုင်သည်။",
-  "desktop.recovery.loadFailed.detail": "Window- {{window}}\nURL- {{url}}\nအမှား- {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Window- {{window}}\nအကြောင်းရင်း- {{reason}}\nကုဒ်- {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Window- {{window}}\nURL- {{url}}\nအမှား- {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Window- {{window}}\nအကြောင်းရင်း- {{reason}}\nကုဒ်- {{code}}",
   "desktop.recovery.unknown": "<အမည်မသိ>",
   "desktop.dialog.chooseFolder": "ဖိုင်တွဲတစ်ခုကို ရွေးပါ။",
   "desktop.dialog.chooseFile": "ဖိုင်တစ်ခုကို ရွေးပါ။",
@@ -74,8 +78,10 @@ export const dict = {
   "desktop.server.local": "ပြည်တွင်းဆာဗာ",
   "desktop.wsl.error.windowsOnly": "WSL ကို Windows တွင်သာ ရနိုင်သည်။",
   "desktop.wsl.error.unavailable": "WSL ကို မရနိုင်ပါ။",
-  "desktop.wsl.error.listInstalled": "ထည့်သွင်းထားသော WSL ကွဲပြားမှုများကို စာရင်းပြုစုရန် မအောင်မြင်ပါ။",
-  "desktop.wsl.error.listOnline": "အွန်လိုင်း WSL ကွဲပြားမှုများကို စာရင်းပြုစုရန် မအောင်မြင်ပါ။",
+  "desktop.wsl.error.listInstalled":
+    "ထည့်သွင်းထားသော WSL ကွဲပြားမှုများကို စာရင်းပြုစုရန် မအောင်မြင်ပါ။",
+  "desktop.wsl.error.listOnline":
+    "အွန်လိုင်း WSL ကွဲပြားမှုများကို စာရင်းပြုစုရန် မအောင်မြင်ပါ။",
   "desktop.wsl.error.executeDistro": "distro တွင် command များကို လုပ်ဆောင်၍မရပါ။",
   "desktop.wsl.error.installWsl": "WSL ထည့်သွင်းခြင်း မအောင်မြင်ပါ။",
   "desktop.wsl.error.installDistro": "distro ကို ထည့်သွင်းရန် မအောင်မြင်ပါ- {{distro}}",
@@ -83,19 +89,23 @@ export const dict = {
   "desktop.wsl.error.alreadyAdded": "{{distro}} ကို ထည့်သွင်းပြီးဖြစ်သည်။",
   "desktop.wsl.error.opencodeMissing": "opencode ကို ဤ distro တွင် ထည့်သွင်းမထားပါ။",
   "desktop.wsl.error.opencodeCannotRun": "opencode ကို ထည့်သွင်းထားသော်လည်း မလည်ပတ်နိုင်ပါ။",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode ကို {{distro}} တွင် ထည့်သွင်းမထားပါ။",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode ကို {{distro}} တွင် ထည့်သွင်းမထားပါ။",
   "desktop.wsl.error.updateVersion":
     "OpenCode အပ်ဒိတ် ပြီးဆုံးသွားသော်လည်း {{distro}} သည် {{installed}} မှ ဆက်လက်တင်ပြနေပါသည်။ {{expected}} မျှော်လင့်ထားသည်။",
   "desktop.wsl.error.noVersion": "ဗားရှင်းမရှိပါ။",
-  "desktop.wsl.error.serverExited": "စတင်ပြီးနောက် WSL ဆာဗာမှ ထွက်ခဲ့သည် (ကုဒ်={{code}} အချက်ပြ={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "စတင်ပြီးနောက် WSL ဆာဗာမှ ထွက်ခဲ့သည် (ကုဒ်={{code}} အချက်ပြ={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "ကျန်းမာရေးမကောင်းမီ WSL ဆာဗာမှ ထွက်ခဲ့သည် (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "{{distro}} ကျန်းမာရေးစစ်ဆေးမှုအတွက် ဆိုက်ကားဆရာ {{timeout}}ms ပြီးနောက် အချိန်ကုန်သွားသည်",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms ပြီးနောက် အချိန်ကုန်သွားသည်",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms ပြီးနောက် အချိန်ကုန်သွားသည်",
   "desktop.wsl.error.failedPort": "ဆိပ်ကမ်းကို ရယူရန် မအောင်မြင်ပါ။",
   "desktop.picker.error.notSelected": "ဖိုင်ကို ရွေးချယ်သူမှ ရွေးချယ်မထားပါ။",
-  "desktop.picker.error.sizeLimit": "ရွေးချယ်ထားသော ပူးတွဲပါဖိုင်များသည် {{limit}} MB ကန့်သတ်ချက်ထက် ကျော်လွန်ပါသည်။",
+  "desktop.picker.error.sizeLimit":
+    "ရွေးချယ်ထားသော ပူးတွဲပါဖိုင်များသည် {{limit}} MB ကန့်သတ်ချက်ထက် ကျော်လွန်ပါသည်။",
   "command.category.suggested": "အကြံပြုထားသည်။",
   "command.category.view": "ကြည့်ရန်",
   "command.category.project": "ပရောဂျက်",
@@ -142,7 +152,8 @@ export const dict = {
   "command.tab.close": "တဘ်ကို ပိတ်ပါ။",
   "command.tab.reopenClosed": "ပိတ်ထားသော တက်ဘ်ကို ပြန်ဖွင့်ပါ။",
   "command.context.addSelection": "ရွေးချယ်ထားသည်ကို ဆက်စပ်အကြောင်းအရာထဲ ထည့်ပါ။",
-  "command.context.addSelection.description": "လက်ရှိဖိုင်မှ ရွေးချယ်ထားသော လိုင်းများကို ထည့်ပါ။",
+  "command.context.addSelection.description":
+    "လက်ရှိဖိုင်မှ ရွေးချယ်ထားသော လိုင်းများကို ထည့်ပါ။",
   "command.input.focus": "အာရုံစူးစိုက်မှု ထည့်သွင်းမှု",
   "command.terminal.toggle": "Terminal ကို ပြောင်းပါ",
   "command.fileTree.toggle": "ဖိုင်သစ်ပြောင်းရန်",
@@ -168,15 +179,18 @@ export const dict = {
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "ခွင့်ပြုချက်များကို အလိုအလျောက် လက်ခံသည်။",
-  "command.permissions.autoaccept.disable": "ခွင့်ပြုချက်များကို အလိုအလျောက်လက်ခံခြင်းကို ရပ်ပါ။",
+  "command.permissions.autoaccept.disable":
+    "ခွင့်ပြုချက်များကို အလိုအလျောက်လက်ခံခြင်းကို ရပ်ပါ။",
   "command.workspace.toggle": "အလုပ်နေရာများ ပြောင်းရန်",
-  "command.workspace.toggle.description": "ဘေးဘားရှိ အလုပ်နေရာများစွာကို ဖွင့်ပါ သို့မဟုတ် ပိတ်ပါ။",
+  "command.workspace.toggle.description":
+    "ဘေးဘားရှိ အလုပ်နေရာများစွာကို ဖွင့်ပါ သို့မဟုတ် ပိတ်ပါ။",
   "command.session.undo": "မလုပ်တော့ပါ။",
   "command.session.undo.description": "နောက်ဆုံးမက်ဆေ့ဂျ်ကို ပြန်ဖျက်ပါ။",
   "command.session.redo": "ပြန်လုပ်ပါ။",
   "command.session.redo.description": "နောက်ဆုံးမပြီးသော မက်ဆေ့ဂျ်ကို ပြန်လုပ်ပါ။",
   "command.session.compact": "ကျစ်လစ်သိပ်သည်းသော စက်ရှင်",
-  "command.session.compact.description": "အကြောင်းအရာအရွယ်အစားကို လျှော့ချရန် စက်ရှင်ကို အကျဉ်းချုံ့ပါ။",
+  "command.session.compact.description":
+    "အကြောင်းအရာအရွယ်အစားကို လျှော့ချရန် စက်ရှင်ကို အကျဉ်းချုံ့ပါ။",
   "command.session.fork": "မက်ဆေ့ဂျ်မှ ခက်ရင်း",
   "command.session.fork.description": "ယခင်မက်ဆေ့ဂျ်မှ ဆက်ရှင်အသစ်တစ်ခု ဖန်တီးပါ။",
   "command.session.share": "စက်ရှင်ကို မျှဝေပါ။",
@@ -196,23 +210,33 @@ export const dict = {
   "dialog.provider.group.other": "အခြား",
   "dialog.provider.custom.label": "စိတ်ကြိုက် OpenAI-သဟဇာတ ပံ့ပိုးပေးသူ",
   "dialog.provider.tag.recommended": "အကြံပြုထားသည်။",
-  "dialog.provider.opencode.note": "Claude၊ GPT၊ Gemini နှင့် အခြားအရာများ အပါအဝင် ရွေးချယ်ထားသော မော်ဒယ်များ",
-  "dialog.provider.opencode.tagline": "ယုံကြည်စိတ်ချရသော အကောင်းဆုံးပြင်ဆင်ထားသော မော်ဒယ်များ",
+  "dialog.provider.opencode.note":
+    "Claude၊ GPT၊ Gemini နှင့် အခြားအရာများ အပါအဝင် ရွေးချယ်ထားသော မော်ဒယ်များ",
+  "dialog.provider.opencode.tagline":
+    "ယုံကြည်စိတ်ချရသော အကောင်းဆုံးပြင်ဆင်ထားသော မော်ဒယ်များ",
   "dialog.provider.opencodeGo.tagline": "လူတိုင်းအတွက် ကုန်ကျစရိတ်သက်သာသော စာရင်းသွင်းမှု",
-  "dialog.provider.anthropic.note": "Pro နှင့် Max အပါအဝင် Claude မော်ဒယ်များသို့ တိုက်ရိုက်ဝင်ရောက်ခွင့်",
-  "dialog.provider.copilot.note": "GitHub Copilot မှတစ်ဆင့် ကုဒ်ရေးနည်းအကူအညီအတွက် AI မော်ဒယ်များ",
-  "dialog.provider.openai.note": "လျင်မြန်ပြီး လုပ်ဆောင်နိုင်သော အထွေထွေ AI လုပ်ဆောင်ချက်များအတွက် GPT မော်ဒယ်များ",
-  "dialog.provider.google.note": "မြန်ဆန်ပြီး ဖွဲ့စည်းတည်ဆောက်ထားသော တုံ့ပြန်မှုများအတွက် Gemini မော်ဒယ်များ",
-  "dialog.provider.openrouter.note": "ပံ့ပိုးပေးသူတစ်ခုတည်းမှ ပံ့ပိုးပေးထားသော မော်ဒယ်အားလုံးကို ဝင်ရောက်ကြည့်ရှုပါ။",
-  "dialog.provider.vercel.note": "စမတ်လမ်းကြောင်းဖြင့် AI မော်ဒယ်များသို့ တစ်စုတစ်စည်းတည်း ဝင်ရောက်ခွင့်",
+  "dialog.provider.anthropic.note":
+    "Pro နှင့် Max အပါအဝင် Claude မော်ဒယ်များသို့ တိုက်ရိုက်ဝင်ရောက်ခွင့်",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot မှတစ်ဆင့် ကုဒ်ရေးနည်းအကူအညီအတွက် AI မော်ဒယ်များ",
+  "dialog.provider.openai.note":
+    "လျင်မြန်ပြီး လုပ်ဆောင်နိုင်သော အထွေထွေ AI လုပ်ဆောင်ချက်များအတွက် GPT မော်ဒယ်များ",
+  "dialog.provider.google.note":
+    "မြန်ဆန်ပြီး ဖွဲ့စည်းတည်ဆောက်ထားသော တုံ့ပြန်မှုများအတွက် Gemini မော်ဒယ်များ",
+  "dialog.provider.openrouter.note":
+    "ပံ့ပိုးပေးသူတစ်ခုတည်းမှ ပံ့ပိုးပေးထားသော မော်ဒယ်အားလုံးကို ဝင်ရောက်ကြည့်ရှုပါ။",
+  "dialog.provider.vercel.note":
+    "စမတ်လမ်းကြောင်းဖြင့် AI မော်ဒယ်များသို့ တစ်စုတစ်စည်းတည်း ဝင်ရောက်ခွင့်",
   "dialog.model.select.title": "မော်ဒယ်ကို ရွေးပါ။",
   "dialog.model.search.placeholder": "မော်ဒယ်များကို ရှာဖွေပါ။",
   "dialog.model.empty": "မော်ဒယ်ရလဒ်များ မရှိပါ။",
   "dialog.model.manage": "မော်ဒယ်များကို စီမံပါ။",
-  "dialog.model.manage.description": "မော်ဒယ်ရွေးချယ်မှုတွင် မည်သည့်မော်ဒယ်များကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
+  "dialog.model.manage.description":
+    "မော်ဒယ်ရွေးချယ်မှုတွင် မည်သည့်မော်ဒယ်များကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
   "dialog.model.manage.provider.toggle": "{{provider}} မော်ဒယ်အားလုံးကို ပြောင်းရန်",
   "dialog.model.unpaid.freeModels.title": "OpenCode မှ ပံ့ပိုးပေးသော အခမဲ့မော်ဒယ်များ",
-  "dialog.model.unpaid.addMore.title": "လူကြိုက်များသော ဝန်ဆောင်မှုပေးသူများထံမှ နောက်ထပ်မော်ဒယ်များကို ထည့်ပါ။",
+  "dialog.model.unpaid.addMore.title":
+    "လူကြိုက်များသော ဝန်ဆောင်မှုပေးသူများထံမှ နောက်ထပ်မော်ဒယ်များကို ထည့်ပါ။",
   "dialog.model.unpaid.viewMoreProviders": "နောက်ထပ်ပံ့ပိုးပေးသူ 70+ ကိုကြည့်ပါ။",
   "dialog.provider.viewAll": "နောက်ထပ်ဝန်ဆောင်မှုပေးသူများကို ပြပါ။",
   "provider.connect.title": "{{provider}} ကို ချိတ်ဆက်ပါ။",
@@ -250,15 +274,18 @@ export const dict = {
     "နှင့် သင့်အကောင့်ကို ချိတ်ဆက်ပြီး OpenCode တွင် {{provider}} မော်ဒယ်များကို အသုံးပြုရန် အောက်ပါကုဒ်ကို ရိုက်ထည့်ပါ။",
   "provider.connect.oauth.auto.confirmationCode": "အတည်ပြုကုဒ်",
   "provider.connect.toast.connected.title": "{{provider}} ချိတ်ဆက်ထားသည်။",
-  "provider.connect.toast.connected.description": "{{provider}} မော်ဒယ်များကို ယခုအသုံးပြုနိုင်ပါပြီ။",
+  "provider.connect.toast.connected.description":
+    "{{provider}} မော်ဒယ်များကို ယခုအသုံးပြုနိုင်ပါပြီ။",
   "provider.custom.title": "စိတ်ကြိုက်ဝန်ဆောင်မှုပေးသည်။",
   "provider.custom.unavailable": "စိတ်ကြိုက်ဝန်ဆောင်မှုပေးသူများကို ဤဆာဗာတွင် မရရှိနိုင်ပါ။",
-  "provider.custom.description.prefix": "OpenAI-သဟဇာတ ပံ့ပိုးပေးသူကို စီစဉ်သတ်မှတ်ပါ။ ကြည့်ပါ။",
+  "provider.custom.description.prefix":
+    "OpenAI-သဟဇာတ ပံ့ပိုးပေးသူကို စီစဉ်သတ်မှတ်ပါ။ ကြည့်ပါ။",
   "provider.custom.description.link": "ပံ့ပိုးပေးသူ config docs",
   "provider.custom.description.suffix": "။",
   "provider.custom.field.providerID.label": "ပံ့ပိုးပေးသူ ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "စာလုံးသေးများ၊ နံပါတ်များ၊ တုံးတိုများ သို့မဟုတ် အောက်မှတ်များ",
+  "provider.custom.field.providerID.description":
+    "စာလုံးသေးများ၊ နံပါတ်များ၊ တုံးတိုများ သို့မဟုတ် အောက်မှတ်များ",
   "provider.custom.field.name.label": "ပြသမှုအမည်",
   "provider.custom.field.name.placeholder": "ကျွန်ုပ်၏ AI ပံ့ပိုးပေးသူ",
   "provider.custom.field.baseURL.label": "အခြေခံ URL",
@@ -290,8 +317,10 @@ export const dict = {
   "provider.custom.error.baseURL.format": "http:// သို့မဟုတ် https:// ဖြင့် စတင်ရပါမည်။",
   "provider.custom.error.required": "လိုအပ်သည်။",
   "provider.custom.error.duplicate": "ပွားပါ။",
-  "provider.disconnect.toast.disconnected.title": "{{provider}} ချိတ်ဆက်မှု ပြတ်တောက်သွားသည်။",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} မော်ဒယ်များကို မရနိုင်တော့ပါ။",
+  "provider.disconnect.toast.disconnected.title":
+    "{{provider}} ချိတ်ဆက်မှု ပြတ်တောက်သွားသည်။",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} မော်ဒယ်များကို မရနိုင်တော့ပါ။",
   "model.tag.free": "အခမဲ့",
   "model.tag.latest": "နောက်ဆုံးထွက်",
   "model.provider.anthropic": "Anthropic",
@@ -389,7 +418,8 @@ export const dict = {
     "ရုပ်ပုံများ၊ PDF များ သို့မဟုတ် စာသားဖိုင်များကိုသာ ဤနေရာတွင် ပူးတွဲနိုင်ပါသည်။",
   "prompt.toast.attachmentDuplicate.title": "ဤဖိုင်ကို အပ်လုဒ်လုပ်ပြီးပါပြီ။",
   "prompt.toast.modelAgentRequired.title": "အေးဂျင့်နှင့် မော်ဒယ်ကို ရွေးပါ။",
-  "prompt.toast.modelAgentRequired.description": "Prompt မပို့မီ အေးဂျင့်နှင့် မော်ဒယ်ကို ရွေးပါ။",
+  "prompt.toast.modelAgentRequired.description":
+    "Prompt မပို့မီ အေးဂျင့်နှင့် မော်ဒယ်ကို ရွေးပါ။",
   "prompt.toast.worktreeCreateFailed.title": "Git worktree ဖန်တီး၍မရပါ။",
   "prompt.toast.sessionCreateFailed.title": "စက်ရှင်ကို ဖန်တီး၍မရပါ။",
   "prompt.toast.shellSendFailed.title": "shell command ကို ပို့၍မရပါ။",
@@ -456,7 +486,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "distro ကို ရွေးပါ။",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL ကို စစ်ဆေးနေသည်...",
-  "wsl.onboarding.restartRequired": "WSL ထည့်သွင်းခြင်းကို အပြီးသတ်ရန် Windows ကို ပြန်လည်စတင်ရန် လိုအပ်သည်။",
+  "wsl.onboarding.restartRequired":
+    "WSL ထည့်သွင်းခြင်းကို အပြီးသတ်ရန် Windows ကို ပြန်လည်စတင်ရန် လိုအပ်သည်။",
   "wsl.onboarding.ready": "WSL အဆင်သင့်ဖြစ်ပါပြီ။",
   "wsl.onboarding.required": "ရှေ့ဆက်ရန် WSL လိုအပ်သည်။",
   "wsl.onboarding.checkingDistros": "ကွဲပြားမှုများကို စစ်ဆေးနေသည်...",
@@ -489,12 +520,14 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "ပျောက်နေသော ဘေ့စ်၊ ကောက်ကြောင်း",
   "wsl.onboarding.distroStatus.unsupported": "ပံ့ပိုးမထားပါ · WSL 2 ကို သုံးပါ။",
   "wsl.onboarding.needAnotherDistro": "နောက်ထပ် distro တစ်ခုလိုပါသလား။",
-  "wsl.onboarding.needAnotherDistroHint": "WSL ကတ်တလောက်မှ Linux ဖြန့်ဖြူးမှုကို ထည့်သွင်းပါ။",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL ကတ်တလောက်မှ Linux ဖြန့်ဖြူးမှုကို ထည့်သွင်းပါ။",
   "wsl.onboarding.wslNotInstalled.title": "WSL ကို ထည့်သွင်းမထားပါ။",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Linux အတွက် Windows Subsystem) ကို OpenCode မှ WSL ဆာဗာ မထည့်မီတွင် လိုအပ်ပါသည်။",
   "wsl.onboarding.wslUnavailable.title": "WSL မရနိုင်ပါ။",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode သည် ဤစက်ပေါ်ရှိ WSL ကို အတည်မပြုနိုင်ပါ။",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode သည် ဤစက်ပေါ်ရှိ WSL ကို အတည်မပြုနိုင်ပါ။",
   "wsl.onboarding.installWsl": "WSL ကို ထည့်သွင်းပါ။",
   "wsl.onboarding.windowsRestartRequired":
     "WSL ထည့်သွင်းခြင်း အပြီးသတ်ရန် Windows ကို ပြန်လည်စတင်ပါ၊ ထို့နောက် OpenCode ကို ပြန်လည်ဖွင့်ပါ။",
@@ -514,7 +547,8 @@ export const dict = {
   "wsl.onboarding.version": "ဗားရှင်း- {{version}}",
   "wsl.onboarding.unknown": "အမည်မသိ",
   "wsl.onboarding.desktopVersion": "ဒက်စ်တော့ {{version}}",
-  "wsl.onboarding.versionMismatch": "ထည့်သွင်းထားသောဗားရှင်းသည် ဒက်စ်တော့အက်ပ်ဗားရှင်းနှင့် မကိုက်ညီပါ။",
+  "wsl.onboarding.versionMismatch":
+    "ထည့်သွင်းထားသောဗားရှင်းသည် ဒက်စ်တော့အက်ပ်ဗားရှင်းနှင့် မကိုက်ညီပါ။",
   "wsl.onboarding.adding": "ထည့်နေသည်...",
   "help.tabs.toast.ariaLabel":
     "တဘ်များကို မိတ်ဆက်ခြင်း။ တက်ဘ်များဖြင့် သင်၏အလုပ်နှင့် တက်ကြွသော ဆက်ရှင်များကို စုစည်းပါ။",
@@ -522,7 +556,8 @@ export const dict = {
   "help.tabs.title": "တဘ်များကို မိတ်ဆက်ခြင်း။",
   "help.tabs.description": "တက်ဘ်များဖြင့် သင်၏အလုပ်နှင့် တက်ကြွသော ဆက်ရှင်များကို စုစည်းပါ။",
   "help.tabs.date": "ဇူလိုင် ၁၄",
-  "help.tabs.introduction": "OpenCode Desktop သည် ယခုအခါ တက်ဘ်များအနီးတွင် တည်ဆောက်ထားသည်။",
+  "help.tabs.introduction":
+    "OpenCode Desktop သည် ယခုအခါ တက်ဘ်များအနီးတွင် တည်ဆောက်ထားသည်။",
   "help.tabs.sessions":
     "တက်ဘ်တစ်ခုတွင် စက်ရှင်အသစ်တစ်ခု စတင်ပါ သို့မဟုတ် သင့်ပရောဂျက်တစ်ခုခုမှ လက်ရှိစက်ရှင်တစ်ခုကို ဖွင့်ပါ။ အသစ်တစ်ခုခုကို စတင်သည့်အခါ တက်ဘ်အသစ်တစ်ခုဖွင့်ပြီး ပြီးသွားသောအခါတွင် ၎င်းကိုပိတ်ပါ။",
   "help.tabs.organize":
@@ -542,7 +577,8 @@ export const dict = {
   "dialog.project.edit.color": "အရောင်",
   "dialog.project.edit.color.select": "{{color}} အရောင်ကို ရွေးပါ။",
   "dialog.project.edit.worktree.startup": "Workspace စတင်ခြင်း script",
-  "dialog.project.edit.worktree.startup.description": "အလုပ်နေရာအသစ် (Git worktree) ဖန်တီးပြီးနောက် လုပ်ဆောင်သည်။",
+  "dialog.project.edit.worktree.startup.description":
+    "အလုပ်နေရာအသစ် (Git worktree) ဖန်တီးပြီးနောက် လုပ်ဆောင်သည်။",
   "dialog.project.edit.worktree.startup.placeholder": "e.g. bun install လုပ်ပါ။",
   "dialog.releaseNotes.action.getStarted": "စတင်လိုက်ပါ။",
   "dialog.releaseNotes.action.next": "နောက်တစ်ခု",
@@ -603,50 +639,68 @@ export const dict = {
   "toast.theme.title": "အပြင်အဆင်ကို ပြောင်းထားသည်။",
   "toast.scheme.title": "အရောင်အစီအစဉ်",
   "toast.workspace.enabled.title": "အလုပ်နေရာများကို ဖွင့်ထားသည်။",
-  "toast.workspace.enabled.description": "ယခု Git worktree များကို ဘေးဘားတွင် ပြသထားသည်။",
+  "toast.workspace.enabled.description":
+    "ယခု Git worktree များကို ဘေးဘားတွင် ပြသထားသည်။",
   "toast.workspace.disabled.title": "အလုပ်နေရာများကို ပိတ်ထားသည်။",
-  "toast.workspace.disabled.description": "ပင်မ Git worktree ကိုသာ ဘေးဘားတွင် ပြသထားသည်။",
+  "toast.workspace.disabled.description":
+    "ပင်မ Git worktree ကိုသာ ဘေးဘားတွင် ပြသထားသည်။",
   "toast.permissions.autoaccept.on.title": "ခွင့်ပြုချက်များကို အလိုအလျောက် လက်ခံခြင်း။",
-  "toast.permissions.autoaccept.on.description": "ခွင့်ပြုချက်တောင်းဆိုမှုများကို အလိုအလျောက် အတည်ပြုပေးမည်ဖြစ်သည်။",
-  "toast.permissions.autoaccept.off.title": "ခွင့်ပြုချက်များကို အလိုအလျောက်လက်ခံခြင်းကို ရပ်ထားသည်။",
-  "toast.permissions.autoaccept.off.description": "ခွင့်ပြုချက်တောင်းခံမှုများသည် အတည်ပြုချက် လိုအပ်မည်ဖြစ်သည်။",
+  "toast.permissions.autoaccept.on.description":
+    "ခွင့်ပြုချက်တောင်းဆိုမှုများကို အလိုအလျောက် အတည်ပြုပေးမည်ဖြစ်သည်။",
+  "toast.permissions.autoaccept.off.title":
+    "ခွင့်ပြုချက်များကို အလိုအလျောက်လက်ခံခြင်းကို ရပ်ထားသည်။",
+  "toast.permissions.autoaccept.off.description":
+    "ခွင့်ပြုချက်တောင်းခံမှုများသည် အတည်ပြုချက် လိုအပ်မည်ဖြစ်သည်။",
   "toast.model.none.title": "မော်ဒယ်ကို ရွေးထားခြင်းမရှိပါ။",
   "toast.model.none.description": "ဤစက်ရှင်ကို အကျဉ်းချုပ်ရန် ဝန်ဆောင်မှုပေးသူကို ချိတ်ဆက်ပါ။",
   "toast.file.loadFailed.title": "ဖိုင်ကို တင်ရန် မအောင်မြင်ပါ။",
   "toast.file.listFailed.title": "ဖိုင်များကို စာရင်းပြုစုရန် မအောင်မြင်ပါ။",
   "toast.context.noLineSelection.title": "လိုင်းရွေးချယ်မှု မရှိပါ။",
-  "toast.context.noLineSelection.description": "ဖိုင်တဘ်ရှိ မျဉ်းအပိုင်းအခြားကို ဦးစွာရွေးချယ်ပါ။",
+  "toast.context.noLineSelection.description":
+    "ဖိုင်တဘ်ရှိ မျဉ်းအပိုင်းအခြားကို ဦးစွာရွေးချယ်ပါ။",
   "toast.session.share.copyFailed.title": "URL ကို ကလစ်ဘုတ်သို့ ကူးယူရန် မအောင်မြင်ပါ။",
   "toast.session.share.success.title": "ဆက်ရှင်ကို မျှဝေထားသည်။",
   "toast.session.share.success.description": "ကလစ်ဘုတ်သို့ ကူးယူထားသော URL ကို မျှဝေပါ။",
   "toast.session.share.failed.title": "စက်ရှင်ကို မျှဝေရန် မအောင်မြင်ပါ။",
-  "toast.session.share.failed.description": "စက်ရှင်အား မျှဝေနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
+  "toast.session.share.failed.description":
+    "စက်ရှင်အား မျှဝေနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
   "toast.session.unshare.success.title": "ဆက်ရှင်ကို မျှဝေမထားပါ။",
-  "toast.session.unshare.success.description": "ဆက်ရှင်ကို အောင်မြင်စွာ မျှဝေခြင်းမှ ဖယ်ရှားလိုက်ပါပြီ။",
+  "toast.session.unshare.success.description":
+    "ဆက်ရှင်ကို အောင်မြင်စွာ မျှဝေခြင်းမှ ဖယ်ရှားလိုက်ပါပြီ။",
   "toast.session.unshare.failed.title": "စက်ရှင်ကို မျှဝေခြင်းမှ ပြန်ဖြုတ်ရန် မအောင်မြင်ပါ။",
-  "toast.session.unshare.failed.description": "စက်ရှင်အား မျှဝေခြင်းမှ ဖယ်ရှားနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
+  "toast.session.unshare.failed.description":
+    "စက်ရှင်အား မျှဝေခြင်းမှ ဖယ်ရှားနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
   "toast.session.export.success.title": "စက်ရှင်ကို တင်ပို့ပြီးပါပြီ။",
   "toast.session.export.success.description": "စက်ရှင်ကို {{filename}} သို့ သိမ်းထားသည်။",
   "toast.session.export.failed.title": "စက်ရှင်ကို ထုတ်ယူ၍မရပါ။",
-  "toast.session.export.failed.description": "စက်ရှင်ကို ထုတ်ယူနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
-  "toast.session.listFailed.title": "{{project}} အတွက် ဆက်ရှင်များကို တင်ရန် မအောင်မြင်ပါ။",
+  "toast.session.export.failed.description":
+    "စက်ရှင်ကို ထုတ်ယူနေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
+  "toast.session.listFailed.title":
+    "{{project}} အတွက် ဆက်ရှင်များကို တင်ရန် မအောင်မြင်ပါ။",
   "toast.project.reloadFailed.title": "{{project}} ကို ပြန်လည်စတင်ရန် မအောင်မြင်ပါ။",
   "toast.update.title": "အပ်ဒိတ် ရနိုင်ပါသည်။",
-  "toast.update.description": "OpenCode ({{version}}) ၏ ဗားရှင်းအသစ်ကို ယခု ထည့်သွင်းနိုင်ပါပြီ။",
+  "toast.update.description":
+    "OpenCode ({{version}}) ၏ ဗားရှင်းအသစ်ကို ယခု ထည့်သွင်းနိုင်ပါပြီ။",
   "toast.update.action.installRestart": "ထည့်သွင်းပြီး ပြန်လည်စတင်ပါ။",
   "toast.update.action.notYet": "မဟုတ်သေးပါ။",
   "toast.update.installFailed.title": "အပ်ဒိတ်ကို ထည့်သွင်း၍ မရပါ",
   "toast.update.installFailed.retry": "ထပ်မံ ကြိုးစားပါ",
 
-  "disk.accessGuidance.macos": "System Settings တွင် DiskLizard အတွက် Full Disk Access ခွင့်ပြုချက် ပေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
-  "disk.accessGuidance.windows": "ဤဒရိုင်ဗာကို ဝင်ရောက်ခွင့်ရှိသော အကောင့်တစ်ခုကို အသုံးပြုပါ၊ သို့မဟုတ် သင့်အကောင့်ဖြင့် ဖတ်ရှုနိုင်သော ဖိုင်တွဲတစ်ခုကို စကင်န်ဖတ်ပါ။",
-  "disk.accessGuidance.linux": "ဖိုင်တွဲနှင့် mount ခွင့်ပြုချက်များကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
-  "disk.accessGuidance.default": "ဤဖိုင်တွဲများသို့ ဝင်ရောက်ခွင့်ကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
-  "disk.accessGuidance.rescan": "ဝင်ရောက်ခွင့် ပြောင်းလဲပြီးနောက် အပေါ်ဘာရှိ Rescan ကို အသုံးပြုပါ။",
+  "disk.accessGuidance.macos":
+    "System Settings တွင် DiskLizard အတွက် Full Disk Access ခွင့်ပြုချက် ပေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
+  "disk.accessGuidance.windows":
+    "ဤဒရိုင်ဗာကို ဝင်ရောက်ခွင့်ရှိသော အကောင့်တစ်ခုကို အသုံးပြုပါ၊ သို့မဟုတ် သင့်အကောင့်ဖြင့် ဖတ်ရှုနိုင်သော ဖိုင်တွဲတစ်ခုကို စကင်န်ဖတ်ပါ။",
+  "disk.accessGuidance.linux":
+    "ဖိုင်တွဲနှင့် mount ခွင့်ပြုချက်များကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
+  "disk.accessGuidance.default":
+    "ဤဖိုင်တွဲများသို့ ဝင်ရောက်ခွင့်ကို ပြန်လည်စစ်ဆေးပြီးနောက် ထပ်မံစကင်န်ဖတ်ပါ။",
+  "disk.accessGuidance.rescan":
+    "ဝင်ရောက်ခွင့် ပြောင်းလဲပြီးနောက် အပေါ်ဘာရှိ Rescan ကို အသုံးပြုပါ။",
   "disk.common.rescan": "ပြန်စကင်",
   "error.page.title": "တစ်ခုခု မှားသွားသည်။",
   "error.page.description": "အပလီကေးရှင်းကို တင်နေစဉ် အမှားအယွင်းတစ်ခု ဖြစ်ပေါ်ခဲ့သည်။",
-  "error.page.description.localServerStartup": "ဒေသတွင်းဆာဗာကို စတင်စဉ်တွင် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
+  "error.page.description.localServerStartup":
+    "ဒေသတွင်းဆာဗာကို စတင်စဉ်တွင် အမှားအယွင်းတစ်ခု ဖြစ်ပွားခဲ့သည်။",
   "error.page.details.label": "အမှားအသေးစိတ်",
   "error.page.action.restart": "ပြန်လည်စတင်ပါ။",
   "error.page.action.report": "အမှားအယွင်းကို တိုင်ကြားပါ။",
@@ -661,12 +715,15 @@ export const dict = {
   "error.page.version": "ဗားရှင်း- {{version}}",
   "error.dev.rootNotFound":
     "အမြစ်ဒြပ်စင်ကို ရှာမတွေ့ပါ။ ၎င်းကို သင်၏ index.html တွင် ထည့်ရန် မေ့သွားပါသလား။ ဒါမှမဟုတ် id attribute က စာလုံးပေါင်းမှားနေသလား။",
-  "error.serverSync.connectFailed": "ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ `{{url}}` တွင်အလုပ်လုပ်နေသောဆာဗာရှိပါသလား။",
+  "error.serverSync.connectFailed":
+    "ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ `{{url}}` တွင်အလုပ်လုပ်နေသောဆာဗာရှိပါသလား။",
   "error.serverSDK.noServerAvailable": "ဆာဗာ မရရှိနိုင်ပါ။",
   "error.serverSDK.serverNotAvailable": "ဆာဗာ မရရှိနိုင်ပါ။",
   "error.childStore.persistedCacheCreateFailed": "ဆက်ရှိနေသော ကက်ရှ်ကို ဖန်တီး၍မရပါ။",
-  "error.childStore.persistedProjectMetadataCreateFailed": "ဆက်ရှိနေသော ပရောဂျက် မက်တာဒေတာကို ဖန်တီး၍မရပါ။",
-  "error.childStore.persistedProjectIconCreateFailed": "ဆက်လက်တည်ရှိနေသော ပရောဂျက်သင်္ကေတကို ဖန်တီး၍မရပါ။",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "ဆက်ရှိနေသော ပရောဂျက် မက်တာဒေတာကို ဖန်တီး၍မရပါ။",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "ဆက်လက်တည်ရှိနေသော ပရောဂျက်သင်္ကေတကို ဖန်တီး၍မရပါ။",
   "error.childStore.storeCreateFailed": "စတိုးကို ဖန်တီး၍မရပါ။",
   "directory.error.invalidUrl": "URL တွင် မမှန်ကန်သော လမ်းညွှန်ချက်",
   "error.chain.unknown": "အမည်မသိ အမှား",
@@ -678,24 +735,30 @@ export const dict = {
   "error.chain.responseBody": "တုံ့ပြန်မှုကိုယ်ထည်-\n{{body}}",
   "error.chain.didYouMean": "ဆိုလိုတာက {{suggestions}}",
   "error.chain.modelNotFound": "မော်ဒယ်ကို ရှာမတွေ့ပါ- {{provider}}/{{model}}",
-  "error.chain.checkConfig": "သင်၏ config (opencode.json) ဝန်ဆောင်မှုပေးသူ/မော်ဒယ်အမည်များကို စစ်ဆေးပါ။",
+  "error.chain.checkConfig":
+    "သင်၏ config (opencode.json) ဝန်ဆောင်မှုပေးသူ/မော်ဒယ်အမည်များကို စစ်ဆေးပါ။",
   "error.chain.mcpFailed":
     'MCP ဆာဗာ "{{name}}" မအောင်မြင်ပါ။ မှတ်ချက်၊ OpenCode သည် MCP စစ်မှန်ကြောင်းအထောက်အထားမခိုင်လုံသေးပါ။',
-  "error.chain.providerAuthFailed": "ပံ့ပိုးသူ စစ်မှန်ကြောင်း အထောက်အထား မအောင်မြင်ပါ ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "ပံ့ပိုးသူ စစ်မှန်ကြောင်း အထောက်အထား မအောင်မြင်ပါ ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'ဝန်ဆောင်မှုပေးသူ "{{provider}}" ကို စတင်ရန် မအောင်မြင်ပါ။ အထောက်အထားများနှင့် ဖွဲ့စည်းမှုပုံစံကို စစ်ဆေးပါ။',
   "error.chain.configJsonInvalid": "{{path}} ရှိ Config ဖိုင်သည် JSON(C) မမှန်ကန်ပါ",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} ရှိ Config file သည် JSON(C): {{message}} မမှန်ပါ။",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} ရှိ Config file သည် JSON(C): {{message}} မမှန်ပါ။",
   "error.chain.configDirectoryTypo":
     '{{path}} ရှိ လမ်းညွှန် "{{dir}}" သည် မမှန်ကန်ပါ။ လမ်းညွှန်ကို "{{suggestion}}" သို့ အမည်ပြောင်းပါ သို့မဟုတ် ၎င်းကို ဖယ်ရှားပါ။ ၎င်းသည် သာမာန် typo တစ်ခုဖြစ်သည်။',
   "error.chain.configFrontmatterError":
     "{{path}} တွင် ရှေ့အကြောင်းအရာကို ခွဲခြမ်းစိတ်ဖြာရန် မအောင်မြင်ပါ-\n{{message}}",
   "error.chain.configInvalid": "{{path}} ရှိ Config ဖိုင်သည် မမှန်ကန်ပါ။",
-  "error.chain.configInvalidWithMessage": "{{path}} ရှိ Config ဖိုင်သည် မမှန်ကန်ပါ- {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} ရှိ Config ဖိုင်သည် မမှန်ကန်ပါ- {{message}}",
   "notification.permission.title": "ခွင့်ပြုချက် လိုအပ်သည်။",
-  "notification.permission.description": "{{sessionTitle}} တွင် {{projectName}} ခွင့်ပြုချက် လိုအပ်သည်။",
+  "notification.permission.description":
+    "{{sessionTitle}} တွင် {{projectName}} ခွင့်ပြုချက် လိုအပ်သည်။",
   "notification.question.title": "မေးခွန်း",
-  "notification.question.description": "{{sessionTitle}} {{projectName}} တွင် မေးခွန်းတစ်ခုရှိသည်။",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}} တွင် မေးခွန်းတစ်ခုရှိသည်။",
   "notification.action.goToSession": "စက်ရှင်သို့ သွားပါ။",
   "notification.session.responseReady.title": "တုံ့ပြန်မှု အဆင်သင့်ဖြစ်ပါပြီ။",
   "notification.session.error.title": "စက်ရှင် အမှား",
@@ -726,7 +789,8 @@ export const dict = {
   "session.tab.unknown": "အမည်မသိ ဆက်ရှင်",
   "session.panel.reviewAndFiles": "ပြန်လည်သုံးသပ်ခြင်းနှင့် ဖိုင်များ",
   "session.error.notFound": "ဤစက်ရှင်ကို ရှာမတွေ့ပါ။",
-  "session.error.notFound.description": "ဤတဘ်သည် ဤဆာဗာတွင်မရှိတော့သော စက်ရှင်တစ်ခုကို ညွှန်ပြသည်။",
+  "session.error.notFound.description":
+    "ဤတဘ်သည် ဤဆာဗာတွင်မရှိတော့သော စက်ရှင်တစ်ခုကို ညွှန်ပြသည်။",
   "session.error.notFound.closeTab": "တဘ်ကို ပိတ်ပါ။",
   "session.error.serverConnection": "ဤဆာဗာသို့ ချိတ်ဆက်၍မရပါ။",
   "session.review.filesChanged": "ဖိုင်များကို {{count}} ပြောင်းထားသည်။",
@@ -734,15 +798,19 @@ export const dict = {
   "session.review.change.other": "ပြောင်းလဲမှုများ",
   "session.review.loadingChanges": "အပြောင်းအလဲများကို ဖွင့်နေသည်...",
   "session.review.empty": "ဤစက်ရှင်တွင် ပြောင်းလဲမှုမရှိသေးပါ။",
-  "session.review.noVcs": "မည်သည့် Git ဗားရှင်းထိန်းချုပ်မှုစနစ်မှ ရှာမတွေ့ပါ၊ အပြောင်းအလဲများကို မပြသပါ။",
+  "session.review.noVcs":
+    "မည်သည့် Git ဗားရှင်းထိန်းချုပ်မှုစနစ်မှ ရှာမတွေ့ပါ၊ အပြောင်းအလဲများကို မပြသပါ။",
   "session.review.noVcs.createGit.title": "Git repository တစ်ခုဖန်တီးပါ။",
-  "session.review.noVcs.createGit.description": "ဤပရောဂျက်ရှိ အပြောင်းအလဲများကို ခြေရာခံ၊ သုံးသပ်ပြီး ပြန်ဖျက်ပါ။",
-  "session.review.noVcs.createGit.actionLoading": "Git repository ကို ဖန်တီးနေသည်...",
+  "session.review.noVcs.createGit.description":
+    "ဤပရောဂျက်ရှိ အပြောင်းအလဲများကို ခြေရာခံ၊ သုံးသပ်ပြီး ပြန်ဖျက်ပါ။",
+  "session.review.noVcs.createGit.actionLoading":
+    "Git repository ကို ဖန်တီးနေသည်...",
   "session.review.noVcs.createGit.action": "Git repository ဖန်တီးပါ။",
   "session.review.noSnapshot":
     "Snapshot ခြေရာခံခြင်းကို config တွင်ပိတ်ထားသည်၊ ထို့ကြောင့် စက်ရှင်ပြောင်းလဲမှုများကို မရရှိနိုင်ပါ",
   "session.review.noChanges": "အပြောင်းအလဲမရှိပါ။",
-  "session.review.noUncommittedChanges": "ကတိကဝတ်မပြုထားသော အပြောင်းအလဲများ မရှိသေးပါ။",
+  "session.review.noUncommittedChanges":
+    "ကတိကဝတ်မပြုထားသော အပြောင်းအလဲများ မရှိသေးပါ။",
   "session.review.noBranchChanges": "ဌာနခွဲပြောင်းလဲမှုမရှိသေးပါ။",
   "session.files.selectToOpen": "ဖွင့်ရန် ဖိုင်တစ်ခုကို ရွေးပါ။",
   "session.files.all": "ဖိုင်အားလုံး",
@@ -841,12 +909,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Terminal ကို ပိတ်ပါ",
   "terminal.connectionLost.title": "ချိတ်ဆက်မှု ပြတ်တောက်သွားသည်။",
-  "terminal.connectionLost.abnormalClose": "WebSocket ကို ပုံမှန်မဟုတ်စွာ ပိတ်ထားသည်- {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket ကို ပုံမှန်မဟုတ်စွာ ပိတ်ထားသည်- {{code}}",
   "terminal.connectionLost.description":
     "Terminal ချိတ်ဆက်မှု ပြတ်တောက်သွားသည်။ ဆာဗာ ပြန်လည်စတင်သည့်အခါ ၎င်းသည် ဖြစ်ပေါ်လာနိုင်သည်။",
   "terminal.connectTicket.csrfError":
     "PTY ချိတ်ဆက်မှုလက်မှတ်ကို မူရင်း သို့မဟုတ် CSRF စစ်ဆေးမှုများဖြင့် ပယ်ချထားသည်။ ဆာဗာ CORS config ကိုစစ်ဆေးပါ။",
-  "terminal.connectTicket.statusError": "PTY ချိတ်ဆက်မှုလက်မှတ် {{status}} ဖြင့် မအောင်မြင်ပါ။",
+  "terminal.connectTicket.statusError":
+    "PTY ချိတ်ဆက်မှုလက်မှတ် {{status}} ဖြင့် မအောင်မြင်ပါ။",
   "titlebar.update": "အပ်ဒိတ်",
   "titlebar.updateVersion": "{{version}} ကို အပ်ဒိတ်လုပ်ပါ။",
   "common.closeTab": "တဘ်ကို ပိတ်ပါ။",
@@ -890,7 +960,8 @@ export const dict = {
   "sidebar.workspaces.enable": "အလုပ်နေရာများကို ဖွင့်ပါ။",
   "sidebar.workspaces.disable": "အလုပ်နေရာများကို ပိတ်ပါ။",
   "sidebar.gettingStarted.title": "စတင်ခြင်း။",
-  "sidebar.gettingStarted.line1": "OpenCode တွင် အခမဲ့မော်ဒယ်များ ပါဝင်သောကြောင့် သင်ချက်ချင်းစတင်နိုင်သည်။",
+  "sidebar.gettingStarted.line1":
+    "OpenCode တွင် အခမဲ့မော်ဒယ်များ ပါဝင်သောကြောင့် သင်ချက်ချင်းစတင်နိုင်သည်။",
   "sidebar.gettingStarted.line2":
     "မော်ဒယ်များ၊ inc ကိုအသုံးပြုရန် မည်သည့်ပံ့ပိုးသူကိုမဆို ချိတ်ဆက်ပါ။ Claude၊ GPT၊ Gemini စသဖြင့်",
   "sidebar.project.recentSessions": "လတ်တလော စက်ရှင်များ",
@@ -920,8 +991,10 @@ export const dict = {
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "လက်ရှိ အက်ပ်သက်တမ်းအတွက် စုစည်းထားသော အပြင်အဆင် အပြောင်းအလဲ။",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "JS heap နှင့် heap ကန့်သတ်ချက်ကို အသုံးပြုထားသည်။ Chromium သာ",
-  "debugBar.mem.tip": "JS heap နှင့် heap ကန့်သတ်ချက်ကို အသုံးပြုထားသည်။ {{limit}} ၏ {{used}}",
+  "debugBar.mem.tipUnavailable":
+    "JS heap နှင့် heap ကန့်သတ်ချက်ကို အသုံးပြုထားသည်။ Chromium သာ",
+  "debugBar.mem.tip":
+    "JS heap နှင့် heap ကန့်သတ်ချက်ကို အသုံးပြုထားသည်။ {{limit}} ၏ {{used}}",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip":
     "အပြန်အလှန်တုံ့ပြန်မှုရှိသော ဒြပ်စင်များအားလုံးတွင် အာရုံစူးစိုက်မှုပုံစံများကို တွန်းအားပေးပါ။",
@@ -939,7 +1012,8 @@ export const dict = {
   "settings.tab.shortcuts": "ဖြတ်လမ်းများ",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ပေါင်းစည်းမှု",
-  "settings.desktop.wsl.description": "Windows တွင် WSL အတွင်းရှိ OpenCode ဆာဗာကို ဖွင့်ပါ။",
+  "settings.desktop.wsl.description":
+    "Windows တွင် WSL အတွင်းရှိ OpenCode ဆာဗာကို ဖွင့်ပါ။",
   "settings.general.section.appearance": "အသွင်အပြင်",
   "settings.general.section.advanced": "အဆင့်မြင့်",
   "settings.general.section.notifications": "စနစ်အကြောင်းကြားချက်များ",
@@ -948,24 +1022,30 @@ export const dict = {
   "settings.general.section.feed": "ကျွေးမွေးခြင်း။",
   "settings.general.section.display": "မျက်နှာပြင်",
   "settings.general.row.language.title": "ဘာသာစကား",
-  "settings.general.row.language.description": "OpenCode အတွက် ဖော်ပြသည့် ဘာသာစကားကို ပြောင်းပါ။",
+  "settings.general.row.language.description":
+    "OpenCode အတွက် ဖော်ပြသည့် ဘာသာစကားကို ပြောင်းပါ။",
   "settings.general.row.shell.title": "Terminal Shell",
-  "settings.general.row.shell.description": "terminal နှင့် agent tools မှအသုံးပြုသော Shell",
+  "settings.general.row.shell.description":
+    "terminal နှင့် agent tools မှအသုံးပြုသော Shell",
   "settings.general.row.shell.autoDefault": "အလိုအလျောက် (ပုံသေ)",
   "settings.general.row.shell.terminalOnly": "terminal သာ",
   "settings.general.row.appearance.title": "အသွင်အပြင်",
-  "settings.general.row.appearance.description": "သင့်စက်ပေါ်တွင် OpenCode ကို မည်သို့မြင်သည်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
+  "settings.general.row.appearance.description":
+    "သင့်စက်ပေါ်တွင် OpenCode ကို မည်သို့မြင်သည်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
   "settings.general.row.colorScheme.title": "အရောင်အစီအစဉ်",
   "settings.general.row.colorScheme.description":
     "OpenCode သည် စနစ်၊ အလင်း သို့မဟုတ် အမှောင် အပြင်အဆင်ကို လိုက်နာခြင်း ရှိ၊ မရှိကို ရွေးပါ။",
   "settings.general.row.theme.title": "အပြင်အဆင်",
   "settings.general.row.theme.description": "OpenCode ကို ဘယ်လိုပုံစံနဲ့ စိတ်ကြိုက်လုပ်မလဲ။",
   "settings.general.row.font.title": "ကုဒ်ဖောင့်",
-  "settings.general.row.font.description": "ကုဒ်တုံးများတွင် အသုံးပြုသည့် ဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
+  "settings.general.row.font.description":
+    "ကုဒ်တုံးများတွင် အသုံးပြုသည့် ဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
   "settings.general.row.terminalFont.title": "Terminal ဖောင့်",
-  "settings.general.row.terminalFont.description": "terminal တွင်အသုံးပြုသောဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
+  "settings.general.row.terminalFont.description":
+    "terminal တွင်အသုံးပြုသောဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
   "settings.general.row.uiFont.title": "UI ဖောင့်",
-  "settings.general.row.uiFont.description": "အင်တာဖေ့စ်တစ်လျှောက်သုံးဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
+  "settings.general.row.uiFont.description":
+    "အင်တာဖေ့စ်တစ်လျှောက်သုံးဖောင့်ကို စိတ်ကြိုက်ပြင်ဆင်ပါ။",
   "settings.general.row.followup.title": "နောက်ဆက်တွဲအပြုအမူ",
   "settings.general.row.followup.description":
     "နောက်ဆက်တွဲအချက်မှာ ချက်ချင်းပဲ့ကိုင်သလား သို့မဟုတ် တန်းစီစောင့်ဆိုင်းခြင်းရှိမရှိကို ရွေးပါ။",
@@ -977,52 +1057,65 @@ export const dict = {
   "settings.general.row.showNavigation.description":
     "ဒက်စ်တော့ ခေါင်းစဉ်ဘားတွင် နောက်နှင့် ရှေ့သို့ ခလုတ်များကို ပြပါ။",
   "settings.general.row.showSearch.title": "အမိန့်များစာရင်း",
-  "settings.general.row.showSearch.description": "ခေါင်းစဉ်ဘားရှိ ရှာဖွေမှုနှင့် အမိန့်ပေးချက် ခလုတ်ကို ပြပါ။",
+  "settings.general.row.showSearch.description":
+    "ခေါင်းစဉ်ဘားရှိ ရှာဖွေမှုနှင့် အမိန့်ပေးချက် ခလုတ်ကို ပြပါ။",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "ဒက်စ်တော့ခေါင်းစဉ်ဘားရှိ terminal ခလုတ်ကိုပြသပါ။",
+  "settings.general.row.showTerminal.description":
+    "ဒက်စ်တော့ခေါင်းစဉ်ဘားရှိ terminal ခလုတ်ကိုပြသပါ။",
   "settings.general.row.showStatus.title": "ဆာဗာအခြေအနေ",
-  "settings.general.row.showStatus.description": "ခေါင်းစဉ်ဘားရှိ ဆာဗာအခြေအနေခလုတ်ကို ပြပါ။",
+  "settings.general.row.showStatus.description":
+    "ခေါင်းစဉ်ဘားရှိ ဆာဗာအခြေအနေခလုတ်ကို ပြပါ။",
   "settings.general.row.mobileTitlebarBottom.title": "အောက်ခြေလမ်းညွှန်",
   "settings.general.row.mobileTitlebarBottom.description":
     "မိုဘိုင်းတွင် စခရင်၏အောက်ခြေတွင် ခေါင်းစဉ်ဘားနှင့် ဆက်ရှင်တက်ဘ်များကို ထားရှိပါ။",
   "settings.general.row.showCustomAgents.title": "အေးဂျင့်ကို ပြပါ။",
   "settings.general.row.showCustomAgents.description":
     "တေးရေးဆရာရှိ အေးဂျင့်များအကြား ပြောင်းပါ။ ဝှက်ထားသည့်အခါ၊ Build အေးဂျင့်အဖြစ် သတ်မှတ်သည်။",
-  "settings.general.row.reasoningSummaries.title": "ကျိုးကြောင်းဆင်ခြင်ခြင်း အနှစ်ချုပ်များကို ပြပါ။",
+  "settings.general.row.reasoningSummaries.title":
+    "ကျိုးကြောင်းဆင်ခြင်ခြင်း အနှစ်ချုပ်များကို ပြပါ။",
   "settings.general.row.reasoningSummaries.description":
     "အချိန်ဇယားတွင် မော်ဒယ် ကျိုးကြောင်းဆင်ခြင်ခြင်း အနှစ်ချုပ်များကို ပြသပါ။",
-  "settings.general.row.shellToolPartsExpanded.title": "shell tool အစိတ်အပိုင်းများကို ချဲ့ပါ။",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "shell tool အစိတ်အပိုင်းများကို ချဲ့ပါ။",
   "settings.general.row.shellToolPartsExpanded.description":
     "အချိန်ဇယားတွင် ပုံသေဖြင့် ချဲ့ထားသော shell tool အစိတ်အပိုင်းများကို ပြပါ။",
-  "settings.general.row.editToolPartsExpanded.title": "တည်းဖြတ်ကိရိယာအစိတ်အပိုင်းများကို ချဲ့ထွင်ပါ။",
+  "settings.general.row.editToolPartsExpanded.title":
+    "တည်းဖြတ်ကိရိယာအစိတ်အပိုင်းများကို ချဲ့ထွင်ပါ။",
   "settings.general.row.editToolPartsExpanded.description":
     "အချိန်ဇယားတွင် ပုံသေဖြင့် ချဲ့ထွင်ထားသော တည်းဖြတ်ခြင်း၊ ရေးသားခြင်းနှင့် ဖာထေးခြင်း ကိရိယာအစိတ်အပိုင်းများကို ပြသပါ။",
   "settings.general.row.newInterface.title": "အပြင်အဆင်အသစ်",
   "settings.general.row.newInterface.badge": "အသစ်",
   "settings.general.row.newInterface.description":
     "တက်ဘ်အသစ်များနှင့် အိမ်အပြင်အဆင်ကို အသုံးပြုပါ။ အပြင်အဆင်များကြားတွင် အချိန်အကန့်အသတ်ဖြင့် ပြောင်းပါ။",
-  "settings.general.row.newInterfaceNotice.title": "သင်သည် ယခုအခါ အပြင်အဆင်အသစ်ကို အသုံးပြုနေပါသည်။",
-  "settings.general.row.newInterfaceNotice.description": "ယခင်အပြင်အဆင်ကို မရနိုင်တော့ပါ။",
+  "settings.general.row.newInterfaceNotice.title":
+    "သင်သည် ယခုအခါ အပြင်အဆင်အသစ်ကို အသုံးပြုနေပါသည်။",
+  "settings.general.row.newInterfaceNotice.description":
+    "ယခင်အပြင်အဆင်ကို မရနိုင်တော့ပါ။",
   "settings.general.row.newInterfaceNotice.dismiss": "ပယ်ရန်",
   "settings.general.row.pinchZoom.title": "ဇူးမ်ချဲ့ရန် ဖိပါ။",
   "settings.general.row.pinchZoom.description":
     "ဇူးမ်လုပ်ရန် trackpad pinch နှင့် Ctrl-scroll gestures ကို ခွင့်ပြုပါ။",
   "settings.general.row.wayland.title": "ဇာတိ Wayland ကို သုံးပါ။",
-  "settings.general.row.wayland.description": "Wayland ရှိ X11 လှည့်ကွက်ကို ပိတ်ပါ။ ပြန်လည်စတင်ရန် လိုအပ်သည်။",
+  "settings.general.row.wayland.description":
+    "Wayland ရှိ X11 လှည့်ကွက်ကို ပိတ်ပါ။ ပြန်လည်စတင်ရန် လိုအပ်သည်။",
   "settings.general.row.wayland.tooltip":
     "Linux တွင် ရောစပ်ထားသော refresh-rate မော်နီတာများနှင့်အတူ၊ မူရင်း Wayland သည် ပိုမိုတည်ငြိမ်နိုင်သည်။",
   "settings.general.row.releaseNotes.title": "ထုတ်ဝေမှုမှတ်စုများ",
-  "settings.general.row.releaseNotes.description": "အပ်ဒိတ်များပြီးနောက် ပေါ့ပ်အပ်အသစ်များကို ပြပါ။",
+  "settings.general.row.releaseNotes.description":
+    "အပ်ဒိတ်များပြီးနောက် ပေါ့ပ်အပ်အသစ်များကို ပြပါ။",
   "settings.updates.row.startup.title": "စတင်ခြင်းတွင် အပ်ဒိတ်များကို စစ်ဆေးပါ။",
-  "settings.updates.row.startup.description": "OpenCode စတင်သည့်အခါ အပ်ဒိတ်များအတွက် အလိုအလျောက်စစ်ဆေးပါ။",
+  "settings.updates.row.startup.description":
+    "OpenCode စတင်သည့်အခါ အပ်ဒိတ်များအတွက် အလိုအလျောက်စစ်ဆေးပါ။",
   "settings.updates.row.check.title": "အပ်ဒိတ်များအတွက် စစ်ဆေးပါ။",
-  "settings.updates.row.check.description": "အပ်ဒိတ်များအတွက် ကိုယ်တိုင်စစ်ဆေးပြီး ရနိုင်လျှင် ထည့်သွင်းပါ။",
+  "settings.updates.row.check.description":
+    "အပ်ဒိတ်များအတွက် ကိုယ်တိုင်စစ်ဆေးပြီး ရနိုင်လျှင် ထည့်သွင်းပါ။",
   "settings.updates.action.checkNow": "ယခုစစ်ဆေးပါ။",
   "settings.updates.action.checking": "စစ်ဆေးနေသည်...",
   "settings.updates.action.downloading": "ဒေါင်းလုဒ်လုပ်နေသည်...",
   "settings.updates.action.installing": "ထည့်သွင်းနေသည်...",
   "settings.updates.toast.latest.title": "သင်သည် ခေတ်မီနေပါသည်။",
-  "settings.updates.toast.latest.description": "သင်သည် OpenCode ၏ နောက်ဆုံးဗားရှင်းကို အသုံးပြုနေပါသည်။",
+  "settings.updates.toast.latest.description":
+    "သင်သည် OpenCode ၏ နောက်ဆုံးဗားရှင်းကို အသုံးပြုနေပါသည်။",
   "sound.option.none": "မရှိပါ။",
   "sound.option.alert01": "သတိပေးချက် ၀၁",
   "sound.option.alert02": "သတိပေးချက် ၀၂",
@@ -1073,22 +1166,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "အေးဂျင့် ပြီးသွားသောအခါ သို့မဟုတ် သတိထားရန် လိုအပ်သည့်အခါ စနစ်သတိပေးချက်ကို ပြပါ။",
   "settings.general.notifications.permissions.title": "ခွင့်ပြုချက်များ",
-  "settings.general.notifications.permissions.description": "ခွင့်ပြုချက်လိုအပ်သည့်အခါ စနစ်သတိပေးချက်ကို ပြပါ။",
+  "settings.general.notifications.permissions.description":
+    "ခွင့်ပြုချက်လိုအပ်သည့်အခါ စနစ်သတိပေးချက်ကို ပြပါ။",
   "settings.general.notifications.errors.title": "အမှားများ",
-  "settings.general.notifications.errors.description": "အမှားအယွင်းတစ်ခုဖြစ်ပေါ်သည့်အခါ စနစ်သတိပေးချက်ကို ပြသပါ။",
+  "settings.general.notifications.errors.description":
+    "အမှားအယွင်းတစ်ခုဖြစ်ပေါ်သည့်အခါ စနစ်သတိပေးချက်ကို ပြသပါ။",
   "settings.general.sounds.agent.title": "အေးဂျင့်",
   "settings.general.sounds.agent.description":
     "အေးဂျင့်ပြီးသွားသောအခါ သို့မဟုတ် အာရုံစူးစိုက်မှုလိုအပ်သည့်အခါ အသံဖွင့်ပါ။",
   "settings.general.sounds.permissions.title": "ခွင့်ပြုချက်များ",
   "settings.general.sounds.permissions.description": "ခွင့်ပြုချက်လိုအပ်သည့်အခါ အသံဖွင့်ပါ။",
   "settings.general.sounds.errors.title": "အမှားများ",
-  "settings.general.sounds.errors.description": "အမှားအယွင်းတစ်ခုဖြစ်ပေါ်သောအခါ အသံဖွင့်ပါ။",
+  "settings.general.sounds.errors.description":
+    "အမှားအယွင်းတစ်ခုဖြစ်ပေါ်သောအခါ အသံဖွင့်ပါ။",
   "settings.shortcuts.title": "ကီးဘုတ်ဖြတ်လမ်းများ",
   "settings.shortcuts.reset.button": "မူရင်းအတိုင်း ပြန်လည်သတ်မှတ်ပါ။",
   "settings.shortcuts.reset.toast.title": "ဖြတ်လမ်းလင့်ခ်များကို ပြန်လည်သတ်မှတ်သည်။",
-  "settings.shortcuts.reset.toast.description": "ကီးဘုတ်ဖြတ်လမ်းများကို မူရင်းအတိုင်း ပြန်လည်သတ်မှတ်ထားသည်။",
+  "settings.shortcuts.reset.toast.description":
+    "ကီးဘုတ်ဖြတ်လမ်းများကို မူရင်းအတိုင်း ပြန်လည်သတ်မှတ်ထားသည်။",
   "settings.shortcuts.conflict.title": "ဖြတ်လမ်းလင့်ခ်ကို အသုံးပြုပြီးဖြစ်သည်။",
-  "settings.shortcuts.conflict.description": "{{keybind}} ကို {{titles}} တွင် တာဝန်ပေးထားပြီးဖြစ်သည်။",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ကို {{titles}} တွင် တာဝန်ပေးထားပြီးဖြစ်သည်။",
   "settings.shortcuts.unassigned": "တာဝန်မယူထား",
   "settings.shortcuts.pressKeys": "ခလုတ်များကို နှိပ်ပါ။",
   "settings.shortcuts.search.placeholder": "ရှာရန် ဖြတ်လမ်းများ",
@@ -1100,12 +1198,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "အချက်ပြပါ။",
   "settings.providers.title": "ဝန်ဆောင်မှုပေးသူများ",
-  "settings.providers.description": "ဝန်ဆောင်မှုပေးသူ ဆက်တင်များကို ဤနေရာတွင် ပြင်ဆင်သတ်မှတ်နိုင်ပါမည်။",
+  "settings.providers.description":
+    "ဝန်ဆောင်မှုပေးသူ ဆက်တင်များကို ဤနေရာတွင် ပြင်ဆင်သတ်မှတ်နိုင်ပါမည်။",
   "settings.providers.section.connected": "ချိတ်ဆက်ထားသော ဝန်ဆောင်မှုပေးသူများ",
   "settings.providers.connected.empty": "ချိတ်ဆက်ပေးသူ မရှိပါ။",
-  "settings.providers.connected.environmentDescription": "သင့်ပတ်ဝန်းကျင် ကိန်းရှင်များမှ ချိတ်ဆက်ထားသည်။",
+  "settings.providers.connected.environmentDescription":
+    "သင့်ပတ်ဝန်းကျင် ကိန်းရှင်များမှ ချိတ်ဆက်ထားသည်။",
   "settings.providers.section.popular": "လူကြိုက်များသော ဝန်ဆောင်မှုပေးသူများ",
-  "settings.providers.custom.description": "အခြေခံ URL ဖြင့် OpenAI-သဟဇာတ ပံ့ပိုးပေးသူကို ထည့်ပါ။",
+  "settings.providers.custom.description":
+    "အခြေခံ URL ဖြင့် OpenAI-သဟဇာတ ပံ့ပိုးပေးသူကို ထည့်ပါ။",
   "settings.providers.tag.environment": "ပတ်ဝန်းကျင်",
   "settings.providers.tag.config": "ပြင်ဆင်မှု",
   "settings.providers.tag.custom": "စိတ်ကြိုက်",
@@ -1119,23 +1220,29 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP ဆက်တင်များကို ဤနေရာတွင် ပြင်ဆင်သတ်မှတ်နိုင်ပါသည်။",
   "settings.permissions.title": "ခွင့်ပြုချက်များ",
-  "settings.permissions.description": "မူရင်းအတိုင်း ဆာဗာအသုံးပြုနိုင်သည့် ကိရိယာများကို ထိန်းချုပ်ပါ။",
+  "settings.permissions.description":
+    "မူရင်းအတိုင်း ဆာဗာအသုံးပြုနိုင်သည့် ကိရိယာများကို ထိန်းချုပ်ပါ။",
   "settings.permissions.section.tools": "ကိရိယာများ",
-  "settings.permissions.toast.updateFailed.title": "ခွင့်ပြုချက်များကို အပ်ဒိတ်လုပ်ရန် မအောင်မြင်ပါ။",
+  "settings.permissions.toast.updateFailed.title":
+    "ခွင့်ပြုချက်များကို အပ်ဒိတ်လုပ်ရန် မအောင်မြင်ပါ။",
   "settings.permissions.action.allow": "ခွင့်ပြုပါ။",
   "settings.permissions.action.ask": "မေး",
   "settings.permissions.action.deny": "ငြင်းဆို",
   "settings.permissions.tool.read.title": "ဖတ်ပါ။",
-  "settings.permissions.tool.read.description": "ဖိုင်တစ်ခုဖတ်ခြင်း (ဖိုင်လမ်းကြောင်းနှင့် ကိုက်ညီသည်)",
+  "settings.permissions.tool.read.description":
+    "ဖိုင်တစ်ခုဖတ်ခြင်း (ဖိုင်လမ်းကြောင်းနှင့် ကိုက်ညီသည်)",
   "settings.permissions.tool.edit.title": "တည်းဖြတ်ပါ။",
   "settings.permissions.tool.edit.description":
     "တည်းဖြတ်မှုများ၊ ရေးသားမှုများနှင့် ဖာထေးမှုများအပါအဝင် ဖိုင်များကို မွမ်းမံပါ။",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "glob ပုံစံများကို အသုံးပြု၍ ဖိုင်များကို ယှဉ်တွဲပါ။",
+  "settings.permissions.tool.glob.description":
+    "glob ပုံစံများကို အသုံးပြု၍ ဖိုင်များကို ယှဉ်တွဲပါ။",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "ပုံမှန်အသုံးအနှုန်းများဖြင့် ဖိုင်အကြောင်းအရာများကို ရှာဖွေပါ။",
+  "settings.permissions.tool.grep.description":
+    "ပုံမှန်အသုံးအနှုန်းများဖြင့် ဖိုင်အကြောင်းအရာများကို ရှာဖွေပါ။",
   "settings.permissions.tool.list.title": "စာရင်း",
-  "settings.permissions.tool.list.description": "လမ်းညွှန်တစ်ခုအတွင်း ဖိုင်များကို စာရင်းပြုစုပါ။",
+  "settings.permissions.tool.list.description":
+    "လမ်းညွှန်တစ်ခုအတွင်း ဖိုင်များကို စာရင်းပြုစုပါ။",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "shell command များကို လုပ်ဆောင်ပါ။",
   "settings.permissions.tool.task.title": "လုပ်ဆောင်စရာ",
@@ -1143,15 +1250,18 @@ export const dict = {
   "settings.permissions.tool.skill.title": "ကျွမ်းကျင်မှု",
   "settings.permissions.tool.skill.description": "အမည်ဖြင့် ကျွမ်းကျင်မှုတစ်ခုကို တင်ပါ။",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "ဘာသာစကားဆာဗာ မေးမြန်းချက်များကို လုပ်ဆောင်ပါ။",
+  "settings.permissions.tool.lsp.description":
+    "ဘာသာစကားဆာဗာ မေးမြန်းချက်များကို လုပ်ဆောင်ပါ။",
   "settings.permissions.tool.todowrite.title": "Todo ရေးပါ။",
   "settings.permissions.tool.todowrite.description": "လုပ်စရာစာရင်းကို အပ်ဒိတ်လုပ်ပါ။",
   "settings.permissions.tool.webfetch.title": "ဝဘ်ထုတ်ယူမှု",
-  "settings.permissions.tool.webfetch.description": "URL တစ်ခုမှ အကြောင်းအရာကို ရယူပါ။",
+  "settings.permissions.tool.webfetch.description":
+    "URL တစ်ခုမှ အကြောင်းအရာကို ရယူပါ။",
   "settings.permissions.tool.websearch.title": "ဝဘ်ရှာဖွေမှု",
   "settings.permissions.tool.websearch.description": "ဝဘ်ကို ရှာပါ။",
   "settings.permissions.tool.external_directory.title": "ပြင်ပလမ်းညွှန်",
-  "settings.permissions.tool.external_directory.description": "ပရောဂျက်လမ်းညွှန်မှ ဖိုင်များကို ဝင်ရောက်ကြည့်ရှုပါ။",
+  "settings.permissions.tool.external_directory.description":
+    "ပရောဂျက်လမ်းညွှန်မှ ဖိုင်များကို ဝင်ရောက်ကြည့်ရှုပါ။",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
   "settings.permissions.tool.doom_loop.description":
     "တူညီသောထည့်သွင်းမှုဖြင့် ထပ်ခါတလဲလဲ ကိရိယာခေါ်ဆိုမှုများကို ရှာဖွေပါ။",

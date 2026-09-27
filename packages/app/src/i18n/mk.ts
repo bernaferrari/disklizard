@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Споделете повратни информации",
   "desktop.menu.reportBug": "Пријавете бубачка",
   "desktop.menu.ariaLabel": "OpenCode мени",
-  "desktop.updater.dialog.checkFailed.message": "Проверката за ажурирање не успеа.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Проверката за ажурирање не успеа.",
   "desktop.updater.dialog.checkFailed.title": "Грешка во ажурирањето",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Ажуриран си.",
   "desktop.updater.dialog.upToDate.title": "Нема ажурирања",
-  "desktop.updater.dialog.ready.message": "Преземено е ажурирањето {{version}}. Да се ​​рестартира сега?",
+  "desktop.updater.dialog.ready.message":
+    "Преземено е ажурирањето {{version}}. Да се ​​рестартира сега?",
   "desktop.updater.dialog.ready.title": "Подготвено за ажурирање",
   "desktop.updater.dialog.restart": "Рестартирајте",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +67,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode не реагира",
   "desktop.recovery.unresponsive.detail":
     "Може да ја рестартирате апликацијата, да ги отворите дневниците или да продолжите да чекате.",
-  "desktop.recovery.loadFailed.detail": "Прозорец: {{window}}\nURL: {{url}}\nГрешка: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Прозорец: {{window}}\nПричина: {{reason}}\nШифра: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Прозорец: {{window}}\nURL: {{url}}\nГрешка: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Прозорец: {{window}}\nПричина: {{reason}}\nШифра: {{code}}",
   "desktop.recovery.unknown": "<непознато>",
   "desktop.dialog.chooseFolder": "Изберете папка",
   "desktop.dialog.chooseFile": "Изберете датотека",
@@ -74,27 +79,38 @@ export const dict = {
   "desktop.server.local": "Локален сервер",
   "desktop.wsl.error.windowsOnly": "WSL е достапна само на Windows",
   "desktop.wsl.error.unavailable": "WSL е недостапен",
-  "desktop.wsl.error.listInstalled": "Не успеа да се наведат инсталираните WSL дистрибуции",
-  "desktop.wsl.error.listOnline": "Не успеа да се наведат онлајн дистрибуции WSL",
-  "desktop.wsl.error.executeDistro": "Не може да се извршат команди во дистрибуција",
+  "desktop.wsl.error.listInstalled":
+    "Не успеа да се наведат инсталираните WSL дистрибуции",
+  "desktop.wsl.error.listOnline":
+    "Не успеа да се наведат онлајн дистрибуции WSL",
+  "desktop.wsl.error.executeDistro":
+    "Не може да се извршат команди во дистрибуција",
   "desktop.wsl.error.installWsl": "инсталацијата WSL не успеа",
-  "desktop.wsl.error.installDistro": "Не успеа да се инсталира дистрибуцијата: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Не успеа да се инсталира дистрибуцијата: {{distro}}",
   "desktop.wsl.error.installOpencode": "инсталацијата OpenCode не успеа",
   "desktop.wsl.error.alreadyAdded": "{{distro}} е веќе додаден",
-  "desktop.wsl.error.opencodeMissing": "opencode не е инсталиран во оваа дистрибуција",
-  "desktop.wsl.error.opencodeCannotRun": "opencode е инсталиран, но не може да се изврши",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode не е инсталиран во {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode не е инсталиран во оваа дистрибуција",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode е инсталиран, но не може да се изврши",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode не е инсталиран во {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode ажурирањето е завршено, но {{distro}} сè уште известува {{installed}}; се очекува {{expected}}",
   "desktop.wsl.error.noVersion": "нема верзија",
-  "desktop.wsl.error.serverExited": "WSL серверот излезе по стартувањето (код={{code}} сигнал={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL серверот излезе по стартувањето (код={{code}} сигнал={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL серверот излезе пред да стане здрав (шифра={{code}} сигнал={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Страничната кола за {{distro}} здравствена проверка истече по {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} истече по {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Страничната кола за {{distro}} здравствена проверка истече по {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} истече по {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Не успеа да се добие порта",
   "desktop.picker.error.notSelected": "Датотеката не беше избрана од избирачот",
-  "desktop.picker.error.sizeLimit": "Избраните прилози ја надминуваат границата {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Избраните прилози ја надминуваат границата {{limit}} MB",
   "command.category.suggested": "Предложено",
   "command.category.view": "Прикажи",
   "command.category.project": "Проект",
@@ -141,7 +157,8 @@ export const dict = {
   "command.tab.close": "Затвори ја картичката",
   "command.tab.reopenClosed": "Повторно отворете го затворениот таб",
   "command.context.addSelection": "Додадете избор во контекст",
-  "command.context.addSelection.description": "Додадете избрани линии од тековната датотека",
+  "command.context.addSelection.description":
+    "Додадете избрани линии од тековната датотека",
   "command.input.focus": "Фокусирајте го влезот",
   "command.terminal.toggle": "Вклучете го терминалот",
   "command.fileTree.toggle": "Вклучете го дрвото на датотеки",
@@ -149,9 +166,11 @@ export const dict = {
   "command.terminal.new": "Нов терминал",
   "command.terminal.new.description": "Направете нова картичка за терминал",
   "command.steps.toggle": "Вклучете ги чекорите",
-  "command.steps.toggle.description": "Прикажи или скриј чекори за тековната порака",
+  "command.steps.toggle.description":
+    "Прикажи или скриј чекори за тековната порака",
   "command.message.previous": "Претходна порака",
-  "command.message.previous.description": "Одете на претходната корисничка порака",
+  "command.message.previous.description":
+    "Одете на претходната корисничка порака",
   "command.message.next": "Следна порака",
   "command.message.next.description": "Одете на следната корисничка порака",
   "command.model.choose": "Изберете модел",
@@ -161,29 +180,39 @@ export const dict = {
   "command.agent.cycle": "Циклус агент",
   "command.agent.cycle.description": "Префрлете се на следниот агент",
   "command.agent.cycle.reverse": "Циклирајте го агентот наназад",
-  "command.agent.cycle.reverse.description": "Префрлете се на претходниот агент",
+  "command.agent.cycle.reverse.description":
+    "Префрлете се на претходниот агент",
   "command.model.variant.cycle": "Циклус напор за размислување",
-  "command.model.variant.cycle.description": "Префрлете се на следното ниво на напор",
+  "command.model.variant.cycle.description":
+    "Префрлете се на следното ниво на напор",
   "command.prompt.mode.shell": "Школка",
   "command.prompt.mode.normal": "Прашај",
   "command.permissions.autoaccept.enable": "Автоматско прифаќање дозволи",
-  "command.permissions.autoaccept.disable": "Стоп за автоматско прифаќање дозволи",
+  "command.permissions.autoaccept.disable":
+    "Стоп за автоматско прифаќање дозволи",
   "command.workspace.toggle": "Вклучете работни простори",
-  "command.workspace.toggle.description": "Овозможете или оневозможете повеќе работни простори во страничната лента",
+  "command.workspace.toggle.description":
+    "Овозможете или оневозможете повеќе работни простори во страничната лента",
   "command.session.undo": "Врати",
   "command.session.undo.description": "Вратете ја последната порака",
   "command.session.redo": "Повторете",
-  "command.session.redo.description": "Повторете ја последната отповикана порака",
+  "command.session.redo.description":
+    "Повторете ја последната отповикана порака",
   "command.session.compact": "Компактна сесија",
-  "command.session.compact.description": "Сумирајте ја сесијата за да ја намалите големината на контекстот",
+  "command.session.compact.description":
+    "Сумирајте ја сесијата за да ја намалите големината на контекстот",
   "command.session.fork": "Разгранување од порака",
-  "command.session.fork.description": "Креирајте нова сесија од претходната порака",
+  "command.session.fork.description":
+    "Креирајте нова сесија од претходната порака",
   "command.session.share": "Споделете сесија",
-  "command.session.share.description": "Споделете ја оваа сесија и копирајте го URL во таблата со исечоци",
+  "command.session.share.description":
+    "Споделете ја оваа сесија и копирајте го URL во таблата со исечоци",
   "command.session.unshare": "Откажете ја сесијата за споделување",
-  "command.session.unshare.description": "Престанете да ја споделувате оваа сесија",
+  "command.session.unshare.description":
+    "Престанете да ја споделувате оваа сесија",
   "command.session.export": "Сесија за извоз",
-  "command.session.export.description": "Извезете го целосниот препис на сесијата како JSON",
+  "command.session.export.description":
+    "Извезете го целосниот препис на сесијата како JSON",
   "palette.search.placeholder": "Пребарувајте датотеки, команди и сесии",
   "palette.search.placeholder.home": "Барај команди и сесии",
   "palette.empty": "Не се пронајдени резултати",
@@ -195,28 +224,39 @@ export const dict = {
   "dialog.provider.group.other": "Друго",
   "dialog.provider.custom.label": "Прилагодено OpenAI-компатибилен провајдер",
   "dialog.provider.tag.recommended": "Препорачано",
-  "dialog.provider.opencode.note": "Курирани модели вклучувајќи Claude, GPT, Gemini и повеќе",
+  "dialog.provider.opencode.note":
+    "Курирани модели вклучувајќи Claude, GPT, Gemini и повеќе",
   "dialog.provider.opencode.tagline": "Сигурни оптимизирани модели",
   "dialog.provider.opencodeGo.tagline": "Ниска цена претплата за секого",
-  "dialog.provider.anthropic.note": "Директен пристап до Claude модели, вклучувајќи ги Pro и Max",
-  "dialog.provider.copilot.note": "Модели со вештачка интелигенција за помош за кодирање преку GitHub Copilot",
-  "dialog.provider.openai.note": "GPT модели за брзи, способни општи задачи со вештачка интелигенција",
-  "dialog.provider.google.note": "Gemini модели за брзи, структурирани одговори",
-  "dialog.provider.openrouter.note": "Пристапете до сите поддржани модели од еден провајдер",
-  "dialog.provider.vercel.note": "Унифициран пристап до модели со вештачка интелигенција со паметно рутирање",
+  "dialog.provider.anthropic.note":
+    "Директен пристап до Claude модели, вклучувајќи ги Pro и Max",
+  "dialog.provider.copilot.note":
+    "Модели со вештачка интелигенција за помош за кодирање преку GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT модели за брзи, способни општи задачи со вештачка интелигенција",
+  "dialog.provider.google.note":
+    "Gemini модели за брзи, структурирани одговори",
+  "dialog.provider.openrouter.note":
+    "Пристапете до сите поддржани модели од еден провајдер",
+  "dialog.provider.vercel.note":
+    "Унифициран пристап до модели со вештачка интелигенција со паметно рутирање",
   "dialog.model.select.title": "Изберете модел",
   "dialog.model.search.placeholder": "Пребарајте модели",
   "dialog.model.empty": "Нема резултати од моделот",
   "dialog.model.manage": "Управувајте со моделите",
-  "dialog.model.manage.description": "Прилагодете кои модели се појавуваат во избирачот на модели.",
+  "dialog.model.manage.description":
+    "Прилагодете кои модели се појавуваат во избирачот на модели.",
   "dialog.model.manage.provider.toggle": "Вклучете ги сите {{provider}} модели",
-  "dialog.model.unpaid.freeModels.title": "Бесплатни модели обезбедени од OpenCode",
-  "dialog.model.unpaid.addMore.title": "Додадете повеќе модели од популарни провајдери",
+  "dialog.model.unpaid.freeModels.title":
+    "Бесплатни модели обезбедени од OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Додадете повеќе модели од популарни провајдери",
   "dialog.model.unpaid.viewMoreProviders": "Видете повеќе од 70 провајдери",
   "dialog.provider.viewAll": "Прикажи повеќе провајдери",
   "provider.connect.title": "Поврзете се {{provider}}",
   "provider.connect.title.anthropicProMax": "Најавете се со Claude Pro/Max",
-  "provider.connect.selectMethod": "Изберете метод за најавување за {{provider}}.",
+  "provider.connect.selectMethod":
+    "Изберете метод за најавување за {{provider}}.",
   "provider.connect.method.apiKey": "клуч API",
   "provider.connect.method.browser": "Прелистувач",
   "provider.connect.method.headless": "Без глава",
@@ -234,7 +274,8 @@ export const dict = {
     "Со еден клуч API ќе добиете пристап до модели како што се Claude, GPT, Gemini, GLM и повеќе.",
   "provider.connect.opencodeZen.visit.prefix": "Посетете",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": "да го соберете вашиот клуч API.",
+  "provider.connect.opencodeZen.visit.suffix":
+    "да го соберете вашиот клуч API.",
   "provider.connect.oauth.code.visit.prefix": "Посетете",
   "provider.connect.oauth.code.visit.link": "оваа врска",
   "provider.connect.oauth.code.visit.suffix":
@@ -249,17 +290,23 @@ export const dict = {
     "и внесете го кодот подолу за да ја поврзете вашата сметка и да користите {{provider}} модели во OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Код за потврда",
   "provider.connect.toast.connected.title": "{{provider}} поврзан",
-  "provider.connect.toast.connected.description": "Моделите {{provider}} сега се достапни за употреба.",
+  "provider.connect.toast.connected.description":
+    "Моделите {{provider}} сега се достапни за употреба.",
   "provider.custom.title": "Прилагоден провајдер",
-  "provider.custom.unavailable": "Прилагодените провајдери се недостапни на овој сервер",
-  "provider.custom.description.prefix": "Конфигурирајте OpenAI-компатибилен провајдер. Видете го",
-  "provider.custom.description.link": "документи за конфигурација на провајдерот",
+  "provider.custom.unavailable":
+    "Прилагодените провајдери се недостапни на овој сервер",
+  "provider.custom.description.prefix":
+    "Конфигурирајте OpenAI-компатибилен провајдер. Видете го",
+  "provider.custom.description.link":
+    "документи за конфигурација на провајдерот",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ИД на провајдер",
   "provider.custom.field.providerID.placeholder": "мојот провајдер",
-  "provider.custom.field.providerID.description": "Мали букви, бројки, цртички или долни црти",
+  "provider.custom.field.providerID.description":
+    "Мали букви, бројки, цртички или долни црти",
   "provider.custom.field.name.label": "Прикажано име",
-  "provider.custom.field.name.placeholder": "Мојот провајдер со вештачка интелигенција",
+  "provider.custom.field.name.placeholder":
+    "Мојот провајдер со вештачка интелигенција",
   "provider.custom.field.baseURL.label": "База URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "клуч API",
@@ -280,16 +327,20 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "вредност",
   "provider.custom.headers.remove": "Отстранете го заглавието",
   "provider.custom.headers.add": "Додадете заглавие",
-  "provider.custom.error.providerID.required": "Потребна е идентификација на провајдер",
-  "provider.custom.error.providerID.format": "Користете мали букви, бројки, цртички или долни црти",
+  "provider.custom.error.providerID.required":
+    "Потребна е идентификација на провајдер",
+  "provider.custom.error.providerID.format":
+    "Користете мали букви, бројки, цртички или долни црти",
   "provider.custom.error.providerID.exists": "ИД на провајдер веќе постои",
   "provider.custom.error.name.required": "Потребно е име за прикажување",
   "provider.custom.error.baseURL.required": "Потребна е основа URL",
-  "provider.custom.error.baseURL.format": "Мора да започне со http:// или https://",
+  "provider.custom.error.baseURL.format":
+    "Мора да започне со http:// или https://",
   "provider.custom.error.required": "Задолжително",
   "provider.custom.error.duplicate": "Дупликат",
   "provider.disconnect.toast.disconnected.title": "{{provider}} исклучен",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} моделите веќе не се достапни.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} моделите веќе не се достапни.",
   "model.tag.free": "Бесплатно",
   "model.tag.latest": "Најнови",
   "model.provider.anthropic": "Anthropic",
@@ -335,7 +386,8 @@ export const dict = {
   "prompt.mode.shell": "Школка",
   "prompt.mode.normal": "Прашај",
   "prompt.mode.shell.exit": "esc за излез",
-  "session.child.promptDisabled": "Сесиите на субагентите не можат да бидат поттикнати.",
+  "session.child.promptDisabled":
+    "Сесиите на субагентите не можат да бидат поттикнати.",
   "session.child.backToParent": "Назад на главната сесија.",
   "prompt.example.1": "Поправете TODO во базата на кодови",
   "prompt.example.2": "Кој е технолошкиот куп на овој проект?",
@@ -361,7 +413,8 @@ export const dict = {
   "prompt.example.22": "Спроведување на кеширање за оваа крајна точка",
   "prompt.example.23": "Додајте страници на оваа листа",
   "prompt.example.24": "Направете CLI команда за...",
-  "prompt.example.25": "Како функционираат променливите на животната средина овде?",
+  "prompt.example.25":
+    "Како функционираат променливите на животната средина овде?",
   "prompt.popover.emptyResults": "Нема соодветни резултати",
   "prompt.popover.emptyCommands": "Нема соодветни команди",
   "prompt.dropzone.label": "Оставете слики, PDFs или текстуални датотеки овде",
@@ -371,7 +424,8 @@ export const dict = {
   "prompt.slash.badge.mcp": "mcp",
   "prompt.context.active": "активни",
   "prompt.context.includeActiveFile": "Вклучете активна датотека",
-  "prompt.context.removeActiveFile": "Отстранете ја активната датотека од контекст",
+  "prompt.context.removeActiveFile":
+    "Отстранете ја активната датотека од контекст",
   "prompt.context.removeFile": "Отстранете ја датотеката од контекст",
   "prompt.action.attachFile": "Додадете датотеки",
   "prompt.menu.addImagesAndFiles": "Додадете датотеки и повеќе",
@@ -383,11 +437,14 @@ export const dict = {
   "prompt.action.send": "Испрати",
   "prompt.action.stop": "Стоп",
   "prompt.toast.pasteUnsupported.title": "Неподдржан прилог",
-  "prompt.toast.pasteUnsupported.description": "Овде може да се прикачат само слики, PDFs или текстуални датотеки.",
+  "prompt.toast.pasteUnsupported.description":
+    "Овде може да се прикачат само слики, PDFs или текстуални датотеки.",
   "prompt.toast.attachmentDuplicate.title": "Оваа датотека е веќе поставена",
   "prompt.toast.modelAgentRequired.title": "Изберете агент и модел",
-  "prompt.toast.modelAgentRequired.description": "Изберете агент и модел пред да испратите известување.",
-  "prompt.toast.worktreeCreateFailed.title": "Не успеа да се создаде работно дрво",
+  "prompt.toast.modelAgentRequired.description":
+    "Изберете агент и модел пред да испратите известување.",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Не успеа да се создаде работно дрво",
   "prompt.toast.sessionCreateFailed.title": "Не успеа да се создаде сесија",
   "prompt.toast.shellSendFailed.title": "Не успеа да се испрати школка команда",
   "prompt.toast.commandSendFailed.title": "Не успеа да се испрати командата",
@@ -415,7 +472,8 @@ export const dict = {
   "app.server.retrying": "Автоматски се обидува повторно...",
   "app.server.otherServers": "Други сервери",
   "dialog.server.title": "Сервери",
-  "dialog.server.description": "Променете на кој OpenCode сервер се поврзува оваа апликација.",
+  "dialog.server.description":
+    "Променете на кој OpenCode сервер се поврзува оваа апликација.",
   "dialog.server.search.placeholder": "Пребарувајте сервери",
   "dialog.server.empty": "Сè уште нема сервери",
   "dialog.server.add.title": "Додај сервер",
@@ -453,7 +511,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Изберете дистрибуција",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Се проверува WSL...",
-  "wsl.onboarding.restartRequired": "На Windows му треба рестартирање за да заврши инсталирањето на WSL.",
+  "wsl.onboarding.restartRequired":
+    "На Windows му треба рестартирање за да заврши инсталирањето на WSL.",
   "wsl.onboarding.ready": "WSL е подготвен.",
   "wsl.onboarding.required": "WSL е потребно за да продолжите.",
   "wsl.onboarding.checkingDistros": "Се проверуваат дистрибуциите...",
@@ -462,9 +521,12 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Дистрибуирање на огласи...",
   "wsl.onboarding.distroReady": "{{distro}} е подготвен.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} сè уште не е инсталиран.",
-  "wsl.onboarding.openDistroOnce": "Отворете {{distro}} еднаш за да го завршите поставувањето.",
-  "wsl.onboarding.finishingDistro": "Завршување на поставувањето за {{distro}}.",
-  "wsl.onboarding.pickDistro": "Изберете дистрибуција или инсталирајте една подолу.",
+  "wsl.onboarding.openDistroOnce":
+    "Отворете {{distro}} еднаш за да го завршите поставувањето.",
+  "wsl.onboarding.finishingDistro":
+    "Завршување на поставувањето за {{distro}}.",
+  "wsl.onboarding.pickDistro":
+    "Изберете дистрибуција или инсталирајте една подолу.",
   "wsl.onboarding.checkingOpencode": "Се проверува OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Се проверува OpenCode во {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Се ажурира OpenCode...",
@@ -486,47 +548,55 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Недостасува bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Неподдржано · Користете WSL 2",
   "wsl.onboarding.needAnotherDistro": "Ви треба уште една дистрибуција?",
-  "wsl.onboarding.needAnotherDistroHint": "Инсталирајте Linux дистрибуција од каталогот WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Инсталирајте Linux дистрибуција од каталогот WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL не е инсталиран",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) е потребно пред OpenCode да може да додаде WSL сервер",
   "wsl.onboarding.wslUnavailable.title": "WSL недостапен",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode не можеше да го потврди WSL на оваа машина.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode не можеше да го потврди WSL на оваа машина.",
   "wsl.onboarding.installWsl": "Инсталирај WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Рестартирајте го Windows за да завршите со инсталирањето WSL, а потоа повторно отворете OpenCode.",
   "wsl.onboarding.next": "Следно",
   "wsl.onboarding.refresh": "Освежи",
-  "wsl.onboarding.allDistrosAdded": "Сите инсталирани дистрибуции се веќе додадени.",
+  "wsl.onboarding.allDistrosAdded":
+    "Сите инсталирани дистрибуции се веќе додадени.",
   "wsl.onboarding.noDistros": "Сè уште не се откриени дистрибуции.",
   "wsl.onboarding.install": "Инсталирајте",
   "wsl.onboarding.installing": "Се инсталира...",
   "wsl.onboarding.installDistro": "Инсталирајте distro",
   "wsl.onboarding.searchDistros": "Пребарувајте дистрибуции",
   "wsl.onboarding.wsl2Required": "WSL 2 е потребно.",
-  "wsl.onboarding.toolsRequired": "Оваа дистрибуција има потреба од bash и curl.",
+  "wsl.onboarding.toolsRequired":
+    "Оваа дистрибуција има потреба од bash и curl.",
   "wsl.onboarding.openTerminal": "Отворете го терминалот",
   "wsl.onboarding.path": "Патека: {{path}}",
   "wsl.onboarding.notFound": "не е пронајден",
   "wsl.onboarding.version": "Верзија: {{version}}",
   "wsl.onboarding.unknown": "непознат",
   "wsl.onboarding.desktopVersion": "работна површина {{version}}",
-  "wsl.onboarding.versionMismatch": "Инсталираната верзија не се совпаѓа со верзијата на апликацијата за десктоп.",
+  "wsl.onboarding.versionMismatch":
+    "Инсталираната верзија не се совпаѓа со верзијата на апликацијата за десктоп.",
   "wsl.onboarding.adding": "Се додава...",
   "help.tabs.toast.ariaLabel":
     "Ви ги претставуваме јазичињата. Организирајте ја вашата работа и активни сесии со јазичиња",
   "help.tabs.toast.dismiss": "Отфрли ги информациите за картичките",
   "help.tabs.title": "Ви ги претставуваме јазичињата",
-  "help.tabs.description": "Организирајте ја вашата работа и активни сесии со јазичиња",
+  "help.tabs.description":
+    "Организирајте ја вашата работа и активни сесии со јазичиња",
   "help.tabs.date": "14 јули",
-  "help.tabs.introduction": "OpenCode Desktop сега е изграден околу картичките.",
+  "help.tabs.introduction":
+    "OpenCode Desktop сега е изграден околу картичките.",
   "help.tabs.sessions":
     "Започнете нова сесија во картичка или отворете постоечка сесија од кој било од вашите проекти. Отворете нова картичка кога започнувате нешто ново и затворете ја кога ќе завршите.",
   "help.tabs.organize":
     "Одржувањето отворени неколку јазичиња го олеснува организирањето на вашите активни сесии. Преименувајте ги картичките во нешто незаборавно ако планирате да ги задржите наоколу.",
   "help.tabs.home":
     "Сите ваши сесии и проекти ќе ги најдете на новиот Почетен екран. Изборот на сесија ја отвора во таб.",
-  "help.tabs.persistence": "Кога повторно ќе ја отворите апликацијата, вашите картички се сè уште отворени.",
+  "help.tabs.persistence":
+    "Кога повторно ќе ја отворите апликацијата, вашите картички се сè уште отворени.",
   "help.tabs.worktrees":
     "Новиот дизајн сè уште не поддржува Git Worktrees, тој доаѓа наскоро. Значи, ако сакате да продолжите да го користите претходниот распоред, можете да се префрлате помеѓу распоредот во Поставки. Само имајте на ум дека новиот распоред ќе стане постојан за неколку недели.",
   "server.row.noUsername": "нема корисничко име",
@@ -538,8 +608,10 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Препорачано: 128x128px",
   "dialog.project.edit.color": "Боја",
   "dialog.project.edit.color.select": "Изберете {{color}} боја",
-  "dialog.project.edit.worktree.startup": "Скрипта за стартување на работен простор",
-  "dialog.project.edit.worktree.startup.description": "Работи по создавање на нов работен простор (работно дрво).",
+  "dialog.project.edit.worktree.startup":
+    "Скрипта за стартување на работен простор",
+  "dialog.project.edit.worktree.startup.description":
+    "Работи по создавање на нов работен простор (работно дрво).",
   "dialog.project.edit.worktree.startup.placeholder": "на пр. bun install",
   "dialog.releaseNotes.action.getStarted": "Започнете",
   "dialog.releaseNotes.action.next": "Следно",
@@ -600,49 +672,72 @@ export const dict = {
   "toast.theme.title": "Темата е сменета",
   "toast.scheme.title": "Шема на бои",
   "toast.workspace.enabled.title": "Работните простори се овозможени",
-  "toast.workspace.enabled.description": "Повеќе работни дрва сега се прикажани во страничната лента",
+  "toast.workspace.enabled.description":
+    "Повеќе работни дрва сега се прикажани во страничната лента",
   "toast.workspace.disabled.title": "Работните простори се оневозможени",
-  "toast.workspace.disabled.description": "Само главното работно дрво е прикажано во страничната лента",
+  "toast.workspace.disabled.description":
+    "Само главното работно дрво е прикажано во страничната лента",
   "toast.permissions.autoaccept.on.title": "Автоматско прифаќање дозволи",
-  "toast.permissions.autoaccept.on.description": "Барањата за дозвола ќе бидат автоматски одобрени",
-  "toast.permissions.autoaccept.off.title": "Го прекина автоматското прифаќање дозволи",
-  "toast.permissions.autoaccept.off.description": "Барањата за дозвола ќе бараат одобрување",
+  "toast.permissions.autoaccept.on.description":
+    "Барањата за дозвола ќе бидат автоматски одобрени",
+  "toast.permissions.autoaccept.off.title":
+    "Го прекина автоматското прифаќање дозволи",
+  "toast.permissions.autoaccept.off.description":
+    "Барањата за дозвола ќе бараат одобрување",
   "toast.model.none.title": "Не е избран модел",
-  "toast.model.none.description": "Поврзете провајдер за да ја сумира оваа сесија",
+  "toast.model.none.description":
+    "Поврзете провајдер за да ја сумира оваа сесија",
   "toast.file.loadFailed.title": "Не успеа да се вчита датотеката",
   "toast.file.listFailed.title": "Не успеа да се наведат датотеките",
   "toast.context.noLineSelection.title": "Нема избор на линија",
-  "toast.context.noLineSelection.description": "Прво изберете опсег на линии во картичката датотека.",
-  "toast.session.share.copyFailed.title": "Не успеа да се копира URL во таблата со исечоци",
+  "toast.context.noLineSelection.description":
+    "Прво изберете опсег на линии во картичката датотека.",
+  "toast.session.share.copyFailed.title":
+    "Не успеа да се копира URL во таблата со исечоци",
   "toast.session.share.success.title": "Сесијата е споделена",
-  "toast.session.share.success.description": "Споделете URL копиран во таблата со исечоци!",
+  "toast.session.share.success.description":
+    "Споделете URL копиран во таблата со исечоци!",
   "toast.session.share.failed.title": "Не успеа да се сподели сесијата",
-  "toast.session.share.failed.description": "Настана грешка при споделувањето на сесијата",
+  "toast.session.share.failed.description":
+    "Настана грешка при споделувањето на сесијата",
   "toast.session.unshare.success.title": "Сесијата не е споделена",
   "toast.session.unshare.success.description": "Успешно отповикана сесија!",
-  "toast.session.unshare.failed.title": "Не успеа да се откаже од споделувањето на сесијата",
-  "toast.session.unshare.failed.description": "Настана грешка при откажувањето на сесијата",
+  "toast.session.unshare.failed.title":
+    "Не успеа да се откаже од споделувањето на сесијата",
+  "toast.session.unshare.failed.description":
+    "Настана грешка при откажувањето на сесијата",
   "toast.session.export.success.title": "Сесијата е извезена",
-  "toast.session.export.success.description": "Сесијата е зачувана во {{filename}}",
+  "toast.session.export.success.description":
+    "Сесијата е зачувана во {{filename}}",
   "toast.session.export.failed.title": "Не успеа да се извезе сесијата",
-  "toast.session.export.failed.description": "Настана грешка при извезувањето на сесијата",
-  "toast.session.listFailed.title": "Не успеа да се вчитаат сесиите за {{project}}",
-  "toast.project.reloadFailed.title": "Не успеа повторно да се вчита {{project}}",
+  "toast.session.export.failed.description":
+    "Настана грешка при извезувањето на сесијата",
+  "toast.session.listFailed.title":
+    "Не успеа да се вчитаат сесиите за {{project}}",
+  "toast.project.reloadFailed.title":
+    "Не успеа повторно да се вчита {{project}}",
   "toast.update.title": "Достапно е ажурирање",
-  "toast.update.description": "Новата верзија на OpenCode ({{version}}) сега е достапна за инсталирање.",
+  "toast.update.description":
+    "Новата верзија на OpenCode ({{version}}) сега е достапна за инсталирање.",
   "toast.update.action.installRestart": "Инсталирајте и рестартирајте",
-  "disk.accessGuidance.macos": "Во системските поставки доделете му Full Disk Access на DiskLizard, а потоа скенирајте повторно.",
-  "disk.accessGuidance.windows": "Користете сметка со пристап до овој диск или скенирајте папка што вашата сметка може да ја чита.",
-  "disk.accessGuidance.linux": "Проверете ги дозволите за папки и точки на монтирање, а потоа скенирајте повторно.",
-  "disk.accessGuidance.default": "Проверете го пристапот до овие папки, а потоа скенирајте повторно.",
-  "disk.accessGuidance.rescan": "Откако ќе го промените пристапот, користете Rescan од горната лента.",
+  "disk.accessGuidance.macos":
+    "Во системските поставки доделете му Full Disk Access на DiskLizard, а потоа скенирајте повторно.",
+  "disk.accessGuidance.windows":
+    "Користете сметка со пристап до овој диск или скенирајте папка што вашата сметка може да ја чита.",
+  "disk.accessGuidance.linux":
+    "Проверете ги дозволите за папки и точки на монтирање, а потоа скенирајте повторно.",
+  "disk.accessGuidance.default":
+    "Проверете го пристапот до овие папки, а потоа скенирајте повторно.",
+  "disk.accessGuidance.rescan":
+    "Откако ќе го промените пристапот, користете Rescan од горната лента.",
   "disk.common.rescan": "Повторно скенирај",
   "toast.update.action.notYet": "Сè уште не",
   "toast.update.installFailed.title": "Не можеше да се инсталира ажурирањето",
   "toast.update.installFailed.retry": "Обиди се повторно",
   "error.page.title": "Нешто тргна наопаку",
   "error.page.description": "Се појави грешка при вчитување на апликацијата.",
-  "error.page.description.localServerStartup": "Се појави грешка при стартување на локалниот сервер.",
+  "error.page.description.localServerStartup":
+    "Се појави грешка при стартување на локалниот сервер.",
   "error.page.details.label": "Детали за грешка",
   "error.page.action.restart": "Рестартирајте",
   "error.page.action.report": "Пријавете грешка",
@@ -652,17 +747,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Проверете дали има ажурирања",
   "error.page.action.updateTo": "Ажурирајте до {{version}}",
   "error.page.circular": "[Кружни]",
-  "error.page.report.prefix": "Ве молиме пријавете ја оваа грешка на тимот OpenCode",
+  "error.page.report.prefix":
+    "Ве молиме пријавете ја оваа грешка на тимот OpenCode",
   "error.page.report.discord": "на Discord",
   "error.page.version": "Верзија: {{version}}",
   "error.dev.rootNotFound":
     "Не е пронајден корен елемент. Дали заборавивте да го додадете во вашата index.html? Или можеби атрибутот id е погрешно напишан?",
-  "error.serverSync.connectFailed": "Не може да се поврзе со серверот. Дали има сервер кој работи на `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Не може да се поврзе со серверот. Дали има сервер кој работи на `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Нема достапен сервер",
   "error.serverSDK.serverNotAvailable": "Серверот не е достапен",
-  "error.childStore.persistedCacheCreateFailed": "Не успеа да се создаде постојан кеш",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Не успеа да се создадат постојани метаподатоци за проектот",
-  "error.childStore.persistedProjectIconCreateFailed": "Не успеа да се создаде икона за постојан проект",
+  "error.childStore.persistedCacheCreateFailed":
+    "Не успеа да се создаде постојан кеш",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Не успеа да се создадат постојани метаподатоци за проектот",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Не успеа да се создаде икона за постојан проект",
   "error.childStore.storeCreateFailed": "Не успеа да се создаде продавница",
   "directory.error.invalidUrl": "Неважечки директориум во URL.",
   "error.chain.unknown": "Непозната грешка",
@@ -674,23 +774,32 @@ export const dict = {
   "error.chain.responseBody": "Тело за одговор:\n{{body}}",
   "error.chain.didYouMean": "Дали сакаше да каже: {{suggestions}}",
   "error.chain.modelNotFound": "Моделот не е пронајден: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Проверете ги имињата на давателот/моделот за конфигурација (opencode.json).",
+  "error.chain.checkConfig":
+    "Проверете ги имињата на давателот/моделот за конфигурација (opencode.json).",
   "error.chain.mcpFailed":
     "MCP серверот „{{name}}“ не успеа. Забелешка, OpenCode сè уште не поддржува автентикација MCP.",
-  "error.chain.providerAuthFailed": "Неуспешна автентикација на провајдерот ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Неуспешна автентикација на провајдерот ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "Не успеа да се иницијализира провајдерот „{{provider}}“. Проверете ги ингеренциите и конфигурацијата.",
-  "error.chain.configJsonInvalid": "Конфигурациската датотека на {{path}} не е валидна JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Конфигурациската датотека на {{path}} не е валидна JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Конфигурациската датотека на {{path}} не е валидна JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Конфигурациската датотека на {{path}} не е валидна JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     "Директориумот „{{dir}}“ во {{path}} не е валиден. Преименувајте го директориумот во „{{suggestion}}“ или отстранете го. Ова е вообичаена печатна грешка.",
-  "error.chain.configFrontmatterError": "Не успеа да се анализира frontmatter во {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "Конфигурациската датотека на {{path}} е неважечка",
-  "error.chain.configInvalidWithMessage": "Конфигурациската датотека на {{path}} е неважечка: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Не успеа да се анализира frontmatter во {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "Конфигурациската датотека на {{path}} е неважечка",
+  "error.chain.configInvalidWithMessage":
+    "Конфигурациската датотека на {{path}} е неважечка: {{message}}",
   "notification.permission.title": "Потребна е дозвола",
-  "notification.permission.description": "На {{sessionTitle}} во {{projectName}} му треба дозвола",
+  "notification.permission.description":
+    "На {{sessionTitle}} во {{projectName}} му треба дозвола",
   "notification.question.title": "Прашање",
-  "notification.question.description": "{{sessionTitle}} во {{projectName}} има прашање",
+  "notification.question.description":
+    "{{sessionTitle}} во {{projectName}} има прашање",
   "notification.action.goToSession": "Одете на сесија",
   "notification.session.responseReady.title": "Подготвен одговор",
   "notification.session.error.title": "Грешка во сесијата",
@@ -721,7 +830,8 @@ export const dict = {
   "session.tab.unknown": "Непозната сесија",
   "session.panel.reviewAndFiles": "Преглед и датотеки",
   "session.error.notFound": "Оваа сесија не може да се најде",
-  "session.error.notFound.description": "Оваа картичка укажува на сесија што повеќе не постои на овој сервер.",
+  "session.error.notFound.description":
+    "Оваа картичка укажува на сесија што повеќе не постои на овој сервер.",
   "session.error.notFound.closeTab": "Затвори ја картичката",
   "session.error.serverConnection": "Не може да се поврзе со овој сервер",
   "session.review.filesChanged": "Променети датотеки {{count}}",
@@ -729,9 +839,11 @@ export const dict = {
   "session.review.change.other": "Промени",
   "session.review.loadingChanges": "Се вчитуваат промените...",
   "session.review.empty": "Сè уште нема промени на оваа сесија",
-  "session.review.noVcs": "Не е откриен систем за контрола на верзијата Git, промените не се прикажани",
+  "session.review.noVcs":
+    "Не е откриен систем за контрола на верзијата Git, промените не се прикажани",
   "session.review.noVcs.createGit.title": "Направете складиште Git",
-  "session.review.noVcs.createGit.description": "Следете, прегледувајте и поништете ги промените во овој проект",
+  "session.review.noVcs.createGit.description":
+    "Следете, прегледувајте и поништете ги промените во овој проект",
   "session.review.noVcs.createGit.actionLoading": "Се создава складиште Git...",
   "session.review.noVcs.createGit.action": "Креирај Git складиште",
   "session.review.noSnapshot":
@@ -742,7 +854,8 @@ export const dict = {
   "session.files.selectToOpen": "Изберете датотека за отворање",
   "session.files.all": "Сите датотеки",
   "session.files.empty": "Нема датотеки",
-  "session.files.binaryContent": "Бинарна датотека (содржината не може да се прикаже)",
+  "session.files.binaryContent":
+    "Бинарна датотека (содржината не може да се прикаже)",
   "session.messages.renderEarlier": "Рендерирајте ги претходните пораки",
   "session.messages.loadingEarlier": "Се вчитуваат претходните пораки...",
   "session.messages.loadEarlier": "Вчитај претходни пораки",
@@ -816,7 +929,8 @@ export const dict = {
   "status.popover.tab.plugins": "Приклучоци",
   "status.popover.action.manageServers": "Управувајте со серверите",
   "session.share.popover.title": "Објави на веб",
-  "session.share.popover.description.shared": "Оваа сесија е јавна на веб. Достапно е за секој со врската.",
+  "session.share.popover.description.shared":
+    "Оваа сесија е јавна на веб. Достапно е за секој со врската.",
   "session.share.popover.description.unshared":
     "Споделете ја сесијата јавно на веб. Ќе биде достапен за секој со врската.",
   "session.share.action.share": "Споделете",
@@ -835,12 +949,14 @@ export const dict = {
   "terminal.title.numbered": "Терминал {{number}}",
   "terminal.close": "Затворете го терминалот",
   "terminal.connectionLost.title": "Изгубена врска",
-  "terminal.connectionLost.abnormalClose": "WebSocket затворено ненормално: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket затворено ненормално: {{code}}",
   "terminal.connectionLost.description":
     "Приклучувањето на терминалот беше прекинато. Ова може да се случи кога серверот се рестартира.",
   "terminal.connectTicket.csrfError":
     "PTY билет за поврзување одбиен по потекло или CSRF проверки. Проверете ја конфигурацијата на серверот CORS.",
-  "terminal.connectTicket.statusError": "PTY билетот за поврзување не успеа со {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY билетот за поврзување не успеа со {{status}}",
   "titlebar.update": "Ажурирање",
   "titlebar.updateVersion": "Ажурирај {{version}}",
   "common.closeTab": "Затвори ја картичката",
@@ -884,8 +1000,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Овозможете работни простори",
   "sidebar.workspaces.disable": "Оневозможи работни простори",
   "sidebar.gettingStarted.title": "Започнување",
-  "sidebar.gettingStarted.line1": "OpenCode вклучува бесплатни модели за да можете веднаш да започнете.",
-  "sidebar.gettingStarted.line2": "Поврзете кој било провајдер за да користите модели, вкл. Claude, GPT, Gemini итн.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode вклучува бесплатни модели за да можете веднаш да започнете.",
+  "sidebar.gettingStarted.line2":
+    "Поврзете кој било провајдер за да користите модели, вкл. Claude, GPT, Gemini итн.",
   "sidebar.project.recentSessions": "Неодамнешни сесии",
   "sidebar.project.viewAllSessions": "Прикажи ги сите сесии",
   "sidebar.project.clearNotifications": "Исчистете ги известувањата",
@@ -903,19 +1021,25 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Кадри над 32 ms во последните 5 секунди.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Блокирано време и број на долги задачи во последните 5 секунди. Максимална задача: {{max}}.",
+  "debugBar.long.tip":
+    "Блокирано време и број на долги задачи во последните 5 секунди. Максимална задача: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Најлошо забележано доцнење на влезот во последните 5 секунди.",
+  "debugBar.delay.tip":
+    "Најлошо забележано доцнење на влезот во последните 5 секунди.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Приближно времетраење на интеракцијата во последните 5 секунди. Ова е слично на INP, а не на официјалниот Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Кумулативно поместување на распоредот за тековниот животен век на апликацијата.",
+  "debugBar.cls.tip":
+    "Кумулативно поместување на распоредот за тековниот животен век на апликацијата.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Користени JS куп наспроти граница на куп. Само Chromium.",
-  "debugBar.mem.tip": "Користени JS куп наспроти граница на куп. {{used}} од {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Користени JS куп наспроти граница на куп. Само Chromium.",
+  "debugBar.mem.tip":
+    "Користени JS куп наспроти граница на куп. {{used}} од {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Принудете ги стиловите на фокусирање на сите интерактивни елементи",
+  "debugBar.focus.tip":
+    "Принудете ги стиловите на фокусирање на сите интерактивни елементи",
   "debugBar.focus.on": "ВКЛУЧЕНО",
   "debugBar.focus.off": "ИСКЛУЧЕНО",
   "debugBar.direction.label": "DIR",
@@ -930,7 +1054,8 @@ export const dict = {
   "settings.tab.shortcuts": "Кратенки",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL интеграција",
-  "settings.desktop.wsl.description": "Стартувај го серверот OpenCode во WSL на Windows.",
+  "settings.desktop.wsl.description":
+    "Стартувај го серверот OpenCode во WSL на Windows.",
   "settings.general.section.appearance": "Изглед",
   "settings.general.section.advanced": "Напредно",
   "settings.general.section.notifications": "Системски известувања",
@@ -939,30 +1064,39 @@ export const dict = {
   "settings.general.section.feed": "Довод",
   "settings.general.section.display": "Приказ",
   "settings.general.row.language.title": "Јазик",
-  "settings.general.row.language.description": "Променете го јазикот на прикажување за OpenCode",
+  "settings.general.row.language.description":
+    "Променете го јазикот на прикажување за OpenCode",
   "settings.general.row.shell.title": "Терминал shell",
-  "settings.general.row.shell.description": "Школката ја користат алатките за терминал и агент",
+  "settings.general.row.shell.description":
+    "Школката ја користат алатките за терминал и агент",
   "settings.general.row.shell.autoDefault": "Автоматски (стандардно)",
   "settings.general.row.shell.terminalOnly": "само терминал",
   "settings.general.row.appearance.title": "Изглед",
-  "settings.general.row.appearance.description": "Приспособете како изгледа OpenCode на вашиот уред",
+  "settings.general.row.appearance.description":
+    "Приспособете како изгледа OpenCode на вашиот уред",
   "settings.general.row.colorScheme.title": "Шема на бои",
-  "settings.general.row.colorScheme.description": "Изберете дали OpenCode ја следи системската, светла или темна тема",
+  "settings.general.row.colorScheme.description":
+    "Изберете дали OpenCode ја следи системската, светла или темна тема",
   "settings.general.row.theme.title": "Тема",
-  "settings.general.row.theme.description": "Приспособете како OpenCode е тематизирана.",
+  "settings.general.row.theme.description":
+    "Приспособете како OpenCode е тематизирана.",
   "settings.general.row.font.title": "Фонт на код",
-  "settings.general.row.font.description": "Приспособете го фонтот што се користи во блоковите со кодови",
+  "settings.general.row.font.description":
+    "Приспособете го фонтот што се користи во блоковите со кодови",
   "settings.general.row.terminalFont.title": "Терминален фонт",
-  "settings.general.row.terminalFont.description": "Приспособете го фонтот што се користи во терминалот",
+  "settings.general.row.terminalFont.description":
+    "Приспособете го фонтот што се користи во терминалот",
   "settings.general.row.uiFont.title": "UI фонт",
-  "settings.general.row.uiFont.description": "Прилагодете го фонтот што се користи низ интерфејсот",
+  "settings.general.row.uiFont.description":
+    "Прилагодете го фонтот што се користи низ интерфејсот",
   "settings.general.row.followup.title": "Последователно однесување",
   "settings.general.row.followup.description":
     "Изберете дали следењето ќе ве поттикне да се управува веднаш или да чекате во редица",
   "settings.general.row.followup.option.queue": "Ред",
   "settings.general.row.followup.option.steer": "Управувај",
   "settings.general.row.showFileTree.title": "Датотека",
-  "settings.general.row.showFileTree.description": "Прикажи го панелот за стебло на датотеки во сесии",
+  "settings.general.row.showFileTree.description":
+    "Прикажи го панелот за стебло на датотеки во сесии",
   "settings.general.row.showNavigation.title": "Контроли за навигација",
   "settings.general.row.showNavigation.description":
     "Покажете ги копчињата назад и напред во насловната лента на работната површина",
@@ -973,48 +1107,60 @@ export const dict = {
   "settings.general.row.showTerminal.description":
     "Прикажете го копчето за терминал во насловната лента на работната површина",
   "settings.general.row.showStatus.title": "Статус на серверот",
-  "settings.general.row.showStatus.description": "Прикажи го копчето за статус на серверот во насловната лента",
+  "settings.general.row.showStatus.description":
+    "Прикажи го копчето за статус на серверот во насловната лента",
   "settings.general.row.mobileTitlebarBottom.title": "Долна навигација",
   "settings.general.row.mobileTitlebarBottom.description":
     "Поставете ја лентата за наслов и јазичињата за сесии на дното на екранот на мобилниот телефон",
   "settings.general.row.showCustomAgents.title": "Покажи агент",
   "settings.general.row.showCustomAgents.description":
     "Префрлете се помеѓу агенти во композиторот. Кога е скриено, стандардно е Build agent.",
-  "settings.general.row.reasoningSummaries.title": "Прикажи резимеа за расудување",
+  "settings.general.row.reasoningSummaries.title":
+    "Прикажи резимеа за расудување",
   "settings.general.row.reasoningSummaries.description":
     "Прикажи резимеа на расудувањето на моделите во временската линија",
-  "settings.general.row.shellToolPartsExpanded.title": "Проширете ги shell делови од алатот",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Проширете ги shell делови од алатот",
   "settings.general.row.shellToolPartsExpanded.description":
     "Прикажи shell делови од алатката стандардно проширени во временската линија",
-  "settings.general.row.editToolPartsExpanded.title": "Проширете ги деловите на алатката за уредување",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Проширете ги деловите на алатката за уредување",
   "settings.general.row.editToolPartsExpanded.description":
     "Прикажи ги деловите на алатката за уредување, пишување и закрпи стандардно проширени во временската линија",
   "settings.general.row.newInterface.title": "Нов распоред",
   "settings.general.row.newInterface.badge": "Ново",
   "settings.general.row.newInterface.description":
     "Користете ги новите јазичиња и распоредот на домот. Префрлете се помеѓу распоредот за ограничено време.",
-  "settings.general.row.newInterfaceNotice.title": "Сега користите нов распоред",
-  "settings.general.row.newInterfaceNotice.description": "Претходниот распоред веќе не е достапен",
+  "settings.general.row.newInterfaceNotice.title":
+    "Сега користите нов распоред",
+  "settings.general.row.newInterfaceNotice.description":
+    "Претходниот распоред веќе не е достапен",
   "settings.general.row.newInterfaceNotice.dismiss": "Отфрли",
   "settings.general.row.pinchZoom.title": "Стиснете за да зумирате",
   "settings.general.row.pinchZoom.description":
     "Дозволете зумирање на гестовите за стискање на подлогата и Ctrl-scroll",
   "settings.general.row.wayland.title": "Користете мајчин Wayland",
-  "settings.general.row.wayland.description": "Оневозможи резервни X11 на Wayland. Потребно е рестартирање.",
+  "settings.general.row.wayland.description":
+    "Оневозможи резервни X11 на Wayland. Потребно е рестартирање.",
   "settings.general.row.wayland.tooltip":
     "На Linux со мешани монитори со стапка на освежување, мајчин Wayland може да биде постабилен.",
   "settings.general.row.releaseNotes.title": "Белешки за ослободување",
-  "settings.general.row.releaseNotes.description": "Прикажи скокачки прозорци „Што има ново“ по ажурирањата",
-  "settings.updates.row.startup.title": "Проверете дали има ажурирања при стартување",
-  "settings.updates.row.startup.description": "Автоматски проверувајте дали има ажурирања кога ќе се стартува OpenCode",
+  "settings.general.row.releaseNotes.description":
+    "Прикажи скокачки прозорци „Што има ново“ по ажурирањата",
+  "settings.updates.row.startup.title":
+    "Проверете дали има ажурирања при стартување",
+  "settings.updates.row.startup.description":
+    "Автоматски проверувајте дали има ажурирања кога ќе се стартува OpenCode",
   "settings.updates.row.check.title": "Проверете дали има ажурирања",
-  "settings.updates.row.check.description": "Рачно проверете дали има ажурирања и инсталирајте ако е достапно",
+  "settings.updates.row.check.description":
+    "Рачно проверете дали има ажурирања и инсталирајте ако е достапно",
   "settings.updates.action.checkNow": "Проверете сега",
   "settings.updates.action.checking": "Се проверува...",
   "settings.updates.action.downloading": "Се презема...",
   "settings.updates.action.installing": "Се инсталира...",
   "settings.updates.toast.latest.title": "Ажуриран си",
-  "settings.updates.toast.latest.description": "Ја извршувате најновата верзија на OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Ја извршувате најновата верзија на OpenCode.",
   "sound.option.none": "Никој",
   "sound.option.alert01": "Аларм 01",
   "sound.option.alert02": "Аларм 02",
@@ -1065,21 +1211,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Прикажи системско известување кога агентот е завршен или има потреба од внимание",
   "settings.general.notifications.permissions.title": "Дозволи",
-  "settings.general.notifications.permissions.description": "Прикажи системско известување кога е потребна дозвола",
+  "settings.general.notifications.permissions.description":
+    "Прикажи системско известување кога е потребна дозвола",
   "settings.general.notifications.errors.title": "Грешки",
-  "settings.general.notifications.errors.description": "Прикажи системско известување кога ќе се појави грешка",
+  "settings.general.notifications.errors.description":
+    "Прикажи системско известување кога ќе се појави грешка",
   "settings.general.sounds.agent.title": "Агент",
-  "settings.general.sounds.agent.description": "Пуштете звук кога агентот е завршен или му треба внимание",
+  "settings.general.sounds.agent.description":
+    "Пуштете звук кога агентот е завршен или му треба внимание",
   "settings.general.sounds.permissions.title": "Дозволи",
-  "settings.general.sounds.permissions.description": "Репродуцирајте звук кога е потребна дозвола",
+  "settings.general.sounds.permissions.description":
+    "Репродуцирајте звук кога е потребна дозвола",
   "settings.general.sounds.errors.title": "Грешки",
-  "settings.general.sounds.errors.description": "Репродуцирајте звук кога ќе се појави грешка",
+  "settings.general.sounds.errors.description":
+    "Репродуцирајте звук кога ќе се појави грешка",
   "settings.shortcuts.title": "Кратенки на тастатурата",
   "settings.shortcuts.reset.button": "Ресетирање на стандардните",
   "settings.shortcuts.reset.toast.title": "Кратенките се ресетираат",
-  "settings.shortcuts.reset.toast.description": "Кратенките на тастатурата се ресетирани на стандардните.",
+  "settings.shortcuts.reset.toast.description":
+    "Кратенките на тастатурата се ресетирани на стандардните.",
   "settings.shortcuts.conflict.title": "Кратенката веќе се користи",
-  "settings.shortcuts.conflict.description": "{{keybind}} е веќе доделен на {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} е веќе доделен на {{titles}}.",
   "settings.shortcuts.unassigned": "Недоделени",
   "settings.shortcuts.pressKeys": "Притиснете ги копчињата",
   "settings.shortcuts.search.placeholder": "Кратенки за пребарување",
@@ -1091,41 +1244,55 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Терминал",
   "settings.shortcuts.group.prompt": "Прашај",
   "settings.providers.title": "Даватели",
-  "settings.providers.description": "Поставките на провајдерот ќе може да се конфигурираат овде.",
+  "settings.providers.description":
+    "Поставките на провајдерот ќе може да се конфигурираат овде.",
   "settings.providers.section.connected": "Поврзани провајдери",
   "settings.providers.connected.empty": "Нема поврзани провајдери",
-  "settings.providers.connected.environmentDescription": "Поврзано од променливите на вашата околина",
+  "settings.providers.connected.environmentDescription":
+    "Поврзано од променливите на вашата околина",
   "settings.providers.section.popular": "Популарни провајдери",
-  "settings.providers.custom.description": "Додадете OpenAI-компатибилен провајдер по база URL.",
+  "settings.providers.custom.description":
+    "Додадете OpenAI-компатибилен провајдер по база URL.",
   "settings.providers.tag.environment": "Животна средина",
   "settings.providers.tag.config": "Конфигурација",
   "settings.providers.tag.custom": "Прилагодено",
   "settings.providers.tag.other": "Друго",
   "settings.models.title": "Модели",
-  "settings.models.description": "Поставките за моделот ќе можат да се конфигурираат овде.",
+  "settings.models.description":
+    "Поставките за моделот ќе можат да се конфигурираат овде.",
   "settings.agents.title": "Агенти",
-  "settings.agents.description": "Овде ќе може да се конфигурираат поставките за агентот.",
+  "settings.agents.description":
+    "Овде ќе може да се конфигурираат поставките за агентот.",
   "settings.commands.title": "Наредби",
-  "settings.commands.description": "Овде ќе може да се конфигурираат поставките за команди.",
+  "settings.commands.description":
+    "Овде ќе може да се конфигурираат поставките за команди.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "Овде ќе може да се конфигурираат поставките MCP.",
+  "settings.mcp.description":
+    "Овде ќе може да се конфигурираат поставките MCP.",
   "settings.permissions.title": "Дозволи",
-  "settings.permissions.description": "Контролирајте кои алатки може да ги користи серверот стандардно.",
+  "settings.permissions.description":
+    "Контролирајте кои алатки може да ги користи серверот стандардно.",
   "settings.permissions.section.tools": "Алатки",
-  "settings.permissions.toast.updateFailed.title": "Не успеа да се ажурираат дозволите",
+  "settings.permissions.toast.updateFailed.title":
+    "Не успеа да се ажурираат дозволите",
   "settings.permissions.action.allow": "Дозволи",
   "settings.permissions.action.ask": "Прашај",
   "settings.permissions.action.deny": "Негирајте",
   "settings.permissions.tool.read.title": "Прочитајте",
-  "settings.permissions.tool.read.description": "Читање датотека (се совпаѓа со патеката на датотеката)",
+  "settings.permissions.tool.read.description":
+    "Читање датотека (се совпаѓа со патеката на датотеката)",
   "settings.permissions.tool.edit.title": "Уреди",
-  "settings.permissions.tool.edit.description": "Изменете ги датотеките, вклучувајќи уредувања, пишувања и закрпи",
+  "settings.permissions.tool.edit.description":
+    "Изменете ги датотеките, вклучувајќи уредувања, пишувања и закрпи",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Усогласувајте ги датотеките користејќи шеми на глоб",
+  "settings.permissions.tool.glob.description":
+    "Усогласувајте ги датотеките користејќи шеми на глоб",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Пребарувајте ја содржината на датотеката користејќи регуларни изрази",
+  "settings.permissions.tool.grep.description":
+    "Пребарувајте ја содржината на датотеката користејќи регуларни изрази",
   "settings.permissions.tool.list.title": "Список",
-  "settings.permissions.tool.list.description": "Наведете датотеки во директориумот",
+  "settings.permissions.tool.list.description":
+    "Наведете датотеки во директориумот",
   "settings.permissions.tool.bash.title": "Баш",
   "settings.permissions.tool.bash.description": "Извршете shell команди",
   "settings.permissions.tool.task.title": "Задача",
@@ -1133,17 +1300,22 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Вештина",
   "settings.permissions.tool.skill.description": "Вчитајте вештина по име",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Стартувај јазични прашања за серверот",
+  "settings.permissions.tool.lsp.description":
+    "Стартувај јазични прашања за серверот",
   "settings.permissions.tool.todowrite.title": "Todo Напиши",
-  "settings.permissions.tool.todowrite.description": "Ажурирајте го списокот со задачи",
+  "settings.permissions.tool.todowrite.description":
+    "Ажурирајте го списокот со задачи",
   "settings.permissions.tool.webfetch.title": "Веб Преземи",
   "settings.permissions.tool.webfetch.description": "Преземи содржина од URL",
   "settings.permissions.tool.websearch.title": "Пребарување на веб",
   "settings.permissions.tool.websearch.description": "Пребарувајте на интернет",
-  "settings.permissions.tool.external_directory.title": "Надворешен директориум",
-  "settings.permissions.tool.external_directory.description": "Пристап до датотеки надвор од директориумот на проектот",
+  "settings.permissions.tool.external_directory.title":
+    "Надворешен директориум",
+  "settings.permissions.tool.external_directory.description":
+    "Пристап до датотеки надвор од директориумот на проектот",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Откријте повторени повици на алатката со идентичен влез",
+  "settings.permissions.tool.doom_loop.description":
+    "Откријте повторени повици на алатката со идентичен влез",
   "session.delete.failed.title": "Не успеа да се избрише сесијата",
   "session.delete.title": "Избришете ја сесијата",
   "session.delete.confirm": "Да се ​​избрише сесијата „{{name}}“?",
@@ -1157,12 +1329,14 @@ export const dict = {
   "workspace.resetting.description": "Ова може да потрае една минута.",
   "workspace.reset.failed.title": "Не успеа да се ресетира работниот простор",
   "workspace.reset.success.title": "Ресетирање на работниот простор",
-  "workspace.reset.success.description": "Работниот простор сега се совпаѓа со стандардната гранка.",
+  "workspace.reset.success.description":
+    "Работниот простор сега се совпаѓа со стандардната гранка.",
   "workspace.error.stillPreparing": "Работниот простор сè уште се подготвува",
   "workspace.status.checking": "Се проверува за неспоени промени...",
   "workspace.status.error": "Не може да се потврди статусот на git.",
   "workspace.status.clean": "Не се откриени неповрзани промени.",
-  "workspace.status.dirty": "Откриени несоединети промени во овој работен простор.",
+  "workspace.status.dirty":
+    "Откриени несоединети промени во овој работен простор.",
   "workspace.delete.title": "Избришете го работниот простор",
   "workspace.delete.confirm": "Да се ​​избрише работниот простор „{{name}}“?",
   "workspace.delete.button": "Избришете го работниот простор",
@@ -1172,6 +1346,7 @@ export const dict = {
   "workspace.reset.archived.none": "Нема да се архивираат активни сесии.",
   "workspace.reset.archived.one": "1 сесија ќе биде архивирана.",
   "workspace.reset.archived.many": "{{count}} сесиите ќе бидат архивирани.",
-  "workspace.reset.note": "Ова ќе го ресетира работниот простор за да одговара на стандардната гранка.",
+  "workspace.reset.note":
+    "Ова ќе го ресетира работниот простор за да одговара на стандардната гранка.",
   "dialog.usageExceeded.dontShowAgain": "Не прикажувај повторно",
 }

@@ -56,10 +56,12 @@ describe("volume presentation", () => {
       sharedFree: 20 * 1024 ** 3,
       snapshotCount: 1,
     }
-    expect(volumeSubtitle(drive)).toBe("926 GB startup disk 20.0 GB shared container free")
-    expect(volumeSubtitle({ ...drive, path: "/Volumes/Backup", type: "removable" })).toBe(
-      "926 GB removable disk 20.0 GB shared container free",
+    expect(volumeSubtitle(drive)).toBe(
+      "926 GB startup disk 20.0 GB shared container free"
     )
+    expect(
+      volumeSubtitle({ ...drive, path: "/Volumes/Backup", type: "removable" })
+    ).toBe("926 GB removable disk 20.0 GB shared container free")
   })
 })
 
@@ -70,12 +72,20 @@ describe("volume completion copy", () => {
   })
 
   it("shows a rate only for a completed fresh traversal", () => {
-    expect(volumeCompletionLabel("scan", { elapsedMs: 2_000, filesPerSecond: 40, bytesPerSecond: 2_048 })).toBe(
-      "2.0s · 40 files/s",
-    )
-    expect(volumeCompletionLabel(undefined, { elapsedMs: 2_000, filesPerSecond: 40, bytesPerSecond: 2_048 })).toBe(
-      "Map ready",
-    )
+    expect(
+      volumeCompletionLabel("scan", {
+        elapsedMs: 2_000,
+        filesPerSecond: 40,
+        bytesPerSecond: 2_048,
+      })
+    ).toBe("2.0s · 40 files/s")
+    expect(
+      volumeCompletionLabel(undefined, {
+        elapsedMs: 2_000,
+        filesPerSecond: 40,
+        bytesPerSecond: 2_048,
+      })
+    ).toBe("Map ready")
   })
 })
 

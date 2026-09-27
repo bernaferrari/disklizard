@@ -11,10 +11,23 @@ export interface ScrollViewProps extends React.ComponentProps<"div"> {
 
 /** Keys the v1 ScrollView handled for scrolling semantics; kept for callers. */
 export const scrollKey = (
-  event: Pick<KeyboardEvent, "key" | "altKey" | "ctrlKey" | "metaKey" | "shiftKey">,
-): "page-down" | "page-up" | "home" | "end" | "up" | "down" | "left" | "right" | "space" | undefined => {
-  if (event.altKey || event.ctrlKey || event.metaKey) return
-  if (event.shiftKey && event.key !== " ") return
+  event: Pick<
+    KeyboardEvent,
+    "key" | "altKey" | "ctrlKey" | "metaKey" | "shiftKey"
+  >
+):
+  | "page-down"
+  | "page-up"
+  | "home"
+  | "end"
+  | "up"
+  | "down"
+  | "left"
+  | "right"
+  | "space"
+  | undefined => {
+  if (event.altKey || event.ctrlKey || event.metaKey) return undefined
+  if (event.shiftKey && event.key !== " ") return undefined
 
   switch (event.key) {
     case "PageDown":
@@ -36,6 +49,7 @@ export const scrollKey = (
     case " ":
       return "space"
   }
+  return undefined
 }
 
 /**
@@ -43,7 +57,12 @@ export const scrollKey = (
  * The element itself is the scroll viewport; `viewportRef` hands it to
  * consumers such as the virtualized storage list.
  */
-export function ScrollView({ viewportRef, className, children, ...rest }: ScrollViewProps) {
+export function ScrollView({
+  viewportRef,
+  className,
+  children,
+  ...rest
+}: ScrollViewProps) {
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   React.useEffect(() => {

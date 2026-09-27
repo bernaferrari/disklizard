@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "გაზიარება გამოხმაურება",
   "desktop.menu.reportBug": "შეცდომის შესახებ შეტყობინება",
   "desktop.menu.ariaLabel": "OpenCode მენიუ",
-  "desktop.updater.dialog.checkFailed.message": "განახლების შემოწმება ვერ მოხერხდა.",
+  "desktop.updater.dialog.checkFailed.message":
+    "განახლების შემოწმება ვერ მოხერხდა.",
   "desktop.updater.dialog.checkFailed.title": "განახლების შეცდომა",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "თქვენ განახლებული ხართ.",
   "desktop.updater.dialog.upToDate.title": "განახლების გარეშე",
-  "desktop.updater.dialog.ready.message": "განახლება {{version}} ჩამოტვირთულია. გადატვირთვა ახლა?",
+  "desktop.updater.dialog.ready.message":
+    "განახლება {{version}} ჩამოტვირთულია. გადატვირთვა ახლა?",
   "desktop.updater.dialog.ready.title": "განახლება მზად არის",
   "desktop.updater.dialog.restart": "გადატვირთვა",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +65,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode ვერ ჩაიტვირთა",
   "desktop.recovery.terminated": "OpenCode ფანჯარა მოულოდნელად შეწყდა",
   "desktop.recovery.unresponsive": "OpenCode არ პასუხობს",
-  "desktop.recovery.unresponsive.detail": "შეგიძლიათ ხელახლა გაუშვათ აპი, გახსნათ ჟურნალები ან გააგრძელოთ ლოდინი.",
-  "desktop.recovery.loadFailed.detail": "ფანჯარა: {{window}}\nURL: {{url}}\nშეცდომა: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "ფანჯარა: {{window}}\nმიზეზი: {{reason}}\nკოდი: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "შეგიძლიათ ხელახლა გაუშვათ აპი, გახსნათ ჟურნალები ან გააგრძელოთ ლოდინი.",
+  "desktop.recovery.loadFailed.detail":
+    "ფანჯარა: {{window}}\nURL: {{url}}\nშეცდომა: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "ფანჯარა: {{window}}\nმიზეზი: {{reason}}\nკოდი: {{code}}",
   "desktop.recovery.unknown": "<unknown>",
   "desktop.dialog.chooseFolder": "აირჩიე საქაღალდე",
   "desktop.dialog.chooseFile": "აირჩიე ფაილი",
@@ -73,27 +79,38 @@ export const dict = {
   "desktop.server.local": "ლოკალური სერვერი",
   "desktop.wsl.error.windowsOnly": "WSL ხელმისაწვდომია მხოლოდ Windows",
   "desktop.wsl.error.unavailable": "WSL მიუწვდომელია",
-  "desktop.wsl.error.listInstalled": "დაინსტალირებული WSL დისტროსიების სია ვერ მოიძებნა",
-  "desktop.wsl.error.listOnline": "ვერ განხორციელდა ონლაინ WSL დისტრიბუტების სიაში",
-  "desktop.wsl.error.executeDistro": "შეუძლებელია ბრძანებების შესრულება დისტროში",
+  "desktop.wsl.error.listInstalled":
+    "დაინსტალირებული WSL დისტროსიების სია ვერ მოიძებნა",
+  "desktop.wsl.error.listOnline":
+    "ვერ განხორციელდა ონლაინ WSL დისტრიბუტების სიაში",
+  "desktop.wsl.error.executeDistro":
+    "შეუძლებელია ბრძანებების შესრულება დისტროში",
   "desktop.wsl.error.installWsl": "WSL ინსტალაცია ვერ მოხერხდა",
-  "desktop.wsl.error.installDistro": "დისტროს დაყენება ვერ მოხერხდა: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "დისტროს დაყენება ვერ მოხერხდა: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode ინსტალაცია ვერ მოხერხდა",
   "desktop.wsl.error.alreadyAdded": "{{distro}} უკვე დამატებულია",
-  "desktop.wsl.error.opencodeMissing": "opencode არ არის დაინსტალირებული ამ დისტროში",
-  "desktop.wsl.error.opencodeCannotRun": "opencode დაინსტალირებულია, მაგრამ ვერ გაშვება",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode არ არის დაინსტალირებული {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode არ არის დაინსტალირებული ამ დისტროში",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode დაინსტალირებულია, მაგრამ ვერ გაშვება",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode არ არის დაინსტალირებული {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode განახლება დასრულდა, მაგრამ {{distro}} კვლავ იუწყება {{installed}}; მოსალოდნელია {{expected}}",
   "desktop.wsl.error.noVersion": "ვერსიის გარეშე",
-  "desktop.wsl.error.serverExited": "WSL სერვერი გავიდა გაშვების შემდეგ (კოდი={{code}} სიგნალი={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL სერვერი გავიდა გაშვების შემდეგ (კოდი={{code}} სიგნალი={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL სერვერი გავიდა გაჯანსაღებამდე (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar for {{distro}} ჯანმრთელობის შემოწმების დრო ამოიწურა {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} დრო ამოიწურა {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar for {{distro}} ჯანმრთელობის შემოწმების დრო ამოიწურა {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} დრო ამოიწურა {{timeout}}ms",
   "desktop.wsl.error.failedPort": "პორტის მიღება ვერ მოხერხდა",
   "desktop.picker.error.notSelected": "ფაილი არ იყო არჩეული ამომრჩევლის მიერ",
-  "desktop.picker.error.sizeLimit": "არჩეული დანართები აღემატება {{limit}} MB ლიმიტს",
+  "desktop.picker.error.sizeLimit":
+    "არჩეული დანართები აღემატება {{limit}} MB ლიმიტს",
   "command.category.suggested": "შემოთავაზებულია",
   "command.category.view": "ნახვა",
   "command.category.project": "პროექტი",
@@ -140,7 +157,8 @@ export const dict = {
   "command.tab.close": "ჩანართის დახურვა",
   "command.tab.reopenClosed": "დახურული ჩანართის ხელახლა გახსნა",
   "command.context.addSelection": "მონიშვნის დამატება კონტექსტში",
-  "command.context.addSelection.description": "მორჩეული ხაზების დამატება მიმდინარე ფაილიდან",
+  "command.context.addSelection.description":
+    "მორჩეული ხაზების დამატება მიმდინარე ფაილიდან",
   "command.input.focus": "ფოკუსის შეყვანა",
   "command.terminal.toggle": "ტერმინალის გადართვა",
   "command.fileTree.toggle": "ფაილის ხის გადართვა",
@@ -148,11 +166,14 @@ export const dict = {
   "command.terminal.new": "ახალი ტერმინალი",
   "command.terminal.new.description": "ტერმინალის ახალი ჩანართის შექმნა",
   "command.steps.toggle": "გადართვა ნაბიჯები",
-  "command.steps.toggle.description": "აჩვენეთ ან დამალეთ ნაბიჯები მიმდინარე შეტყობინებისთვის",
+  "command.steps.toggle.description":
+    "აჩვენეთ ან დამალეთ ნაბიჯები მიმდინარე შეტყობინებისთვის",
   "command.message.previous": "წინა შეტყობინება",
-  "command.message.previous.description": "გადადით მომხმარებლის წინა შეტყობინებაზე",
+  "command.message.previous.description":
+    "გადადით მომხმარებლის წინა შეტყობინებაზე",
   "command.message.next": "შემდეგი შეტყობინება",
-  "command.message.next.description": "გადადით მომხმარებლის შემდეგ შეტყობინებაზე",
+  "command.message.next.description":
+    "გადადით მომხმარებლის შემდეგ შეტყობინებაზე",
   "command.model.choose": "აირჩიე მოდელი",
   "command.model.choose.description": "აირჩიე სხვა მოდელი",
   "command.mcp.toggle": "გადართვა MCPs",
@@ -162,27 +183,34 @@ export const dict = {
   "command.agent.cycle.reverse": "წინა აგენტზე გადასვლა",
   "command.agent.cycle.reverse.description": "წინა აგენტზე გადასვლა",
   "command.model.variant.cycle": "აზროვნების ძალისხმევის დონის შეცვლა",
-  "command.model.variant.cycle.description": "გადართვა ძალისხმევის შემდეგ დონეზე",
+  "command.model.variant.cycle.description":
+    "გადართვა ძალისხმევის შემდეგ დონეზე",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "მოთხოვნა",
   "command.permissions.autoaccept.enable": "ნებართვების ავტომატური მიღება",
-  "command.permissions.autoaccept.disable": "ნებართვების ავტომატური მიღების შეწყვეტა",
+  "command.permissions.autoaccept.disable":
+    "ნებართვების ავტომატური მიღების შეწყვეტა",
   "command.workspace.toggle": "სამუშაო სივრცის გადართვა",
-  "command.workspace.toggle.description": "ჩართეთ ან გამორთეთ მრავალი სამუშაო სივრცე გვერდითა ზოლში",
+  "command.workspace.toggle.description":
+    "ჩართეთ ან გამორთეთ მრავალი სამუშაო სივრცე გვერდითა ზოლში",
   "command.session.undo": "გაუქმება",
   "command.session.undo.description": "ბოლო შეტყობინების გაუქმება",
   "command.session.redo": "გამეორება",
   "command.session.redo.description": "გაამეორეთ ბოლო გაუქმებული შეტყობინება",
   "command.session.compact": "კომპაქტური სესია",
-  "command.session.compact.description": "შეაჯამეთ სესია კონტექსტის ზომის შესამცირებლად",
+  "command.session.compact.description":
+    "შეაჯამეთ სესია კონტექსტის ზომის შესამცირებლად",
   "command.session.fork": "შეტყობინებიდან განშტოება",
-  "command.session.fork.description": "შექმენით ახალი სესია წინა შეტყობინებისგან",
+  "command.session.fork.description":
+    "შექმენით ახალი სესია წინა შეტყობინებისგან",
   "command.session.share": "გაზიარება სესიის",
-  "command.session.share.description": "გააზიარეთ ეს სესია და დააკოპირეთ URL ბუფერში",
+  "command.session.share.description":
+    "გააზიარეთ ეს სესია და დააკოპირეთ URL ბუფერში",
   "command.session.unshare": "გაზიარების სესიის გაუქმება",
   "command.session.unshare.description": "შეწყვიტე ამ სესიის გაზიარება",
   "command.session.export": "ექსპორტის სესია",
-  "command.session.export.description": "სესიის სრული ტრანსკრიპტის ექსპორტი, როგორც JSON",
+  "command.session.export.description":
+    "სესიის სრული ტრანსკრიპტის ექსპორტი, როგორც JSON",
   "palette.search.placeholder": "ფაილების, ბრძანებების და სესიების ძიება",
   "palette.search.placeholder.home": "ძებნის ბრძანებები და სესიები",
   "palette.empty": "შედეგები არ მოიძებნა",
@@ -194,28 +222,38 @@ export const dict = {
   "dialog.provider.group.other": "სხვა",
   "dialog.provider.custom.label": "მორგებული OpenAI-თავსებადი პროვაიდერი",
   "dialog.provider.tag.recommended": "რეკომენდებულია",
-  "dialog.provider.opencode.note": "კურირებული მოდელები, მათ შორის Claude, GPT, Gemini და სხვა",
+  "dialog.provider.opencode.note":
+    "კურირებული მოდელები, მათ შორის Claude, GPT, Gemini და სხვა",
   "dialog.provider.opencode.tagline": "სანდო ოპტიმიზებული მოდელები",
   "dialog.provider.opencodeGo.tagline": "დაბალფასიანი გამოწერა ყველასთვის",
-  "dialog.provider.anthropic.note": "პირდაპირი წვდომა Claude მოდელზე, მათ შორის Pro და Max",
-  "dialog.provider.copilot.note": "AI მოდელები კოდირების დახმარებისთვის GitHub Copilot",
-  "dialog.provider.openai.note": "GPT მოდელები სწრაფი, ზოგადი AI ამოცანების შესასრულებლად",
-  "dialog.provider.google.note": "Gemini მოდელები სწრაფი, სტრუქტურირებული პასუხებისთვის",
-  "dialog.provider.openrouter.note": "წვდომა ყველა მხარდაჭერილ მოდელზე ერთი პროვაიდერისგან",
-  "dialog.provider.vercel.note": "ერთიანი წვდომა AI მოდელებზე ჭკვიანი მარშრუტით",
+  "dialog.provider.anthropic.note":
+    "პირდაპირი წვდომა Claude მოდელზე, მათ შორის Pro და Max",
+  "dialog.provider.copilot.note":
+    "AI მოდელები კოდირების დახმარებისთვის GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT მოდელები სწრაფი, ზოგადი AI ამოცანების შესასრულებლად",
+  "dialog.provider.google.note":
+    "Gemini მოდელები სწრაფი, სტრუქტურირებული პასუხებისთვის",
+  "dialog.provider.openrouter.note":
+    "წვდომა ყველა მხარდაჭერილ მოდელზე ერთი პროვაიდერისგან",
+  "dialog.provider.vercel.note":
+    "ერთიანი წვდომა AI მოდელებზე ჭკვიანი მარშრუტით",
   "dialog.model.select.title": "აირჩიეთ მოდელი",
   "dialog.model.search.placeholder": "მოდელების ძიება",
   "dialog.model.empty": "მოდელის შედეგები არ არის",
   "dialog.model.manage": "მოდელების მართვა",
-  "dialog.model.manage.description": "მოარგეთ რომელი მოდელები გამოჩნდება მოდელის ამომრჩეველში.",
+  "dialog.model.manage.description":
+    "მოარგეთ რომელი მოდელები გამოჩნდება მოდელის ამომრჩეველში.",
   "dialog.model.manage.provider.toggle": "ყველა {{provider}} მოდელის გადართვა",
   "dialog.model.unpaid.freeModels.title": "უფასო მოდელები მოწოდებულია OpenCode",
-  "dialog.model.unpaid.addMore.title": "დაამატე მეტი მოდელები პოპულარული პროვაიდერებისგან",
+  "dialog.model.unpaid.addMore.title":
+    "დაამატე მეტი მოდელები პოპულარული პროვაიდერებისგან",
   "dialog.model.unpaid.viewMoreProviders": "იხილეთ 70+ სხვა პროვაიდერი",
   "dialog.provider.viewAll": "აჩვენე მეტი პროვაიდერი",
   "provider.connect.title": "დაკავშირება {{provider}}",
   "provider.connect.title.anthropicProMax": "შესვლა Claude Pro/Max-ით",
-  "provider.connect.selectMethod": "აირჩიეთ შესვლის მეთოდი {{provider}}-ისთვის.",
+  "provider.connect.selectMethod":
+    "აირჩიეთ შესვლის მეთოდი {{provider}}-ისთვის.",
   "provider.connect.method.apiKey": "API გასაღები",
   "provider.connect.method.browser": "ბრაუზერი",
   "provider.connect.method.headless": "გრაფიკული ინტერფეისის გარეშე",
@@ -233,7 +271,8 @@ export const dict = {
     "ერთი API გასაღებით თქვენ მიიღებთ წვდომას ისეთ მოდელებზე, როგორიცაა Claude, GPT, Gemini, GLM და სხვა.",
   "provider.connect.opencodeZen.visit.prefix": "ეწვიეთ ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " თქვენი API გასაღების შესაგროვებლად.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " თქვენი API გასაღების შესაგროვებლად.",
   "provider.connect.oauth.code.visit.prefix": "ეწვიეთ ",
   "provider.connect.oauth.code.visit.link": "ეს ბმული",
   "provider.connect.oauth.code.visit.suffix":
@@ -248,15 +287,19 @@ export const dict = {
     " და შეიყვანეთ ქვემოთ კოდი თქვენი ანგარიშის დასაკავშირებლად და გამოიყენეთ {{provider}} მოდელები OpenCode-ში.",
   "provider.connect.oauth.auto.confirmationCode": "დადასტურების კოდი",
   "provider.connect.toast.connected.title": "{{provider}} დაკავშირებული",
-  "provider.connect.toast.connected.description": "{{provider}} მოდელები ახლა ხელმისაწვდომია გამოსაყენებლად.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} მოდელები ახლა ხელმისაწვდომია გამოსაყენებლად.",
   "provider.custom.title": "მომხმარებელი პროვაიდერი",
-  "provider.custom.unavailable": "მორგებული პროვაიდერები მიუწვდომელია ამ სერვერზე",
-  "provider.custom.description.prefix": "OpenAI-თავსებადი პროვაიდერის კონფიგურაცია. იხილეთ ",
+  "provider.custom.unavailable":
+    "მორგებული პროვაიდერები მიუწვდომელია ამ სერვერზე",
+  "provider.custom.description.prefix":
+    "OpenAI-თავსებადი პროვაიდერის კონფიგურაცია. იხილეთ ",
   "provider.custom.description.link": "პროვაიდერის კონფიგურაციის დოკუმენტები",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "პროვაიდერის ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "მცირე ასოები, რიცხვები, დეფისები ან ქვედა ხაზი",
+  "provider.custom.field.providerID.description":
+    "მცირე ასოები, რიცხვები, დეფისები ან ქვედა ხაზი",
   "provider.custom.field.name.label": "საჩვენებელი სახელი",
   "provider.custom.field.name.placeholder": "ჩემი AI პროვაიდერი",
   "provider.custom.field.baseURL.label": "ბაზა URL",
@@ -280,7 +323,8 @@ export const dict = {
   "provider.custom.headers.remove": "სათაურის წაშლა",
   "provider.custom.headers.add": "სათაურის დამატება",
   "provider.custom.error.providerID.required": "საჭიროა პროვაიდერის ID",
-  "provider.custom.error.providerID.format": "გამოიყენე მცირე ასოები, რიცხვები, დეფისები ან ქვედა ხაზი",
+  "provider.custom.error.providerID.format":
+    "გამოიყენე მცირე ასოები, რიცხვები, დეფისები ან ქვედა ხაზი",
   "provider.custom.error.providerID.exists": "ეს პროვაიდერის ID უკვე არსებობს",
   "provider.custom.error.name.required": "საჩვენებელი სახელი აუცილებელია",
   "provider.custom.error.baseURL.required": "საჭიროა ბაზის URL",
@@ -288,7 +332,8 @@ export const dict = {
   "provider.custom.error.required": "საჭირო",
   "provider.custom.error.duplicate": "დუბლიკატი",
   "provider.disconnect.toast.disconnected.title": "{{provider}} გათიშულია",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} მოდელები აღარ არის ხელმისაწვდომი.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} მოდელები აღარ არის ხელმისაწვდომი.",
   "model.tag.free": "უფასო",
   "model.tag.latest": "უახლესი",
   "model.provider.anthropic": "Anthropic",
@@ -382,10 +427,12 @@ export const dict = {
   "prompt.action.send": "გაგზავნა",
   "prompt.action.stop": "შეჩერება",
   "prompt.toast.pasteUnsupported.title": "მხარდაუჭერელი დანართი",
-  "prompt.toast.pasteUnsupported.description": "აქ შეიძლება დაერთოს მხოლოდ სურათები, PDF ან ტექსტური ფაილები.",
+  "prompt.toast.pasteUnsupported.description":
+    "აქ შეიძლება დაერთოს მხოლოდ სურათები, PDF ან ტექსტური ფაილები.",
   "prompt.toast.attachmentDuplicate.title": "ეს ფაილი უკვე ატვირთულია",
   "prompt.toast.modelAgentRequired.title": "აირჩიეთ აგენტი და მოდელი",
-  "prompt.toast.modelAgentRequired.description": "აირჩიეთ აგენტი და მოდელი მოთხოვნის გაგზავნამდე.",
+  "prompt.toast.modelAgentRequired.description":
+    "აირჩიეთ აგენტი და მოდელი მოთხოვნის გაგზავნამდე.",
   "prompt.toast.worktreeCreateFailed.title": "ვერ შეიქმნა სამუშაო ხე",
   "prompt.toast.sessionCreateFailed.title": "სესიის შექმნა ვერ მოხერხდა",
   "prompt.toast.shellSendFailed.title": "Shell ბრძანების გაგზავნა ვერ მოხერხდა",
@@ -414,7 +461,8 @@ export const dict = {
   "app.server.retrying": "ვცდი ავტომატურად...",
   "app.server.otherServers": "სხვა სერვერები",
   "dialog.server.title": "სერვერები",
-  "dialog.server.description": "გადართეთ რომელ OpenCode სერვერს უკავშირდება ეს აპი.",
+  "dialog.server.description":
+    "გადართეთ რომელ OpenCode სერვერს უკავშირდება ეს აპი.",
   "dialog.server.search.placeholder": "სერვერების ძებნა",
   "dialog.server.empty": "სერვერები ჯერ არ არის",
   "dialog.server.add.title": "სერვერის დამატება",
@@ -452,7 +500,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "აირჩიე დისტრო",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "შემოწმებულია WSL...",
-  "wsl.onboarding.restartRequired": "Windows საჭიროებს გადატვირთვას WSL-ის ინსტალაციის დასასრულებლად.",
+  "wsl.onboarding.restartRequired":
+    "Windows საჭიროებს გადატვირთვას WSL-ის ინსტალაციის დასასრულებლად.",
   "wsl.onboarding.ready": "WSL მზად არის.",
   "wsl.onboarding.required": "WSL საჭიროა გასაგრძელებლად.",
   "wsl.onboarding.checkingDistros": "გავრცელების შემოწმება...",
@@ -460,8 +509,10 @@ export const dict = {
   "wsl.onboarding.checkingDistro": "შემოწმებულია {{distro}}...",
   "wsl.onboarding.listingDistros": "Listing Distros...",
   "wsl.onboarding.distroReady": "{{distro}} მზად არის.",
-  "wsl.onboarding.distroNotInstalled": "{{distro}} ჯერ არ არის დაინსტალირებული.",
-  "wsl.onboarding.openDistroOnce": "გახსენით {{distro}} ერთხელ დაყენების დასასრულებლად.",
+  "wsl.onboarding.distroNotInstalled":
+    "{{distro}} ჯერ არ არის დაინსტალირებული.",
+  "wsl.onboarding.openDistroOnce":
+    "გახსენით {{distro}} ერთხელ დაყენების დასასრულებლად.",
   "wsl.onboarding.finishingDistro": "{{distro}}-ისთვის დაყენების დასრულება.",
   "wsl.onboarding.pickDistro": "აირჩიეთ დისტრო ან დააინსტალირეთ ერთი ქვემოთ.",
   "wsl.onboarding.checkingOpencode": "შემოწმებულია OpenCode...",
@@ -481,22 +532,27 @@ export const dict = {
   "wsl.onboarding.checkAgain": "გადაამოწმეთ",
   "wsl.onboarding.distroStatus.ready": "მზად",
   "wsl.onboarding.distroStatus.checking": "შემოწმება...",
-  "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode არ არის დაინსტალირებული",
+  "wsl.onboarding.distroStatus.opencodeMissing":
+    "OpenCode არ არის დაინსტალირებული",
   "wsl.onboarding.distroStatus.missingTools": "აკლია bash და curl",
-  "wsl.onboarding.distroStatus.unsupported": "მხარდაუჭერელია · გამოიყენეთ WSL 2",
+  "wsl.onboarding.distroStatus.unsupported":
+    "მხარდაუჭერელია · გამოიყენეთ WSL 2",
   "wsl.onboarding.needAnotherDistro": "გჭირდებათ სხვა დისტრო?",
-  "wsl.onboarding.needAnotherDistroHint": "დააინსტალირეთ Linux დისტრიბუცია WSL კატალოგიდან",
+  "wsl.onboarding.needAnotherDistroHint":
+    "დააინსტალირეთ Linux დისტრიბუცია WSL კატალოგიდან",
   "wsl.onboarding.wslNotInstalled.title": "WSL არ არის დაინსტალირებული",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows ქვესისტემა Linux-ისთვის) საჭიროა, სანამ OpenCode შეძლებს WSL სერვერის დამატებას",
   "wsl.onboarding.wslUnavailable.title": "WSL მიუწვდომელია",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ვერ დაადასტურა WSL ამ მოწყობილობაზე.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ვერ დაადასტურა WSL ამ მოწყობილობაზე.",
   "wsl.onboarding.installWsl": "დააინსტალირეთ WSL",
   "wsl.onboarding.windowsRestartRequired":
     "გადატვირთეთ Windows WSL-ის ინსტალაციის დასასრულებლად, შემდეგ ხელახლა გახსენით OpenCode.",
   "wsl.onboarding.next": "შემდეგი",
   "wsl.onboarding.refresh": "განახლება",
-  "wsl.onboarding.allDistrosAdded": "ყველა დაინსტალირებული დისტრო უკვე დამატებულია.",
+  "wsl.onboarding.allDistrosAdded":
+    "ყველა დაინსტალირებული დისტრო უკვე დამატებულია.",
   "wsl.onboarding.noDistros": "გავრცელება ჯერ არ არის გამოვლენილი.",
   "wsl.onboarding.install": "ინსტალაცია",
   "wsl.onboarding.installing": "ინსტალაცია...",
@@ -510,21 +566,26 @@ export const dict = {
   "wsl.onboarding.version": "ვერსია: {{version}}",
   "wsl.onboarding.unknown": "უცნობი",
   "wsl.onboarding.desktopVersion": "დესკტოპის {{version}}",
-  "wsl.onboarding.versionMismatch": "დაინსტალირებული ვერსია არ ემთხვევა დესკტოპის აპის ვერსიას.",
+  "wsl.onboarding.versionMismatch":
+    "დაინსტალირებული ვერსია არ ემთხვევა დესკტოპის აპის ვერსიას.",
   "wsl.onboarding.adding": "დამატება...",
-  "help.tabs.toast.ariaLabel": "გაცნობა ჩანართებს. მოაწყეთ თქვენი სამუშაო და აქტიური სესიები ჩანართებით",
+  "help.tabs.toast.ariaLabel":
+    "გაცნობა ჩანართებს. მოაწყეთ თქვენი სამუშაო და აქტიური სესიები ჩანართებით",
   "help.tabs.toast.dismiss": "ჩანართების ინფორმაციის უარყოფა",
   "help.tabs.title": "ჩანართების გაცნობა",
-  "help.tabs.description": "მოაწყვეთ თქვენი სამუშაო და აქტიური სესიები ჩანართებით",
+  "help.tabs.description":
+    "მოაწყვეთ თქვენი სამუშაო და აქტიური სესიები ჩანართებით",
   "help.tabs.date": "14 ივლისი",
-  "help.tabs.introduction": "OpenCode სამუშაო მაგიდა ახლა აგებულია ჩანართების გარშემო.",
+  "help.tabs.introduction":
+    "OpenCode სამუშაო მაგიდა ახლა აგებულია ჩანართების გარშემო.",
   "help.tabs.sessions":
     "დაიწყეთ ახალი სესია ჩანართში, ან გახსენით არსებული სესია თქვენი რომელიმე პროექტიდან. გახსენით ახალი ჩანართი, როდესაც რაიმე ახალს იწყებთ და დახურეთ, როდესაც დაასრულებთ.",
   "help.tabs.organize":
     "რამდენიმე ჩანართის გახსნა გაადვილებს თქვენი აქტიური სესიების ორგანიზებას. გადაარქვით ჩანართებს რაიმე დასამახსოვრებლად, თუ აპირებთ მათ შენარჩუნებას.",
   "help.tabs.home":
     "თქვენ იპოვით ყველა თქვენს სესიას და პროექტს ახალ მთავარ ეკრანზე. სესიის არჩევა ხსნის მას ჩანართში.",
-  "help.tabs.persistence": "აპის ხელახლა გახსნისას, თქვენი ჩანართები კვლავ ღიაა.",
+  "help.tabs.persistence":
+    "აპის ხელახლა გახსნისას, თქვენი ჩანართები კვლავ ღიაა.",
   "help.tabs.worktrees":
     "ახალი დიზაინი ჯერ არ უჭერს მხარს Git Worktrees-ს, ის მალე გამოვა. ასე რომ, თუ გსურთ გააგრძელოთ წინა განლაგების გამოყენება, შეგიძლიათ გადართოთ განლაგებებს შორის პარამეტრებიდან. უბრალოდ გაითვალისწინეთ, რომ ახალი განლაგება მუდმივი გახდება რამდენიმე კვირაში.",
   "server.row.noUsername": "მომხმარებლის სახელის გარეშე",
@@ -537,14 +598,16 @@ export const dict = {
   "dialog.project.edit.color": "ფერი",
   "dialog.project.edit.color.select": "აირჩიეთ {{color}} ფერი",
   "dialog.project.edit.worktree.startup": "სამუშაო სივრცის გაშვების სკრიპტი",
-  "dialog.project.edit.worktree.startup.description": "იშვება ახალი სამუშაო სივრცის (სამუშაო ხის) შექმნის შემდეგ",
+  "dialog.project.edit.worktree.startup.description":
+    "იშვება ახალი სამუშაო სივრცის (სამუშაო ხის) შექმნის შემდეგ",
   "dialog.project.edit.worktree.startup.placeholder": "მაგ. bun ინსტალაცია",
   "dialog.releaseNotes.action.getStarted": "დაწყება",
   "dialog.releaseNotes.action.next": "შემდეგი",
   "dialog.releaseNotes.action.hideFuture": "მომავალში არ მაჩვენო",
   "dialog.releaseNotes.media.alt": "გამოშვების გადახედვა",
   "context.breakdown.title": "კონტექსტის დაშლა",
-  "context.breakdown.note": 'შეყვანის ნიშნების სავარაუდო დაშლა. "სხვა" მოიცავს ხელსაწყოს განმარტებებს და ზედნადებს.',
+  "context.breakdown.note":
+    'შეყვანის ნიშნების სავარაუდო დაშლა. "სხვა" მოიცავს ხელსაწყოს განმარტებებს და ზედნადებს.',
   "context.breakdown.system": "სისტემა",
   "context.breakdown.user": "მომხმარებელი",
   "context.breakdown.assistant": "ასისტენტი",
@@ -597,49 +660,68 @@ export const dict = {
   "toast.theme.title": "თემა შეიცვალა",
   "toast.scheme.title": "ფერთა სქემა",
   "toast.workspace.enabled.title": "სამუშაო სივრცე ჩართულია",
-  "toast.workspace.enabled.description": "მრავალი სამუშაო ხე ახლა ნაჩვენებია გვერდითა ზოლში",
+  "toast.workspace.enabled.description":
+    "მრავალი სამუშაო ხე ახლა ნაჩვენებია გვერდითა ზოლში",
   "toast.workspace.disabled.title": "სამუშაო სივრცე გამორთულია",
-  "toast.workspace.disabled.description": "მხოლოდ ძირითადი სამუშაო ხე ნაჩვენებია გვერდითა ზოლში",
+  "toast.workspace.disabled.description":
+    "მხოლოდ ძირითადი სამუშაო ხე ნაჩვენებია გვერდითა ზოლში",
   "toast.permissions.autoaccept.on.title": "ნებართვების ავტომატური მიღება",
-  "toast.permissions.autoaccept.on.description": "ნებართვის მოთხოვნები ავტომატურად დამტკიცდება",
-  "toast.permissions.autoaccept.off.title": "შეწყდა ნებართვების ავტომატური მიღება",
-  "toast.permissions.autoaccept.off.description": "ნებართვის მოთხოვნა საჭიროებს დამტკიცებას",
+  "toast.permissions.autoaccept.on.description":
+    "ნებართვის მოთხოვნები ავტომატურად დამტკიცდება",
+  "toast.permissions.autoaccept.off.title":
+    "შეწყდა ნებართვების ავტომატური მიღება",
+  "toast.permissions.autoaccept.off.description":
+    "ნებართვის მოთხოვნა საჭიროებს დამტკიცებას",
   "toast.model.none.title": "მოდელი არ არის არჩეული",
-  "toast.model.none.description": "დააკავშირეთ პროვაიდერი ამ სესიის შესაჯამებლად",
+  "toast.model.none.description":
+    "დააკავშირეთ პროვაიდერი ამ სესიის შესაჯამებლად",
   "toast.file.loadFailed.title": "ფაილის ჩატვირთვა ვერ მოხერხდა",
   "toast.file.listFailed.title": "ფაილების სია ვერ მოხერხდა",
   "toast.context.noLineSelection.title": "ხაზი არ არის მონიშნული",
-  "toast.context.noLineSelection.description": "აირჩიეთ ხაზის დიაპაზონი ჯერ ფაილის ჩანართში.",
-  "toast.session.share.copyFailed.title": "ვერ მოხერხდა URL-ის კოპირება ბუფერში",
+  "toast.context.noLineSelection.description":
+    "აირჩიეთ ხაზის დიაპაზონი ჯერ ფაილის ჩანართში.",
+  "toast.session.share.copyFailed.title":
+    "ვერ მოხერხდა URL-ის კოპირება ბუფერში",
   "toast.session.share.success.title": "სესია გაზიარებულია",
-  "toast.session.share.success.description": "გააზიარეთ URL კოპირებულია ბუფერში!",
+  "toast.session.share.success.description":
+    "გააზიარეთ URL კოპირებულია ბუფერში!",
   "toast.session.share.failed.title": "სესიის გაზიარება ვერ მოხერხდა",
   "toast.session.share.failed.description": "მოხდა შეცდომა სესიის გაზიარებისას",
   "toast.session.unshare.success.title": "სესია გაუზიარებელი",
   "toast.session.unshare.success.description": "სესია წარმატებით გაუზიარეს!",
-  "toast.session.unshare.failed.title": "ვერ მოხერხდა სესიის გაზიარების გაუქმება",
-  "toast.session.unshare.failed.description": "მოხდა შეცდომა სესიის გაზიარებისას",
+  "toast.session.unshare.failed.title":
+    "ვერ მოხერხდა სესიის გაზიარების გაუქმება",
+  "toast.session.unshare.failed.description":
+    "მოხდა შეცდომა სესიის გაზიარებისას",
   "toast.session.export.success.title": "სესია ექსპორტირებული",
   "toast.session.export.success.description": "სესია შენახულია {{filename}}",
   "toast.session.export.failed.title": "სესიის ექსპორტი ვერ მოხერხდა",
-  "toast.session.export.failed.description": "მოხდა შეცდომა სესიის ექსპორტის დროს",
+  "toast.session.export.failed.description":
+    "მოხდა შეცდომა სესიის ექსპორტის დროს",
   "toast.session.listFailed.title": "ვერ ჩაიტვირთა სესიები {{project}}",
   "toast.project.reloadFailed.title": "ვერ ჩაიტვირთა {{project}}",
   "toast.update.title": "ხელმისაწვდომია განახლება",
-  "toast.update.description": "OpenCode-ის ({{version}}) ახალი ვერსია ახლა ხელმისაწვდომია დასაინსტალირებლად.",
+  "toast.update.description":
+    "OpenCode-ის ({{version}}) ახალი ვერსია ახლა ხელმისაწვდომია დასაინსტალირებლად.",
   "toast.update.action.installRestart": "ინსტალაცია და გადატვირთვა",
-  "disk.accessGuidance.macos": "სისტემის პარამეტრებში მიანიჭეთ DiskLizard-ს Full Disk Access უფლება და ხელახლა სკანირება მოახდინეთ.",
-  "disk.accessGuidance.windows": "გამოიყენეთ ანგარიში, რომელსაც ამ დისკზე წვდომა აქვს, ან სკანირება მოახდინეთ საქაღალდეზე, რომელიც თქვენს ანგარიშს შეუძლია წაიკითხოს.",
-  "disk.accessGuidance.linux": "გადახედეთ საქაღალდეებისა და მიმაგრების წვდომის უფლებებს და ხელახლა სკანირება მოახდინეთ.",
-  "disk.accessGuidance.default": "გადახედეთ ამ საქაღალდეებზე წვდომას და ხელახლა სკანირება მოახდინეთ.",
-  "disk.accessGuidance.rescan": "წვდომის შეცვლის შემდეგ გამოიყენეთ Rescan ზედა პანელში.",
+  "disk.accessGuidance.macos":
+    "სისტემის პარამეტრებში მიანიჭეთ DiskLizard-ს Full Disk Access უფლება და ხელახლა სკანირება მოახდინეთ.",
+  "disk.accessGuidance.windows":
+    "გამოიყენეთ ანგარიში, რომელსაც ამ დისკზე წვდომა აქვს, ან სკანირება მოახდინეთ საქაღალდეზე, რომელიც თქვენს ანგარიშს შეუძლია წაიკითხოს.",
+  "disk.accessGuidance.linux":
+    "გადახედეთ საქაღალდეებისა და მიმაგრების წვდომის უფლებებს და ხელახლა სკანირება მოახდინეთ.",
+  "disk.accessGuidance.default":
+    "გადახედეთ ამ საქაღალდეებზე წვდომას და ხელახლა სკანირება მოახდინეთ.",
+  "disk.accessGuidance.rescan":
+    "წვდომის შეცვლის შემდეგ გამოიყენეთ Rescan ზედა პანელში.",
   "disk.common.rescan": "თავიდან სკანირება",
   "toast.update.action.notYet": "ჯერ არა",
   "toast.update.installFailed.title": "განახლების დაყენება ვერ მოხერხდა",
   "toast.update.installFailed.retry": "ხელახლა ცდა",
   "error.page.title": "რაღაც შეცდომა მოხდა",
   "error.page.description": "მოხდა შეცდომა აპლიკაციის ჩატვირთვისას.",
-  "error.page.description.localServerStartup": "მოხდა შეცდომა ლოკალური სერვერის გაშვებისას.",
+  "error.page.description.localServerStartup":
+    "მოხდა შეცდომა ლოკალური სერვერის გაშვებისას.",
   "error.page.details.label": "შეცდომის დეტალები",
   "error.page.action.restart": "გადატვირთვა",
   "error.page.action.report": "შეცდომის შესახებ შეტყობინება",
@@ -654,12 +736,15 @@ export const dict = {
   "error.page.version": "ვერსია: {{version}}",
   "error.dev.rootNotFound":
     "ძირის ელემენტი ვერ მოიძებნა. დაგავიწყდათ მისი დამატება თქვენს index.html-ში? ან იქნებ id ატრიბუტი არასწორად არის დაწერილი?",
-  "error.serverSync.connectFailed": "სერვერთან დაკავშირება ვერ მოხერხდა. არის სერვერი გაშვებული `{{url}}`-ზე?",
+  "error.serverSync.connectFailed":
+    "სერვერთან დაკავშირება ვერ მოხერხდა. არის სერვერი გაშვებული `{{url}}`-ზე?",
   "error.serverSDK.noServerAvailable": "სერვერი არ არის ხელმისაწვდომი",
   "error.serverSDK.serverNotAvailable": "სერვერი მიუწვდომელია",
   "error.childStore.persistedCacheCreateFailed": "შეუძლებელია ქეშის შექმნა",
-  "error.childStore.persistedProjectMetadataCreateFailed": "პროექტის მუდმივი მეტამონაცემების შექმნა ვერ მოხერხდა",
-  "error.childStore.persistedProjectIconCreateFailed": "პროექტის მუდმივი ხატის შექმნა ვერ მოხერხდა",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "პროექტის მუდმივი მეტამონაცემების შექმნა ვერ მოხერხდა",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "პროექტის მუდმივი ხატის შექმნა ვერ მოხერხდა",
   "error.childStore.storeCreateFailed": "მაღაზიის შექმნა ვერ მოხერხდა",
   "directory.error.invalidUrl": "არასწორი დირექტორია URL-ში.",
   "error.chain.unknown": "უცნობი შეცდომა",
@@ -671,23 +756,31 @@ export const dict = {
   "error.chain.responseBody": "პასუხის სხეული:\n{{body}}",
   "error.chain.didYouMean": "იგულისხმეთ: {{suggestions}}",
   "error.chain.modelNotFound": "მოდელი ვერ მოიძებნა: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "შეამოწმეთ თქვენი კონფიგურაცია (opencode.json) პროვაიდერის/მოდელების სახელები",
+  "error.chain.checkConfig":
+    "შეამოწმეთ თქვენი კონფიგურაცია (opencode.json) პროვაიდერის/მოდელების სახელები",
   "error.chain.mcpFailed":
     'MCP სერვერი "{{name}}" ვერ მოხერხდა. შენიშვნა, OpenCode ჯერ არ უჭერს მხარს MCP ავთენტიფიკაციას.',
-  "error.chain.providerAuthFailed": "პროვაიდერის ავთენტიფიკაცია ვერ მოხერხდა ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "პროვაიდერის ავთენტიფიკაცია ვერ მოხერხდა ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "ვერ მოხერხდა პროვაიდერის „{{provider}}“ ინიციალიზაცია. შეამოწმეთ რწმუნებათა სიგელები და კონფიგურაცია.",
-  "error.chain.configJsonInvalid": "კონფიგურაციის ფაილი {{path}}-ზე არ არის სწორი JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "კონფიგურაციის ფაილი {{path}}-ზე არ არის სწორი JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "კონფიგურაციის ფაილი {{path}}-ზე არ არის სწორი JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "კონფიგურაციის ფაილი {{path}}-ზე არ არის სწორი JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'ცნობარი "{{dir}}" {{path}}-ში არასწორია. დაარქვით დირექტორიას "{{suggestion}}" ან წაშალეთ იგი. ეს ჩვეულებრივი შეცდომაა.',
-  "error.chain.configFrontmatterError": "ვერ მოხერხდა ფრონტის მასალის გაანალიზება {{path}}-ში:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "ვერ მოხერხდა ფრონტის მასალის გაანალიზება {{path}}-ში:\n{{message}}",
   "error.chain.configInvalid": "კონფიგურაციის ფაილი {{path}}-ზე არასწორია",
-  "error.chain.configInvalidWithMessage": "კონფიგურაციის ფაილი {{path}}-ზე არასწორია: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "კონფიგურაციის ფაილი {{path}}-ზე არასწორია: {{message}}",
   "notification.permission.title": "ნებართვა საჭიროა",
-  "notification.permission.description": "{{sessionTitle}} {{projectName}}-ში საჭიროებს ნებართვას",
+  "notification.permission.description":
+    "{{sessionTitle}} {{projectName}}-ში საჭიროებს ნებართვას",
   "notification.question.title": "კითხვა",
-  "notification.question.description": "{{sessionTitle}} {{projectName}}-ში აქვს შეკითხვა",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}}-ში აქვს შეკითხვა",
   "notification.action.goToSession": "სესიაზე გადასვლა",
   "notification.session.responseReady.title": "პასუხი მზად არის",
   "notification.session.error.title": "სესიის შეცდომა",
@@ -718,7 +811,8 @@ export const dict = {
   "session.tab.unknown": "უცნობი სესია",
   "session.panel.reviewAndFiles": "მიმოხილვა და ფაილები",
   "session.error.notFound": "ეს სესია ვერ მოიძებნა",
-  "session.error.notFound.description": "ეს ჩანართი მიუთითებს სესიაზე, რომელიც აღარ არსებობს ამ სერვერზე.",
+  "session.error.notFound.description":
+    "ეს ჩანართი მიუთითებს სესიაზე, რომელიც აღარ არსებობს ამ სერვერზე.",
   "session.error.notFound.closeTab": "ჩანართის დახურვა",
   "session.error.serverConnection": "ამ სერვერთან დაკავშირება შეუძლებელია",
   "session.review.filesChanged": "ფაილები შეიცვალა {{count}}",
@@ -726,19 +820,23 @@ export const dict = {
   "session.review.change.other": "ცვლილებები",
   "session.review.loadingChanges": "ცვლილებების ჩატვირთვა...",
   "session.review.empty": "ამ სესიაში ცვლილებები ჯერ არ არის",
-  "session.review.noVcs": "არ არის აღმოჩენილი Git ვერსიის კონტროლის სისტემა, ცვლილებები არ არის ნაჩვენები",
+  "session.review.noVcs":
+    "არ არის აღმოჩენილი Git ვერსიის კონტროლის სისტემა, ცვლილებები არ არის ნაჩვენები",
   "session.review.noVcs.createGit.title": "შექმენით Git საცავი",
-  "session.review.noVcs.createGit.description": "თვალყური ადევნეთ, გადახედეთ და გააუქმეთ ცვლილებები ამ პროექტში",
+  "session.review.noVcs.createGit.description":
+    "თვალყური ადევნეთ, გადახედეთ და გააუქმეთ ცვლილებები ამ პროექტში",
   "session.review.noVcs.createGit.actionLoading": "Git საცავის შექმნა...",
   "session.review.noVcs.createGit.action": "შექმენით Git საცავი",
-  "session.review.noSnapshot": "Snapshot tracking გამორთულია კონფიგურაციაში, ამიტომ სესიის ცვლილებები მიუწვდომელია",
+  "session.review.noSnapshot":
+    "Snapshot tracking გამორთულია კონფიგურაციაში, ამიტომ სესიის ცვლილებები მიუწვდომელია",
   "session.review.noChanges": "ცვლილებები არ არის",
   "session.review.noUncommittedChanges": "შეუსრულებელი ცვლილებები ჯერ არ არის",
   "session.review.noBranchChanges": "ფილიალი ჯერ არ არის ცვლილებები",
   "session.files.selectToOpen": "აირჩიეთ ფაილი გასახსნელად",
   "session.files.all": "ყველა ფაილი",
   "session.files.empty": "ფაილები არ არის",
-  "session.files.binaryContent": "ორობითი ფაილი (კონტენტის ჩვენება შეუძლებელია)",
+  "session.files.binaryContent":
+    "ორობითი ფაილი (კონტენტის ჩვენება შეუძლებელია)",
   "session.messages.renderEarlier": "ადრე შეტყობინებების რენდერი",
   "session.messages.loadingEarlier": "ვიტვირთება ადრინდელი შეტყობინებები...",
   "session.messages.loadEarlier": "ადრე შეტყობინებების ჩატვირთვა",
@@ -755,7 +853,8 @@ export const dict = {
   "session.question.pending.one": "{{count}} მომლოდინე შეკითხვა",
   "session.question.pending.other": "{{count}} მომლოდინე შეკითხვა",
   "session.followupDock.summary.one": "{{count}} რიგში დადებული შეტყობინება",
-  "session.followupDock.summary.other": "{{count}} რიგში შემავალი შეტყობინებები",
+  "session.followupDock.summary.other":
+    "{{count}} რიგში შემავალი შეტყობინებები",
   "session.followupDock.sendNow": "გაგზავნა ახლა",
   "session.followupDock.edit": "რედაქტირება",
   "session.followupDock.collapse": "შეტყობინებების რიგში ჩაკეცვა",
@@ -812,7 +911,8 @@ export const dict = {
   "status.popover.tab.plugins": "დანამატები",
   "status.popover.action.manageServers": "სერვერების მართვა",
   "session.share.popover.title": "გამოქვეყნება ვებზე",
-  "session.share.popover.description.shared": "ეს სესია საჯაროა ინტერნეტში. ის ხელმისაწვდომია ყველასთვის ბმულით.",
+  "session.share.popover.description.shared":
+    "ეს სესია საჯაროა ინტერნეტში. ის ხელმისაწვდომია ყველასთვის ბმულით.",
   "session.share.popover.description.unshared":
     "სესიის საჯაროდ გაზიარება ვებში. ის ყველასთვის ხელმისაწვდომი იქნება ბმულით.",
   "session.share.action.share": "გაზიარება",
@@ -831,11 +931,14 @@ export const dict = {
   "terminal.title.numbered": "ტერმინალი {{number}}",
   "terminal.close": "ტერმინალის დახურვა",
   "terminal.connectionLost.title": "კავშირი დაიკარგა",
-  "terminal.connectionLost.abnormalClose": "WebSocket დახურულია არანორმალურად: {{code}}",
-  "terminal.connectionLost.description": "ტერმინალის კავშირი შეწყდა. ეს შეიძლება მოხდეს სერვერის გადატვირთვისას.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket დახურულია არანორმალურად: {{code}}",
+  "terminal.connectionLost.description":
+    "ტერმინალის კავშირი შეწყდა. ეს შეიძლება მოხდეს სერვერის გადატვირთვისას.",
   "terminal.connectTicket.csrfError":
     "PTY დამაკავშირებელი ბილეთი უარყოფილია წარმოშობის ან CSRF ჩეკებით. შეამოწმეთ სერვერის CORS კონფიგურაცია.",
-  "terminal.connectTicket.statusError": "PTY დაკავშირების ბილეთი ვერ მოხერხდა {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY დაკავშირების ბილეთი ვერ მოხერხდა {{status}}",
   "titlebar.update": "განახლება",
   "titlebar.updateVersion": "განახლება {{version}}",
   "common.closeTab": "ჩანართის დახურვა",
@@ -879,7 +982,8 @@ export const dict = {
   "sidebar.workspaces.enable": "სამუშაო სივრცის ჩართვა",
   "sidebar.workspaces.disable": "სამუშაო სივრცის გამორთვა",
   "sidebar.gettingStarted.title": "დაწყება",
-  "sidebar.gettingStarted.line1": "OpenCode მოიცავს უფასო მოდელებს, ასე რომ თქვენ შეგიძლიათ დაუყოვნებლივ დაიწყოთ.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode მოიცავს უფასო მოდელებს, ასე რომ თქვენ შეგიძლიათ დაუყოვნებლივ დაიწყოთ.",
   "sidebar.gettingStarted.line2":
     "დააკავშირეთ ნებისმიერი პროვაიდერი მოდელების გამოსაყენებლად, inc. Claude, GPT, Gemini და სხვ.",
   "sidebar.project.recentSessions": "ბოლო სესიები",
@@ -899,23 +1003,29 @@ export const dict = {
   "debugBar.jank.label": "შეფერხება",
   "debugBar.jank.tip": "ჩარჩოები 32 ms-ზე მეტი ბოლო 5 წამში.",
   "debugBar.long.label": "ხანგრძლივი",
-  "debugBar.long.tip": "დაბლოკილი დრო და ხანგრძლივი ამოცანების რაოდენობა ბოლო 5 წამში. მაქსიმალური დავალება: {{max}}.",
+  "debugBar.long.tip":
+    "დაბლოკილი დრო და ხანგრძლივი ამოცანების რაოდენობა ბოლო 5 წამში. მაქსიმალური დავალება: {{max}}.",
   "debugBar.delay.label": "დაყოვნება",
   "debugBar.delay.tip": "შეყვანის ყველაზე უარესი შეფერხება ბოლო 5 წამში.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "ინტერაქციის სავარაუდო ხანგრძლივობა ბოლო 5 წამის განმავლობაში. ეს არის INP-ის მსგავსი და არა ოფიციალური Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "განლაგების კუმულატიური ცვლა აპლიკაციის მიმდინარე სიცოცხლის ხანგრძლივობისთვის.",
+  "debugBar.cls.tip":
+    "განლაგების კუმულატიური ცვლა აპლიკაციის მიმდინარე სიცოცხლის ხანგრძლივობისთვის.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "გამოყენებული JS heap vs heap limit. მხოლოდ Chromium.",
-  "debugBar.mem.tip": "გამოყენებული JS heap vs heap limit. {{used}} / {{limit}}-დან.",
+  "debugBar.mem.tipUnavailable":
+    "გამოყენებული JS heap vs heap limit. მხოლოდ Chromium.",
+  "debugBar.mem.tip":
+    "გამოყენებული JS heap vs heap limit. {{used}} / {{limit}}-დან.",
   "debugBar.focus.label": "ფოკუსი",
-  "debugBar.focus.tip": "აიძულებს ფოკუსირებას სტილებს ყველა ინტერაქტიულ ელემენტზე",
+  "debugBar.focus.tip":
+    "აიძულებს ფოკუსირებას სტილებს ყველა ინტერაქტიულ ელემენტზე",
   "debugBar.focus.on": "ჩართული",
   "debugBar.focus.off": "გამორთული",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "აპის სრული განლაგების მიმართულების იძულება არჩეული ენის შეცვლის გარეშე",
+  "debugBar.direction.tip":
+    "აპის სრული განლაგების მიმართულების იძულება არჩეული ენის შეცვლის გარეშე",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode სამუშაო მაგიდა",
@@ -925,7 +1035,8 @@ export const dict = {
   "settings.tab.shortcuts": "მალსახმობები",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ინტეგრაცია",
-  "settings.desktop.wsl.description": "გაუშვით OpenCode სერვერი WSL-ში Windows-ზე.",
+  "settings.desktop.wsl.description":
+    "გაუშვით OpenCode სერვერი WSL-ში Windows-ზე.",
   "settings.general.section.appearance": "გარეგნობა",
   "settings.general.section.advanced": "დამატებითი",
   "settings.general.section.notifications": "სისტემის შეტყობინებები",
@@ -936,75 +1047,99 @@ export const dict = {
   "settings.general.row.language.title": "ენა",
   "settings.general.row.language.description": "შეცვალეთ ჩვენების ენა OpenCode",
   "settings.general.row.shell.title": "ტერმინალის გარსი",
-  "settings.general.row.shell.description": "Shell გამოიყენება ტერმინალის და აგენტის ხელსაწყოების მიერ",
+  "settings.general.row.shell.description":
+    "Shell გამოიყენება ტერმინალის და აგენტის ხელსაწყოების მიერ",
   "settings.general.row.shell.autoDefault": "ავტომატური (ნაგულისხმევი)",
   "settings.general.row.shell.terminalOnly": "მხოლოდ ტერმინალი",
   "settings.general.row.appearance.title": "გარეგნობა",
-  "settings.general.row.appearance.description": "მორგეთ, როგორ გამოიყურება OpenCode თქვენს მოწყობილობაზე",
+  "settings.general.row.appearance.description":
+    "მორგეთ, როგორ გამოიყურება OpenCode თქვენს მოწყობილობაზე",
   "settings.general.row.colorScheme.title": "ფერთა სქემა",
-  "settings.general.row.colorScheme.description": "აირჩიეთ, მიჰყვება თუ არა OpenCode სისტემას, ღია თუ ბნელ თემას",
+  "settings.general.row.colorScheme.description":
+    "აირჩიეთ, მიჰყვება თუ არა OpenCode სისტემას, ღია თუ ბნელ თემას",
   "settings.general.row.theme.title": "თემა",
-  "settings.general.row.theme.description": "მორგება, თუ როგორ არის OpenCode თემატური.",
+  "settings.general.row.theme.description":
+    "მორგება, თუ როგორ არის OpenCode თემატური.",
   "settings.general.row.font.title": "კოდის შრიფტი",
-  "settings.general.row.font.description": "მორგეთ კოდის ბლოკებში გამოყენებული შრიფტი",
+  "settings.general.row.font.description":
+    "მორგეთ კოდის ბლოკებში გამოყენებული შრიფტი",
   "settings.general.row.terminalFont.title": "ტერმინალის შრიფტი",
-  "settings.general.row.terminalFont.description": "მორგეთ ტერმინალში გამოყენებული შრიფტი",
+  "settings.general.row.terminalFont.description":
+    "მორგეთ ტერმინალში გამოყენებული შრიფტი",
   "settings.general.row.uiFont.title": "UI ფონტი",
-  "settings.general.row.uiFont.description": "დააყენეთ ინტერფეისში გამოყენებული შრიფტის მორგება",
+  "settings.general.row.uiFont.description":
+    "დააყენეთ ინტერფეისში გამოყენებული შრიფტის მორგება",
   "settings.general.row.followup.title": "შემდეგი ქცევა",
   "settings.general.row.followup.description":
     "აირჩიეთ, შემდგომი დაკვირვების მოთხოვნა მყისიერად იხელმძღვანელეთ თუ დაელოდეთ რიგში",
   "settings.general.row.followup.option.queue": "რიგი",
   "settings.general.row.followup.option.steer": "მმართველი",
   "settings.general.row.showFileTree.title": "ფაილის ხე",
-  "settings.general.row.showFileTree.description": "ფაილის ხის პანელის ჩვენება სესიებში",
+  "settings.general.row.showFileTree.description":
+    "ფაილის ხის პანელის ჩვენება სესიებში",
   "settings.general.row.showNavigation.title": "ნავიგაციის კონტროლი",
-  "settings.general.row.showNavigation.description": "უკანა და წინსვლის ღილაკების ჩვენება დესკტოპის სათაურის ზოლში",
+  "settings.general.row.showNavigation.description":
+    "უკანა და წინსვლის ღილაკების ჩვენება დესკტოპის სათაურის ზოლში",
   "settings.general.row.showSearch.title": "ბრძანების პალიტრა",
-  "settings.general.row.showSearch.description": "ძებნისა და ბრძანების პალიტრის ღილაკის ჩვენება სათაურის ზოლში",
+  "settings.general.row.showSearch.description":
+    "ძებნისა და ბრძანების პალიტრის ღილაკის ჩვენება სათაურის ზოლში",
   "settings.general.row.showTerminal.title": "ტერმინალი",
-  "settings.general.row.showTerminal.description": "ტერმინალის ღილაკის ჩვენება დესკტოპის სათაურის ზოლში",
+  "settings.general.row.showTerminal.description":
+    "ტერმინალის ღილაკის ჩვენება დესკტოპის სათაურის ზოლში",
   "settings.general.row.showStatus.title": "სერვერის სტატუსი",
-  "settings.general.row.showStatus.description": "სერვერის სტატუსის ღილაკის ჩვენება სათაურის ზოლში",
+  "settings.general.row.showStatus.description":
+    "სერვერის სტატუსის ღილაკის ჩვენება სათაურის ზოლში",
   "settings.general.row.mobileTitlebarBottom.title": "ქვედა ნავიგაცია",
   "settings.general.row.mobileTitlebarBottom.description":
     "მოათავსეთ სათაურის ზოლი და სესიის ჩანართები ეკრანის ბოლოში მობილურზე",
   "settings.general.row.showCustomAgents.title": "აგენტის ჩვენება",
   "settings.general.row.showCustomAgents.description":
     "გადართვა კომპოზიტორში აგენტებს შორის. როდესაც დამალულია, ნაგულისხმევად არის Build აგენტი.",
-  "settings.general.row.reasoningSummaries.title": "მსჯელობის შეჯამების ჩვენება",
-  "settings.general.row.reasoningSummaries.description": "მოდელების მსჯელობის რეზიუმეების ჩვენება ვადებში",
-  "settings.general.row.shellToolPartsExpanded.title": "Shell ხელსაწყოს ნაწილების გაფართოება",
+  "settings.general.row.reasoningSummaries.title":
+    "მსჯელობის შეჯამების ჩვენება",
+  "settings.general.row.reasoningSummaries.description":
+    "მოდელების მსჯელობის რეზიუმეების ჩვენება ვადებში",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Shell ხელსაწყოს ნაწილების გაფართოება",
   "settings.general.row.shellToolPartsExpanded.description":
     "Shell ხელსაწყოს ნაწილების ნაგულისხმევად გაფართოებული ჩვენება ქრონოლოგიაში",
-  "settings.general.row.editToolPartsExpanded.title": "გაფართოვდეს ხელსაწყოს ნაწილები",
+  "settings.general.row.editToolPartsExpanded.title":
+    "გაფართოვდეს ხელსაწყოს ნაწილები",
   "settings.general.row.editToolPartsExpanded.description":
     "აჩვენეთ რედაქტირების, ჩაწერის და პაჩის ხელსაწყოს ნაწილები, რომლებიც ნაგულისხმევად გაფართოვდა ვადებში",
   "settings.general.row.newInterface.title": "ახალი განლაგება",
   "settings.general.row.newInterface.badge": "ახალი",
   "settings.general.row.newInterface.description":
     "გამოიყენეთ ახალი ჩანართები და სახლის განლაგება. განლაგებებს შორის გადართვა შეზღუდული დროით.",
-  "settings.general.row.newInterfaceNotice.title": "თქვენ ახლა იყენებთ ახალ განლაგებას",
-  "settings.general.row.newInterfaceNotice.description": "წინა განლაგება აღარ არის ხელმისაწვდომი",
+  "settings.general.row.newInterfaceNotice.title":
+    "თქვენ ახლა იყენებთ ახალ განლაგებას",
+  "settings.general.row.newInterfaceNotice.description":
+    "წინა განლაგება აღარ არის ხელმისაწვდომი",
   "settings.general.row.newInterfaceNotice.dismiss": "დატოვება",
   "settings.general.row.pinchZoom.title": "დააჭირე გასადიდებლად",
-  "settings.general.row.pinchZoom.description": "Trackpad pinch და Ctrl-scroll ჟესტებით მასშტაბირება",
+  "settings.general.row.pinchZoom.description":
+    "Trackpad pinch და Ctrl-scroll ჟესტებით მასშტაბირება",
   "settings.general.row.wayland.title": "გამოიყენე მშობლიური Wayland",
-  "settings.general.row.wayland.description": "X11-ის გამორთვა Wayland-ზე. საჭიროებს გადატვირთვას.",
+  "settings.general.row.wayland.description":
+    "X11-ის გამორთვა Wayland-ზე. საჭიროებს გადატვირთვას.",
   "settings.general.row.wayland.tooltip":
     "Linux-ზე განახლების სიჩქარის შერეული მონიტორებით, მშობლიური Wayland შეიძლება იყოს უფრო სტაბილური.",
   "settings.general.row.releaseNotes.title": "გამოშვების შენიშვნები",
-  "settings.general.row.releaseNotes.description": "აჩვენე რა არის ახალი ამომხტარი ფანჯარა განახლებების შემდეგ",
+  "settings.general.row.releaseNotes.description":
+    "აჩვენე რა არის ახალი ამომხტარი ფანჯარა განახლებების შემდეგ",
   "settings.updates.row.startup.title": "შეამოწმეთ განახლებები გაშვებისას",
-  "settings.updates.row.startup.description": "ავტომატურად შეამოწმეთ განახლებები, როდესაც OpenCode გაშვება",
+  "settings.updates.row.startup.description":
+    "ავტომატურად შეამოწმეთ განახლებები, როდესაც OpenCode გაშვება",
   "settings.updates.row.check.title": "შეამოწმეთ განახლებები",
-  "settings.updates.row.check.description": "ხელით შეამოწმეთ განახლებები და დააინსტალირეთ, თუ შესაძლებელია",
+  "settings.updates.row.check.description":
+    "ხელით შეამოწმეთ განახლებები და დააინსტალირეთ, თუ შესაძლებელია",
   "settings.updates.action.checkNow": "შეამოწმეთ ახლა",
   "settings.updates.action.checking": "შემოწმება...",
   "settings.updates.action.downloading": "ჩამოტვირთვა...",
   "settings.updates.action.installing": "ინსტალაცია...",
   "settings.updates.toast.latest.title": "თქვენ განახლებული ხართ",
-  "settings.updates.toast.latest.description": "თქვენ იყენებთ OpenCode-ის უახლეს ვერსიას.",
+  "settings.updates.toast.latest.description":
+    "თქვენ იყენებთ OpenCode-ის უახლეს ვერსიას.",
   "sound.option.none": "არცერთი",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1055,21 +1190,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "სისტემის შეტყობინების ჩვენება, როდესაც აგენტი დასრულებულია ან საჭიროებს ყურადღებას",
   "settings.general.notifications.permissions.title": "ნებართვები",
-  "settings.general.notifications.permissions.description": "სისტემის შეტყობინების ჩვენება, როცა საჭიროა ნებართვა",
+  "settings.general.notifications.permissions.description":
+    "სისტემის შეტყობინების ჩვენება, როცა საჭიროა ნებართვა",
   "settings.general.notifications.errors.title": "შეცდომები",
-  "settings.general.notifications.errors.description": "სისტემის შეტყობინების ჩვენება შეცდომის დადგომისას",
+  "settings.general.notifications.errors.description":
+    "სისტემის შეტყობინების ჩვენება შეცდომის დადგომისას",
   "settings.general.sounds.agent.title": "აგენტი",
-  "settings.general.sounds.agent.description": "ხმის დაკვრა, როცა აგენტი დასრულებულია ან საჭიროებს ყურადღებას",
+  "settings.general.sounds.agent.description":
+    "ხმის დაკვრა, როცა აგენტი დასრულებულია ან საჭიროებს ყურადღებას",
   "settings.general.sounds.permissions.title": "ნებართვები",
-  "settings.general.sounds.permissions.description": "ხმის დაკვრა როცა საჭიროა ნებართვა",
+  "settings.general.sounds.permissions.description":
+    "ხმის დაკვრა როცა საჭიროა ნებართვა",
   "settings.general.sounds.errors.title": "შეცდომები",
   "settings.general.sounds.errors.description": "ხმის დაკვრა შეცდომის დროს",
   "settings.shortcuts.title": "კლავიატურის მალსახმობები",
   "settings.shortcuts.reset.button": "დაყენება ნაგულისხმევზე",
   "settings.shortcuts.reset.toast.title": "მალსახმობები აღდგენილია",
-  "settings.shortcuts.reset.toast.description": "კლავიატურის მალსახმობები აღდგენილია ნაგულისხმევად.",
+  "settings.shortcuts.reset.toast.description":
+    "კლავიატურის მალსახმობები აღდგენილია ნაგულისხმევად.",
   "settings.shortcuts.conflict.title": "მალსახი უკვე გამოიყენება",
-  "settings.shortcuts.conflict.description": "{{keybind}} უკვე მინიჭებულია {{titles}}-ს.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} უკვე მინიჭებულია {{titles}}-ს.",
   "settings.shortcuts.unassigned": "მიუყენებელი",
   "settings.shortcuts.pressKeys": "დააჭირე კლავიშებს",
   "settings.shortcuts.search.placeholder": "ძებნის მალსახმობები",
@@ -1081,12 +1222,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "ტერმინალი",
   "settings.shortcuts.group.prompt": "მოთხოვნა",
   "settings.providers.title": "პროვაიდერები",
-  "settings.providers.description": "პროვაიდერის პარამეტრების კონფიგურაცია იქნება აქ.",
+  "settings.providers.description":
+    "პროვაიდერის პარამეტრების კონფიგურაცია იქნება აქ.",
   "settings.providers.section.connected": "დაკავშირებული პროვაიდერები",
   "settings.providers.connected.empty": "დაკავშირებული პროვაიდერები არ არის",
-  "settings.providers.connected.environmentDescription": "დაკავშირებულია თქვენი გარემოს ცვლადებიდან",
+  "settings.providers.connected.environmentDescription":
+    "დაკავშირებულია თქვენი გარემოს ცვლადებიდან",
   "settings.providers.section.popular": "პოპულარული პროვაიდერები",
-  "settings.providers.custom.description": "დაამატე OpenAI-თავსებადი პროვაიდერი ბაზის მიხედვით: URL.",
+  "settings.providers.custom.description":
+    "დაამატე OpenAI-თავსებადი პროვაიდერი ბაზის მიხედვით: URL.",
   "settings.providers.tag.environment": "გარემო",
   "settings.providers.tag.config": "კონფიგურაცია",
   "settings.providers.tag.custom": "მორგებული",
@@ -1096,24 +1240,32 @@ export const dict = {
   "settings.agents.title": "აგენტები",
   "settings.agents.description": "აგენტის პარამეტრების კონფიგურაცია იქნება აქ.",
   "settings.commands.title": "ბრძანებები",
-  "settings.commands.description": "ბრძანების პარამეტრების კონფიგურაცია იქნება აქ.",
+  "settings.commands.description":
+    "ბრძანების პარამეტრების კონფიგურაცია იქნება აქ.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "MCP პარამეტრების კონფიგურაცია აქ იქნება შესაძლებელი.",
+  "settings.mcp.description":
+    "MCP პარამეტრების კონფიგურაცია აქ იქნება შესაძლებელი.",
   "settings.permissions.title": "ნებართვები",
-  "settings.permissions.description": "აკონტროლეთ, რომელი ხელსაწყოების გამოყენება შეუძლია სერვერს ნაგულისხმევად.",
+  "settings.permissions.description":
+    "აკონტროლეთ, რომელი ხელსაწყოების გამოყენება შეუძლია სერვერს ნაგულისხმევად.",
   "settings.permissions.section.tools": "ხელსაწყოები",
-  "settings.permissions.toast.updateFailed.title": "ნებართვების განახლება ვერ მოხერხდა",
+  "settings.permissions.toast.updateFailed.title":
+    "ნებართვების განახლება ვერ მოხერხდა",
   "settings.permissions.action.allow": "დაშვება",
   "settings.permissions.action.ask": "კითხვა",
   "settings.permissions.action.deny": "უარი",
   "settings.permissions.tool.read.title": "წაიკითხე",
-  "settings.permissions.tool.read.description": "ფაილის კითხვა (შეესაბამება ფაილის გზას)",
+  "settings.permissions.tool.read.description":
+    "ფაილის კითხვა (შეესაბამება ფაილის გზას)",
   "settings.permissions.tool.edit.title": "რედაქტირება",
-  "settings.permissions.tool.edit.description": "ფაილების შეცვლა, რედაქტირების, ჩაწერებისა და პაჩების ჩათვლით",
+  "settings.permissions.tool.edit.description":
+    "ფაილების შეცვლა, რედაქტირების, ჩაწერებისა და პაჩების ჩათვლით",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "ფაილების შესატყვისი გლობალური შაბლონების გამოყენებით",
+  "settings.permissions.tool.glob.description":
+    "ფაილების შესატყვისი გლობალური შაბლონების გამოყენებით",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "ფაილის შიგთავსის ძიება რეგულარული გამონათქვამების გამოყენებით",
+  "settings.permissions.tool.grep.description":
+    "ფაილის შიგთავსის ძიება რეგულარული გამონათქვამების გამოყენებით",
   "settings.permissions.tool.list.title": "სია",
   "settings.permissions.tool.list.description": "ფაილების სია დირექტორიაში",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1123,7 +1275,8 @@ export const dict = {
   "settings.permissions.tool.skill.title": "უნარი",
   "settings.permissions.tool.skill.description": "უნარის ჩატვირთვა სახელით",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "ენის სერვერის მოთხოვნების გაშვება",
+  "settings.permissions.tool.lsp.description":
+    "ენის სერვერის მოთხოვნების გაშვება",
   "settings.permissions.tool.todowrite.title": "Todo Write",
   "settings.permissions.tool.todowrite.description": "განაახლე სამუშაოების სია",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
@@ -1131,9 +1284,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "ვებ ძიება",
   "settings.permissions.tool.websearch.description": "მოძებნე ვებში",
   "settings.permissions.tool.external_directory.title": "გარე დირექტორია",
-  "settings.permissions.tool.external_directory.description": "წვდომა ფაილებზე პროექტის დირექტორიას გარეთ",
+  "settings.permissions.tool.external_directory.description":
+    "წვდომა ფაილებზე პროექტის დირექტორიას გარეთ",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "იდენტური შეყვანით ხელსაწყოს განმეორებითი გამოძახებების აღმოჩენა",
+  "settings.permissions.tool.doom_loop.description":
+    "იდენტური შეყვანით ხელსაწყოს განმეორებითი გამოძახებების აღმოჩენა",
   "session.delete.failed.title": "სესიის წაშლა ვერ მოხერხდა",
   "session.delete.title": "სესიის წაშლა",
   "session.delete.confirm": "წაშალე სესია „{{name}}“?",
@@ -1147,12 +1302,14 @@ export const dict = {
   "workspace.resetting.description": "ამას შეიძლება ერთი წუთი დასჭირდეს.",
   "workspace.reset.failed.title": "სამუშაო სივრცის გადაყენება ვერ მოხერხდა",
   "workspace.reset.success.title": "სამუშაო სივრცის გადატვირთვა",
-  "workspace.reset.success.description": "სამუშაო სივრცე ახლა ემთხვევა ნაგულისხმევ ფილიალს.",
+  "workspace.reset.success.description":
+    "სამუშაო სივრცე ახლა ემთხვევა ნაგულისხმევ ფილიალს.",
   "workspace.error.stillPreparing": "სამუშაო სივრცე ჯერ კიდევ მზადდება",
   "workspace.status.checking": "შეუერთებელი ცვლილებების შემოწმება...",
   "workspace.status.error": "git სტატუსის გადამოწმება შეუძლებელია.",
   "workspace.status.clean": "გაუერთებელი ცვლილებები არ არის აღმოჩენილი.",
-  "workspace.status.dirty": "აღმოჩენილი ცვლილებები აღმოჩენილია ამ სამუშაო სივრცეში.",
+  "workspace.status.dirty":
+    "აღმოჩენილი ცვლილებები აღმოჩენილია ამ სამუშაო სივრცეში.",
   "workspace.delete.title": "სამუშაო სივრცის წაშლა",
   "workspace.delete.confirm": "სამუშაო სივრცის „{{name}}“ წაშლა?",
   "workspace.delete.button": "სამუშაო სივრცის წაშლა",
@@ -1162,6 +1319,7 @@ export const dict = {
   "workspace.reset.archived.none": "აქტიური სესიები არ იქნება დაარქივებული.",
   "workspace.reset.archived.one": "1 სესია დაარქივდება.",
   "workspace.reset.archived.many": "{{count}} სესია დაარქივდება.",
-  "workspace.reset.note": "ეს აღადგენს სამუშაო სივრცეს ნაგულისხმევი ფილიალის შესატყვისად.",
+  "workspace.reset.note":
+    "ეს აღადგენს სამუშაო სივრცეს ნაგულისხმევი ფილიალის შესატყვისად.",
   "dialog.usageExceeded.dontShowAgain": "აღარ მაჩვენო",
 }

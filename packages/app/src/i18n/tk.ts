@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode menýusy",
   "desktop.updater.dialog.checkFailed.message": "Täzelenme şowsuz boldy.",
   "desktop.updater.dialog.checkFailed.title": "Täzelenme säwligi",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Döwrebap",
   "desktop.updater.dialog.upToDate.title": "Täzelenme ýok",
-  "desktop.updater.dialog.ready.message": "Göçürilen {{version}} täzeläň. Indi täzeden başlaň?",
+  "desktop.updater.dialog.ready.message":
+    "Göçürilen {{version}} täzeläň. Indi täzeden başlaň?",
   "desktop.updater.dialog.ready.title": "Täzelenme taýýar",
   "desktop.updater.dialog.restart": "Gaýtadan açyň",
   "desktop.updater.dialog.retry": "Retry",
@@ -60,12 +62,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "Garaşmagy dowam ediň",
   "desktop.recovery.action.quit": "Taşla",
   "desktop.recovery.loadFailed": "OpenCode ýükläp bilmedi",
-  "desktop.recovery.terminated": "OpenCode penjiresi garaşylmadyk ýagdaýda bes edildi",
+  "desktop.recovery.terminated":
+    "OpenCode penjiresi garaşylmadyk ýagdaýda bes edildi",
   "desktop.recovery.unresponsive": "OpenCode jogap berenok",
   "desktop.recovery.unresponsive.detail":
     "Programmany täzeden açyp bilersiňiz, surnallary açyp ýa-da garaşyp bilersiňiz.",
-  "desktop.recovery.loadFailed.detail": "Penjire: {{window}}\nURL: {{url}}\nRoralňyşlyk: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Penjire: {{window}}\nSebäp: {{reason}}\nKod: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Penjire: {{window}}\nURL: {{url}}\nRoralňyşlyk: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Penjire: {{window}}\nSebäp: {{reason}}\nKod: {{code}}",
   "desktop.recovery.unknown": "<näbelli>",
   "desktop.dialog.chooseFolder": "Papka saýlaň",
   "desktop.dialog.chooseFile": "Faýl saýlaň",
@@ -76,25 +81,31 @@ export const dict = {
   "desktop.wsl.error.unavailable": "WSL elýeterli däl",
   "desktop.wsl.error.listInstalled": "Gurlan WSL distroslaryny sanap bilmedi",
   "desktop.wsl.error.listOnline": "Onlaýn WSL distroslaryny sanap bilmedi",
-  "desktop.wsl.error.executeDistro": "Distroda buýruklary ýerine ýetirip bolmaýar",
+  "desktop.wsl.error.executeDistro":
+    "Distroda buýruklary ýerine ýetirip bolmaýar",
   "desktop.wsl.error.installWsl": "WSL gurmak şowsuz",
   "desktop.wsl.error.installDistro": "Distro gurup bilmedi: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode gurmak şowsuz",
   "desktop.wsl.error.alreadyAdded": "{{distro}} eýýäm goşuldy",
   "desktop.wsl.error.opencodeMissing": "açyk kod bu distroda gurlanok",
-  "desktop.wsl.error.opencodeCannotRun": "opencode guruldy, ýöne işledip bilmedi",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode guruldy, ýöne işledip bilmedi",
   "desktop.wsl.error.opencodeNotInstalled": "OpenCode {{distro}} gurulmady",
   "desktop.wsl.error.updateVersion":
     "OpenCode täzelenmesi gutardy, ýöne {{distro}} henizem {{installed}} habar berýär; garaşylýan {{expected}}",
   "desktop.wsl.error.noVersion": "wersiýasy ýok",
-  "desktop.wsl.error.serverExited": "WSL serweri işe başlandan soň çykdy (kod = {{code}} signal = {{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL serweri işe başlandan soň çykdy (kod = {{code}} signal = {{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL serweri sagdyn bolmanka çykdy (kod = {{code}} signal = {{signal}}) {{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} saglyk barlagy üçin Sidecar, {{timeout}}ms-den soň gutardy",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms-den soň gutardy",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} saglyk barlagy üçin Sidecar, {{timeout}}ms-den soň gutardy",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms-den soň gutardy",
   "desktop.wsl.error.failedPort": "Port alyp bilmedi",
   "desktop.picker.error.notSelected": "Faýl saýlaýjy tarapyndan saýlanmady",
-  "desktop.picker.error.sizeLimit": "Saýlanan goşundylar {{limit}} MB çäginden ýokary",
+  "desktop.picker.error.sizeLimit":
+    "Saýlanan goşundylar {{limit}} MB çäginden ýokary",
   "command.category.suggested": "Teklip edilýär",
   "command.category.view": "Gör",
   "command.category.project": "Taslama",
@@ -141,7 +152,8 @@ export const dict = {
   "command.tab.close": "Salgy ýapyň",
   "command.tab.reopenClosed": "Closedapyk goýmany açyň",
   "command.context.addSelection": "Kontekste saýlama goşuň",
-  "command.context.addSelection.description": "Häzirki faýldan saýlanan setirleri goşuň",
+  "command.context.addSelection.description":
+    "Häzirki faýldan saýlanan setirleri goşuň",
   "command.input.focus": "Giriş fokus",
   "command.terminal.toggle": "Terminaly açyň",
   "command.fileTree.toggle": "Faýl agajyny çalyşyň",
@@ -149,7 +161,8 @@ export const dict = {
   "command.terminal.new": "Täze terminal",
   "command.terminal.new.description": "Täze terminal goýmasyny dörediň",
   "command.steps.toggle": "Ädimleri aç ýa-da ýap",
-  "command.steps.toggle.description": "Häzirki habar üçin ädimleri görkeziň ýa-da gizläň",
+  "command.steps.toggle.description":
+    "Häzirki habar üçin ädimleri görkeziň ýa-da gizläň",
   "command.message.previous": "Öňki habar",
   "command.message.previous.description": "Öňki ulanyjy habaryna geçiň",
   "command.message.next": "Indiki habar",
@@ -163,27 +176,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Öňki agent",
   "command.agent.cycle.reverse.description": "Öňki agente geçiň",
   "command.model.variant.cycle": "Indiki pikirleniş derejesi",
-  "command.model.variant.cycle.description": "Indiki synanyşyk derejesine geçiň",
+  "command.model.variant.cycle.description":
+    "Indiki synanyşyk derejesine geçiň",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Rugsatlary awtomatiki kabul ediň",
-  "command.permissions.autoaccept.disable": "Awto-kabul ediş rugsatlaryny bes ediň",
+  "command.permissions.autoaccept.disable":
+    "Awto-kabul ediş rugsatlaryny bes ediň",
   "command.workspace.toggle": "Workspace-lary çalşyň",
-  "command.workspace.toggle.description": "Gapdal paneldäki birnäçe workspace-i işletmek ýa-da öçürmek",
+  "command.workspace.toggle.description":
+    "Gapdal paneldäki birnäçe workspace-i işletmek ýa-da öçürmek",
   "command.session.undo": "Yza gaýtar",
   "command.session.undo.description": "Iň soňky habary yzyna al",
   "command.session.redo": "Gaýtadan işlediň",
-  "command.session.redo.description": "Iň soňky yzyna gaýtarylan habary yzyna gaýtaryň",
+  "command.session.redo.description":
+    "Iň soňky yzyna gaýtarylan habary yzyna gaýtaryň",
   "command.session.compact": "Ykjam sessiýa",
-  "command.session.compact.description": "Kontekstiň ululygyny azaltmak üçin sessiýany jemläň",
+  "command.session.compact.description":
+    "Kontekstiň ululygyny azaltmak üçin sessiýany jemläň",
   "command.session.fork": "Habardan şahalandyr",
   "command.session.fork.description": "Öňki habardan täze sessiýa dörediň",
   "command.session.share": "Sessiýa paýlaş",
-  "command.session.share.description": "Bu sessiýany paýlaşyň we URL buferine göçüriň",
+  "command.session.share.description":
+    "Bu sessiýany paýlaşyň we URL buferine göçüriň",
   "command.session.unshare": "Paýlaşma sessiýasy",
   "command.session.unshare.description": "Bu sessiýany paýlaşmagy bes ediň",
   "command.session.export": "Eksport sessiýasy",
-  "command.session.export.description": "Sessiýanyň doly ýazgysyny JSON görnüşinde eksport ediň",
+  "command.session.export.description":
+    "Sessiýanyň doly ýazgysyny JSON görnüşinde eksport ediň",
   "palette.search.placeholder": "Faýllary, buýruklary we sessiýalary gözläň",
   "palette.search.placeholder.home": "Buýruklary we sessiýalary gözläň",
   "palette.empty": "Netije tapylmady",
@@ -198,20 +218,29 @@ export const dict = {
   "dialog.provider.opencode.note": "Claude, GPT, Gemini we ş.m.",
   "dialog.provider.opencode.tagline": "Ygtybarly optimal modeller",
   "dialog.provider.opencodeGo.tagline": "Hemmeler üçin arzan bahaly abuna",
-  "dialog.provider.anthropic.note": "Pro we Max ýaly Claude modellerine göni giriş",
-  "dialog.provider.copilot.note": "GitHub Copilot arkaly kodlaşdyrmak üçin AI modelleri",
-  "dialog.provider.openai.note": "Çalt, başarnykly umumy AI meseleleri üçin GPT modelleri",
-  "dialog.provider.google.note": "Çalt, gurluşly jogaplar üçin Gemini modelleri",
-  "dialog.provider.openrouter.note": "Bir üpjün edijiden ähli goldanýan modellere giriň",
-  "dialog.provider.vercel.note": "Akylly marşrutizasiýa bilen AI modellerine bitewi giriş",
+  "dialog.provider.anthropic.note":
+    "Pro we Max ýaly Claude modellerine göni giriş",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot arkaly kodlaşdyrmak üçin AI modelleri",
+  "dialog.provider.openai.note":
+    "Çalt, başarnykly umumy AI meseleleri üçin GPT modelleri",
+  "dialog.provider.google.note":
+    "Çalt, gurluşly jogaplar üçin Gemini modelleri",
+  "dialog.provider.openrouter.note":
+    "Bir üpjün edijiden ähli goldanýan modellere giriň",
+  "dialog.provider.vercel.note":
+    "Akylly marşrutizasiýa bilen AI modellerine bitewi giriş",
   "dialog.model.select.title": "Model saýlaň",
   "dialog.model.search.placeholder": "Gözleg modelleri",
   "dialog.model.empty": "Hiç hili model netijesi ýok",
   "dialog.model.manage": "Modelleri dolandyryň",
-  "dialog.model.manage.description": "Model saýlaýjysynda haýsy modelleriň peýda bolýandygyny düzüň.",
-  "dialog.model.manage.provider.toggle": "Zhli {{provider}} modellerini üýtgediň",
+  "dialog.model.manage.description":
+    "Model saýlaýjysynda haýsy modelleriň peýda bolýandygyny düzüň.",
+  "dialog.model.manage.provider.toggle":
+    "Zhli {{provider}} modellerini üýtgediň",
   "dialog.model.unpaid.freeModels.title": "OpenCode tarapyndan mugt modeller",
-  "dialog.model.unpaid.addMore.title": "Meşhur üpjün edijilerden has köp model goşuň",
+  "dialog.model.unpaid.addMore.title":
+    "Meşhur üpjün edijilerden has köp model goşuň",
   "dialog.model.unpaid.viewMoreProviders": "Moreene-de 70+ üpjün edijä serediň",
   "dialog.provider.viewAll": "Has köp üpjün edijini görkeziň",
   "provider.connect.title": "{{provider}} birikdiriň",
@@ -249,22 +278,27 @@ export const dict = {
     " hasabyňyzy birikdirmek we {{provider}} modellerini OpenCode-de ulanmak üçin aşakdaky kody giriziň.",
   "provider.connect.oauth.auto.confirmationCode": "Tassyklama kody",
   "provider.connect.toast.connected.title": "{{provider}} birikdirildi",
-  "provider.connect.toast.connected.description": "{{provider}} modelleri indi ulanylyp bilner.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} modelleri indi ulanylyp bilner.",
   "provider.custom.title": "Hususy üpjün ediji",
-  "provider.custom.unavailable": "Bu serwerde ýörite üpjün edijiler elýeterli däl",
-  "provider.custom.description.prefix": "OpenAI gabat gelýän üpjün edijini sazlaň. Serediň ",
+  "provider.custom.unavailable":
+    "Bu serwerde ýörite üpjün edijiler elýeterli däl",
+  "provider.custom.description.prefix":
+    "OpenAI gabat gelýän üpjün edijini sazlaň. Serediň ",
   "provider.custom.description.link": "üpjün ediji konfigurasiýa resminamalary",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Üpjün edijiniň şahsyýetnamasy",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Uly harplar, sanlar, çyzgylar ýa-da aşaky çyzyklar",
+  "provider.custom.field.providerID.description":
+    "Uly harplar, sanlar, çyzgylar ýa-da aşaky çyzyklar",
   "provider.custom.field.name.label": "Adyny görkeziň",
   "provider.custom.field.name.placeholder": "AI üpjün edijim",
   "provider.custom.field.baseURL.label": "Esasy URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API açary",
   "provider.custom.field.apiKey.placeholder": "API açary",
-  "provider.custom.field.apiKey.description": "Meýletin. Awtory sözbaşylar arkaly dolandyrsaňyz, boş goýuň.",
+  "provider.custom.field.apiKey.description":
+    "Meýletin. Awtory sözbaşylar arkaly dolandyrsaňyz, boş goýuň.",
   "provider.custom.models.label": "Modeller",
   "provider.custom.models.id.label": "Şahsyýetnamasy",
   "provider.custom.models.id.placeholder": "model-id",
@@ -279,16 +313,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "bahasy",
   "provider.custom.headers.remove": "Sözbaşy aýyryň",
   "provider.custom.headers.add": "Sözbaşy goşuň",
-  "provider.custom.error.providerID.required": "Üpjün edijiniň şahsyýetnamasy talap edilýär",
-  "provider.custom.error.providerID.format": "Baş harplary, sanlary, defisleri ýa-da aşaky harplary ulanyň",
-  "provider.custom.error.providerID.exists": "Şol üpjün edijiniň ID-si eýýäm bar",
+  "provider.custom.error.providerID.required":
+    "Üpjün edijiniň şahsyýetnamasy talap edilýär",
+  "provider.custom.error.providerID.format":
+    "Baş harplary, sanlary, defisleri ýa-da aşaky harplary ulanyň",
+  "provider.custom.error.providerID.exists":
+    "Şol üpjün edijiniň ID-si eýýäm bar",
   "provider.custom.error.name.required": "Ekranyň ady talap edilýär",
   "provider.custom.error.baseURL.required": "Esasy URL hökmany",
-  "provider.custom.error.baseURL.format": "Http: // ýa-da https: // bilen başlamaly",
+  "provider.custom.error.baseURL.format":
+    "Http: // ýa-da https: // bilen başlamaly",
   "provider.custom.error.required": "Gerekli",
   "provider.custom.error.duplicate": "Göçürme",
   "provider.disconnect.toast.disconnected.title": "{{provider}} kesildi",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modelleri indi ýok.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modelleri indi ýok.",
   "model.tag.free": "Mugt",
   "model.tag.latest": "Iň soňky",
   "model.provider.anthropic": "Anthropic",
@@ -363,7 +402,8 @@ export const dict = {
   "prompt.example.25": "Daşky gurşaw üýtgeýjileri bu ýerde nähili işleýär?",
   "prompt.popover.emptyResults": "Gabat gelýän netijeler ýok",
   "prompt.popover.emptyCommands": "Gabat gelýän buýruklar ýok",
-  "prompt.dropzone.label": "Suratlary, PDF-leri ýa-da tekst faýllaryny şu ýere taşlaň",
+  "prompt.dropzone.label":
+    "Suratlary, PDF-leri ýa-da tekst faýllaryny şu ýere taşlaň",
   "prompt.dropzone.file.label": "@mention faýlyna geçiň",
   "prompt.slash.badge.custom": "adat",
   "prompt.slash.badge.skill": "ussatlygy",
@@ -382,10 +422,12 @@ export const dict = {
   "prompt.action.send": "Iber",
   "prompt.action.stop": "Dur",
   "prompt.toast.pasteUnsupported.title": "Goldaw berilmeýän goşundy",
-  "prompt.toast.pasteUnsupported.description": "Bu ýerde diňe suratlar, PDF ýa-da tekst faýllary birikdirilip bilner.",
+  "prompt.toast.pasteUnsupported.description":
+    "Bu ýerde diňe suratlar, PDF ýa-da tekst faýllary birikdirilip bilner.",
   "prompt.toast.attachmentDuplicate.title": "Bu faýl eýýäm ýüklendi",
   "prompt.toast.modelAgentRequired.title": "Agent we model saýlaň",
-  "prompt.toast.modelAgentRequired.description": "Sorag ibermezden ozal agent we model saýlaň.",
+  "prompt.toast.modelAgentRequired.description":
+    "Sorag ibermezden ozal agent we model saýlaň.",
   "prompt.toast.worktreeCreateFailed.title": "Git worktree döredip bolmady",
   "prompt.toast.sessionCreateFailed.title": "Sessiýa döredip bilmedi",
   "prompt.toast.shellSendFailed.title": "Shell buýrugy iberilmedi",
@@ -414,7 +456,8 @@ export const dict = {
   "app.server.retrying": "Awtomatiki usulda gaýtadan synanyşmak ...",
   "app.server.otherServers": "Beýleki serwerler",
   "dialog.server.title": "Serwerler",
-  "dialog.server.description": "Bu programmanyň haýsy OpenCode serwerine birikýändigini üýtgediň.",
+  "dialog.server.description":
+    "Bu programmanyň haýsy OpenCode serwerine birikýändigini üýtgediň.",
   "dialog.server.search.placeholder": "Serwerleri gözläň",
   "dialog.server.empty": "Entek serwer ýok",
   "dialog.server.add.title": "Serwer goşuň",
@@ -452,7 +495,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Distro saýlaň",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL barlamak ...",
-  "wsl.onboarding.restartRequired": "Windows, WSL gurnamagy gutarmak üçin täzeden başlamaly.",
+  "wsl.onboarding.restartRequired":
+    "Windows, WSL gurnamagy gutarmak üçin täzeden başlamaly.",
   "wsl.onboarding.ready": "WSL taýýar.",
   "wsl.onboarding.required": "Dowam etmek üçin WSL talap edilýär.",
   "wsl.onboarding.checkingDistros": "Distroslary barlamak ...",
@@ -461,11 +505,13 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Distroslaryň sanawy ...",
   "wsl.onboarding.distroReady": "{{distro}} taýýar.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} entek gurlanok.",
-  "wsl.onboarding.openDistroOnce": "Gurmak işini tamamlamak üçin {{distro}} bir gezek açyň.",
+  "wsl.onboarding.openDistroOnce":
+    "Gurmak işini tamamlamak üçin {{distro}} bir gezek açyň.",
   "wsl.onboarding.finishingDistro": "{{distro}} üçin gurnama.",
   "wsl.onboarding.pickDistro": "Distro saýlaň ýa-da aşakda birini guruň.",
   "wsl.onboarding.checkingOpencode": "OpenCode barlamak ...",
-  "wsl.onboarding.checkingOpencodeIn": "{{distro}} içinde OpenCode barlanýar...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "{{distro}} içinde OpenCode barlanýar...",
   "wsl.onboarding.updatingOpencode": "OpenCode täzelenmek ...",
   "wsl.onboarding.updatingOpencodeIn": "{{distro}}-de OpenCode täzelenmek ...",
   "wsl.onboarding.updateOpencodeIn": "OpenCode-ni {{distro}}-de täzeläň.",
@@ -485,17 +531,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Ingitirim bolan baş, egri",
   "wsl.onboarding.distroStatus.unsupported": "Goldaw berilmeýär · WSL 2 ulanyň",
   "wsl.onboarding.needAnotherDistro": "Başga bir distro gerekmi?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL katalogyndan Linux paýlanyşyny guruň",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL katalogyndan Linux paýlanyşyny guruň",
   "wsl.onboarding.wslNotInstalled.title": "WSL gurulmady",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Linux üçin Windows kiçi ulgamy) OpenCode WSL serwerini goşmazdan ozal talap edilýär",
   "wsl.onboarding.wslUnavailable.title": "WSL elýeterli däl",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode bu enjamda WSL barlap bilmedi.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode bu enjamda WSL barlap bilmedi.",
   "wsl.onboarding.installWsl": "WSL guruň",
-  "wsl.onboarding.windowsRestartRequired": "WSL gurnamagy gutarmak üçin Windows-i täzeden açyň, soňra OpenCode açyň.",
+  "wsl.onboarding.windowsRestartRequired":
+    "WSL gurnamagy gutarmak üçin Windows-i täzeden açyň, soňra OpenCode açyň.",
   "wsl.onboarding.next": "Indiki",
   "wsl.onboarding.refresh": "Täzele",
-  "wsl.onboarding.allDistrosAdded": "Gurlan distroslaryň hemmesi eýýäm goşuldy.",
+  "wsl.onboarding.allDistrosAdded":
+    "Gurlan distroslaryň hemmesi eýýäm goşuldy.",
   "wsl.onboarding.noDistros": "Entek hiç hili distro tapylmady.",
   "wsl.onboarding.install": "Gurnama",
   "wsl.onboarding.installing": "Gurmak ...",
@@ -509,15 +559,18 @@ export const dict = {
   "wsl.onboarding.version": "Wersiýa: {{version}}",
   "wsl.onboarding.unknown": "näbelli",
   "wsl.onboarding.desktopVersion": "iş stoly {{version}}",
-  "wsl.onboarding.versionMismatch": "Gurlan wersiýa iş stoly programma wersiýasyna gabat gelenok.",
+  "wsl.onboarding.versionMismatch":
+    "Gurlan wersiýa iş stoly programma wersiýasyna gabat gelenok.",
   "wsl.onboarding.adding": "Goşmak ...",
   "help.tabs.toast.ariaLabel":
     "Salgylar bilen tanyşdyrmak. Işleriňizi we işjeň sessiýalaryňyzy bellikler bilen tertipläň",
   "help.tabs.toast.dismiss": "Salgylar baradaky maglumatlary aýyryň",
   "help.tabs.title": "Salgylar bilen tanyşdyrmak",
-  "help.tabs.description": "Işleriňizi we işjeň sessiýalaryňyzy bellikler bilen tertipläň",
+  "help.tabs.description":
+    "Işleriňizi we işjeň sessiýalaryňyzy bellikler bilen tertipläň",
   "help.tabs.date": "14-nji iýul",
-  "help.tabs.introduction": "OpenCode Desktop indi goýmalaryň töwereginde guruldy.",
+  "help.tabs.introduction":
+    "OpenCode Desktop indi goýmalaryň töwereginde guruldy.",
   "help.tabs.sessions":
     "Salgyda täze sessiýa başlaň ýa-da islendik taslamaňyzdan bar bolan sessiýany açyň. Täze bir zat başlanyňyzda täze tab açyň we gutaranyňyzdan soň ýapyň.",
   "help.tabs.organize":
@@ -537,7 +590,8 @@ export const dict = {
   "dialog.project.edit.color": "Reňk",
   "dialog.project.edit.color.select": "{{color}} reňkini saýlaň",
   "dialog.project.edit.worktree.startup": "Workspace başlangyç skripti",
-  "dialog.project.edit.worktree.startup.description": "Täze workspace (Git worktree) döredilenden soň işleýär.",
+  "dialog.project.edit.worktree.startup.description":
+    "Täze workspace (Git worktree) döredilenden soň işleýär.",
   "dialog.project.edit.worktree.startup.placeholder": "meselem bun install",
   "dialog.releaseNotes.action.getStarted": "Başla",
   "dialog.releaseNotes.action.next": "Indiki",
@@ -598,50 +652,70 @@ export const dict = {
   "toast.theme.title": "Tema açyldy",
   "toast.scheme.title": "Reňk shemasy",
   "toast.workspace.enabled.title": "Workspace-lar açyk",
-  "toast.workspace.enabled.description": "Indi gapdal panelde birnäçe Git worktree görkezilýär",
+  "toast.workspace.enabled.description":
+    "Indi gapdal panelde birnäçe Git worktree görkezilýär",
   "toast.workspace.disabled.title": "Workspace-lar ýapyk",
-  "toast.workspace.disabled.description": "Gapdal panelde diňe esasy Git worktree görkezilýär",
+  "toast.workspace.disabled.description":
+    "Gapdal panelde diňe esasy Git worktree görkezilýär",
   "toast.permissions.autoaccept.on.title": "Awto-kabul ediş rugsatlary",
-  "toast.permissions.autoaccept.on.description": "Rugsat haýyşlary awtomatiki tassyklanar",
-  "toast.permissions.autoaccept.off.title": "Awto-kabul ediş rugsatlary bes edildi",
-  "toast.permissions.autoaccept.off.description": "Rugsat haýyşlary tassyklamagy talap eder",
+  "toast.permissions.autoaccept.on.description":
+    "Rugsat haýyşlary awtomatiki tassyklanar",
+  "toast.permissions.autoaccept.off.title":
+    "Awto-kabul ediş rugsatlary bes edildi",
+  "toast.permissions.autoaccept.off.description":
+    "Rugsat haýyşlary tassyklamagy talap eder",
   "toast.model.none.title": "Hiç hili model saýlanmady",
-  "toast.model.none.description": "Bu sessiýany jemlemek üçin üpjün edijini birikdiriň",
+  "toast.model.none.description":
+    "Bu sessiýany jemlemek üçin üpjün edijini birikdiriň",
   "toast.file.loadFailed.title": "Faýl ýükläp bilmedi",
   "toast.file.listFailed.title": "Faýllary sanap bilmedi",
   "toast.context.noLineSelection.title": "Setir saýlamasy ýok",
-  "toast.context.noLineSelection.description": "Ilki bilen faýl goýmasynda setir aralygyny saýlaň.",
+  "toast.context.noLineSelection.description":
+    "Ilki bilen faýl goýmasynda setir aralygyny saýlaň.",
   "toast.session.share.copyFailed.title": "URL buferine göçürip bilmedi",
   "toast.session.share.success.title": "Sessiýa paýlaşyldy",
   "toast.session.share.success.description": "Buferde göçürilen URL paýlaşyň!",
   "toast.session.share.failed.title": "Sessiýany paýlaşyp bilmedi",
-  "toast.session.share.failed.description": "Sessiýa paýlaşylanda ýalňyşlyk ýüze çykdy",
+  "toast.session.share.failed.description":
+    "Sessiýa paýlaşylanda ýalňyşlyk ýüze çykdy",
   "toast.session.unshare.success.title": "Sessiýa paýlaşylmady",
-  "toast.session.unshare.success.description": "Sessiýa üstünlikli paýlaşylmady!",
+  "toast.session.unshare.success.description":
+    "Sessiýa üstünlikli paýlaşylmady!",
   "toast.session.unshare.failed.title": "Sessiýa paýlaşylmady",
-  "toast.session.unshare.failed.description": "Sessiýa paýlaşylanda ýalňyşlyk ýüze çykdy",
+  "toast.session.unshare.failed.description":
+    "Sessiýa paýlaşylanda ýalňyşlyk ýüze çykdy",
   "toast.session.export.success.title": "Sessiýa eksport edildi",
-  "toast.session.export.success.description": "Sessiýa {{filename}}-de saklandy",
+  "toast.session.export.success.description":
+    "Sessiýa {{filename}}-de saklandy",
   "toast.session.export.failed.title": "Sessiýa eksport edip bilmedi",
-  "toast.session.export.failed.description": "Sessiýa eksport edilende säwlik ýüze çykdy",
-  "toast.session.listFailed.title": "{{project}} üçin sessiýalary ýükläp bilmedi",
+  "toast.session.export.failed.description":
+    "Sessiýa eksport edilende säwlik ýüze çykdy",
+  "toast.session.listFailed.title":
+    "{{project}} üçin sessiýalary ýükläp bilmedi",
   "toast.project.reloadFailed.title": "{{project}} ýükläp bilmedi",
   "toast.update.title": "Täzelenme elýeterli",
-  "toast.update.description": "Indi gurmak üçin OpenCode ({{version}}) -iň täze wersiýasy bar.",
+  "toast.update.description":
+    "Indi gurmak üçin OpenCode ({{version}}) -iň täze wersiýasy bar.",
   "toast.update.action.installRestart": "Guruň we täzeden açyň",
   "toast.update.action.notYet": "Entek däl",
   "toast.update.installFailed.title": "Täzeligi gurup bolmady",
   "toast.update.installFailed.retry": "Ýene synanyşyň",
 
-  "disk.accessGuidance.macos": "System Settings-de DiskLizard-a Full Disk Access hukugyny beriň, soň täzeden barlaň.",
-  "disk.accessGuidance.windows": "Şu diske girim hukugy bolan hasaby ulanyň ýa-da hasabyňyz oka biljek papkany barlaň.",
-  "disk.accessGuidance.linux": "Papka we birikdiriliş rugsatlaryny gözden geçirip, soň täzeden barlaň.",
-  "disk.accessGuidance.default": "Şu papkalara girimi gözden geçirip, soň täzeden barlaň.",
-  "disk.accessGuidance.rescan": "Girimi üýtgedenden soň ýokarky paneldäki Rescan-i ulanyň.",
+  "disk.accessGuidance.macos":
+    "System Settings-de DiskLizard-a Full Disk Access hukugyny beriň, soň täzeden barlaň.",
+  "disk.accessGuidance.windows":
+    "Şu diske girim hukugy bolan hasaby ulanyň ýa-da hasabyňyz oka biljek papkany barlaň.",
+  "disk.accessGuidance.linux":
+    "Papka we birikdiriliş rugsatlaryny gözden geçirip, soň täzeden barlaň.",
+  "disk.accessGuidance.default":
+    "Şu papkalara girimi gözden geçirip, soň täzeden barlaň.",
+  "disk.accessGuidance.rescan":
+    "Girimi üýtgedenden soň ýokarky paneldäki Rescan-i ulanyň.",
   "disk.common.rescan": "Täzeden skanirlaň",
   "error.page.title": "Bir zat nädogry boldy",
   "error.page.description": "Programmany ýükläniňizde säwlik ýüze çykdy.",
-  "error.page.description.localServerStartup": "Serli serweri işe girizeniňizde säwlik ýüze çykdy.",
+  "error.page.description.localServerStartup":
+    "Serli serweri işe girizeniňizde säwlik ýüze çykdy.",
   "error.page.details.label": "Roralňyşlyk maglumatlary",
   "error.page.action.restart": "Gaýtadan açyň",
   "error.page.action.report": "Roralňyşlyk barada habar beriň",
@@ -651,17 +725,21 @@ export const dict = {
   "error.page.action.checkUpdates": "Täzelenmeleri barlaň",
   "error.page.action.updateTo": "{{version}} täzeläň",
   "error.page.circular": "[Tegelek]",
-  "error.page.report.prefix": "Bu ýalňyşlygy OpenCode toparyna habar bermegiňizi haýyş edýäris",
+  "error.page.report.prefix":
+    "Bu ýalňyşlygy OpenCode toparyna habar bermegiňizi haýyş edýäris",
   "error.page.report.discord": "Diskord",
   "error.page.version": "Wersiýa: {{version}}",
   "error.dev.rootNotFound":
     "Kök elementi tapylmady index.html-e goşmagy ýatdan çykardyňyzmy? Ora-da id atributynyň ýalňyş ýazylan bolmagy mümkin?",
-  "error.serverSync.connectFailed": "Serwere birigip bilmedim. `{{url}}`-de işleýän serwer barmy?",
+  "error.serverSync.connectFailed":
+    "Serwere birigip bilmedim. `{{url}}`-de işleýän serwer barmy?",
   "error.serverSDK.noServerAvailable": "Serwer ýok",
   "error.serverSDK.serverNotAvailable": "Serwer elýeterli däl",
   "error.childStore.persistedCacheCreateFailed": "Dowamly keş ýasap bilmedi",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Dowamly taslama meta-maglumatyny döredip bilmedi",
-  "error.childStore.persistedProjectIconCreateFailed": "Dowamly taslama nyşanyny döredip bilmedi",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Dowamly taslama meta-maglumatyny döredip bilmedi",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Dowamly taslama nyşanyny döredip bilmedi",
   "error.childStore.storeCreateFailed": "Dükan döredip bilmedi",
   "directory.error.invalidUrl": "URL-de nädogry katalog.",
   "error.chain.unknown": "Näbelli ýalňyşlyk",
@@ -673,22 +751,30 @@ export const dict = {
   "error.chain.responseBody": "Jogap beriji organ:\n{{body}}",
   "error.chain.didYouMean": "Diýjek bolduňmy: {{suggestions}}",
   "error.chain.modelNotFound": "Model tapylmady: {{provider}} / {{model}}",
-  "error.chain.checkConfig": "Konfigurasiýaňyzy (opencode.json) üpjün edijiniň / model atlaryny barlaň",
-  "error.chain.mcpFailed": 'MCP serweri "{{name}}" şowsuz. Üns beriň, OpenCode entek MCP tassyklamasyny goldamaýar.',
-  "error.chain.providerAuthFailed": "Prowaýderiň tassyklamasy şowsuz ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Konfigurasiýaňyzy (opencode.json) üpjün edijiniň / model atlaryny barlaň",
+  "error.chain.mcpFailed":
+    'MCP serweri "{{name}}" şowsuz. Üns beriň, OpenCode entek MCP tassyklamasyny goldamaýar.',
+  "error.chain.providerAuthFailed":
+    "Prowaýderiň tassyklamasy şowsuz ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" üpjün edijini işe girizip bilmedi. Şahsyýetnamalary we konfigurasiýany barlaň.',
   "error.chain.configJsonInvalid": "{{path}} faýly sazlamak JSON (C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} faýly sazlamak JSON (C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} faýly sazlamak JSON (C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}}-daky "{{dir}}" katalogy dogry däl. Katalogyň adyny "{{suggestion}}" diýip üýtgediň ýa-da aýyryň. Bu umumy ýalňyşlyk.',
-  "error.chain.configFrontmatterError": "{{path}}-de frontmateri derňäp bilmedi:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}}-de frontmateri derňäp bilmedi:\n{{message}}",
   "error.chain.configInvalid": "{{path}} faýly sazlamak nädogry",
-  "error.chain.configInvalidWithMessage": "{{path}} faýly sazlamak nädogry: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} faýly sazlamak nädogry: {{message}}",
   "notification.permission.title": "Rugsat gerek",
-  "notification.permission.description": "{{projectName}} taslamasyndaky {{sessionTitle}} rugsat talap edýär",
+  "notification.permission.description":
+    "{{projectName}} taslamasyndaky {{sessionTitle}} rugsat talap edýär",
   "notification.question.title": "Sorag",
-  "notification.question.description": "{{projectName}} taslamasyndaky {{sessionTitle}} sessiýasynyň soragy bar",
+  "notification.question.description":
+    "{{projectName}} taslamasyndaky {{sessionTitle}} sessiýasynyň soragy bar",
   "notification.action.goToSession": "Sessiýa git",
   "notification.session.responseReady.title": "Jogap taýýar",
   "notification.session.error.title": "Sessiýa ýalňyşlygy",
@@ -711,14 +797,16 @@ export const dict = {
   "home.sessions.group.today": "Bu gün",
   "home.sessions.group.yesterday": "Düýn",
   "home.sessions.group.older": "Köne",
-  "home.providerTip": "Claude, GPT, Gemini we ş.m. ýaly beýleki modelleri ulanmak üçin 75+ üpjün edijä birikdiriň.",
+  "home.providerTip":
+    "Claude, GPT, Gemini we ş.m. ýaly beýleki modelleri ulanmak üçin 75+ üpjün edijä birikdiriň.",
   "session.tab.session": "Sessiýa",
   "session.tab.review": "Syn",
   "session.tab.context": "Kontekst",
   "session.tab.unknown": "Näbelli sessiýa",
   "session.panel.reviewAndFiles": "Gözden geçiriň we faýllary",
   "session.error.notFound": "Bu sessiýany tapyp bolmaýar",
-  "session.error.notFound.description": "Bu goýma, bu serwerde ýok bolan sessiýany görkezýär.",
+  "session.error.notFound.description":
+    "Bu goýma, bu serwerde ýok bolan sessiýany görkezýär.",
   "session.error.notFound.closeTab": "Tab ýapyň",
   "session.error.serverConnection": "Bu serwere birigip bilemok",
   "session.review.filesChanged": "Faýllar üýtgedildi {{count}}",
@@ -726,15 +814,18 @@ export const dict = {
   "session.review.change.other": "Üýtgeşmeler",
   "session.review.loadingChanges": "Üýtgeşmeler ýüklenýär ...",
   "session.review.empty": "Bu sessiýada entek üýtgeşme ýok",
-  "session.review.noVcs": "Git wersiýa dolandyryş ulgamy tapylmady, üýtgeşmeler görkezilmedi",
+  "session.review.noVcs":
+    "Git wersiýa dolandyryş ulgamy tapylmady, üýtgeşmeler görkezilmedi",
   "session.review.noVcs.createGit.title": "Git ammary dörediň",
-  "session.review.noVcs.createGit.description": "Bu taslamadaky üýtgeşmeleri yzarlaň, gözden geçiriň we yzyna alyň",
+  "session.review.noVcs.createGit.description":
+    "Bu taslamadaky üýtgeşmeleri yzarlaň, gözden geçiriň we yzyna alyň",
   "session.review.noVcs.createGit.actionLoading": "Git ammaryny döretmek ...",
   "session.review.noVcs.createGit.action": "Git ammary dörediň",
   "session.review.noSnapshot":
     "Snapshot yzarlamasy konfigurasiýada ýapyk, şonuň üçin sessiýa üýtgeşmeleri elýeterli däl",
   "session.review.noChanges": "Üýtgeşme ýok",
-  "session.review.noUncommittedChanges": "Entek rugsat berilmedik üýtgeşmeler ýok",
+  "session.review.noUncommittedChanges":
+    "Entek rugsat berilmedik üýtgeşmeler ýok",
   "session.review.noBranchChanges": "Entek hiç hili şahamça üýtgemeýär",
   "session.files.selectToOpen": "Açmak üçin bir faýl saýlaň",
   "session.files.all": "Fileshli faýllar",
@@ -833,11 +924,14 @@ export const dict = {
   "terminal.title.numbered": "{{number}} terminaly",
   "terminal.close": "Terminaly ýapyň",
   "terminal.connectionLost.title": "Baglanyşyk ýitdi",
-  "terminal.connectionLost.abnormalClose": "WebSocket adatdan daşary ýapyldy: {{code}}",
-  "terminal.connectionLost.description": "Terminal birikmesi kesildi. Serwer täzeden başlanda bolup biler.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket adatdan daşary ýapyldy: {{code}}",
+  "terminal.connectionLost.description":
+    "Terminal birikmesi kesildi. Serwer täzeden başlanda bolup biler.",
   "terminal.connectTicket.csrfError":
     "PTY baglanyşyk bileti gelip çykyşy ýa-da CSRF barlaglary bilen ret edilýär. CORS serwerini barlaň.",
-  "terminal.connectTicket.statusError": "PTY birikme bileti {{status}} bilen şowsuz boldy",
+  "terminal.connectTicket.statusError":
+    "PTY birikme bileti {{status}} bilen şowsuz boldy",
   "titlebar.update": "Täzelen",
   "titlebar.updateVersion": "{{version}} täzeläň",
   "common.closeTab": "Salgy ýapyň",
@@ -881,7 +975,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Workspace-lary açyň",
   "sidebar.workspaces.disable": "Workspace-lary öçüriň",
   "sidebar.gettingStarted.title": "Başlamak",
-  "sidebar.gettingStarted.line1": "OpenCode mugt modelleri öz içine alýar, derrew başlap bilersiňiz.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode mugt modelleri öz içine alýar, derrew başlap bilersiňiz.",
   "sidebar.gettingStarted.line2":
     "Modelleri ulanmak üçin islendik üpjün edijini birikdiriň. Claude, GPT, Gemini we ş.m.",
   "sidebar.project.recentSessions": "Soňky sessiýalar",
@@ -901,23 +996,29 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Soňky 5 sekuntda 32 metrden gowrak çarçuwalar.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blok edilen wagt we soňky 5 sekuntda uzak iş. Iň ýokary wezipe: {{max}}.",
+  "debugBar.long.tip":
+    "Blok edilen wagt we soňky 5 sekuntda uzak iş. Iň ýokary wezipe: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Iň erbet syn edilen soňky 5 sekuntda.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Soňky 5 sekundyň dowamynda takmynan täsirleşme dowamlylygy. Bu INP ýaly, resmi Web Vital INP däl.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Häzirki programmanyň ömri üçin jemleýji düzüliş çalşygy.",
+  "debugBar.cls.tip":
+    "Häzirki programmanyň ömri üçin jemleýji düzüliş çalşygy.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Ulanylan JS üýşmesi vs üýşmek çägi. Diňe Chromium.",
-  "debugBar.mem.tip": "Ulanylan JS üýşmesi vs üýşmek çägi. {{limit}}-iň {{used}}.",
+  "debugBar.mem.tipUnavailable":
+    "Ulanylan JS üýşmesi vs üýşmek çägi. Diňe Chromium.",
+  "debugBar.mem.tip":
+    "Ulanylan JS üýşmesi vs üýşmek çägi. {{limit}}-iň {{used}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Intacthli interaktiw elementlere fokus stillerini mejbur ediň",
+  "debugBar.focus.tip":
+    "Intacthli interaktiw elementlere fokus stillerini mejbur ediň",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Saýlanan dili üýtgetmän doly programma düzüliş ugruny mejbur ediň",
+  "debugBar.direction.tip":
+    "Saýlanan dili üýtgetmän doly programma düzüliş ugruny mejbur ediň",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -927,7 +1028,8 @@ export const dict = {
   "settings.tab.shortcuts": "Salgylanmalar",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integrasiýa",
-  "settings.desktop.wsl.description": "OpenCode serwerini WSL-de Windows-de işlediň.",
+  "settings.desktop.wsl.description":
+    "OpenCode serwerini WSL-de Windows-de işlediň.",
   "settings.general.section.appearance": "Daş görnüşi",
   "settings.general.section.advanced": "Ösen",
   "settings.general.section.notifications": "Ulgam habarnamalary",
@@ -936,79 +1038,101 @@ export const dict = {
   "settings.general.section.feed": "Iýmit",
   "settings.general.section.display": "Ekran",
   "settings.general.row.language.title": "Dil",
-  "settings.general.row.language.description": "OpenCode üçin displeý dilini üýtgediň",
+  "settings.general.row.language.description":
+    "OpenCode üçin displeý dilini üýtgediň",
   "settings.general.row.shell.title": "Terminal shell-i",
-  "settings.general.row.shell.description": "Terminal we agent gurallary tarapyndan ulanylýan shell",
+  "settings.general.row.shell.description":
+    "Terminal we agent gurallary tarapyndan ulanylýan shell",
   "settings.general.row.shell.autoDefault": "Awto (Bellenilen)",
   "settings.general.row.shell.terminalOnly": "Diňe terminal",
   "settings.general.row.appearance.title": "Daş görnüşi",
-  "settings.general.row.appearance.description": "OpenCode enjamyňyzda nähili görünýändigini düzüň",
+  "settings.general.row.appearance.description":
+    "OpenCode enjamyňyzda nähili görünýändigini düzüň",
   "settings.general.row.colorScheme.title": "Reňk shemasy",
   "settings.general.row.colorScheme.description":
     "OpenCode ulgamy, ýagtylygy ýa-da garaňky temany yzarlaýandygyny saýlaň",
   "settings.general.row.theme.title": "Mowzuk",
   "settings.general.row.theme.description": "OpenCode-iň mowzuklydygyny düzüň.",
   "settings.general.row.font.title": "Kod şrifti",
-  "settings.general.row.font.description": "Kod bloklarynda ulanylýan şrifti düzüň",
+  "settings.general.row.font.description":
+    "Kod bloklarynda ulanylýan şrifti düzüň",
   "settings.general.row.terminalFont.title": "Terminal şrifti",
-  "settings.general.row.terminalFont.description": "Terminalda ulanylýan şrifti düzüň",
+  "settings.general.row.terminalFont.description":
+    "Terminalda ulanylýan şrifti düzüň",
   "settings.general.row.uiFont.title": "UI şrift",
-  "settings.general.row.uiFont.description": "Interfeýsiň hemme ýerinde ulanylýan şrifti düzüň",
+  "settings.general.row.uiFont.description":
+    "Interfeýsiň hemme ýerinde ulanylýan şrifti düzüň",
   "settings.general.row.followup.title": "Gözegçilik",
   "settings.general.row.followup.description":
     "Gözegçiligiň haýal etmän dolandyrjakdygyny ýa-da nobata garaşýandygyny saýlaň",
   "settings.general.row.followup.option.queue": "Nobat",
   "settings.general.row.followup.option.steer": "Rul",
   "settings.general.row.showFileTree.title": "Faýl agajy",
-  "settings.general.row.showFileTree.description": "Faýl agajy panelini seanslarda görkeziň",
+  "settings.general.row.showFileTree.description":
+    "Faýl agajy panelini seanslarda görkeziň",
   "settings.general.row.showNavigation.title": "Nawigasiýa dolandyryşlary",
-  "settings.general.row.showNavigation.description": "Iş stolunyň ady setirinde yzky we öňe düwmeleri görkeziň",
+  "settings.general.row.showNavigation.description":
+    "Iş stolunyň ady setirinde yzky we öňe düwmeleri görkeziň",
   "settings.general.row.showSearch.title": "Buýruk palitrasy",
-  "settings.general.row.showSearch.description": "Gözleg we buýruk palitrasy düwmesini sözbaşy setirinde görkeziň",
+  "settings.general.row.showSearch.description":
+    "Gözleg we buýruk palitrasy düwmesini sözbaşy setirinde görkeziň",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Iş stolunyň ady setirinde terminal düwmesini görkeziň",
+  "settings.general.row.showTerminal.description":
+    "Iş stolunyň ady setirinde terminal düwmesini görkeziň",
   "settings.general.row.showStatus.title": "Serweriň ýagdaýy",
-  "settings.general.row.showStatus.description": "Serweriň ýagdaý düwmesini sözbaşy setirinde görkeziň",
+  "settings.general.row.showStatus.description":
+    "Serweriň ýagdaý düwmesini sözbaşy setirinde görkeziň",
   "settings.general.row.mobileTitlebarBottom.title": "Aşakdaky nawigasiýa",
   "settings.general.row.mobileTitlebarBottom.description":
     "Adyň setirini we sessiýa belliklerini ekranyň aşagyna ykjam ýerleşdiriň",
   "settings.general.row.showCustomAgents.title": "Agent görkez",
   "settings.general.row.showCustomAgents.description":
     "Kompozitordaky agentleriň arasynda geçiň. Gizlenende, agent gurmak üçin defolt.",
-  "settings.general.row.reasoningSummaries.title": "Pikirleriň gysgaça mazmunyny görkeziň",
+  "settings.general.row.reasoningSummaries.title":
+    "Pikirleriň gysgaça mazmunyny görkeziň",
   "settings.general.row.reasoningSummaries.description":
     "Wagt görkezijisinde model pikirlenişiň gysgaça mazmunyny görkeziň",
-  "settings.general.row.shellToolPartsExpanded.title": "Shell gural böleklerini giňeltmek",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Shell gural böleklerini giňeltmek",
   "settings.general.row.shellToolPartsExpanded.description":
     "Wagt görkezijisinde deslapky görnüşde giňeldilen shell gural böleklerini görkeziň",
-  "settings.general.row.editToolPartsExpanded.title": "Redaktirleme gurallarynyň böleklerini giňeltmek",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Redaktirleme gurallarynyň böleklerini giňeltmek",
   "settings.general.row.editToolPartsExpanded.description":
     "Wagt tertibinde tertip boýunça giňeldilen redaktirlemegi, ýazmagy we patch gurallaryny görkeziň",
   "settings.general.row.newInterface.title": "Täze düzüliş",
   "settings.general.row.newInterface.badge": "Täze",
   "settings.general.row.newInterface.description":
     "Täze goýmalary we öý tertibini ulanyň. Çäkli wagt üçin düzülişleriň arasynda geçiň.",
-  "settings.general.row.newInterfaceNotice.title": "Indi täze düzülişi ulanýarsyňyz",
-  "settings.general.row.newInterfaceNotice.description": "Öňki düzüliş indi elýeterli däl",
+  "settings.general.row.newInterfaceNotice.title":
+    "Indi täze düzülişi ulanýarsyňyz",
+  "settings.general.row.newInterfaceNotice.description":
+    "Öňki düzüliş indi elýeterli däl",
   "settings.general.row.newInterfaceNotice.dismiss": "Işden aýyrmak",
   "settings.general.row.pinchZoom.title": "Ulaltmak üçin çümmük",
-  "settings.general.row.pinchZoom.description": "Trackpad çümmüklerine we Ctrl-aýlaw hereketlerine ýakynlaşdyryň",
+  "settings.general.row.pinchZoom.description":
+    "Trackpad çümmüklerine we Ctrl-aýlaw hereketlerine ýakynlaşdyryň",
   "settings.general.row.wayland.title": "Nativeerli Wayland ulanyň",
-  "settings.general.row.wayland.description": "Wayland-de X11 yza gaýdyp gelmegi öçüriň. Gaýtadan açmagy talap edýär.",
+  "settings.general.row.wayland.description":
+    "Wayland-de X11 yza gaýdyp gelmegi öçüriň. Gaýtadan açmagy talap edýär.",
   "settings.general.row.wayland.tooltip":
     "Garyşyk täzeleniş tizligi monitorlary bolan Linux-de ýerli Wayland has durnukly bolup biler.",
   "settings.general.row.releaseNotes.title": "Bellikleri goýberiň",
-  "settings.general.row.releaseNotes.description": "Täzelenmelerden soň täze çykýanlary görkeziň",
+  "settings.general.row.releaseNotes.description":
+    "Täzelenmelerden soň täze çykýanlary görkeziň",
   "settings.updates.row.startup.title": "Başlangyçdaky täzelenmeleri barlaň",
-  "settings.updates.row.startup.description": "OpenCode işe başlanda täzelenmeleri awtomatiki barlaň",
+  "settings.updates.row.startup.description":
+    "OpenCode işe başlanda täzelenmeleri awtomatiki barlaň",
   "settings.updates.row.check.title": "Täzelenmeleri barlaň",
-  "settings.updates.row.check.description": "Täzelenmeleri el bilen barlaň we bar bolsa guruň",
+  "settings.updates.row.check.description":
+    "Täzelenmeleri el bilen barlaň we bar bolsa guruň",
   "settings.updates.action.checkNow": "Indi barlaň",
   "settings.updates.action.checking": "Barlamak ...",
   "settings.updates.action.downloading": "Ingüklemek ...",
   "settings.updates.action.installing": "Gurmak ...",
   "settings.updates.toast.latest.title": "Döwrebap",
-  "settings.updates.toast.latest.description": "OpenCode-iň iň soňky wersiýasyny işleýärsiňiz.",
+  "settings.updates.toast.latest.description":
+    "OpenCode-iň iň soňky wersiýasyny işleýärsiňiz.",
   "sound.option.none": "Hiç",
   "sound.option.alert01": "Duýduryş 01",
   "sound.option.alert02": "Duýduryş 02",
@@ -1059,21 +1183,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Agent doly bolanda ýa-da ünsi talap edende ulgam habarnamasyny görkeziň",
   "settings.general.notifications.permissions.title": "Rugsatlar",
-  "settings.general.notifications.permissions.description": "Rugsat talap edilende ulgam habarnamasyny görkeziň",
+  "settings.general.notifications.permissions.description":
+    "Rugsat talap edilende ulgam habarnamasyny görkeziň",
   "settings.general.notifications.errors.title": "Rorsalňyşlyklar",
-  "settings.general.notifications.errors.description": "Ýalňyşlyk ýüze çykanda ulgam habarnamasyny görkeziň",
+  "settings.general.notifications.errors.description":
+    "Ýalňyşlyk ýüze çykanda ulgam habarnamasyny görkeziň",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Agent doly bolanda ýa-da ünsi talap edende ses çalyň",
+  "settings.general.sounds.agent.description":
+    "Agent doly bolanda ýa-da ünsi talap edende ses çalyň",
   "settings.general.sounds.permissions.title": "Rugsatlar",
-  "settings.general.sounds.permissions.description": "Rugsat gerek bolsa ses çalyň",
+  "settings.general.sounds.permissions.description":
+    "Rugsat gerek bolsa ses çalyň",
   "settings.general.sounds.errors.title": "Rorsalňyşlyklar",
-  "settings.general.sounds.errors.description": "Ýalňyşlyk ýüze çykanda ses çalyň",
+  "settings.general.sounds.errors.description":
+    "Ýalňyşlyk ýüze çykanda ses çalyň",
   "settings.shortcuts.title": "Klawiatura salgylanmalary",
   "settings.shortcuts.reset.button": "Dymmaklyklara gaýtaryň",
   "settings.shortcuts.reset.toast.title": "Salgylanmalar täzeden düzülýär",
-  "settings.shortcuts.reset.toast.description": "Klawiatura gysga ýollary deslapky görnüşde täzeden düzüldi.",
+  "settings.shortcuts.reset.toast.description":
+    "Klawiatura gysga ýollary deslapky görnüşde täzeden düzüldi.",
   "settings.shortcuts.conflict.title": "Salgylanma eýýäm ulanylýar",
-  "settings.shortcuts.conflict.description": "{{keybind}} eýýäm {{titles}}-e bellendi.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} eýýäm {{titles}}-e bellendi.",
   "settings.shortcuts.unassigned": "Bellenmedik",
   "settings.shortcuts.pressKeys": "Düwmeleri basyň",
   "settings.shortcuts.search.placeholder": "Salgylanmalary gözläň",
@@ -1085,12 +1216,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "Prompt",
   "settings.providers.title": "Üpjün edijiler",
-  "settings.providers.description": "Üpjün edijiniň sazlamalary bu ýerde düzülip bilner.",
+  "settings.providers.description":
+    "Üpjün edijiniň sazlamalary bu ýerde düzülip bilner.",
   "settings.providers.section.connected": "Birikdirilen üpjün edijiler",
   "settings.providers.connected.empty": "Baglanan üpjün edijiler ýok",
-  "settings.providers.connected.environmentDescription": "Daşky gurşaw üýtgeýjilerinden birikdirildi",
+  "settings.providers.connected.environmentDescription":
+    "Daşky gurşaw üýtgeýjilerinden birikdirildi",
   "settings.providers.section.popular": "Meşhur üpjün edijiler",
-  "settings.providers.custom.description": "URL esasly OpenAI gabat gelýän üpjün edijini goşuň.",
+  "settings.providers.custom.description":
+    "URL esasly OpenAI gabat gelýän üpjün edijini goşuň.",
   "settings.providers.tag.environment": "Daşky gurşaw",
   "settings.providers.tag.config": "Sazlamak",
   "settings.providers.tag.custom": "Omörite",
@@ -1100,34 +1234,43 @@ export const dict = {
   "settings.agents.title": "Agentler",
   "settings.agents.description": "Agent sazlamalary bu ýerde düzülip bilner.",
   "settings.commands.title": "Buýruklar",
-  "settings.commands.description": "Buýruk sazlamalary bu ýerde düzülip bilner.",
+  "settings.commands.description":
+    "Buýruk sazlamalary bu ýerde düzülip bilner.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP sazlamalary bu ýerde düzülip bilner.",
   "settings.permissions.title": "Rugsatlar",
-  "settings.permissions.description": "Serweriň haýsy gurallary ulanyp biljekdigini dolandyryň.",
+  "settings.permissions.description":
+    "Serweriň haýsy gurallary ulanyp biljekdigini dolandyryň.",
   "settings.permissions.section.tools": "Gurallar",
   "settings.permissions.toast.updateFailed.title": "Rugsatlary täzeläp bilmedi",
   "settings.permissions.action.allow": "Rugsat beriň",
   "settings.permissions.action.ask": "Soraň",
   "settings.permissions.action.deny": "Inkär et",
   "settings.permissions.tool.read.title": "Oka",
-  "settings.permissions.tool.read.description": "Faýl okamak (faýl ýoluna gabat gelýär)",
+  "settings.permissions.tool.read.description":
+    "Faýl okamak (faýl ýoluna gabat gelýär)",
   "settings.permissions.tool.edit.title": "Redaktirläň",
-  "settings.permissions.tool.edit.description": "Faýllary, şol sanda redaktirlemegi, ýazmagy we ýamalary üýtgediň",
+  "settings.permissions.tool.edit.description":
+    "Faýllary, şol sanda redaktirlemegi, ýazmagy we ýamalary üýtgediň",
   "settings.permissions.tool.glob.title": "Globus",
-  "settings.permissions.tool.glob.description": "Global faýllary ulanyp faýllary deňeşdiriň",
+  "settings.permissions.tool.glob.description":
+    "Global faýllary ulanyp faýllary deňeşdiriň",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Faýl mazmunyny yzygiderli aňlatmalar arkaly gözläň",
+  "settings.permissions.tool.grep.description":
+    "Faýl mazmunyny yzygiderli aňlatmalar arkaly gözläň",
   "settings.permissions.tool.list.title": "Sanaw",
-  "settings.permissions.tool.list.description": "Faýllary bukjanyň içinde sanaň",
+  "settings.permissions.tool.list.description":
+    "Faýllary bukjanyň içinde sanaň",
   "settings.permissions.tool.bash.title": "Baş",
   "settings.permissions.tool.bash.description": "Shell buýruklaryny işlediň",
   "settings.permissions.tool.task.title": "Wezipe",
   "settings.permissions.tool.task.description": "Sub-agentleri işe giriziň",
   "settings.permissions.tool.skill.title": "Ussatlyk",
-  "settings.permissions.tool.skill.description": "Bir ussatlygy at bilen ýükläň",
+  "settings.permissions.tool.skill.description":
+    "Bir ussatlygy at bilen ýükläň",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Dil serweriniň talaplaryny işlediň",
+  "settings.permissions.tool.lsp.description":
+    "Dil serweriniň talaplaryny işlediň",
   "settings.permissions.tool.todowrite.title": "Todo ýaz",
   "settings.permissions.tool.todowrite.description": "Todo sanawyny täzeläň",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
@@ -1135,9 +1278,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web gözlegi",
   "settings.permissions.tool.websearch.description": "Webde gözläň",
   "settings.permissions.tool.external_directory.title": "Daşarky katalog",
-  "settings.permissions.tool.external_directory.description": "Taslama bukjasynyň daşyndaky faýllara giriň",
+  "settings.permissions.tool.external_directory.description":
+    "Taslama bukjasynyň daşyndaky faýllara giriň",
   "settings.permissions.tool.doom_loop.title": "Doom aýlawy",
-  "settings.permissions.tool.doom_loop.description": "Birmeňzeş giriş bilen gaýtalanýan gural jaňlaryny kesgitläň",
+  "settings.permissions.tool.doom_loop.description":
+    "Birmeňzeş giriş bilen gaýtalanýan gural jaňlaryny kesgitläň",
   "session.delete.failed.title": "Sessiýany pozup bilmedi",
   "session.delete.title": "Sessiýany poz",
   "session.delete.confirm": '"{{name}}" sessiýasyny pozmalymy?',
@@ -1151,12 +1296,14 @@ export const dict = {
   "workspace.resetting.description": "Bu bir minut alyp biler.",
   "workspace.reset.failed.title": "Workspace täzeden düzüp bolmady",
   "workspace.reset.success.title": "Workspace täzeden düzüldi",
-  "workspace.reset.success.description": "Workspace indi adaty şaha gabat gelýär.",
+  "workspace.reset.success.description":
+    "Workspace indi adaty şaha gabat gelýär.",
   "workspace.error.stillPreparing": "Workspace henizem taýýarlanýar",
   "workspace.status.checking": "Birleşdirilmedik üýtgeşmeleri barlamak ...",
   "workspace.status.error": "Git ýagdaýyny barlap bolmaýar.",
   "workspace.status.clean": "Düzülmedik üýtgeşmeler tapylmady.",
-  "workspace.status.dirty": "Bu workspace-de birleşdirilmedik üýtgeşmeler ýüze çykaryldy.",
+  "workspace.status.dirty":
+    "Bu workspace-de birleşdirilmedik üýtgeşmeler ýüze çykaryldy.",
   "workspace.delete.title": "Workspace-i poz",
   "workspace.delete.confirm": '"{{name}}" workspace-i pozmalymy?',
   "workspace.delete.button": "Workspace-i poz",
@@ -1166,6 +1313,7 @@ export const dict = {
   "workspace.reset.archived.none": "Hiç bir işjeň sessiýa arhiwlenmez.",
   "workspace.reset.archived.one": "1 sessiýa arhiwlener.",
   "workspace.reset.archived.many": "{{count}} sessiýalary arhiwlener.",
-  "workspace.reset.note": "Bu workspace-i adaty şaha gabat getirmek üçin täzeden düzer.",
+  "workspace.reset.note":
+    "Bu workspace-i adaty şaha gabat getirmek üçin täzeden düzer.",
   "dialog.usageExceeded.dontShowAgain": "Gaýtadan görkezme",
 }

@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Jaga tagasisidet",
   "desktop.menu.reportBug": "Teatage veast",
   "desktop.menu.ariaLabel": "OpenCode menüü",
-  "desktop.updater.dialog.checkFailed.message": "Värskenduskontroll ebaõnnestus.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Värskenduskontroll ebaõnnestus.",
   "desktop.updater.dialog.checkFailed.title": "Värskendusviga",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Oled kursis.",
   "desktop.updater.dialog.upToDate.title": "Värskendusi pole",
-  "desktop.updater.dialog.ready.message": "Värskendus {{version}} on alla laaditud. Kas alustada kohe uuesti?",
+  "desktop.updater.dialog.ready.message":
+    "Värskendus {{version}} on alla laaditud. Kas alustada kohe uuesti?",
   "desktop.updater.dialog.ready.title": "Värskendus valmis",
   "desktop.updater.dialog.restart": "Taaskäivitage",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,9 +65,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode laadimine ebaõnnestus",
   "desktop.recovery.terminated": "OpenCode aken suleti ootamatult",
   "desktop.recovery.unresponsive": "OpenCode ei vasta",
-  "desktop.recovery.unresponsive.detail": "Saate rakenduse uuesti käivitada, logid avada või oodata.",
-  "desktop.recovery.loadFailed.detail": "Aken: {{window}}\nURL: {{url}}\nViga: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Aken: {{window}}\nPõhjus: {{reason}}\nKood: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Saate rakenduse uuesti käivitada, logid avada või oodata.",
+  "desktop.recovery.loadFailed.detail":
+    "Aken: {{window}}\nURL: {{url}}\nViga: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Aken: {{window}}\nPõhjus: {{reason}}\nKood: {{code}}",
   "desktop.recovery.unknown": "<tundmatu>",
   "desktop.dialog.chooseFolder": "Valige kaust",
   "desktop.dialog.chooseFile": "Valige fail",
@@ -73,27 +79,37 @@ export const dict = {
   "desktop.server.local": "Kohalik server",
   "desktop.wsl.error.windowsOnly": "WSL on saadaval ainult Windows",
   "desktop.wsl.error.unavailable": "WSL pole saadaval",
-  "desktop.wsl.error.listInstalled": "Installitud WSL distributsioonide loendisse lisamine nurjus",
-  "desktop.wsl.error.listOnline": "Internetis WSL distributsioonide loendisse lisamine ebaõnnestus",
+  "desktop.wsl.error.listInstalled":
+    "Installitud WSL distributsioonide loendisse lisamine nurjus",
+  "desktop.wsl.error.listOnline":
+    "Internetis WSL distributsioonide loendisse lisamine ebaõnnestus",
   "desktop.wsl.error.executeDistro": "Distros ei saa käske täita",
   "desktop.wsl.error.installWsl": "WSL installimine ebaõnnestus",
-  "desktop.wsl.error.installDistro": "Distro installimine ebaõnnestus: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Distro installimine ebaõnnestus: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode installimine ebaõnnestus",
   "desktop.wsl.error.alreadyAdded": "{{distro}} on juba lisatud",
-  "desktop.wsl.error.opencodeMissing": "opencode pole sellesse distrosse installitud",
-  "desktop.wsl.error.opencodeCannotRun": "opencode on installitud, kuid seda ei saa käivitada",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode pole installitud asukohta {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode pole sellesse distrosse installitud",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode on installitud, kuid seda ei saa käivitada",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode pole installitud asukohta {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode värskendus on lõpetatud, kuid {{distro}} teatab endiselt {{installed}}; oodata {{expected}}",
   "desktop.wsl.error.noVersion": "versiooni pole",
-  "desktop.wsl.error.serverExited": "WSL-server sulgus pärast käivitamist (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL-server sulgus pärast käivitamist (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL server väljus enne tervenemist (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} tervisekontrolli külgkorv aegus {{timeout}} ms pärast",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} aegus {{timeout}} ms pärast",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} tervisekontrolli külgkorv aegus {{timeout}} ms pärast",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} aegus {{timeout}} ms pärast",
   "desktop.wsl.error.failedPort": "Pordi hankimine ebaõnnestus",
   "desktop.picker.error.notSelected": "Valija ei valinud faili",
-  "desktop.picker.error.sizeLimit": "Valitud manused ületavad {{limit}} MB piirangut",
+  "desktop.picker.error.sizeLimit":
+    "Valitud manused ületavad {{limit}} MB piirangut",
   "command.category.suggested": "Soovitatud",
   "command.category.view": "Vaade",
   "command.category.project": "Projekt",
@@ -140,7 +156,8 @@ export const dict = {
   "command.tab.close": "Sule vahekaart",
   "command.tab.reopenClosed": "Ava suletud vaheleht uuesti",
   "command.context.addSelection": "Lisage valik konteksti",
-  "command.context.addSelection.description": "Lisa valitud read aktiivsest failist",
+  "command.context.addSelection.description":
+    "Lisa valitud read aktiivsest failist",
   "command.input.focus": "Fookuse sisend",
   "command.terminal.toggle": "Lülita terminali sisse",
   "command.fileTree.toggle": "Failipuu sisse- ja väljalülitamine",
@@ -150,7 +167,8 @@ export const dict = {
   "command.steps.toggle": "Lülitage samme sisse",
   "command.steps.toggle.description": "Näita või peida praeguse sõnumi samme",
   "command.message.previous": "Eelmine sõnum",
-  "command.message.previous.description": "Minge eelmise kasutaja sõnumi juurde",
+  "command.message.previous.description":
+    "Minge eelmise kasutaja sõnumi juurde",
   "command.message.next": "Järgmine sõnum",
   "command.message.next.description": "Minge järgmise kasutajateate juurde",
   "command.model.choose": "Valige mudel",
@@ -162,27 +180,33 @@ export const dict = {
   "command.agent.cycle.reverse": "Tsükli agent tagurpidi",
   "command.agent.cycle.reverse.description": "Lülituge eelmisele agendile",
   "command.model.variant.cycle": "Tsükli mõtlemise pingutus",
-  "command.model.variant.cycle.description": "Lülituge järgmisele pingutustasemele",
+  "command.model.variant.cycle.description":
+    "Lülituge järgmisele pingutustasemele",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Viip",
   "command.permissions.autoaccept.enable": "Lubade automaatne aktsepteerimine",
-  "command.permissions.autoaccept.disable": "Peatage lubade automaatne vastuvõtmine",
+  "command.permissions.autoaccept.disable":
+    "Peatage lubade automaatne vastuvõtmine",
   "command.workspace.toggle": "Tööruumide sisse- ja väljalülitamine",
-  "command.workspace.toggle.description": "Lubage või keelake külgribal mitu tööruumi",
+  "command.workspace.toggle.description":
+    "Lubage või keelake külgribal mitu tööruumi",
   "command.session.undo": "Võta tagasi",
   "command.session.undo.description": "Võta viimane sõnum tagasi",
   "command.session.redo": "Tee uuesti",
   "command.session.redo.description": "Korrake viimane tühistatud sõnum",
   "command.session.compact": "Kompaktne seanss",
-  "command.session.compact.description": "Konteksti suuruse vähendamiseks tehke seansist kokkuvõte",
+  "command.session.compact.description":
+    "Konteksti suuruse vähendamiseks tehke seansist kokkuvõte",
   "command.session.fork": "Sõnumi kahvel",
   "command.session.fork.description": "Looge eelmisest sõnumist uus seanss",
   "command.session.share": "Jaga seanssi",
-  "command.session.share.description": "Jagage seda seanssi ja kopeerige URL lõikelauale",
+  "command.session.share.description":
+    "Jagage seda seanssi ja kopeerige URL lõikelauale",
   "command.session.unshare": "Tühista seansi jagamine",
   "command.session.unshare.description": "Lõpetage selle seansi jagamine",
   "command.session.export": "Ekspordiseanss",
-  "command.session.export.description": "Ekspordi kogu seansi transkriptsioon kui JSON",
+  "command.session.export.description":
+    "Ekspordi kogu seansi transkriptsioon kui JSON",
   "palette.search.placeholder": "Otsige faile, käske ja seansse",
   "palette.search.placeholder.home": "Otsige käske ja seansse",
   "palette.empty": "Tulemusi ei leitud",
@@ -194,28 +218,38 @@ export const dict = {
   "dialog.provider.group.other": "muud",
   "dialog.provider.custom.label": "Kohandatud OpenAI-ga ühilduv pakkuja",
   "dialog.provider.tag.recommended": "Soovitatav",
-  "dialog.provider.opencode.note": "Kureeritud mudelid, sealhulgas Claude, GPT, Gemini ja palju muud",
+  "dialog.provider.opencode.note":
+    "Kureeritud mudelid, sealhulgas Claude, GPT, Gemini ja palju muud",
   "dialog.provider.opencode.tagline": "Usaldusväärsed optimeeritud mudelid",
   "dialog.provider.opencodeGo.tagline": "Madala hinnaga tellimus kõigile",
-  "dialog.provider.anthropic.note": "Otsene juurdepääs Claude mudelile, sealhulgas Pro ja Max",
-  "dialog.provider.copilot.note": "AI mudelid kodeerimisabiks GitHub Copilot kaudu",
-  "dialog.provider.openai.note": "GPT mudelid kiirete ja võimekate üldiste AI-ülesannete jaoks",
-  "dialog.provider.google.note": "Gemini mudelid kiirete ja struktureeritud vastuste jaoks",
-  "dialog.provider.openrouter.note": "Juurdepääs kõigile ühe pakkuja toetatud mudelitele",
-  "dialog.provider.vercel.note": "Ühtne juurdepääs AI mudelitele nutika marsruutimisega",
+  "dialog.provider.anthropic.note":
+    "Otsene juurdepääs Claude mudelile, sealhulgas Pro ja Max",
+  "dialog.provider.copilot.note":
+    "AI mudelid kodeerimisabiks GitHub Copilot kaudu",
+  "dialog.provider.openai.note":
+    "GPT mudelid kiirete ja võimekate üldiste AI-ülesannete jaoks",
+  "dialog.provider.google.note":
+    "Gemini mudelid kiirete ja struktureeritud vastuste jaoks",
+  "dialog.provider.openrouter.note":
+    "Juurdepääs kõigile ühe pakkuja toetatud mudelitele",
+  "dialog.provider.vercel.note":
+    "Ühtne juurdepääs AI mudelitele nutika marsruutimisega",
   "dialog.model.select.title": "Valige mudel",
   "dialog.model.search.placeholder": "Otsige mudeleid",
   "dialog.model.empty": "Mudelitulemusi pole",
   "dialog.model.manage": "Hallake mudeleid",
-  "dialog.model.manage.description": "Kohandage, millised mudelid mudelivalijas kuvatakse.",
-  "dialog.model.manage.provider.toggle": "Lülitab kõik {{provider}} mudelid sisse",
+  "dialog.model.manage.description":
+    "Kohandage, millised mudelid mudelivalijas kuvatakse.",
+  "dialog.model.manage.provider.toggle":
+    "Lülitab kõik {{provider}} mudelid sisse",
   "dialog.model.unpaid.freeModels.title": "Tasuta mudeleid pakub OpenCode",
   "dialog.model.unpaid.addMore.title": "Lisage populaarsete pakkujate mudeleid",
   "dialog.model.unpaid.viewMoreProviders": "Vaadake veel 70+ pakkujat",
   "dialog.provider.viewAll": "Kuva rohkem teenusepakkujaid",
   "provider.connect.title": "Ühenda {{provider}}",
   "provider.connect.title.anthropicProMax": "Logi sisse Claude Pro/Max",
-  "provider.connect.selectMethod": "Valige {{provider}} jaoks sisselogimisviis.",
+  "provider.connect.selectMethod":
+    "Valige {{provider}} jaoks sisselogimisviis.",
   "provider.connect.method.apiKey": "API klahv",
   "provider.connect.method.browser": "Brauser",
   "provider.connect.method.headless": "Peata",
@@ -248,22 +282,27 @@ export const dict = {
     " ja sisestage allolev kood, et ühendada oma konto ja kasutada {{provider}} mudelit jaotises OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Kinnituskood",
   "provider.connect.toast.connected.title": "{{provider}} ühendatud",
-  "provider.connect.toast.connected.description": "{{provider}} mudelit on nüüd kasutamiseks saadaval.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} mudelit on nüüd kasutamiseks saadaval.",
   "provider.custom.title": "Kohandatud pakkuja",
-  "provider.custom.unavailable": "Kohandatud pakkujad pole selles serveris saadaval",
-  "provider.custom.description.prefix": "Konfigureerige OpenAI-ga ühilduv pakkuja. Vaadake ",
+  "provider.custom.unavailable":
+    "Kohandatud pakkujad pole selles serveris saadaval",
+  "provider.custom.description.prefix":
+    "Konfigureerige OpenAI-ga ühilduv pakkuja. Vaadake ",
   "provider.custom.description.link": "pakkuja konfiguratsioonidokumendid",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Pakkuja ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Väikesed tähed, numbrid, sidekriipsud või allkriipsud",
+  "provider.custom.field.providerID.description":
+    "Väikesed tähed, numbrid, sidekriipsud või allkriipsud",
   "provider.custom.field.name.label": "Kuvatav nimi",
   "provider.custom.field.name.placeholder": "Minu AI pakkuja",
   "provider.custom.field.baseURL.label": "Baas URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API klahv",
   "provider.custom.field.apiKey.placeholder": "API klahv",
-  "provider.custom.field.apiKey.description": "Valikuline. Jätke tühjaks, kui haldate autentimist päiste kaudu.",
+  "provider.custom.field.apiKey.description":
+    "Valikuline. Jätke tühjaks, kui haldate autentimist päiste kaudu.",
   "provider.custom.models.label": "Mudelid",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -279,7 +318,8 @@ export const dict = {
   "provider.custom.headers.remove": "Eemalda päis",
   "provider.custom.headers.add": "Lisa päis",
   "provider.custom.error.providerID.required": "Pakkuja ID on nõutav",
-  "provider.custom.error.providerID.format": "Kasutage väiketähti, numbreid, sidekriipse või allkriipse",
+  "provider.custom.error.providerID.format":
+    "Kasutage väiketähti, numbreid, sidekriipse või allkriipse",
   "provider.custom.error.providerID.exists": "See pakkuja ID on juba olemas",
   "provider.custom.error.name.required": "Kuvatav nimi on kohustuslik",
   "provider.custom.error.baseURL.required": "Alus URL on nõutav",
@@ -287,7 +327,8 @@ export const dict = {
   "provider.custom.error.required": "Nõutav",
   "provider.custom.error.duplicate": "Duplikaat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} on katkestatud",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} mudelit pole enam saadaval.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} mudelit pole enam saadaval.",
   "model.tag.free": "Tasuta",
   "model.tag.latest": "Viimased",
   "model.provider.anthropic": "Anthropic",
@@ -381,10 +422,12 @@ export const dict = {
   "prompt.action.send": "Saada",
   "prompt.action.stop": "Peatus",
   "prompt.toast.pasteUnsupported.title": "Toetamata manus",
-  "prompt.toast.pasteUnsupported.description": "Siia saab lisada ainult pilte, PDFs või tekstifaile.",
+  "prompt.toast.pasteUnsupported.description":
+    "Siia saab lisada ainult pilte, PDFs või tekstifaile.",
   "prompt.toast.attachmentDuplicate.title": "See fail on juba üles laaditud",
   "prompt.toast.modelAgentRequired.title": "Valige agent ja mudel",
-  "prompt.toast.modelAgentRequired.description": "Enne viipa saatmist valige agent ja mudel.",
+  "prompt.toast.modelAgentRequired.description":
+    "Enne viipa saatmist valige agent ja mudel.",
   "prompt.toast.worktreeCreateFailed.title": "Tööpuu loomine ebaõnnestus",
   "prompt.toast.sessionCreateFailed.title": "Seansi loomine ebaõnnestus",
   "prompt.toast.shellSendFailed.title": "Shelli käsu saatmine ebaõnnestus",
@@ -413,7 +456,8 @@ export const dict = {
   "app.server.retrying": "Automaatne uuesti proovimine...",
   "app.server.otherServers": "Muud serverid",
   "dialog.server.title": "Serverid",
-  "dialog.server.description": "Lülitage, millise OpenCode serveriga see rakendus ühenduse loob.",
+  "dialog.server.description":
+    "Lülitage, millise OpenCode serveriga see rakendus ühenduse loob.",
   "dialog.server.search.placeholder": "Otsi serveritest",
   "dialog.server.empty": "Servereid veel pole",
   "dialog.server.add.title": "Lisa server",
@@ -451,7 +495,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Valige distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL kontrollimine...",
-  "wsl.onboarding.restartRequired": "Windows vajab installimise WSL lõpetamiseks taaskäivitamist.",
+  "wsl.onboarding.restartRequired":
+    "Windows vajab installimise WSL lõpetamiseks taaskäivitamist.",
   "wsl.onboarding.ready": "WSL on valmis.",
   "wsl.onboarding.required": "Jätkamiseks on vaja WSL.",
   "wsl.onboarding.checkingDistros": "Distrode kontrollimine...",
@@ -460,18 +505,22 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Distrode loend...",
   "wsl.onboarding.distroReady": "{{distro}} on valmis.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} pole veel installitud.",
-  "wsl.onboarding.openDistroOnce": "Seadistamise lõpetamiseks avage üks kord {{distro}}.",
+  "wsl.onboarding.openDistroOnce":
+    "Seadistamise lõpetamiseks avage üks kord {{distro}}.",
   "wsl.onboarding.finishingDistro": "Seadistuse lõpetamine {{distro}} jaoks.",
   "wsl.onboarding.pickDistro": "Valige distro või installige see allpool.",
   "wsl.onboarding.checkingOpencode": "OpenCode kontrollimine...",
-  "wsl.onboarding.checkingOpencodeIn": "OpenCode kontrollimine asukohas {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "OpenCode kontrollimine asukohas {{distro}}...",
   "wsl.onboarding.updatingOpencode": "OpenCode värskendamine...",
-  "wsl.onboarding.updatingOpencodeIn": "OpenCode värskendamine asukohas {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "OpenCode värskendamine asukohas {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Värskenda OpenCode jaotises {{distro}}.",
   "wsl.onboarding.updateOpencode": "Värskenda OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode on valmis {{distro}}.",
   "wsl.onboarding.opencodeReady": "OpenCode on valmis.",
-  "wsl.onboarding.installOpencodeIn": "Installige OpenCode asukohta {{distro}}.",
+  "wsl.onboarding.installOpencodeIn":
+    "Installige OpenCode asukohta {{distro}}.",
   "wsl.onboarding.installOpencode": "Installige OpenCode",
   "wsl.onboarding.chooseDistroFirst": "Valige esmalt distro.",
   "wsl.onboarding.loadFailed": "Oleku WSL laadimine ebaõnnestus.",
@@ -484,17 +533,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Puuduvad bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Toetamata · Kasutage WSL 2",
   "wsl.onboarding.needAnotherDistro": "Kas vajate teist distrot?",
-  "wsl.onboarding.needAnotherDistroHint": "Installige Linux distributsioon kataloogist WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Installige Linux distributsioon kataloogist WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL pole installitud",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows alamsüsteem Linux jaoks) on nõutav, enne kui OpenCode saab lisada WSL serveri",
   "wsl.onboarding.wslUnavailable.title": "WSL pole saadaval",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ei saanud selles masinas kontrollida WSL.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ei saanud selles masinas kontrollida WSL.",
   "wsl.onboarding.installWsl": "Installige WSL",
-  "wsl.onboarding.windowsRestartRequired": "Taaskäivitage Windows, et installida WSL, seejärel avage uuesti OpenCode.",
+  "wsl.onboarding.windowsRestartRequired":
+    "Taaskäivitage Windows, et installida WSL, seejärel avage uuesti OpenCode.",
   "wsl.onboarding.next": "Edasi",
   "wsl.onboarding.refresh": "Värskenda",
-  "wsl.onboarding.allDistrosAdded": "Kõik installitud distrood on juba lisatud.",
+  "wsl.onboarding.allDistrosAdded":
+    "Kõik installitud distrood on juba lisatud.",
   "wsl.onboarding.noDistros": "Ühtegi distrosid pole veel tuvastatud.",
   "wsl.onboarding.install": "Installige",
   "wsl.onboarding.installing": "Installimine...",
@@ -508,20 +561,26 @@ export const dict = {
   "wsl.onboarding.version": "Versioon: {{version}}",
   "wsl.onboarding.unknown": "teadmata",
   "wsl.onboarding.desktopVersion": "töölaud {{version}}",
-  "wsl.onboarding.versionMismatch": "Installitud versioon ei ühti töölauarakenduse versiooniga.",
+  "wsl.onboarding.versionMismatch":
+    "Installitud versioon ei ühti töölauarakenduse versiooniga.",
   "wsl.onboarding.adding": "Lisamine...",
-  "help.tabs.toast.ariaLabel": "Tutvustame vahekaarte. Korraldage oma tööd ja aktiivseid seansse vahekaartide abil",
+  "help.tabs.toast.ariaLabel":
+    "Tutvustame vahekaarte. Korraldage oma tööd ja aktiivseid seansse vahekaartide abil",
   "help.tabs.toast.dismiss": "Loobu vahelehtede teabest",
   "help.tabs.title": "Tutvustame vahekaarte",
-  "help.tabs.description": "Korraldage oma tööd ja aktiivseid seansse vahekaartide abil",
+  "help.tabs.description":
+    "Korraldage oma tööd ja aktiivseid seansse vahekaartide abil",
   "help.tabs.date": "14. juuli",
-  "help.tabs.introduction": "OpenCode Töölaud on nüüd üles ehitatud vahekaartide ümber.",
+  "help.tabs.introduction":
+    "OpenCode Töölaud on nüüd üles ehitatud vahekaartide ümber.",
   "help.tabs.sessions":
     "Alustage vahekaardil uut seanssi või avage mis tahes projektist olemasolev seanss. Kui alustate midagi uut, avage uus vaheleht ja sulgege see, kui olete lõpetanud.",
   "help.tabs.organize":
     "Mõne vahelehe avatuna hoidmine muudab aktiivsete seansside korraldamise lihtsamaks. Nimetage vahekaardid ümber millekski meeldejäävaks, kui kavatsete need alles jätta.",
-  "help.tabs.home": "Kõik seansid ja projektid leiate uuelt avalehelt. Seansi valimine avab selle vahekaardil.",
-  "help.tabs.persistence": "Kui avate rakenduse uuesti, on teie vahelehed endiselt avatud.",
+  "help.tabs.home":
+    "Kõik seansid ja projektid leiate uuelt avalehelt. Seansi valimine avab selle vahekaardil.",
+  "help.tabs.persistence":
+    "Kui avate rakenduse uuesti, on teie vahelehed endiselt avatud.",
   "help.tabs.worktrees":
     "Uus disain ei toeta veel Git tööpuud, see on peagi saadaval. Seega, kui eelistate jätkata eelmise paigutuse kasutamist, saate seadetes küljendusi vahetada. Pidage vaid meeles, et uus paigutus muutub mõne nädala pärast püsivaks.",
   "server.row.noUsername": "kasutajanime pole",
@@ -534,14 +593,16 @@ export const dict = {
   "dialog.project.edit.color": "Värv",
   "dialog.project.edit.color.select": "Valige {{color}} värv",
   "dialog.project.edit.worktree.startup": "Tööruumi käivitusskript",
-  "dialog.project.edit.worktree.startup.description": "Käivitatakse pärast uue tööruumi (tööpuu) loomist.",
+  "dialog.project.edit.worktree.startup.description":
+    "Käivitatakse pärast uue tööruumi (tööpuu) loomist.",
   "dialog.project.edit.worktree.startup.placeholder": "nt. bun install",
   "dialog.releaseNotes.action.getStarted": "Alustage",
   "dialog.releaseNotes.action.next": "Edasi",
   "dialog.releaseNotes.action.hideFuture": "Ärge näidake neid tulevikus",
   "dialog.releaseNotes.media.alt": "Väljalase eelvaade",
   "context.breakdown.title": "Konteksti jaotus",
-  "context.breakdown.note": 'Sisendmärkide ligikaudne jaotus. "Muu" hõlmab tööriistade määratlusi ja üldkulusid.',
+  "context.breakdown.note":
+    'Sisendmärkide ligikaudne jaotus. "Muu" hõlmab tööriistade määratlusi ja üldkulusid.',
   "context.breakdown.system": "Süsteem",
   "context.breakdown.user": "Kasutaja",
   "context.breakdown.assistant": "Assistent",
@@ -594,49 +655,70 @@ export const dict = {
   "toast.theme.title": "Teema vahetatud",
   "toast.scheme.title": "Värvilahendus",
   "toast.workspace.enabled.title": "Tööruumid on lubatud",
-  "toast.workspace.enabled.description": "Nüüd kuvatakse külgribal mitu tööpuud",
+  "toast.workspace.enabled.description":
+    "Nüüd kuvatakse külgribal mitu tööpuud",
   "toast.workspace.disabled.title": "Tööruumid on keelatud",
-  "toast.workspace.disabled.description": "Külgribal kuvatakse ainult peamine tööpuud",
+  "toast.workspace.disabled.description":
+    "Külgribal kuvatakse ainult peamine tööpuud",
   "toast.permissions.autoaccept.on.title": "Lubade automaatne aktsepteerimine",
-  "toast.permissions.autoaccept.on.description": "Loataotlused kinnitatakse automaatselt",
-  "toast.permissions.autoaccept.off.title": "Lubade automaatne vastuvõtmine on peatatud",
-  "toast.permissions.autoaccept.off.description": "Loataotlused nõuavad kinnitust",
+  "toast.permissions.autoaccept.on.description":
+    "Loataotlused kinnitatakse automaatselt",
+  "toast.permissions.autoaccept.off.title":
+    "Lubade automaatne vastuvõtmine on peatatud",
+  "toast.permissions.autoaccept.off.description":
+    "Loataotlused nõuavad kinnitust",
   "toast.model.none.title": "Ühtegi mudelit pole valitud",
-  "toast.model.none.description": "Seansi kokkuvõtte tegemiseks ühendage teenusepakkuja",
+  "toast.model.none.description":
+    "Seansi kokkuvõtte tegemiseks ühendage teenusepakkuja",
   "toast.file.loadFailed.title": "Faili laadimine ebaõnnestus",
   "toast.file.listFailed.title": "Failide loetlemine ebaõnnestus",
   "toast.context.noLineSelection.title": "Rea valikut pole",
-  "toast.context.noLineSelection.description": "Valige faili vahekaardilt esmalt reavahemik.",
-  "toast.session.share.copyFailed.title": "URL lõikelauale kopeerimine ebaõnnestus",
+  "toast.context.noLineSelection.description":
+    "Valige faili vahekaardilt esmalt reavahemik.",
+  "toast.session.share.copyFailed.title":
+    "URL lõikelauale kopeerimine ebaõnnestus",
   "toast.session.share.success.title": "Seanss jagatud",
   "toast.session.share.success.description": "Jaga URL kopeeriti lõikelauale!",
   "toast.session.share.failed.title": "Seansi jagamine ebaõnnestus",
   "toast.session.share.failed.description": "Seansi jagamisel ilmnes viga",
   "toast.session.unshare.success.title": "Seansi jagamine tühistati",
-  "toast.session.unshare.success.description": "Seansi jagamise tühistamine õnnestus!",
-  "toast.session.unshare.failed.title": "Seansi jagamise tühistamine ebaõnnestus",
-  "toast.session.unshare.failed.description": "Seansi jagamise tühistamisel ilmnes viga",
+  "toast.session.unshare.success.description":
+    "Seansi jagamise tühistamine õnnestus!",
+  "toast.session.unshare.failed.title":
+    "Seansi jagamise tühistamine ebaõnnestus",
+  "toast.session.unshare.failed.description":
+    "Seansi jagamise tühistamisel ilmnes viga",
   "toast.session.export.success.title": "Seanss eksporditud",
-  "toast.session.export.success.description": "Seanss salvestatud asukohta {{filename}}",
+  "toast.session.export.success.description":
+    "Seanss salvestatud asukohta {{filename}}",
   "toast.session.export.failed.title": "Seansi eksportimine ebaõnnestus",
   "toast.session.export.failed.description": "Seansi eksportimisel ilmnes viga",
-  "toast.session.listFailed.title": "{{project}} seansside laadimine ebaõnnestus",
-  "toast.project.reloadFailed.title": "{{project}} uuesti laadimine ebaõnnestus",
+  "toast.session.listFailed.title":
+    "{{project}} seansside laadimine ebaõnnestus",
+  "toast.project.reloadFailed.title":
+    "{{project}} uuesti laadimine ebaõnnestus",
   "toast.update.title": "Värskendus saadaval",
-  "toast.update.description": "Rakenduse OpenCode ({{version}}) uus versioon on nüüd installimiseks saadaval.",
+  "toast.update.description":
+    "Rakenduse OpenCode ({{version}}) uus versioon on nüüd installimiseks saadaval.",
   "toast.update.action.installRestart": "Installige ja taaskäivitage",
-  "disk.accessGuidance.macos": "Andke System Settingsis DiskLizardile luba Full Disk Access ja skannige uuesti.",
-  "disk.accessGuidance.windows": "Kasutage kontot, millel on sellele kettale juurdepääs, või skannige kausta, mida teie konto saab lugeda.",
-  "disk.accessGuidance.linux": "Vaadake üle kaustade ja haakepunktide õigused ning skannige uuesti.",
-  "disk.accessGuidance.default": "Vaadake üle juurdepääs nendele kaustadele ja skannige uuesti.",
-  "disk.accessGuidance.rescan": "Pärast juurdepääsu muutmist kasutage ülemisel ribal käsku Rescan.",
+  "disk.accessGuidance.macos":
+    "Andke System Settingsis DiskLizardile luba Full Disk Access ja skannige uuesti.",
+  "disk.accessGuidance.windows":
+    "Kasutage kontot, millel on sellele kettale juurdepääs, või skannige kausta, mida teie konto saab lugeda.",
+  "disk.accessGuidance.linux":
+    "Vaadake üle kaustade ja haakepunktide õigused ning skannige uuesti.",
+  "disk.accessGuidance.default":
+    "Vaadake üle juurdepääs nendele kaustadele ja skannige uuesti.",
+  "disk.accessGuidance.rescan":
+    "Pärast juurdepääsu muutmist kasutage ülemisel ribal käsku Rescan.",
   "disk.common.rescan": "Skaneeri uuesti",
   "toast.update.action.notYet": "Veel mitte",
   "toast.update.installFailed.title": "Värskenduse installimine nurjus",
   "toast.update.installFailed.retry": "Proovi uuesti",
   "error.page.title": "Midagi läks valesti",
   "error.page.description": "Rakenduse laadimisel ilmnes viga.",
-  "error.page.description.localServerStartup": "Kohaliku serveri käivitamisel ilmnes viga.",
+  "error.page.description.localServerStartup":
+    "Kohaliku serveri käivitamisel ilmnes viga.",
   "error.page.details.label": "Vea üksikasjad",
   "error.page.action.restart": "Taaskäivitage",
   "error.page.action.report": "Teata veast",
@@ -651,12 +733,16 @@ export const dict = {
   "error.page.version": "Versioon: {{version}}",
   "error.dev.rootNotFound":
     "Juurelementi ei leitud. Kas unustasite selle lisada oma loendisse index.html? Või äkki on id-atribuut valesti kirjutatud?",
-  "error.serverSync.connectFailed": "Serveriga ei õnnestunud ühendust luua. Kas aadressil `{{url}}` töötab server?",
+  "error.serverSync.connectFailed":
+    "Serveriga ei õnnestunud ühendust luua. Kas aadressil `{{url}}` töötab server?",
   "error.serverSDK.noServerAvailable": "Serverit pole saadaval",
   "error.serverSDK.serverNotAvailable": "Server pole saadaval",
-  "error.childStore.persistedCacheCreateFailed": "Püsiva vahemälu loomine ebaõnnestus",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Püsiva projekti metaandmete loomine ebaõnnestus",
-  "error.childStore.persistedProjectIconCreateFailed": "Püsiva projekti ikooni loomine ebaõnnestus",
+  "error.childStore.persistedCacheCreateFailed":
+    "Püsiva vahemälu loomine ebaõnnestus",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Püsiva projekti metaandmete loomine ebaõnnestus",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Püsiva projekti ikooni loomine ebaõnnestus",
   "error.childStore.storeCreateFailed": "Poe loomine ebaõnnestus",
   "directory.error.invalidUrl": "Kehtetu kataloog asukohas URL.",
   "error.chain.unknown": "Tundmatu viga",
@@ -668,22 +754,32 @@ export const dict = {
   "error.chain.responseBody": "Vastuse keha:\n{{body}}",
   "error.chain.didYouMean": "Kas mõtlesite: {{suggestions}}",
   "error.chain.modelNotFound": "Mudelit ei leitud: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Kontrollige oma konfiguratsiooni (opencode.json) pakkuja/mudeli nimesid",
-  "error.chain.mcpFailed": 'MCP server "{{name}}" ebaõnnestus. Pange tähele, OpenCode ei toeta veel MCP autentimist.',
-  "error.chain.providerAuthFailed": "Pakkuja autentimine ebaõnnestus ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Kontrollige oma konfiguratsiooni (opencode.json) pakkuja/mudeli nimesid",
+  "error.chain.mcpFailed":
+    'MCP server "{{name}}" ebaõnnestus. Pange tähele, OpenCode ei toeta veel MCP autentimist.',
+  "error.chain.providerAuthFailed":
+    "Pakkuja autentimine ebaõnnestus ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Teenusepakkuja "{{provider}}" lähtestamine ebaõnnestus. Kontrollige mandaate ja konfiguratsiooni.',
-  "error.chain.configJsonInvalid": "Konfiguratsioonifail asukohas {{path}} ei kehti JSON (C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfiguratsioonifail asukohas {{path}} ei kehti JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfiguratsioonifail asukohas {{path}} ei kehti JSON (C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfiguratsioonifail asukohas {{path}} ei kehti JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Kataloog "{{dir}}" asukohas {{path}} ei kehti. Nimetage kataloog ümber "{{suggestion}}" või eemaldage see. See on tavaline kirjaviga.',
-  "error.chain.configFrontmatterError": "Frontmatteri sõelumine failis {{path}} ebaõnnestus:\n{{message}}",
-  "error.chain.configInvalid": "Konfiguratsioonifail aadressil {{path}} on kehtetu",
-  "error.chain.configInvalidWithMessage": "Konfiguratsioonifail aadressil {{path}} on kehtetu: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Frontmatteri sõelumine failis {{path}} ebaõnnestus:\n{{message}}",
+  "error.chain.configInvalid":
+    "Konfiguratsioonifail aadressil {{path}} on kehtetu",
+  "error.chain.configInvalidWithMessage":
+    "Konfiguratsioonifail aadressil {{path}} on kehtetu: {{message}}",
   "notification.permission.title": "Nõutav luba",
-  "notification.permission.description": "{{sessionTitle}} asukohas {{projectName}} vajab luba",
+  "notification.permission.description":
+    "{{sessionTitle}} asukohas {{projectName}} vajab luba",
   "notification.question.title": "küsimus",
-  "notification.question.description": "{{sessionTitle}} kasutajal {{projectName}} on küsimus",
+  "notification.question.description":
+    "{{sessionTitle}} kasutajal {{projectName}} on küsimus",
   "notification.action.goToSession": "Mine seansile",
   "notification.session.responseReady.title": "Vastus valmis",
   "notification.session.error.title": "Seansi viga",
@@ -698,7 +794,8 @@ export const dict = {
   "home.server.collapse": "Ahenda serveriprojektid",
   "home.server.expand": "Laiendage serveriprojekte",
   "home.sessions.search.placeholder": "Otsi seansse",
-  "home.sessions.search.placeholder.scoped": "Otsige seansse asukohas {{scope}}",
+  "home.sessions.search.placeholder.scoped":
+    "Otsige seansse asukohas {{scope}}",
   "home.sessions.search.sessions": "Seansid",
   "home.sessions.search.noResults": "{{query}} jaoks ei leitud seansse",
   "home.sessions.empty": "Siin pole veel midagi",
@@ -706,14 +803,16 @@ export const dict = {
   "home.sessions.group.today": "Täna",
   "home.sessions.group.yesterday": "eile",
   "home.sessions.group.older": "Vanemad",
-  "home.providerTip": "Ühendage 75+ teenusepakkujaga, et kasutada muid mudeleid, sealhulgas Claude, GPT, Gemini jne",
+  "home.providerTip":
+    "Ühendage 75+ teenusepakkujaga, et kasutada muid mudeleid, sealhulgas Claude, GPT, Gemini jne",
   "session.tab.session": "Seanss",
   "session.tab.review": "Ülevaade",
   "session.tab.context": "Kontekst",
   "session.tab.unknown": "Tundmatu seanss",
   "session.panel.reviewAndFiles": "Ülevaatus ja failid",
   "session.error.notFound": "Seda seanssi ei leitud",
-  "session.error.notFound.description": "See vahekaart osutab seansile, mida selles serveris enam ei eksisteeri.",
+  "session.error.notFound.description":
+    "See vahekaart osutab seansile, mida selles serveris enam ei eksisteeri.",
   "session.error.notFound.closeTab": "Sule vahekaart",
   "session.error.serverConnection": "Selle serveriga ei saa ühendust",
   "session.review.filesChanged": "Muudetud failid {{count}}",
@@ -721,9 +820,11 @@ export const dict = {
   "session.review.change.other": "Muudatused",
   "session.review.loadingChanges": "Muudatuste laadimine...",
   "session.review.empty": "Sellel seansil pole veel muudatusi",
-  "session.review.noVcs": "Ei tuvastatud Git Versioonikontrollisüsteemi, muudatusi ei kuvata",
+  "session.review.noVcs":
+    "Ei tuvastatud Git Versioonikontrollisüsteemi, muudatusi ei kuvata",
   "session.review.noVcs.createGit.title": "Loo Git hoidla",
-  "session.review.noVcs.createGit.description": "Selle projekti muudatuste jälgimine, ülevaatamine ja tagasivõtmine",
+  "session.review.noVcs.createGit.description":
+    "Selle projekti muudatuste jälgimine, ülevaatamine ja tagasivõtmine",
   "session.review.noVcs.createGit.actionLoading": "Git hoidla loomine...",
   "session.review.noVcs.createGit.action": "Loo Git hoidla",
   "session.review.noSnapshot":
@@ -828,11 +929,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Sulgege terminal",
   "terminal.connectionLost.title": "Ühendus katkes",
-  "terminal.connectionLost.abnormalClose": "WebSocket on ebatavaliselt suletud: {{code}}",
-  "terminal.connectionLost.description": "Terminali ühendus katkes. See võib juhtuda serveri taaskäivitamisel.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket on ebatavaliselt suletud: {{code}}",
+  "terminal.connectionLost.description":
+    "Terminali ühendus katkes. See võib juhtuda serveri taaskäivitamisel.",
   "terminal.connectTicket.csrfError":
     "PTY ühenduse pilet lükati tagasi päritolu või CSRF kontrolli tõttu. Kontrollige serveri CORS konfiguratsiooni.",
-  "terminal.connectTicket.statusError": "PTY ühenduspilet ebaõnnestus kasutajaga {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY ühenduspilet ebaõnnestus kasutajaga {{status}}",
   "titlebar.update": "Värskenda",
   "titlebar.updateVersion": "Värskenda {{version}}",
   "common.closeTab": "Sule vahekaart",
@@ -876,8 +980,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Luba tööruumid",
   "sidebar.workspaces.disable": "Keela tööruumid",
   "sidebar.gettingStarted.title": "Alustamine",
-  "sidebar.gettingStarted.line1": "OpenCode sisaldab tasuta mudeleid, nii et saate kohe alustada.",
-  "sidebar.gettingStarted.line2": "Mudelite kasutamiseks ühendage mis tahes pakkuja, sh. Claude, GPT, Gemini jne.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode sisaldab tasuta mudeleid, nii et saate kohe alustada.",
+  "sidebar.gettingStarted.line2":
+    "Mudelite kasutamiseks ühendage mis tahes pakkuja, sh. Claude, GPT, Gemini jne.",
   "sidebar.project.recentSessions": "Viimased istungid",
   "sidebar.project.viewAllSessions": "Vaadake kõiki seansse",
   "sidebar.project.clearNotifications": "Tühjenda märguanded",
@@ -898,21 +1004,27 @@ export const dict = {
   "debugBar.long.tip":
     "Blokeeritud aeg ja pikkade ülesannete arv viimase 5 sekundi jooksul. Maksimaalne ülesanne: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Halvim täheldatud sisendi viivitus viimase 5 sekundi jooksul.",
+  "debugBar.delay.tip":
+    "Halvim täheldatud sisendi viivitus viimase 5 sekundi jooksul.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Ligikaudne interaktsiooni kestus viimase 5 sekundi jooksul. See on INP-sarnane, mitte ametlik Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kumulatiivne paigutuse nihe praeguse rakenduse kasutusaja jooksul.",
+  "debugBar.cls.tip":
+    "Kumulatiivne paigutuse nihe praeguse rakenduse kasutusaja jooksul.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Kasutatud JS kuhja vs hunniku limiit. Chromium ainult.",
-  "debugBar.mem.tip": "Kasutatud JS kuhja vs hunniku limiit. {{used}} / {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Kasutatud JS kuhja vs hunniku limiit. Chromium ainult.",
+  "debugBar.mem.tip":
+    "Kasutatud JS kuhja vs hunniku limiit. {{used}} / {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Sundige fookusstiilid kõigile interaktiivsetele elementidele",
+  "debugBar.focus.tip":
+    "Sundige fookusstiilid kõigile interaktiivsetele elementidele",
   "debugBar.focus.on": "SEES",
   "debugBar.focus.off": "VÄLJAS",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Sunnige kogu rakenduse paigutuse suund valitud keelt muutmata",
+  "debugBar.direction.tip":
+    "Sunnige kogu rakenduse paigutuse suund valitud keelt muutmata",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Töölaud",
@@ -922,7 +1034,8 @@ export const dict = {
   "settings.tab.shortcuts": "Otseteed",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integratsioon",
-  "settings.desktop.wsl.description": "Käivitage OpenCode server sees WSL saidil Windows.",
+  "settings.desktop.wsl.description":
+    "Käivitage OpenCode server sees WSL saidil Windows.",
   "settings.general.section.appearance": "Välimus",
   "settings.general.section.advanced": "Täpsemalt",
   "settings.general.section.notifications": "Süsteemi teatised",
@@ -933,74 +1046,99 @@ export const dict = {
   "settings.general.row.language.title": "Keel",
   "settings.general.row.language.description": "Muutke OpenCode kuvakeelt",
   "settings.general.row.shell.title": "Terminali shell",
-  "settings.general.row.shell.description": "Terminali ja agenditööriistade kasutatav shell",
+  "settings.general.row.shell.description":
+    "Terminali ja agenditööriistade kasutatav shell",
   "settings.general.row.shell.autoDefault": "Automaatne (vaikimisi)",
   "settings.general.row.shell.terminalOnly": "ainult terminal",
   "settings.general.row.appearance.title": "Välimus",
-  "settings.general.row.appearance.description": "Kohandage, kuidas OpenCode teie seadmes välja näeb",
+  "settings.general.row.appearance.description":
+    "Kohandage, kuidas OpenCode teie seadmes välja näeb",
   "settings.general.row.colorScheme.title": "Värvilahendus",
-  "settings.general.row.colorScheme.description": "Valige, kas OpenCode järgib süsteemi, heledat või tumedat teemat",
+  "settings.general.row.colorScheme.description":
+    "Valige, kas OpenCode järgib süsteemi, heledat või tumedat teemat",
   "settings.general.row.theme.title": "Teema",
-  "settings.general.row.theme.description": "Kohandage, kuidas OpenCode on teemastatud.",
+  "settings.general.row.theme.description":
+    "Kohandage, kuidas OpenCode on teemastatud.",
   "settings.general.row.font.title": "Koodi font",
-  "settings.general.row.font.description": "Kohandage koodiplokkides kasutatavat fonti",
+  "settings.general.row.font.description":
+    "Kohandage koodiplokkides kasutatavat fonti",
   "settings.general.row.terminalFont.title": "Terminali font",
-  "settings.general.row.terminalFont.description": "Kohandage terminalis kasutatavat fonti",
+  "settings.general.row.terminalFont.description":
+    "Kohandage terminalis kasutatavat fonti",
   "settings.general.row.uiFont.title": "Kasutajaliidese font",
-  "settings.general.row.uiFont.description": "Kohandage kogu liideses kasutatavat fonti",
+  "settings.general.row.uiFont.description":
+    "Kohandage kogu liideses kasutatavat fonti",
   "settings.general.row.followup.title": "Järelkäitumine",
-  "settings.general.row.followup.description": "Valige, kas järelviibad juhivad kohe või oodake järjekorras",
+  "settings.general.row.followup.description":
+    "Valige, kas järelviibad juhivad kohe või oodake järjekorras",
   "settings.general.row.followup.option.queue": "Järjekord",
   "settings.general.row.followup.option.steer": "Juhtida",
   "settings.general.row.showFileTree.title": "Failipuu",
-  "settings.general.row.showFileTree.description": "Failipuu paneeli kuvamine seanssides",
+  "settings.general.row.showFileTree.description":
+    "Failipuu paneeli kuvamine seanssides",
   "settings.general.row.showNavigation.title": "Navigeerimisnupud",
-  "settings.general.row.showNavigation.description": "Näidake töölaua tiitliribal tagasi ja edasi nuppe",
+  "settings.general.row.showNavigation.description":
+    "Näidake töölaua tiitliribal tagasi ja edasi nuppe",
   "settings.general.row.showSearch.title": "Käsupalett",
-  "settings.general.row.showSearch.description": "Kuvage tiitliribal otsingu- ja käsupaleti nupp",
+  "settings.general.row.showSearch.description":
+    "Kuvage tiitliribal otsingu- ja käsupaleti nupp",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Kuvage töölaua tiitliribal terminali nupp",
+  "settings.general.row.showTerminal.description":
+    "Kuvage töölaua tiitliribal terminali nupp",
   "settings.general.row.showStatus.title": "Serveri olek",
-  "settings.general.row.showStatus.description": "Näita tiitliribal serveri olekunuppu",
+  "settings.general.row.showStatus.description":
+    "Näita tiitliribal serveri olekunuppu",
   "settings.general.row.mobileTitlebarBottom.title": "Alumine navigeerimine",
   "settings.general.row.mobileTitlebarBottom.description":
     "Asetage tiitliriba ja seansi vahekaardid mobiilis ekraani allossa",
   "settings.general.row.showCustomAgents.title": "Näita agenti",
   "settings.general.row.showCustomAgents.description":
     "Helilooja agentide vahel vahetamine. Kui see on peidetud, on vaikimisi Agent.",
-  "settings.general.row.reasoningSummaries.title": "Näita põhjenduste kokkuvõtteid",
-  "settings.general.row.reasoningSummaries.description": "Kuva mudeli arutluskäigu kokkuvõtted ajaskaalal",
-  "settings.general.row.shellToolPartsExpanded.title": "Laienda shellitööriista osi",
+  "settings.general.row.reasoningSummaries.title":
+    "Näita põhjenduste kokkuvõtteid",
+  "settings.general.row.reasoningSummaries.description":
+    "Kuva mudeli arutluskäigu kokkuvõtted ajaskaalal",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Laienda shellitööriista osi",
   "settings.general.row.shellToolPartsExpanded.description":
     "Kuva shellitööriista osad ajaskaalal vaikimisi laiendatuna",
-  "settings.general.row.editToolPartsExpanded.title": "Laiendage tööriista osade redigeerimist",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Laiendage tööriista osade redigeerimist",
   "settings.general.row.editToolPartsExpanded.description":
     "Kuva ajaskaalal vaikimisi laiendatud redigeerimis-, kirjutamis- ja paigatööriistade osad",
   "settings.general.row.newInterface.title": "Uus paigutus",
   "settings.general.row.newInterface.badge": "Uus",
   "settings.general.row.newInterface.description":
     "Kasutage uusi vahekaarte ja avalehe paigutust. Lülituge piiratud aja jooksul paigutuste vahel.",
-  "settings.general.row.newInterfaceNotice.title": "Kasutate nüüd uut paigutust",
-  "settings.general.row.newInterfaceNotice.description": "Eelmine paigutus pole enam saadaval",
+  "settings.general.row.newInterfaceNotice.title":
+    "Kasutate nüüd uut paigutust",
+  "settings.general.row.newInterfaceNotice.description":
+    "Eelmine paigutus pole enam saadaval",
   "settings.general.row.newInterfaceNotice.dismiss": "Loobu",
   "settings.general.row.pinchZoom.title": "Suumimiseks näpistage",
-  "settings.general.row.pinchZoom.description": "Lubage suumimiseks puuteplaadi kokkusurumine ja Ctrl-kerimine",
+  "settings.general.row.pinchZoom.description":
+    "Lubage suumimiseks puuteplaadi kokkusurumine ja Ctrl-kerimine",
   "settings.general.row.wayland.title": "Kasuta omakeelset Wayland",
-  "settings.general.row.wayland.description": "Keela X11 varundus Wayland. Nõuab taaskäivitamist.",
+  "settings.general.row.wayland.description":
+    "Keela X11 varundus Wayland. Nõuab taaskäivitamist.",
   "settings.general.row.wayland.tooltip":
     "Segatud värskendussagedusega kuvarite puhul Linux võib natiivne Wayland olla stabiilsem.",
   "settings.general.row.releaseNotes.title": "Väljalaske märkmed",
-  "settings.general.row.releaseNotes.description": "Kuva Mis on uut hüpikaknad pärast värskendusi",
+  "settings.general.row.releaseNotes.description":
+    "Kuva Mis on uut hüpikaknad pärast värskendusi",
   "settings.updates.row.startup.title": "Kontrollige käivitamisel värskendusi",
-  "settings.updates.row.startup.description": "Kontrollige automaatselt värskendusi, kui OpenCode käivitub",
+  "settings.updates.row.startup.description":
+    "Kontrollige automaatselt värskendusi, kui OpenCode käivitub",
   "settings.updates.row.check.title": "Kontrollige värskendusi",
-  "settings.updates.row.check.description": "Kontrollige värskendusi käsitsi ja installige, kui need on saadaval",
+  "settings.updates.row.check.description":
+    "Kontrollige värskendusi käsitsi ja installige, kui need on saadaval",
   "settings.updates.action.checkNow": "Kontrollige kohe",
   "settings.updates.action.checking": "Kontrollimine...",
   "settings.updates.action.downloading": "Allalaadimine...",
   "settings.updates.action.installing": "Installimine...",
   "settings.updates.toast.latest.title": "Oled kursis",
-  "settings.updates.toast.latest.description": "Kasutate rakenduse OpenCode uusimat versiooni.",
+  "settings.updates.toast.latest.description":
+    "Kasutate rakenduse OpenCode uusimat versiooni.",
   "sound.option.none": "Mitte ühtegi",
   "sound.option.alert01": "Hoiatus 01",
   "sound.option.alert02": "Hoiatus 02",
@@ -1048,23 +1186,30 @@ export const dict = {
   "sound.option.yup05": "jah 05",
   "sound.option.yup06": "jah 06",
   "settings.general.notifications.agent.title": "Agent",
-  "settings.general.notifications.agent.description": "Kuva süsteemi teatis, kui agent on valmis või vajab tähelepanu",
+  "settings.general.notifications.agent.description":
+    "Kuva süsteemi teatis, kui agent on valmis või vajab tähelepanu",
   "settings.general.notifications.permissions.title": "load",
-  "settings.general.notifications.permissions.description": "Kuva süsteemi teatis, kui luba on vaja",
+  "settings.general.notifications.permissions.description":
+    "Kuva süsteemi teatis, kui luba on vaja",
   "settings.general.notifications.errors.title": "Vead",
-  "settings.general.notifications.errors.description": "Kuva tõrke korral süsteemi teatis",
+  "settings.general.notifications.errors.description":
+    "Kuva tõrke korral süsteemi teatis",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Esitage heli, kui agent on valmis või vajab tähelepanu",
+  "settings.general.sounds.agent.description":
+    "Esitage heli, kui agent on valmis või vajab tähelepanu",
   "settings.general.sounds.permissions.title": "load",
-  "settings.general.sounds.permissions.description": "Esitage heli, kui on vaja luba",
+  "settings.general.sounds.permissions.description":
+    "Esitage heli, kui on vaja luba",
   "settings.general.sounds.errors.title": "Vead",
   "settings.general.sounds.errors.description": "Esita tõrke korral heli",
   "settings.shortcuts.title": "Klaviatuuri otseteed",
   "settings.shortcuts.reset.button": "Lähtestage vaikeseadetele",
   "settings.shortcuts.reset.toast.title": "Otseteed lähtestatakse",
-  "settings.shortcuts.reset.toast.description": "Klaviatuuri otseteed on lähtestatud vaikeseadetele.",
+  "settings.shortcuts.reset.toast.description":
+    "Klaviatuuri otseteed on lähtestatud vaikeseadetele.",
   "settings.shortcuts.conflict.title": "Otsetee on juba kasutusel",
-  "settings.shortcuts.conflict.description": "{{keybind}} on juba määratud kasutajale {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} on juba määratud kasutajale {{titles}}.",
   "settings.shortcuts.unassigned": "Määramata",
   "settings.shortcuts.pressKeys": "Vajutage klahve",
   "settings.shortcuts.search.placeholder": "Otsige otseteid",
@@ -1079,9 +1224,11 @@ export const dict = {
   "settings.providers.description": "Pakkuja seadeid saab siin konfigureerida.",
   "settings.providers.section.connected": "Ühendatud pakkujad",
   "settings.providers.connected.empty": "Ühendatud pakkujaid pole",
-  "settings.providers.connected.environmentDescription": "Ühendatud teie keskkonnamuutujatega",
+  "settings.providers.connected.environmentDescription":
+    "Ühendatud teie keskkonnamuutujatega",
   "settings.providers.section.popular": "Populaarsed pakkujad",
-  "settings.providers.custom.description": "Lisage OpenAI-ga ühilduv pakkuja baasi URL alusel.",
+  "settings.providers.custom.description":
+    "Lisage OpenAI-ga ühilduv pakkuja baasi URL alusel.",
   "settings.providers.tag.environment": "Keskkond",
   "settings.providers.tag.config": "Konfig",
   "settings.providers.tag.custom": "Kohandatud",
@@ -1095,20 +1242,26 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP seadeid saab siin konfigureerida.",
   "settings.permissions.title": "load",
-  "settings.permissions.description": "Saate juhtida, milliseid tööriistu server vaikimisi kasutada saab.",
+  "settings.permissions.description":
+    "Saate juhtida, milliseid tööriistu server vaikimisi kasutada saab.",
   "settings.permissions.section.tools": "Tööriistad",
-  "settings.permissions.toast.updateFailed.title": "Lubade värskendamine ebaõnnestus",
+  "settings.permissions.toast.updateFailed.title":
+    "Lubade värskendamine ebaõnnestus",
   "settings.permissions.action.allow": "Luba",
   "settings.permissions.action.ask": "Küsi",
   "settings.permissions.action.deny": "Keela",
   "settings.permissions.tool.read.title": "Lugege",
-  "settings.permissions.tool.read.description": "Faili lugemine (vastab faili teele)",
+  "settings.permissions.tool.read.description":
+    "Faili lugemine (vastab faili teele)",
   "settings.permissions.tool.edit.title": "Muuda",
-  "settings.permissions.tool.edit.description": "Failide muutmine, sh muudatused, kirjutamised ja paigad",
+  "settings.permissions.tool.edit.description":
+    "Failide muutmine, sh muudatused, kirjutamised ja paigad",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Sobitage failid globaalsete mustrite abil",
+  "settings.permissions.tool.glob.description":
+    "Sobitage failid globaalsete mustrite abil",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Otsige faili sisu regulaaravaldiste abil",
+  "settings.permissions.tool.grep.description":
+    "Otsige faili sisu regulaaravaldiste abil",
   "settings.permissions.tool.list.title": "Nimekiri",
   "settings.permissions.tool.list.description": "Loetlege failid kataloogis",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1118,17 +1271,22 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Oskus",
   "settings.permissions.tool.skill.description": "Laadige oskus nime järgi",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Käivitage keeleserveri päringuid",
+  "settings.permissions.tool.lsp.description":
+    "Käivitage keeleserveri päringuid",
   "settings.permissions.tool.todowrite.title": "Todo Kirjuta",
-  "settings.permissions.tool.todowrite.description": "Värskendage ülesannete loendit",
+  "settings.permissions.tool.todowrite.description":
+    "Värskendage ülesannete loendit",
   "settings.permissions.tool.webfetch.title": "Veebi toomine",
-  "settings.permissions.tool.webfetch.description": "Sisu toomine asukohast URL",
+  "settings.permissions.tool.webfetch.description":
+    "Sisu toomine asukohast URL",
   "settings.permissions.tool.websearch.title": "Veebiotsing",
   "settings.permissions.tool.websearch.description": "Otsige veebist",
   "settings.permissions.tool.external_directory.title": "Väline kataloog",
-  "settings.permissions.tool.external_directory.description": "Juurdepääs failidele väljaspool projekti kataloogi",
+  "settings.permissions.tool.external_directory.description":
+    "Juurdepääs failidele väljaspool projekti kataloogi",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Tuvastab korduvad tööriistakutsed identse sisendiga",
+  "settings.permissions.tool.doom_loop.description":
+    "Tuvastab korduvad tööriistakutsed identse sisendiga",
   "session.delete.failed.title": "Seansi kustutamine ebaõnnestus",
   "session.delete.title": "Kustuta seanss",
   "session.delete.confirm": 'Kas kustutada seanss "{{name}}"?',

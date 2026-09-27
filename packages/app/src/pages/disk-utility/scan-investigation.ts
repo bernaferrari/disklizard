@@ -1,4 +1,5 @@
 import type { DiskScanNode } from "./types"
+import { developerInventoryNode } from "./developer-inventory"
 import {
   computeDeveloperSummaryWithInventory,
   computeDeveloperSummaryWithInventoryAsync,
@@ -6,14 +7,12 @@ import {
   computeReclaimAsync,
   fileKind,
   recognize,
-  yieldToMain,
   type DeveloperSummary,
   type Recognition,
   type ReclaimSummary,
 } from "./recognize"
 import {
   diskEntrySearchText,
-  filterIndexedDiskEntries,
   rankedDiskChildren,
   sortDiskEntries,
   walkRankedDiskTree,
@@ -22,7 +21,11 @@ import {
   type IndexedDiskEntry,
 } from "./entry-view"
 
-export type ScanInvestigationLens = "all" | "developer" | "recommendations" | "changes"
+export type ScanInvestigationLens =
+  | "all"
+  | "developer"
+  | "recommendations"
+  | "changes"
 
 export type ScanInvestigationEntry = {
   node: DiskScanNode
@@ -31,7 +34,10 @@ export type ScanInvestigationEntry = {
   sourceIndex: number
 }
 
-export type ScanInvestigationCandidate = { node: DiskScanNode; displaySize: number }
+export type ScanInvestigationCandidate = {
+  node: DiskScanNode
+  displaySize: number
+}
 
 export type ScanInvestigationState = {
   identityIndexBuilt: boolean
@@ -96,16 +102,26 @@ type ScanInvestigationEntriesOptions = {
   recommendationCandidates?: () => readonly ScanInvestigationCandidate[]
 }
 
-function matchesScanInvestigationFilter(node: DiskScanNode, filter: ScanInvestigationFilter) {
+function matchesScanInvestigationFilter(
+  node: DiskScanNode,
+  filter: ScanInvestigationFilter
+) {
   if (filter.kind && filter.kind !== "all") {
     // Directories are only ever kind `folder`; extension buckets are files-only.
-    if (node.isDir ? filter.kind !== "folder" : fileKind(node.ext).kind !== filter.kind) return false
+    if (
+      node.isDir
+        ? filter.kind !== "folder"
+        : fileKind(node.ext).kind !== filter.kind
+    )
+      return false
   }
   if (filter.modifiedFrom !== undefined && filter.modifiedFrom !== null) {
-    if (node.modifiedAt === undefined || node.modifiedAt < filter.modifiedFrom) return false
+    if (node.modifiedAt === undefined || node.modifiedAt < filter.modifiedFrom)
+      return false
   }
   if (filter.modifiedTo !== undefined && filter.modifiedTo !== null) {
-    if (node.modifiedAt === undefined || node.modifiedAt > filter.modifiedTo) return false
+    if (node.modifiedAt === undefined || node.modifiedAt > filter.modifiedTo)
+      return false
   }
   return true
 }
@@ -115,11 +131,23 @@ function matchesScanInvestigationFilter(node: DiskScanNode, filter: ScanInvestig
  * Construction is deliberately cheap: full-tree identity, recognition, search,
  * and lens summaries are each built only by the operation that needs them.
  */
-export function createScanInvestigation(root: DiskScanNode | null | undefined, options: ScanInvestigationOptions = {}) {
+export function createScanInvestigation(
+  root: DiskScanNode | null | undefined,
+  options: ScanInvestigationOptions = {}
+) {
   const recognizeNode = options.recognizeNode ?? recognize
-  const recognitionText = options.recognitionText ?? ((recognition: Recognition) => recognition.tag ?? "")
-  const recognitionQueryMayMatch = options.recognitionQueryMayMatch ?? (() => true)
+  const recognitionText =
+    options.recognitionText ??
+    ((recognition: Recognition) => recognition.tag ?? "")
+  const recognitionQueryMayMatch =
+    options.recognitionQueryMayMatch ?? (() => true)
   const recognitionByNode = new WeakMap<DiskScanNode, Recognition>()
+  const inventoryByPath = new Map(
+    (root?.developerArtifactInventory?.items ?? []).map((artifact) => [
+      artifact.path.replaceAll("\\", "/").replace(/\/+$/, ""),
+      artifact,
+    ])
+  )
   let identities: WeakMap<DiskScanNode, NodeIdentity> | undefined
   let searchIndex: IndexedDiskEntry[] | undefined
   let recognitionIndexBuilt = false
@@ -131,13 +159,29 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
   const recognitionFor = (node: DiskScanNode) => {
     const cached = recognitionByNode.get(node)
     if (cached) return cached
-    const result = recognizeNode(node)
+    const visual = recognizeNode(node)
+    const artifact = inventoryByPath.get(
+      node.path.replaceAll("\\", "/").replace(/\/+$/, "")
+    )
+    const observed =
+      artifact && !node.isHidden && !node.hardLink
+        ? recognizeNode(developerInventoryNode(artifact))
+        : undefined
+    // The inventory has direct child and parent-manifest evidence that the
+    // visual name matcher cannot see. Preserve an explicit visual protection,
+    // then let the observed assessment decide both promotions and demotions.
+    const visuallyProtected =
+      visual.cleanup === "protected" ||
+      visual.safety === "system" ||
+      visual.safety === "version-control"
+    const result = observed && !visuallyProtected ? observed : visual
     recognitionByNode.set(node, result)
     return result
   }
 
   const visitRetainedTree = (includeSearchText: boolean) => {
-    const nextIdentities = identities ?? new WeakMap<DiskScanNode, NodeIdentity>()
+    const nextIdentities =
+      identities ?? new WeakMap<DiskScanNode, NodeIdentity>()
     const nextSearchIndex: IndexedDiskEntry[] = []
     walkRankedDiskTree(root, (node, colorIndex, sourceIndex) => {
       nextIdentities.set(node, { colorIndex, sourceIndex })
@@ -164,7 +208,9 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     return searchIndex!
   }
 
-  const currentFolderEntries = (viewNode: DiskScanNode | null | undefined): ScanInvestigationEntry[] => {
+  const currentFolderEntries = (
+    viewNode: DiskScanNode | null | undefined
+  ): ScanInvestigationEntry[] => {
     if (!viewNode) return []
     return rankedDiskChildren(viewNode).map(({ node }, sourceIndex) => ({
       node,
@@ -174,7 +220,9 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     }))
   }
 
-  const decorateCandidates = (candidates: readonly ScanInvestigationCandidate[]): ScanInvestigationEntry[] => {
+  const decorateCandidates = (
+    candidates: readonly ScanInvestigationCandidate[]
+  ): ScanInvestigationEntry[] => {
     const identityIndex = ensureIdentities()
     return candidates.map(({ node, displaySize }, sourceIndex) => ({
       node,
@@ -207,7 +255,11 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
   const cachedPrefix = (normalized: string): IndexedDiskEntry[] | undefined => {
     let best: string | undefined
     for (const key of matchCache.keys()) {
-      if (normalized.startsWith(key) && (best === undefined || key.length > best.length)) best = key
+      if (
+        normalized.startsWith(key) &&
+        (best === undefined || key.length > best.length)
+      )
+        best = key
     }
     return best === undefined ? undefined : matchCache.get(best)
   }
@@ -218,7 +270,10 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     }
     return (entry: IndexedDiskEntry) =>
       entry.searchText.includes(normalized) ||
-      recognitionText(recognitionFor(entry.node)).trim().toLocaleLowerCase().includes(normalized)
+      recognitionText(recognitionFor(entry.node))
+        .trim()
+        .toLocaleLowerCase()
+        .includes(normalized)
   }
 
   const searchMatches = (normalized: string): IndexedDiskEntry[] => {
@@ -231,13 +286,16 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     }
     const base = cachedPrefix(normalized) ?? ensureSearchIndex()
     const matches = base.filter(matchPredicate(normalized))
-    if (base.length > 0 && recognitionQueryMayMatch(normalized)) recognitionIndexBuilt = true
+    if (base.length > 0 && recognitionQueryMayMatch(normalized))
+      recognitionIndexBuilt = true
     rememberMatches(normalized, matches)
     return matches
   }
 
   /** Same result as `searchMatches`, but yields to the event loop between chunks. */
-  const searchMatchesAsync = async (normalized: string): Promise<IndexedDiskEntry[]> => {
+  const searchMatchesAsync = async (
+    normalized: string
+  ): Promise<IndexedDiskEntry[]> => {
     const cached = matchCache.get(normalized)
     if (cached) return cached
     const base = cachedPrefix(normalized) ?? ensureSearchIndex()
@@ -256,7 +314,9 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     return matches
   }
 
-  const searchCandidates = (matches: readonly IndexedDiskEntry[]): ScanInvestigationEntry[] =>
+  const searchCandidates = (
+    matches: readonly IndexedDiskEntry[]
+  ): ScanInvestigationEntry[] =>
     matches.map(({ node, colorIndex, sourceIndex }) => ({
       node,
       colorIndex,
@@ -264,9 +324,13 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
       displaySize: node.size,
     }))
 
-  const lensCandidates = (input: ScanInvestigationEntriesOptions): ScanInvestigationEntry[] => {
-    if (input.lens === "developer") return decorateCandidates(input.developerCandidates?.() ?? [])
-    if (input.lens === "recommendations") return decorateCandidates(input.recommendationCandidates?.() ?? [])
+  const lensCandidates = (
+    input: ScanInvestigationEntriesOptions
+  ): ScanInvestigationEntry[] => {
+    if (input.lens === "developer")
+      return decorateCandidates(input.developerCandidates?.() ?? [])
+    if (input.lens === "recommendations")
+      return decorateCandidates(input.recommendationCandidates?.() ?? [])
     return []
   }
 
@@ -274,18 +338,33 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
   const finishCandidates = (
     input: ScanInvestigationEntriesOptions,
     query: string,
-    candidates: ScanInvestigationEntry[],
+    candidates: ScanInvestigationEntry[]
   ): ScanInvestigationEntry[] => {
     let result = candidates
     if (query && input.lens !== "all") {
       const normalizedQuery = query.toLocaleLowerCase()
       result = result.filter((entry) =>
-        diskEntrySearchText(entry.node, recognitionText(recognitionFor(entry.node))).includes(normalizedQuery),
+        diskEntrySearchText(
+          entry.node,
+          recognitionText(recognitionFor(entry.node))
+        ).includes(normalizedQuery)
       )
     }
     const filter = input.filter
-    if (filter) result = result.filter((entry) => matchesScanInvestigationFilter(entry.node, filter))
-    return sortDiskEntries(input.sortKey === "category" ? result.map(entry => ({ ...entry, category: recognizeNode(entry.node).developer ?? "" })) : result, input.sortKey, input.sortDirection)
+    if (filter)
+      result = result.filter((entry) =>
+        matchesScanInvestigationFilter(entry.node, filter)
+      )
+    return sortDiskEntries(
+      input.sortKey === "category"
+        ? result.map((entry) => ({
+            ...entry,
+            category: recognizeNode(entry.node).developer ?? "",
+          }))
+        : result,
+      input.sortKey,
+      input.sortDirection
+    )
   }
 
   const selectLens = (input: ScanInvestigationEntriesOptions, query: string) =>
@@ -297,26 +376,35 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
           ? searchCandidates(searchMatches(query.toLocaleLowerCase()))
           : currentFolderEntries(input.viewNode)
 
-  const selectLensAsync = async (input: ScanInvestigationEntriesOptions, query: string) =>
+  const selectLensAsync = async (
+    input: ScanInvestigationEntriesOptions,
+    query: string
+  ) =>
     input.lens === "changes"
       ? []
       : input.lens !== "all"
         ? lensCandidates(input)
         : query
-          ? searchCandidates(await searchMatchesAsync(query.toLocaleLowerCase()))
+          ? searchCandidates(
+              await searchMatchesAsync(query.toLocaleLowerCase())
+            )
           : currentFolderEntries(input.viewNode)
 
   /**
    * Synchronous path for small candidate sets. Kept in lockstep with
    * `entriesAsync` so both produce identical results for identical input.
    */
-  const entries: (input: ScanInvestigationEntriesOptions) => ScanInvestigationEntry[] = (input) => {
+  const entries: (
+    input: ScanInvestigationEntriesOptions
+  ) => ScanInvestigationEntry[] = (input) => {
     const query = input.query.trim()
     return finishCandidates(input, query, selectLens(input, query))
   }
 
   /** Chunked path for scan-wide searches over large indexes; same result contract. */
-  const entriesAsync = async (input: ScanInvestigationEntriesOptions): Promise<ScanInvestigationEntry[]> => {
+  const entriesAsync = async (
+    input: ScanInvestigationEntriesOptions
+  ): Promise<ScanInvestigationEntry[]> => {
     const query = input.query.trim()
     return finishCandidates(input, query, await selectLensAsync(input, query))
   }
@@ -333,10 +421,16 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     warmed = (async () => {
       ensureSearchIndex()
       await yieldToMain()
-      developerSummary = await computeDeveloperSummaryWithInventoryAsync(root ?? null, recognitionFor)
+      developerSummary = await computeDeveloperSummaryWithInventoryAsync(
+        root ?? null,
+        recognitionFor
+      )
       developerSummaryBuilt = true
       await yieldToMain()
-      recommendationSummary = await computeReclaimAsync(root ?? null, recognitionFor)
+      recommendationSummary = await computeReclaimAsync(
+        root ?? null,
+        recognitionFor
+      )
       recommendationSummaryBuilt = true
     })()
     return warmed
@@ -349,7 +443,10 @@ export function createScanInvestigation(root: DiskScanNode | null | undefined, o
     warm,
     developer() {
       if (!developerSummaryBuilt) {
-        developerSummary = computeDeveloperSummaryWithInventory(root ?? null, recognitionFor)
+        developerSummary = computeDeveloperSummaryWithInventory(
+          root ?? null,
+          recognitionFor
+        )
         developerSummaryBuilt = true
       }
       return developerSummary!
@@ -390,7 +487,9 @@ export type DebouncedSearchQuery = {
   dispose(): void
 }
 
-export function createDebouncedSearchQuery(delayMs = 180): DebouncedSearchQuery {
+export function createDebouncedSearchQuery(
+  delayMs = 180
+): DebouncedSearchQuery {
   let debounced = ""
   let pending = false
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -400,7 +499,7 @@ export function createDebouncedSearchQuery(delayMs = 180): DebouncedSearchQuery 
     if (debounced === nextDebounced && pending === nextPending) return
     debounced = nextDebounced
     pending = nextPending
-    for (const listener of [...listeners]) listener()
+    for (const listener of listeners) listener()
   }
 
   const settle = (value: string) => {

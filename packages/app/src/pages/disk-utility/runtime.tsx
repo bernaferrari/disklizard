@@ -1,6 +1,10 @@
 import * as React from "react"
 import type { AsyncStorage, SyncStorage } from "@/lib/storage"
-import { DESKTOP_NATIVE_LOCALE_TAGS, resolveDiskLizardReleaseLocale, type DesktopNativeLocale } from "../../i18n/desktop-native"
+import {
+  DESKTOP_NATIVE_LOCALE_TAGS,
+  resolveDiskLizardReleaseLocale,
+  type DesktopNativeLocale,
+} from "../../i18n/desktop-native"
 import {
   diskCleanupLocksDefault,
   diskPinnedLocationsDefault,
@@ -80,14 +84,26 @@ export type DiskLizardPlatform = {
 }
 
 export { DISK_ACCESS_GUIDANCE }
-export type { DiskAccessGuidanceKey, DiskLanguageKey, DiskLanguageMessageKey, DiskLanguagePluralCategory, DiskLanguagePluralKey }
+export type {
+  DiskAccessGuidanceKey,
+  DiskLanguageKey,
+  DiskLanguageMessageKey,
+  DiskLanguagePluralCategory,
+  DiskLanguagePluralKey,
+}
 export { DISK_LANGUAGE_TEXT, DISK_LANGUAGE_PLURALS }
 
-type Placeholder<S extends string> = S extends `${string}{${infer Name}}${infer Rest}`
-  ? Name | Placeholder<Rest>
-  : never
-type TextParams<Key extends DiskLanguageKey> = Record<Placeholder<(typeof DISK_LANGUAGE_TEXT)[Key]>, string | number>
-type TextArgs<Key extends DiskLanguageKey> = [Placeholder<(typeof DISK_LANGUAGE_TEXT)[Key]>] extends [never]
+type Placeholder<S extends string> =
+  S extends `${string}{${infer Name}}${infer Rest}`
+    ? Name | Placeholder<Rest>
+    : never
+type TextParams<Key extends DiskLanguageKey> = Record<
+  Placeholder<(typeof DISK_LANGUAGE_TEXT)[Key]>,
+  string | number
+>
+type TextArgs<Key extends DiskLanguageKey> = [
+  Placeholder<(typeof DISK_LANGUAGE_TEXT)[Key]>,
+] extends [never]
   ? []
   : [params: TextParams<Key>]
 type PluralTemplate<Key extends DiskLanguagePluralKey> =
@@ -97,17 +113,23 @@ type PluralParams<Key extends DiskLanguagePluralKey> = Record<
   Exclude<Placeholder<PluralTemplate<Key>>, "count">,
   string | number
 >
-type PluralArgs<Key extends DiskLanguagePluralKey> = [Exclude<Placeholder<PluralTemplate<Key>>, "count">] extends [
-  never,
-]
+type PluralArgs<Key extends DiskLanguagePluralKey> = [
+  Exclude<Placeholder<PluralTemplate<Key>>, "count">,
+] extends [never]
   ? []
   : [params: PluralParams<Key>]
 
-function interpolate(template: string, params: Readonly<Record<string, string | number>>) {
-  return template.replace(/\{\{\s*([^{}]+?)\s*\}\}|\{\s*([^{}]+?)\s*\}/g, (match, double, single) => {
-    const name = String(double ?? single)
-    return params[name] === undefined ? match : String(params[name])
-  })
+function interpolate(
+  template: string,
+  params: Readonly<Record<string, string | number>>
+) {
+  return template.replace(
+    /\{\{\s*([^{}]+?)\s*\}\}|\{\s*([^{}]+?)\s*\}/g,
+    (match, double, single) => {
+      const name = String(double ?? single)
+      return params[name] === undefined ? match : String(params[name])
+    }
+  )
 }
 
 export function resolveDiskLanguageLocale(languages: readonly string[]) {
@@ -120,7 +142,7 @@ export function resolveDiskLanguageLocale(languages: readonly string[]) {
 
 export function createDiskLanguage(
   locale: DesktopNativeLocale,
-  messages: Readonly<Partial<Record<DiskLanguageMessageKey, string>>> = {},
+  messages: Readonly<Partial<Record<DiskLanguageMessageKey, string>>> = {}
 ) {
   const intl = DESKTOP_NATIVE_LOCALE_TAGS[locale]
   const rules = new Intl.PluralRules(intl)
@@ -130,13 +152,22 @@ export function createDiskLanguage(
     locale,
     intl,
     t<Key extends DiskLanguageKey>(key: Key, ...args: TextArgs<Key>) {
-      return interpolate(messages[key] ?? DISK_LANGUAGE_TEXT[key], args[0] ?? {})
+      return interpolate(
+        messages[key] ?? DISK_LANGUAGE_TEXT[key],
+        args[0] ?? {}
+      )
     },
-    plural<Key extends DiskLanguagePluralKey>(key: Key, count: number, ...args: PluralArgs<Key>) {
-      const category = rules.select(count) as DiskLanguagePluralCategory
-      const localized = messages[`${key}.${category}`] ?? messages[`${key}.other`]
+    plural<Key extends DiskLanguagePluralKey>(
+      key: Key,
+      count: number,
+      ...args: PluralArgs<Key>
+    ) {
+      const category = rules.select(count)
+      const localized =
+        messages[`${key}.${category}`] ?? messages[`${key}.other`]
       const englishCategory = englishRules.select(count)
-      const english = DISK_LANGUAGE_PLURALS[key][englishCategory === "one" ? "one" : "other"]
+      const english =
+        DISK_LANGUAGE_PLURALS[key][englishCategory === "one" ? "one" : "other"]
       return interpolate(localized ?? english, { count, ...args[0] })
     },
   }
@@ -153,14 +184,20 @@ function subscribeLanguage(listener: () => void) {
   return () => languageListeners.delete(listener)
 }
 
-export function configureDiskLanguage(locale: DesktopNativeLocale, messages: Readonly<Record<string, string>> = {}) {
+export function configureDiskLanguage(
+  locale: DesktopNativeLocale,
+  messages: Readonly<Record<string, string>> = {}
+) {
   activeDiskLanguage = createDiskLanguage(locale, messages)
   languageVersion += 1
-  for (const listener of [...languageListeners]) listener()
+  for (const listener of languageListeners) listener()
   return activeDiskLanguage
 }
 
-export function diskLanguageText<Key extends DiskLanguageKey>(key: Key, ...args: TextArgs<Key>) {
+export function diskLanguageText<Key extends DiskLanguageKey>(
+  key: Key,
+  ...args: TextArgs<Key>
+) {
   return activeDiskLanguage.t(key, ...args)
 }
 
@@ -176,11 +213,14 @@ const PINNED_STORAGE_NAME = "disklizard.dat"
 const PINNED_STORAGE_KEY = "pinned-locations"
 const CLEANUP_LOCK_STORAGE_KEY = "cleanup-locks"
 
-const PlatformContext = React.createContext<DiskLizardPlatform | undefined>(undefined)
+const PlatformContext = React.createContext<DiskLizardPlatform | undefined>(
+  undefined
+)
 
 export function usePlatform() {
   const platform = React.useContext(PlatformContext)
-  if (!platform) throw new Error("usePlatform must be used within DiskLizardRuntime")
+  if (!platform)
+    throw new Error("usePlatform must be used within DiskLizardRuntime")
   return platform
 }
 
@@ -192,7 +232,7 @@ export function useLanguage() {
   const version = React.useSyncExternalStore(
     subscribeLanguage,
     () => languageVersion,
-    () => languageVersion,
+    () => languageVersion
   )
   return React.useMemo(
     () => ({
@@ -201,7 +241,7 @@ export function useLanguage() {
       t: diskLanguageText,
       plural: diskLanguagePlural,
     }),
-    [version],
+    [version]
   )
 }
 
@@ -228,7 +268,11 @@ function storageErrorMessage(error: unknown) {
  * platform is unknown.
  */
 export function diskPreviewTooLargeBody(os?: DiskLizardOS) {
-  return diskLanguageText(os === "macos" ? "disk.preview.tooLarge.body" : "disk.preview.tooLarge.bodyDefault")
+  return diskLanguageText(
+    os === "macos"
+      ? "disk.preview.tooLarge.body"
+      : "disk.preview.tooLarge.bodyDefault"
+  )
 }
 
 export type DiskSettingsSnapshot = {
@@ -244,9 +288,13 @@ export type DiskSettingsStore = {
   getSnapshot(): DiskSettingsSnapshot
   general: {
     diskPinnedLocations(): DiskPinnedLocation[]
-    setDiskPinnedLocations(next: DiskPinnedLocation[]): Promise<DiskSettingsWriteResult<DiskPinnedLocation>>
+    setDiskPinnedLocations(
+      next: DiskPinnedLocation[]
+    ): Promise<DiskSettingsWriteResult<DiskPinnedLocation>>
     diskCleanupLocks(): DiskCleanupLock[]
-    setDiskCleanupLocks(next: DiskCleanupLock[]): Promise<DiskSettingsWriteResult<DiskCleanupLock>>
+    setDiskCleanupLocks(
+      next: DiskCleanupLock[]
+    ): Promise<DiskSettingsWriteResult<DiskCleanupLock>>
     cleanupLocksStatus(): DiskCleanupLocksStatus
     retryDiskCleanupLocks(): Promise<boolean>
     resetDiskCleanupLocks(): Promise<boolean>
@@ -267,7 +315,10 @@ type DiskSettingsState = {
  * write-serialization and rollback semantics as v1, exposed as a
  * subscribe/snapshot store for `useSyncExternalStore`.
  */
-export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskSettingsOptions = {}): DiskSettingsStore {
+export function createDiskSettings(
+  storage?: DiskSettingsStorage,
+  options: DiskSettingsOptions = {}
+): DiskSettingsStore {
   let state: DiskSettingsState = {
     locations: [...diskPinnedLocationsDefault] as DiskPinnedLocation[],
     locks: [...diskCleanupLocksDefault] as DiskCleanupLock[],
@@ -292,7 +343,7 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
       cleanupLocksStatus: state.cleanupLocksStatus,
       persistenceError: state.locksError ?? state.pinsError,
     }
-    for (const listener of [...listeners]) listener()
+    for (const listener of listeners) listener()
   }
 
   const errorPatch = (kind: "pins" | "locks", error: string | undefined) =>
@@ -307,7 +358,7 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
     key: string,
     pathOptions: SavedPathOptions,
     revision: number,
-    apply: (value: SavedPath[]) => void,
+    apply: (value: SavedPath[]) => void
   ) => {
     if (!storage) {
       if (kind === "locks") commit({ cleanupLocksStatus: "ready" })
@@ -316,9 +367,14 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
     try {
       const parsed = decodeSavedPaths(await storage.getItem(key), pathOptions)
       if (parsed.status === "invalid") {
-        throw new Error(kind === "locks" ? "Saved cleanup protections are invalid" : "Saved scan locations are invalid")
+        throw new Error(
+          kind === "locks"
+            ? "Saved cleanup protections are invalid"
+            : "Saved scan locations are invalid"
+        )
       }
-      if (revision === (kind === "locks" ? locksRevision : pinsRevision)) apply(parsed.status === "valid" ? parsed.value : [])
+      if (revision === (kind === "locks" ? locksRevision : pinsRevision))
+        apply(parsed.status === "valid" ? parsed.value : [])
       commit(errorPatch(kind, undefined))
       if (kind === "locks") commit({ cleanupLocksStatus: "ready" })
       return true
@@ -329,7 +385,10 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
     }
   }
 
-  const pinnedPathOptions = { limit: PINNED_LOCATION_LIMIT, os: options.os } satisfies SavedPathOptions
+  const pinnedPathOptions = {
+    limit: PINNED_LOCATION_LIMIT,
+    os: options.os,
+  } satisfies SavedPathOptions
   const cleanupLockPathOptions = {
     limit: CLEANUP_LOCK_LIMIT,
     os: options.os,
@@ -338,8 +397,16 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
   } satisfies SavedPathOptions
 
   const ready = Promise.all([
-    read("pins", PINNED_STORAGE_KEY, pinnedPathOptions, pinsRevision, (value) => commit({ locations: value })),
-    read("locks", CLEANUP_LOCK_STORAGE_KEY, cleanupLockPathOptions, locksRevision, (value) => commit({ locks: value })),
+    read("pins", PINNED_STORAGE_KEY, pinnedPathOptions, pinsRevision, (value) =>
+      commit({ locations: value })
+    ),
+    read(
+      "locks",
+      CLEANUP_LOCK_STORAGE_KEY,
+      cleanupLockPathOptions,
+      locksRevision,
+      (value) => commit({ locks: value })
+    ),
   ]).then(() => undefined)
 
   const write = (kind: "pins" | "locks", key: string, value: unknown) => {
@@ -361,7 +428,9 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
     return operation
   }
 
-  const persistPins = async (next: DiskPinnedLocation[]): Promise<DiskSettingsWriteResult<DiskPinnedLocation>> => {
+  const persistPins = async (
+    next: DiskPinnedLocation[]
+  ): Promise<DiskSettingsWriteResult<DiskPinnedLocation>> => {
     const sanitized = sanitizeSavedPaths(next, pinnedPathOptions)
     const previous = [...state.locations]
     const revision = ++pinsRevision
@@ -370,8 +439,11 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
     if (!ok && revision === pinsRevision) commit({ locations: previous })
     return { ok, value: [...state.locations] }
   }
-  const persistLocks = async (next: DiskCleanupLock[]): Promise<DiskSettingsWriteResult<DiskCleanupLock>> => {
-    if (state.cleanupLocksStatus !== "ready") return { ok: false, value: [...state.locks] }
+  const persistLocks = async (
+    next: DiskCleanupLock[]
+  ): Promise<DiskSettingsWriteResult<DiskCleanupLock>> => {
+    if (state.cleanupLocksStatus !== "ready")
+      return { ok: false, value: [...state.locks] }
     const sanitized = sanitizeSavedPaths(next, cleanupLockPathOptions)
     const revision = ++locksRevision
     commit({ cleanupLocksStatus: "saving" })
@@ -384,8 +456,12 @@ export function createDiskSettings(storage?: DiskSettingsStorage, options: DiskS
   const retryCleanupLocks = async () => {
     if (!storage || state.cleanupLocksStatus !== "error") return false
     commit({ cleanupLocksStatus: "loading", locksError: undefined })
-    return read("locks", CLEANUP_LOCK_STORAGE_KEY, cleanupLockPathOptions, locksRevision, (value) =>
-      commit({ locks: value }),
+    return read(
+      "locks",
+      CLEANUP_LOCK_STORAGE_KEY,
+      cleanupLockPathOptions,
+      locksRevision,
+      (value) => commit({ locks: value })
     )
   }
 
@@ -430,9 +506,9 @@ export function createPersistenceErrorDeduper() {
   return (error: string | undefined) => {
     if (!error) {
       previous = undefined
-      return
+      return undefined
     }
-    if (error === previous) return
+    if (error === previous) return undefined
     previous = error
     return error
   }
@@ -445,14 +521,27 @@ export function createPersistenceErrorDeduper() {
 export function useSettings() {
   const platform = usePlatform()
   const store = React.useMemo(
-    () => createDiskSettings(platform.storage?.(PINNED_STORAGE_NAME), { os: platform.os }),
-    [platform.storage, platform.os],
+    () =>
+      createDiskSettings(platform.storage?.(PINNED_STORAGE_NAME), {
+        os: platform.os,
+      }),
+    [platform.storage, platform.os]
   )
-  const snapshot = React.useSyncExternalStore(store.subscribe, store.getSnapshot)
+  const snapshot = React.useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot
+  )
   return { store, ...snapshot }
 }
 
-export function DiskLizardRuntime(props: { platform: DiskLizardPlatform; children?: React.ReactNode }) {
+export function DiskLizardRuntime(props: {
+  platform: DiskLizardPlatform
+  children?: React.ReactNode
+}) {
   const value = React.useMemo(() => props.platform, [props.platform])
-  return <PlatformContext.Provider value={value}>{props.children}</PlatformContext.Provider>
+  return (
+    <PlatformContext.Provider value={value}>
+      {props.children}
+    </PlatformContext.Provider>
+  )
 }

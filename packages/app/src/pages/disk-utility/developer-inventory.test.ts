@@ -18,11 +18,18 @@ import {
   recognize,
 } from "./recognize"
 
-function dir(name: string, path: string, size: number, children: DiskScanNode[] = []): DiskScanNode {
+function dir(
+  name: string,
+  path: string,
+  size: number,
+  children: DiskScanNode[] = []
+): DiskScanNode {
   return { name, path, size, isDir: true, children, ext: "" }
 }
 
-function artifact(overrides: Partial<DeveloperArtifact> = {}): DeveloperArtifact {
+function artifact(
+  overrides: Partial<DeveloperArtifact> = {}
+): DeveloperArtifact {
   return {
     name: "node_modules",
     path: "/repo/node_modules",
@@ -59,7 +66,12 @@ function inventory(items: DeveloperArtifact[]): DeveloperArtifactInventory {
 
 describe("deep developer artifact inventory", () => {
   it("marks synthetic list nodes and preserves the scanner's exact recognition posture", () => {
-    const source = artifact({ kind: "toolchain-cache", ecosystem: "rust", confidence: "likely", cleanup: "review" })
+    const source = artifact({
+      kind: "toolchain-cache",
+      ecosystem: "rust",
+      confidence: "likely",
+      cleanup: "review",
+    })
     const node = developerInventoryNode(source)
 
     expect(isDeveloperInventoryNode(node)).toBe(true)
@@ -74,22 +86,37 @@ describe("deep developer artifact inventory", () => {
   })
 
   it("keeps deep artifacts under agent and VCS worktrees protected from Smart Cleanup", () => {
-    const identity = { platform: "posix" as const, device: "1", fileId: "42", modifiedAt: 1_700_000_000_000 }
+    const identity = {
+      platform: "posix" as const,
+      device: "1",
+      fileId: "42",
+      modifiedAt: 1_700_000_000_000,
+    }
     for (const path of [
       "/Users/alex/.codex/worktrees/feature/node_modules",
       "/code/project/.git/worktrees/feature/node_modules",
     ]) {
-      const node = developerInventoryNode(artifact({ path, directoryIdentity: identity }))
+      const node = developerInventoryNode(
+        artifact({ path, directoryIdentity: identity })
+      )
       const recognition = recognize(node)
 
-      expect(recognition).toMatchObject({ safety: "version-control", cleanup: "protected" })
+      expect(recognition).toMatchObject({
+        safety: "version-control",
+        cleanup: "protected",
+      })
       expect(developerArtifactCleanupReadiness(recognition)).toBe("protected")
       expect(isSmartCleanupEligible(node, recognition)).toBe(false)
     }
   })
 
   it("keeps a precise cache whitelist eligible outside protected ancestry", () => {
-    const identity = { platform: "posix" as const, device: "1", fileId: "42", modifiedAt: 1_700_000_000_000 }
+    const identity = {
+      platform: "posix" as const,
+      device: "1",
+      fileId: "42",
+      modifiedAt: 1_700_000_000_000,
+    }
     const node = developerInventoryNode(
       artifact({
         name: "caches",
@@ -97,22 +124,39 @@ describe("deep developer artifact inventory", () => {
         kind: "toolchain-cache",
         ecosystem: "jvm",
         directoryIdentity: identity,
-      }),
+      })
     )
     const recognition = recognize(node)
 
-    expect(recognition).toMatchObject({ tag: "Gradle cache", safety: "cache", cleanup: "eligible", ecosystem: "jvm" })
+    expect(recognition).toMatchObject({
+      tag: "Gradle cache",
+      safety: "cache",
+      cleanup: "eligible",
+      ecosystem: "jvm",
+    })
     expect(isSmartCleanupEligible(node, recognition)).toBe(true)
   })
 
   it("requires scanner-captured direct-directory identity before a deep record can move to Trash", () => {
     const withoutIdentity = developerInventoryNode(artifact())
-    const identity = { platform: "posix" as const, device: "1", fileId: "42", modifiedAt: 1_700_000_000_000 }
+    const identity = {
+      platform: "posix" as const,
+      device: "1",
+      fileId: "42",
+      modifiedAt: 1_700_000_000_000,
+    }
     const withIdentity = developerInventoryNode(
-      artifact({ directoryIdentity: identity, kind: "toolchain-cache", ecosystem: "rust", cleanup: "review" }),
+      artifact({
+        directoryIdentity: identity,
+        kind: "toolchain-cache",
+        ecosystem: "rust",
+        cleanup: "review",
+      })
     )
 
-    expect(developerInventoryDeletePrecondition(withoutIdentity)).toBeUndefined()
+    expect(
+      developerInventoryDeletePrecondition(withoutIdentity)
+    ).toBeUndefined()
     expect(developerInventoryDeletePrecondition(withIdentity)).toEqual({
       kind: "developer-artifact",
       directoryIdentity: identity,
@@ -132,14 +176,25 @@ describe("deep developer artifact inventory", () => {
       ...dir("repo", "/repo", 80),
       developerArtifactInventory: inventory([artifact({ path })]),
     }
-    const identity = { platform: "posix" as const, device: "1", fileId: "42", modifiedAt: 1_700_000_000_000 }
+    const identity = {
+      platform: "posix" as const,
+      device: "1",
+      fileId: "42",
+      modifiedAt: 1_700_000_000_000,
+    }
     const refreshedTree: DiskScanNode = {
       ...dir("repo", "/repo", 80),
-      developerArtifactInventory: inventory([artifact({ path, directoryIdentity: identity })]),
+      developerArtifactInventory: inventory([
+        artifact({ path, directoryIdentity: identity }),
+      ]),
     }
 
-    expect(developerInventoryCollectionNodeForPath(staleTree, path)).toBeUndefined()
-    expect(developerInventoryCollectionNodeForPath(refreshedTree, path)).toMatchObject({
+    expect(
+      developerInventoryCollectionNodeForPath(staleTree, path)
+    ).toBeUndefined()
+    expect(
+      developerInventoryCollectionNodeForPath(refreshedTree, path)
+    ).toMatchObject({
       path,
       inventoryOnly: true,
       directoryIdentity: identity,
@@ -171,7 +226,9 @@ describe("deep developer artifact inventory", () => {
     const build = dir("build", "/repo/build", 100)
     const root: DiskScanNode = {
       ...dir("repo", "/repo", 100, [build]),
-      developerArtifactInventory: inventory([artifact({ path: "/repo/build/node_modules", size: 60 })]),
+      developerArtifactInventory: inventory([
+        artifact({ path: "/repo/build/node_modules", size: 60 }),
+      ]),
     }
 
     const summary = computeDeveloperSummaryWithInventory(root)
@@ -223,7 +280,11 @@ describe("deep developer artifact inventory", () => {
     const summary = computeDeveloperSummaryWithInventory(root)
 
     expect(summary.totalBytes).toBe(100)
-    expect(Object.fromEntries(summary.items.map(({ node, bytes }) => [node.path, bytes]))).toMatchObject({
+    expect(
+      Object.fromEntries(
+        summary.items.map(({ node, bytes }) => [node.path, bytes])
+      )
+    ).toMatchObject({
       "/repo/.gradle/caches": 70,
       "/repo/.gradle": 30,
     })
@@ -234,13 +295,19 @@ describe("deep developer artifact inventory", () => {
     const codex = dir(".codex", "/repo/.codex", 50, [worktrees])
     const root: DiskScanNode = {
       ...dir("repo", "/repo", 50, [codex]),
-      developerArtifactInventory: inventory([artifact({ path: "/repo/.codex/cache/node_modules", size: 15 })]),
+      developerArtifactInventory: inventory([
+        artifact({ path: "/repo/.codex/cache/node_modules", size: 15 }),
+      ]),
     }
 
     const summary = computeDeveloperSummaryWithInventory(root)
 
     expect(summary.totalBytes).toBe(50)
-    expect(Object.fromEntries(summary.items.map(({ node, bytes }) => [node.path, bytes]))).toMatchObject({
+    expect(
+      Object.fromEntries(
+        summary.items.map(({ node, bytes }) => [node.path, bytes])
+      )
+    ).toMatchObject({
       "/repo/.codex/worktrees": 20,
       "/repo/.codex/cache/node_modules": 15,
       "/repo/.codex": 15,
@@ -252,13 +319,24 @@ describe("deep developer artifact inventory", () => {
     const root: DiskScanNode = {
       ...dir("repo", "/repo", 80),
       developerArtifactInventory: inventory([
-        artifact({ path: "/repo/deep/node_modules", modifiedAt: now - 45 * 24 * 60 * 60 * 1_000 }),
+        artifact({
+          path: "/repo/deep/node_modules",
+          modifiedAt: now - 45 * 24 * 60 * 60 * 1_000,
+        }),
       ]),
     }
 
     const item = computeDeveloperSummaryWithInventory(root).items[0]
-    expect(matchesDeveloperArtifact(item, { ecosystem: "node", readiness: "eligible", minAgeDays: 30 }, now)).toBe(true)
-    expect(matchesDeveloperArtifact(item, { ecosystem: "python" }, now)).toBe(false)
+    expect(
+      matchesDeveloperArtifact(
+        item,
+        { ecosystem: "node", readiness: "eligible", minAgeDays: 30 },
+        now
+      )
+    ).toBe(true)
+    expect(matchesDeveloperArtifact(item, { ecosystem: "python" }, now)).toBe(
+      false
+    )
   })
 
   it("reconciles a deeply nested review inventory without pairwise ancestry scans", () => {
@@ -276,7 +354,7 @@ describe("deep developer artifact inventory", () => {
           ecosystem: "generic",
           confidence: "ambiguous",
           cleanup: "review",
-        }),
+        })
       )
     }
     const root: DiskScanNode = {
@@ -307,42 +385,70 @@ describe("deep developer artifact inventory", () => {
       },
     }
 
-    expect(computeDeveloperSummaryWithInventory(root)).toEqual({ totalBytes: 0, totalCount: 0, buckets: [], items: [] })
-    expect(root.developerArtifactInventory?.status).toMatchObject({ state: "partial", unreadableCount: 1 })
+    expect(computeDeveloperSummaryWithInventory(root)).toEqual({
+      totalBytes: 0,
+      totalCount: 0,
+      buckets: [],
+      items: [],
+    })
+    expect(root.developerArtifactInventory?.status).toMatchObject({
+      state: "partial",
+      unreadableCount: 1,
+    })
   })
 
   it("requires a fresh root map for any deletion inside an inventory-enabled root", () => {
     const root: DiskScanNode = {
       ...dir("repo", "/repo", 100),
-      developerArtifactInventory: inventory([artifact({ path: "/repo/build/node_modules", size: 60 })]),
+      developerArtifactInventory: inventory([
+        artifact({ path: "/repo/build/node_modules", size: 60 }),
+      ]),
     }
 
-    expect(developerInventoryNeedsRefresh(root, [dir("build", "/repo/build", 100)])).toBe(true)
-    expect(developerInventoryNeedsRefresh(root, [dir("package-lock.json", "/repo/package-lock.json", 1, [])])).toBe(true)
-    expect(developerInventoryNeedsRefresh(root, [dir("other", "/other", 1)])).toBe(false)
+    expect(
+      developerInventoryNeedsRefresh(root, [dir("build", "/repo/build", 100)])
+    ).toBe(true)
+    expect(
+      developerInventoryNeedsRefresh(root, [
+        dir("package-lock.json", "/repo/package-lock.json", 1, []),
+      ])
+    ).toBe(true)
+    expect(
+      developerInventoryNeedsRefresh(root, [dir("other", "/other", 1)])
+    ).toBe(false)
 
     const cappedRoot: DiskScanNode = {
       ...root,
       developerArtifactInventory: {
         ...root.developerArtifactInventory!,
-        status: { ...root.developerArtifactInventory!.status, state: "partial", truncated: true },
+        status: {
+          ...root.developerArtifactInventory!.status,
+          state: "partial",
+          truncated: true,
+        },
       },
     }
-    expect(developerInventoryNeedsRefresh(cappedRoot, [dir("unretained", "/repo/unretained", 1)])).toBe(true)
+    expect(
+      developerInventoryNeedsRefresh(cappedRoot, [
+        dir("unretained", "/repo/unretained", 1),
+      ])
+    ).toBe(true)
   })
 
   it("checks every retained root when a shared cross-tab basket deletes an item", () => {
     const currentRoot = dir("current", "/current", 1)
     const backgroundRoot: DiskScanNode = {
       ...dir("repo", "/repo", 100),
-      developerArtifactInventory: inventory([artifact({ path: "/repo/deep/node_modules", size: 80 })]),
+      developerArtifactInventory: inventory([
+        artifact({ path: "/repo/deep/node_modules", size: 80 }),
+      ]),
     }
 
     expect(
       developerInventoryRootsNeedRefresh(
         [currentRoot, backgroundRoot],
-        [dir("package-lock.json", "/repo/package-lock.json", 1)],
-      ),
+        [dir("package-lock.json", "/repo/package-lock.json", 1)]
+      )
     ).toBe(true)
   })
 })

@@ -25,8 +25,12 @@ export function showToast(options: ShowToastOptions) {
   const actionOptions = {
     description,
     duration,
-    ...(primary ? { action: { label: primary.label, onClick: primary.onClick } } : {}),
-    ...(secondary ? { cancel: { label: secondary.label, onClick: secondary.onClick } } : {}),
+    ...(primary
+      ? { action: { label: primary.label, onClick: primary.onClick } }
+      : {}),
+    ...(secondary
+      ? { cancel: { label: secondary.label, onClick: secondary.onClick } }
+      : {}),
   }
   if (variant === "error") {
     toast.error(title, actionOptions)

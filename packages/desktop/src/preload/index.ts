@@ -27,6 +27,7 @@ const api: ElectronAPI = {
     cancelScan: (scanId) => ipcRenderer.invoke("disklizard:cancel-scan", scanId),
     stopWatching: (scanId, options) => ipcRenderer.invoke("disklizard:stop-watching", scanId, options),
     authorizeDeletePaths: (paths) => ipcRenderer.invoke("disklizard:authorize-delete-paths", paths),
+    checkDeleteAccess: (path) => ipcRenderer.invoke("disklizard:check-delete-access", path),
     deletePath: (path, options) => ipcRenderer.invoke("disklizard:delete-path", path, options),
     previewPath: (path) => ipcRenderer.invoke("disklizard:preview-path", path),
     systemPreviewPath: (path) => ipcRenderer.invoke("disklizard:system-preview-path", path),

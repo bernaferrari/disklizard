@@ -7,15 +7,17 @@ import type {
 
 export type DiskDeletionPlatform = "macos" | "windows" | "linux"
 
-export function assertCleanupProtectionsReady(ready: boolean, message = "Saved cleanup protections are unavailable") {
+export function assertCleanupProtectionsReady(
+  ready: boolean,
+  message = "Saved cleanup protections are unavailable"
+) {
   if (!ready) throw new Error(message)
 }
 
 export function resolveDeleteAuthorization(
   outcomes: readonly DiskDeleteAuthorizationOutcome[],
   path: string,
-  mismatchMessage: string,
-  os?: DiskDeletionPlatform,
+  mismatchMessage: string
 ) {
   // Main-process capabilities are bound to the exact scanner-issued path.
   // Do not case-fold here: Windows supports case-sensitive directories.
@@ -44,10 +46,13 @@ export async function executeAuthorizedDeletionBatch(input: {
   authorizationMismatchMessage: string
   onSettled?(completed: number, total: number): void
 }) {
-  assertCleanupProtectionsReady(input.cleanupProtectionsReady, input.cleanupProtectionsUnavailableMessage)
+  assertCleanupProtectionsReady(
+    input.cleanupProtectionsReady,
+    input.cleanupProtectionsUnavailableMessage
+  )
   const locks = input.locks ?? []
   const actionable = uniqueDeletionRoots(input.nodes, input.os).filter((node) =>
-    canActOnNode(node, input.os, locks),
+    canActOnNode(node, input.os, locks)
   )
   if (actionable.length === 0) return { removed: [], failed: [] }
 
@@ -58,18 +63,21 @@ export async function executeAuthorizedDeletionBatch(input: {
     async (node) => {
       try {
         assertCleanupProtectionsReady(
-          input.currentCleanupProtectionsReady?.() ?? input.cleanupProtectionsReady,
-          input.cleanupProtectionsUnavailableMessage,
+          input.currentCleanupProtectionsReady?.() ??
+            input.cleanupProtectionsReady,
+          input.cleanupProtectionsUnavailableMessage
         )
         const currentLocks = input.currentCleanupLocks?.() ?? locks
         if (!canActOnNode(node, input.os, currentLocks)) {
-          throw new Error(input.cleanupProtectionChangedMessage ?? "Cleanup protections changed — review this item again")
+          throw new Error(
+            input.cleanupProtectionChangedMessage ??
+              "Cleanup protections changed — review this item again"
+          )
         }
         const authorization = resolveDeleteAuthorization(
           outcomes,
           node.path,
-          input.authorizationMismatchMessage,
-          input.os,
+          input.authorizationMismatchMessage
         )
         return await input.remove(node, authorization)
       } finally {
@@ -78,6 +86,6 @@ export async function executeAuthorizedDeletionBatch(input: {
       }
     },
     input.os,
-    locks,
+    locks
   )
 }

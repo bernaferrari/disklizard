@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode μενού",
   "desktop.updater.dialog.checkFailed.message": "Ο έλεγχος ενημέρωσης απέτυχε.",
   "desktop.updater.dialog.checkFailed.title": "Σφάλμα ενημέρωσης",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Είστε ενημερωμένοι.",
   "desktop.updater.dialog.upToDate.title": "Χωρίς ενημερώσεις",
-  "desktop.updater.dialog.ready.message": "Η ενημέρωση {{version}} λήφθηκε. Επανεκκίνηση τώρα;",
+  "desktop.updater.dialog.ready.message":
+    "Η ενημέρωση {{version}} λήφθηκε. Επανεκκίνηση τώρα;",
   "desktop.updater.dialog.ready.title": "Έτοιμη ενημέρωση",
   "desktop.updater.dialog.restart": "Επανεκκίνηση",
   "desktop.updater.dialog.retry": "Retry",
@@ -60,12 +62,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "Συνεχίστε την αναμονή",
   "desktop.recovery.action.quit": "Τερματισμός",
   "desktop.recovery.loadFailed": "OpenCode απέτυχε η φόρτωση",
-  "desktop.recovery.terminated": "OpenCode το παράθυρο τερματίστηκε απροσδόκητα",
+  "desktop.recovery.terminated":
+    "OpenCode το παράθυρο τερματίστηκε απροσδόκητα",
   "desktop.recovery.unresponsive": "OpenCode δεν αποκρίνεται",
   "desktop.recovery.unresponsive.detail":
     "Μπορείτε να επανεκκινήσετε την εφαρμογή, να ανοίξετε τα αρχεία καταγραφής ή να συνεχίσετε να περιμένετε.",
-  "desktop.recovery.loadFailed.detail": "Παράθυρο: {{window}}\nURL: {{url}}\nΣφάλμα: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Παράθυρο: {{window}}\nΑιτία: {{reason}}\nΚωδικός: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Παράθυρο: {{window}}\nURL: {{url}}\nΣφάλμα: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Παράθυρο: {{window}}\nΑιτία: {{reason}}\nΚωδικός: {{code}}",
   "desktop.recovery.unknown": "<unknown>",
   "desktop.dialog.chooseFolder": "Επιλογή φακέλου",
   "desktop.dialog.chooseFile": "Επιλογή αρχείου",
@@ -74,27 +79,39 @@ export const dict = {
   "desktop.server.local": "Τοπικός διακομιστής",
   "desktop.wsl.error.windowsOnly": "WSL είναι διαθέσιμο μόνο στις Windows",
   "desktop.wsl.error.unavailable": "WSL δεν είναι διαθέσιμο",
-  "desktop.wsl.error.listInstalled": "Απέτυχε η λίστα εγκατεστημένων WSL διανομών",
-  "desktop.wsl.error.listOnline": "Απέτυχε η λίστα με τις διαδικτυακές διανομές WSL",
-  "desktop.wsl.error.executeDistro": "Δεν είναι δυνατή η εκτέλεση εντολών στη διανομή",
+  "desktop.wsl.error.listInstalled":
+    "Απέτυχε η λίστα εγκατεστημένων WSL διανομών",
+  "desktop.wsl.error.listOnline":
+    "Απέτυχε η λίστα με τις διαδικτυακές διανομές WSL",
+  "desktop.wsl.error.executeDistro":
+    "Δεν είναι δυνατή η εκτέλεση εντολών στη διανομή",
   "desktop.wsl.error.installWsl": "WSL η εγκατάσταση απέτυχε",
-  "desktop.wsl.error.installDistro": "Αποτυχία εγκατάστασης διανομής: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Αποτυχία εγκατάστασης διανομής: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode η εγκατάσταση απέτυχε",
   "desktop.wsl.error.alreadyAdded": "{{distro}} έχει ήδη προστεθεί",
-  "desktop.wsl.error.opencodeMissing": "ο ανοιχτός κώδικας δεν είναι εγκατεστημένος σε αυτήν τη διανομή",
-  "desktop.wsl.error.opencodeCannotRun": "ο ανοιχτός κώδικας είναι εγκατεστημένος αλλά δεν ήταν δυνατή η εκτέλεση",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode δεν είναι εγκατεστημένο στο {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "ο ανοιχτός κώδικας δεν είναι εγκατεστημένος σε αυτήν τη διανομή",
+  "desktop.wsl.error.opencodeCannotRun":
+    "ο ανοιχτός κώδικας είναι εγκατεστημένος αλλά δεν ήταν δυνατή η εκτέλεση",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode δεν είναι εγκατεστημένο στο {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCode η ενημέρωση ολοκληρώθηκε αλλά το {{distro}} εξακολουθεί να αναφέρει {{installed}}; αναμενόμενο {{expected}}",
   "desktop.wsl.error.noVersion": "χωρίς έκδοση",
-  "desktop.wsl.error.serverExited": "WSL έξοδος διακομιστή μετά την εκκίνηση (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL έξοδος διακομιστή μετά την εκκίνηση (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL ο διακομιστής εξήλθε πριν γίνει υγιής (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Το πλευρικό καρότσι για έλεγχο υγείας {{distro}} έληξε μετά από {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} έληξε μετά από {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Το πλευρικό καρότσι για έλεγχο υγείας {{distro}} έληξε μετά από {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} έληξε μετά από {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Αποτυχία λήψης θύρας",
-  "desktop.picker.error.notSelected": "Το αρχείο δεν επιλέχθηκε από τον επιλογέα",
-  "desktop.picker.error.sizeLimit": "Τα επιλεγμένα συνημμένα υπερβαίνουν το όριο των {{limit}} MB",
+  "desktop.picker.error.notSelected":
+    "Το αρχείο δεν επιλέχθηκε από τον επιλογέα",
+  "desktop.picker.error.sizeLimit":
+    "Τα επιλεγμένα συνημμένα υπερβαίνουν το όριο των {{limit}} MB",
   "command.category.suggested": "Προτεινόμενο",
   "command.category.view": "Προβολή",
   "command.category.project": "Έργο",
@@ -141,7 +158,8 @@ export const dict = {
   "command.tab.close": "Κλείσιμο καρτέλας",
   "command.tab.reopenClosed": "Άνοιγμα ξανά κλειστής καρτέλας",
   "command.context.addSelection": "Προσθήκη επιλογής στο πλαίσιο",
-  "command.context.addSelection.description": "Προσθήκη επιλεγμένων γραμμών από το τρέχον αρχείο",
+  "command.context.addSelection.description":
+    "Προσθήκη επιλεγμένων γραμμών από το τρέχον αρχείο",
   "command.input.focus": "Εισαγωγή εστίασης",
   "command.terminal.toggle": "Εναλλαγή τερματικού",
   "command.fileTree.toggle": "Εναλλαγή δέντρου αρχείου",
@@ -149,9 +167,11 @@ export const dict = {
   "command.terminal.new": "Νέο τερματικό",
   "command.terminal.new.description": "Δημιουργία νέας καρτέλας τερματικού",
   "command.steps.toggle": "Εναλλαγή βημάτων",
-  "command.steps.toggle.description": "Εμφάνιση ή απόκρυψη βημάτων για το τρέχον μήνυμα",
+  "command.steps.toggle.description":
+    "Εμφάνιση ή απόκρυψη βημάτων για το τρέχον μήνυμα",
   "command.message.previous": "Προηγούμενο μήνυμα",
-  "command.message.previous.description": "Μετάβαση στο προηγούμενο μήνυμα χρήστη",
+  "command.message.previous.description":
+    "Μετάβαση στο προηγούμενο μήνυμα χρήστη",
   "command.message.next": "Επόμενο μήνυμα",
   "command.message.next.description": "Μετάβαση στο επόμενο μήνυμα χρήστη",
   "command.model.choose": "Επιλογή μοντέλου",
@@ -161,29 +181,39 @@ export const dict = {
   "command.agent.cycle": "Εναλλαγή πράκτορα",
   "command.agent.cycle.description": "Μετάβαση στον επόμενο πράκτορα",
   "command.agent.cycle.reverse": "Μετάβαση στον προηγούμενο πράκτορα",
-  "command.agent.cycle.reverse.description": "Εναλλαγή στον προηγούμενο πράκτορα",
+  "command.agent.cycle.reverse.description":
+    "Εναλλαγή στον προηγούμενο πράκτορα",
   "command.model.variant.cycle": "Εναλλαγή επιπέδου συλλογιστικής",
-  "command.model.variant.cycle.description": "Μετάβαση στο επόμενο επίπεδο προσπάθειας",
+  "command.model.variant.cycle.description":
+    "Μετάβαση στο επόμενο επίπεδο προσπάθειας",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Προτροπή",
   "command.permissions.autoaccept.enable": "Αυτόματη αποδοχή δικαιωμάτων",
-  "command.permissions.autoaccept.disable": "Διακοπή αυτόματης αποδοχής δικαιωμάτων",
+  "command.permissions.autoaccept.disable":
+    "Διακοπή αυτόματης αποδοχής δικαιωμάτων",
   "command.workspace.toggle": "Εναλλαγή χώρων εργασίας",
-  "command.workspace.toggle.description": "Ενεργοποίηση ή απενεργοποίηση πολλών χώρων εργασίας στην πλαϊνή γραμμή",
+  "command.workspace.toggle.description":
+    "Ενεργοποίηση ή απενεργοποίηση πολλών χώρων εργασίας στην πλαϊνή γραμμή",
   "command.session.undo": "Αναίρεση",
   "command.session.undo.description": "Αναίρεση του τελευταίου μηνύματος",
   "command.session.redo": "Επανάληψη",
-  "command.session.redo.description": "Επανάληψη του τελευταίου μηνύματος που αναιρέθηκε",
+  "command.session.redo.description":
+    "Επανάληψη του τελευταίου μηνύματος που αναιρέθηκε",
   "command.session.compact": "Συμπαγής συνεδρία",
-  "command.session.compact.description": "Συνοψήστε τη συνεδρία για να μειώσετε το μέγεθος του περιβάλλοντος",
+  "command.session.compact.description":
+    "Συνοψήστε τη συνεδρία για να μειώσετε το μέγεθος του περιβάλλοντος",
   "command.session.fork": "Διακλάδωση από μήνυμα",
-  "command.session.fork.description": "Δημιουργία νέας συνεδρίας από προηγούμενο μήνυμα",
+  "command.session.fork.description":
+    "Δημιουργία νέας συνεδρίας από προηγούμενο μήνυμα",
   "command.session.share": "Κοινή χρήση συνεδρίας",
-  "command.session.share.description": "Κοινή χρήση αυτής της συνεδρίας και αντιγράψτε το URL στο πρόχειρο",
+  "command.session.share.description":
+    "Κοινή χρήση αυτής της συνεδρίας και αντιγράψτε το URL στο πρόχειρο",
   "command.session.unshare": "Κατάργηση κοινής χρήσης συνεδρίας",
-  "command.session.unshare.description": "Διακοπή κοινής χρήσης αυτής της συνεδρίας",
+  "command.session.unshare.description":
+    "Διακοπή κοινής χρήσης αυτής της συνεδρίας",
   "command.session.export": "Εξαγωγή συνεδρίας",
-  "command.session.export.description": "Εξαγωγή της πλήρους μεταγραφής της συνεδρίας ως JSON",
+  "command.session.export.description":
+    "Εξαγωγή της πλήρους μεταγραφής της συνεδρίας ως JSON",
   "palette.search.placeholder": "Αναζήτηση αρχείων, εντολών και συνεδριών",
   "palette.search.placeholder.home": "Αναζήτηση εντολών και συνεδρίες",
   "palette.empty": "Δεν βρέθηκαν αποτελέσματα",
@@ -195,23 +225,34 @@ export const dict = {
   "dialog.provider.group.other": "Άλλο",
   "dialog.provider.custom.label": "Προσαρμοσμένη OpenAI-συμβατός πάροχος",
   "dialog.provider.tag.recommended": "Συνιστάται",
-  "dialog.provider.opencode.note": "Επιμελημένα μοντέλα συμπεριλαμβανομένων των Claude, GPT, Gemini και άλλων",
+  "dialog.provider.opencode.note":
+    "Επιμελημένα μοντέλα συμπεριλαμβανομένων των Claude, GPT, Gemini και άλλων",
   "dialog.provider.opencode.tagline": "Αξιόπιστα βελτιστοποιημένα μοντέλα",
   "dialog.provider.opencodeGo.tagline": "Συνδρομή χαμηλού κόστους για όλους",
-  "dialog.provider.anthropic.note": "Άμεση πρόσβαση σε Claude μοντέλα, συμπεριλαμβανομένων των Pro και Max",
-  "dialog.provider.copilot.note": "Μοντέλα AI για βοήθεια κωδικοποίησης μέσω GitHub Copilot",
-  "dialog.provider.openai.note": "GPT μοντέλα για γρήγορες, ικανές εργασίες γενικής τεχνητής νοημοσύνης",
-  "dialog.provider.google.note": "Gemini μοντέλα για γρήγορες, δομημένες απαντήσεις",
-  "dialog.provider.openrouter.note": "Πρόσβαση σε όλα τα υποστηριζόμενα μοντέλα από έναν πάροχο",
-  "dialog.provider.vercel.note": "Ενοποιημένη πρόσβαση σε μοντέλα τεχνητής νοημοσύνης με έξυπνη δρομολόγηση",
+  "dialog.provider.anthropic.note":
+    "Άμεση πρόσβαση σε Claude μοντέλα, συμπεριλαμβανομένων των Pro και Max",
+  "dialog.provider.copilot.note":
+    "Μοντέλα AI για βοήθεια κωδικοποίησης μέσω GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT μοντέλα για γρήγορες, ικανές εργασίες γενικής τεχνητής νοημοσύνης",
+  "dialog.provider.google.note":
+    "Gemini μοντέλα για γρήγορες, δομημένες απαντήσεις",
+  "dialog.provider.openrouter.note":
+    "Πρόσβαση σε όλα τα υποστηριζόμενα μοντέλα από έναν πάροχο",
+  "dialog.provider.vercel.note":
+    "Ενοποιημένη πρόσβαση σε μοντέλα τεχνητής νοημοσύνης με έξυπνη δρομολόγηση",
   "dialog.model.select.title": "Επιλογή μοντέλου",
   "dialog.model.search.placeholder": "Αναζήτηση μοντέλων",
   "dialog.model.empty": "Δεν υπάρχουν αποτελέσματα μοντέλου",
   "dialog.model.manage": "Διαχείριση μοντέλων",
-  "dialog.model.manage.description": "Προσαρμογή των μοντέλων που εμφανίζονται στον επιλογέα μοντέλων.",
-  "dialog.model.manage.provider.toggle": "Εναλλαγή όλων των {{provider}} μοντέλων",
-  "dialog.model.unpaid.freeModels.title": "Δωρεάν μοντέλα παρέχονται από OpenCode",
-  "dialog.model.unpaid.addMore.title": "Προσθήκη περισσότερων μοντέλων από δημοφιλείς παρόχους",
+  "dialog.model.manage.description":
+    "Προσαρμογή των μοντέλων που εμφανίζονται στον επιλογέα μοντέλων.",
+  "dialog.model.manage.provider.toggle":
+    "Εναλλαγή όλων των {{provider}} μοντέλων",
+  "dialog.model.unpaid.freeModels.title":
+    "Δωρεάν μοντέλα παρέχονται από OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Προσθήκη περισσότερων μοντέλων από δημοφιλείς παρόχους",
   "dialog.model.unpaid.viewMoreProviders": "Δείτε 70+ ακόμη παρόχους",
   "dialog.provider.viewAll": "Εμφάνιση περισσότερων παρόχων",
   "provider.connect.title": "Σύνδεση {{provider}}",
@@ -234,7 +275,8 @@ export const dict = {
     "Με ένα μόνο κλειδί API θα έχετε πρόσβαση σε μοντέλα όπως Claude, GPT, Gemini, GLM και άλλα.",
   "provider.connect.opencodeZen.visit.prefix": "Επίσκεψη ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " για τη συλλογή του κλειδιού σας API.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " για τη συλλογή του κλειδιού σας API.",
   "provider.connect.oauth.code.visit.prefix": "Επίσκεψη ",
   "provider.connect.oauth.code.visit.link": "αυτός ο σύνδεσμος",
   "provider.connect.oauth.code.visit.suffix":
@@ -249,15 +291,19 @@ export const dict = {
     " και εισαγάγετε τον παρακάτω κωδικό για να συνδέσετε τον λογαριασμό σας και να χρησιμοποιήσετε {{provider}} μοντέλα στο OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Κωδικός επιβεβαίωσης",
   "provider.connect.toast.connected.title": "{{provider}} συνδεδεμένο",
-  "provider.connect.toast.connected.description": "{{provider}} μοντέλα είναι πλέον διαθέσιμα για χρήση.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} μοντέλα είναι πλέον διαθέσιμα για χρήση.",
   "provider.custom.title": "Προσαρμοσμένος πάροχος",
-  "provider.custom.unavailable": "Οι προσαρμοσμένοι πάροχοι δεν είναι διαθέσιμοι σε αυτόν τον διακομιστή",
-  "provider.custom.description.prefix": "Διαμορφώστε έναν πάροχο συμβατό με OpenAI. Δείτε το ",
+  "provider.custom.unavailable":
+    "Οι προσαρμοσμένοι πάροχοι δεν είναι διαθέσιμοι σε αυτόν τον διακομιστή",
+  "provider.custom.description.prefix":
+    "Διαμορφώστε έναν πάροχο συμβατό με OpenAI. Δείτε το ",
   "provider.custom.description.link": "έγγραφα διαμόρφωσης παρόχου",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Αναγνωριστικό παρόχου",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Πεζά γράμματα, αριθμοί, παύλες ή κάτω παύλες",
+  "provider.custom.field.providerID.description":
+    "Πεζά γράμματα, αριθμοί, παύλες ή κάτω παύλες",
   "provider.custom.field.name.label": "Εμφανιζόμενο όνομα",
   "provider.custom.field.name.placeholder": "Ο πάροχος τεχνητής νοημοσύνης μου",
   "provider.custom.field.baseURL.label": "Βάση URL",
@@ -280,16 +326,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "τιμή",
   "provider.custom.headers.remove": "Κατάργηση κεφαλίδας",
   "provider.custom.headers.add": "Προσθήκη κεφαλίδας",
-  "provider.custom.error.providerID.required": "Απαιτείται αναγνωριστικό παρόχου",
-  "provider.custom.error.providerID.format": "Χρησιμοποιήστε πεζά γράμματα, αριθμούς, παύλες ή κάτω παύλες",
-  "provider.custom.error.providerID.exists": "Αυτό το αναγνωριστικό παρόχου υπάρχει ήδη",
+  "provider.custom.error.providerID.required":
+    "Απαιτείται αναγνωριστικό παρόχου",
+  "provider.custom.error.providerID.format":
+    "Χρησιμοποιήστε πεζά γράμματα, αριθμούς, παύλες ή κάτω παύλες",
+  "provider.custom.error.providerID.exists":
+    "Αυτό το αναγνωριστικό παρόχου υπάρχει ήδη",
   "provider.custom.error.name.required": "Απαιτείται το εμφανιζόμενο όνομα",
   "provider.custom.error.baseURL.required": "Η βάση URL απαιτείται",
-  "provider.custom.error.baseURL.format": "Πρέπει να ξεκινά με http:// ή https://",
+  "provider.custom.error.baseURL.format":
+    "Πρέπει να ξεκινά με http:// ή https://",
   "provider.custom.error.required": "Απαιτείται",
   "provider.custom.error.duplicate": "Διπλότυπο",
   "provider.disconnect.toast.disconnected.title": "{{provider}} αποσυνδέθηκε",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} μοντέλα δεν είναι πλέον διαθέσιμα.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} μοντέλα δεν είναι πλέον διαθέσιμα.",
   "model.tag.free": "Δωρεάν",
   "model.tag.latest": "Τελευταία",
   "model.provider.anthropic": "Anthropic",
@@ -335,7 +386,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Προτροπή",
   "prompt.mode.shell.exit": "esc για έξοδο",
-  "session.child.promptDisabled": "Δεν είναι δυνατή η αποστολή προτροπών σε συνεδρίες υποπρακτόρων.",
+  "session.child.promptDisabled":
+    "Δεν είναι δυνατή η αποστολή προτροπών σε συνεδρίες υποπρακτόρων.",
   "session.child.backToParent": "Επιστροφή στην κύρια συνεδρία.",
   "prompt.example.1": "Διόρθωση TODO στη βάση κώδικα",
   "prompt.example.2": "Ποια είναι η τεχνική στοίβα αυτού του έργου;",
@@ -343,7 +395,8 @@ export const dict = {
   "prompt.example.4": "Εξηγήστε πώς λειτουργεί ο έλεγχος ταυτότητας",
   "prompt.example.5": "Εύρεση και διόρθωση ευπαθειών ασφαλείας",
   "prompt.example.6": "Προσθήκη δοκιμών μονάδας για την υπηρεσία χρήστη",
-  "prompt.example.7": "Επανασκευάστε αυτήν τη λειτουργία για να είναι πιο ευανάγνωστη",
+  "prompt.example.7":
+    "Επανασκευάστε αυτήν τη λειτουργία για να είναι πιο ευανάγνωστη",
   "prompt.example.8": "Τι σημαίνει αυτό το σφάλμα;",
   "prompt.example.9": "Βοηθήστε με να διορθώσω αυτό το ζήτημα",
   "prompt.example.10": "Δημιουργία API τεκμηρίωσης",
@@ -358,7 +411,8 @@ export const dict = {
   "prompt.example.19": "Προσθήκη καταγραφής σε όλη τη βάση κώδικα",
   "prompt.example.20": "Ποιες εξαρτήσεις είναι ξεπερασμένες;",
   "prompt.example.21": "Βοηθήστε με να γράψω ένα σενάριο μετεγκατάστασης",
-  "prompt.example.22": "Εφαρμογή προσωρινής αποθήκευσης για αυτό το τελικό σημείο",
+  "prompt.example.22":
+    "Εφαρμογή προσωρινής αποθήκευσης για αυτό το τελικό σημείο",
   "prompt.example.23": "Προσθήκη σελιδοποίησης σε αυτήν τη λίστα",
   "prompt.example.24": "Δημιουργία εντολής CLI για...",
   "prompt.example.25": "Πώς λειτουργούν οι μεταβλητές περιβάλλοντος εδώ;",
@@ -371,7 +425,8 @@ export const dict = {
   "prompt.slash.badge.mcp": "mcp",
   "prompt.context.active": "ενεργό",
   "prompt.context.includeActiveFile": "Συμπεριλάβετε ενεργό αρχείο",
-  "prompt.context.removeActiveFile": "Κατάργηση ενεργού αρχείου από το περιβάλλον",
+  "prompt.context.removeActiveFile":
+    "Κατάργηση ενεργού αρχείου από το περιβάλλον",
   "prompt.context.removeFile": "Κατάργηση αρχείου από το περιβάλλον",
   "prompt.action.attachFile": "Προσθήκη αρχείων",
   "prompt.menu.addImagesAndFiles": "Προσθήκη αρχείων και άλλα",
@@ -383,17 +438,21 @@ export const dict = {
   "prompt.action.send": "Αποστολή",
   "prompt.action.stop": "Διακοπή",
   "prompt.toast.pasteUnsupported.title": "Μη υποστηριζόμενο συνημμένο",
-  "prompt.toast.pasteUnsupported.description": "Εδώ επισυνάπτονται μόνο εικόνες, αρχεία PDF ή αρχεία κειμένου.",
-  "prompt.toast.attachmentDuplicate.title": "Αυτό το αρχείο έχει ήδη μεταφορτωθεί",
+  "prompt.toast.pasteUnsupported.description":
+    "Εδώ επισυνάπτονται μόνο εικόνες, αρχεία PDF ή αρχεία κειμένου.",
+  "prompt.toast.attachmentDuplicate.title":
+    "Αυτό το αρχείο έχει ήδη μεταφορτωθεί",
   "prompt.toast.modelAgentRequired.title": "Επιλέξτε έναν πράκτορα και μοντέλο",
   "prompt.toast.modelAgentRequired.description":
     "Επιλέξτε έναν πράκτορα και ένα μοντέλο πριν στείλετε ένα μήνυμα προτροπής.",
-  "prompt.toast.worktreeCreateFailed.title": "Αποτυχία δημιουργίας δέντρου εργασίας",
+  "prompt.toast.worktreeCreateFailed.title":
+    "Αποτυχία δημιουργίας δέντρου εργασίας",
   "prompt.toast.sessionCreateFailed.title": "Αποτυχία δημιουργίας συνεδρίας",
   "prompt.toast.shellSendFailed.title": "Αποτυχία αποστολής εντολής κελύφους",
   "prompt.toast.commandSendFailed.title": "Αποτυχία αποστολής εντολής",
   "prompt.toast.promptSendFailed.title": "Αποτυχία αποστολής προτροπής",
-  "prompt.toast.promptSendFailed.description": "Δεν είναι δυνατή η ανάκτηση της συνεδρίας",
+  "prompt.toast.promptSendFailed.description":
+    "Δεν είναι δυνατή η ανάκτηση της συνεδρίας",
   "dialog.mcp.title": "MCPs",
   "dialog.mcp.description": "{{enabled}} από {{total}} ενεργοποιημένα",
   "dialog.mcp.empty": "Δεν έχει διαμορφωθεί το MCPs",
@@ -416,7 +475,8 @@ export const dict = {
   "app.server.retrying": "Αυτόματη προσπάθεια επανάληψης...",
   "app.server.otherServers": "Άλλοι διακομιστές",
   "dialog.server.title": "Διακομιστές",
-  "dialog.server.description": "Αλλαγή σε ποιον διακομιστή OpenCode συνδέεται αυτή η εφαρμογή.",
+  "dialog.server.description":
+    "Αλλαγή σε ποιον διακομιστή OpenCode συνδέεται αυτή η εφαρμογή.",
   "dialog.server.search.placeholder": "Αναζήτηση διακομιστών",
   "dialog.server.empty": "Δεν υπάρχουν ακόμη διακομιστές",
   "dialog.server.add.title": "Προσθήκη διακομιστή",
@@ -454,7 +514,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Επιλογή διανομής",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Έλεγχος WSL...",
-  "wsl.onboarding.restartRequired": "Windows χρειάζεται επανεκκίνηση για να ολοκληρωθεί η εγκατάσταση του WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows χρειάζεται επανεκκίνηση για να ολοκληρωθεί η εγκατάσταση του WSL.",
   "wsl.onboarding.ready": "WSL είναι έτοιμο.",
   "wsl.onboarding.required": "WSL απαιτείται για να συνεχίσετε.",
   "wsl.onboarding.checkingDistros": "Έλεγχος διανομών...",
@@ -462,10 +523,14 @@ export const dict = {
   "wsl.onboarding.checkingDistro": "Έλεγχος {{distro}}...",
   "wsl.onboarding.listingDistros": "Διανομές λίστας...",
   "wsl.onboarding.distroReady": "{{distro}} είναι έτοιμο.",
-  "wsl.onboarding.distroNotInstalled": "{{distro}} δεν έχει εγκατασταθεί ακόμα.",
-  "wsl.onboarding.openDistroOnce": "Ανοίξτε το {{distro}} μία φορά για να ολοκληρώσετε τη ρύθμιση.",
-  "wsl.onboarding.finishingDistro": "Ολοκλήρωση της ρύθμισης για το {{distro}}.",
-  "wsl.onboarding.pickDistro": "Επιλέξτε μια διανομή ή εγκαταστήστε μία παρακάτω.",
+  "wsl.onboarding.distroNotInstalled":
+    "{{distro}} δεν έχει εγκατασταθεί ακόμα.",
+  "wsl.onboarding.openDistroOnce":
+    "Ανοίξτε το {{distro}} μία φορά για να ολοκληρώσετε τη ρύθμιση.",
+  "wsl.onboarding.finishingDistro":
+    "Ολοκλήρωση της ρύθμισης για το {{distro}}.",
+  "wsl.onboarding.pickDistro":
+    "Επιλέξτε μια διανομή ή εγκαταστήστε μία παρακάτω.",
   "wsl.onboarding.checkingOpencode": "Έλεγχος OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Έλεγχος OpenCode σε {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Ενημέρωση OpenCode...",
@@ -474,7 +539,8 @@ export const dict = {
   "wsl.onboarding.updateOpencode": "Ενημέρωση OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode είναι έτοιμο στο {{distro}}.",
   "wsl.onboarding.opencodeReady": "OpenCode είναι έτοιμο.",
-  "wsl.onboarding.installOpencodeIn": "Εγκατάσταση του OpenCode στο {{distro}}.",
+  "wsl.onboarding.installOpencodeIn":
+    "Εγκατάσταση του OpenCode στο {{distro}}.",
   "wsl.onboarding.installOpencode": "Εγκατάσταση OpenCode",
   "wsl.onboarding.chooseDistroFirst": "Επιλέξτε πρώτα μια διανομή.",
   "wsl.onboarding.loadFailed": "Απέτυχε η φόρτωση της κατάστασης WSL.",
@@ -483,22 +549,26 @@ export const dict = {
   "wsl.onboarding.checkAgain": "Έλεγχος ξανά",
   "wsl.onboarding.distroStatus.ready": "Έτοιμο",
   "wsl.onboarding.distroStatus.checking": "Έλεγχος...",
-  "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode δεν έχει εγκατασταθεί",
+  "wsl.onboarding.distroStatus.opencodeMissing":
+    "OpenCode δεν έχει εγκατασταθεί",
   "wsl.onboarding.distroStatus.missingTools": "Λείπει το bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Δεν υποστηρίζεται · Χρήση WSL 2",
   "wsl.onboarding.needAnotherDistro": "Χρειάζεστε άλλη διανομή;",
-  "wsl.onboarding.needAnotherDistroHint": "Εγκαταστήστε μια διανομή Linux από τον κατάλογο WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Εγκαταστήστε μια διανομή Linux από τον κατάλογο WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL δεν έχει εγκατασταθεί",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Υποσύστημα για Linux) απαιτείται για να μπορέσει ο OpenCode να προσθέσει έναν διακομιστή WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL μη διαθέσιμο",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode δεν μπόρεσε να επαληθεύσει το WSL σε αυτό το μηχάνημα.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode δεν μπόρεσε να επαληθεύσει το WSL σε αυτό το μηχάνημα.",
   "wsl.onboarding.installWsl": "Εγκατάσταση WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Επανεκκινήστε το Windows για να ολοκληρώσετε την εγκατάσταση του WSL και μετά ανοίξτε ξανά το OpenCode.",
   "wsl.onboarding.next": "Επόμενο",
   "wsl.onboarding.refresh": "Ανανέωση",
-  "wsl.onboarding.allDistrosAdded": "Όλες οι εγκατεστημένες διανομές έχουν ήδη προστεθεί.",
+  "wsl.onboarding.allDistrosAdded":
+    "Όλες οι εγκατεστημένες διανομές έχουν ήδη προστεθεί.",
   "wsl.onboarding.noDistros": "Δεν έχουν εντοπιστεί ακόμη διανομές.",
   "wsl.onboarding.install": "Εγκατάσταση",
   "wsl.onboarding.installing": "Εγκατάσταση...",
@@ -512,21 +582,26 @@ export const dict = {
   "wsl.onboarding.version": "Έκδοση: {{version}}",
   "wsl.onboarding.unknown": "άγνωστο",
   "wsl.onboarding.desktopVersion": "επιτραπέζιος υπολογιστής {{version}}",
-  "wsl.onboarding.versionMismatch": "Η εγκατεστημένη έκδοση δεν ταιριάζει με την έκδοση της εφαρμογής για υπολογιστές.",
+  "wsl.onboarding.versionMismatch":
+    "Η εγκατεστημένη έκδοση δεν ταιριάζει με την έκδοση της εφαρμογής για υπολογιστές.",
   "wsl.onboarding.adding": "Προσθήκη...",
-  "help.tabs.toast.ariaLabel": "Εισαγωγή καρτελών. Οργανώστε την εργασία και τις ενεργές συνεδρίες σας με καρτέλες",
+  "help.tabs.toast.ariaLabel":
+    "Εισαγωγή καρτελών. Οργανώστε την εργασία και τις ενεργές συνεδρίες σας με καρτέλες",
   "help.tabs.toast.dismiss": "Παράβλεψη πληροφοριών καρτελών",
   "help.tabs.title": "Εισαγωγή καρτελών",
-  "help.tabs.description": "Οργανώστε την εργασία και τις ενεργές συνεδρίες σας με καρτέλες",
+  "help.tabs.description":
+    "Οργανώστε την εργασία και τις ενεργές συνεδρίες σας με καρτέλες",
   "help.tabs.date": "14 Ιουλίου",
-  "help.tabs.introduction": "OpenCode Η επιφάνεια εργασίας είναι πλέον χτισμένη γύρω από καρτέλες.",
+  "help.tabs.introduction":
+    "OpenCode Η επιφάνεια εργασίας είναι πλέον χτισμένη γύρω από καρτέλες.",
   "help.tabs.sessions":
     "Ξεκινήστε μια νέα συνεδρία σε μια καρτέλα ή ανοίξτε μια υπάρχουσα περίοδο λειτουργίας από οποιοδήποτε από τα έργα σας. Ανοίξτε μια νέα καρτέλα όταν ξεκινάτε κάτι νέο και κλείστε την όταν τελειώσετε.",
   "help.tabs.organize":
     "Διατηρώντας μερικές καρτέλες ανοιχτές διευκολύνετε την οργάνωση των ενεργών συνεδριών σας. Μετονομάστε τις καρτέλες σε κάτι αξιομνημόνευτο, αν σκοπεύετε να τις διατηρήσετε.",
   "help.tabs.home":
     "Θα βρείτε όλες τις συνεδρίες και τα έργα σας στη νέα Αρχική οθόνη. Η επιλογή μιας συνεδρίας ανοίγει σε μια καρτέλα.",
-  "help.tabs.persistence": "Όταν ανοίγετε ξανά την εφαρμογή, οι καρτέλες σας είναι ακόμα ανοιχτές.",
+  "help.tabs.persistence":
+    "Όταν ανοίγετε ξανά την εφαρμογή, οι καρτέλες σας είναι ακόμα ανοιχτές.",
   "help.tabs.worktrees":
     "Η νέα σχεδίαση δεν υποστηρίζει ακόμα Git Worktrees, θα είναι σύντομα διαθέσιμη. Επομένως, εάν προτιμάτε να συνεχίσετε να χρησιμοποιείτε την προηγούμενη διάταξη, μπορείτε να κάνετε εναλλαγή μεταξύ των διατάξεων στις Ρυθμίσεις. Απλώς έχετε κατά νου ότι η νέα διάταξη θα γίνει μόνιμη σε λίγες εβδομάδες.",
   "server.row.noUsername": "χωρίς όνομα χρήστη",
@@ -544,7 +619,8 @@ export const dict = {
   "dialog.project.edit.worktree.startup.placeholder": "π.χ. εγκατάσταση bun",
   "dialog.releaseNotes.action.getStarted": "Ξεκινήστε",
   "dialog.releaseNotes.action.next": "Επόμενο",
-  "dialog.releaseNotes.action.hideFuture": "Να μην εμφανίζονται αυτά στο μέλλον",
+  "dialog.releaseNotes.action.hideFuture":
+    "Να μην εμφανίζονται αυτά στο μέλλον",
   "dialog.releaseNotes.media.alt": "Προεπισκόπηση έκδοσης",
   "context.breakdown.title": "Ανάλυση περιβάλλοντος",
   "context.breakdown.note":
@@ -601,49 +677,75 @@ export const dict = {
   "toast.theme.title": "Εναλλαγή θέματος",
   "toast.scheme.title": "Χρωματικός συνδυασμός",
   "toast.workspace.enabled.title": "Οι χώροι εργασίας ενεργοποιημένοι",
-  "toast.workspace.enabled.description": "Πολλά δέντρα εργασίας εμφανίζονται τώρα στην πλαϊνή γραμμή",
+  "toast.workspace.enabled.description":
+    "Πολλά δέντρα εργασίας εμφανίζονται τώρα στην πλαϊνή γραμμή",
   "toast.workspace.disabled.title": "Οι χώροι εργασίας είναι απενεργοποιημένοι",
-  "toast.workspace.disabled.description": "Μόνο το κύριο δέντρο εργασίας εμφανίζεται στην πλαϊνή γραμμή",
+  "toast.workspace.disabled.description":
+    "Μόνο το κύριο δέντρο εργασίας εμφανίζεται στην πλαϊνή γραμμή",
   "toast.permissions.autoaccept.on.title": "Αυτόματη αποδοχή δικαιωμάτων",
-  "toast.permissions.autoaccept.on.description": "Τα αιτήματα άδειας θα εγκρίνονται αυτόματα",
-  "toast.permissions.autoaccept.off.title": "Διακοπή αυτόματης αποδοχής δικαιωμάτων",
-  "toast.permissions.autoaccept.off.description": "Τα αιτήματα άδειας απαιτούν έγκριση",
+  "toast.permissions.autoaccept.on.description":
+    "Τα αιτήματα άδειας θα εγκρίνονται αυτόματα",
+  "toast.permissions.autoaccept.off.title":
+    "Διακοπή αυτόματης αποδοχής δικαιωμάτων",
+  "toast.permissions.autoaccept.off.description":
+    "Τα αιτήματα άδειας απαιτούν έγκριση",
   "toast.model.none.title": "Δεν έχει επιλεγεί μοντέλο",
-  "toast.model.none.description": "Συνδέστε έναν πάροχο για να συνοψίσετε αυτήν τη συνεδρία",
+  "toast.model.none.description":
+    "Συνδέστε έναν πάροχο για να συνοψίσετε αυτήν τη συνεδρία",
   "toast.file.loadFailed.title": "Αποτυχία φόρτωσης αρχείου",
   "toast.file.listFailed.title": "Απέτυχε η λίστα αρχείων",
   "toast.context.noLineSelection.title": "Χωρίς επιλογή γραμμής",
-  "toast.context.noLineSelection.description": "Επιλέξτε ένα εύρος γραμμής σε μια καρτέλα αρχείου πρώτα.",
-  "toast.session.share.copyFailed.title": "Αποτυχία αντιγραφής του URL στο πρόχειρο",
+  "toast.context.noLineSelection.description":
+    "Επιλέξτε ένα εύρος γραμμής σε μια καρτέλα αρχείου πρώτα.",
+  "toast.session.share.copyFailed.title":
+    "Αποτυχία αντιγραφής του URL στο πρόχειρο",
   "toast.session.share.success.title": "Η συνεδρία κοινοποιήθηκε",
-  "toast.session.share.success.description": "Κοινή χρήση του URL αντιγράφηκε στο πρόχειρο!",
+  "toast.session.share.success.description":
+    "Κοινή χρήση του URL αντιγράφηκε στο πρόχειρο!",
   "toast.session.share.failed.title": "Αποτυχία κοινής χρήσης συνεδρίας",
-  "toast.session.share.failed.description": "Παρουσιάστηκε σφάλμα κατά την κοινή χρήση της συνεδρίας",
-  "toast.session.unshare.success.title": "Καταργήθηκε η κοινή χρήση της συνεδρίας",
-  "toast.session.unshare.success.description": "Η κοινή χρήση της συνεδρίας καταργήθηκε με επιτυχία!",
-  "toast.session.unshare.failed.title": "Αποτυχία κατάργησης κοινής χρήσης συνεδρίας",
-  "toast.session.unshare.failed.description": "Παρουσιάστηκε σφάλμα κατά την κατάργηση κοινής χρήσης της συνεδρίας",
+  "toast.session.share.failed.description":
+    "Παρουσιάστηκε σφάλμα κατά την κοινή χρήση της συνεδρίας",
+  "toast.session.unshare.success.title":
+    "Καταργήθηκε η κοινή χρήση της συνεδρίας",
+  "toast.session.unshare.success.description":
+    "Η κοινή χρήση της συνεδρίας καταργήθηκε με επιτυχία!",
+  "toast.session.unshare.failed.title":
+    "Αποτυχία κατάργησης κοινής χρήσης συνεδρίας",
+  "toast.session.unshare.failed.description":
+    "Παρουσιάστηκε σφάλμα κατά την κατάργηση κοινής χρήσης της συνεδρίας",
   "toast.session.export.success.title": "Εξαγωγή συνεδρίας",
-  "toast.session.export.success.description": "Η συνεδρία αποθηκεύτηκε στο {{filename}}",
+  "toast.session.export.success.description":
+    "Η συνεδρία αποθηκεύτηκε στο {{filename}}",
   "toast.session.export.failed.title": "Αποτυχία εξαγωγής συνεδρίας",
-  "toast.session.export.failed.description": "Παρουσιάστηκε σφάλμα κατά την εξαγωγή της συνεδρίας",
-  "toast.session.listFailed.title": "Αποτυχία φόρτωσης συνεδριών για {{project}}",
+  "toast.session.export.failed.description":
+    "Παρουσιάστηκε σφάλμα κατά την εξαγωγή της συνεδρίας",
+  "toast.session.listFailed.title":
+    "Αποτυχία φόρτωσης συνεδριών για {{project}}",
   "toast.project.reloadFailed.title": "Αποτυχία επαναφόρτωσης του {{project}}",
   "toast.update.title": "Διαθέσιμη ενημέρωση",
-  "toast.update.description": "Μια νέα έκδοση του OpenCode ({{version}}) είναι τώρα διαθέσιμη για εγκατάσταση.",
+  "toast.update.description":
+    "Μια νέα έκδοση του OpenCode ({{version}}) είναι τώρα διαθέσιμη για εγκατάσταση.",
   "toast.update.action.installRestart": "Εγκατάσταση και επανεκκίνηση",
-  "disk.accessGuidance.macos": "Χορηγήστε στο DiskLizard πλήρη πρόσβαση στον δίσκο (Full Disk Access) στις Ρυθμίσεις Συστήματος και σαρώστε ξανά.",
-  "disk.accessGuidance.windows": "Χρησιμοποιήστε λογαριασμό με πρόσβαση σε αυτόν τον δίσκο ή σαρώστε έναν φάκελο που ο λογαριασμός σας μπορεί να διαβάσει.",
-  "disk.accessGuidance.linux": "Ελέγξτε τα δικαιώματα των φακέλων και των σημείων προσάρτησης και σαρώστε ξανά.",
-  "disk.accessGuidance.default": "Ελέγξτε την πρόσβαση σε αυτούς τους φακέλους και σαρώστε ξανά.",
-  "disk.accessGuidance.rescan": "Μετά την αλλαγή της πρόσβασης χρησιμοποιήστε την Επανασάρωση στην πάνω μπάρα.",
+  "disk.accessGuidance.macos":
+    "Χορηγήστε στο DiskLizard πλήρη πρόσβαση στον δίσκο (Full Disk Access) στις Ρυθμίσεις Συστήματος και σαρώστε ξανά.",
+  "disk.accessGuidance.windows":
+    "Χρησιμοποιήστε λογαριασμό με πρόσβαση σε αυτόν τον δίσκο ή σαρώστε έναν φάκελο που ο λογαριασμός σας μπορεί να διαβάσει.",
+  "disk.accessGuidance.linux":
+    "Ελέγξτε τα δικαιώματα των φακέλων και των σημείων προσάρτησης και σαρώστε ξανά.",
+  "disk.accessGuidance.default":
+    "Ελέγξτε την πρόσβαση σε αυτούς τους φακέλους και σαρώστε ξανά.",
+  "disk.accessGuidance.rescan":
+    "Μετά την αλλαγή της πρόσβασης χρησιμοποιήστε την Επανασάρωση στην πάνω μπάρα.",
   "disk.common.rescan": "Επανασάρωση",
   "toast.update.action.notYet": "Όχι ακόμη",
-  "toast.update.installFailed.title": "Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης",
+  "toast.update.installFailed.title":
+    "Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης",
   "toast.update.installFailed.retry": "Επανάληψη",
   "error.page.title": "Κάτι πήγε στραβά",
-  "error.page.description": "Παρουσιάστηκε σφάλμα κατά τη φόρτωση της εφαρμογής.",
-  "error.page.description.localServerStartup": "Παρουσιάστηκε σφάλμα κατά την εκκίνηση του τοπικού διακομιστή.",
+  "error.page.description":
+    "Παρουσιάστηκε σφάλμα κατά τη φόρτωση της εφαρμογής.",
+  "error.page.description.localServerStartup":
+    "Παρουσιάστηκε σφάλμα κατά την εκκίνηση του τοπικού διακομιστή.",
   "error.page.details.label": "Λεπτομέρειες σφάλματος",
   "error.page.action.restart": "Επανεκκίνηση",
   "error.page.action.report": "Αναφορά σφάλματος",
@@ -662,9 +764,12 @@ export const dict = {
     "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή. Υπάρχει διακομιστής που εκτελείται στο `{{url}}`;",
   "error.serverSDK.noServerAvailable": "Δεν υπάρχει διαθέσιμος διακομιστής",
   "error.serverSDK.serverNotAvailable": "Ο διακομιστής δεν είναι διαθέσιμος",
-  "error.childStore.persistedCacheCreateFailed": "Αποτυχία δημιουργίας διαρκούς κρυφής μνήμης",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Αποτυχία δημιουργίας συνεχιζόμενων μεταδεδομένων έργου",
-  "error.childStore.persistedProjectIconCreateFailed": "Αποτυχία δημιουργίας εικονιδίου συνεχούς έργου",
+  "error.childStore.persistedCacheCreateFailed":
+    "Αποτυχία δημιουργίας διαρκούς κρυφής μνήμης",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Αποτυχία δημιουργίας συνεχιζόμενων μεταδεδομένων έργου",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Αποτυχία δημιουργίας εικονιδίου συνεχούς έργου",
   "error.childStore.storeCreateFailed": "Αποτυχία δημιουργίας καταστήματος",
   "directory.error.invalidUrl": "Μη έγκυρος κατάλογος στο URL.",
   "error.chain.unknown": "Άγνωστο σφάλμα",
@@ -676,24 +781,32 @@ export const dict = {
   "error.chain.responseBody": "Σώμα απόκρισης:\n{{body}}",
   "error.chain.didYouMean": "Μήπως εννοείτε: {{suggestions}}",
   "error.chain.modelNotFound": "Το μοντέλο δεν βρέθηκε: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Ελέγξτε τη διαμόρφωση (opencode.json) ονόματα παρόχου/μοντέλων",
+  "error.chain.checkConfig":
+    "Ελέγξτε τη διαμόρφωση (opencode.json) ονόματα παρόχου/μοντέλων",
   "error.chain.mcpFailed":
     'MCP διακομιστής "{{name}}" απέτυχε. Σημείωση, το OpenCode δεν υποστηρίζει ακόμη έλεγχο ταυτότητας MCP.',
-  "error.chain.providerAuthFailed": "Ο έλεγχος ταυτότητας παρόχου απέτυχε ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Ο έλεγχος ταυτότητας παρόχου απέτυχε ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Απέτυχε η προετοιμασία του παρόχου "{{provider}}". Ελέγξτε τα διαπιστευτήρια και τη διαμόρφωση.',
-  "error.chain.configJsonInvalid": "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο JSON(C)",
+  "error.chain.configJsonInvalid":
+    "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο JSON(C)",
   "error.chain.configJsonInvalidWithMessage":
     "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Ο κατάλογος "{{dir}}" στο {{path}} δεν είναι έγκυρος. Μετονομάστε τον κατάλογο σε "{{suggestion}}" ή καταργήστε τον. Αυτό είναι ένα συνηθισμένο τυπογραφικό λάθος.',
-  "error.chain.configFrontmatterError": "Απέτυχε η ανάλυση του frontmatter στο {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο",
-  "error.chain.configInvalidWithMessage": "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Απέτυχε η ανάλυση του frontmatter στο {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο",
+  "error.chain.configInvalidWithMessage":
+    "Το αρχείο διαμόρφωσης στο {{path}} δεν είναι έγκυρο: {{message}}",
   "notification.permission.title": "Απαιτείται άδεια",
-  "notification.permission.description": "{{sessionTitle}} στο {{projectName}} χρειάζεται άδεια",
+  "notification.permission.description":
+    "{{sessionTitle}} στο {{projectName}} χρειάζεται άδεια",
   "notification.question.title": "Ερώτηση",
-  "notification.question.description": "{{sessionTitle}} στο {{projectName}} έχει μια ερώτηση",
+  "notification.question.description":
+    "{{sessionTitle}} στο {{projectName}} έχει μια ερώτηση",
   "notification.action.goToSession": "Μετάβαση στην περίοδο λειτουργίας",
   "notification.session.responseReady.title": "Έτοιμη απάντηση",
   "notification.session.error.title": "Σφάλμα συνεδρίας",
@@ -708,11 +821,14 @@ export const dict = {
   "home.server.collapse": "Σύμπτυξη έργων διακομιστή",
   "home.server.expand": "Ανάπτυξη έργων διακομιστή",
   "home.sessions.search.placeholder": "Συνεδρίες αναζήτησης",
-  "home.sessions.search.placeholder.scoped": "Περιόδους αναζήτησης σε {{scope}}",
+  "home.sessions.search.placeholder.scoped":
+    "Περιόδους αναζήτησης σε {{scope}}",
   "home.sessions.search.sessions": "Συνεδρίες",
-  "home.sessions.search.noResults": "Δεν βρέθηκαν περίοδοι σύνδεσης για {{query}}",
+  "home.sessions.search.noResults":
+    "Δεν βρέθηκαν περίοδοι σύνδεσης για {{query}}",
   "home.sessions.empty": "Τίποτα εδώ ακόμα",
-  "home.sessions.empty.description": "Δημιουργήστε μια περίοδο λειτουργίας για να ξεκινήσετε",
+  "home.sessions.empty.description":
+    "Δημιουργήστε μια περίοδο λειτουργίας για να ξεκινήσετε",
   "home.sessions.group.today": "Σήμερα",
   "home.sessions.group.yesterday": "Χθες",
   "home.sessions.group.older": "Παλαιότερο",
@@ -727,26 +843,32 @@ export const dict = {
   "session.error.notFound.description":
     "Αυτή η καρτέλα δείχνει μια περίοδο λειτουργίας που δεν υπάρχει πλέον σε αυτόν τον διακομιστή.",
   "session.error.notFound.closeTab": "Κλείσιμο καρτέλας",
-  "session.error.serverConnection": "Δεν είναι δυνατή η σύνδεση σε αυτόν τον διακομιστή",
+  "session.error.serverConnection":
+    "Δεν είναι δυνατή η σύνδεση σε αυτόν τον διακομιστή",
   "session.review.filesChanged": "Τα αρχεία άλλαξαν {{count}}",
   "session.review.change.one": "Αλλαγή",
   "session.review.change.other": "Αλλαγές",
   "session.review.loadingChanges": "Φόρτωση αλλαγών...",
   "session.review.empty": "Δεν υπάρχουν ακόμη αλλαγές σε αυτήν τη συνεδρία",
-  "session.review.noVcs": "Δεν εντοπίστηκε σύστημα ελέγχου έκδοσης Git, οι αλλαγές δεν εμφανίζονται",
+  "session.review.noVcs":
+    "Δεν εντοπίστηκε σύστημα ελέγχου έκδοσης Git, οι αλλαγές δεν εμφανίζονται",
   "session.review.noVcs.createGit.title": "Δημιουργία αποθετηρίου Git",
-  "session.review.noVcs.createGit.description": "Παρακολούθηση, έλεγχος και αναίρεση αλλαγών σε αυτό το έργο",
-  "session.review.noVcs.createGit.actionLoading": "Δημιουργία αποθετηρίου Git...",
+  "session.review.noVcs.createGit.description":
+    "Παρακολούθηση, έλεγχος και αναίρεση αλλαγών σε αυτό το έργο",
+  "session.review.noVcs.createGit.actionLoading":
+    "Δημιουργία αποθετηρίου Git...",
   "session.review.noVcs.createGit.action": "Δημιουργία αποθετηρίου Git",
   "session.review.noSnapshot":
     "Η παρακολούθηση στιγμιότυπου είναι απενεργοποιημένη στις ρυθμίσεις παραμέτρων, επομένως οι αλλαγές περιόδου λειτουργίας δεν είναι διαθέσιμες",
   "session.review.noChanges": "Χωρίς αλλαγές",
-  "session.review.noUncommittedChanges": "Δεν υπάρχουν ακόμη μη δεσμευμένες αλλαγές",
+  "session.review.noUncommittedChanges":
+    "Δεν υπάρχουν ακόμη μη δεσμευμένες αλλαγές",
   "session.review.noBranchChanges": "Δεν υπάρχουν ακόμη αλλαγές κλάδου",
   "session.files.selectToOpen": "Επιλέξτε ένα αρχείο για άνοιγμα",
   "session.files.all": "Όλα τα αρχεία",
   "session.files.empty": "Δεν υπάρχουν αρχεία",
-  "session.files.binaryContent": "Δυαδικό αρχείο (το περιεχόμενο δεν μπορεί να εμφανιστεί)",
+  "session.files.binaryContent":
+    "Δυαδικό αρχείο (το περιεχόμενο δεν μπορεί να εμφανιστεί)",
   "session.messages.renderEarlier": "Απόδοση προηγούμενων μηνυμάτων",
   "session.messages.loadingEarlier": "Φόρτωση προηγούμενων μηνυμάτων...",
   "session.messages.loadEarlier": "Φόρτωση προηγούμενων μηνυμάτων",
@@ -840,12 +962,14 @@ export const dict = {
   "terminal.title.numbered": "Τερματικό {{number}}",
   "terminal.close": "Κλείσιμο τερματικού",
   "terminal.connectionLost.title": "Η σύνδεση χάθηκε",
-  "terminal.connectionLost.abnormalClose": "WebSocket έκλεισε ασυνήθιστα: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket έκλεισε ασυνήθιστα: {{code}}",
   "terminal.connectionLost.description":
     "Η σύνδεση τερματικού διακόπηκε. Αυτό μπορεί να συμβεί κατά την επανεκκίνηση του διακομιστή.",
   "terminal.connectTicket.csrfError":
     "PTY εισιτήριο σύνδεσης απορρίφθηκε από την προέλευση ή CSRF επιταγές. Ελέγξτε τη διαμόρφωση του διακομιστή CORS.",
-  "terminal.connectTicket.statusError": "PTY η σύνδεση εισιτηρίου απέτυχε με {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY η σύνδεση εισιτηρίου απέτυχε με {{status}}",
   "titlebar.update": "Ενημέρωση",
   "titlebar.updateVersion": "Ενημέρωση {{version}}",
   "common.closeTab": "Κλείσιμο καρτέλας",
@@ -889,8 +1013,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Ενεργοποίηση χώρων εργασίας",
   "sidebar.workspaces.disable": "Απενεργοποίηση χώρων εργασίας",
   "sidebar.gettingStarted.title": "Ξεκινώντας",
-  "sidebar.gettingStarted.line1": "OpenCode περιλαμβάνει δωρεάν μοντέλα, ώστε να μπορείτε να ξεκινήσετε αμέσως.",
-  "sidebar.gettingStarted.line2": "Συνδέστε οποιονδήποτε πάροχο για χρήση μοντέλων, inc. Claude, GPT, Gemini κ.λπ.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode περιλαμβάνει δωρεάν μοντέλα, ώστε να μπορείτε να ξεκινήσετε αμέσως.",
+  "sidebar.gettingStarted.line2":
+    "Συνδέστε οποιονδήποτε πάροχο για χρήση μοντέλων, inc. Claude, GPT, Gemini κ.λπ.",
   "sidebar.project.recentSessions": "Πρόσφατες συνεδρίες",
   "sidebar.project.viewAllSessions": "Προβολή όλων των συνεδριών",
   "sidebar.project.clearNotifications": "Διαγραφή ειδοποιήσεων",
@@ -902,7 +1028,8 @@ export const dict = {
   "debugBar.nav.tip":
     "Τελευταία ολοκληρωμένη μετάβαση διαδρομής που αγγίζει μια σελίδα συνεδρίας, μετρημένη από την έναρξη του δρομολογητή μέχρι την πρώτη βαφή μετά την καθίζηση.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Κυλιόμενα καρέ ανά δευτερόλεπτο τα τελευταία 5 δευτερόλεπτα.",
+  "debugBar.fps.tip":
+    "Κυλιόμενα καρέ ανά δευτερόλεπτο τα τελευταία 5 δευτερόλεπτα.",
   "debugBar.frame.label": "ΚΑΡΕ",
   "debugBar.frame.tip": "Χειρότερος χρόνος καρέ τα τελευταία 5 δευτερόλεπτα.",
   "debugBar.jank.label": "ΕΜΠΛΟΚΗ",
@@ -911,15 +1038,19 @@ export const dict = {
   "debugBar.long.tip":
     "Αποκλεισμένος χρόνος και πλήθος εργασιών μεγάλης διάρκειας τα τελευταία 5 δευτερόλεπτα. Μέγιστη εργασία: {{max}}.",
   "debugBar.delay.label": "ΚΑΘΥΣΤΕΡΗΣΗ",
-  "debugBar.delay.tip": "Η χειρότερη καθυστέρηση εισόδου που παρατηρήθηκε τα τελευταία 5 δευτερόλεπτα.",
+  "debugBar.delay.tip":
+    "Η χειρότερη καθυστέρηση εισόδου που παρατηρήθηκε τα τελευταία 5 δευτερόλεπτα.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Κατά προσέγγιση διάρκεια αλληλεπίδρασης τα τελευταία 5 δευτερόλεπτα. Αυτό είναι INPόπως, όχι το επίσημο Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Σωρευτική αλλαγή διάταξης για την τρέχουσα διάρκεια ζωής της εφαρμογής.",
+  "debugBar.cls.tip":
+    "Σωρευτική αλλαγή διάταξης για την τρέχουσα διάρκεια ζωής της εφαρμογής.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Χρησιμοποιημένο σωρό JS έναντι ορίου σωρού. Chromium μόνο.",
-  "debugBar.mem.tip": "Χρησιμοποιημένο σωρό JS έναντι ορίου σωρού. {{used}} από {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Χρησιμοποιημένο σωρό JS έναντι ορίου σωρού. Chromium μόνο.",
+  "debugBar.mem.tip":
+    "Χρησιμοποιημένο σωρό JS έναντι ορίου σωρού. {{used}} από {{limit}}.",
   "debugBar.focus.label": "ΕΣΤΙΑΣΗ",
   "debugBar.focus.tip": "Επιβολή στυλ εστίασης σε όλα τα διαδραστικά στοιχεία",
   "debugBar.focus.on": "ΕΝΕΡΓΟ",
@@ -936,7 +1067,8 @@ export const dict = {
   "settings.tab.shortcuts": "Συντομεύσεις",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL ενσωμάτωση",
-  "settings.desktop.wsl.description": "Εκτέλεση του διακομιστή OpenCode μέσα στο WSL στο Windows.",
+  "settings.desktop.wsl.description":
+    "Εκτέλεση του διακομιστή OpenCode μέσα στο WSL στο Windows.",
   "settings.general.section.appearance": "Εμφάνιση",
   "settings.general.section.advanced": "Για προχωρημένους",
   "settings.general.section.notifications": "Ειδοποιήσεις συστήματος",
@@ -945,31 +1077,39 @@ export const dict = {
   "settings.general.section.feed": "Ροή",
   "settings.general.section.display": "Εμφάνιση",
   "settings.general.row.language.title": "Γλώσσα",
-  "settings.general.row.language.description": "Αλλαγή της γλώσσας εμφάνισης για το OpenCode",
+  "settings.general.row.language.description":
+    "Αλλαγή της γλώσσας εμφάνισης για το OpenCode",
   "settings.general.row.shell.title": "Τερματικό κέλυφος",
-  "settings.general.row.shell.description": "Κέλυφος που χρησιμοποιείται από το τερματικό και τα εργαλεία του πράκτορα",
+  "settings.general.row.shell.description":
+    "Κέλυφος που χρησιμοποιείται από το τερματικό και τα εργαλεία του πράκτορα",
   "settings.general.row.shell.autoDefault": "Αυτόματο (Προεπιλογή)",
   "settings.general.row.shell.terminalOnly": "μόνο τερματικό",
   "settings.general.row.appearance.title": "Εμφάνιση",
-  "settings.general.row.appearance.description": "Προσαρμογή της εμφάνισης του OpenCode στη συσκευή σας",
+  "settings.general.row.appearance.description":
+    "Προσαρμογή της εμφάνισης του OpenCode στη συσκευή σας",
   "settings.general.row.colorScheme.title": "Χρωματικός συνδυασμός",
   "settings.general.row.colorScheme.description":
     "Επιλέξτε εάν το OpenCode ακολουθεί το σύστημα, το ανοιχτό ή το σκοτεινό θέμα",
   "settings.general.row.theme.title": "Θέμα",
-  "settings.general.row.theme.description": "Προσαρμογή του τρόπου με τον οποίο έχει θέμα το OpenCode.",
+  "settings.general.row.theme.description":
+    "Προσαρμογή του τρόπου με τον οποίο έχει θέμα το OpenCode.",
   "settings.general.row.font.title": "Γραμματοσειρά κώδικα",
-  "settings.general.row.font.description": "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται στα μπλοκ κώδικα",
+  "settings.general.row.font.description":
+    "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται στα μπλοκ κώδικα",
   "settings.general.row.terminalFont.title": "Τερματική γραμματοσειρά",
-  "settings.general.row.terminalFont.description": "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται στο τερματικό",
+  "settings.general.row.terminalFont.description":
+    "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται στο τερματικό",
   "settings.general.row.uiFont.title": "Γραμματοσειρά UI",
-  "settings.general.row.uiFont.description": "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται σε όλη τη διεπαφή",
+  "settings.general.row.uiFont.description":
+    "Προσαρμογή της γραμματοσειράς που χρησιμοποιείται σε όλη τη διεπαφή",
   "settings.general.row.followup.title": "Συμπεριφορά παρακολούθησης",
   "settings.general.row.followup.description":
     "Επιλέξτε εάν οι επακόλουθες προτροπές κατευθύνονται αμέσως ή περιμένετε σε μια ουρά",
   "settings.general.row.followup.option.queue": "Ουρά",
   "settings.general.row.followup.option.steer": "Καθοδήγηση",
   "settings.general.row.showFileTree.title": "Δέντρο αρχείων",
-  "settings.general.row.showFileTree.description": "Εμφάνιση του πίνακα δέντρου αρχείων σε περιόδους λειτουργίας",
+  "settings.general.row.showFileTree.description":
+    "Εμφάνιση του πίνακα δέντρου αρχείων σε περιόδους λειτουργίας",
   "settings.general.row.showNavigation.title": "Στοιχεία ελέγχου πλοήγησης",
   "settings.general.row.showNavigation.description":
     "Εμφάνιση των κουμπιών πίσω και εμπρός στη γραμμή τίτλου της επιφάνειας εργασίας",
@@ -980,47 +1120,60 @@ export const dict = {
   "settings.general.row.showTerminal.description":
     "Εμφάνιση του κουμπιού τερματικού στη γραμμή τίτλου της επιφάνειας εργασίας",
   "settings.general.row.showStatus.title": "Κατάσταση διακομιστή",
-  "settings.general.row.showStatus.description": "Εμφάνιση του κουμπιού κατάστασης διακομιστή στη γραμμή τίτλου",
+  "settings.general.row.showStatus.description":
+    "Εμφάνιση του κουμπιού κατάστασης διακομιστή στη γραμμή τίτλου",
   "settings.general.row.mobileTitlebarBottom.title": "Κάτω πλοήγηση",
   "settings.general.row.mobileTitlebarBottom.description":
     "Τοποθετήστε τη γραμμή τίτλου και τις καρτέλες περιόδου λειτουργίας στο κάτω μέρος της οθόνης στο κινητό",
   "settings.general.row.showCustomAgents.title": "Εμφάνιση πράκτορα",
   "settings.general.row.showCustomAgents.description":
     "Εναλλαγή μεταξύ πρακτόρων στον συνθέτη. Όταν είναι κρυφό, ορίζεται από προεπιλογή Build agent.",
-  "settings.general.row.reasoningSummaries.title": "Εμφάνιση περιλήψεων συλλογισμών",
-  "settings.general.row.reasoningSummaries.description": "Εμφάνιση περιλήψεων συλλογισμών μοντέλων στη γραμμή χρόνου",
-  "settings.general.row.shellToolPartsExpanded.title": "Ανάπτυξη εξαρτημάτων εργαλείου κελύφους",
+  "settings.general.row.reasoningSummaries.title":
+    "Εμφάνιση περιλήψεων συλλογισμών",
+  "settings.general.row.reasoningSummaries.description":
+    "Εμφάνιση περιλήψεων συλλογισμών μοντέλων στη γραμμή χρόνου",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Ανάπτυξη εξαρτημάτων εργαλείου κελύφους",
   "settings.general.row.shellToolPartsExpanded.description":
     "Εμφάνιση εξαρτημάτων εργαλείου κελύφους που έχουν αναπτυχθεί από προεπιλογή στη γραμμή χρόνου",
-  "settings.general.row.editToolPartsExpanded.title": "Ανάπτυξη τμημάτων εργαλείου επεξεργασίας",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Ανάπτυξη τμημάτων εργαλείου επεξεργασίας",
   "settings.general.row.editToolPartsExpanded.description":
     "Εμφάνιση τμημάτων του εργαλείου επεξεργασίας, εγγραφής και ενημέρωσης κώδικα που έχουν αναπτυχθεί από προεπιλογή στη γραμμή χρόνου",
   "settings.general.row.newInterface.title": "Νέα διάταξη",
   "settings.general.row.newInterface.badge": "Νέο",
   "settings.general.row.newInterface.description":
     "Χρησιμοποιήστε τις νέες καρτέλες και τη διάταξη του σπιτιού. Εναλλαγή μεταξύ των διατάξεων για περιορισμένο χρονικό διάστημα.",
-  "settings.general.row.newInterfaceNotice.title": "Χρησιμοποιείτε τώρα νέα διάταξη",
-  "settings.general.row.newInterfaceNotice.description": "Η προηγούμενη διάταξη δεν είναι πλέον διαθέσιμη",
+  "settings.general.row.newInterfaceNotice.title":
+    "Χρησιμοποιείτε τώρα νέα διάταξη",
+  "settings.general.row.newInterfaceNotice.description":
+    "Η προηγούμενη διάταξη δεν είναι πλέον διαθέσιμη",
   "settings.general.row.newInterfaceNotice.dismiss": "Παράβλεψη",
   "settings.general.row.pinchZoom.title": "Τσιμπήστε για μεγέθυνση",
   "settings.general.row.pinchZoom.description":
     "Να επιτρέπεται η μεγέθυνση των χειρονομιών τσιμπήματος και κύλισης Ctrl",
   "settings.general.row.wayland.title": "Χρήση εγγενούς Wayland",
-  "settings.general.row.wayland.description": "Απενεργοποίηση εναλλακτικού X11 στο Wayland. Απαιτείται επανεκκίνηση.",
+  "settings.general.row.wayland.description":
+    "Απενεργοποίηση εναλλακτικού X11 στο Wayland. Απαιτείται επανεκκίνηση.",
   "settings.general.row.wayland.tooltip":
     "Σε Linux με μικτές οθόνες ρυθμού ανανέωσης, το εγγενές Wayland μπορεί να είναι πιο σταθερό.",
   "settings.general.row.releaseNotes.title": "Σημειώσεις έκδοσης",
-  "settings.general.row.releaseNotes.description": "Εμφάνιση αναδυόμενων παραθύρων για τα νέα μετά από ενημερώσεις",
-  "settings.updates.row.startup.title": "Έλεγχος για ενημερώσεις κατά την εκκίνηση",
-  "settings.updates.row.startup.description": "Αυτόματος έλεγχος για ενημερώσεις κατά την εκκίνηση του OpenCode",
+  "settings.general.row.releaseNotes.description":
+    "Εμφάνιση αναδυόμενων παραθύρων για τα νέα μετά από ενημερώσεις",
+  "settings.updates.row.startup.title":
+    "Έλεγχος για ενημερώσεις κατά την εκκίνηση",
+  "settings.updates.row.startup.description":
+    "Αυτόματος έλεγχος για ενημερώσεις κατά την εκκίνηση του OpenCode",
   "settings.updates.row.check.title": "Έλεγχος για ενημερώσεις",
-  "settings.updates.row.check.description": "Ελέγξτε μη αυτόματα για ενημερώσεις και εγκαταστήστε εάν είναι διαθέσιμες",
+  "settings.updates.row.check.description":
+    "Ελέγξτε μη αυτόματα για ενημερώσεις και εγκαταστήστε εάν είναι διαθέσιμες",
   "settings.updates.action.checkNow": "Έλεγχος τώρα",
   "settings.updates.action.checking": "Έλεγχος...",
   "settings.updates.action.downloading": "Λήψη...",
   "settings.updates.action.installing": "Εγκατάσταση...",
   "settings.updates.toast.latest.title": "Είστε ενημερωμένοι",
-  "settings.updates.toast.latest.description": "Εκτελείτε την πιο πρόσφατη έκδοση του OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Εκτελείτε την πιο πρόσφατη έκδοση του OpenCode.",
   "sound.option.none": "Κανένα",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1071,21 +1224,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Εμφάνιση ειδοποίησης συστήματος όταν ο πράκτορας είναι πλήρης ή χρειάζεται προσοχή",
   "settings.general.notifications.permissions.title": "Δικαιώματα",
-  "settings.general.notifications.permissions.description": "Εμφάνιση ειδοποίησης συστήματος όταν απαιτείται άδεια",
+  "settings.general.notifications.permissions.description":
+    "Εμφάνιση ειδοποίησης συστήματος όταν απαιτείται άδεια",
   "settings.general.notifications.errors.title": "Σφάλματα",
-  "settings.general.notifications.errors.description": "Εμφάνιση ειδοποίησης συστήματος όταν παρουσιαστεί σφάλμα",
+  "settings.general.notifications.errors.description":
+    "Εμφάνιση ειδοποίησης συστήματος όταν παρουσιαστεί σφάλμα",
   "settings.general.sounds.agent.title": "Πράκτορας",
-  "settings.general.sounds.agent.description": "Αναπαραγωγή ήχου όταν ο πράκτορας είναι πλήρης ή χρειάζεται προσοχή",
+  "settings.general.sounds.agent.description":
+    "Αναπαραγωγή ήχου όταν ο πράκτορας είναι πλήρης ή χρειάζεται προσοχή",
   "settings.general.sounds.permissions.title": "Δικαιώματα",
-  "settings.general.sounds.permissions.description": "Αναπαραγωγή ήχου όταν απαιτείται άδεια",
+  "settings.general.sounds.permissions.description":
+    "Αναπαραγωγή ήχου όταν απαιτείται άδεια",
   "settings.general.sounds.errors.title": "Σφάλματα",
-  "settings.general.sounds.errors.description": "Αναπαραγωγή ήχου όταν παρουσιαστεί σφάλμα",
+  "settings.general.sounds.errors.description":
+    "Αναπαραγωγή ήχου όταν παρουσιαστεί σφάλμα",
   "settings.shortcuts.title": "Συντομεύσεις πληκτρολογίου",
   "settings.shortcuts.reset.button": "Επαναφορά στις προεπιλογές",
   "settings.shortcuts.reset.toast.title": "Επαναφορά συντομεύσεων",
-  "settings.shortcuts.reset.toast.description": "Οι συντομεύσεις πληκτρολογίου έχουν επαναφερθεί στις προεπιλογές.",
+  "settings.shortcuts.reset.toast.description":
+    "Οι συντομεύσεις πληκτρολογίου έχουν επαναφερθεί στις προεπιλογές.",
   "settings.shortcuts.conflict.title": "Η συντόμευση χρησιμοποιείται ήδη",
-  "settings.shortcuts.conflict.description": "{{keybind}} έχει ήδη εκχωρηθεί στο {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} έχει ήδη εκχωρηθεί στο {{titles}}.",
   "settings.shortcuts.unassigned": "Μη εκχωρημένο",
   "settings.shortcuts.pressKeys": "Πατήστε τα πλήκτρα",
   "settings.shortcuts.search.placeholder": "Συντομεύσεις αναζήτησης",
@@ -1097,42 +1257,55 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Τερματικό",
   "settings.shortcuts.group.prompt": "Προτροπή",
   "settings.providers.title": "Παρόχοι",
-  "settings.providers.description": "Οι ρυθμίσεις παρόχου θα μπορούν να διαμορφωθούν εδώ.",
+  "settings.providers.description":
+    "Οι ρυθμίσεις παρόχου θα μπορούν να διαμορφωθούν εδώ.",
   "settings.providers.section.connected": "Συνδεδεμένοι πάροχοι",
   "settings.providers.connected.empty": "Δεν υπάρχουν συνδεδεμένοι πάροχοι",
-  "settings.providers.connected.environmentDescription": "Συνδέθηκε από τις μεταβλητές περιβάλλοντος",
+  "settings.providers.connected.environmentDescription":
+    "Συνδέθηκε από τις μεταβλητές περιβάλλοντος",
   "settings.providers.section.popular": "Δημοφιλείς πάροχοι",
-  "settings.providers.custom.description": "Προσθήκη παρόχου συμβατού με OpenAI κατά βάση URL.",
+  "settings.providers.custom.description":
+    "Προσθήκη παρόχου συμβατού με OpenAI κατά βάση URL.",
   "settings.providers.tag.environment": "Περιβάλλον",
   "settings.providers.tag.config": "Ρύθμιση",
   "settings.providers.tag.custom": "Προσαρμοσμένο",
   "settings.providers.tag.other": "Άλλο",
   "settings.models.title": "Μοντέλα",
-  "settings.models.description": "Οι ρυθμίσεις μοντέλου μπορούν να διαμορφωθούν εδώ.",
+  "settings.models.description":
+    "Οι ρυθμίσεις μοντέλου μπορούν να διαμορφωθούν εδώ.",
   "settings.agents.title": "Πράκτορες",
-  "settings.agents.description": "Οι ρυθμίσεις πρακτόρων μπορούν να διαμορφωθούν εδώ.",
+  "settings.agents.description":
+    "Οι ρυθμίσεις πρακτόρων μπορούν να διαμορφωθούν εδώ.",
   "settings.commands.title": "Εντολές",
-  "settings.commands.description": "Οι ρυθμίσεις εντολών θα μπορούν να διαμορφωθούν εδώ.",
+  "settings.commands.description":
+    "Οι ρυθμίσεις εντολών θα μπορούν να διαμορφωθούν εδώ.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "MCP οι ρυθμίσεις θα μπορούν να διαμορφωθούν εδώ.",
+  "settings.mcp.description":
+    "MCP οι ρυθμίσεις θα μπορούν να διαμορφωθούν εδώ.",
   "settings.permissions.title": "Δικαιώματα",
-  "settings.permissions.description": "Ελέγξτε ποια εργαλεία μπορεί να χρησιμοποιήσει ο διακομιστής από προεπιλογή.",
+  "settings.permissions.description":
+    "Ελέγξτε ποια εργαλεία μπορεί να χρησιμοποιήσει ο διακομιστής από προεπιλογή.",
   "settings.permissions.section.tools": "Εργαλεία",
-  "settings.permissions.toast.updateFailed.title": "Αποτυχία ενημέρωσης δικαιωμάτων",
+  "settings.permissions.toast.updateFailed.title":
+    "Αποτυχία ενημέρωσης δικαιωμάτων",
   "settings.permissions.action.allow": "Να επιτρέπεται",
   "settings.permissions.action.ask": "Ρωτήστε",
   "settings.permissions.action.deny": "Απόρριψη",
   "settings.permissions.tool.read.title": "Διαβάστε",
-  "settings.permissions.tool.read.description": "Ανάγνωση αρχείου (ταιριάζει με τη διαδρομή αρχείου)",
+  "settings.permissions.tool.read.description":
+    "Ανάγνωση αρχείου (ταιριάζει με τη διαδρομή αρχείου)",
   "settings.permissions.tool.edit.title": "Επεξεργασία",
   "settings.permissions.tool.edit.description":
     "Τροποποίηση αρχείων, συμπεριλαμβανομένων επεξεργασιών, εγγραφών και ενημερώσεων κώδικα",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Αντιστοιχία αρχείων με χρήση μοτίβων σφαιρών",
+  "settings.permissions.tool.glob.description":
+    "Αντιστοιχία αρχείων με χρήση μοτίβων σφαιρών",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Αναζήτηση περιεχομένων αρχείου με χρήση κανονικών εκφράσεων",
+  "settings.permissions.tool.grep.description":
+    "Αναζήτηση περιεχομένων αρχείου με χρήση κανονικών εκφράσεων",
   "settings.permissions.tool.list.title": "Λίστα",
-  "settings.permissions.tool.list.description": "Λίστα αρχείων σε έναν κατάλογο",
+  "settings.permissions.tool.list.description":
+    "Λίστα αρχείων σε έναν κατάλογο",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Εκτέλεση εντολών κελύφους",
   "settings.permissions.tool.task.title": "Εργασία",
@@ -1140,17 +1313,22 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Ικανότητα",
   "settings.permissions.tool.skill.description": "Φόρτωση δεξιότητας με όνομα",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Ερωτήματα διακομιστή γλώσσας εκτέλεσης",
+  "settings.permissions.tool.lsp.description":
+    "Ερωτήματα διακομιστή γλώσσας εκτέλεσης",
   "settings.permissions.tool.todowrite.title": "Todo Write",
-  "settings.permissions.tool.todowrite.description": "Ενημέρωση της λίστας εργασιών",
+  "settings.permissions.tool.todowrite.description":
+    "Ενημέρωση της λίστας εργασιών",
   "settings.permissions.tool.webfetch.title": "Λήψη Ιστού",
-  "settings.permissions.tool.webfetch.description": "Λήψη περιεχομένου από ένα URL",
+  "settings.permissions.tool.webfetch.description":
+    "Λήψη περιεχομένου από ένα URL",
   "settings.permissions.tool.websearch.title": "Αναζήτηση Ιστού",
   "settings.permissions.tool.websearch.description": "Αναζήτηση στον Ιστό",
   "settings.permissions.tool.external_directory.title": "Εξωτερικός κατάλογος",
-  "settings.permissions.tool.external_directory.description": "Πρόσβαση σε αρχεία εκτός του καταλόγου του έργου",
+  "settings.permissions.tool.external_directory.description":
+    "Πρόσβαση σε αρχεία εκτός του καταλόγου του έργου",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Εντοπισμός επαναλαμβανόμενων κλήσεων εργαλείου με ίδια είσοδο",
+  "settings.permissions.tool.doom_loop.description":
+    "Εντοπισμός επαναλαμβανόμενων κλήσεων εργαλείου με ίδια είσοδο",
   "session.delete.failed.title": "Αποτυχία διαγραφής συνεδρίας",
   "session.delete.title": "Διαγραφή συνεδρίας",
   "session.delete.confirm": 'Διαγραφή συνεδρίας "{{name}}";',
@@ -1164,12 +1342,14 @@ export const dict = {
   "workspace.resetting.description": "Αυτό μπορεί να διαρκέσει ένα λεπτό.",
   "workspace.reset.failed.title": "Αποτυχία επαναφοράς του χώρου εργασίας",
   "workspace.reset.success.title": "Επαναφορά χώρου εργασίας",
-  "workspace.reset.success.description": "Ο χώρος εργασίας αντιστοιχεί πλέον στον προεπιλεγμένο κλάδο.",
+  "workspace.reset.success.description":
+    "Ο χώρος εργασίας αντιστοιχεί πλέον στον προεπιλεγμένο κλάδο.",
   "workspace.error.stillPreparing": "Ο χώρος εργασίας προετοιμάζεται ακόμη",
   "workspace.status.checking": "Έλεγχος για μη συγχωνευμένες αλλαγές...",
   "workspace.status.error": "Δεν είναι δυνατή η επαλήθευση της κατάστασης git.",
   "workspace.status.clean": "Δεν εντοπίστηκαν μη συγχωνευμένες αλλαγές.",
-  "workspace.status.dirty": "Εντοπίστηκαν μη συγχωνευμένες αλλαγές σε αυτόν τον χώρο εργασίας.",
+  "workspace.status.dirty":
+    "Εντοπίστηκαν μη συγχωνευμένες αλλαγές σε αυτόν τον χώρο εργασίας.",
   "workspace.delete.title": "Διαγραφή χώρου εργασίας",
   "workspace.delete.confirm": 'Διαγραφή χώρου εργασίας "{{name}}";',
   "workspace.delete.button": "Διαγραφή χώρου εργασίας",
@@ -1178,7 +1358,9 @@ export const dict = {
   "workspace.reset.button": "Επαναφορά χώρου εργασίας",
   "workspace.reset.archived.none": "Δεν θα αρχειοθετηθούν ενεργές συνεδρίες.",
   "workspace.reset.archived.one": "Θα αρχειοθετηθεί 1 συνεδρία.",
-  "workspace.reset.archived.many": "{{count}} θα αρχειοθετηθούν οι περίοδοι σύνδεσης.",
-  "workspace.reset.note": "Αυτό θα επαναφέρει τον χώρο εργασίας ώστε να ταιριάζει με τον προεπιλεγμένο κλάδο.",
+  "workspace.reset.archived.many":
+    "{{count}} θα αρχειοθετηθούν οι περίοδοι σύνδεσης.",
+  "workspace.reset.note":
+    "Αυτό θα επαναφέρει τον χώρο εργασίας ώστε να ταιριάζει με τον προεπιλεγμένο κλάδο.",
   "dialog.usageExceeded.dontShowAgain": "Να μην εμφανιστεί ξανά",
 }

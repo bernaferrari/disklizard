@@ -1,7 +1,11 @@
 import { expect, test } from "bun:test"
 import { withoutCollected } from "./collection-map"
 import type { DiskScanNode } from "./types"
-const node = (path: string, size: number, children: DiskScanNode[] = []): DiskScanNode => ({path, name: path, size, children, isDir: true, ext: ""})
+const node = (
+  path: string,
+  size: number,
+  children: DiskScanNode[] = []
+): DiskScanNode => ({ path, name: path, size, children, isDir: true, ext: "" })
 test("drag projection subtracts descendants once and cancellation restores the original scan", () => {
   const child = node("/a/b", 20)
   const sibling = node("/c", 30)

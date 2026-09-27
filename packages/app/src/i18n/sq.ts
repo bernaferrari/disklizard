@@ -44,13 +44,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Ndani komentet",
   "desktop.menu.reportBug": "Raportoni një gabim",
   "desktop.menu.ariaLabel": "Menuja OpenCode",
-  "desktop.updater.dialog.checkFailed.message": "Kontrolli i përditësimit dështoi.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Kontrolli i përditësimit dështoi.",
   "desktop.updater.dialog.checkFailed.title": "Gabim i përditësimit",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Ju jeni të përditësuar.",
   "desktop.updater.dialog.upToDate.title": "Nuk ka përditësime",
-  "desktop.updater.dialog.ready.message": "Përditësimi {{version}} u shkarkua. Të riniset tani?",
+  "desktop.updater.dialog.ready.message":
+    "Përditësimi {{version}} u shkarkua. Të riniset tani?",
   "desktop.updater.dialog.ready.title": "Përditësimi gati",
   "desktop.updater.dialog.restart": "Rinis",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +67,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode nuk po përgjigjet",
   "desktop.recovery.unresponsive.detail":
     "Mund ta rinisni aplikacionin, të hapni regjistrat ose të vazhdoni të prisni.",
-  "desktop.recovery.loadFailed.detail": "Dritarja: {{window}}\nURL: {{url}}\nGabim: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Dritarja: {{window}}\nArsyeja: {{reason}}\nKodi: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Dritarja: {{window}}\nURL: {{url}}\nGabim: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Dritarja: {{window}}\nArsyeja: {{reason}}\nKodi: {{code}}",
   "desktop.recovery.unknown": "<i panjohur>",
   "desktop.dialog.chooseFolder": "Zgjidhni një dosje",
   "desktop.dialog.chooseFile": "Zgjidhni një skedar",
@@ -74,27 +79,37 @@ export const dict = {
   "desktop.server.local": "Server lokal",
   "desktop.wsl.error.windowsOnly": "WSL disponohet vetëm në Windows",
   "desktop.wsl.error.unavailable": "WSL është i padisponueshëm",
-  "desktop.wsl.error.listInstalled": "Lista e shpërndarjeve të instaluara WSL dështoi",
+  "desktop.wsl.error.listInstalled":
+    "Lista e shpërndarjeve të instaluara WSL dështoi",
   "desktop.wsl.error.listOnline": "Lista e shpërndarjeve në linjë WSL dështoi",
-  "desktop.wsl.error.executeDistro": "Nuk mund të ekzekutohen komandat në distro",
+  "desktop.wsl.error.executeDistro":
+    "Nuk mund të ekzekutohen komandat në distro",
   "desktop.wsl.error.installWsl": "Instalimi i WSL dështoi",
-  "desktop.wsl.error.installDistro": "Instalimi i shpërndarjes dështoi: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Instalimi i shpërndarjes dështoi: {{distro}}",
   "desktop.wsl.error.installOpencode": "Instalimi i OpenCode dështoi",
   "desktop.wsl.error.alreadyAdded": "{{distro}} është shtuar tashmë",
-  "desktop.wsl.error.opencodeMissing": "Opencode nuk është i instaluar në këtë shpërndarje",
-  "desktop.wsl.error.opencodeCannotRun": "Opencode është instaluar por nuk mund të ekzekutohet",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode nuk është i instaluar në {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "Opencode nuk është i instaluar në këtë shpërndarje",
+  "desktop.wsl.error.opencodeCannotRun":
+    "Opencode është instaluar por nuk mund të ekzekutohet",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode nuk është i instaluar në {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Përditësimi i OpenCode përfundoi, por {{distro}} ende raporton {{installed}}; pritet {{expected}}",
   "desktop.wsl.error.noVersion": "asnjë version",
-  "desktop.wsl.error.serverExited": "Serveri WSL doli pas nisjes (kodi={{code}} sinjal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Serveri WSL doli pas nisjes (kodi={{code}} sinjal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Serveri WSL doli përpara se të bëhej i shëndetshëm (kodi={{code}} sinjal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Makina anësore për kontrollin shëndetësor të {{distro}} mbaroi pas {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} skadoi pas {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Makina anësore për kontrollin shëndetësor të {{distro}} mbaroi pas {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} skadoi pas {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Dështoi në marrjen e portit",
   "desktop.picker.error.notSelected": "Skedari nuk u zgjodh nga zgjedhësi",
-  "desktop.picker.error.sizeLimit": "Bashkëngjitjet e zgjedhura tejkalojnë kufirin {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Bashkëngjitjet e zgjedhura tejkalojnë kufirin {{limit}} MB",
   "command.category.suggested": "Sugjeruar",
   "command.category.view": "Shiko",
   "command.category.project": "Projekti",
@@ -141,7 +156,8 @@ export const dict = {
   "command.tab.close": "Mbyll skedën",
   "command.tab.reopenClosed": "Rihap skedën e mbyllur",
   "command.context.addSelection": "Shtoni përzgjedhjen në kontekst",
-  "command.context.addSelection.description": "Shtoni linjat e zgjedhura nga skedari aktual",
+  "command.context.addSelection.description":
+    "Shtoni linjat e zgjedhura nga skedari aktual",
   "command.input.focus": "Fokusoni hyrjen",
   "command.terminal.toggle": "Ndrysho terminalin",
   "command.fileTree.toggle": "Ndrysho pemën e skedarit",
@@ -149,9 +165,11 @@ export const dict = {
   "command.terminal.new": "Terminali i ri",
   "command.terminal.new.description": "Krijo një skedë të re terminali",
   "command.steps.toggle": "Ndrysho hapat",
-  "command.steps.toggle.description": "Shfaq ose fshih hapat për mesazhin aktual",
+  "command.steps.toggle.description":
+    "Shfaq ose fshih hapat për mesazhin aktual",
   "command.message.previous": "Mesazhi i mëparshëm",
-  "command.message.previous.description": "Shkoni te mesazhi i mëparshëm i përdoruesit",
+  "command.message.previous.description":
+    "Shkoni te mesazhi i mëparshëm i përdoruesit",
   "command.message.next": "Mesazhi i radhës",
   "command.message.next.description": "Shkoni te mesazhi tjetër i përdoruesit",
   "command.model.choose": "Zgjidhni modelin",
@@ -163,27 +181,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Agjenti i mëparshëm",
   "command.agent.cycle.reverse.description": "Kalo te agjenti i mëparshëm",
   "command.model.variant.cycle": "Niveli tjetër i arsyetimit",
-  "command.model.variant.cycle.description": "Kalo në nivelin tjetër të përpjekjes",
+  "command.model.variant.cycle.description":
+    "Kalo në nivelin tjetër të përpjekjes",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Kërkesë",
   "command.permissions.autoaccept.enable": "Prano automatikisht lejet",
-  "command.permissions.autoaccept.disable": "Ndalo pranimin automatik të lejeve",
+  "command.permissions.autoaccept.disable":
+    "Ndalo pranimin automatik të lejeve",
   "command.workspace.toggle": "Ndrysho hapësirat e punës",
-  "command.workspace.toggle.description": "Aktivizo ose çaktivizo shumë hapësira pune në shiritin anësor",
+  "command.workspace.toggle.description":
+    "Aktivizo ose çaktivizo shumë hapësira pune në shiritin anësor",
   "command.session.undo": "Zhbër",
   "command.session.undo.description": "Zhbër mesazhin e fundit",
   "command.session.redo": "Ribëje",
   "command.session.redo.description": "Ribërë mesazhin e fundit të zhbërë",
   "command.session.compact": "Sesion kompakt",
-  "command.session.compact.description": "Përmblidhni seancën për të zvogëluar madhësinë e kontekstit",
+  "command.session.compact.description":
+    "Përmblidhni seancën për të zvogëluar madhësinë e kontekstit",
   "command.session.fork": "Fork nga mesazhi",
-  "command.session.fork.description": "Krijoni një seancë të re nga një mesazh i mëparshëm",
+  "command.session.fork.description":
+    "Krijoni një seancë të re nga një mesazh i mëparshëm",
   "command.session.share": "Ndani seancën",
-  "command.session.share.description": "Ndani këtë sesion dhe kopjoni URL në kujtesën e fragmenteve",
+  "command.session.share.description":
+    "Ndani këtë sesion dhe kopjoni URL në kujtesën e fragmenteve",
   "command.session.unshare": "Anulo ndarjen e seancës",
   "command.session.unshare.description": "Ndalo ndarjen e këtij sesioni",
   "command.session.export": "Sesioni i eksportit",
-  "command.session.export.description": "Eksporto transkriptin e plotë të sesionit si JSON",
+  "command.session.export.description":
+    "Eksporto transkriptin e plotë të sesionit si JSON",
   "palette.search.placeholder": "Kërkoni skedarë, komanda dhe sesione",
   "palette.search.placeholder.home": "Kërko komandat dhe seancat",
   "palette.empty": "Nuk u gjet asnjë rezultat",
@@ -193,30 +218,43 @@ export const dict = {
   "dialog.provider.empty": "Nuk u gjet asnjë ofrues",
   "dialog.provider.group.popular": "Popullore",
   "dialog.provider.group.other": "Të tjera",
-  "dialog.provider.custom.label": "Ofrues i personalizuar i përputhshëm me OpenAI",
+  "dialog.provider.custom.label":
+    "Ofrues i personalizuar i përputhshëm me OpenAI",
   "dialog.provider.tag.recommended": "Rekomanduar",
-  "dialog.provider.opencode.note": "Modele të kuruara duke përfshirë Claude, GPT, Gemini dhe më shumë",
+  "dialog.provider.opencode.note":
+    "Modele të kuruara duke përfshirë Claude, GPT, Gemini dhe më shumë",
   "dialog.provider.opencode.tagline": "Modele të besueshme të optimizuara",
   "dialog.provider.opencodeGo.tagline": "Abonim me kosto të ulët për të gjithë",
-  "dialog.provider.anthropic.note": "Qasje e drejtpërdrejtë në modelet Claude, duke përfshirë Pro dhe Max",
-  "dialog.provider.copilot.note": "Modele të AI për ndihmë kodimi përmes GitHub Copilot",
-  "dialog.provider.openai.note": "Modelet GPT për detyra të shpejta dhe të afta të përgjithshme të AI",
-  "dialog.provider.google.note": "Modele Gemini për përgjigje të shpejta dhe të strukturuara",
-  "dialog.provider.openrouter.note": "Hyni në të gjitha modelet e mbështetura nga një ofrues",
-  "dialog.provider.vercel.note": "Qasje e unifikuar në modelet e AI me rrugëzim inteligjent",
+  "dialog.provider.anthropic.note":
+    "Qasje e drejtpërdrejtë në modelet Claude, duke përfshirë Pro dhe Max",
+  "dialog.provider.copilot.note":
+    "Modele të AI për ndihmë kodimi përmes GitHub Copilot",
+  "dialog.provider.openai.note":
+    "Modelet GPT për detyra të shpejta dhe të afta të përgjithshme të AI",
+  "dialog.provider.google.note":
+    "Modele Gemini për përgjigje të shpejta dhe të strukturuara",
+  "dialog.provider.openrouter.note":
+    "Hyni në të gjitha modelet e mbështetura nga një ofrues",
+  "dialog.provider.vercel.note":
+    "Qasje e unifikuar në modelet e AI me rrugëzim inteligjent",
   "dialog.model.select.title": "Zgjidhni modelin",
   "dialog.model.search.placeholder": "Kërko modele",
   "dialog.model.empty": "Asnjë rezultat modeli",
   "dialog.model.manage": "Menaxhoni modelet",
-  "dialog.model.manage.description": "Personalizo cilat modele shfaqen në përzgjedhësin e modelit.",
-  "dialog.model.manage.provider.toggle": "Ndrysho të gjitha modelet {{provider}}",
-  "dialog.model.unpaid.freeModels.title": "Modele falas të ofruara nga OpenCode",
-  "dialog.model.unpaid.addMore.title": "Shtoni më shumë modele nga ofruesit e njohur",
+  "dialog.model.manage.description":
+    "Personalizo cilat modele shfaqen në përzgjedhësin e modelit.",
+  "dialog.model.manage.provider.toggle":
+    "Ndrysho të gjitha modelet {{provider}}",
+  "dialog.model.unpaid.freeModels.title":
+    "Modele falas të ofruara nga OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Shtoni më shumë modele nga ofruesit e njohur",
   "dialog.model.unpaid.viewMoreProviders": "Shiko mbi 70 ofrues të tjerë",
   "dialog.provider.viewAll": "Shfaq më shumë ofrues",
   "provider.connect.title": "Lidhni {{provider}}",
   "provider.connect.title.anthropicProMax": "Hyni me Claude Pro/Max",
-  "provider.connect.selectMethod": "Zgjidhni metodën e hyrjes për {{provider}}.",
+  "provider.connect.selectMethod":
+    "Zgjidhni metodën e hyrjes për {{provider}}.",
   "provider.connect.method.apiKey": "Tasti API",
   "provider.connect.method.browser": "Shfletuesi",
   "provider.connect.method.headless": "Pa kokë",
@@ -234,7 +272,8 @@ export const dict = {
     "Me një çelës të vetëm API do të keni akses në modele të tilla si Claude, GPT, Gemini, GLM dhe më shumë.",
   "provider.connect.opencodeZen.visit.prefix": "Vizitoni ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " për të mbledhur çelësin tuaj API.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " për të mbledhur çelësin tuaj API.",
   "provider.connect.oauth.code.visit.prefix": "Vizitoni ",
   "provider.connect.oauth.code.visit.link": "kjo lidhje",
   "provider.connect.oauth.code.visit.suffix":
@@ -249,22 +288,27 @@ export const dict = {
     " dhe futni kodin më poshtë për të lidhur llogarinë tuaj dhe për të përdorur modelet {{provider}} në OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Kodi i konfirmimit",
   "provider.connect.toast.connected.title": "{{provider}} i lidhur",
-  "provider.connect.toast.connected.description": "Modelet {{provider}} tani janë në dispozicion për t'u përdorur.",
+  "provider.connect.toast.connected.description":
+    "Modelet {{provider}} tani janë në dispozicion për t'u përdorur.",
   "provider.custom.title": "Ofruesi i personalizuar",
-  "provider.custom.unavailable": "Ofruesit e personalizuar nuk janë të disponueshëm në këtë server",
-  "provider.custom.description.prefix": "Konfiguro një ofrues të pajtueshëm me OpenAI. Shihni ",
+  "provider.custom.unavailable":
+    "Ofruesit e personalizuar nuk janë të disponueshëm në këtë server",
+  "provider.custom.description.prefix":
+    "Konfiguro një ofrues të pajtueshëm me OpenAI. Shihni ",
   "provider.custom.description.link": "dokumentet e konfigurimit të ofruesit",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID e ofruesit",
   "provider.custom.field.providerID.placeholder": "ofruesi im",
-  "provider.custom.field.providerID.description": "Shkronjat e vogla, numrat, vizat vijuese ose nënvizat",
+  "provider.custom.field.providerID.description":
+    "Shkronjat e vogla, numrat, vizat vijuese ose nënvizat",
   "provider.custom.field.name.label": "Emri i shfaqur",
   "provider.custom.field.name.placeholder": "Ofruesi im i AI",
   "provider.custom.field.baseURL.label": "Baza URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "Tasti API",
   "provider.custom.field.apiKey.placeholder": "Tasti API",
-  "provider.custom.field.apiKey.description": "Fakultative. Lëreni bosh nëse menaxhoni auth nëpërmjet titujve.",
+  "provider.custom.field.apiKey.description":
+    "Fakultative. Lëreni bosh nëse menaxhoni auth nëpërmjet titujve.",
   "provider.custom.models.label": "Modelet",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -280,15 +324,19 @@ export const dict = {
   "provider.custom.headers.remove": "Hiq kokën",
   "provider.custom.headers.add": "Shto kokën",
   "provider.custom.error.providerID.required": "Kërkohet ID e ofruesit",
-  "provider.custom.error.providerID.format": "Përdorni shkronja të vogla, numra, viza ose nënvizime",
-  "provider.custom.error.providerID.exists": "Ajo ID e ofruesit ekziston tashmë",
+  "provider.custom.error.providerID.format":
+    "Përdorni shkronja të vogla, numra, viza ose nënvizime",
+  "provider.custom.error.providerID.exists":
+    "Ajo ID e ofruesit ekziston tashmë",
   "provider.custom.error.name.required": "Kërkohet emri i shfaqur",
   "provider.custom.error.baseURL.required": "Kërkohet baza URL",
-  "provider.custom.error.baseURL.format": "Duhet të fillojë me http:// ose https://",
+  "provider.custom.error.baseURL.format":
+    "Duhet të fillojë me http:// ose https://",
   "provider.custom.error.required": "E detyrueshme",
   "provider.custom.error.duplicate": "Dublikatë",
   "provider.disconnect.toast.disconnected.title": "{{provider}} u shkëput",
-  "provider.disconnect.toast.disconnected.description": "Modelet {{provider}} nuk janë më të disponueshme.",
+  "provider.disconnect.toast.disconnected.description":
+    "Modelet {{provider}} nuk janë më të disponueshme.",
   "model.tag.free": "Falas",
   "model.tag.latest": "E fundit",
   "model.provider.anthropic": "Anthropic",
@@ -386,7 +434,8 @@ export const dict = {
     "Këtu mund të bashkëngjiten vetëm imazhe, skedarë PDF ose skedarë teksti.",
   "prompt.toast.attachmentDuplicate.title": "Ky skedar tashmë është ngarkuar",
   "prompt.toast.modelAgentRequired.title": "Zgjidhni një agjent dhe model",
-  "prompt.toast.modelAgentRequired.description": "Zgjidhni një agjent dhe model përpara se të dërgoni një kërkesë.",
+  "prompt.toast.modelAgentRequired.description":
+    "Zgjidhni një agjent dhe model përpara se të dërgoni një kërkesë.",
   "prompt.toast.worktreeCreateFailed.title": "Krijimi i pemës së punës dështoi",
   "prompt.toast.sessionCreateFailed.title": "Krijimi i sesionit dështoi",
   "prompt.toast.shellSendFailed.title": "Dërgimi i komandës së predhës dështoi",
@@ -415,7 +464,8 @@ export const dict = {
   "app.server.retrying": "Po riprovohet automatikisht...",
   "app.server.otherServers": "Serverë të tjerë",
   "dialog.server.title": "Serverat",
-  "dialog.server.description": "Ndrysho me cilin server OpenCode lidhet ky aplikacion.",
+  "dialog.server.description":
+    "Ndrysho me cilin server OpenCode lidhet ky aplikacion.",
   "dialog.server.search.placeholder": "Kërko serverët",
   "dialog.server.empty": "Ende nuk ka serverë",
   "dialog.server.add.title": "Shto server",
@@ -453,7 +503,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Zgjidhni shpërndarjen",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Po kontrollon WSL...",
-  "wsl.onboarding.restartRequired": "Windows ka nevojë për një rinisje për të përfunduar instalimin e WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows ka nevojë për një rinisje për të përfunduar instalimin e WSL.",
   "wsl.onboarding.ready": "WSL është gati.",
   "wsl.onboarding.required": "WSL kërkohet për të vazhduar.",
   "wsl.onboarding.checkingDistros": "Po kontrollon shpërndarjet...",
@@ -462,13 +513,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Listimi i shpërndarjeve...",
   "wsl.onboarding.distroReady": "{{distro}} është gati.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} nuk është instaluar ende.",
-  "wsl.onboarding.openDistroOnce": "Hap {{distro}} një herë për të përfunduar konfigurimin.",
+  "wsl.onboarding.openDistroOnce":
+    "Hap {{distro}} një herë për të përfunduar konfigurimin.",
   "wsl.onboarding.finishingDistro": "Përfundimi i konfigurimit për {{distro}}.",
-  "wsl.onboarding.pickDistro": "Zgjidh një shpërndarje ose instalo një më poshtë.",
+  "wsl.onboarding.pickDistro":
+    "Zgjidh një shpërndarje ose instalo një më poshtë.",
   "wsl.onboarding.checkingOpencode": "Po kontrollon OpenCode...",
-  "wsl.onboarding.checkingOpencodeIn": "Po kontrollon OpenCode në {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "Po kontrollon OpenCode në {{distro}}...",
   "wsl.onboarding.updatingOpencode": "OpenCode po përditësohet...",
-  "wsl.onboarding.updatingOpencodeIn": "Po përditëson OpenCode në {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Po përditëson OpenCode në {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Përditëso OpenCode në {{distro}}.",
   "wsl.onboarding.updateOpencode": "Përditëso OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode është gati në {{distro}}.",
@@ -482,49 +537,59 @@ export const dict = {
   "wsl.onboarding.checkAgain": "Kontrollo sërish",
   "wsl.onboarding.distroStatus.ready": "Gati",
   "wsl.onboarding.distroStatus.checking": "Po kontrollon...",
-  "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode nuk është i instaluar",
+  "wsl.onboarding.distroStatus.opencodeMissing":
+    "OpenCode nuk është i instaluar",
   "wsl.onboarding.distroStatus.missingTools": "Mungon bash, kaçurrela",
   "wsl.onboarding.distroStatus.unsupported": "E pambështetur · Përdor WSL 2",
   "wsl.onboarding.needAnotherDistro": "Keni nevojë për një shpërndarje tjetër?",
-  "wsl.onboarding.needAnotherDistroHint": "Instaloni një shpërndarje Linux nga katalogu WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instaloni një shpërndarje Linux nga katalogu WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL nuk është i instaluar",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Nënsistemi Windows për Linux) kërkohet përpara se OpenCode të shtojë një server WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL i padisponueshëm",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode nuk mund ta verifikonte WSL në këtë makinë.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode nuk mund ta verifikonte WSL në këtë makinë.",
   "wsl.onboarding.installWsl": "Instaloni WSL",
-  "wsl.onboarding.windowsRestartRequired": "Rinis Windows për të përfunduar instalimin e WSL, më pas rihap OpenCode.",
+  "wsl.onboarding.windowsRestartRequired":
+    "Rinis Windows për të përfunduar instalimin e WSL, më pas rihap OpenCode.",
   "wsl.onboarding.next": "Tjetra",
   "wsl.onboarding.refresh": "Rifresko",
-  "wsl.onboarding.allDistrosAdded": "Të gjitha shpërndarjet e instaluara janë shtuar tashmë.",
+  "wsl.onboarding.allDistrosAdded":
+    "Të gjitha shpërndarjet e instaluara janë shtuar tashmë.",
   "wsl.onboarding.noDistros": "Nuk është zbuluar ende asnjë shpërndarje.",
   "wsl.onboarding.install": "Instaloni",
   "wsl.onboarding.installing": "Po instalohet...",
   "wsl.onboarding.installDistro": "Instaloni distro",
   "wsl.onboarding.searchDistros": "Kërko shpërndarjet",
   "wsl.onboarding.wsl2Required": "Kërkohet WSL 2.",
-  "wsl.onboarding.toolsRequired": "Kjo shpërndarje ka nevojë për bash dhe kaçurrela.",
+  "wsl.onboarding.toolsRequired":
+    "Kjo shpërndarje ka nevojë për bash dhe kaçurrela.",
   "wsl.onboarding.openTerminal": "Hap terminalin",
   "wsl.onboarding.path": "Rruga: {{path}}",
   "wsl.onboarding.notFound": "nuk u gjet",
   "wsl.onboarding.version": "Versioni: {{version}}",
   "wsl.onboarding.unknown": "i panjohur",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Versioni i instaluar nuk përputhet me versionin e aplikacionit desktop.",
+  "wsl.onboarding.versionMismatch":
+    "Versioni i instaluar nuk përputhet me versionin e aplikacionit desktop.",
   "wsl.onboarding.adding": "Po shtohet...",
-  "help.tabs.toast.ariaLabel": "Prezantimi i skedave. Organizoni punën tuaj dhe seancat aktive me skeda",
+  "help.tabs.toast.ariaLabel":
+    "Prezantimi i skedave. Organizoni punën tuaj dhe seancat aktive me skeda",
   "help.tabs.toast.dismiss": "Hiq informacionin e skedave",
   "help.tabs.title": "Prezantimi i skedave",
   "help.tabs.description": "Organizoni punën tuaj dhe seancat aktive me skeda",
   "help.tabs.date": "14 korrik",
-  "help.tabs.introduction": "OpenCode Desktop tani është ndërtuar rreth skedave.",
+  "help.tabs.introduction":
+    "OpenCode Desktop tani është ndërtuar rreth skedave.",
   "help.tabs.sessions":
     "Filloni një sesion të ri në një skedë ose hapni një sesion ekzistues nga ndonjë prej projekteve tuaja. Hapni një skedë të re kur filloni diçka të re dhe mbylleni kur të keni mbaruar.",
   "help.tabs.organize":
     "Mbajtja e disa skedave të hapura e bën më të lehtë organizimin e seancave tuaja aktive. Riemërtoni skedat në diçka të paharrueshme nëse planifikoni t'i mbani ato përreth.",
   "help.tabs.home":
     "Do t'i gjeni të gjitha seancat dhe projektet tuaja në ekranin e ri Home. Zgjedhja e një sesioni e hap atë në një skedë.",
-  "help.tabs.persistence": "Kur rihapni aplikacionin, skedat tuaja janë ende të hapura.",
+  "help.tabs.persistence":
+    "Kur rihapni aplikacionin, skedat tuaja janë ende të hapura.",
   "help.tabs.worktrees":
     'Dizajni i ri nuk mbështet ende Git Worktrees, ai vjen së shpejti. Pra, nëse preferoni të vazhdoni të përdorni paraqitjen e mëparshme, mund të kaloni midis paraqitjeve te "Cilësimet". Vetëm mbani në mend se faqosja e re do të bëhet e përhershme brenda disa javësh.',
   "server.row.noUsername": "asnjë emër përdoruesi",
@@ -536,7 +601,8 @@ export const dict = {
   "dialog.project.edit.icon.recommended": "Rekomandohet: 128x128px",
   "dialog.project.edit.color": "Ngjyra",
   "dialog.project.edit.color.select": "Zgjidhni ngjyrën {{color}}",
-  "dialog.project.edit.worktree.startup": "Skript i nisjes së hapësirës së punës",
+  "dialog.project.edit.worktree.startup":
+    "Skript i nisjes së hapësirës së punës",
   "dialog.project.edit.worktree.startup.description":
     "Ekzekutohet pas krijimit të një hapësire të re pune (pema e punës).",
   "dialog.project.edit.worktree.startup.placeholder": "p.sh. bun install",
@@ -599,50 +665,70 @@ export const dict = {
   "toast.theme.title": "Tema u ndërrua",
   "toast.scheme.title": "Skema e ngjyrave",
   "toast.workspace.enabled.title": "Hapësirat e punës janë aktivizuar",
-  "toast.workspace.enabled.description": "Pemët e shumta të punës shfaqen tani në shiritin anësor",
+  "toast.workspace.enabled.description":
+    "Pemët e shumta të punës shfaqen tani në shiritin anësor",
   "toast.workspace.disabled.title": "Hapësirat e punës janë çaktivizuar",
-  "toast.workspace.disabled.description": "Vetëm pema kryesore e punës shfaqet në shiritin anësor",
+  "toast.workspace.disabled.description":
+    "Vetëm pema kryesore e punës shfaqet në shiritin anësor",
   "toast.permissions.autoaccept.on.title": "Auto-pranimi i lejeve",
-  "toast.permissions.autoaccept.on.description": "Kërkesat për leje do të miratohen automatikisht",
-  "toast.permissions.autoaccept.off.title": "Ndaloi pranimin automatik të lejeve",
-  "toast.permissions.autoaccept.off.description": "Kërkesat për leje do të kërkojnë miratim",
+  "toast.permissions.autoaccept.on.description":
+    "Kërkesat për leje do të miratohen automatikisht",
+  "toast.permissions.autoaccept.off.title":
+    "Ndaloi pranimin automatik të lejeve",
+  "toast.permissions.autoaccept.off.description":
+    "Kërkesat për leje do të kërkojnë miratim",
   "toast.model.none.title": "Asnjë model i zgjedhur",
-  "toast.model.none.description": "Lidhni një ofrues për të përmbledhur këtë sesion",
+  "toast.model.none.description":
+    "Lidhni një ofrues për të përmbledhur këtë sesion",
   "toast.file.loadFailed.title": "Ngarkimi i skedarit dështoi",
   "toast.file.listFailed.title": "Lista e skedarëve dështoi",
   "toast.context.noLineSelection.title": "Nuk ka përzgjedhje rreshti",
-  "toast.context.noLineSelection.description": "Së pari zgjidhni një varg rreshti në një skedë skedari.",
-  "toast.session.share.copyFailed.title": "Kopjimi i URL në kujtesën e fragmenteve dështoi",
+  "toast.context.noLineSelection.description":
+    "Së pari zgjidhni një varg rreshti në një skedë skedari.",
+  "toast.session.share.copyFailed.title":
+    "Kopjimi i URL në kujtesën e fragmenteve dështoi",
   "toast.session.share.success.title": "Sesioni i përbashkët",
-  "toast.session.share.success.description": "Ndani URL kopjuar në kujtesën e fragmenteve!",
+  "toast.session.share.success.description":
+    "Ndani URL kopjuar në kujtesën e fragmenteve!",
   "toast.session.share.failed.title": "Ndarja e sesionit dështoi",
-  "toast.session.share.failed.description": "Ndodhi një gabim gjatë ndarjes së seancës",
+  "toast.session.share.failed.description":
+    "Ndodhi një gabim gjatë ndarjes së seancës",
   "toast.session.unshare.success.title": "Sesioni u anulua",
   "toast.session.unshare.success.description": "Sesioni u anulua me sukses!",
   "toast.session.unshare.failed.title": "Shpërndarja e sesionit dështoi",
-  "toast.session.unshare.failed.description": "Ndodhi një gabim gjatë anulimit të seancës",
+  "toast.session.unshare.failed.description":
+    "Ndodhi një gabim gjatë anulimit të seancës",
   "toast.session.export.success.title": "Sesioni u eksportua",
   "toast.session.export.success.description": "Sesioni u ruajt në {{filename}}",
   "toast.session.export.failed.title": "Eksportimi i sesionit dështoi",
-  "toast.session.export.failed.description": "Ndodhi një gabim gjatë eksportimit të sesionit",
-  "toast.session.listFailed.title": "Ngarkimi i seancave për {{project}} dështoi",
+  "toast.session.export.failed.description":
+    "Ndodhi një gabim gjatë eksportimit të sesionit",
+  "toast.session.listFailed.title":
+    "Ngarkimi i seancave për {{project}} dështoi",
   "toast.project.reloadFailed.title": "Ringarkimi i {{project}} dështoi",
   "toast.update.title": "Ofrohet përditësim",
-  "toast.update.description": "Një version i ri i OpenCode ({{version}}) është tani i disponueshëm për t'u instaluar.",
+  "toast.update.description":
+    "Një version i ri i OpenCode ({{version}}) është tani i disponueshëm për t'u instaluar.",
   "toast.update.action.installRestart": "Instaloni dhe rinisni",
   "toast.update.action.notYet": "Ende jo",
   "toast.update.installFailed.title": "Përditësimi nuk mund të instalohet",
   "toast.update.installFailed.retry": "Provo përsëri",
 
-  "disk.accessGuidance.macos": "Jepi DiskLizard-it lejen Full Disk Access te System Settings dhe pastaj skano përsëri.",
-  "disk.accessGuidance.windows": "Përdor një llogari me qasje te ky disk, ose skano një dosje që llogaria jote mund ta lexojë.",
-  "disk.accessGuidance.linux": "Shiko lejet e dosjeve dhe të pikave të montimit, pastaj skano përsëri.",
-  "disk.accessGuidance.default": "Shiko qasjen te këto dosje, pastaj skano përsëri.",
-  "disk.accessGuidance.rescan": "Pasi të ndryshosh qasjen, përdor Rescan në shiritin e sipërm.",
+  "disk.accessGuidance.macos":
+    "Jepi DiskLizard-it lejen Full Disk Access te System Settings dhe pastaj skano përsëri.",
+  "disk.accessGuidance.windows":
+    "Përdor një llogari me qasje te ky disk, ose skano një dosje që llogaria jote mund ta lexojë.",
+  "disk.accessGuidance.linux":
+    "Shiko lejet e dosjeve dhe të pikave të montimit, pastaj skano përsëri.",
+  "disk.accessGuidance.default":
+    "Shiko qasjen te këto dosje, pastaj skano përsëri.",
+  "disk.accessGuidance.rescan":
+    "Pasi të ndryshosh qasjen, përdor Rescan në shiritin e sipërm.",
   "disk.common.rescan": "Skano përsëri",
   "error.page.title": "Diçka shkoi keq",
   "error.page.description": "Ndodhi një gabim gjatë ngarkimit të aplikacionit.",
-  "error.page.description.localServerStartup": "Ndodhi një gabim gjatë nisjes së serverit lokal.",
+  "error.page.description.localServerStartup":
+    "Ndodhi një gabim gjatë nisjes së serverit lokal.",
   "error.page.details.label": "Detajet e gabimit",
   "error.page.action.restart": "Rinis",
   "error.page.action.report": "Raportoni një gabim",
@@ -652,18 +738,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Kontrolloni për përditësime",
   "error.page.action.updateTo": "Përditëso në {{version}}",
   "error.page.circular": "[Rrethore]",
-  "error.page.report.prefix": "Ju lutemi raportoni këtë gabim te ekipi i OpenCode",
+  "error.page.report.prefix":
+    "Ju lutemi raportoni këtë gabim te ekipi i OpenCode",
   "error.page.report.discord": "mbi Mosmarrëveshjen",
   "error.page.version": "Versioni: {{version}}",
   "error.dev.rootNotFound":
     "Elementi rrënjë nuk u gjet. A keni harruar ta shtoni atë në index.html tuaj? Apo ndoshta atributi id është shkruar gabim?",
-  "error.serverSync.connectFailed": "Nuk mund të lidhej me serverin. A ka një server që funksionon në `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Nuk mund të lidhej me serverin. A ka një server që funksionon në `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Asnjë server i disponueshëm",
   "error.serverSDK.serverNotAvailable": "Serveri nuk disponohet",
-  "error.childStore.persistedCacheCreateFailed": "Dështoi në krijimin e memories së vazhdueshme",
+  "error.childStore.persistedCacheCreateFailed":
+    "Dështoi në krijimin e memories së vazhdueshme",
   "error.childStore.persistedProjectMetadataCreateFailed":
     "Krijimi i meta të dhënave të vazhdueshme të projektit dështoi",
-  "error.childStore.persistedProjectIconCreateFailed": "Krijimi i ikonës së projektit të vazhdueshëm dështoi",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Krijimi i ikonës së projektit të vazhdueshëm dështoi",
   "error.childStore.storeCreateFailed": "Krijimi i dyqanit dështoi",
   "directory.error.invalidUrl": "Drejtoria e pavlefshme në URL.",
   "error.chain.unknown": "Gabim i panjohur",
@@ -675,23 +765,32 @@ export const dict = {
   "error.chain.responseBody": "Trupi i përgjigjes:\n{{body}}",
   "error.chain.didYouMean": "A do të thuash: {{suggestions}}",
   "error.chain.modelNotFound": "Modeli nuk u gjet: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Kontrolloni emrat e ofruesit/modelit tuaj të konfigurimit (opencode.json).",
-  "error.chain.mcpFailed": 'Serveri MCP "{{name}}" dështoi. Shënim, OpenCode nuk e mbështet ende vërtetimin MCP.',
-  "error.chain.providerAuthFailed": "Autentifikimi i ofruesit dështoi ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Kontrolloni emrat e ofruesit/modelit tuaj të konfigurimit (opencode.json).",
+  "error.chain.mcpFailed":
+    'Serveri MCP "{{name}}" dështoi. Shënim, OpenCode nuk e mbështet ende vërtetimin MCP.',
+  "error.chain.providerAuthFailed":
+    "Autentifikimi i ofruesit dështoi ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Inicializimi i ofruesit "{{provider}}" dështoi. Kontrolloni kredencialet dhe konfigurimin.',
-  "error.chain.configJsonInvalid": "Skedari i konfigurimit në {{path}} nuk është i vlefshëm JSON(C)",
+  "error.chain.configJsonInvalid":
+    "Skedari i konfigurimit në {{path}} nuk është i vlefshëm JSON(C)",
   "error.chain.configJsonInvalidWithMessage":
     "Skedari i konfigurimit në {{path}} nuk është i vlefshëm JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Drejtoria "{{dir}}" në {{path}} nuk është e vlefshme. Riemërtoni direktorinë në "{{suggestion}}" ose hiqeni atë. Ky është një gabim i zakonshëm.',
-  "error.chain.configFrontmatterError": "Dështoi në analizimin e materialit të parë në {{path}}:\n{{message}}",
-  "error.chain.configInvalid": "Skedari i konfigurimit në {{path}} është i pavlefshëm",
-  "error.chain.configInvalidWithMessage": "Skedari i konfigurimit në {{path}} është i pavlefshëm: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Dështoi në analizimin e materialit të parë në {{path}}:\n{{message}}",
+  "error.chain.configInvalid":
+    "Skedari i konfigurimit në {{path}} është i pavlefshëm",
+  "error.chain.configInvalidWithMessage":
+    "Skedari i konfigurimit në {{path}} është i pavlefshëm: {{message}}",
   "notification.permission.title": "Kërkohet leje",
-  "notification.permission.description": "{{sessionTitle}} në {{projectName}} ka nevojë për leje",
+  "notification.permission.description":
+    "{{sessionTitle}} në {{projectName}} ka nevojë për leje",
   "notification.question.title": "Pyetje",
-  "notification.question.description": "{{sessionTitle}} në {{projectName}} ka një pyetje",
+  "notification.question.description":
+    "{{sessionTitle}} në {{projectName}} ka një pyetje",
   "notification.action.goToSession": "Shkoni në seancë",
   "notification.session.responseReady.title": "Përgjigja gati",
   "notification.session.error.title": "Gabim në seancë",
@@ -714,14 +813,16 @@ export const dict = {
   "home.sessions.group.today": "Sot",
   "home.sessions.group.yesterday": "Dje",
   "home.sessions.group.older": "Më të vjetër",
-  "home.providerTip": "Lidhu me 75+ ofrues për të përdorur modele të tjera, duke përfshirë Claude, GPT, Gemini, etj.",
+  "home.providerTip":
+    "Lidhu me 75+ ofrues për të përdorur modele të tjera, duke përfshirë Claude, GPT, Gemini, etj.",
   "session.tab.session": "Sesioni",
   "session.tab.review": "Rishikimi",
   "session.tab.context": "Konteksti",
   "session.tab.unknown": "Sesion i panjohur",
   "session.panel.reviewAndFiles": "Rishikimi dhe dosjet",
   "session.error.notFound": "Ky sesion nuk mund të gjendet",
-  "session.error.notFound.description": "Kjo skedë tregon për një sesion që nuk ekziston më në këtë server.",
+  "session.error.notFound.description":
+    "Kjo skedë tregon për një sesion që nuk ekziston më në këtë server.",
   "session.error.notFound.closeTab": "Mbyll skedën",
   "session.error.serverConnection": "Nuk mund të lidhet me këtë server",
   "session.review.filesChanged": "Skedarët u ndryshuan {{count}}",
@@ -729,9 +830,11 @@ export const dict = {
   "session.review.change.other": "Ndryshimet",
   "session.review.loadingChanges": "Ndryshimet po ngarkohen...",
   "session.review.empty": "Ende nuk ka ndryshime në këtë seancë",
-  "session.review.noVcs": "Nuk u zbulua sistemi i kontrollit të versionit Git, ndryshimet nuk shfaqen",
+  "session.review.noVcs":
+    "Nuk u zbulua sistemi i kontrollit të versionit Git, ndryshimet nuk shfaqen",
   "session.review.noVcs.createGit.title": "Krijoni një depo Git",
-  "session.review.noVcs.createGit.description": "Gjurmoni, rishikoni dhe anuloni ndryshimet në këtë projekt",
+  "session.review.noVcs.createGit.description":
+    "Gjurmoni, rishikoni dhe anuloni ndryshimet në këtë projekt",
   "session.review.noVcs.createGit.actionLoading": "Krijimi i depove Git...",
   "session.review.noVcs.createGit.action": "Krijo depo Git",
   "session.review.noSnapshot":
@@ -742,7 +845,8 @@ export const dict = {
   "session.files.selectToOpen": "Zgjidhni një skedar për të hapur",
   "session.files.all": "Të gjithë skedarët",
   "session.files.empty": "Nuk ka skedarë",
-  "session.files.binaryContent": "Skedar binar (përmbajtja nuk mund të shfaqet)",
+  "session.files.binaryContent":
+    "Skedar binar (përmbajtja nuk mund të shfaqet)",
   "session.messages.renderEarlier": "Jepni mesazhe të mëparshme",
   "session.messages.loadingEarlier": "Mesazhet e mëparshme po ngarkohen...",
   "session.messages.loadEarlier": "Ngarko mesazhet e mëparshme",
@@ -836,11 +940,14 @@ export const dict = {
   "terminal.title.numbered": "Terminali {{number}}",
   "terminal.close": "Mbyll terminalin",
   "terminal.connectionLost.title": "Lidhja e humbur",
-  "terminal.connectionLost.abnormalClose": "WebSocket u mbyll anormalisht: {{code}}",
-  "terminal.connectionLost.description": "Lidhja e terminalit u ndërpre. Kjo mund të ndodhë kur serveri riniset.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket u mbyll anormalisht: {{code}}",
+  "terminal.connectionLost.description":
+    "Lidhja e terminalit u ndërpre. Kjo mund të ndodhë kur serveri riniset.",
   "terminal.connectTicket.csrfError":
     "Bileta lidhëse PTY e refuzuar nga origjina ose çeqet CSRF. Kontrolloni konfigurimin e serverit CORS.",
-  "terminal.connectTicket.statusError": "Bileta e lidhjes PTY dështoi me {{status}}",
+  "terminal.connectTicket.statusError":
+    "Bileta e lidhjes PTY dështoi me {{status}}",
   "titlebar.update": "Përditëso",
   "titlebar.updateVersion": "Përditëso {{version}}",
   "common.closeTab": "Mbyll skedën",
@@ -884,8 +991,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktivizo hapësirat e punës",
   "sidebar.workspaces.disable": "Çaktivizo hapësirat e punës",
   "sidebar.gettingStarted.title": "Duke filluar",
-  "sidebar.gettingStarted.line1": "OpenCode përfshin modele falas, kështu që mund të filloni menjëherë.",
-  "sidebar.gettingStarted.line2": "Lidhni çdo ofrues për të përdorur modele, inc. Claude, GPT, Gemini etj.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode përfshin modele falas, kështu që mund të filloni menjëherë.",
+  "sidebar.gettingStarted.line2":
+    "Lidhni çdo ofrues për të përdorur modele, inc. Claude, GPT, Gemini etj.",
   "sidebar.project.recentSessions": "Seancat e fundit",
   "sidebar.project.viewAllSessions": "Shikoni të gjitha seancat",
   "sidebar.project.clearNotifications": "Pastro njoftimet",
@@ -897,30 +1006,38 @@ export const dict = {
   "debugBar.nav.tip":
     "Tranzicioni i fundit i përfunduar i rrugës duke prekur një faqe sesioni, i matur nga fillimi i routerit deri në bojën e parë pasi të vendoset.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Korniza rrotulluese për sekondë gjatë 5 sekondave të fundit.",
+  "debugBar.fps.tip":
+    "Korniza rrotulluese për sekondë gjatë 5 sekondave të fundit.",
   "debugBar.frame.label": "FRAME",
-  "debugBar.frame.tip": "Koha më e keqe e kuadrove gjatë 5 sekondave të fundit.",
+  "debugBar.frame.tip":
+    "Koha më e keqe e kuadrove gjatë 5 sekondave të fundit.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Korniza mbi 32 ms në 5 sekondat e fundit.",
   "debugBar.long.label": "LONG",
   "debugBar.long.tip":
     "Koha e bllokuar dhe numërimi i detyrave të gjata në 5 sekondat e fundit. Detyra maksimale: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Vonesa më e keqe e vërejtur e hyrjes në 5 sekondat e fundit.",
+  "debugBar.delay.tip":
+    "Vonesa më e keqe e vërejtur e hyrjes në 5 sekondat e fundit.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Kohëzgjatja e përafërt e ndërveprimit gjatë 5 sekondave të fundit. Ky është i ngjashëm me INP, jo Web Vitals zyrtar INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Zhvendosja kumulative e paraqitjes për jetëgjatësinë aktuale të aplikacionit.",
+  "debugBar.cls.tip":
+    "Zhvendosja kumulative e paraqitjes për jetëgjatësinë aktuale të aplikacionit.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Grup i përdorur JS kundrejt kufirit të grumbullit. Vetëm Chromium.",
-  "debugBar.mem.tip": "Grup i përdorur JS kundrejt kufirit të grumbullit. {{used}} e {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Grup i përdorur JS kundrejt kufirit të grumbullit. Vetëm Chromium.",
+  "debugBar.mem.tip":
+    "Grup i përdorur JS kundrejt kufirit të grumbullit. {{used}} e {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Forconi stilet e fokusimit në të gjithë elementët ndërveprues",
+  "debugBar.focus.tip":
+    "Forconi stilet e fokusimit në të gjithë elementët ndërveprues",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Forco drejtimin e plotë të paraqitjes së aplikacionit pa ndryshuar gjuhën e zgjedhur",
+  "debugBar.direction.tip":
+    "Forco drejtimin e plotë të paraqitjes së aplikacionit pa ndryshuar gjuhën e zgjedhur",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -930,7 +1047,8 @@ export const dict = {
   "settings.tab.shortcuts": "Shkurtoret",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "Integrimi WSL",
-  "settings.desktop.wsl.description": "Ekzekutoni serverin OpenCode brenda WSL në Windows.",
+  "settings.desktop.wsl.description":
+    "Ekzekutoni serverin OpenCode brenda WSL në Windows.",
   "settings.general.section.appearance": "Pamja e jashtme",
   "settings.general.section.advanced": "E avancuar",
   "settings.general.section.notifications": "Njoftimet e sistemit",
@@ -939,31 +1057,39 @@ export const dict = {
   "settings.general.section.feed": "Prurja",
   "settings.general.section.display": "Ekrani",
   "settings.general.row.language.title": "Gjuha",
-  "settings.general.row.language.description": "Ndryshoni gjuhën e ekranit për OpenCode",
+  "settings.general.row.language.description":
+    "Ndryshoni gjuhën e ekranit për OpenCode",
   "settings.general.row.shell.title": "Predha e terminalit",
-  "settings.general.row.shell.description": "Predha e përdorur nga terminali dhe mjetet e agjentit",
+  "settings.general.row.shell.description":
+    "Predha e përdorur nga terminali dhe mjetet e agjentit",
   "settings.general.row.shell.autoDefault": "Auto (e parazgjedhur)",
   "settings.general.row.shell.terminalOnly": "vetëm terminali",
   "settings.general.row.appearance.title": "Pamja e jashtme",
-  "settings.general.row.appearance.description": "Personalizojeni se si duket OpenCode në pajisjen tuaj",
+  "settings.general.row.appearance.description":
+    "Personalizojeni se si duket OpenCode në pajisjen tuaj",
   "settings.general.row.colorScheme.title": "Skema e ngjyrave",
   "settings.general.row.colorScheme.description":
     "Zgjidhni nëse OpenCode ndjek temën e sistemit, të lehtë ose të errët",
   "settings.general.row.theme.title": "Tema",
-  "settings.general.row.theme.description": "Personalizojeni se si është tema e OpenCode.",
+  "settings.general.row.theme.description":
+    "Personalizojeni se si është tema e OpenCode.",
   "settings.general.row.font.title": "Fonti i kodit",
-  "settings.general.row.font.description": "Personalizoni fontin e përdorur në blloqet e kodit",
+  "settings.general.row.font.description":
+    "Personalizoni fontin e përdorur në blloqet e kodit",
   "settings.general.row.terminalFont.title": "Fonti i Terminalit",
-  "settings.general.row.terminalFont.description": "Personalizojeni fontin e përdorur në terminal",
+  "settings.general.row.terminalFont.description":
+    "Personalizojeni fontin e përdorur në terminal",
   "settings.general.row.uiFont.title": "Fonti UI",
-  "settings.general.row.uiFont.description": "Personalizoni fontin e përdorur në të gjithë ndërfaqen",
+  "settings.general.row.uiFont.description":
+    "Personalizoni fontin e përdorur në të gjithë ndërfaqen",
   "settings.general.row.followup.title": "Sjellja pasuese",
   "settings.general.row.followup.description":
     "Zgjidhni nëse kërkesat e ndjekjes drejtohen menjëherë ose prisni në një radhë",
   "settings.general.row.followup.option.queue": "Radhë",
   "settings.general.row.followup.option.steer": "Drejtoni",
   "settings.general.row.showFileTree.title": "Pema e skedarit",
-  "settings.general.row.showFileTree.description": "Shfaq panelin e pemës së skedarëve në sesione",
+  "settings.general.row.showFileTree.description":
+    "Shfaq panelin e pemës së skedarëve në sesione",
   "settings.general.row.showNavigation.title": "Kontrollet e navigimit",
   "settings.general.row.showNavigation.description":
     "Shfaqni butonat prapa dhe përpara në shiritin e titullit të desktopit",
@@ -971,48 +1097,63 @@ export const dict = {
   "settings.general.row.showSearch.description":
     "Shfaq butonin e paletës së kërkimit dhe komandës në shiritin e titullit",
   "settings.general.row.showTerminal.title": "Terminali",
-  "settings.general.row.showTerminal.description": "Shfaq butonin e terminalit në shiritin e titullit të desktopit",
+  "settings.general.row.showTerminal.description":
+    "Shfaq butonin e terminalit në shiritin e titullit të desktopit",
   "settings.general.row.showStatus.title": "Statusi i serverit",
-  "settings.general.row.showStatus.description": "Shfaq butonin e statusit të serverit në shiritin e titullit",
+  "settings.general.row.showStatus.description":
+    "Shfaq butonin e statusit të serverit në shiritin e titullit",
   "settings.general.row.mobileTitlebarBottom.title": "Navigimi i poshtëm",
   "settings.general.row.mobileTitlebarBottom.description":
     "Vendosni shiritin e titullit dhe skedat e sesionit në fund të ekranit në celular",
   "settings.general.row.showCustomAgents.title": "Trego agjentin",
   "settings.general.row.showCustomAgents.description":
     "Kaloni ndërmjet agjentëve në kompozitor. Kur fshihet, si parazgjedhje është Build agent.",
-  "settings.general.row.reasoningSummaries.title": "Trego përmbledhjet e arsyetimit",
-  "settings.general.row.reasoningSummaries.description": "Shfaqni përmbledhjet e arsyetimit të modelit në afatin kohor",
-  "settings.general.row.shellToolPartsExpanded.title": "Zgjeroni pjesët e veglave të guaskës",
+  "settings.general.row.reasoningSummaries.title":
+    "Trego përmbledhjet e arsyetimit",
+  "settings.general.row.reasoningSummaries.description":
+    "Shfaqni përmbledhjet e arsyetimit të modelit në afatin kohor",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Zgjeroni pjesët e veglave të guaskës",
   "settings.general.row.shellToolPartsExpanded.description":
     "Shfaq pjesët e veglës së guaskës të zgjeruara si parazgjedhje në afatin kohor",
-  "settings.general.row.editToolPartsExpanded.title": "Zgjero pjesët e veglave të redaktimit",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Zgjero pjesët e veglave të redaktimit",
   "settings.general.row.editToolPartsExpanded.description":
     "Shfaq pjesët e veglave të modifikimit, shkrimit dhe korrigjimit të zgjeruara si parazgjedhje në afatin kohor",
   "settings.general.row.newInterface.title": "Paraqitje e re",
   "settings.general.row.newInterface.badge": "E re",
   "settings.general.row.newInterface.description":
     "Përdorni skedat e reja dhe paraqitjen e shtëpisë. Kaloni ndërmjet paraqitjeve për një kohë të kufizuar.",
-  "settings.general.row.newInterfaceNotice.title": "Tani po përdorni strukturë të re",
-  "settings.general.row.newInterfaceNotice.description": "Paraqitja e mëparshme nuk është më e disponueshme",
+  "settings.general.row.newInterfaceNotice.title":
+    "Tani po përdorni strukturë të re",
+  "settings.general.row.newInterfaceNotice.description":
+    "Paraqitja e mëparshme nuk është më e disponueshme",
   "settings.general.row.newInterfaceNotice.dismiss": "Largoje",
   "settings.general.row.pinchZoom.title": "Pini për të zmadhuar",
-  "settings.general.row.pinchZoom.description": "Lejo zmadhimin e kapjes së tastierës dhe gjestet e lëvizjes Ctrl",
+  "settings.general.row.pinchZoom.description":
+    "Lejo zmadhimin e kapjes së tastierës dhe gjestet e lëvizjes Ctrl",
   "settings.general.row.wayland.title": "Përdorni Wayland amtare",
-  "settings.general.row.wayland.description": "Çaktivizo kthimin e X11 në Wayland. Kërkon rinisje.",
+  "settings.general.row.wayland.description":
+    "Çaktivizo kthimin e X11 në Wayland. Kërkon rinisje.",
   "settings.general.row.wayland.tooltip":
     "Në Linux me monitorë të përzier me shpejtësi rifreskimi, Wayland vendas mund të jetë më i qëndrueshëm.",
   "settings.general.row.releaseNotes.title": "Shënimet e publikimit",
-  "settings.general.row.releaseNotes.description": "Shfaq dritaret kërcyese Çfarë ka të re pas përditësimeve",
-  "settings.updates.row.startup.title": "Kontrolloni për përditësime gjatë nisjes",
-  "settings.updates.row.startup.description": "Kontrolloni automatikisht për përditësime kur niset OpenCode",
+  "settings.general.row.releaseNotes.description":
+    "Shfaq dritaret kërcyese Çfarë ka të re pas përditësimeve",
+  "settings.updates.row.startup.title":
+    "Kontrolloni për përditësime gjatë nisjes",
+  "settings.updates.row.startup.description":
+    "Kontrolloni automatikisht për përditësime kur niset OpenCode",
   "settings.updates.row.check.title": "Kontrolloni për përditësime",
-  "settings.updates.row.check.description": "Kontrolloni manualisht për përditësime dhe instaloni nëse ka",
+  "settings.updates.row.check.description":
+    "Kontrolloni manualisht për përditësime dhe instaloni nëse ka",
   "settings.updates.action.checkNow": "Kontrollo tani",
   "settings.updates.action.checking": "Po kontrollon...",
   "settings.updates.action.downloading": "Po shkarkohet...",
   "settings.updates.action.installing": "Po instalohet...",
   "settings.updates.toast.latest.title": "Ju jeni të përditësuar",
-  "settings.updates.toast.latest.description": "Ju jeni duke ekzekutuar versionin më të fundit të OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Ju jeni duke ekzekutuar versionin më të fundit të OpenCode.",
   "sound.option.none": "Asnjë",
   "sound.option.alert01": "Alarmi 01",
   "sound.option.alert02": "Alarmi 02",
@@ -1063,21 +1204,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Shfaq njoftimin e sistemit kur agjenti është i plotë ose ka nevojë për vëmendje",
   "settings.general.notifications.permissions.title": "Lejet",
-  "settings.general.notifications.permissions.description": "Shfaq njoftimin e sistemit kur kërkohet një leje",
+  "settings.general.notifications.permissions.description":
+    "Shfaq njoftimin e sistemit kur kërkohet një leje",
   "settings.general.notifications.errors.title": "Gabimet",
-  "settings.general.notifications.errors.description": "Shfaq njoftimin e sistemit kur ndodh një gabim",
+  "settings.general.notifications.errors.description":
+    "Shfaq njoftimin e sistemit kur ndodh një gabim",
   "settings.general.sounds.agent.title": "Agjenti",
-  "settings.general.sounds.agent.description": "Luaj tingullin kur agjenti është i plotë ose ka nevojë për vëmendje",
+  "settings.general.sounds.agent.description":
+    "Luaj tingullin kur agjenti është i plotë ose ka nevojë për vëmendje",
   "settings.general.sounds.permissions.title": "Lejet",
-  "settings.general.sounds.permissions.description": "Luaj tingull kur kërkohet leje",
+  "settings.general.sounds.permissions.description":
+    "Luaj tingull kur kërkohet leje",
   "settings.general.sounds.errors.title": "Gabimet",
-  "settings.general.sounds.errors.description": "Luaj tingullin kur ndodh një gabim",
+  "settings.general.sounds.errors.description":
+    "Luaj tingullin kur ndodh një gabim",
   "settings.shortcuts.title": "Shkurtoret e tastierës",
   "settings.shortcuts.reset.button": "Rivendos në standardet",
   "settings.shortcuts.reset.toast.title": "Rivendosja e shkurtoreve",
-  "settings.shortcuts.reset.toast.description": "Shkurtoret e tastierës janë rivendosur në standardet.",
+  "settings.shortcuts.reset.toast.description":
+    "Shkurtoret e tastierës janë rivendosur në standardet.",
   "settings.shortcuts.conflict.title": "Shkurtorja tashmë është në përdorim",
-  "settings.shortcuts.conflict.description": "{{keybind}} i është caktuar tashmë {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} i është caktuar tashmë {{titles}}.",
   "settings.shortcuts.unassigned": "E pacaktuar",
   "settings.shortcuts.pressKeys": "Shtypni tastet",
   "settings.shortcuts.search.placeholder": "Shkurtoret e kërkimit",
@@ -1089,12 +1237,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminali",
   "settings.shortcuts.group.prompt": "Kërkesë",
   "settings.providers.title": "Ofruesit",
-  "settings.providers.description": "Cilësimet e ofruesit do të konfigurohen këtu.",
+  "settings.providers.description":
+    "Cilësimet e ofruesit do të konfigurohen këtu.",
   "settings.providers.section.connected": "Ofruesit e lidhur",
   "settings.providers.connected.empty": "Nuk ka ofrues të lidhur",
-  "settings.providers.connected.environmentDescription": "Lidhur nga variablat e mjedisit tuaj",
+  "settings.providers.connected.environmentDescription":
+    "Lidhur nga variablat e mjedisit tuaj",
   "settings.providers.section.popular": "Ofruesit e njohur",
-  "settings.providers.custom.description": "Shtoni një ofrues të pajtueshëm me OpenAI nga baza URL.",
+  "settings.providers.custom.description":
+    "Shtoni një ofrues të pajtueshëm me OpenAI nga baza URL.",
   "settings.providers.tag.environment": "Mjedisi",
   "settings.providers.tag.config": "Konfigurimi",
   "settings.providers.tag.custom": "Me porosi",
@@ -1102,28 +1253,37 @@ export const dict = {
   "settings.models.title": "Modelet",
   "settings.models.description": "Cilësimet e modelit do të konfigurohen këtu.",
   "settings.agents.title": "Agjentët",
-  "settings.agents.description": "Cilësimet e agjentit do të konfigurohen këtu.",
+  "settings.agents.description":
+    "Cilësimet e agjentit do të konfigurohen këtu.",
   "settings.commands.title": "Komandat",
-  "settings.commands.description": "Cilësimet e komandës do të konfigurohen këtu.",
+  "settings.commands.description":
+    "Cilësimet e komandës do të konfigurohen këtu.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Cilësimet MCP do të konfigurohen këtu.",
   "settings.permissions.title": "Lejet",
-  "settings.permissions.description": "Kontrolloni se cilat mjete mund të përdorë serveri si parazgjedhje.",
+  "settings.permissions.description":
+    "Kontrolloni se cilat mjete mund të përdorë serveri si parazgjedhje.",
   "settings.permissions.section.tools": "Mjetet",
-  "settings.permissions.toast.updateFailed.title": "Përditësimi i lejeve dështoi",
+  "settings.permissions.toast.updateFailed.title":
+    "Përditësimi i lejeve dështoi",
   "settings.permissions.action.allow": "Lejo",
   "settings.permissions.action.ask": "Pyetni",
   "settings.permissions.action.deny": "Moho",
   "settings.permissions.tool.read.title": "Lexoni",
-  "settings.permissions.tool.read.description": "Leximi i një skedari (përputhet me shtegun e skedarit)",
+  "settings.permissions.tool.read.description":
+    "Leximi i një skedari (përputhet me shtegun e skedarit)",
   "settings.permissions.tool.edit.title": "Redakto",
-  "settings.permissions.tool.edit.description": "Ndryshoni skedarët, duke përfshirë redaktimet, shkrimet dhe arnimet",
+  "settings.permissions.tool.edit.description":
+    "Ndryshoni skedarët, duke përfshirë redaktimet, shkrimet dhe arnimet",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Përputhni skedarët duke përdorur modele glob",
+  "settings.permissions.tool.glob.description":
+    "Përputhni skedarët duke përdorur modele glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Kërkoni përmbajtjen e skedarit duke përdorur shprehje të rregullta",
+  "settings.permissions.tool.grep.description":
+    "Kërkoni përmbajtjen e skedarit duke përdorur shprehje të rregullta",
   "settings.permissions.tool.list.title": "Lista",
-  "settings.permissions.tool.list.description": "Listoni skedarët brenda një drejtorie",
+  "settings.permissions.tool.list.description":
+    "Listoni skedarët brenda një drejtorie",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Ekzekutoni komandat e guaskës",
   "settings.permissions.tool.task.title": "Detyrë",
@@ -1131,17 +1291,22 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Shkathtësi",
   "settings.permissions.tool.skill.description": "Ngarko një aftësi me emër",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Drejtoni pyetjet e serverit të gjuhës",
+  "settings.permissions.tool.lsp.description":
+    "Drejtoni pyetjet e serverit të gjuhës",
   "settings.permissions.tool.todowrite.title": "Todo Shkruani",
-  "settings.permissions.tool.todowrite.description": "Përditësoni listën e detyrave",
+  "settings.permissions.tool.todowrite.description":
+    "Përditësoni listën e detyrave",
   "settings.permissions.tool.webfetch.title": "Marrja në ueb",
-  "settings.permissions.tool.webfetch.description": "Merr përmbajtje nga një URL",
+  "settings.permissions.tool.webfetch.description":
+    "Merr përmbajtje nga një URL",
   "settings.permissions.tool.websearch.title": "Kërkimi në ueb",
   "settings.permissions.tool.websearch.description": "Kërkoni në ueb",
   "settings.permissions.tool.external_directory.title": "Drejtoria e jashtme",
-  "settings.permissions.tool.external_directory.description": "Qasni skedarët jashtë drejtorisë së projektit",
+  "settings.permissions.tool.external_directory.description":
+    "Qasni skedarët jashtë drejtorisë së projektit",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Zbuloni thirrjet e përsëritura të mjeteve me hyrje identike",
+  "settings.permissions.tool.doom_loop.description":
+    "Zbuloni thirrjet e përsëritura të mjeteve me hyrje identike",
   "session.delete.failed.title": "Fshirja e sesionit dështoi",
   "session.delete.title": "Fshi sesionin",
   "session.delete.confirm": 'Të fshihet sesioni "{{name}}"?',
@@ -1155,12 +1320,15 @@ export const dict = {
   "workspace.resetting.description": "Kjo mund të zgjasë një minutë.",
   "workspace.reset.failed.title": "Rivendosja e hapësirës së punës dështoi",
   "workspace.reset.success.title": "Rivendosja e hapësirës së punës",
-  "workspace.reset.success.description": "Hapësira e punës tani përputhet me degën e paracaktuar.",
-  "workspace.error.stillPreparing": "Hapësira e punës është ende duke u përgatitur",
+  "workspace.reset.success.description":
+    "Hapësira e punës tani përputhet me degën e paracaktuar.",
+  "workspace.error.stillPreparing":
+    "Hapësira e punës është ende duke u përgatitur",
   "workspace.status.checking": "Po kontrollon për ndryshime të pabashkuara...",
   "workspace.status.error": "Statusi i git nuk mund të verifikohet.",
   "workspace.status.clean": "Nuk u zbuluan ndryshime të pabashkuara.",
-  "workspace.status.dirty": "Ndryshime të pabashkuara u zbuluan në këtë hapësirë pune.",
+  "workspace.status.dirty":
+    "Ndryshime të pabashkuara u zbuluan në këtë hapësirë pune.",
   "workspace.delete.title": "Fshi hapësirën e punës",
   "workspace.delete.confirm": 'Të fshihet hapësira e punës "{{name}}"?',
   "workspace.delete.button": "Fshi hapësirën e punës",
@@ -1170,6 +1338,7 @@ export const dict = {
   "workspace.reset.archived.none": "Asnjë seancë aktive nuk do të arkivohet.",
   "workspace.reset.archived.one": "1 sesion do të arkivohet.",
   "workspace.reset.archived.many": "Seancat {{count}} do të arkivohen.",
-  "workspace.reset.note": "Kjo do të rivendosë hapësirën e punës që të përputhet me degën e paracaktuar.",
+  "workspace.reset.note":
+    "Kjo do të rivendosë hapësirën e punës që të përputhet me degën e paracaktuar.",
   "dialog.usageExceeded.dontShowAgain": "Mos e shfaq përsëri",
 }

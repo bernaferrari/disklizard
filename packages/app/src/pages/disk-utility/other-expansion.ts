@@ -30,38 +30,64 @@ export function planOtherExpansion(
   root: DiskScanNode,
   aggregate: DiskScanNode,
   os?: DesktopOS,
-  options: OtherExpansionOptions = {},
+  options: OtherExpansionOptions = {}
 ): OtherExpansionPlan | undefined {
-  if (!aggregate.isOther || aggregate.isHidden) return
+  if (!aggregate.isOther || aggregate.isHidden) return undefined
 
-  const initialChildren = positiveInteger(options.initialChildren, DEFAULT_INITIAL_CHILDREN)
-  const growthFactor = positiveInteger(options.growthFactor, DEFAULT_GROWTH_FACTOR)
+  const initialChildren = positiveInteger(
+    options.initialChildren,
+    DEFAULT_INITIAL_CHILDREN
+  )
+  const growthFactor = positiveInteger(
+    options.growthFactor,
+    DEFAULT_GROWTH_FACTOR
+  )
   const maxChildren = positiveInteger(options.maxChildren, DEFAULT_MAX_CHILDREN)
   const parent = findAggregateParent(root, aggregate, os)
-  if (!parent) return
+  if (!parent) return undefined
 
-  const retainedCount = parent.children.reduce((count, child) => count + (child.isOther ? 0 : 1), 0)
-  if (retainedCount >= maxChildren) return
+  const retainedCount = parent.children.reduce(
+    (count, child) => count + (child.isOther ? 0 : 1),
+    0
+  )
+  if (retainedCount >= maxChildren) return undefined
 
   const representedCount = positiveMetadataCount(aggregate.otherCount)
-  const progressiveLimit = Math.max(initialChildren, retainedCount * growthFactor)
-  const knownTotal = representedCount === undefined ? undefined : retainedCount + representedCount
+  const progressiveLimit = Math.max(
+    initialChildren,
+    retainedCount * growthFactor
+  )
+  const knownTotal =
+    representedCount === undefined
+      ? undefined
+      : retainedCount + representedCount
   return {
     parent,
     maxChildren: Math.min(
       maxChildren,
-      knownTotal === undefined ? progressiveLimit : Math.max(retainedCount + 1, Math.min(progressiveLimit, knownTotal)),
+      knownTotal === undefined
+        ? progressiveLimit
+        : Math.max(retainedCount + 1, Math.min(progressiveLimit, knownTotal))
     ),
     ...(representedCount === undefined ? {} : { representedCount }),
   }
 }
 
-function findAggregateParent(root: DiskScanNode, aggregate: DiskScanNode, os?: DesktopOS): DiskScanNode | undefined {
+function findAggregateParent(
+  root: DiskScanNode,
+  aggregate: DiskScanNode,
+  os?: DesktopOS
+): DiskScanNode | undefined {
   for (const child of root.children) {
-    if (child.isOther && (child === aggregate || diskPathEquals(child.path, aggregate.path, os))) return root
+    if (
+      child.isOther &&
+      (child === aggregate || diskPathEquals(child.path, aggregate.path, os))
+    )
+      return root
     const match = findAggregateParent(child, aggregate, os)
     if (match) return match
   }
+  return undefined
 }
 
 function positiveMetadataCount(value: number | undefined) {

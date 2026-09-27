@@ -2,11 +2,15 @@ import { Button } from "@/components/dl/button"
 import { Icon, type IconName } from "@/components/dl/icon"
 import type { ReactNode } from "react"
 import type { DiskScanNode } from "./types"
+import { storageMapColor } from "./visual-palette"
 import { formatBytes } from "./format"
 import { diskLanguageText, useLanguage } from "./runtime"
-import { diskNodeDisplayName } from "./node-display"
 
-export function DriveFallback(props: { loading: boolean; error?: string; onChoose: () => void }) {
+export function DriveFallback(props: {
+  loading: boolean
+  error?: string
+  onChoose: () => void
+}) {
   const language = useLanguage()
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-8 py-16 text-center">
@@ -18,22 +22,26 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
             <span className="mt-2 block h-3 w-52 rounded-sm bg-surface-raised-base/70" />
           </span>
           <span className="hidden h-1.5 w-[148px] rounded-full bg-surface-raised-base sm:block" />
-          <span className="text-13-regular text-text-weaker">{language.t("disk.drive.reading")}</span>
+          <span className="text-13-regular text-text-weaker">
+            {language.t("disk.drive.reading")}
+          </span>
         </div>
       ) : (
         <>
           <span className="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
             <Icon name="folder" className="size-4" />
           </span>
-          <h2 className="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">
-            {props.error ? language.t("disk.drive.readFailed") : language.t("disk.drive.none")}
+          <h2 className="text-14-medium mt-4 tracking-[-0.015em] text-text-strong">
+            {props.error
+              ? language.t("disk.drive.readFailed")
+              : language.t("disk.drive.none")}
           </h2>
-          <p className="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">
+          <p className="text-13-regular mt-1 max-w-[30ch] leading-relaxed text-text-weak">
             {props.error ?? language.t("disk.drive.pickFolder")}
           </p>
           <Button
             data-disk-primary-action
-            className="min-h-11 min-w-11 mt-4"
+            className="mt-4 min-h-11 min-w-11"
             variant="secondary"
             size="small"
             icon="folder-add-left"
@@ -47,7 +55,12 @@ export function DriveFallback(props: { loading: boolean; error?: string; onChoos
   )
 }
 
-export type IndexEmptyKind = "folder" | "search" | "developer" | "recommendations" | "recent"
+export type IndexEmptyKind =
+  | "folder"
+  | "search"
+  | "developer"
+  | "recommendations"
+  | "recent"
 
 export function indexEmptyCopy(kind: IndexEmptyKind) {
   if (kind === "search") {
@@ -85,7 +98,13 @@ export function indexEmptyCopy(kind: IndexEmptyKind) {
   }
 }
 
-export function IndexEmpty(props: { kind: IndexEmptyKind; onReset: () => void }) {
+export function IndexEmpty(props: {
+  kind: IndexEmptyKind
+  title?: string
+  body?: string
+  actionLabel?: string
+  onReset: () => void
+}) {
   const language = useLanguage()
   const copy = indexEmptyCopy(props.kind)
   const filtered = props.kind !== "folder"
@@ -94,27 +113,49 @@ export function IndexEmpty(props: { kind: IndexEmptyKind; onReset: () => void })
       <span className="grid size-11 place-items-center rounded-full bg-surface-raised-base text-text-weak">
         <Icon name={copy.icon} className="size-4" />
       </span>
-      <h3 className="mt-4 text-14-medium tracking-[-0.015em] text-text-strong">{copy.title}</h3>
-      <p className="mt-1 max-w-[30ch] text-13-regular leading-relaxed text-text-weak">{copy.body}</p>
+      <h3 className="text-14-medium mt-4 tracking-[-0.015em] text-text-strong">
+        {props.title ?? copy.title}
+      </h3>
+      <p className="text-13-regular mt-1 max-w-[30ch] leading-relaxed text-text-weak">
+        {props.body ?? copy.body}
+      </p>
       {filtered ? (
-        <Button className="min-h-11 min-w-11 mt-4" size="small" variant="secondary" onClick={props.onReset}>
-          {language.t("disk.common.contents")}
+        <Button
+          className="mt-4 min-h-11 min-w-11"
+          size="small"
+          variant="secondary"
+          onClick={props.onReset}
+        >
+          {props.actionLabel ?? language.t("disk.common.contents")}
         </Button>
       ) : null}
     </div>
   )
 }
 
-export function Placeholder(props: { icon: IconName; title: string; body: string; actions?: ReactNode }) {
+export function Placeholder(props: {
+  icon: IconName
+  title: string
+  body: string
+  actions?: ReactNode
+}) {
   return (
     <div className="flex h-full items-center justify-center px-6">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-5 grid size-12 place-items-center rounded-full bg-surface-raised-base shadow-[0_0_0_1px_rgb(127_127_127/0.1),0_8px_24px_rgb(0_0_0/0.06)]">
           <Icon name={props.icon} className="size-5 text-text-weak" />
         </div>
-        <h2 className="text-14-medium tracking-[-0.015em] text-text-strong">{props.title}</h2>
-        <p className="mt-1 text-13-regular leading-relaxed text-text-weak">{props.body}</p>
-        {props.actions ? <div className="mt-4 flex flex-wrap justify-center gap-2">{props.actions}</div> : null}
+        <h2 className="text-14-medium tracking-[-0.015em] text-text-strong">
+          {props.title}
+        </h2>
+        <p className="text-13-regular mt-1 leading-relaxed text-text-weak">
+          {props.body}
+        </p>
+        {props.actions ? (
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {props.actions}
+          </div>
+        ) : null}
       </div>
     </div>
   )
@@ -134,27 +175,36 @@ export type CenterOverlayBehavior = {
 export function centerOverlayBehavior(
   node: DiskScanNode | null,
   canOpen: boolean,
-  inventoryOnly: boolean,
+  inventoryOnly: boolean
 ): CenterOverlayBehavior {
   const isInventoryOnly = inventoryOnly && !!node
   return {
     canOpen: !!node?.isDir && !isInventoryOnly && canOpen,
     inventoryOnly: isInventoryOnly,
-    ...(isInventoryOnly ? { reviewOnlyCopy: diskLanguageText("disk.drive.inventoryOnly") } : {}),
+    ...(isInventoryOnly
+      ? { reviewOnlyCopy: diskLanguageText("disk.drive.inventoryOnly") }
+      : {}),
   }
 }
 
 /** The open directory stays anchored while hover previews appear in the inspector. */
 export function CenterOverlay(props: { node: DiskScanNode | null }) {
-  const [amount, unit] = props.node ? formatBytes(props.node.size).split(" ") : []
+  const [amount, unit] = props.node
+    ? formatBytes(props.node.size).split(" ")
+    : []
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
-      <div className="@max-[399px]:max-w-[46%] max-w-[29%] text-center">
+      <div className="max-w-[29%] text-center @max-[399px]:max-w-[46%]">
         {props.node ? (
           <>
-            <p className="whitespace-nowrap text-[clamp(24px,4.6cqw,38px)] font-medium leading-none tracking-[-0.04em] tabular-nums text-text-strong">
+            <p
+              className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap tabular-nums"
+              style={{ color: storageMapColor(0, 0) }}
+            >
               {amount}
-              <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">{unit}</span>
+              <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
+                {unit}
+              </span>
             </p>
           </>
         ) : null}

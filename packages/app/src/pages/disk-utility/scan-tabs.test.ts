@@ -13,8 +13,19 @@ import {
   type ScanTab,
 } from "./scan-tabs"
 
-function dir(name: string, path: string, children: DiskScanNode[] = []): DiskScanNode {
-  return { name, path, size: children.reduce((sum, child) => sum + child.size, 0), isDir: true, children, ext: "" }
+function dir(
+  name: string,
+  path: string,
+  children: DiskScanNode[] = []
+): DiskScanNode {
+  return {
+    name,
+    path,
+    size: children.reduce((sum, child) => sum + child.size, 0),
+    isDir: true,
+    children,
+    ext: "",
+  }
 }
 
 describe("retained scan tabs", () => {
@@ -33,34 +44,59 @@ describe("retained scan tabs", () => {
         volumeJobIDs: ["active", "background"],
         activeID: "active",
         hasCurrentScan: true,
-      }),
+      })
     ).toBe(4)
   })
 
   it("rebases only the watcher-matched background tab and restores its nearest valid view", () => {
     const oldPackage = dir("package", "/repo/node_modules/package")
-    const oldTree = dir("repo", "/repo", [dir("node_modules", "/repo/node_modules", [oldPackage])])
+    const oldTree = dir("repo", "/repo", [
+      dir("node_modules", "/repo/node_modules", [oldPackage]),
+    ])
     const activeTree = dir("other", "/other")
     const tabs: RetainedScanTab[] = [
-      { id: "background", sessionID: "scan-a", tree: oldTree, view: oldPackage },
+      {
+        id: "background",
+        sessionID: "scan-a",
+        tree: oldTree,
+        view: oldPackage,
+      },
       { id: "other", sessionID: "scan-b", tree: activeTree, view: activeTree },
     ]
     const refreshedPackage = dir("package", "/repo/node_modules/package")
-    const refreshedTree = dir("repo", "/repo", [dir("node_modules", "/repo/node_modules", [refreshedPackage])])
+    const refreshedTree = dir("repo", "/repo", [
+      dir("node_modules", "/repo/node_modules", [refreshedPackage]),
+    ])
 
-    const next = refreshScanTabsForWatcherUpdate(tabs, "scan-a", () => refreshedTree, "linux")
+    const next = refreshScanTabsForWatcherUpdate(
+      tabs,
+      "scan-a",
+      () => refreshedTree,
+      "linux"
+    )
 
-    expect(next[0]).toMatchObject({ id: "background", tree: refreshedTree, view: refreshedPackage })
+    expect(next[0]).toMatchObject({
+      id: "background",
+      tree: refreshedTree,
+      view: refreshedPackage,
+    })
     expect(next[1]).toBe(tabs[1])
   })
 
   it("falls back to the fresh root when a background tab's old view disappeared", () => {
     const oldBuild = dir("build", "/repo/build")
     const oldTree = dir("repo", "/repo", [oldBuild])
-    const tabs: RetainedScanTab[] = [{ id: "background", sessionID: "scan-a", tree: oldTree, view: oldBuild }]
+    const tabs: RetainedScanTab[] = [
+      { id: "background", sessionID: "scan-a", tree: oldTree, view: oldBuild },
+    ]
     const refreshedTree = dir("repo", "/repo", [dir("src", "/repo/src")])
 
-    const next = refreshScanTabsForWatcherUpdate(tabs, "scan-a", () => refreshedTree, "linux")
+    const next = refreshScanTabsForWatcherUpdate(
+      tabs,
+      "scan-a",
+      () => refreshedTree,
+      "linux"
+    )
 
     expect(next[0].view).toBe(refreshedTree)
   })
@@ -89,11 +125,16 @@ describe("retained scan tabs", () => {
         view: freshView,
         browseHistory: { past: ["/repo"], current: "/repo/src", future: [] },
       },
-      { newTabID: "must-not-be-used", volumeJobSessionIDs: [], os: "linux" },
+      { newTabID: "must-not-be-used", volumeJobSessionIDs: [], os: "linux" }
     )
 
     expect(next).toHaveLength(1)
-    expect(next[0]).toMatchObject({ id: "kept-id", sessionID: "scan-a", tree: freshTree, view: freshView })
+    expect(next[0]).toMatchObject({
+      id: "kept-id",
+      sessionID: "scan-a",
+      tree: freshTree,
+      view: freshView,
+    })
   })
 
   it("repairs duplicate retained owners for one session while saving its latest state", () => {
@@ -119,7 +160,7 @@ describe("retained scan tabs", () => {
         view: latestTree,
         browseHistory: { past: [], current: "/repo", future: [] },
       },
-      { newTabID: "unused", volumeJobSessionIDs: [], os: "linux" },
+      { newTabID: "unused", volumeJobSessionIDs: [], os: "linux" }
     )
 
     expect(next).toHaveLength(1)
@@ -173,7 +214,7 @@ describe("retained scan tabs", () => {
         view: secondTree,
         browseHistory: { past: [], current: "/second", future: [] },
       },
-      { newTabID: "tab-100", volumeJobSessionIDs: [], os: "linux" },
+      { newTabID: "tab-100", volumeJobSessionIDs: [], os: "linux" }
     )
 
     expect(next.map((tab) => tab.id)).toEqual(["tab-100", "tab-100-2"])
@@ -204,17 +245,25 @@ describe("retained scan tabs", () => {
       activeSessionID: "active",
       volumeJobSessionIDs: ["volume"],
     })
-    expect(limited.tabs.map((item) => item.id)).toEqual(["sessionless", "recent-a", "recent-b"])
+    expect(limited.tabs.map((item) => item.id)).toEqual([
+      "sessionless",
+      "recent-a",
+      "recent-b",
+    ])
     expect(limited.releaseSessionIDs).toEqual(["release-me"])
     expect(MAX_RETAINED_SCAN_TABS).toBe(4)
-    expect(() => limitRetainedScanTabs(tabs, { limit: -1, volumeJobSessionIDs: [] })).toThrow(
-      "Invalid retained scan tab limit",
-    )
+    expect(() =>
+      limitRetainedScanTabs(tabs, { limit: -1, volumeJobSessionIDs: [] })
+    ).toThrow("Invalid retained scan tab limit")
   })
 
   it("does not save an absent map or a session already owned by a volume job", () => {
     const tree = dir("repo", "/repo")
-    const options = { newTabID: "unused", volumeJobSessionIDs: ["scan-a"], os: "linux" as const }
+    const options = {
+      newTabID: "unused",
+      volumeJobSessionIDs: ["scan-a"],
+      os: "linux" as const,
+    }
     const absent = saveCurrentScanTab(
       [],
       {
@@ -225,7 +274,7 @@ describe("retained scan tabs", () => {
         view: null,
         browseHistory: { past: [], future: [] },
       },
-      options,
+      options
     )
     const volumeOwned = saveCurrentScanTab(
       [],
@@ -237,7 +286,7 @@ describe("retained scan tabs", () => {
         view: tree,
         browseHistory: { past: [], current: "/repo", future: [] },
       },
-      options,
+      options
     )
 
     expect(absent).toEqual([])
@@ -254,7 +303,11 @@ describe("retained scan tabs", () => {
       sourcePath: "/repo",
       tree: restoredTree,
       view: missingView,
-      browseHistory: { past: ["/repo"], current: "/repo/build", future: ["/repo/src"] },
+      browseHistory: {
+        past: ["/repo"],
+        current: "/repo/build",
+        future: ["/repo/src"],
+      },
     }
     const currentTree = dir("home", "/home")
 
@@ -269,11 +322,15 @@ describe("retained scan tabs", () => {
         view: currentTree,
         browseHistory: { past: [], current: "/home", future: [] },
       },
-      { newTabID: "saved-current", volumeJobSessionIDs: [], os: "linux" },
+      { newTabID: "saved-current", volumeJobSessionIDs: [], os: "linux" }
     )
 
     expect(transition.restored?.view).toBe(restoredTree)
-    expect(transition.restored?.browseHistory).toEqual({ past: [], current: "/repo", future: [] })
+    expect(transition.restored?.browseHistory).toEqual({
+      past: [],
+      current: "/repo",
+      future: [],
+    })
     expect(transition.tabs.map((tab) => tab.id)).toEqual(["saved-current"])
   })
 
@@ -299,11 +356,19 @@ describe("retained scan tabs", () => {
       view: currentTree,
       browseHistory: { past: [], current: "/home", future: [] },
     }
-    const options = { newTabID: "saved-current", volumeJobSessionIDs: [], os: "linux" as const }
+    const options = {
+      newTabID: "saved-current",
+      volumeJobSessionIDs: [],
+      os: "linux" as const,
+    }
 
     const restored = restoreScanTab([parked], "parked", current, options)
     expect(restored.restored?.view).toBe(freshView)
-    expect(restored.restored?.browseHistory).toEqual({ past: ["/repo"], current: "/repo/src", future: [] })
+    expect(restored.restored?.browseHistory).toEqual({
+      past: ["/repo"],
+      current: "/repo/src",
+      future: [],
+    })
 
     const missing = restoreScanTab([parked], "missing", current, options)
     expect(missing.tabs).toEqual([parked])
@@ -334,7 +399,7 @@ describe("retained scan tabs", () => {
         view: currentTree,
         browseHistory: { past: [], current: "/home", future: [] },
       },
-      { newTabID: "saved-current", volumeJobSessionIDs: [], os: "linux" },
+      { newTabID: "saved-current", volumeJobSessionIDs: [], os: "linux" }
     )
 
     expect(transition.tabs.map((tab) => tab.id)).toEqual(["saved-current"])
@@ -359,10 +424,14 @@ describe("retained scan tabs", () => {
     })
     expect(finalOwner).toMatchObject({ tabs: [], releaseSessionID: "scan-a" })
 
-    const duplicateOwner = closeScanTab([parked("first", "scan-a"), parked("second", "scan-a")], "first", {
-      activeSessionID: "scan-current",
-      volumeJobSessionIDs: [],
-    })
+    const duplicateOwner = closeScanTab(
+      [parked("first", "scan-a"), parked("second", "scan-a")],
+      "first",
+      {
+        activeSessionID: "scan-current",
+        volumeJobSessionIDs: [],
+      }
+    )
     expect(duplicateOwner.tabs.map((tab) => tab.id)).toEqual(["second"])
     expect(duplicateOwner.releaseSessionID).toBeUndefined()
 
@@ -370,13 +439,13 @@ describe("retained scan tabs", () => {
       closeScanTab([parked("active-copy", "scan-a")], "active-copy", {
         activeSessionID: "scan-a",
         volumeJobSessionIDs: [],
-      }).releaseSessionID,
+      }).releaseSessionID
     ).toBeUndefined()
     expect(
       closeScanTab([parked("volume-copy", "scan-a")], "volume-copy", {
         activeSessionID: "scan-current",
         volumeJobSessionIDs: ["scan-a"],
-      }).releaseSessionID,
+      }).releaseSessionID
     ).toBeUndefined()
   })
 

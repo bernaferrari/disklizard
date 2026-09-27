@@ -47,11 +47,13 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "اپ ڈیٹ دی پڑتال ناکام ہو گئی۔",
   "desktop.updater.dialog.checkFailed.title": "اپ ڈیٹ دی غلطی",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "تہاڈے کول تازہ ترین ورژن اے۔",
   "desktop.updater.dialog.upToDate.title": "کوئی اپ ڈیٹ نئیں",
-  "desktop.updater.dialog.ready.message": "اپ ڈیٹ {{version}} ڈاؤن لوڈ ہو گئی اے۔ ہن دوبارہ شروع کرنا اے؟",
+  "desktop.updater.dialog.ready.message":
+    "اپ ڈیٹ {{version}} ڈاؤن لوڈ ہو گئی اے۔ ہن دوبارہ شروع کرنا اے؟",
   "desktop.updater.dialog.ready.title": "اپ ڈیٹ تیار اے",
   "desktop.updater.dialog.restart": "دوبارہ شروع کرو",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,9 +66,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode لوڈ نئیں ہو سکیا",
   "desktop.recovery.terminated": "OpenCode دی ونڈو اچانک بند ہو گئی",
   "desktop.recovery.unresponsive": "OpenCode جواب نئیں دے رہیا",
-  "desktop.recovery.unresponsive.detail": "تسی ایپ دوبارہ چلا سکدے او، لاگ کھول سکدے او یا اڈیک جاری رکھ سکدے او۔",
-  "desktop.recovery.loadFailed.detail": "ونڈو: {{window}}\nURL: {{url}}\nغلطی: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "ونڈو: {{window}}\nکارن: {{reason}}\nکوڈ: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "تسی ایپ دوبارہ چلا سکدے او، لاگ کھول سکدے او یا اڈیک جاری رکھ سکدے او۔",
+  "desktop.recovery.loadFailed.detail":
+    "ونڈو: {{window}}\nURL: {{url}}\nغلطی: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "ونڈو: {{window}}\nکارن: {{reason}}\nکوڈ: {{code}}",
   "desktop.recovery.unknown": "<نامعلوم>",
 
   "desktop.dialog.chooseFolder": "فولڈر چنو",
@@ -77,7 +82,8 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL صرف Windows تے دستیاب اے",
   "desktop.wsl.error.unavailable": "WSL دستیاب نئیں",
-  "desktop.wsl.error.listInstalled": "انسٹال کیتے WSL ڈسٹرو دی فہرست نئیں بن سکی",
+  "desktop.wsl.error.listInstalled":
+    "انسٹال کیتے WSL ڈسٹرو دی فہرست نئیں بن سکی",
   "desktop.wsl.error.listOnline": "آن لائن WSL ڈسٹرو دی فہرست نئیں بن سکی",
   "desktop.wsl.error.executeDistro": "ڈسٹرو وچ کمانڈاں نئیں چل سکدیاں",
   "desktop.wsl.error.installWsl": "WSL دی تنصیب ناکام ہو گئی",
@@ -86,19 +92,24 @@ export const dict = {
   "desktop.wsl.error.alreadyAdded": "{{distro}} پہلے ای شامل اے",
   "desktop.wsl.error.opencodeMissing": "اس ڈسٹرو وچ opencode انسٹال نئیں اے",
   "desktop.wsl.error.opencodeCannotRun": "opencode انسٹال اے پر چل نئیں سکیا",
-  "desktop.wsl.error.opencodeNotInstalled": "{{distro}} وچ OpenCode انسٹال نئیں اے",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "{{distro}} وچ OpenCode انسٹال نئیں اے",
   "desktop.wsl.error.updateVersion":
     "OpenCode دی اپ ڈیٹ پوری ہو گئی پر {{distro}} ہلے وی {{installed}} دس رہیا اے؛ {{expected}} چاہیدا سی",
   "desktop.wsl.error.noVersion": "کوئی ورژن نئیں",
-  "desktop.wsl.error.serverExited": "WSL سرور شروع ہون پچھوں بند ہو گیا (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL سرور شروع ہون پچھوں بند ہو گیا (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL سرور ٹھیک حالت وچ آون توں پہلاں بند ہو گیا (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} دے sidecar دی صحت پڑتال لئی مقرر ویلا {{timeout}}ms پچھوں مُک گیا",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} لئی مقرر ویلا {{timeout}}ms پچھوں مُک گیا",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} دے sidecar دی صحت پڑتال لئی مقرر ویلا {{timeout}}ms پچھوں مُک گیا",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} لئی مقرر ویلا {{timeout}}ms پچھوں مُک گیا",
   "desktop.wsl.error.failedPort": "پورٹ نئیں مل سکی",
 
   "desktop.picker.error.notSelected": "چونکار ولوں فائل نئیں چنی گئی",
-  "desktop.picker.error.sizeLimit": "چنیاں منسلک فائلاں {{limit}} MB دی حد توں ودھ نیں",
+  "desktop.picker.error.sizeLimit":
+    "چنیاں منسلک فائلاں {{limit}} MB دی حد توں ودھ نیں",
 
   "command.category.suggested": "تجویز کیتا گیا",
   "command.category.view": "نظارہ",
@@ -146,7 +157,8 @@ export const dict = {
   "command.tab.close": "ٹیب بند کرو",
   "command.tab.reopenClosed": "بند ٹیب دوبارہ کھولو",
   "command.context.addSelection": "سیاق و سباق وچ انتخاب شامل کرو",
-  "command.context.addSelection.description": "موجودہ فائل چوں منتخب کردہ لائناں شامل کرو",
+  "command.context.addSelection.description":
+    "موجودہ فائل چوں منتخب کردہ لائناں شامل کرو",
   "command.input.focus": "ان پٹ تے فوکس کرو",
   "command.terminal.toggle": "ٹرمینل نوں ٹوگل کرو",
   "command.fileTree.toggle": "فائل ٹری نوں ٹوگل کرو",
@@ -154,7 +166,8 @@ export const dict = {
   "command.terminal.new": "نواں ٹرمینل",
   "command.terminal.new.description": "اک نواں ٹرمینل ٹیب بناؤ",
   "command.steps.toggle": "قدم ٹوگل کرو",
-  "command.steps.toggle.description": "موجودہ پیغام لئی اقدامات وکھاؤ یا لُکا دیو",
+  "command.steps.toggle.description":
+    "موجودہ پیغام لئی اقدامات وکھاؤ یا لُکا دیو",
   "command.message.previous": "پچھلا سنیہا",
   "command.message.previous.description": "پچھلے صارف دے سنیہے تے جاؤ",
   "command.message.next": "اگلا سنیہا",
@@ -174,21 +187,25 @@ export const dict = {
   "command.permissions.autoaccept.enable": "خودکار اجازتاں قبول کرو",
   "command.permissions.autoaccept.disable": "خودکار اجازتاں قبول کرنا بند کرو",
   "command.workspace.toggle": "ورک سپیس ٹوگل کرو",
-  "command.workspace.toggle.description": "سائڈبار وچ متعدد ورک اسپیسز نو فعال یا غیر فعال کرو",
+  "command.workspace.toggle.description":
+    "سائڈبار وچ متعدد ورک اسپیسز نو فعال یا غیر فعال کرو",
   "command.session.undo": "کالعدم کرو",
   "command.session.undo.description": "آخری سنیہا کالعدم کرو",
   "command.session.redo": "دوبارہ کرو",
   "command.session.redo.description": "آخری انڈون سنیہا دوبارہ کرو",
   "command.session.compact": "سیشن مختصر کرو",
-  "command.session.compact.description": "سیاق و سباق دا سائز گھٹ کرن لئی سیشن دا خلاصہ کرو",
+  "command.session.compact.description":
+    "سیاق و سباق دا سائز گھٹ کرن لئی سیشن دا خلاصہ کرو",
   "command.session.fork": "سنیہا توں فورک",
   "command.session.fork.description": "پچھلے سنیہے توں اک نواں سیشن بناؤ",
   "command.session.share": "سیشن شیئر کرو",
-  "command.session.share.description": "اس سیشن نو شیئر کرو تے URL نو کلپ بورڈ تے کاپی کرو",
+  "command.session.share.description":
+    "اس سیشن نو شیئر کرو تے URL نو کلپ بورڈ تے کاپی کرو",
   "command.session.unshare": "سیشن شیئر کرنا بند کرو",
   "command.session.unshare.description": "اس سیشن نو شیئر کرنا بند کرو",
   "command.session.export": "سیشن برآمد کرو",
-  "command.session.export.description": "سیشن دی پوری نقل JSON دی شکل وچ برآمد کرو",
+  "command.session.export.description":
+    "سیشن دی پوری نقل JSON دی شکل وچ برآمد کرو",
 
   "palette.search.placeholder": "فائلاں، کمانڈز، تے سیشنز تلاش کرو",
   "palette.search.placeholder.home": "سرچ کمانڈز تے سیشنز",
@@ -201,23 +218,31 @@ export const dict = {
   "dialog.provider.group.other": "ہور",
   "dialog.provider.custom.label": "من پسند OpenAI نال رلدا پرووائیڈر",
   "dialog.provider.tag.recommended": "سفارش کیتی",
-  "dialog.provider.opencode.note": "Claude، GPT، Gemini تے ہور سمیت کیوریٹڈ ماڈل",
+  "dialog.provider.opencode.note":
+    "Claude، GPT، Gemini تے ہور سمیت کیوریٹڈ ماڈل",
   "dialog.provider.opencode.tagline": "قابل اعتماد اصلاح شدہ ماڈل",
   "dialog.provider.opencodeGo.tagline": "ہر اک لئی گھٹ قیمت دی رکنیت",
-  "dialog.provider.anthropic.note": "پرو تے میکس سمیت Claude ماڈل تک براہ راست رسائی",
-  "dialog.provider.copilot.note": "GitHub Copilot دے ذریعے کوڈنگ دی مدد لئی اے آئی ماڈل",
+  "dialog.provider.anthropic.note":
+    "پرو تے میکس سمیت Claude ماڈل تک براہ راست رسائی",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot دے ذریعے کوڈنگ دی مدد لئی اے آئی ماڈل",
   "dialog.provider.openai.note": "تیز تے صلاحیت والے عام AI کماں لئی GPT ماڈل",
   "dialog.provider.google.note": "تیز تے منظم جواباں لئی Gemini ماڈل",
-  "dialog.provider.openrouter.note": "اک پرووائیڈر توں سارے سپورٹڈ ماڈلاں تک رسائی لوو",
-  "dialog.provider.vercel.note": "سمارٹ روٹنگ دے نال اے آئی ماڈل تک متحدہ رسائی",
+  "dialog.provider.openrouter.note":
+    "اک پرووائیڈر توں سارے سپورٹڈ ماڈلاں تک رسائی لوو",
+  "dialog.provider.vercel.note":
+    "سمارٹ روٹنگ دے نال اے آئی ماڈل تک متحدہ رسائی",
   "dialog.model.select.title": "ماڈل چنو",
   "dialog.model.search.placeholder": "ماڈل لبھو",
   "dialog.model.empty": "کوئی ماڈل نئیں لبھیا",
   "dialog.model.manage": "ماڈل دا انتظام کرو",
-  "dialog.model.manage.description": "ماڈل سلیکٹر وچ کیہڑے ماڈل دکھائی دیندے نیں، اپنی مرضی دے مطابق بناؤ۔",
+  "dialog.model.manage.description":
+    "ماڈل سلیکٹر وچ کیہڑے ماڈل دکھائی دیندے نیں، اپنی مرضی دے مطابق بناؤ۔",
   "dialog.model.manage.provider.toggle": "{{provider}} دے سارے ماڈل ٹوگل کرو",
-  "dialog.model.unpaid.freeModels.title": "OpenCode دے ذریعہ فراہم کردہ مفت ماڈل",
-  "dialog.model.unpaid.addMore.title": "مقبول پرووائیڈراں توں ہور ماڈل شامل کرو",
+  "dialog.model.unpaid.freeModels.title":
+    "OpenCode دے ذریعہ فراہم کردہ مفت ماڈل",
+  "dialog.model.unpaid.addMore.title":
+    "مقبول پرووائیڈراں توں ہور ماڈل شامل کرو",
   "dialog.model.unpaid.viewMoreProviders": "70+ ہور پرووائیڈر ویکھو",
   "dialog.provider.viewAll": "ہور پرووائیڈر وکھاؤ",
   "provider.connect.title": "{{provider}} نال جڑو",
@@ -255,21 +280,25 @@ export const dict = {
     " تے اپنے اکاؤنٹ نوں جوڑن تے OpenCode وچ {{provider}} ماڈل ورتن لئی تھلے دتا کوڈ درج کرو۔",
   "provider.connect.oauth.auto.confirmationCode": "تصدیقی کوڈ",
   "provider.connect.toast.connected.title": "{{provider}} جڑیا ہویا",
-  "provider.connect.toast.connected.description": "{{provider}} ماڈل ہن ورتن لئی دستیاب ہن۔",
+  "provider.connect.toast.connected.description":
+    "{{provider}} ماڈل ہن ورتن لئی دستیاب ہن۔",
   "provider.custom.title": "من پسند پرووائیڈر",
-  "provider.custom.description.prefix": "OpenAI نال رلدا پرووائیڈر سیٹ کرو۔ ویکھو ",
+  "provider.custom.description.prefix":
+    "OpenAI نال رلدا پرووائیڈر سیٹ کرو۔ ویکھو ",
   "provider.custom.description.link": "پرووائیڈر کنفگ دے دستاویز",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "پرووائیڈر ID",
   "provider.custom.field.providerID.placeholder": "میرا پرووائیڈر",
-  "provider.custom.field.providerID.description": "نکے اکھر، نمبر، ہائفن، یا انڈر سکور",
+  "provider.custom.field.providerID.description":
+    "نکے اکھر، نمبر، ہائفن، یا انڈر سکور",
   "provider.custom.field.name.label": "ڈسپلے دا ناں",
   "provider.custom.field.name.placeholder": "میرا اے آئی فراہم کرن آلا",
   "provider.custom.field.baseURL.label": "بیس URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API کلید",
   "provider.custom.field.apiKey.placeholder": "API کلید",
-  "provider.custom.field.apiKey.description": "اختیاری۔ جے تسی ہیڈرز دے ذریعے تصدیق دا انتظام کردے او تے خالی چھڈ دیو۔",
+  "provider.custom.field.apiKey.description":
+    "اختیاری۔ جے تسی ہیڈرز دے ذریعے تصدیق دا انتظام کردے او تے خالی چھڈ دیو۔",
   "provider.custom.models.label": "ماڈل",
   "provider.custom.models.id.label": "آئی ڈی",
   "provider.custom.models.id.placeholder": "ماڈل آئی ڈی",
@@ -285,16 +314,21 @@ export const dict = {
   "provider.custom.headers.remove": "ہیڈر ہٹا دیو",
   "provider.custom.headers.add": "ہیڈر شامل کرو",
   "provider.custom.error.providerID.required": "پروائیڈر آئی ڈی دی لوڑ اے",
-  "provider.custom.error.providerID.format": "نکے اکھر، نمبر، ہائفن، یا انڈر سکور ورتو",
-  "provider.custom.error.providerID.exists": "اوہ پرووائیڈر ID پہلے توں موجود اے",
+  "provider.custom.error.providerID.format":
+    "نکے اکھر، نمبر، ہائفن، یا انڈر سکور ورتو",
+  "provider.custom.error.providerID.exists":
+    "اوہ پرووائیڈر ID پہلے توں موجود اے",
   "provider.custom.error.name.required": "ڈسپلے ناں دی لوڑ اے",
   "provider.custom.error.baseURL.required": "بیس URL دی لوڑ اے",
-  "provider.custom.error.baseURL.format": "http:// یا https:// توں شروع کرنا ضروری اے۔",
+  "provider.custom.error.baseURL.format":
+    "http:// یا https:// توں شروع کرنا ضروری اے۔",
   "provider.custom.error.required": "لازمی اے",
   "provider.custom.error.duplicate": "دُہرا",
-  "provider.custom.unavailable": "ایس سرور تے من پسند پرووائیڈر دستیاب نئیں نیں",
+  "provider.custom.unavailable":
+    "ایس سرور تے من پسند پرووائیڈر دستیاب نئیں نیں",
   "provider.disconnect.toast.disconnected.title": "{{provider}} منقطع",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} ماڈل ہن دستیاب نئیں ہن۔",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} ماڈل ہن دستیاب نئیں ہن۔",
   "model.tag.free": "مفت",
   "model.tag.latest": "تازہ ترین",
   "model.provider.anthropic": "Anthropic",
@@ -340,7 +374,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "پرامپٹ",
   "prompt.mode.shell.exit": "باہر نکلن لئی ایس سی",
-  "session.child.promptDisabled": "ذیلی ایجنٹ سیشناں نو اشارہ نئیں کیتا جا سکدا۔",
+  "session.child.promptDisabled":
+    "ذیلی ایجنٹ سیشناں نو اشارہ نئیں کیتا جا سکدا۔",
   "session.child.backToParent": "مین سیشن تے واپس جاؤ۔",
   "prompt.example.1": "کوڈ بیس چ اک TODO ٹھیک کرو",
   "prompt.example.2": "اس پروجیکٹ دا ٹیک سٹیک کی اے؟",
@@ -390,9 +425,11 @@ export const dict = {
   "prompt.toast.pasteUnsupported.title": "غیر تعاون یافتہ منسلکہ",
   "prompt.toast.pasteUnsupported.description":
     "ایتھے صرف تصویراں، پی ڈی ایف، یا ٹیکسٹ فائلاں منسلک کیتیاں جا سکدیاں نیں۔",
-  "prompt.toast.attachmentDuplicate.title": "ایہہ فائل پہلے ای اپ لوڈ ہو چکی اے",
+  "prompt.toast.attachmentDuplicate.title":
+    "ایہہ فائل پہلے ای اپ لوڈ ہو چکی اے",
   "prompt.toast.modelAgentRequired.title": "اک ایجنٹ تے ماڈل چنو",
-  "prompt.toast.modelAgentRequired.description": "پرامپٹ بھیجن توں پہلاں اک ایجنٹ تے ماڈل دا انتخاب کرو۔",
+  "prompt.toast.modelAgentRequired.description":
+    "پرامپٹ بھیجن توں پہلاں اک ایجنٹ تے ماڈل دا انتخاب کرو۔",
   "prompt.toast.worktreeCreateFailed.title": "ورک ٹری بنان چ ناکامی ہوئی",
   "prompt.toast.sessionCreateFailed.title": "سیشن بنان چ ناکامی ہوئی",
   "prompt.toast.shellSendFailed.title": "شیل کمانڈ بھیجن چ ناکام رہیا",
@@ -421,7 +458,8 @@ export const dict = {
   "app.server.retrying": "خود بخود دوبارہ کوشش کر رئے آں...",
   "app.server.otherServers": "ہور سرور",
   "dialog.server.title": "سرورز",
-  "dialog.server.description": "ایہہ ایپ کس OpenCode سرور نال جڑدی اے، اس نوں سوئچ کرو۔",
+  "dialog.server.description":
+    "ایہہ ایپ کس OpenCode سرور نال جڑدی اے، اس نوں سوئچ کرو۔",
   "dialog.server.search.placeholder": "سرچ سرورز",
   "dialog.server.empty": "ہلے تک کوئی سرور نئیں",
   "dialog.server.add.title": "سرور شامل کرو",
@@ -459,7 +497,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "ڈسٹرو دا انتخاب کرو",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL چیک کر رئے آں...",
-  "wsl.onboarding.restartRequired": "WSL دی تنصیب پوری کرن لئی Windows نوں دوبارہ شروع کرنا پئے گا۔",
+  "wsl.onboarding.restartRequired":
+    "WSL دی تنصیب پوری کرن لئی Windows نوں دوبارہ شروع کرنا پئے گا۔",
   "wsl.onboarding.ready": "WSL تیار اے۔",
   "wsl.onboarding.required": "جاری رکھن لئی WSL دی لوڑ اے۔",
   "wsl.onboarding.checkingDistros": "ڈسٹرو چیک کر ریا واں...",
@@ -468,13 +507,15 @@ export const dict = {
   "wsl.onboarding.listingDistros": "ڈسٹرو دی فہرست...",
   "wsl.onboarding.distroReady": "{{distro}} تیار اے۔",
   "wsl.onboarding.distroNotInstalled": "{{distro}} اجے تک انسٹال نئیں ہویا۔",
-  "wsl.onboarding.openDistroOnce": "سیٹ اپ ختم کرن لئی {{distro}} نوں اک واری کھولو۔",
+  "wsl.onboarding.openDistroOnce":
+    "سیٹ اپ ختم کرن لئی {{distro}} نوں اک واری کھولو۔",
   "wsl.onboarding.finishingDistro": "{{distro}} دا سیٹ اپ پورا ہو رہیا اے۔",
   "wsl.onboarding.pickDistro": "اک ڈسٹرو چنو یا تھلے دتی گئی اک انسٹال کرو۔",
   "wsl.onboarding.checkingOpencode": "OpenCode چیک کر رئے آں...",
   "wsl.onboarding.checkingOpencodeIn": "{{distro}} چ OpenCode دی جانچ پڑتال...",
   "wsl.onboarding.updatingOpencode": "OpenCode نو اپ ڈیٹ کر رئے آں...",
-  "wsl.onboarding.updatingOpencodeIn": "{{distro}} وچ OpenCode نو اپ ڈیٹ کر رئے آں...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "{{distro}} وچ OpenCode نو اپ ڈیٹ کر رئے آں...",
   "wsl.onboarding.updateOpencodeIn": "{{distro}} وچ OpenCode نو اپ ڈیٹ کرو۔",
   "wsl.onboarding.updateOpencode": "OpenCode اپ ڈیٹ کرو",
   "wsl.onboarding.opencodeReadyIn": "OpenCode {{distro}} چ تیار اے۔",
@@ -488,22 +529,27 @@ export const dict = {
   "wsl.onboarding.checkAgain": "دوبارہ چیک کرو",
   "wsl.onboarding.distroStatus.ready": "تیار",
   "wsl.onboarding.distroStatus.checking": "چیک کر رہیا واں...",
-  "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode انسٹال نئیں کیتا گیا",
+  "wsl.onboarding.distroStatus.opencodeMissing":
+    "OpenCode انسٹال نئیں کیتا گیا",
   "wsl.onboarding.distroStatus.missingTools": "bash تے curl نئیں ملے",
-  "wsl.onboarding.distroStatus.unsupported": "غیر تعاون یافتہ · WSL 2 استعمال کرو",
+  "wsl.onboarding.distroStatus.unsupported":
+    "غیر تعاون یافتہ · WSL 2 استعمال کرو",
   "wsl.onboarding.needAnotherDistro": "تہانوں اک ہور ڈسٹرو دی لوڑ اے؟",
-  "wsl.onboarding.needAnotherDistroHint": "WSL کیٹلاگ توں Linux ڈسٹری بیوشن انسٹال کرو",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL کیٹلاگ توں Linux ڈسٹری بیوشن انسٹال کرو",
   "wsl.onboarding.wslNotInstalled.title": "WSL انسٹال نئیں کیتا گیا",
   "wsl.onboarding.wslNotInstalled.description":
     "OpenCode دے WSL سرور شامل کرن توں پہلاں WSL (Windows Subsystem for Linux) دی لوڑ اے",
   "wsl.onboarding.wslUnavailable.title": "WSL دستیاب نئیں",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ایس مشین تے WSL دی تصدیق نئیں کر سکیا۔",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ایس مشین تے WSL دی تصدیق نئیں کر سکیا۔",
   "wsl.onboarding.installWsl": "WSL انسٹال کرو",
   "wsl.onboarding.windowsRestartRequired":
     "WSL دی تنصیب پوری کرن لئی Windows نوں دوبارہ شروع کرو، فیر OpenCode دوبارہ کھولو۔",
   "wsl.onboarding.next": "اگلا",
   "wsl.onboarding.refresh": "تازہ کرو",
-  "wsl.onboarding.allDistrosAdded": "سارے انسٹال شدہ ڈسٹرو پہلے ای شامل کر دتے گئے ہن۔",
+  "wsl.onboarding.allDistrosAdded":
+    "سارے انسٹال شدہ ڈسٹرو پہلے ای شامل کر دتے گئے ہن۔",
   "wsl.onboarding.noDistros": "ہلے تیکر کوئی ڈسٹرو نئیں لبھیا۔",
   "wsl.onboarding.install": "انسٹال کرو",
   "wsl.onboarding.installing": "انسٹال کر رہیا اے...",
@@ -517,9 +563,11 @@ export const dict = {
   "wsl.onboarding.version": "ورژن: {{version}}",
   "wsl.onboarding.unknown": "نامعلوم",
   "wsl.onboarding.desktopVersion": "ڈیسک ٹاپ {{version}}",
-  "wsl.onboarding.versionMismatch": "انسٹال کیتا گیا ورژن ڈیسک ٹاپ ایپ ورژن نال میل نئیں کھاندا۔",
+  "wsl.onboarding.versionMismatch":
+    "انسٹال کیتا گیا ورژن ڈیسک ٹاپ ایپ ورژن نال میل نئیں کھاندا۔",
   "wsl.onboarding.adding": "شامل کر رہیا واں...",
-  "help.tabs.toast.ariaLabel": "ٹیباں دی جان پچھان۔ اپنے کم تے چالو سیشناں نوں ٹیباں نال ترتیب دیو",
+  "help.tabs.toast.ariaLabel":
+    "ٹیباں دی جان پچھان۔ اپنے کم تے چالو سیشناں نوں ٹیباں نال ترتیب دیو",
   "help.tabs.toast.dismiss": "ٹیباں دی جانکاری ہٹاؤ",
   "help.tabs.title": "ٹیباں دی جان پچھان",
   "help.tabs.description": "اپنے کم تے چالو سیشناں نوں ٹیباں نال ترتیب دیو",
@@ -544,7 +592,8 @@ export const dict = {
   "dialog.project.edit.color": "رنگ",
   "dialog.project.edit.color.select": "{{color}} رنگ چنو",
   "dialog.project.edit.worktree.startup": "ورک اسپیس اسٹارٹ اپ سکرپٹ",
-  "dialog.project.edit.worktree.startup.description": "اک نویں ورک سپیس (ورک ٹری) بنان دے بعد چلدا اے۔",
+  "dialog.project.edit.worktree.startup.description":
+    "اک نویں ورک سپیس (ورک ٹری) بنان دے بعد چلدا اے۔",
   "dialog.project.edit.worktree.startup.placeholder": "مثلاً بن انسٹال کرو",
   "dialog.releaseNotes.action.getStarted": "شروع کرو",
   "dialog.releaseNotes.action.next": "اگلا",
@@ -553,7 +602,8 @@ export const dict = {
   "dialog.usageExceeded.dontShowAgain": "دوبارہ نہ وکھاؤ",
 
   "context.breakdown.title": "کانٹیکسٹ دی ونڈ",
-  "context.breakdown.note": 'ان پٹ ٹوکناں دی لگ بھگ ونڈ۔ "ہور" وچ ٹول دیاں تعریفاں تے وادھو خرچ شامل نیں۔',
+  "context.breakdown.note":
+    'ان پٹ ٹوکناں دی لگ بھگ ونڈ۔ "ہور" وچ ٹول دیاں تعریفاں تے وادھو خرچ شامل نیں۔',
   "context.breakdown.system": "نظام",
   "context.breakdown.user": "ورتن آلا",
   "context.breakdown.assistant": "اسسٹنٹ",
@@ -607,50 +657,69 @@ export const dict = {
   "toast.theme.title": "تھیم سوئچ ہو گیا",
   "toast.scheme.title": "رنگ سکیم",
   "toast.workspace.enabled.title": "ورک اسپیسز اینبلڈ نیں",
-  "toast.workspace.enabled.description": "اک توں ودھ ورک ٹری ہن سائڈبار وچ دکھائے گئے نیں",
+  "toast.workspace.enabled.description":
+    "اک توں ودھ ورک ٹری ہن سائڈبار وچ دکھائے گئے نیں",
   "toast.workspace.disabled.title": "ورک سپیس بند نیں",
-  "toast.workspace.disabled.description": "سائڈبار چ صرف مین ورک ٹری وکھایا گیا اے۔",
+  "toast.workspace.disabled.description":
+    "سائڈبار چ صرف مین ورک ٹری وکھایا گیا اے۔",
   "toast.permissions.autoaccept.on.title": "اجازتاں نوں خودکار قبول کرنا",
-  "toast.permissions.autoaccept.on.description": "اجازت دی درخواستاں خود بخود منظور ہو جان گیاں",
-  "toast.permissions.autoaccept.off.title": "اجازتاں نوں خودکار قبول کرنا بند کر دتا گیا",
-  "toast.permissions.autoaccept.off.description": "اجازت دی درخواستاں لئی منظوری دی لوڑ ہووے گی",
+  "toast.permissions.autoaccept.on.description":
+    "اجازت دی درخواستاں خود بخود منظور ہو جان گیاں",
+  "toast.permissions.autoaccept.off.title":
+    "اجازتاں نوں خودکار قبول کرنا بند کر دتا گیا",
+  "toast.permissions.autoaccept.off.description":
+    "اجازت دی درخواستاں لئی منظوری دی لوڑ ہووے گی",
   "toast.model.none.title": "کوئی ماڈل نئیں چنیا گیا",
-  "toast.model.none.description": "اس سیشن دا خلاصہ کرن لئی کسے پرووائیڈر نال جڑو",
+  "toast.model.none.description":
+    "اس سیشن دا خلاصہ کرن لئی کسے پرووائیڈر نال جڑو",
   "toast.file.loadFailed.title": "فائل لوڈ کرن چ ناکامی ہوئی",
   "toast.file.listFailed.title": "فائلاں دی فہرست بنان چ ناکام رہیا",
   "toast.context.noLineSelection.title": "کوئی لائن سلیکشن نئیں",
-  "toast.context.noLineSelection.description": "پہلے فائل ٹیب چ اک لائن رینج منتخب کرو۔",
-  "toast.session.share.copyFailed.title": "کلپ بورڈ تے URL کاپی کرن چ ناکام رہیا",
+  "toast.context.noLineSelection.description":
+    "پہلے فائل ٹیب چ اک لائن رینج منتخب کرو۔",
+  "toast.session.share.copyFailed.title":
+    "کلپ بورڈ تے URL کاپی کرن چ ناکام رہیا",
   "toast.session.share.success.title": "سیشن سانجھا کیتا گیا",
-  "toast.session.share.success.description": "شیئر URL کلپ بورڈ تے کاپی ہو گیا!",
+  "toast.session.share.success.description":
+    "شیئر URL کلپ بورڈ تے کاپی ہو گیا!",
   "toast.session.share.failed.title": "سیشن شیئر کرن چ ناکام رہیا",
-  "toast.session.share.failed.description": "سیشن شیئر کردے ویلے کوئی غلطی ہو گئی",
+  "toast.session.share.failed.description":
+    "سیشن شیئر کردے ویلے کوئی غلطی ہو گئی",
   "toast.session.unshare.success.title": "سیشن شیئر کرنا بند ہو گیا",
-  "toast.session.unshare.success.description": "سیشن دا شیئر کامیابی نال بند ہو گیا!",
+  "toast.session.unshare.success.description":
+    "سیشن دا شیئر کامیابی نال بند ہو گیا!",
   "toast.session.unshare.failed.title": "سیشن ان شیئر کرن چ ناکام رہیا",
-  "toast.session.unshare.failed.description": "سیشن ان شیئر کردے ویلے کوئی غلطی ہو گئی",
+  "toast.session.unshare.failed.description":
+    "سیشن ان شیئر کردے ویلے کوئی غلطی ہو گئی",
   "toast.session.export.success.title": "سیشن برآمد ہو گیا",
-  "toast.session.export.success.description": "سیشن نوں \u2068{{filename}}\u2069 وچ محفوظ کر دتا گیا",
+  "toast.session.export.success.description":
+    "سیشن نوں \u2068{{filename}}\u2069 وچ محفوظ کر دتا گیا",
   "toast.session.export.failed.title": "سیشن برآمد کرن چ ناکامی ہوئی",
-  "toast.session.export.failed.description": "سیشن برآمد کردے ویلے اک غلطی ہو گئی",
+  "toast.session.export.failed.description":
+    "سیشن برآمد کردے ویلے اک غلطی ہو گئی",
 
   "toast.session.listFailed.title": "{{project}} لئی سیشن لوڈ کرن چ ناکام رہیا",
   "toast.project.reloadFailed.title": "{{project}} دوبارہ لوڈ نئیں ہو سکیا",
   "toast.update.title": "اپ ڈیٹ دستیاب اے",
-  "toast.update.description": "OpenCode ({{version}}) دا اک نواں ورژن ہن انسٹال کرن لئی دستیاب اے۔",
+  "toast.update.description":
+    "OpenCode ({{version}}) دا اک نواں ورژن ہن انسٹال کرن لئی دستیاب اے۔",
   "toast.update.action.installRestart": "انسٹال کرو تے دوبارہ شروع کرو",
   "toast.update.action.notYet": "اجے نئیں",
-  "disk.accessGuidance.macos": "System Settings ਵਿੱਚ DiskLizard ਨੂੰ Full Disk Access ਦਿਓ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
-  "disk.accessGuidance.windows": "ਅਜਿਹੇ ਖਾਤੇ ਦੀ ਵਰਤੋਂ ਕਰੋ ਜਿਸ ਨੂੰ ਇਸ ਡਰਾਈਵ ਤੱਕ ਪਹੁੰਚ ਹੈ, ਜਾਂ ਕੋਈ ਅਜਿਹਾ ਫੋਲਡਰ ਸਕੈਨ ਕਰੋ ਜੋ ਤੁਹਾਡਾ ਖਾਤਾ ਪੜ੍ਹ ਸਕੇ।",
+  "disk.accessGuidance.macos":
+    "System Settings ਵਿੱਚ DiskLizard ਨੂੰ Full Disk Access ਦਿਓ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
+  "disk.accessGuidance.windows":
+    "ਅਜਿਹੇ ਖਾਤੇ ਦੀ ਵਰਤੋਂ ਕਰੋ ਜਿਸ ਨੂੰ ਇਸ ਡਰਾਈਵ ਤੱਕ ਪਹੁੰਚ ਹੈ, ਜਾਂ ਕੋਈ ਅਜਿਹਾ ਫੋਲਡਰ ਸਕੈਨ ਕਰੋ ਜੋ ਤੁਹਾਡਾ ਖਾਤਾ ਪੜ੍ਹ ਸਕੇ।",
   "disk.accessGuidance.linux": "ਫੋਲਡਰ ਅਤੇ ਮਾਊਂਟ ਇਜਾਜ਼ਤਾਂ ਵੇਖੋ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
   "disk.accessGuidance.default": "ਇਹਨਾਂ ਫੋਲਡਰਾਂ ਤੱਕ ਪਹੁੰਚ ਵੇਖੋ, ਫਿਰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।",
-  "disk.accessGuidance.rescan": "ਪਹੁੰਚ ਬਦਲਣ ਤੋਂ ਬਾਅਦ ਉੱਪਰਲੀ ਪੱਟੀ ਵਿੱਚ Rescan ਦੀ ਵਰਤੋਂ ਕਰੋ।",
+  "disk.accessGuidance.rescan":
+    "ਪਹੁੰਚ ਬਦਲਣ ਤੋਂ ਬਾਅਦ ਉੱਪਰਲੀ ਪੱਟੀ ਵਿੱਚ Rescan ਦੀ ਵਰਤੋਂ ਕਰੋ।",
   "disk.common.rescan": "ਮੁੜ ਸਕੈਨ ਕਰੋ",
   "toast.update.installFailed.title": "ਅੱਪਡੇਟ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋ ਸਕਿਆ",
   "toast.update.installFailed.retry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
   "error.page.title": "کجھ غلط ہو گیا",
   "error.page.description": "ایپلیکیشن لوڈ کردے ویلے غلطی ہوئی۔",
-  "error.page.description.localServerStartup": "لوکل سرور شروع کردے ویلے غلطی ہوئی۔",
+  "error.page.description.localServerStartup":
+    "لوکل سرور شروع کردے ویلے غلطی ہوئی۔",
   "error.page.details.label": "غلطی دی تفصیلات",
   "error.page.action.restart": "دوبارہ شروع کرو",
   "error.page.action.report": "غلطی دی رپورٹ کرو",
@@ -660,17 +729,21 @@ export const dict = {
   "error.page.action.checkUpdates": "اپ ڈیٹس لئی چیک کرو",
   "error.page.action.updateTo": "{{version}} تے اپ ڈیٹ کرو",
   "error.page.circular": "[چکری]",
-  "error.page.report.prefix": "مہربانی کر کے اس غلطی دی اطلاع OpenCode ٹیم نوں دیو",
+  "error.page.report.prefix":
+    "مہربانی کر کے اس غلطی دی اطلاع OpenCode ٹیم نوں دیو",
   "error.page.report.discord": "Discord تے",
   "error.page.version": "ورژن: {{version}}",
   "error.dev.rootNotFound":
     "عنصر نئیں لبیا۔ کی تسی ایہنوں اپنے index.html چ شامل کرنا بھل گئے او؟ یا شاید id وصف غلط ہجے ہو گیا اے؟",
-  "error.serverSync.connectFailed": "سرور نال نئیں جڑ سکیا۔ کی `{{url}}` تے کوئی سرور چل رہیا اے؟",
+  "error.serverSync.connectFailed":
+    "سرور نال نئیں جڑ سکیا۔ کی `{{url}}` تے کوئی سرور چل رہیا اے؟",
   "error.serverSDK.noServerAvailable": "کوئی سرور دستیاب نئیں",
   "error.serverSDK.serverNotAvailable": "سرور دستیاب نئیں",
   "error.childStore.persistedCacheCreateFailed": "پکا کیش نئیں بن سکیا",
-  "error.childStore.persistedProjectMetadataCreateFailed": "مستقل پروجیکٹ میٹا ڈیٹا بنان چ ناکام رہیا",
-  "error.childStore.persistedProjectIconCreateFailed": "پرسٹڈ پروجیکٹ آئیکن بنان چ ناکام رہیا",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "مستقل پروجیکٹ میٹا ڈیٹا بنان چ ناکام رہیا",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "پرسٹڈ پروجیکٹ آئیکن بنان چ ناکام رہیا",
   "error.childStore.storeCreateFailed": "سٹور بنان چ ناکامی ہوئی",
   "directory.error.invalidUrl": "URL وچ غلط ڈائریکٹری اے۔",
   "error.chain.unknown": "نامعلوم غلطی",
@@ -682,21 +755,31 @@ export const dict = {
   "error.chain.responseBody": "جواب دا متن:\n{{body}}",
   "error.chain.didYouMean": "کی تہاڈا مطلب سی: {{suggestions}}",
   "error.chain.modelNotFound": "ماڈل نئیں لبیا: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "اپنی کنفگ (opencode.json) وچ پرووائیڈر/ماڈل دے ناں چیک کرو",
-  "error.chain.mcpFailed": 'MCP سرور "{{name}}" ناکام ہو گیا۔ نوٹ، OpenCode ہلے تک MCP تصدیق دی حمایت نئیں کردا۔',
-  "error.chain.providerAuthFailed": "فراہم کرن آلے دی تصدیق ناکام ہو گئی ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'پرووائیڈر "{{provider}}" شروع نئیں ہو سکیا۔ اسناد تے کنفگ چیک کرو۔',
-  "error.chain.configJsonInvalid": "{{path}} تے کنفیگ فائل درست نئیں اے JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} تے کنفیگ فائل درست نئیں اے JSON(C): {{message}}",
+  "error.chain.checkConfig":
+    "اپنی کنفگ (opencode.json) وچ پرووائیڈر/ماڈل دے ناں چیک کرو",
+  "error.chain.mcpFailed":
+    'MCP سرور "{{name}}" ناکام ہو گیا۔ نوٹ، OpenCode ہلے تک MCP تصدیق دی حمایت نئیں کردا۔',
+  "error.chain.providerAuthFailed":
+    "فراہم کرن آلے دی تصدیق ناکام ہو گئی ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'پرووائیڈر "{{provider}}" شروع نئیں ہو سکیا۔ اسناد تے کنفگ چیک کرو۔',
+  "error.chain.configJsonInvalid":
+    "{{path}} تے کنفیگ فائل درست نئیں اے JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} تے کنفیگ فائل درست نئیں اے JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} وچ "{{dir}}" ڈائریکٹری درست نئیں اے۔ ڈائریکٹری دا ناں "{{suggestion}}" رکھو یا اینوں ہٹا دیو۔ ایہہ اک عام ٹائپنگ دی غلطی اے۔',
-  "error.chain.configFrontmatterError": "{{path}} وچ فرنٹ میٹر دی تجزیہ کرن وچ ناکام رہیا:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} وچ فرنٹ میٹر دی تجزیہ کرن وچ ناکام رہیا:\n{{message}}",
   "error.chain.configInvalid": "{{path}} تے کنفیگ فائل غلط اے",
-  "error.chain.configInvalidWithMessage": "{{path}} تے کنفیگ فائل غلط اے: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} تے کنفیگ فائل غلط اے: {{message}}",
   "notification.permission.title": "اجازت دی لوڑ اے",
-  "notification.permission.description": "{{sessionTitle}} {{projectName}} وچ اجازت دی لوڑ اے",
+  "notification.permission.description":
+    "{{sessionTitle}} {{projectName}} وچ اجازت دی لوڑ اے",
   "notification.question.title": "سوال",
-  "notification.question.description": "{{sessionTitle}} {{projectName}} وچ اک سوال اے",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}} وچ اک سوال اے",
   "notification.action.goToSession": "سیشن تے جاؤ",
   "notification.session.responseReady.title": "جواب تیار اے",
   "notification.session.error.title": "سیشن دی غلطی",
@@ -727,7 +810,8 @@ export const dict = {
   "session.tab.unknown": "نامعلوم سیشن",
   "session.panel.reviewAndFiles": "جائزہ تے فائلاں",
   "session.error.notFound": "ایہہ سیشن نئیں لبیا جا سکدا",
-  "session.error.notFound.description": "ایہ ٹیب اک سیشن ول اشارہ کردا اے جہڑا ہن اس سرور تے موجود نئیں اے۔",
+  "session.error.notFound.description":
+    "ایہ ٹیب اک سیشن ول اشارہ کردا اے جہڑا ہن اس سرور تے موجود نئیں اے۔",
   "session.error.notFound.closeTab": "ٹیب بند کرو",
   "session.error.serverConnection": "اس سرور نال جڑ نئیں سکدے",
   "session.review.filesChanged": "بدلیاں فائلاں {{count}}",
@@ -735,12 +819,15 @@ export const dict = {
   "session.review.change.other": "تبدیلیاں",
   "session.review.loadingChanges": "تبدیلیاں لوڈ ہو رہیاں نیں...",
   "session.review.empty": "اس سیشن وچ حالے تک کوئی تبدیلی نئیں",
-  "session.review.noVcs": "کوئی Git ورژن کنٹرول سسٹم نئیں لبھیا، تبدیلیاں نئیں وکھائیاں گئیاں",
+  "session.review.noVcs":
+    "کوئی Git ورژن کنٹرول سسٹم نئیں لبھیا، تبدیلیاں نئیں وکھائیاں گئیاں",
   "session.review.noVcs.createGit.title": "اک Git ریپازٹری بناؤ",
-  "session.review.noVcs.createGit.description": "اس منصوبے چ تبدیلیاں نو ٹریک کرو، جائزہ لوو تے کالعدم کرو",
+  "session.review.noVcs.createGit.description":
+    "اس منصوبے چ تبدیلیاں نو ٹریک کرو، جائزہ لوو تے کالعدم کرو",
   "session.review.noVcs.createGit.actionLoading": "Git ریپازٹری بنانا...",
   "session.review.noVcs.createGit.action": "Git ریپازٹری بناؤ",
-  "session.review.noSnapshot": "ترتیب وچ سنیپ شاٹ ٹریکنگ غیر فعال اے، اس لیی سیشن تبدیلیاں دستیاب نئیں نیں",
+  "session.review.noSnapshot":
+    "ترتیب وچ سنیپ شاٹ ٹریکنگ غیر فعال اے، اس لیی سیشن تبدیلیاں دستیاب نئیں نیں",
   "session.review.noChanges": "کوئی تبدیلی نئیں",
   "session.review.noUncommittedChanges": "ہلے کوئی ان کمٹڈ تبدیلی نئیں",
   "session.review.noBranchChanges": "ہلے تیکر کوئی برانچ نئیں بدلی",
@@ -821,7 +908,8 @@ export const dict = {
   "status.popover.tab.plugins": "پلگ انز",
   "status.popover.action.manageServers": "سرورز دا انتظام کرو",
   "session.share.popover.title": "ویب تے شائع کرو",
-  "session.share.popover.description.shared": "ایہ سیشن ویب تے عوامی اے۔ ایہ لنک آلے ہر بندے لئی رسائی حاصل اے۔",
+  "session.share.popover.description.shared":
+    "ایہ سیشن ویب تے عوامی اے۔ ایہ لنک آلے ہر بندے لئی رسائی حاصل اے۔",
   "session.share.popover.description.unshared":
     "ویب تے عوامی طور تے سیشن شیئر کرو۔ ایہ لنک آلے ہر بندے لئی رسائی حاصل ہووے گی۔",
   "session.share.action.share": "شیئر کرو",
@@ -840,11 +928,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "ٹرمینل بند کرو",
   "terminal.connectionLost.title": "کنکشن گواچ گیا",
-  "terminal.connectionLost.abnormalClose": "WebSocket غیر معمولی طور تے بند کیتا گیا: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket غیر معمولی طور تے بند کیتا گیا: {{code}}",
   "terminal.connectionLost.description":
     "ٹرمینل کنکشن وچ رکاوٹ پے گئی۔ ایہ اودوں ہو سکدا اے جدوں سرور دوبارہ شروع ہوندا اے۔",
-  "terminal.connectTicket.csrfError": "PTY کنکشن ٹکٹ نوں ماخذ یا CSRF جانچاں نے رد کر دتا۔ سرور دی CORS کنفگ چیک کرو۔",
-  "terminal.connectTicket.statusError": "PTY کنکشن ٹکٹ {{status}} سٹیٹس نال ناکام ہو گیا",
+  "terminal.connectTicket.csrfError":
+    "PTY کنکشن ٹکٹ نوں ماخذ یا CSRF جانچاں نے رد کر دتا۔ سرور دی CORS کنفگ چیک کرو۔",
+  "terminal.connectTicket.statusError":
+    "PTY کنکشن ٹکٹ {{status}} سٹیٹس نال ناکام ہو گیا",
   "titlebar.update": "اپ ڈیٹ کرو",
   "titlebar.updateVersion": "اپ ڈیٹ کرو {{version}}",
   "common.closeTab": "ٹیب بند کرو",
@@ -888,8 +979,10 @@ export const dict = {
   "sidebar.workspaces.enable": "ورک سپیس چالو کرو",
   "sidebar.workspaces.disable": "ورک اسپیسز نو غیر فعال کرو",
   "sidebar.gettingStarted.title": "شروع کرنا",
-  "sidebar.gettingStarted.line1": "OpenCode چ مفت ماڈل شامل نیں تاکہ تسی فوری طور تے شروع کر سکو۔",
-  "sidebar.gettingStarted.line2": "Claude، GPT، Gemini وغیرہ ماڈل ورتن لئی کوئی وی پرووائیڈر جوڑو۔",
+  "sidebar.gettingStarted.line1":
+    "OpenCode چ مفت ماڈل شامل نیں تاکہ تسی فوری طور تے شروع کر سکو۔",
+  "sidebar.gettingStarted.line2":
+    "Claude، GPT، Gemini وغیرہ ماڈل ورتن لئی کوئی وی پرووائیڈر جوڑو۔",
   "sidebar.project.recentSessions": "حالیہ سیشن",
   "sidebar.project.viewAllSessions": "سارے سیشن ویکھو",
   "sidebar.project.clearNotifications": "نوٹیفکیشن صاف کرو",
@@ -907,22 +1000,26 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "پچھلے 5 سیکنڈ چ 32 ایم ایس توں ودھ فریم۔",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "پچھلے 5 سیکنڈاں چ بلاک کیتا گیا ویلہ تے لمے کماں دی گنتی۔ زیادہ توں زیادہ کم: {{max}}۔",
+  "debugBar.long.tip":
+    "پچھلے 5 سیکنڈاں چ بلاک کیتا گیا ویلہ تے لمے کماں دی گنتی۔ زیادہ توں زیادہ کم: {{max}}۔",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "پچھلے 5 سیکنڈاں چ بدترین ان پٹ دی تاخیر ویکھی گئی۔",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "پچھلے 5 سیکنڈاں چ تقریباً تعامل دی مدت۔ ایہ INP ورگا اے، سرکاری Web Vitals INP نئیں۔",
+  "debugBar.inp.tip":
+    "پچھلے 5 سیکنڈاں چ تقریباً تعامل دی مدت۔ ایہ INP ورگا اے، سرکاری Web Vitals INP نئیں۔",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "موجودہ ایپ دی زندگی لئی مجموعی ترتیب دی تبدیلی۔",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "جے ایس ہیپ بمقابلہ ہیپ لیمٹ استعمال کیتا گیا۔ صرف Chromium۔",
+  "debugBar.mem.tipUnavailable":
+    "جے ایس ہیپ بمقابلہ ہیپ لیمٹ استعمال کیتا گیا۔ صرف Chromium۔",
   "debugBar.mem.tip": "ورتیا JS ہیپ تے ہیپ دی حد۔ {{limit}} وچوں {{used}}۔",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "سارے انٹرایکٹو عناصر اُتے فوکس سٹائل لازمی لاگو کرو",
   "debugBar.focus.on": "چالو",
   "debugBar.focus.off": "بند",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "چُنی ہوئی زبان نوں بدلے بغیر پوری ایپ دے لے آؤٹ دی سمت لازمی مقرر کرو",
+  "debugBar.direction.tip":
+    "چُنی ہوئی زبان نوں بدلے بغیر پوری ایپ دے لے آؤٹ دی سمت لازمی مقرر کرو",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode ڈیسک ٹاپ",
@@ -932,7 +1029,8 @@ export const dict = {
   "settings.tab.shortcuts": "شارٹ کٹ",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL نال جوڑ",
-  "settings.desktop.wsl.description": "Windows تے WSL دے اندر OpenCode سرور چلاؤ۔",
+  "settings.desktop.wsl.description":
+    "Windows تے WSL دے اندر OpenCode سرور چلاؤ۔",
   "settings.general.section.appearance": "دِکھ",
   "settings.general.section.advanced": "اَڈوانسڈ",
   "settings.general.section.notifications": "سسٹم نوٹیفکیشنز",
@@ -941,75 +1039,101 @@ export const dict = {
   "settings.general.section.feed": "فیڈ",
   "settings.general.section.display": "ڈسپلے",
   "settings.general.row.language.title": "بولی",
-  "settings.general.row.language.description": "OpenCode لئی ڈسپلے دی بولی بدلو",
+  "settings.general.row.language.description":
+    "OpenCode لئی ڈسپلے دی بولی بدلو",
   "settings.general.row.shell.title": "شیل",
-  "settings.general.row.shell.description": "Shell ٹرمینل تے ایجنٹ ٹولز دے ذریعہ استعمال کیتا جاندا اے",
+  "settings.general.row.shell.description":
+    "Shell ٹرمینل تے ایجنٹ ٹولز دے ذریعہ استعمال کیتا جاندا اے",
   "settings.general.row.shell.autoDefault": "آٹو (پہلے توں طے شدہ)",
   "settings.general.row.shell.terminalOnly": "صرف ٹرمینل",
   "settings.general.row.appearance.title": "دِکھ",
-  "settings.general.row.appearance.description": "اپنے آلے تے OpenCode کیویں لگدا اے، اپنی مرضی دے مطابق بناؤ",
+  "settings.general.row.appearance.description":
+    "اپنے آلے تے OpenCode کیویں لگدا اے، اپنی مرضی دے مطابق بناؤ",
   "settings.general.row.colorScheme.title": "رنگ سکیم",
-  "settings.general.row.colorScheme.description": "چنو کہ آیا OpenCode سسٹم، لائٹ، یا ڈارک تھیم دی پیروی کردا اے",
+  "settings.general.row.colorScheme.description":
+    "چنو کہ آیا OpenCode سسٹم، لائٹ، یا ڈارک تھیم دی پیروی کردا اے",
   "settings.general.row.theme.title": "تھیم",
-  "settings.general.row.theme.description": "OpenCode نوں کس طرح تھیم کیتا گیا اے، اپنی مرضی دے مطابق بناؤ۔",
+  "settings.general.row.theme.description":
+    "OpenCode نوں کس طرح تھیم کیتا گیا اے، اپنی مرضی دے مطابق بناؤ۔",
   "settings.general.row.font.title": "کوڈ فونٹ",
-  "settings.general.row.font.description": "کوڈ بلاکس وچ استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
+  "settings.general.row.font.description":
+    "کوڈ بلاکس وچ استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
   "settings.general.row.terminalFont.title": "Terminal فونٹ",
-  "settings.general.row.terminalFont.description": "ٹرمینل وچ استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
+  "settings.general.row.terminalFont.description":
+    "ٹرمینل وچ استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
   "settings.general.row.uiFont.title": "یو آئی فونٹ",
-  "settings.general.row.uiFont.description": "پورے انٹرفیس تے استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
+  "settings.general.row.uiFont.description":
+    "پورے انٹرفیس تے استعمال ہون آلے فونٹ نو اپنی مرضی دے مطابق بناؤ",
   "settings.general.row.followup.title": "فالو اپ رویہ",
-  "settings.general.row.followup.description": "چنو کہ فالو اپ اشارے فوری طور تے چلدے نیں یا قطار چ انتظار کردے نیں",
+  "settings.general.row.followup.description":
+    "چنو کہ فالو اپ اشارے فوری طور تے چلدے نیں یا قطار چ انتظار کردے نیں",
   "settings.general.row.followup.option.queue": "قطار",
   "settings.general.row.followup.option.steer": "سٹیئر",
   "settings.general.row.showFileTree.title": "فائل ٹری",
-  "settings.general.row.showFileTree.description": "سیشنز چ فائل ٹری پینل وکھاؤ",
+  "settings.general.row.showFileTree.description":
+    "سیشنز چ فائل ٹری پینل وکھاؤ",
   "settings.general.row.showNavigation.title": "نیوی گیشن کنٹرولز",
-  "settings.general.row.showNavigation.description": "ڈیسک ٹاپ ٹائٹل بار وچ پچھے تے اگے دے بٹن وکھاؤ",
+  "settings.general.row.showNavigation.description":
+    "ڈیسک ٹاپ ٹائٹل بار وچ پچھے تے اگے دے بٹن وکھاؤ",
   "settings.general.row.showSearch.title": "کمانڈ پیلیٹ",
-  "settings.general.row.showSearch.description": "ٹائٹل بار وچ سرچ تے کمانڈ پیلیٹ بٹن وکھاؤ",
+  "settings.general.row.showSearch.description":
+    "ٹائٹل بار وچ سرچ تے کمانڈ پیلیٹ بٹن وکھاؤ",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "ڈیسک ٹاپ ٹائٹل بار وچ ٹرمینل بٹن وکھاؤ",
+  "settings.general.row.showTerminal.description":
+    "ڈیسک ٹاپ ٹائٹل بار وچ ٹرمینل بٹن وکھاؤ",
   "settings.general.row.showStatus.title": "سرور دی حیثیت",
-  "settings.general.row.showStatus.description": "ٹائٹل بار وچ سرور دی حیثیت دا بٹن وکھاؤ",
+  "settings.general.row.showStatus.description":
+    "ٹائٹل بار وچ سرور دی حیثیت دا بٹن وکھاؤ",
   "settings.general.row.mobileTitlebarBottom.title": "تھلویں نیوی گیشن",
-  "settings.general.row.mobileTitlebarBottom.description": "موبائل تے سکرین دے تھلے ٹائٹل بار تے سیشن ٹیب رکھو",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "موبائل تے سکرین دے تھلے ٹائٹل بار تے سیشن ٹیب رکھو",
   "settings.general.row.showCustomAgents.title": "ایجنٹ وکھاؤ",
   "settings.general.row.showCustomAgents.description":
     "کمپوزر چ ایجنٹاں دے وچکار سوئچ کرو۔ جدوں لُکیا ہوندا اے، تے بلڈ ایجنٹ تے ڈیفالٹ ہوندا اے۔",
   "settings.general.row.reasoningSummaries.title": "استدلال دے خلاصے وکھاؤ",
-  "settings.general.row.reasoningSummaries.description": "ٹائم لائن وچ ماڈل دی استدلال دے خلاصے وکھاؤ",
-  "settings.general.row.shellToolPartsExpanded.title": "شیل ٹول دے حصیاں نو ودھاؤ",
+  "settings.general.row.reasoningSummaries.description":
+    "ٹائم لائن وچ ماڈل دی استدلال دے خلاصے وکھاؤ",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "شیل ٹول دے حصیاں نو ودھاؤ",
   "settings.general.row.shellToolPartsExpanded.description":
     "ٹائم لائن وچ ڈیفالٹ دے طور تے ودھائے گئے شیل ٹول دے حصے وکھاؤ",
-  "settings.general.row.editToolPartsExpanded.title": "ترمیم دے آلے دے حصیاں نو ودھاؤ",
+  "settings.general.row.editToolPartsExpanded.title":
+    "ترمیم دے آلے دے حصیاں نو ودھاؤ",
   "settings.general.row.editToolPartsExpanded.description":
     "ٹائم لائن وچ ڈیفالٹ دے طور تے ودھائے گئے ترمیم، لکھن تے پیچ ٹول دے حصے وکھاؤ",
   "settings.general.row.newInterface.title": "نواں لے آؤٹ",
   "settings.general.row.newInterface.badge": "نواں",
   "settings.general.row.newInterface.description":
     "نویں ٹیبز تے ہوم لے آؤٹ ورتو۔ اک محدود ویلے لئی ترتیب دے وچکار سوئچ کرو۔",
-  "settings.general.row.newInterfaceNotice.title": "تسی ہن نواں لے آؤٹ ورت رہے او",
-  "settings.general.row.newInterfaceNotice.description": "پچھلا لے آؤٹ ہن دستیاب نئیں",
+  "settings.general.row.newInterfaceNotice.title":
+    "تسی ہن نواں لے آؤٹ ورت رہے او",
+  "settings.general.row.newInterfaceNotice.description":
+    "پچھلا لے آؤٹ ہن دستیاب نئیں",
   "settings.general.row.newInterfaceNotice.dismiss": "برخاست کرو",
   "settings.general.row.pinchZoom.title": "زوم کرن لئی چٹکی مارو",
-  "settings.general.row.pinchZoom.description": "ٹریک پیڈ پنچ تے کنٹرول سکرول اشارے نو زوم کرن دی اجازت دیو",
+  "settings.general.row.pinchZoom.description":
+    "ٹریک پیڈ پنچ تے کنٹرول سکرول اشارے نو زوم کرن دی اجازت دیو",
   "settings.general.row.wayland.title": "مقامی Wayland ورتو",
-  "settings.general.row.wayland.description": "Wayland تے X11 فال بیک نو غیر فعال کرو۔ دوبارہ شروع کرن دی لوڑ اے۔",
+  "settings.general.row.wayland.description":
+    "Wayland تے X11 فال بیک نو غیر فعال کرو۔ دوبارہ شروع کرن دی لوڑ اے۔",
   "settings.general.row.wayland.tooltip":
     "مخلوط ریفریش ریٹ مانیٹراں دے نال Linux تے، مقامی Wayland زیادہ مستحکم ہو سکدا اے۔",
   "settings.general.row.releaseNotes.title": "ریلیز نوٹ",
-  "settings.general.row.releaseNotes.description": "اپ ڈیٹ پچھوں 'نواں کی اے' پاپ اپ وکھاؤ",
+  "settings.general.row.releaseNotes.description":
+    "اپ ڈیٹ پچھوں 'نواں کی اے' پاپ اپ وکھاؤ",
   "settings.updates.row.startup.title": "شروع ہون تے اپ ڈیٹاں دی پڑتال کرو",
-  "settings.updates.row.startup.description": "جدوں OpenCode لانچ ہوندا اے تے خودبخود اپ ڈیٹس چیک کرو",
+  "settings.updates.row.startup.description":
+    "جدوں OpenCode لانچ ہوندا اے تے خودبخود اپ ڈیٹس چیک کرو",
   "settings.updates.row.check.title": "اپ ڈیٹس لئی چیک کرو",
-  "settings.updates.row.check.description": "اپ ڈیٹس لئی دستی طور تے چیک کرو تے جے دستیاب ہووے تے انسٹال کرو",
+  "settings.updates.row.check.description":
+    "اپ ڈیٹس لئی دستی طور تے چیک کرو تے جے دستیاب ہووے تے انسٹال کرو",
   "settings.updates.action.checkNow": "ہن چیک کرو",
   "settings.updates.action.checking": "چیک کر رہیا واں...",
   "settings.updates.action.downloading": "ڈاؤن لوڈ کر رہیا اے...",
   "settings.updates.action.installing": "انسٹال کر رہیا اے...",
   "settings.updates.toast.latest.title": "تسی تازہ ترین او",
-  "settings.updates.toast.latest.description": "تسی OpenCode دا تازہ ترین ورژن چلا رئے او۔",
+  "settings.updates.toast.latest.description":
+    "تسی OpenCode دا تازہ ترین ورژن چلا رئے او۔",
   "sound.option.none": "کوئی نئیں",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1060,21 +1184,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "جدوں ایجنٹ مکمل ہو جائے یا توجہ دی لوڑ ہووے تے سسٹم نوٹیفکیشن وکھاؤ",
   "settings.general.notifications.permissions.title": "اجازتاں",
-  "settings.general.notifications.permissions.description": "جدوں اجازت دی لوڑ ہووے تے سسٹم نوٹیفکیشن وکھاؤ",
+  "settings.general.notifications.permissions.description":
+    "جدوں اجازت دی لوڑ ہووے تے سسٹم نوٹیفکیشن وکھاؤ",
   "settings.general.notifications.errors.title": "غلطیاں",
-  "settings.general.notifications.errors.description": "جدوں کوئی غلطی ہوندی اے تے سسٹم نوٹیفکیشن وکھاؤ",
+  "settings.general.notifications.errors.description":
+    "جدوں کوئی غلطی ہوندی اے تے سسٹم نوٹیفکیشن وکھاؤ",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "جدوں ایجنٹ مکمل ہو جائے یا توجہ دی لوڑ ہووے تے آواز چلاؤ",
+  "settings.general.sounds.agent.description":
+    "جدوں ایجنٹ مکمل ہو جائے یا توجہ دی لوڑ ہووے تے آواز چلاؤ",
   "settings.general.sounds.permissions.title": "اجازتاں",
-  "settings.general.sounds.permissions.description": "جدوں اجازت دی لوڑ ہووے تے آواز چلاؤ",
+  "settings.general.sounds.permissions.description":
+    "جدوں اجازت دی لوڑ ہووے تے آواز چلاؤ",
   "settings.general.sounds.errors.title": "غلطیاں",
-  "settings.general.sounds.errors.description": "جدوں کوئی غلطی ہوندی اے تے آواز چلاؤ",
+  "settings.general.sounds.errors.description":
+    "جدوں کوئی غلطی ہوندی اے تے آواز چلاؤ",
   "settings.shortcuts.title": "کی بورڈ شارٹ کٹ",
   "settings.shortcuts.reset.button": "ڈیفالٹ تے ری سیٹ کرو",
   "settings.shortcuts.reset.toast.title": "شارٹ کٹس ری سیٹ ہو گئے",
-  "settings.shortcuts.reset.toast.description": "کی بورڈ دے شارٹ کٹس نو ڈیفالٹ تے ری سیٹ کر دتا گیا اے۔",
+  "settings.shortcuts.reset.toast.description":
+    "کی بورڈ دے شارٹ کٹس نو ڈیفالٹ تے ری سیٹ کر دتا گیا اے۔",
   "settings.shortcuts.conflict.title": "شارٹ کٹ پہلے ای استعمال چ اے",
-  "settings.shortcuts.conflict.description": "{{keybind}} پہلے ای {{titles}} نوں تفویض کیتا گیا اے۔",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} پہلے ای {{titles}} نوں تفویض کیتا گیا اے۔",
   "settings.shortcuts.unassigned": "غیر تفویض شدہ",
   "settings.shortcuts.pressKeys": "کنجیاں دباؤ",
   "settings.shortcuts.search.placeholder": "شارٹ کٹ لبھو",
@@ -1086,41 +1217,53 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminal",
   "settings.shortcuts.group.prompt": "پرامپٹ",
   "settings.providers.title": "پرووائیڈر",
-  "settings.providers.description": "پرووائیڈر دیاں سیٹنگاں ایتھے بدلیاں جا سکدیاں نیں۔",
+  "settings.providers.description":
+    "پرووائیڈر دیاں سیٹنگاں ایتھے بدلیاں جا سکدیاں نیں۔",
   "settings.providers.section.connected": "جڑے ہوئے پرووائیڈر",
   "settings.providers.connected.empty": "کوئی پرووائیڈر نئیں جڑیا",
-  "settings.providers.connected.environmentDescription": "تہاڈے ماحول دے متغیراں توں جڑیا ہویا اے",
+  "settings.providers.connected.environmentDescription":
+    "تہاڈے ماحول دے متغیراں توں جڑیا ہویا اے",
   "settings.providers.section.popular": "مقبول پرووائیڈر",
-  "settings.providers.custom.description": "بیس URL نال OpenAI دے نال رلدا پرووائیڈر شامل کرو۔",
+  "settings.providers.custom.description":
+    "بیس URL نال OpenAI دے نال رلدا پرووائیڈر شامل کرو۔",
   "settings.providers.tag.environment": "ماحول",
   "settings.providers.tag.config": "ترتیب",
   "settings.providers.tag.custom": "مخصوص",
   "settings.providers.tag.other": "ہور",
   "settings.models.title": "ماڈل",
-  "settings.models.description": "ماڈل دی ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
+  "settings.models.description":
+    "ماڈل دی ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
   "settings.agents.title": "ایجنٹاں",
   "settings.agents.description": "Agent ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
   "settings.commands.title": "کمانڈز",
-  "settings.commands.description": "کمانڈ دی ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
+  "settings.commands.description":
+    "کمانڈ دی ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP ترتیبات ایتھے ترتیب دے قابل ہون گیاں۔",
   "settings.permissions.title": "اجازتاں",
-  "settings.permissions.description": "کنٹرول کرو کہ سرور پہلے توں طے شدہ طور تے کیہڑے اوزار استعمال کر سکدا اے۔",
+  "settings.permissions.description":
+    "کنٹرول کرو کہ سرور پہلے توں طے شدہ طور تے کیہڑے اوزار استعمال کر سکدا اے۔",
   "settings.permissions.section.tools": "ٹول",
-  "settings.permissions.toast.updateFailed.title": "اجازتاں نو اپ ڈیٹ کرن اچ ناکام رہیا",
+  "settings.permissions.toast.updateFailed.title":
+    "اجازتاں نو اپ ڈیٹ کرن اچ ناکام رہیا",
   "settings.permissions.action.allow": "اجازت دیو",
   "settings.permissions.action.ask": "پُچھو",
   "settings.permissions.action.deny": "منع کرو",
   "settings.permissions.tool.read.title": "پڑھو",
-  "settings.permissions.tool.read.description": "فائل پڑھنا (فائل دے راہ نال میل کھاندا اے)",
+  "settings.permissions.tool.read.description":
+    "فائل پڑھنا (فائل دے راہ نال میل کھاندا اے)",
   "settings.permissions.tool.edit.title": "ترمیم",
-  "settings.permissions.tool.edit.description": "فائلاں وچ ترمیم کرو، بشمول ترمیماں، لکھتاں تے پیچاں",
+  "settings.permissions.tool.edit.description":
+    "فائلاں وچ ترمیم کرو، بشمول ترمیماں، لکھتاں تے پیچاں",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "glob پیٹرناں نال فائلاں دا میل کرو",
+  "settings.permissions.tool.glob.description":
+    "glob پیٹرناں نال فائلاں دا میل کرو",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "ریگولر ایکسپریشنز دا استعمال کردے ہوئے فائل دے مواد نو تلاش کرو",
+  "settings.permissions.tool.grep.description":
+    "ریگولر ایکسپریشنز دا استعمال کردے ہوئے فائل دے مواد نو تلاش کرو",
   "settings.permissions.tool.list.title": "فہرست",
-  "settings.permissions.tool.list.description": "ڈائریکٹری دے اندر فائلاں دی فہرست بناؤ",
+  "settings.permissions.tool.list.description":
+    "ڈائریکٹری دے اندر فائلاں دی فہرست بناؤ",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "شیل کمانڈز چلاؤ",
   "settings.permissions.tool.task.title": "کم",
@@ -1139,7 +1282,8 @@ export const dict = {
   "settings.permissions.tool.external_directory.description":
     "پروجیکٹ ڈائریکٹری توں باہر دیاں فائلاں تک رسائی حاصل کرو",
   "settings.permissions.tool.doom_loop.title": "ڈوم لوپ",
-  "settings.permissions.tool.doom_loop.description": "اکو جئے ان پٹ دے نال بار بار ٹول کالاں دا پتہ لاو",
+  "settings.permissions.tool.doom_loop.description":
+    "اکو جئے ان پٹ دے نال بار بار ٹول کالاں دا پتہ لاو",
   "session.delete.failed.title": "سیشن نو مٹان اچ ناکام رہیا",
   "session.delete.title": "سیشن مٹاؤ",
   "session.delete.confirm": 'سیشن "{{name}}" نوں مٹا دیو؟',
@@ -1153,12 +1297,14 @@ export const dict = {
   "workspace.resetting.description": "اس چ اک منٹ لگ سکدا اے۔",
   "workspace.reset.failed.title": "ورک سپیس نوں ری سیٹ کرن چ ناکامی ہوئی",
   "workspace.reset.success.title": "ورک اسپیس ری سیٹ",
-  "workspace.reset.success.description": "ورک سپیس ہن ڈیفالٹ برانچ نال میل کھاندا اے۔",
+  "workspace.reset.success.description":
+    "ورک سپیس ہن ڈیفالٹ برانچ نال میل کھاندا اے۔",
   "workspace.error.stillPreparing": "ورک اسپیس ہلے وی تیاری کر رئی اے",
   "workspace.status.checking": "غیر ضم شدہ تبدیلیاں دی جانچ پڑتال...",
   "workspace.status.error": "Git دی حالت دی پڑتال نئیں ہو سکی۔",
   "workspace.status.clean": "کوئی غیر ضم شدہ تبدیلی نئیں لبھی۔",
-  "workspace.status.dirty": "اس ورک اسپیس وچ غیر ضم شدہ تبدیلیاں دا پتہ چلیا اے۔",
+  "workspace.status.dirty":
+    "اس ورک اسپیس وچ غیر ضم شدہ تبدیلیاں دا پتہ چلیا اے۔",
   "workspace.delete.title": "ورک اسپیس نو مٹا دیو",
   "workspace.delete.confirm": 'ورک اسپیس "{{name}}" نو مٹا دیو؟',
   "workspace.delete.button": "ورک اسپیس نو مٹا دیو",
@@ -1168,5 +1314,6 @@ export const dict = {
   "workspace.reset.archived.none": "کوئی فعال سیشن آرکائیو نئیں کیتا جائے گا۔",
   "workspace.reset.archived.one": "1 سیشن آرکائیو کیتا جائے گا۔",
   "workspace.reset.archived.many": "{{count}} سیشن آرکائیو کیتے جان گے۔",
-  "workspace.reset.note": "ایہ ورک اسپیس نو ڈیفالٹ برانچ نال ملاون لئی ری سیٹ کرے گا۔",
+  "workspace.reset.note":
+    "ایہ ورک اسپیس نو ڈیفالٹ برانچ نال ملاون لئی ری سیٹ کرے گا۔",
 }

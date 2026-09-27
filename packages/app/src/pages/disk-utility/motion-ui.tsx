@@ -10,7 +10,11 @@ import { motion, MotionConfig, type HTMLMotionProps } from "framer-motion"
 export const DISK_MOTION_EASE = [0.32, 0.72, 0, 1] as const
 
 /** Continuous rotation (v1 `dl-spin`, `dl-scan-sweep`). */
-export function Spin({ duration = 0.8, origin, ...rest }: { duration?: number; origin?: string } & HTMLMotionProps<"div">) {
+export function Spin({
+  duration = 0.8,
+  origin,
+  ...rest
+}: { duration?: number; origin?: string } & HTMLMotionProps<"div">) {
   return (
     <motion.div
       animate={{ rotate: 360 }}
@@ -67,6 +71,10 @@ export function FadeSettle(props: HTMLMotionProps<"img">) {
 }
 
 /** Provider wiring reduced-motion preference into framer globally. */
-export function DiskMotionProvider({ children }: { children: React.ReactNode }) {
+export function DiskMotionProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return <MotionConfig reducedMotion="user">{children}</MotionConfig>
 }

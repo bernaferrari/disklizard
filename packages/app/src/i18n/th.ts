@@ -1,6 +1,8 @@
 export const dict = {
-  "disk.accessGuidance.macos": "ให้สิทธิ์ Full Disk Access แก่ DiskLizard ใน System Settings แล้วสแกนอีกครั้ง",
-  "disk.accessGuidance.windows": "ใช้บัญชีที่เข้าถึงไดรฟ์นี้ได้ หรือสแกนโฟลเดอร์ที่บัญชีของคุณอ่านได้",
+  "disk.accessGuidance.macos":
+    "ให้สิทธิ์ Full Disk Access แก่ DiskLizard ใน System Settings แล้วสแกนอีกครั้ง",
+  "disk.accessGuidance.windows":
+    "ใช้บัญชีที่เข้าถึงไดรฟ์นี้ได้ หรือสแกนโฟลเดอร์ที่บัญชีของคุณอ่านได้",
   "disk.accessGuidance.linux": "ตรวจสอบสิทธิ์ของโฟลเดอร์และจุดเมาต์ แล้วสแกนอีกครั้ง",
   "disk.accessGuidance.default": "ตรวจสอบการเข้าถึงโฟลเดอร์เหล่านี้ แล้วสแกนอีกครั้ง",
   "disk.accessGuidance.rescan": "หลังเปลี่ยนสิทธิ์การเข้าถึง ให้ใช้ปุ่ม Rescan ในแถบด้านบน.",
@@ -53,11 +55,13 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "การตรวจหาการอัปเดตล้มเหลว",
   "desktop.updater.dialog.checkFailed.title": "ข้อผิดพลาดในการอัปเดต",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "คุณกำลังใช้เวอร์ชันล่าสุด",
   "desktop.updater.dialog.upToDate.title": "ไม่มีการอัปเดต",
-  "desktop.updater.dialog.ready.message": "ดาวน์โหลดการอัปเดต {{version}} แล้ว เริ่มการทำงานใหม่ตอนนี้หรือไม่",
+  "desktop.updater.dialog.ready.message":
+    "ดาวน์โหลดการอัปเดต {{version}} แล้ว เริ่มการทำงานใหม่ตอนนี้หรือไม่",
   "desktop.updater.dialog.ready.title": "พร้อมอัปเดต",
   "desktop.updater.dialog.restart": "เริ่มการทำงานใหม่",
   "desktop.updater.dialog.retry": "Retry",
@@ -70,9 +74,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "โหลด OpenCode ไม่สำเร็จ",
   "desktop.recovery.terminated": "หน้าต่าง OpenCode หยุดทำงานโดยไม่คาดคิด",
   "desktop.recovery.unresponsive": "OpenCode ไม่ตอบสนอง",
-  "desktop.recovery.unresponsive.detail": "คุณสามารถเปิดแอปอีกครั้ง เปิดบันทึก หรือรอต่อไป",
-  "desktop.recovery.loadFailed.detail": "หน้าต่าง: {{window}}\nURL: {{url}}\nข้อผิดพลาด: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "หน้าต่าง: {{window}}\nสาเหตุ: {{reason}}\nรหัส: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "คุณสามารถเปิดแอปอีกครั้ง เปิดบันทึก หรือรอต่อไป",
+  "desktop.recovery.loadFailed.detail":
+    "หน้าต่าง: {{window}}\nURL: {{url}}\nข้อผิดพลาด: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "หน้าต่าง: {{window}}\nสาเหตุ: {{reason}}\nรหัส: {{code}}",
   "desktop.recovery.unknown": "<ไม่ทราบ>",
 
   "desktop.dialog.chooseFolder": "เลือกโฟลเดอร์",
@@ -96,11 +103,14 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "อัปเดต OpenCode เสร็จแล้ว แต่ {{distro}} ยังคงรายงานเวอร์ชัน {{installed}} ทั้งที่ควรเป็น {{expected}}",
   "desktop.wsl.error.noVersion": "ไม่มีเวอร์ชัน",
-  "desktop.wsl.error.serverExited": "เซิร์ฟเวอร์ WSL หยุดทำงานหลังเริ่มต้น (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "เซิร์ฟเวอร์ WSL หยุดทำงานหลังเริ่มต้น (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "เซิร์ฟเวอร์ WSL หยุดทำงานก่อนพร้อมใช้งาน (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "การตรวจสอบสถานะ Sidecar สำหรับ {{distro}} หมดเวลาหลังจาก {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} หมดเวลาหลังจาก {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "การตรวจสอบสถานะ Sidecar สำหรับ {{distro}} หมดเวลาหลังจาก {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} หมดเวลาหลังจาก {{timeout}}ms",
   "desktop.wsl.error.failedPort": "ไม่สามารถรับพอร์ตได้",
 
   "desktop.picker.error.notSelected": "ไม่ได้เลือกไฟล์จากตัวเลือกไฟล์",
@@ -186,7 +196,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "ยอมรับสิทธิ์โดยอัตโนมัติ",
   "command.permissions.autoaccept.disable": "หยุดยอมรับสิทธิ์โดยอัตโนมัติ",
   "command.workspace.toggle": "สลับพื้นที่ทำงาน",
-  "command.workspace.toggle.description": "เปิดหรือปิดใช้งานพื้นที่ทำงานหลายรายการในแถบด้านข้าง",
+  "command.workspace.toggle.description":
+    "เปิดหรือปิดใช้งานพื้นที่ทำงานหลายรายการในแถบด้านข้าง",
   "command.session.undo": "เลิกทำ",
   "command.session.undo.description": "เลิกทำข้อความล่าสุด",
   "command.session.redo": "ทำซ้ำ",
@@ -215,15 +226,21 @@ export const dict = {
   "dialog.provider.group.other": "อื่น ๆ",
   "dialog.provider.custom.label": "ผู้ให้บริการแบบกำหนดเองที่เข้ากันได้กับ OpenAI",
   "dialog.provider.tag.recommended": "แนะนำ",
-  "dialog.provider.opencode.note": "โมเดลที่คัดสรร รวมถึง Claude, GPT, Gemini และอื่น ๆ",
+  "dialog.provider.opencode.note":
+    "โมเดลที่คัดสรร รวมถึง Claude, GPT, Gemini และอื่น ๆ",
   "dialog.provider.opencode.tagline": "โมเดลที่เชื่อถือได้และปรับให้เหมาะสม",
   "dialog.provider.opencodeGo.tagline": "การสมัครสมาชิกราคาประหยัดสำหรับทุกคน",
-  "dialog.provider.anthropic.note": "เข้าถึงโมเดล Claude โดยตรง รวมถึง Pro และ Max",
-  "dialog.provider.copilot.note": "โมเดล AI สำหรับการช่วยเหลือในการเขียนโค้ดผ่าน GitHub Copilot",
-  "dialog.provider.openai.note": "โมเดล GPT สำหรับงาน AI ทั่วไปที่รวดเร็วและมีความสามารถ",
-  "dialog.provider.google.note": "โมเดล Gemini สำหรับการตอบสนองที่รวดเร็วและมีโครงสร้าง",
+  "dialog.provider.anthropic.note":
+    "เข้าถึงโมเดล Claude โดยตรง รวมถึง Pro และ Max",
+  "dialog.provider.copilot.note":
+    "โมเดล AI สำหรับการช่วยเหลือในการเขียนโค้ดผ่าน GitHub Copilot",
+  "dialog.provider.openai.note":
+    "โมเดล GPT สำหรับงาน AI ทั่วไปที่รวดเร็วและมีความสามารถ",
+  "dialog.provider.google.note":
+    "โมเดล Gemini สำหรับการตอบสนองที่รวดเร็วและมีโครงสร้าง",
   "dialog.provider.openrouter.note": "เข้าถึงโมเดลที่รองรับทั้งหมดจากผู้ให้บริการเดียว",
-  "dialog.provider.vercel.note": "การเข้าถึงโมเดล AI แบบรวมด้วยการกำหนดเส้นทางอัจฉริยะ",
+  "dialog.provider.vercel.note":
+    "การเข้าถึงโมเดล AI แบบรวมด้วยการกำหนดเส้นทางอัจฉริยะ",
 
   "dialog.model.select.title": "เลือกโมเดล",
   "dialog.model.search.placeholder": "ค้นหาโมเดล",
@@ -273,7 +290,8 @@ export const dict = {
     " และป้อนรหัสด้านล่างเพื่อเชื่อมต่อบัญชีและใช้โมเดล {{provider}} ใน OpenCode",
   "provider.connect.oauth.auto.confirmationCode": "รหัสยืนยัน",
   "provider.connect.toast.connected.title": "เชื่อมต่อ {{provider}} แล้ว",
-  "provider.connect.toast.connected.description": "โมเดล {{provider}} พร้อมใช้งานแล้ว",
+  "provider.connect.toast.connected.description":
+    "โมเดล {{provider}} พร้อมใช้งานแล้ว",
 
   "provider.custom.title": "ผู้ให้บริการที่กำหนดเอง",
   "provider.custom.unavailable": "ผู้ให้บริการที่กำหนดเองไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
@@ -282,14 +300,16 @@ export const dict = {
   "provider.custom.description.suffix": "",
   "provider.custom.field.providerID.label": "รหัสผู้ให้บริการ",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "ตัวอักษรพิมพ์เล็ก ตัวเลข ยัติภังค์ หรือขีดล่าง",
+  "provider.custom.field.providerID.description":
+    "ตัวอักษรพิมพ์เล็ก ตัวเลข ยัติภังค์ หรือขีดล่าง",
   "provider.custom.field.name.label": "ชื่อที่แสดง",
   "provider.custom.field.name.placeholder": "ผู้ให้บริการ AI ของฉัน",
   "provider.custom.field.baseURL.label": "URL พื้นฐาน",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "คีย์ API",
   "provider.custom.field.apiKey.placeholder": "คีย์ API",
-  "provider.custom.field.apiKey.description": "ไม่บังคับ เว้นว่างไว้หากคุณจัดการการยืนยันตัวตนผ่านส่วนหัว",
+  "provider.custom.field.apiKey.description":
+    "ไม่บังคับ เว้นว่างไว้หากคุณจัดการการยืนยันตัวตนผ่านส่วนหัว",
   "provider.custom.models.label": "โมเดล",
   "provider.custom.models.id.label": "รหัส",
   "provider.custom.models.id.placeholder": "model-id",
@@ -305,7 +325,8 @@ export const dict = {
   "provider.custom.headers.remove": "ลบส่วนหัว",
   "provider.custom.headers.add": "เพิ่มส่วนหัว",
   "provider.custom.error.providerID.required": "ต้องระบุรหัสผู้ให้บริการ",
-  "provider.custom.error.providerID.format": "ใช้ตัวอักษรพิมพ์เล็ก ตัวเลข ยัติภังค์ หรือขีดล่าง",
+  "provider.custom.error.providerID.format":
+    "ใช้ตัวอักษรพิมพ์เล็ก ตัวเลข ยัติภังค์ หรือขีดล่าง",
   "provider.custom.error.providerID.exists": "รหัสผู้ให้บริการนั้นมีอยู่แล้ว",
   "provider.custom.error.name.required": "ต้องระบุชื่อที่แสดง",
   "provider.custom.error.baseURL.required": "ต้องระบุ URL พื้นฐาน",
@@ -313,8 +334,10 @@ export const dict = {
   "provider.custom.error.required": "จำเป็น",
   "provider.custom.error.duplicate": "ซ้ำ",
 
-  "provider.disconnect.toast.disconnected.title": "ยกเลิกการเชื่อมต่อ {{provider}} แล้ว",
-  "provider.disconnect.toast.disconnected.description": "โมเดล {{provider}} ไม่พร้อมใช้งานอีกต่อไป",
+  "provider.disconnect.toast.disconnected.title":
+    "ยกเลิกการเชื่อมต่อ {{provider}} แล้ว",
+  "provider.disconnect.toast.disconnected.description":
+    "โมเดล {{provider}} ไม่พร้อมใช้งานอีกต่อไป",
 
   "model.tag.free": "ฟรี",
   "model.tag.latest": "ล่าสุด",
@@ -414,7 +437,8 @@ export const dict = {
 
   "prompt.toast.pasteUnsupported.title": "ไฟล์แนบที่ไม่รองรับ",
   "prompt.toast.attachmentDuplicate.title": "ไฟล์นี้ถูกอัปโหลดแล้ว",
-  "prompt.toast.pasteUnsupported.description": "แนบได้เฉพาะรูปภาพ PDF หรือไฟล์ข้อความเท่านั้น",
+  "prompt.toast.pasteUnsupported.description":
+    "แนบได้เฉพาะรูปภาพ PDF หรือไฟล์ข้อความเท่านั้น",
   "prompt.toast.modelAgentRequired.title": "เลือกเอเจนต์และโมเดล",
   "prompt.toast.modelAgentRequired.description": "เลือกเอเจนต์และโมเดลก่อนส่งพรอมต์",
   "prompt.toast.worktreeCreateFailed.title": "ไม่สามารถสร้าง worktree",
@@ -485,7 +509,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "เลือกดิสโทร",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "กำลังตรวจสอบ WSL...",
-  "wsl.onboarding.restartRequired": "ต้องรีสตาร์ท Windows เพื่อให้การติดตั้ง WSL เสร็จสมบูรณ์",
+  "wsl.onboarding.restartRequired":
+    "ต้องรีสตาร์ท Windows เพื่อให้การติดตั้ง WSL เสร็จสมบูรณ์",
   "wsl.onboarding.ready": "WSL พร้อมใช้งานแล้ว",
   "wsl.onboarding.required": "ต้องมี WSL เพื่อดำเนินการต่อ",
   "wsl.onboarding.checkingDistros": "กำลังตรวจสอบดิสโทร...",
@@ -523,7 +548,8 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "ต้องมี WSL (Windows Subsystem for Linux) ก่อนที่ OpenCode จะเพิ่มเซิร์ฟเวอร์ WSL ได้",
   "wsl.onboarding.wslUnavailable.title": "WSL ไม่พร้อมใช้งาน",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ไม่สามารถตรวจสอบ WSL บนเครื่องนี้ได้",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ไม่สามารถตรวจสอบ WSL บนเครื่องนี้ได้",
   "wsl.onboarding.installWsl": "ติดตั้ง WSL",
   "wsl.onboarding.windowsRestartRequired":
     "รีสตาร์ท Windows เพื่อให้การติดตั้ง WSL เสร็จสมบูรณ์ แล้วเปิด OpenCode อีกครั้ง",
@@ -556,7 +582,8 @@ export const dict = {
     "เริ่มเซสชันใหม่ในแท็บ หรือเปิดเซสชันที่มีอยู่จากโปรเจกต์ใดก็ได้ เปิดแท็บใหม่เมื่อเริ่มงานใหม่ และปิดเมื่อทำงานเสร็จ",
   "help.tabs.organize":
     "การเปิดแท็บไว้สองสามแท็บช่วยให้จัดระเบียบเซสชันที่ใช้งานอยู่ได้ง่ายขึ้น เปลี่ยนชื่อแท็บให้จดจำได้ง่ายหากต้องการเก็บแท็บไว้",
-  "help.tabs.home": "คุณจะพบเซสชันและโปรเจกต์ทั้งหมดในหน้าจอหน้าหลักแบบใหม่ เมื่อเลือกเซสชัน เซสชันนั้นจะเปิดในแท็บ",
+  "help.tabs.home":
+    "คุณจะพบเซสชันและโปรเจกต์ทั้งหมดในหน้าจอหน้าหลักแบบใหม่ เมื่อเลือกเซสชัน เซสชันนั้นจะเปิดในแท็บ",
   "help.tabs.persistence": "เมื่อเปิดแอปอีกครั้ง แท็บของคุณจะยังคงเปิดอยู่",
   "help.tabs.worktrees":
     "การออกแบบใหม่ยังไม่รองรับ Git Worktrees แต่จะรองรับเร็ว ๆ นี้ ดังนั้น หากต้องการใช้เค้าโครงก่อนหน้าต่อ คุณสามารถสลับเค้าโครงได้ในการตั้งค่า โปรดทราบว่าเค้าโครงใหม่จะกลายเป็นเค้าโครงถาวรภายในอีกไม่กี่สัปดาห์",
@@ -570,13 +597,15 @@ export const dict = {
   "dialog.project.edit.color": "สี",
   "dialog.project.edit.color.select": "เลือกสี {{color}}",
   "dialog.project.edit.worktree.startup": "สคริปต์เริ่มต้นพื้นที่ทำงาน",
-  "dialog.project.edit.worktree.startup.description": "ทำงานหลังจากสร้างพื้นที่ทำงานใหม่ (worktree)",
+  "dialog.project.edit.worktree.startup.description":
+    "ทำงานหลังจากสร้างพื้นที่ทำงานใหม่ (worktree)",
   "dialog.project.edit.worktree.startup.placeholder": "เช่น bun install",
 
   "dialog.usageExceeded.dontShowAgain": "ไม่ต้องแสดงอีก",
 
   "context.breakdown.title": "การแบ่งบริบท",
-  "context.breakdown.note": 'การแบ่งโดยประมาณของโทเค็นนำเข้า "อื่น ๆ" รวมถึงคำนิยามเครื่องมือและโอเวอร์เฮด',
+  "context.breakdown.note":
+    'การแบ่งโดยประมาณของโทเค็นนำเข้า "อื่น ๆ" รวมถึงคำนิยามเครื่องมือและโอเวอร์เฮด',
   "context.breakdown.system": "ระบบ",
   "context.breakdown.user": "ผู้ใช้",
   "context.breakdown.assistant": "ผู้ช่วย",
@@ -637,12 +666,14 @@ export const dict = {
   "toast.scheme.title": "โทนสี",
 
   "toast.workspace.enabled.title": "เปิดใช้งานพื้นที่ทำงานแล้ว",
-  "toast.workspace.enabled.description": "ตอนนี้จะแสดง worktree หลายรายการในแถบด้านข้าง",
+  "toast.workspace.enabled.description":
+    "ตอนนี้จะแสดง worktree หลายรายการในแถบด้านข้าง",
   "toast.workspace.disabled.title": "ปิดใช้งานพื้นที่ทำงานแล้ว",
   "toast.workspace.disabled.description": "จะแสดงเฉพาะ worktree หลักในแถบด้านข้าง",
 
   "toast.permissions.autoaccept.on.title": "กำลังยอมรับสิทธิ์โดยอัตโนมัติ",
-  "toast.permissions.autoaccept.on.description": "คำขอสิทธิ์จะได้รับการอนุมัติโดยอัตโนมัติ",
+  "toast.permissions.autoaccept.on.description":
+    "คำขอสิทธิ์จะได้รับการอนุมัติโดยอัตโนมัติ",
   "toast.permissions.autoaccept.off.title": "หยุดยอมรับสิทธิ์โดยอัตโนมัติแล้ว",
   "toast.permissions.autoaccept.off.description": "คำขอสิทธิ์จะต้องได้รับการอนุมัติ",
 
@@ -664,7 +695,8 @@ export const dict = {
   "toast.session.unshare.success.title": "ยกเลิกการแชร์เซสชันแล้ว",
   "toast.session.unshare.success.description": "ยกเลิกการแชร์เซสชันสำเร็จ!",
   "toast.session.unshare.failed.title": "ไม่สามารถยกเลิกการแชร์เซสชัน",
-  "toast.session.unshare.failed.description": "เกิดข้อผิดพลาดระหว่างการยกเลิกการแชร์เซสชัน",
+  "toast.session.unshare.failed.description":
+    "เกิดข้อผิดพลาดระหว่างการยกเลิกการแชร์เซสชัน",
 
   "toast.session.export.success.title": "ส่งออกเซสชันแล้ว",
   "toast.session.export.success.description": "บันทึกเซสชันไปยัง {{filename}} แล้ว",
@@ -674,7 +706,8 @@ export const dict = {
   "toast.session.listFailed.title": "ไม่สามารถโหลดเซสชันสำหรับ {{project}}",
 
   "toast.update.title": "มีการอัปเดต",
-  "toast.update.description": "เวอร์ชันใหม่ของ OpenCode ({{version}}) พร้อมใช้งานสำหรับติดตั้ง",
+  "toast.update.description":
+    "เวอร์ชันใหม่ของ OpenCode ({{version}}) พร้อมใช้งานสำหรับติดตั้ง",
   "toast.update.action.installRestart": "ติดตั้งและรีสตาร์ท",
   "toast.update.action.notYet": "ยังไม่",
   "toast.update.installFailed.title": "ไม่สามารถติดตั้งการอัปเดตได้",
@@ -682,7 +715,8 @@ export const dict = {
 
   "error.page.title": "เกิดข้อผิดพลาด",
   "error.page.description": "เกิดข้อผิดพลาดระหว่างการโหลดแอปพลิเคชัน",
-  "error.page.description.localServerStartup": "เกิดข้อผิดพลาดขณะเริ่มเซิร์ฟเวอร์ในเครื่อง",
+  "error.page.description.localServerStartup":
+    "เกิดข้อผิดพลาดขณะเริ่มเซิร์ฟเวอร์ในเครื่อง",
   "error.page.details.label": "รายละเอียดข้อผิดพลาด",
   "error.page.action.restart": "รีสตาร์ท",
   "error.page.action.report": "รายงานข้อผิดพลาด",
@@ -695,9 +729,11 @@ export const dict = {
   "error.page.report.discord": "บน Discord",
   "error.page.version": "เวอร์ชัน: {{version}}",
 
-  "error.dev.rootNotFound": "ไม่พบองค์ประกอบรูท คุณลืมเพิ่มใน index.html หรือบางทีแอตทริบิวต์ id อาจสะกดผิด?",
+  "error.dev.rootNotFound":
+    "ไม่พบองค์ประกอบรูท คุณลืมเพิ่มใน index.html หรือบางทีแอตทริบิวต์ id อาจสะกดผิด?",
 
-  "error.serverSync.connectFailed": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ มีเซิร์ฟเวอร์ทำงานอยู่ที่ `{{url}}` หรือไม่?",
+  "error.serverSync.connectFailed":
+    "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ มีเซิร์ฟเวอร์ทำงานอยู่ที่ `{{url}}` หรือไม่?",
   "directory.error.invalidUrl": "ไดเรกทอรีใน URL ไม่ถูกต้อง",
 
   "error.chain.unknown": "ข้อผิดพลาดที่ไม่รู้จัก",
@@ -708,22 +744,31 @@ export const dict = {
   "error.chain.responseBody": "เนื้อหาการตอบสนอง:\n{{body}}",
   "error.chain.didYouMean": "คุณหมายถึง: {{suggestions}}",
   "error.chain.modelNotFound": "ไม่พบโมเดล: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "ตรวจสอบการกำหนดค่าของคุณ (opencode.json) ชื่อผู้ให้บริการ/โมเดล",
-  "error.chain.mcpFailed": 'เซิร์ฟเวอร์ MCP "{{name}}" ล้มเหลว โปรดทราบว่า OpenCode ยังไม่รองรับการตรวจสอบสิทธิ์ MCP',
-  "error.chain.providerAuthFailed": "การตรวจสอบสิทธิ์ผู้ให้บริการล้มเหลว ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'ไม่สามารถเริ่มต้นผู้ให้บริการ "{{provider}}" ตรวจสอบข้อมูลรับรองและการกำหนดค่า',
+  "error.chain.checkConfig":
+    "ตรวจสอบการกำหนดค่าของคุณ (opencode.json) ชื่อผู้ให้บริการ/โมเดล",
+  "error.chain.mcpFailed":
+    'เซิร์ฟเวอร์ MCP "{{name}}" ล้มเหลว โปรดทราบว่า OpenCode ยังไม่รองรับการตรวจสอบสิทธิ์ MCP',
+  "error.chain.providerAuthFailed":
+    "การตรวจสอบสิทธิ์ผู้ให้บริการล้มเหลว ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'ไม่สามารถเริ่มต้นผู้ให้บริการ "{{provider}}" ตรวจสอบข้อมูลรับรองและการกำหนดค่า',
   "error.chain.configJsonInvalid": "ไฟล์กำหนดค่าที่ {{path}} ไม่ใช่ JSON(C) ที่ถูกต้อง",
-  "error.chain.configJsonInvalidWithMessage": "ไฟล์กำหนดค่าที่ {{path}} ไม่ใช่ JSON(C) ที่ถูกต้อง: {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "ไฟล์กำหนดค่าที่ {{path}} ไม่ใช่ JSON(C) ที่ถูกต้อง: {{message}}",
   "error.chain.configDirectoryTypo":
     'ไดเรกทอรี "{{dir}}" ใน {{path}} ไม่ถูกต้อง เปลี่ยนชื่อไดเรกทอรีเป็น "{{suggestion}}" หรือเอาออก นี่เป็นการสะกดผิดทั่วไป',
-  "error.chain.configFrontmatterError": "ไม่สามารถแยกวิเคราะห์ frontmatter ใน {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "ไม่สามารถแยกวิเคราะห์ frontmatter ใน {{path}}:\n{{message}}",
   "error.chain.configInvalid": "ไฟล์กำหนดค่าที่ {{path}} ไม่ถูกต้อง",
-  "error.chain.configInvalidWithMessage": "ไฟล์กำหนดค่าที่ {{path}} ไม่ถูกต้อง: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "ไฟล์กำหนดค่าที่ {{path}} ไม่ถูกต้อง: {{message}}",
 
   "notification.permission.title": "ต้องการสิทธิ์",
-  "notification.permission.description": "{{sessionTitle}} ใน {{projectName}} ต้องการสิทธิ์",
+  "notification.permission.description":
+    "{{sessionTitle}} ใน {{projectName}} ต้องการสิทธิ์",
   "notification.question.title": "คำถาม",
-  "notification.question.description": "{{sessionTitle}} ใน {{projectName}} มีคำถาม",
+  "notification.question.description":
+    "{{sessionTitle}} ใน {{projectName}} มีคำถาม",
   "notification.action.goToSession": "ไปที่เซสชัน",
 
   "notification.session.responseReady.title": "คำตอบพร้อมแล้ว",
@@ -748,7 +793,8 @@ export const dict = {
   "home.sessions.group.today": "วันนี้",
   "home.sessions.group.yesterday": "เมื่อวาน",
   "home.sessions.group.older": "ก่อนหน้านี้",
-  "home.providerTip": "เชื่อมต่อกับผู้ให้บริการกว่า 75 รายเพื่อใช้โมเดลอื่น ๆ รวมถึง Claude, GPT, Gemini และอีกมากมาย",
+  "home.providerTip":
+    "เชื่อมต่อกับผู้ให้บริการกว่า 75 รายเพื่อใช้โมเดลอื่น ๆ รวมถึง Claude, GPT, Gemini และอีกมากมาย",
 
   "session.tab.session": "เซสชัน",
   "session.tab.review": "ตรวจสอบ",
@@ -765,7 +811,8 @@ export const dict = {
   "session.review.loadingChanges": "กำลังโหลดการเปลี่ยนแปลง...",
   "session.review.empty": "ยังไม่มีการเปลี่ยนแปลงในเซสชันนี้",
   "session.review.noVcs": "ไม่ตรวจพบระบบควบคุมเวอร์ชัน Git การเปลี่ยนแปลงจะไม่แสดง",
-  "session.review.noSnapshot": "การติดตามสแนปชอตถูกปิดใช้งานในการกำหนดค่า ดังนั้นการเปลี่ยนแปลงเซสชันจึงไม่พร้อมใช้งาน",
+  "session.review.noSnapshot":
+    "การติดตามสแนปชอตถูกปิดใช้งานในการกำหนดค่า ดังนั้นการเปลี่ยนแปลงเซสชันจึงไม่พร้อมใช้งาน",
   "session.review.noChanges": "ไม่มีการเปลี่ยนแปลง",
   "session.review.noUncommittedChanges": "ยังไม่มีการเปลี่ยนแปลงที่รอคอมมิต",
   "session.review.noBranchChanges": "ยังไม่มีการเปลี่ยนแปลงในสาขา",
@@ -832,8 +879,10 @@ export const dict = {
   "status.popover.action.manageServers": "จัดการเซิร์ฟเวอร์",
 
   "session.share.popover.title": "เผยแพร่บนเว็บ",
-  "session.share.popover.description.shared": "เซสชันนี้เป็นสาธารณะบนเว็บ สามารถเข้าถึงได้โดยผู้ที่มีลิงก์",
-  "session.share.popover.description.unshared": "แชร์เซสชันสาธารณะบนเว็บ จะเข้าถึงได้โดยผู้ที่มีลิงก์",
+  "session.share.popover.description.shared":
+    "เซสชันนี้เป็นสาธารณะบนเว็บ สามารถเข้าถึงได้โดยผู้ที่มีลิงก์",
+  "session.share.popover.description.unshared":
+    "แชร์เซสชันสาธารณะบนเว็บ จะเข้าถึงได้โดยผู้ที่มีลิงก์",
   "session.share.action.share": "แชร์",
   "session.share.action.publish": "เผยแพร่",
   "session.share.action.publishing": "กำลังเผยแพร่...",
@@ -852,10 +901,12 @@ export const dict = {
   "terminal.title.numbered": "เทอร์มินัล {{number}}",
   "terminal.close": "ปิดเทอร์มินัล",
   "terminal.connectionLost.title": "การเชื่อมต่อขาดหาย",
-  "terminal.connectionLost.description": "การเชื่อมต่อเทอร์มินัลถูกขัดจังหวะ อาจเกิดขึ้นเมื่อเซิร์ฟเวอร์รีสตาร์ท",
+  "terminal.connectionLost.description":
+    "การเชื่อมต่อเทอร์มินัลถูกขัดจังหวะ อาจเกิดขึ้นเมื่อเซิร์ฟเวอร์รีสตาร์ท",
   "terminal.connectTicket.csrfError":
     "ตั๋วเชื่อมต่อ PTY ถูกปฏิเสธโดยการตรวจสอบต้นทางหรือ CSRF โปรดตรวจสอบการกำหนดค่า CORS ของเซิร์ฟเวอร์",
-  "terminal.connectTicket.statusError": "ตั๋วเชื่อมต่อ PTY ล้มเหลวโดยมีสถานะ {{status}}",
+  "terminal.connectTicket.statusError":
+    "ตั๋วเชื่อมต่อ PTY ล้มเหลวโดยมีสถานะ {{status}}",
 
   "titlebar.update": "อัปเดต",
   "titlebar.updateVersion": "อัปเดต {{version}}",
@@ -883,7 +934,8 @@ export const dict = {
   "sidebar.workspaces.disable": "ปิดใช้งานพื้นที่ทำงาน",
   "sidebar.gettingStarted.title": "เริ่มต้นใช้งาน",
   "sidebar.gettingStarted.line1": "OpenCode รวมถึงโมเดลฟรีเพื่อให้คุณเริ่มต้นได้ทันที",
-  "sidebar.gettingStarted.line2": "เชื่อมต่อผู้ให้บริการใด ๆ เพื่อใช้โมเดล รวมถึง Claude, GPT, Gemini ฯลฯ",
+  "sidebar.gettingStarted.line2":
+    "เชื่อมต่อผู้ให้บริการใด ๆ เพื่อใช้โมเดล รวมถึง Claude, GPT, Gemini ฯลฯ",
   "sidebar.project.recentSessions": "เซสชันล่าสุด",
   "sidebar.project.viewAllSessions": "ดูเซสชันทั้งหมด",
   "sidebar.project.clearNotifications": "ล้างการแจ้งเตือน",
@@ -898,7 +950,8 @@ export const dict = {
   "settings.tab.shortcuts": "ทางลัด",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "การรวม WSL",
-  "settings.desktop.wsl.description": "เรียกใช้เซิร์ฟเวอร์ OpenCode ภายใน WSL บน Windows",
+  "settings.desktop.wsl.description":
+    "เรียกใช้เซิร์ฟเวอร์ OpenCode ภายใน WSL บน Windows",
 
   "settings.general.section.appearance": "รูปลักษณ์",
   "settings.general.section.advanced": "ขั้นสูง",
@@ -916,9 +969,11 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "อัตโนมัติ (ค่าเริ่มต้น)",
   "settings.general.row.shell.terminalOnly": "เทอร์มินัลเท่านั้น",
   "settings.general.row.appearance.title": "รูปลักษณ์",
-  "settings.general.row.appearance.description": "ปรับแต่งรูปลักษณ์ของ OpenCode บนอุปกรณ์ของคุณ",
+  "settings.general.row.appearance.description":
+    "ปรับแต่งรูปลักษณ์ของ OpenCode บนอุปกรณ์ของคุณ",
   "settings.general.row.colorScheme.title": "โทนสี",
-  "settings.general.row.colorScheme.description": "เลือกว่าจะให้ OpenCode ใช้ธีมตามระบบ สว่าง หรือมืด",
+  "settings.general.row.colorScheme.description":
+    "เลือกว่าจะให้ OpenCode ใช้ธีมตามระบบ สว่าง หรือมืด",
   "settings.general.row.theme.title": "ธีม",
   "settings.general.row.theme.description": "ปรับแต่งธีมของ OpenCode",
   "settings.general.row.font.title": "แบบอักษรโค้ด",
@@ -928,19 +983,24 @@ export const dict = {
   "settings.general.row.uiFont.title": "แบบอักษร UI",
   "settings.general.row.uiFont.description": "ปรับแต่งแบบอักษรที่ใช้ทั่วทั้งอินเทอร์เฟซ",
   "settings.general.row.followup.title": "พฤติกรรมการติดตามผล",
-  "settings.general.row.followup.description": "เลือกว่าจะให้พรอมต์ติดตามผลทำงานทันทีหรือรอในคิว",
+  "settings.general.row.followup.description":
+    "เลือกว่าจะให้พรอมต์ติดตามผลทำงานทันทีหรือรอในคิว",
   "settings.general.row.followup.option.queue": "คิว",
   "settings.general.row.followup.option.steer": "นำทาง",
   "settings.general.row.showFileTree.title": "แผนผังไฟล์",
   "settings.general.row.showFileTree.description": "แสดงแผงแผนผังไฟล์ในเซสชัน",
   "settings.general.row.showNavigation.title": "ตัวควบคุมการนำทาง",
-  "settings.general.row.showNavigation.description": "แสดงปุ่มย้อนกลับและไปข้างหน้าในแถบชื่อเรื่องเดสก์ท็อป",
+  "settings.general.row.showNavigation.description":
+    "แสดงปุ่มย้อนกลับและไปข้างหน้าในแถบชื่อเรื่องเดสก์ท็อป",
   "settings.general.row.showSearch.title": "ชุดคำสั่ง",
-  "settings.general.row.showSearch.description": "แสดงปุ่มค้นหาและชุดคำสั่งในแถบชื่อเรื่อง",
+  "settings.general.row.showSearch.description":
+    "แสดงปุ่มค้นหาและชุดคำสั่งในแถบชื่อเรื่อง",
   "settings.general.row.showTerminal.title": "เทอร์มินัล",
-  "settings.general.row.showTerminal.description": "แสดงปุ่มเทอร์มินัลในแถบชื่อเรื่องเดสก์ท็อป",
+  "settings.general.row.showTerminal.description":
+    "แสดงปุ่มเทอร์มินัลในแถบชื่อเรื่องเดสก์ท็อป",
   "settings.general.row.showStatus.title": "สถานะเซิร์ฟเวอร์",
-  "settings.general.row.showStatus.description": "แสดงปุ่มสถานะเซิร์ฟเวอร์ในแถบชื่อเรื่อง",
+  "settings.general.row.showStatus.description":
+    "แสดงปุ่มสถานะเซิร์ฟเวอร์ในแถบชื่อเรื่อง",
   "settings.general.row.mobileTitlebarBottom.title": "การนำทางด้านล่าง",
   "settings.general.row.mobileTitlebarBottom.description":
     "วางแถบชื่อเรื่องและแท็บเซสชันไว้ด้านล่างของหน้าจอบนอุปกรณ์เคลื่อนที่",
@@ -948,9 +1008,11 @@ export const dict = {
   "settings.general.row.showCustomAgents.description":
     "สลับระหว่างเอเจนต์ในช่องเขียนข้อความ เมื่อซ่อน ระบบจะใช้เอเจนต์ Build เป็นค่าเริ่มต้น",
   "settings.general.row.reasoningSummaries.title": "แสดงสรุปการใช้เหตุผล",
-  "settings.general.row.reasoningSummaries.description": "แสดงสรุปการใช้เหตุผลของโมเดลในไทม์ไลน์",
+  "settings.general.row.reasoningSummaries.description":
+    "แสดงสรุปการใช้เหตุผลของโมเดลในไทม์ไลน์",
   "settings.general.row.shellToolPartsExpanded.title": "ขยายส่วนเครื่องมือ shell",
-  "settings.general.row.shellToolPartsExpanded.description": "แสดงส่วนเครื่องมือ shell แบบขยายตามค่าเริ่มต้นในไทม์ไลน์",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "แสดงส่วนเครื่องมือ shell แบบขยายตามค่าเริ่มต้นในไทม์ไลน์",
   "settings.general.row.editToolPartsExpanded.title": "ขยายส่วนเครื่องมือ edit",
   "settings.general.row.editToolPartsExpanded.description":
     "แสดงส่วนเครื่องมือ edit, write และ patch แบบขยายตามค่าเริ่มต้นในไทม์ไลน์",
@@ -959,27 +1021,35 @@ export const dict = {
   "settings.general.row.newInterface.description":
     "ใช้แท็บใหม่และเลย์เอาต์หน้าแรก คุณสามารถสลับระหว่างเลย์เอาต์ได้ในช่วงเวลาจำกัด",
   "settings.general.row.newInterfaceNotice.title": "ขณะนี้คุณกำลังใช้เลย์เอาต์ใหม่",
-  "settings.general.row.newInterfaceNotice.description": "เลย์เอาต์ก่อนหน้าไม่พร้อมใช้งานอีกต่อไป",
+  "settings.general.row.newInterfaceNotice.description":
+    "เลย์เอาต์ก่อนหน้าไม่พร้อมใช้งานอีกต่อไป",
   "settings.general.row.newInterfaceNotice.dismiss": "ปิด",
   "settings.general.row.pinchZoom.title": "บีบนิ้วเพื่อซูม",
-  "settings.general.row.pinchZoom.description": "อนุญาตให้ใช้ท่าบีบนิ้วบนแทร็คแพดและ Ctrl-scroll เพื่อซูม",
+  "settings.general.row.pinchZoom.description":
+    "อนุญาตให้ใช้ท่าบีบนิ้วบนแทร็คแพดและ Ctrl-scroll เพื่อซูม",
   "settings.general.row.wayland.title": "ใช้ Wayland แบบเนทีฟ",
-  "settings.general.row.wayland.description": "ปิดใช้งาน X11 fallback บน Wayland ต้องรีสตาร์ท",
-  "settings.general.row.wayland.tooltip": "บน Linux ที่มีจอภาพรีเฟรชเรตแบบผสม Wayland แบบเนทีฟอาจเสถียรกว่า",
+  "settings.general.row.wayland.description":
+    "ปิดใช้งาน X11 fallback บน Wayland ต้องรีสตาร์ท",
+  "settings.general.row.wayland.tooltip":
+    "บน Linux ที่มีจอภาพรีเฟรชเรตแบบผสม Wayland แบบเนทีฟอาจเสถียรกว่า",
 
   "settings.general.row.releaseNotes.title": "บันทึกการอัปเดต",
-  "settings.general.row.releaseNotes.description": "แสดงป๊อปอัพ What's New หลังจากอัปเดต",
+  "settings.general.row.releaseNotes.description":
+    "แสดงป๊อปอัพ What's New หลังจากอัปเดต",
 
   "settings.updates.row.startup.title": "ตรวจสอบการอัปเดตเมื่อเริ่มต้น",
-  "settings.updates.row.startup.description": "ตรวจสอบการอัปเดตโดยอัตโนมัติเมื่อ OpenCode เปิดใช้งาน",
+  "settings.updates.row.startup.description":
+    "ตรวจสอบการอัปเดตโดยอัตโนมัติเมื่อ OpenCode เปิดใช้งาน",
   "settings.updates.row.check.title": "ตรวจสอบการอัปเดต",
-  "settings.updates.row.check.description": "ตรวจสอบการอัปเดตด้วยตนเองและติดตั้งหากมี",
+  "settings.updates.row.check.description":
+    "ตรวจสอบการอัปเดตด้วยตนเองและติดตั้งหากมี",
   "settings.updates.action.checkNow": "ตรวจสอบทันที",
   "settings.updates.action.checking": "กำลังตรวจสอบ...",
   "settings.updates.action.downloading": "กำลังดาวน์โหลด...",
   "settings.updates.action.installing": "กำลังติดตั้ง...",
   "settings.updates.toast.latest.title": "คุณเป็นเวอร์ชันล่าสุดแล้ว",
-  "settings.updates.toast.latest.description": "คุณกำลังใช้งาน OpenCode เวอร์ชันล่าสุด",
+  "settings.updates.toast.latest.description":
+    "คุณกำลังใช้งาน OpenCode เวอร์ชันล่าสุด",
 
   "sound.option.none": "ไม่มี",
   "sound.option.alert01": "เสียงเตือน 01",
@@ -1029,14 +1099,18 @@ export const dict = {
   "sound.option.yup06": "Yup 06",
 
   "settings.general.notifications.agent.title": "เอเจนต์",
-  "settings.general.notifications.agent.description": "แสดงการแจ้งเตือนระบบเมื่อเอเจนต์เสร็จสิ้นหรือต้องการความสนใจ",
+  "settings.general.notifications.agent.description":
+    "แสดงการแจ้งเตือนระบบเมื่อเอเจนต์เสร็จสิ้นหรือต้องการความสนใจ",
   "settings.general.notifications.permissions.title": "สิทธิ์",
-  "settings.general.notifications.permissions.description": "แสดงการแจ้งเตือนระบบเมื่อต้องการสิทธิ์",
+  "settings.general.notifications.permissions.description":
+    "แสดงการแจ้งเตือนระบบเมื่อต้องการสิทธิ์",
   "settings.general.notifications.errors.title": "ข้อผิดพลาด",
-  "settings.general.notifications.errors.description": "แสดงการแจ้งเตือนระบบเมื่อเกิดข้อผิดพลาด",
+  "settings.general.notifications.errors.description":
+    "แสดงการแจ้งเตือนระบบเมื่อเกิดข้อผิดพลาด",
 
   "settings.general.sounds.agent.title": "เอเจนต์",
-  "settings.general.sounds.agent.description": "เล่นเสียงเมื่อเอเจนต์เสร็จสิ้นหรือต้องการความสนใจ",
+  "settings.general.sounds.agent.description":
+    "เล่นเสียงเมื่อเอเจนต์เสร็จสิ้นหรือต้องการความสนใจ",
   "settings.general.sounds.permissions.title": "สิทธิ์",
   "settings.general.sounds.permissions.description": "เล่นเสียงเมื่อต้องการสิทธิ์",
   "settings.general.sounds.errors.title": "ข้อผิดพลาด",
@@ -1047,7 +1121,8 @@ export const dict = {
   "settings.shortcuts.reset.toast.title": "รีเซ็ตทางลัดแล้ว",
   "settings.shortcuts.reset.toast.description": "รีเซ็ตทางลัดแป้นพิมพ์เป็นค่าเริ่มต้นแล้ว",
   "settings.shortcuts.conflict.title": "ทางลัดใช้งานอยู่แล้ว",
-  "settings.shortcuts.conflict.description": "{{keybind}} ถูกกำหนดให้กับ {{titles}} แล้ว",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} ถูกกำหนดให้กับ {{titles}} แล้ว",
   "settings.shortcuts.unassigned": "ไม่ได้กำหนด",
   "settings.shortcuts.pressKeys": "กดปุ่ม",
   "settings.shortcuts.search.placeholder": "ค้นหาทางลัด",
@@ -1090,7 +1165,8 @@ export const dict = {
   "settings.permissions.tool.read.title": "อ่าน",
   "settings.permissions.tool.read.description": "อ่านไฟล์ (ตรงกับเส้นทางไฟล์)",
   "settings.permissions.tool.edit.title": "แก้ไข",
-  "settings.permissions.tool.edit.description": "แก้ไขไฟล์ รวมถึงการแก้ไข เขียน แพตช์ และแก้ไขหลายรายการ",
+  "settings.permissions.tool.edit.description":
+    "แก้ไขไฟล์ รวมถึงการแก้ไข เขียน แพตช์ และแก้ไขหลายรายการ",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "จับคู่ไฟล์โดยใช้รูปแบบ glob",
   "settings.permissions.tool.grep.title": "Grep",
@@ -1112,9 +1188,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "ค้นหาเว็บ",
   "settings.permissions.tool.websearch.description": "ค้นหาบนเว็บ",
   "settings.permissions.tool.external_directory.title": "ไดเรกทอรีภายนอก",
-  "settings.permissions.tool.external_directory.description": "เข้าถึงไฟล์นอกไดเรกทอรีโปรเจกต์",
+  "settings.permissions.tool.external_directory.description":
+    "เข้าถึงไฟล์นอกไดเรกทอรีโปรเจกต์",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "ตรวจจับการเรียกเครื่องมือซ้ำด้วยข้อมูลนำเข้าเหมือนกัน",
+  "settings.permissions.tool.doom_loop.description":
+    "ตรวจจับการเรียกเครื่องมือซ้ำด้วยข้อมูลนำเข้าเหมือนกัน",
 
   "session.delete.failed.title": "ไม่สามารถลบเซสชัน",
   "session.delete.title": "ลบเซสชัน",
@@ -1158,8 +1236,10 @@ export const dict = {
   "common.time.minutesAgo.short": "{{count}} นาทีที่แล้ว",
   "common.time.hoursAgo.short": "{{count}} ชม. ที่แล้ว",
   "common.time.daysAgo.short": "{{count}} วันที่แล้ว",
-  "settings.providers.connected.environmentDescription": "เชื่อมต่อจากตัวแปรสภาพแวดล้อมของคุณ",
-  "settings.providers.custom.description": "เพิ่มผู้ให้บริการที่รองรับ OpenAI ด้วย URL หลัก",
+  "settings.providers.connected.environmentDescription":
+    "เชื่อมต่อจากตัวแปรสภาพแวดล้อมของคุณ",
+  "settings.providers.custom.description":
+    "เพิ่มผู้ให้บริการที่รองรับ OpenAI ด้วย URL หลัก",
 
   "app.server.unreachable": "ไม่สามารถติดต่อ {{server}}",
   "app.server.retrying": "กำลังลองใหม่โดยอัตโนมัติ...",
@@ -1168,7 +1248,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "รหัสผ่าน",
   "server.row.noUsername": "ไม่มีชื่อผู้ใช้",
   "session.review.noVcs.createGit.title": "สร้าง Git รีโพซิทอรี",
-  "session.review.noVcs.createGit.description": "ติดตาม ตรวจสอบ และเลิกทำการเปลี่ยนแปลงในโปรเจกต์นี้",
+  "session.review.noVcs.createGit.description":
+    "ติดตาม ตรวจสอบ และเลิกทำการเปลี่ยนแปลงในโปรเจกต์นี้",
   "session.review.noVcs.createGit.actionLoading": "กำลังสร้าง Git รีโพซิทอรี...",
   "session.review.noVcs.createGit.action": "สร้าง Git รีโพซิทอรี",
   "session.todo.progress": "เสร็จสิ้น {{done}} จาก {{total}} รายการ",
@@ -1204,7 +1285,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "เฟรมที่เกิน 32ms ในช่วง 5 วินาทีที่ผ่านมา",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "เวลาที่ถูกบล็อกและจำนวนงานยาวในช่วง 5 วินาทีที่ผ่านมา งานสูงสุด: {{max}}",
+  "debugBar.long.tip":
+    "เวลาที่ถูกบล็อกและจำนวนงานยาวในช่วง 5 วินาทีที่ผ่านมา งานสูงสุด: {{max}}",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "ความล่าช้าในการป้อนข้อมูลที่แย่ที่สุดที่สังเกตได้ในช่วง 5 วินาทีที่ผ่านมา",
   "debugBar.inp.label": "INP",
@@ -1242,8 +1324,10 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "ไม่มีเซิร์ฟเวอร์",
   "error.serverSDK.serverNotAvailable": "เซิร์ฟเวอร์ไม่พร้อมใช้งาน",
   "error.childStore.persistedCacheCreateFailed": "ไม่สามารถสร้างแคชถาวร",
-  "error.childStore.persistedProjectMetadataCreateFailed": "ไม่สามารถสร้างเมตาดาต้าโปรเจกต์ถาวร",
-  "error.childStore.persistedProjectIconCreateFailed": "ไม่สามารถสร้างไอคอนโปรเจกต์ถาวร",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "ไม่สามารถสร้างเมตาดาต้าโปรเจกต์ถาวร",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "ไม่สามารถสร้างไอคอนโปรเจกต์ถาวร",
   "error.childStore.storeCreateFailed": "ไม่สามารถสร้างที่เก็บ",
   "terminal.connectionLost.abnormalClose": "WebSocket ปิดอย่างผิดปกติ: {{code}}",
 }

@@ -46,11 +46,13 @@ export const dict: Record<string, string> = {
   "desktop.menu.ariaLabel": "OpenCode मेनु",
   "desktop.updater.dialog.checkFailed.message": "अद्यावधिक जाँच असफल भयो।",
   "desktop.updater.dialog.checkFailed.title": "अपडेट त्रुटि",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "तपाईं अद्यावधिक हुनुहुन्छ।",
   "desktop.updater.dialog.upToDate.title": "कुनै अद्यावधिकहरू छैनन्",
-  "desktop.updater.dialog.ready.message": "अपडेट {{version}} डाउनलोड गरियो। अहिले पुन: सुरु गर्ने हो?",
+  "desktop.updater.dialog.ready.message":
+    "अपडेट {{version}} डाउनलोड गरियो। अहिले पुन: सुरु गर्ने हो?",
   "desktop.updater.dialog.ready.title": "अपडेट तयार",
   "desktop.updater.dialog.restart": "पुन: सुरु गर्नुहोस्",
   "desktop.updater.dialog.retry": "Retry",
@@ -64,8 +66,10 @@ export const dict: Record<string, string> = {
   "desktop.recovery.unresponsive": "OpenCode ले प्रतिक्रिया दिइरहेको छैन",
   "desktop.recovery.unresponsive.detail":
     "तपाईं एप पुन: लन्च गर्न सक्नुहुन्छ, लगहरू खोल्न सक्नुहुन्छ वा पर्खन सक्नुहुन्छ।",
-  "desktop.recovery.loadFailed.detail": "विन्डो: {{window}}\nURL: {{url}}\nत्रुटि: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "विन्डो: {{window}}\nकारण: {{reason}}\nकोड: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "विन्डो: {{window}}\nURL: {{url}}\nत्रुटि: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "विन्डो: {{window}}\nकारण: {{reason}}\nकोड: {{code}}",
   "desktop.recovery.unknown": "<अज्ञात>",
   "desktop.dialog.chooseFolder": "एउटा फोल्डर छान्नुहोस्",
   "desktop.dialog.chooseFile": "एउटा फाइल छान्नुहोस्",
@@ -87,11 +91,14 @@ export const dict: Record<string, string> = {
   "desktop.wsl.error.updateVersion":
     "OpenCode अद्यावधिक समाप्त भयो तर {{distro}} ले अझै पनि रिपोर्ट गर्छ {{installed}}; अपेक्षित {{expected}}",
   "desktop.wsl.error.noVersion": "कुनै संस्करण छैन",
-  "desktop.wsl.error.serverExited": "WSL सर्भर स्टार्टअप पछि बाहिर निस्कियो (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL सर्भर स्टार्टअप पछि बाहिर निस्कियो (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL सर्भर स्वस्थ हुनु अघि बाहिर निस्कियो (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} स्वास्थ्य जाँचको लागि साइडकार {{timeout}}ms पछि समय सकियो",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} {{timeout}}ms पछि टाइमआउट भयो",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} स्वास्थ्य जाँचको लागि साइडकार {{timeout}}ms पछि समय सकियो",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} {{timeout}}ms पछि टाइमआउट भयो",
   "desktop.wsl.error.failedPort": "पोर्ट प्राप्त गर्न असफल भयो",
   "desktop.picker.error.notSelected": "फाइल चयनकर्ता द्वारा चयन गरिएको थिएन",
   "desktop.picker.error.sizeLimit": "चयन गरिएका संलग्नहरू {{limit}} MB सीमा नाघ्छन्",
@@ -141,7 +148,8 @@ export const dict: Record<string, string> = {
   "command.tab.close": "ट्याब बन्द गर्नुहोस्",
   "command.tab.reopenClosed": "बन्द ट्याब पुन: खोल्नुहोस्",
   "command.context.addSelection": "सन्दर्भमा चयन थप्नुहोस्",
-  "command.context.addSelection.description": "हालको फाइलबाट चयन गरिएका रेखाहरू थप्नुहोस्",
+  "command.context.addSelection.description":
+    "हालको फाइलबाट चयन गरिएका रेखाहरू थप्नुहोस्",
   "command.input.focus": "फोकस इनपुट",
   "command.terminal.toggle": "टर्मिनल टगल गर्नुहोस्",
   "command.fileTree.toggle": "फाइल रूख टगल गर्नुहोस्",
@@ -149,7 +157,8 @@ export const dict: Record<string, string> = {
   "command.terminal.new": "नयाँ टर्मिनल",
   "command.terminal.new.description": "नयाँ टर्मिनल ट्याब सिर्जना गर्नुहोस्",
   "command.steps.toggle": "चरणहरू टगल गर्नुहोस्",
-  "command.steps.toggle.description": "हालको सन्देशका लागि चरणहरू देखाउनुहोस् वा लुकाउनुहोस्",
+  "command.steps.toggle.description":
+    "हालको सन्देशका लागि चरणहरू देखाउनुहोस् वा लुकाउनुहोस्",
   "command.message.previous": "अघिल्लो सन्देश",
   "command.message.previous.description": "अघिल्लो प्रयोगकर्ता सन्देशमा जानुहोस्",
   "command.message.next": "अर्को सन्देश",
@@ -169,7 +178,8 @@ export const dict: Record<string, string> = {
   "command.permissions.autoaccept.enable": "अनुमतिहरू स्वत: स्वीकार गर्नुहोस्",
   "command.permissions.autoaccept.disable": "अनुमतिहरू स्वत: स्वीकार गर्न रोक्नुहोस्",
   "command.workspace.toggle": "कार्यस्थान टगल गर्नुहोस्",
-  "command.workspace.toggle.description": "साइडबारमा बहु कार्यस्थानहरू सक्षम वा असक्षम गर्नुहोस्",
+  "command.workspace.toggle.description":
+    "साइडबारमा बहु कार्यस्थानहरू सक्षम वा असक्षम गर्नुहोस्",
   "command.session.undo": "पूर्ववत गर्नुहोस्",
   "command.session.undo.description": "अन्तिम सन्देश अनडू गर्नुहोस्",
   "command.session.redo": "पुन: गर्नुहोस्",
@@ -179,11 +189,13 @@ export const dict: Record<string, string> = {
   "command.session.fork": "सन्देशबाट फोर्क",
   "command.session.fork.description": "अघिल्लो सन्देशबाट नयाँ सत्र सिर्जना गर्नुहोस्",
   "command.session.share": "सत्र साझेदारी गर्नुहोस्",
-  "command.session.share.description": "यो सत्र साझा गर्नुहोस् र क्लिपबोर्डमा URL प्रतिलिपि गर्नुहोस्",
+  "command.session.share.description":
+    "यो सत्र साझा गर्नुहोस् र क्लिपबोर्डमा URL प्रतिलिपि गर्नुहोस्",
   "command.session.unshare": "सत्र अनसेयर गर्नुहोस्",
   "command.session.unshare.description": "यो सत्र साझा गर्न रोक्नुहोस्",
   "command.session.export": "निर्यात सत्र",
-  "command.session.export.description": "पूर्ण सत्र ट्रान्सक्रिप्ट JSON को रूपमा निर्यात गर्नुहोस्",
+  "command.session.export.description":
+    "पूर्ण सत्र ट्रान्सक्रिप्ट JSON को रूपमा निर्यात गर्नुहोस्",
   "palette.search.placeholder": "फाइलहरू, आदेशहरू, र सत्रहरू खोज्नुहोस्",
   "palette.search.placeholder.home": "आदेश र सत्रहरू खोज्नुहोस्",
   "palette.empty": "कुनै परिणाम फेला परेन",
@@ -195,12 +207,16 @@ export const dict: Record<string, string> = {
   "dialog.provider.group.other": "अन्य",
   "dialog.provider.custom.label": "आफू अनुकूल OpenAI-कम्प्याटिबल प्रदायक",
   "dialog.provider.tag.recommended": "सिफारिस गर्नुभयो",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini र थप सहित क्युरेट गरिएका मोडेलहरू",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini र थप सहित क्युरेट गरिएका मोडेलहरू",
   "dialog.provider.opencode.tagline": "भरपर्दो अनुकूलित मोडेलहरू",
   "dialog.provider.opencodeGo.tagline": "सबैको लागि कम लागत सदस्यता",
-  "dialog.provider.anthropic.note": "प्रो र म्याक्स सहित Claude मोडेलहरूमा प्रत्यक्ष पहुँच",
-  "dialog.provider.copilot.note": "GitHub Copilot मार्फत कोडिङ सहायताका लागि AI मोडेलहरू",
-  "dialog.provider.openai.note": "छिटो, सक्षम सामान्य AI कार्यहरूको लागि GPT मोडेलहरू",
+  "dialog.provider.anthropic.note":
+    "प्रो र म्याक्स सहित Claude मोडेलहरूमा प्रत्यक्ष पहुँच",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot मार्फत कोडिङ सहायताका लागि AI मोडेलहरू",
+  "dialog.provider.openai.note":
+    "छिटो, सक्षम सामान्य AI कार्यहरूको लागि GPT मोडेलहरू",
   "dialog.provider.google.note": "छिटो, संरचित प्रतिक्रियाहरूको लागि Gemini मोडेलहरू",
   "dialog.provider.openrouter.note": "एक प्रदायकबाट सबै समर्थित मोडेलहरू पहुँच गर्नुहोस्",
   "dialog.provider.vercel.note": "स्मार्ट राउटिङको साथ एआई मोडेलहरूमा एकीकृत पहुँच",
@@ -208,9 +224,11 @@ export const dict: Record<string, string> = {
   "dialog.model.search.placeholder": "मोडेलहरू खोज्नुहोस्",
   "dialog.model.empty": "कुनै मोडेल परिणामहरू छैनन्",
   "dialog.model.manage": "मोडेलहरू प्रबन्ध गर्नुहोस्",
-  "dialog.model.manage.description": "मोडेल चयनकर्तामा कुन मोडेलहरू देखा पर्दछ अनुकूलित गर्नुहोस्।",
+  "dialog.model.manage.description":
+    "मोडेल चयनकर्तामा कुन मोडेलहरू देखा पर्दछ अनुकूलित गर्नुहोस्।",
   "dialog.model.manage.provider.toggle": "सबै {{provider}} मोडेलहरू टगल गर्नुहोस्",
-  "dialog.model.unpaid.freeModels.title": "OpenCode द्वारा प्रदान गरिएको नि:शुल्क मोडेलहरू",
+  "dialog.model.unpaid.freeModels.title":
+    "OpenCode द्वारा प्रदान गरिएको नि:शुल्क मोडेलहरू",
   "dialog.model.unpaid.addMore.title": "लोकप्रिय प्रदायकहरूबाट थप मोडेलहरू थप्नुहोस्",
   "dialog.model.unpaid.viewMoreProviders": "70+ थप प्रदायकहरू हेर्नुहोस्",
   "dialog.provider.viewAll": "थप प्रदायकहरू देखाउनुहोस्",
@@ -249,15 +267,18 @@ export const dict: Record<string, string> = {
     "र आफ्नो खाता जडान गर्न तलको कोड प्रविष्ट गर्नुहोस् र {{provider}} मोडेलहरू OpenCode मा प्रयोग गर्नुहोस्।",
   "provider.connect.oauth.auto.confirmationCode": "पुष्टि कोड",
   "provider.connect.toast.connected.title": "{{provider}} जडान भयो",
-  "provider.connect.toast.connected.description": "{{provider}} मोडेलहरू अब प्रयोग गर्न उपलब्ध छन्।",
+  "provider.connect.toast.connected.description":
+    "{{provider}} मोडेलहरू अब प्रयोग गर्न उपलब्ध छन्।",
   "provider.custom.title": "अनुकूलन प्रदायक",
   "provider.custom.unavailable": "यस सर्भरमा अनुकूलन प्रदायकहरू उपलब्ध छैनन्",
-  "provider.custom.description.prefix": "एउटा OpenAI-कम्प्याटिबल प्रदायक कन्फिगर गर्नुहोस्। हेर्नुहोस्",
+  "provider.custom.description.prefix":
+    "एउटा OpenAI-कम्प्याटिबल प्रदायक कन्फिगर गर्नुहोस्। हेर्नुहोस्",
   "provider.custom.description.link": "प्रदायक कन्फिगरेसन कागजातहरू",
   "provider.custom.description.suffix": "।",
   "provider.custom.field.providerID.label": "प्रदायक आईडी",
   "provider.custom.field.providerID.placeholder": "मेरो प्रदायक",
-  "provider.custom.field.providerID.description": "लोअरकेस अक्षरहरू, संख्याहरू, हाइफनहरू, वा अन्डरस्कोरहरू",
+  "provider.custom.field.providerID.description":
+    "लोअरकेस अक्षरहरू, संख्याहरू, हाइफनहरू, वा अन्डरस्कोरहरू",
   "provider.custom.field.name.label": "नाम प्रदर्शन गर्नुहोस्",
   "provider.custom.field.name.placeholder": "मेरो एआई प्रदायक",
   "provider.custom.field.baseURL.label": "आधार URL",
@@ -281,7 +302,8 @@ export const dict: Record<string, string> = {
   "provider.custom.headers.remove": "हेडर हटाउनुहोस्",
   "provider.custom.headers.add": "हेडर थप्नुहोस्",
   "provider.custom.error.providerID.required": "प्रदायक ID आवश्यक छ",
-  "provider.custom.error.providerID.format": "सानो अक्षर, संख्या, हाइफन वा अन्डरस्कोरहरू प्रयोग गर्नुहोस्",
+  "provider.custom.error.providerID.format":
+    "सानो अक्षर, संख्या, हाइफन वा अन्डरस्कोरहरू प्रयोग गर्नुहोस्",
   "provider.custom.error.providerID.exists": "त्यो प्रदायक ID पहिले नै अवस्थित छ",
   "provider.custom.error.name.required": "प्रदर्शन नाम आवश्यक छ",
   "provider.custom.error.baseURL.required": "आधार URL आवश्यक छ",
@@ -289,7 +311,8 @@ export const dict: Record<string, string> = {
   "provider.custom.error.required": "आवश्यक छ",
   "provider.custom.error.duplicate": "नक्कल",
   "provider.disconnect.toast.disconnected.title": "{{provider}} जडान विच्छेद भयो",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} मोडेलहरू अब उपलब्ध छैनन्।",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} मोडेलहरू अब उपलब्ध छैनन्।",
   "model.tag.free": "नि:शुल्क",
   "model.tag.latest": "पछिल्लो",
   "model.provider.anthropic": "Anthropic",
@@ -383,10 +406,12 @@ export const dict: Record<string, string> = {
   "prompt.action.send": "पठाउनुहोस्",
   "prompt.action.stop": "रोक्नुहोस्",
   "prompt.toast.pasteUnsupported.title": "असमर्थित संलग्नक",
-  "prompt.toast.pasteUnsupported.description": "केवल छविहरू, PDF हरू, वा पाठ फाइलहरू यहाँ संलग्न गर्न सकिन्छ।",
+  "prompt.toast.pasteUnsupported.description":
+    "केवल छविहरू, PDF हरू, वा पाठ फाइलहरू यहाँ संलग्न गर्न सकिन्छ।",
   "prompt.toast.attachmentDuplicate.title": "यो फाइल पहिले नै अपलोड गरिएको छ",
   "prompt.toast.modelAgentRequired.title": "एक एजेन्ट र मोडेल चयन गर्नुहोस्",
-  "prompt.toast.modelAgentRequired.description": "प्रम्प्ट पठाउनु अघि एजेन्ट र मोडेल छान्नुहोस्।",
+  "prompt.toast.modelAgentRequired.description":
+    "प्रम्प्ट पठाउनु अघि एजेन्ट र मोडेल छान्नुहोस्।",
   "prompt.toast.worktreeCreateFailed.title": "Git वर्कट्री सिर्जना गर्न असफल भयो",
   "prompt.toast.sessionCreateFailed.title": "सत्र सिर्जना गर्न असफल भयो",
   "prompt.toast.shellSendFailed.title": "शेल आदेश पठाउन असफल भयो",
@@ -453,7 +478,8 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.step.distro": "डिस्ट्रो छान्नुहोस्",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL जाँच गर्दै...",
-  "wsl.onboarding.restartRequired": "WSL स्थापना पूरा गर्न Windows लाई पुन: सुरु गर्न आवश्यक छ।",
+  "wsl.onboarding.restartRequired":
+    "WSL स्थापना पूरा गर्न Windows लाई पुन: सुरु गर्न आवश्यक छ।",
   "wsl.onboarding.ready": "WSL तयार छ।",
   "wsl.onboarding.required": "WSL जारी राख्न आवश्यक छ।",
   "wsl.onboarding.checkingDistros": "distros जाँच गर्दै...",
@@ -486,12 +512,14 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.distroStatus.missingTools": "हराइरहेको ब्याश, कर्ल",
   "wsl.onboarding.distroStatus.unsupported": "असमर्थित · WSL २ प्रयोग गर्नुहोस्",
   "wsl.onboarding.needAnotherDistro": "अर्को डिस्ट्रो चाहिन्छ?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL क्याटलगबाट Linux वितरण स्थापना गर्नुहोस्",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL क्याटलगबाट Linux वितरण स्थापना गर्नुहोस्",
   "wsl.onboarding.wslNotInstalled.title": "WSL स्थापित छैन",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Linux को लागि सबसिस्टम) OpenCode ले WSL सर्भर थप्न अघि आवश्यक छ।",
   "wsl.onboarding.wslUnavailable.title": "WSL उपलब्ध छैन",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ले यो मेसिनमा WSL प्रमाणित गर्न सकेन।",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ले यो मेसिनमा WSL प्रमाणित गर्न सकेन।",
   "wsl.onboarding.installWsl": "WSL स्थापना गर्नुहोस्",
   "wsl.onboarding.windowsRestartRequired":
     "WSL स्थापना पूरा गर्न Windows पुन: सुरु गर्नुहोस्, त्यसपछि OpenCode पुन: खोल्नुहोस्।",
@@ -511,9 +539,11 @@ export const dict: Record<string, string> = {
   "wsl.onboarding.version": "संस्करण: {{version}}",
   "wsl.onboarding.unknown": "अज्ञात",
   "wsl.onboarding.desktopVersion": "डेस्कटप {{version}}",
-  "wsl.onboarding.versionMismatch": "स्थापना गरिएको संस्करण डेस्कटप एप संस्करणसँग मेल खाँदैन।",
+  "wsl.onboarding.versionMismatch":
+    "स्थापना गरिएको संस्करण डेस्कटप एप संस्करणसँग मेल खाँदैन।",
   "wsl.onboarding.adding": "थप्दै...",
-  "help.tabs.toast.ariaLabel": "ट्याबहरू प्रस्तुत गर्दै। ट्याबहरूसँग आफ्नो काम र सक्रिय सत्रहरू व्यवस्थित गर्नुहोस्",
+  "help.tabs.toast.ariaLabel":
+    "ट्याबहरू प्रस्तुत गर्दै। ट्याबहरूसँग आफ्नो काम र सक्रिय सत्रहरू व्यवस्थित गर्नुहोस्",
   "help.tabs.toast.dismiss": "ट्याब जानकारी खारेज गर्नुहोस्",
   "help.tabs.title": "ट्याबहरू प्रस्तुत गर्दै",
   "help.tabs.description": "ट्याबहरूसँग आफ्नो काम र सक्रिय सत्रहरू व्यवस्थित गर्नुहोस्",
@@ -538,14 +568,16 @@ export const dict: Record<string, string> = {
   "dialog.project.edit.color": "रङ",
   "dialog.project.edit.color.select": "{{color}} रंग चयन गर्नुहोस्",
   "dialog.project.edit.worktree.startup": "कार्यस्थान स्टार्टअप स्क्रिप्ट",
-  "dialog.project.edit.worktree.startup.description": "नयाँ कार्यस्थान (वर्कट्री) सिर्जना गरेपछि चल्छ।",
+  "dialog.project.edit.worktree.startup.description":
+    "नयाँ कार्यस्थान (वर्कट्री) सिर्जना गरेपछि चल्छ।",
   "dialog.project.edit.worktree.startup.placeholder": "जस्तै बन स्थापना",
   "dialog.releaseNotes.action.getStarted": "सुरु गर्नुहोस्",
   "dialog.releaseNotes.action.next": "अर्को",
   "dialog.releaseNotes.action.hideFuture": "भविष्यमा यी नदेखाउनुहोस्",
   "dialog.releaseNotes.media.alt": "रिलिज पूर्वावलोकन",
   "context.breakdown.title": "सन्दर्भ ब्रेकडाउन",
-  "context.breakdown.note": 'इनपुट टोकनहरूको अनुमानित ब्रेकडाउन। "अन्य" मा उपकरण परिभाषा र ओभरहेड समावेश छ।',
+  "context.breakdown.note":
+    'इनपुट टोकनहरूको अनुमानित ब्रेकडाउन। "अन्य" मा उपकरण परिभाषा र ओभरहेड समावेश छ।',
   "context.breakdown.system": "प्रणाली",
   "context.breakdown.user": "प्रयोगकर्ता",
   "context.breakdown.assistant": "सहायक",
@@ -600,20 +632,26 @@ export const dict: Record<string, string> = {
   "toast.workspace.enabled.title": "कार्यस्थान सक्षम पारियो",
   "toast.workspace.enabled.description": "बहु कार्य रूखहरू अब साइडबारमा देखाइएका छन्",
   "toast.workspace.disabled.title": "कार्यस्थान असक्षम पारियो",
-  "toast.workspace.disabled.description": "साइडबारमा मुख्य कार्य रूख मात्र देखाइएको छ",
+  "toast.workspace.disabled.description":
+    "साइडबारमा मुख्य कार्य रूख मात्र देखाइएको छ",
   "toast.permissions.autoaccept.on.title": "स्वत: स्वीकार गर्ने अनुमतिहरू",
-  "toast.permissions.autoaccept.on.description": "अनुमति अनुरोधहरू स्वचालित रूपमा स्वीकृत हुनेछन्",
+  "toast.permissions.autoaccept.on.description":
+    "अनुमति अनुरोधहरू स्वचालित रूपमा स्वीकृत हुनेछन्",
   "toast.permissions.autoaccept.off.title": "स्वत: स्वीकार गर्ने अनुमतिहरू रोकियो",
-  "toast.permissions.autoaccept.off.description": "अनुमति अनुरोधहरू अनुमोदन आवश्यक हुनेछ",
+  "toast.permissions.autoaccept.off.description":
+    "अनुमति अनुरोधहरू अनुमोदन आवश्यक हुनेछ",
   "toast.model.none.title": "कुनै मोडेल चयन गरिएको छैन",
   "toast.model.none.description": "यो सत्र संक्षेप गर्न प्रदायक जडान गर्नुहोस्",
   "toast.file.loadFailed.title": "फाइल लोड गर्न असफल भयो",
   "toast.file.listFailed.title": "फाइलहरू सूचीबद्ध गर्न असफल भयो",
   "toast.context.noLineSelection.title": "कुनै लाइन चयन छैन",
-  "toast.context.noLineSelection.description": "पहिले फाइल ट्याबमा रेखा दायरा चयन गर्नुहोस्।",
-  "toast.session.share.copyFailed.title": "URL लाई क्लिपबोर्डमा प्रतिलिपि गर्न असफल भयो",
+  "toast.context.noLineSelection.description":
+    "पहिले फाइल ट्याबमा रेखा दायरा चयन गर्नुहोस्।",
+  "toast.session.share.copyFailed.title":
+    "URL लाई क्लिपबोर्डमा प्रतिलिपि गर्न असफल भयो",
   "toast.session.share.success.title": "सत्र साझा गर्नुभयो",
-  "toast.session.share.success.description": "साझा गर्नुहोस् URL क्लिपबोर्डमा प्रतिलिपि गरियो!",
+  "toast.session.share.success.description":
+    "साझा गर्नुहोस् URL क्लिपबोर्डमा प्रतिलिपि गरियो!",
   "toast.session.share.failed.title": "सत्र साझेदारी गर्न असफल भयो",
   "toast.session.share.failed.description": "सत्र साझा गर्दा त्रुटि भयो",
   "toast.session.unshare.success.title": "सत्र अनसेयर गरियो",
@@ -621,23 +659,31 @@ export const dict: Record<string, string> = {
   "toast.session.unshare.failed.title": "सत्र अनसेयर गर्न असफल भयो",
   "toast.session.unshare.failed.description": "सत्र अनसेयर गर्दा त्रुटि भयो",
   "toast.session.export.success.title": "सत्र निर्यात गरियो",
-  "toast.session.export.success.description": "सत्र {{filename}} मा सुरक्षित गरियो",
+  "toast.session.export.success.description":
+    "सत्र {{filename}} मा सुरक्षित गरियो",
   "toast.session.export.failed.title": "सत्र निर्यात गर्न असफल भयो",
   "toast.session.export.failed.description": "सत्र निर्यात गर्दा त्रुटि भयो",
-  "toast.session.listFailed.title": "{{project}} का लागि सत्रहरू लोड गर्न असफल भयो",
+  "toast.session.listFailed.title":
+    "{{project}} का लागि सत्रहरू लोड गर्न असफल भयो",
   "toast.project.reloadFailed.title": "{{project}} पुन: लोड गर्न असफल भयो",
   "toast.update.title": "अपडेट उपलब्ध छ",
-  "toast.update.description": "OpenCode ({{version}}) को नयाँ संस्करण अब स्थापना गर्न उपलब्ध छ।",
+  "toast.update.description":
+    "OpenCode ({{version}}) को नयाँ संस्करण अब स्थापना गर्न उपलब्ध छ।",
   "toast.update.action.installRestart": "स्थापना र पुन: सुरु गर्नुहोस्",
   "toast.update.action.notYet": "अझै छैन",
   "toast.update.installFailed.title": "अपडेट स्थापना गर्न सकिएन",
   "toast.update.installFailed.retry": "फेरि प्रयास गर्नुहोस्",
 
-  "disk.accessGuidance.macos": "System Settings मा DiskLizardलाई Full Disk Access प्रदान गर्नुहोस्, अनि फेरि स्क्यान गर्नुहोस्।",
-  "disk.accessGuidance.windows": "यो ड्राइभमा पहुँच भएको खाता प्रयोग गर्नुहोस्, वा तपाईंको खाताले पढ्न सक्ने फोल्डर स्क्यान गर्नुहोस्।",
-  "disk.accessGuidance.linux": "फोल्डर र माउन्ट अनुमतिहरू समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
-  "disk.accessGuidance.default": "यी फोल्डरहरूमा पहुँच समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
-  "disk.accessGuidance.rescan": "पहुँच परिवर्तन गरेपछि माथिल्लो पट्टीको Rescan प्रयोग गर्नुहोस्।",
+  "disk.accessGuidance.macos":
+    "System Settings मा DiskLizardलाई Full Disk Access प्रदान गर्नुहोस्, अनि फेरि स्क्यान गर्नुहोस्।",
+  "disk.accessGuidance.windows":
+    "यो ड्राइभमा पहुँच भएको खाता प्रयोग गर्नुहोस्, वा तपाईंको खाताले पढ्न सक्ने फोल्डर स्क्यान गर्नुहोस्।",
+  "disk.accessGuidance.linux":
+    "फोल्डर र माउन्ट अनुमतिहरू समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
+  "disk.accessGuidance.default":
+    "यी फोल्डरहरूमा पहुँच समीक्षा गरेर फेरि स्क्यान गर्नुहोस्।",
+  "disk.accessGuidance.rescan":
+    "पहुँच परिवर्तन गरेपछि माथिल्लो पट्टीको Rescan प्रयोग गर्नुहोस्।",
   "disk.common.rescan": "फेरि स्क्यान गर्नुहोस्",
   "error.page.title": "केही गडबड भयो",
   "error.page.description": "एप्लिकेसन लोड गर्दा त्रुटि भयो।",
@@ -656,12 +702,16 @@ export const dict: Record<string, string> = {
   "error.page.version": "संस्करण: {{version}}",
   "error.dev.rootNotFound":
     "मूल तत्व फेला परेन। के तपाईंले यसलाई आफ्नो index.html मा थप्न बिर्सनुभयो? वा हुनसक्छ आईडी विशेषता गलत हिज्जे भयो?",
-  "error.serverSync.connectFailed": "सर्भरमा जडान गर्न सकिएन। `{{url}}` मा कुनै सर्भर चलिरहेको छ?",
+  "error.serverSync.connectFailed":
+    "सर्भरमा जडान गर्न सकिएन। `{{url}}` मा कुनै सर्भर चलिरहेको छ?",
   "error.serverSDK.noServerAvailable": "कुनै सर्भर उपलब्ध छैन",
   "error.serverSDK.serverNotAvailable": "सर्भर उपलब्ध छैन",
-  "error.childStore.persistedCacheCreateFailed": "निरन्तर क्यास सिर्जना गर्न असफल भयो",
-  "error.childStore.persistedProjectMetadataCreateFailed": "निरन्तर परियोजना मेटाडेटा सिर्जना गर्न असफल भयो",
-  "error.childStore.persistedProjectIconCreateFailed": "निरन्तर परियोजना प्रतिमा सिर्जना गर्न असफल भयो",
+  "error.childStore.persistedCacheCreateFailed":
+    "निरन्तर क्यास सिर्जना गर्न असफल भयो",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "निरन्तर परियोजना मेटाडेटा सिर्जना गर्न असफल भयो",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "निरन्तर परियोजना प्रतिमा सिर्जना गर्न असफल भयो",
   "error.childStore.storeCreateFailed": "स्टोर सिर्जना गर्न असफल भयो",
   "directory.error.invalidUrl": "URL मा अवैध निर्देशिका।",
   "error.chain.unknown": "अज्ञात त्रुटि",
@@ -673,23 +723,30 @@ export const dict: Record<string, string> = {
   "error.chain.responseBody": "प्रतिक्रिया मुख्य भाग:\n{{body}}",
   "error.chain.didYouMean": "के तपाईको मतलब: {{suggestions}}",
   "error.chain.modelNotFound": "मोडेल फेला परेन: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "आफ्नो कन्फिगरेसन (opencode.json) प्रदायक/मोडेल नामहरू जाँच गर्नुहोस्",
+  "error.chain.checkConfig":
+    "आफ्नो कन्फिगरेसन (opencode.json) प्रदायक/मोडेल नामहरू जाँच गर्नुहोस्",
   "error.chain.mcpFailed":
     'MCP सर्भर "{{name}}" असफल भयो। नोट गर्नुहोस्, OpenCode ले अझै पनि MCP प्रमाणीकरणलाई समर्थन गर्दैन।',
-  "error.chain.providerAuthFailed": "प्रदायक प्रमाणीकरण असफल भयो ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "प्रदायक प्रमाणीकरण असफल भयो ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'प्रदायक "{{provider}}" प्रारम्भ गर्न असफल भयो। प्रमाण र कन्फिगरेसन जाँच गर्नुहोस्।',
   "error.chain.configJsonInvalid": "{{path}} मा कन्फिग फाइल मान्य छैन JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} मा कन्फिग फाइल मान्य छैन JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} मा कन्फिग फाइल मान्य छैन JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'डाइरेक्टरी "{{dir}}" {{path}} मा मान्य छैन। डाइरेक्टरीलाई "{{suggestion}}" मा पुन: नामाकरण गर्नुहोस् वा यसलाई हटाउनुहोस्। यो सामान्य टाइपो हो।',
-  "error.chain.configFrontmatterError": "{{path}} मा फ्रन्टमेटर पार्स गर्न असफल भयो:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} मा फ्रन्टमेटर पार्स गर्न असफल भयो:\n{{message}}",
   "error.chain.configInvalid": "{{path}} मा कन्फिग फाइल अमान्य छ",
-  "error.chain.configInvalidWithMessage": "{{path}} मा कन्फिग फाइल अमान्य छ: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} मा कन्फिग फाइल अमान्य छ: {{message}}",
   "notification.permission.title": "अनुमति आवश्यक छ",
-  "notification.permission.description": "{{sessionTitle}} मा {{projectName}} लाई अनुमति चाहिन्छ",
+  "notification.permission.description":
+    "{{sessionTitle}} मा {{projectName}} लाई अनुमति चाहिन्छ",
   "notification.question.title": "प्रश्न",
-  "notification.question.description": "{{sessionTitle}} {{projectName}} मा एउटा प्रश्न छ",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}} मा एउटा प्रश्न छ",
   "notification.action.goToSession": "सत्रमा जानुहोस्",
   "notification.session.responseReady.title": "प्रतिक्रिया तयार छ",
   "notification.session.error.title": "सत्र त्रुटि",
@@ -712,14 +769,16 @@ export const dict: Record<string, string> = {
   "home.sessions.group.today": "आज",
   "home.sessions.group.yesterday": "हिजो",
   "home.sessions.group.older": "पुरानो",
-  "home.providerTip": "Claude, GPT, Gemini, आदि सहित अन्य मोडेलहरू प्रयोग गर्न ७५+ प्रदायकहरूसँग जडान गर्नुहोस्",
+  "home.providerTip":
+    "Claude, GPT, Gemini, आदि सहित अन्य मोडेलहरू प्रयोग गर्न ७५+ प्रदायकहरूसँग जडान गर्नुहोस्",
   "session.tab.session": "सत्र",
   "session.tab.review": "समीक्षा गर्नुहोस्",
   "session.tab.context": "सन्दर्भ",
   "session.tab.unknown": "अज्ञात सत्र",
   "session.panel.reviewAndFiles": "समीक्षा र फाइलहरू",
   "session.error.notFound": "यो सत्र फेला पार्न सकिँदैन",
-  "session.error.notFound.description": "यो ट्याबले यो सर्भरमा अब अवस्थित नभएको सत्रलाई संकेत गर्छ।",
+  "session.error.notFound.description":
+    "यो ट्याबले यो सर्भरमा अब अवस्थित नभएको सत्रलाई संकेत गर्छ।",
   "session.error.notFound.closeTab": "ट्याब बन्द गर्नुहोस्",
   "session.error.serverConnection": "यो सर्भरमा जडान गर्न सकिँदैन",
   "session.review.filesChanged": "फाइलहरू परिवर्तन गरियो {{count}}",
@@ -727,7 +786,8 @@ export const dict: Record<string, string> = {
   "session.review.change.other": "परिवर्तनहरू",
   "session.review.loadingChanges": "परिवर्तनहरू लोड गर्दै...",
   "session.review.empty": "यस सत्रमा अझै कुनै परिवर्तन छैन",
-  "session.review.noVcs": "कुनै Git संस्करण नियन्त्रण प्रणाली पत्ता लागेन, परिवर्तनहरू प्रदर्शित भएन",
+  "session.review.noVcs":
+    "कुनै Git संस्करण नियन्त्रण प्रणाली पत्ता लागेन, परिवर्तनहरू प्रदर्शित भएन",
   "session.review.noVcs.createGit.title": "एउटा Git भण्डार सिर्जना गर्नुहोस्",
   "session.review.noVcs.createGit.description":
     "यस परियोजनामा ​​भएका परिवर्तनहरू ट्र्याक गर्नुहोस्, समीक्षा गर्नुहोस् र पूर्ववत गर्नुहोस्",
@@ -815,7 +875,8 @@ export const dict: Record<string, string> = {
   "status.popover.tab.plugins": "प्लगइनहरू",
   "status.popover.action.manageServers": "सर्भरहरू प्रबन्ध गर्नुहोस्",
   "session.share.popover.title": "वेबमा प्रकाशित गर्नुहोस्",
-  "session.share.popover.description.shared": "यो सत्र वेबमा सार्वजनिक छ। यो लिङ्क भएको जो कोहीको लागि पहुँचयोग्य छ।",
+  "session.share.popover.description.shared":
+    "यो सत्र वेबमा सार्वजनिक छ। यो लिङ्क भएको जो कोहीको लागि पहुँचयोग्य छ।",
   "session.share.popover.description.unshared":
     "वेबमा सार्वजनिक रूपमा सत्र साझेदारी गर्नुहोस्। यो लिङ्क भएको जो कोहीको लागि पहुँचयोग्य हुनेछ।",
   "session.share.action.share": "सेयर गर्नुहोस्",
@@ -834,8 +895,10 @@ export const dict: Record<string, string> = {
   "terminal.title.numbered": "टर्मिनल {{number}}",
   "terminal.close": "टर्मिनल बन्द गर्नुहोस्",
   "terminal.connectionLost.title": "जडान हरायो",
-  "terminal.connectionLost.abnormalClose": "WebSocket असामान्य रूपमा बन्द भयो: {{code}}",
-  "terminal.connectionLost.description": "टर्मिनल जडान अवरुद्ध भयो। सर्भर पुन: सुरु हुँदा यो हुन सक्छ।",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket असामान्य रूपमा बन्द भयो: {{code}}",
+  "terminal.connectionLost.description":
+    "टर्मिनल जडान अवरुद्ध भयो। सर्भर पुन: सुरु हुँदा यो हुन सक्छ।",
   "terminal.connectTicket.csrfError":
     "PTY जडान टिकट उत्पत्ति वा CSRF चेक द्वारा अस्वीकार गरियो। सर्भर CORS कन्फिगरेसन जाँच गर्नुहोस्।",
   "terminal.connectTicket.statusError": "PTY जडान टिकट {{status}} सँग असफल भयो",
@@ -882,8 +945,10 @@ export const dict: Record<string, string> = {
   "sidebar.workspaces.enable": "कार्यस्थान सक्षम गर्नुहोस्",
   "sidebar.workspaces.disable": "कार्यस्थानहरू असक्षम गर्नुहोस्",
   "sidebar.gettingStarted.title": "सुरु गर्दै",
-  "sidebar.gettingStarted.line1": "OpenCode मा नि:शुल्क मोडेलहरू समावेश छन् ताकि तपाईं तुरुन्तै सुरु गर्न सक्नुहुन्छ।",
-  "sidebar.gettingStarted.line2": "मोडेलहरू, inc प्रयोग गर्न कुनै पनि प्रदायक जडान गर्नुहोस्। Claude, GPT, Gemini आदि।",
+  "sidebar.gettingStarted.line1":
+    "OpenCode मा नि:शुल्क मोडेलहरू समावेश छन् ताकि तपाईं तुरुन्तै सुरु गर्न सक्नुहुन्छ।",
+  "sidebar.gettingStarted.line2":
+    "मोडेलहरू, inc प्रयोग गर्न कुनै पनि प्रदायक जडान गर्नुहोस्। Claude, GPT, Gemini आदि।",
   "sidebar.project.recentSessions": "भर्खरका सत्रहरू",
   "sidebar.project.viewAllSessions": "सबै सत्रहरू हेर्नुहोस्",
   "sidebar.project.clearNotifications": "सूचनाहरू खाली गर्नुहोस्",
@@ -901,22 +966,27 @@ export const dict: Record<string, string> = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "पछिल्लो 5 सेकेन्डमा 32ms भन्दा बढी फ्रेमहरू।",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "पछिल्लो 5 सेकेन्डमा अवरुद्ध समय र लामो-कार्य गणना। अधिकतम कार्य: {{max}}।",
+  "debugBar.long.tip":
+    "पछिल्लो 5 सेकेन्डमा अवरुद्ध समय र लामो-कार्य गणना। अधिकतम कार्य: {{max}}।",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "पछिल्लो 5 सेकेन्डमा सबैभन्दा खराब अवलोकन इनपुट ढिलाइ।",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "पछिल्लो ५ सेकेन्डमा अन्तरक्रियाको अनुमानित अवधि। यो INP-जस्तो हो, आधिकारिक Web Vitals INP होइन।",
+  "debugBar.inp.tip":
+    "पछिल्लो ५ सेकेन्डमा अन्तरक्रियाको अनुमानित अवधि। यो INP-जस्तो हो, आधिकारिक Web Vitals INP होइन।",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "हालको एपको जीवनकालको लागि संचयी लेआउट शिफ्ट।",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "JS हीप बनाम हिप सीमा प्रयोग गरियो। Chromium मात्र।",
-  "debugBar.mem.tip": "JS हीप बनाम हिप सीमा प्रयोग गरियो। {{limit}} को {{used}}।",
+  "debugBar.mem.tipUnavailable":
+    "JS हीप बनाम हिप सीमा प्रयोग गरियो। Chromium मात्र।",
+  "debugBar.mem.tip":
+    "JS हीप बनाम हिप सीमा प्रयोग गरियो। {{limit}} को {{used}}।",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "सबै अन्तरक्रियात्मक तत्वहरूमा फोकस शैलीहरू बल गर्नुहोस्",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "बन्द",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "चयन गरिएको भाषा परिवर्तन नगरी पूर्ण एप लेआउट दिशा बल गर्नुहोस्",
+  "debugBar.direction.tip":
+    "चयन गरिएको भाषा परिवर्तन नगरी पूर्ण एप लेआउट दिशा बल गर्नुहोस्",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode डेस्कटप",
@@ -926,7 +996,8 @@ export const dict: Record<string, string> = {
   "settings.tab.shortcuts": "सर्टकटहरू",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL एकीकरण",
-  "settings.desktop.wsl.description": "OpenCode सर्भर भित्र WSL Windows मा चलाउनुहोस्।",
+  "settings.desktop.wsl.description":
+    "OpenCode सर्भर भित्र WSL Windows मा चलाउनुहोस्।",
   "settings.general.section.appearance": "उपस्थिति",
   "settings.general.section.advanced": "उन्नत",
   "settings.general.section.notifications": "प्रणाली सूचनाहरू",
@@ -935,38 +1006,51 @@ export const dict: Record<string, string> = {
   "settings.general.section.feed": "फिड",
   "settings.general.section.display": "प्रदर्शन",
   "settings.general.row.language.title": "भाषा",
-  "settings.general.row.language.description": "OpenCode को लागि प्रदर्शन भाषा परिवर्तन गर्नुहोस्",
+  "settings.general.row.language.description":
+    "OpenCode को लागि प्रदर्शन भाषा परिवर्तन गर्नुहोस्",
   "settings.general.row.shell.title": "टर्मिनल शेल",
-  "settings.general.row.shell.description": "टर्मिनल र एजेन्ट उपकरणहरू द्वारा प्रयोग गरिएको शेल",
+  "settings.general.row.shell.description":
+    "टर्मिनल र एजेन्ट उपकरणहरू द्वारा प्रयोग गरिएको शेल",
   "settings.general.row.shell.autoDefault": "स्वतः (पूर्वनिर्धारित)",
   "settings.general.row.shell.terminalOnly": "टर्मिनल मात्र",
   "settings.general.row.appearance.title": "उपस्थिति",
-  "settings.general.row.appearance.description": "आफ्नो यन्त्रमा OpenCode कस्तो देखिन्छ अनुकूलित गर्नुहोस्",
+  "settings.general.row.appearance.description":
+    "आफ्नो यन्त्रमा OpenCode कस्तो देखिन्छ अनुकूलित गर्नुहोस्",
   "settings.general.row.colorScheme.title": "रंग योजना",
   "settings.general.row.colorScheme.description":
     "OpenCode ले प्रणाली, उज्यालो वा गाढा विषयवस्तुलाई फलो गर्छ कि गर्दैन भन्ने छनौट गर्नुहोस्",
   "settings.general.row.theme.title": "विषयवस्तु",
-  "settings.general.row.theme.description": "कसरी OpenCode विषयवस्तुलाई अनुकूलित गर्नुहोस्।",
+  "settings.general.row.theme.description":
+    "कसरी OpenCode विषयवस्तुलाई अनुकूलित गर्नुहोस्।",
   "settings.general.row.font.title": "कोड फन्ट",
-  "settings.general.row.font.description": "कोड ब्लकहरूमा प्रयोग गरिएको फन्ट अनुकूलित गर्नुहोस्",
+  "settings.general.row.font.description":
+    "कोड ब्लकहरूमा प्रयोग गरिएको फन्ट अनुकूलित गर्नुहोस्",
   "settings.general.row.terminalFont.title": "टर्मिनल फन्ट",
-  "settings.general.row.terminalFont.description": "टर्मिनलमा प्रयोग गरिएको फन्ट अनुकूलन गर्नुहोस्",
+  "settings.general.row.terminalFont.description":
+    "टर्मिनलमा प्रयोग गरिएको फन्ट अनुकूलन गर्नुहोस्",
   "settings.general.row.uiFont.title": "UI फन्ट",
-  "settings.general.row.uiFont.description": "इन्टरफेसमा प्रयोग गरिएको फन्ट अनुकूलित गर्नुहोस्",
+  "settings.general.row.uiFont.description":
+    "इन्टरफेसमा प्रयोग गरिएको फन्ट अनुकूलित गर्नुहोस्",
   "settings.general.row.followup.title": "अनुगमन व्यवहार",
-  "settings.general.row.followup.description": "छनोट गर्नुहोस् कि फलो-अपले तुरुन्तै स्टेयर गर्ने वा लाममा पर्खनुहोस्",
+  "settings.general.row.followup.description":
+    "छनोट गर्नुहोस् कि फलो-अपले तुरुन्तै स्टेयर गर्ने वा लाममा पर्खनुहोस्",
   "settings.general.row.followup.option.queue": "लाम",
   "settings.general.row.followup.option.steer": "स्टेयर",
   "settings.general.row.showFileTree.title": "फाइल रूख",
-  "settings.general.row.showFileTree.description": "सत्रहरूमा फाइल ट्री प्यानल देखाउनुहोस्",
+  "settings.general.row.showFileTree.description":
+    "सत्रहरूमा फाइल ट्री प्यानल देखाउनुहोस्",
   "settings.general.row.showNavigation.title": "नेभिगेसन नियन्त्रणहरू",
-  "settings.general.row.showNavigation.description": "डेस्कटप शीर्षक पट्टीमा पछाडि र अगाडि बटनहरू देखाउनुहोस्",
+  "settings.general.row.showNavigation.description":
+    "डेस्कटप शीर्षक पट्टीमा पछाडि र अगाडि बटनहरू देखाउनुहोस्",
   "settings.general.row.showSearch.title": "आदेश प्यालेट",
-  "settings.general.row.showSearch.description": "शीर्षक पट्टीमा खोज र आदेश प्यालेट बटन देखाउनुहोस्",
+  "settings.general.row.showSearch.description":
+    "शीर्षक पट्टीमा खोज र आदेश प्यालेट बटन देखाउनुहोस्",
   "settings.general.row.showTerminal.title": "टर्मिनल",
-  "settings.general.row.showTerminal.description": "डेस्कटप शीर्षक पट्टीमा टर्मिनल बटन देखाउनुहोस्",
+  "settings.general.row.showTerminal.description":
+    "डेस्कटप शीर्षक पट्टीमा टर्मिनल बटन देखाउनुहोस्",
   "settings.general.row.showStatus.title": "सर्भर स्थिति",
-  "settings.general.row.showStatus.description": "शीर्षक पट्टीमा सर्भर स्थिति बटन देखाउनुहोस्",
+  "settings.general.row.showStatus.description":
+    "शीर्षक पट्टीमा सर्भर स्थिति बटन देखाउनुहोस्",
   "settings.general.row.mobileTitlebarBottom.title": "तल्लो नेभिगेसन",
   "settings.general.row.mobileTitlebarBottom.description":
     "मोबाइलमा स्क्रिनको फेदमा शीर्षक पट्टी र सत्र ट्याबहरू राख्नुहोस्",
@@ -974,30 +1058,40 @@ export const dict: Record<string, string> = {
   "settings.general.row.showCustomAgents.description":
     "कम्पोजरमा एजेन्टहरू बीच स्विच गर्नुहोस्। लुकेको बेला, बिल्ड एजेन्टमा पूर्वनिर्धारित हुन्छ।",
   "settings.general.row.reasoningSummaries.title": "तर्क सारांशहरू देखाउनुहोस्",
-  "settings.general.row.reasoningSummaries.description": "टाइमलाइनमा मोडेल तर्क सारांशहरू प्रदर्शन गर्नुहोस्",
-  "settings.general.row.shellToolPartsExpanded.title": "शेल उपकरणका भागहरू विस्तार गर्नुहोस्",
+  "settings.general.row.reasoningSummaries.description":
+    "टाइमलाइनमा मोडेल तर्क सारांशहरू प्रदर्शन गर्नुहोस्",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "शेल उपकरणका भागहरू विस्तार गर्नुहोस्",
   "settings.general.row.shellToolPartsExpanded.description":
     "टाइमलाइनमा पूर्वनिर्धारित रूपमा विस्तारित शेल उपकरण भागहरू देखाउनुहोस्",
-  "settings.general.row.editToolPartsExpanded.title": "सम्पादन उपकरण भागहरू विस्तार गर्नुहोस्",
+  "settings.general.row.editToolPartsExpanded.title":
+    "सम्पादन उपकरण भागहरू विस्तार गर्नुहोस्",
   "settings.general.row.editToolPartsExpanded.description":
     "टाइमलाइनमा पूर्वनिर्धारित रूपमा विस्तार गरिएको सम्पादन, लेख्नुहोस् र प्याच उपकरण भागहरू देखाउनुहोस्",
   "settings.general.row.newInterface.title": "नयाँ लेआउट",
   "settings.general.row.newInterface.badge": "नयाँ",
   "settings.general.row.newInterface.description":
     "नयाँ ट्याबहरू र गृह लेआउट प्रयोग गर्नुहोस्। सीमित समयको लागि लेआउटहरू बीच स्विच गर्नुहोस्।",
-  "settings.general.row.newInterfaceNotice.title": "तपाईं अहिले नयाँ लेआउट प्रयोग गर्दै हुनुहुन्छ",
-  "settings.general.row.newInterfaceNotice.description": "अघिल्लो लेआउट अब उपलब्ध छैन",
+  "settings.general.row.newInterfaceNotice.title":
+    "तपाईं अहिले नयाँ लेआउट प्रयोग गर्दै हुनुहुन्छ",
+  "settings.general.row.newInterfaceNotice.description":
+    "अघिल्लो लेआउट अब उपलब्ध छैन",
   "settings.general.row.newInterfaceNotice.dismiss": "खारेज गर्नुहोस्",
   "settings.general.row.pinchZoom.title": "जुम गर्न पिन्च गर्नुहोस्",
   "settings.general.row.pinchZoom.description":
     "ट्र्याकप्याड पिन्च र Ctrl-स्क्रोल इशाराहरूलाई जुम गर्न अनुमति दिनुहोस्",
   "settings.general.row.wayland.title": "नेटिभ Wayland प्रयोग गर्नुहोस्",
-  "settings.general.row.wayland.description": "Wayland मा X11 फलब्याक असक्षम गर्नुहोस्। पुन: सुरु गर्न आवश्यक छ।",
-  "settings.general.row.wayland.tooltip": "Linux मा मिश्रित रिफ्रेस-रेट मनिटरहरूसँग, नेटिभ Wayland थप स्थिर हुन सक्छ।",
+  "settings.general.row.wayland.description":
+    "Wayland मा X11 फलब्याक असक्षम गर्नुहोस्। पुन: सुरु गर्न आवश्यक छ।",
+  "settings.general.row.wayland.tooltip":
+    "Linux मा मिश्रित रिफ्रेस-रेट मनिटरहरूसँग, नेटिभ Wayland थप स्थिर हुन सक्छ।",
   "settings.general.row.releaseNotes.title": "रिलिज नोटहरू",
-  "settings.general.row.releaseNotes.description": "अपडेट पछि के नयाँ पपअपहरू देखाउनुहोस्",
-  "settings.updates.row.startup.title": "स्टार्टअपमा अद्यावधिकहरूको लागि जाँच गर्नुहोस्",
-  "settings.updates.row.startup.description": "OpenCode सुरु हुँदा अद्यावधिकहरूको लागि स्वचालित रूपमा जाँच गर्नुहोस्",
+  "settings.general.row.releaseNotes.description":
+    "अपडेट पछि के नयाँ पपअपहरू देखाउनुहोस्",
+  "settings.updates.row.startup.title":
+    "स्टार्टअपमा अद्यावधिकहरूको लागि जाँच गर्नुहोस्",
+  "settings.updates.row.startup.description":
+    "OpenCode सुरु हुँदा अद्यावधिकहरूको लागि स्वचालित रूपमा जाँच गर्नुहोस्",
   "settings.updates.row.check.title": "अपडेटहरूको लागि जाँच गर्नुहोस्",
   "settings.updates.row.check.description":
     "म्यानुअल रूपमा अद्यावधिकहरूको लागि जाँच गर्नुहोस् र यदि उपलब्ध छ भने स्थापना गर्नुहोस्",
@@ -1006,7 +1100,8 @@ export const dict: Record<string, string> = {
   "settings.updates.action.downloading": "डाउनलोड गर्दै...",
   "settings.updates.action.installing": "स्थापना गर्दै...",
   "settings.updates.toast.latest.title": "तपाईं अद्यावधिक हुनुहुन्छ",
-  "settings.updates.toast.latest.description": "तपाईं OpenCode को नवीनतम संस्करण चलाइरहनुभएको छ।",
+  "settings.updates.toast.latest.description":
+    "तपाईं OpenCode को नवीनतम संस्करण चलाइरहनुभएको छ।",
   "sound.option.none": "कुनै पनि होइन",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1057,21 +1152,27 @@ export const dict: Record<string, string> = {
   "settings.general.notifications.agent.description":
     "एजेन्ट पूरा हुँदा वा ध्यान आवश्यक हुँदा प्रणाली सूचना देखाउनुहोस्",
   "settings.general.notifications.permissions.title": "अनुमतिहरू",
-  "settings.general.notifications.permissions.description": "अनुमति आवश्यक हुँदा प्रणाली सूचना देखाउनुहोस्",
+  "settings.general.notifications.permissions.description":
+    "अनुमति आवश्यक हुँदा प्रणाली सूचना देखाउनुहोस्",
   "settings.general.notifications.errors.title": "त्रुटिहरू",
-  "settings.general.notifications.errors.description": "त्रुटि हुँदा प्रणाली सूचना देखाउनुहोस्",
+  "settings.general.notifications.errors.description":
+    "त्रुटि हुँदा प्रणाली सूचना देखाउनुहोस्",
   "settings.general.sounds.agent.title": "एजेन्ट",
-  "settings.general.sounds.agent.description": "जब एजेन्ट पूर्ण हुन्छ वा ध्यान चाहिन्छ ध्वनि बजाउनुहोस्",
+  "settings.general.sounds.agent.description":
+    "जब एजेन्ट पूर्ण हुन्छ वा ध्यान चाहिन्छ ध्वनि बजाउनुहोस्",
   "settings.general.sounds.permissions.title": "अनुमतिहरू",
-  "settings.general.sounds.permissions.description": "अनुमति आवश्यक हुँदा ध्वनि बजाउनुहोस्",
+  "settings.general.sounds.permissions.description":
+    "अनुमति आवश्यक हुँदा ध्वनि बजाउनुहोस्",
   "settings.general.sounds.errors.title": "त्रुटिहरू",
   "settings.general.sounds.errors.description": "त्रुटि हुँदा ध्वनि बजाउनुहोस्",
   "settings.shortcuts.title": "किबोर्ड सर्टकटहरू",
   "settings.shortcuts.reset.button": "पूर्वनिर्धारितमा रिसेट गर्नुहोस्",
   "settings.shortcuts.reset.toast.title": "सर्टकट रिसेट",
-  "settings.shortcuts.reset.toast.description": "किबोर्ड सर्टकटहरू पूर्वनिर्धारितमा रिसेट गरिएका छन्।",
+  "settings.shortcuts.reset.toast.description":
+    "किबोर्ड सर्टकटहरू पूर्वनिर्धारितमा रिसेट गरिएका छन्।",
   "settings.shortcuts.conflict.title": "सर्टकट पहिले नै प्रयोगमा छ",
-  "settings.shortcuts.conflict.description": "{{keybind}} पहिले नै {{titles}} लाई तोकिएको छ।",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} पहिले नै {{titles}} लाई तोकिएको छ।",
   "settings.shortcuts.unassigned": "तोकिएको छैन",
   "settings.shortcuts.pressKeys": "कुञ्जीहरू थिच्नुहोस्",
   "settings.shortcuts.search.placeholder": "सर्टकट खोज्नुहोस्",
@@ -1086,9 +1187,11 @@ export const dict: Record<string, string> = {
   "settings.providers.description": "प्रदायक सेटिङहरू यहाँ कन्फिगर योग्य हुनेछ।",
   "settings.providers.section.connected": "जडान गरिएका प्रदायकहरू",
   "settings.providers.connected.empty": "जडान गरिएका प्रदायकहरू छैनन्",
-  "settings.providers.connected.environmentDescription": "तपाईंको वातावरण चरबाट जडान गरिएको",
+  "settings.providers.connected.environmentDescription":
+    "तपाईंको वातावरण चरबाट जडान गरिएको",
   "settings.providers.section.popular": "लोकप्रिय प्रदायकहरू",
-  "settings.providers.custom.description": "आधार URL द्वारा एक OpenAI-कम्प्याटिबल प्रदायक थप्नुहोस्।",
+  "settings.providers.custom.description":
+    "आधार URL द्वारा एक OpenAI-कम्प्याटिबल प्रदायक थप्नुहोस्।",
   "settings.providers.tag.environment": "वातावरण",
   "settings.providers.tag.config": "कन्फिग",
   "settings.providers.tag.custom": "अनुकूलन",
@@ -1102,22 +1205,28 @@ export const dict: Record<string, string> = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP सेटिङहरू यहाँ कन्फिगर योग्य हुनेछन्।",
   "settings.permissions.title": "अनुमतिहरू",
-  "settings.permissions.description": "सर्भरले पूर्वनिर्धारित रूपमा प्रयोग गर्न सक्ने उपकरणहरू नियन्त्रण गर्नुहोस्।",
+  "settings.permissions.description":
+    "सर्भरले पूर्वनिर्धारित रूपमा प्रयोग गर्न सक्ने उपकरणहरू नियन्त्रण गर्नुहोस्।",
   "settings.permissions.section.tools": "उपकरणहरू",
-  "settings.permissions.toast.updateFailed.title": "अनुमतिहरू अद्यावधिक गर्न असफल भयो",
+  "settings.permissions.toast.updateFailed.title":
+    "अनुमतिहरू अद्यावधिक गर्न असफल भयो",
   "settings.permissions.action.allow": "अनुमति दिनुहोस्",
   "settings.permissions.action.ask": "सोध्नुहोस्",
   "settings.permissions.action.deny": "अस्वीकार गर्नुहोस्",
   "settings.permissions.tool.read.title": "पढ्नुहोस्",
   "settings.permissions.tool.read.description": "फाइल पढ्दै (फाइल पथसँग मेल खान्छ)",
   "settings.permissions.tool.edit.title": "सम्पादन गर्नुहोस्",
-  "settings.permissions.tool.edit.description": "सम्पादनहरू, लेखहरू, र प्याचहरू सहित फाइलहरू परिमार्जन गर्नुहोस्",
+  "settings.permissions.tool.edit.description":
+    "सम्पादनहरू, लेखहरू, र प्याचहरू सहित फाइलहरू परिमार्जन गर्नुहोस्",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "ग्लोब ढाँचाहरू प्रयोग गरेर फाइलहरू मिलाउनुहोस्",
+  "settings.permissions.tool.glob.description":
+    "ग्लोब ढाँचाहरू प्रयोग गरेर फाइलहरू मिलाउनुहोस्",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "नियमित अभिव्यक्ति प्रयोग गरी फाइल सामग्री खोज्नुहोस्",
+  "settings.permissions.tool.grep.description":
+    "नियमित अभिव्यक्ति प्रयोग गरी फाइल सामग्री खोज्नुहोस्",
   "settings.permissions.tool.list.title": "सूची",
-  "settings.permissions.tool.list.description": "निर्देशिका भित्र फाइलहरू सूचीबद्ध गर्नुहोस्",
+  "settings.permissions.tool.list.description":
+    "निर्देशिका भित्र फाइलहरू सूचीबद्ध गर्नुहोस्",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "शेल आदेशहरू चलाउनुहोस्",
   "settings.permissions.tool.task.title": "कार्य",
@@ -1129,13 +1238,16 @@ export const dict: Record<string, string> = {
   "settings.permissions.tool.todowrite.title": "Todo Write",
   "settings.permissions.tool.todowrite.description": "कार्य सूची अद्यावधिक गर्नुहोस्",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
-  "settings.permissions.tool.webfetch.description": "URL बाट सामग्री प्राप्त गर्नुहोस्",
+  "settings.permissions.tool.webfetch.description":
+    "URL बाट सामग्री प्राप्त गर्नुहोस्",
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "वेब खोज्नुहोस्",
   "settings.permissions.tool.external_directory.title": "बाह्य निर्देशिका",
-  "settings.permissions.tool.external_directory.description": "परियोजना निर्देशिका बाहिर फाइलहरू पहुँच गर्नुहोस्",
+  "settings.permissions.tool.external_directory.description":
+    "परियोजना निर्देशिका बाहिर फाइलहरू पहुँच गर्नुहोस्",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "उस्तै इनपुटको साथ बारम्बार उपकरण कलहरू पत्ता लगाउनुहोस्",
+  "settings.permissions.tool.doom_loop.description":
+    "उस्तै इनपुटको साथ बारम्बार उपकरण कलहरू पत्ता लगाउनुहोस्",
   "session.delete.failed.title": "सत्र मेटाउन असफल भयो",
   "session.delete.title": "सत्र मेटाउनुहोस्",
   "session.delete.confirm": 'सत्र "{{name}}" मेटाउने हो?',
@@ -1149,7 +1261,8 @@ export const dict: Record<string, string> = {
   "workspace.resetting.description": "यसले एक मिनेट लिन सक्छ।",
   "workspace.reset.failed.title": "कार्यस्थान रिसेट गर्न असफल भयो",
   "workspace.reset.success.title": "कार्यस्थान रिसेट",
-  "workspace.reset.success.description": "कार्यस्थान अब पूर्वनिर्धारित शाखासँग मेल खान्छ।",
+  "workspace.reset.success.description":
+    "कार्यस्थान अब पूर्वनिर्धारित शाखासँग मेल खान्छ।",
   "workspace.error.stillPreparing": "कार्यस्थान अझै तयार हुँदै छ",
   "workspace.status.checking": "मर्ज नगरिएका परिवर्तनहरूको लागि जाँच गर्दै...",
   "workspace.status.error": "Git स्थिति प्रमाणित गर्न असमर्थ।",

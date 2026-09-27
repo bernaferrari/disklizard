@@ -11,6 +11,7 @@ import {
   hasUnverifiedPhysicalCloneAccounting,
   isPhysicalByteAccounting,
   isPinnedScanLocation,
+  mayContainUnobservedContents,
   replaceScanSubtree,
   removeScanSubtrees,
   runDeletionBatch,
@@ -40,6 +41,49 @@ const drive: DiskDriveInfo = {
   type: "local",
 }
 
+describe("partial scan review", () => {
+  const project = { ...root, path: "/work/project", name: "project" }
+  it("warns only affected ancestors when every unreadable path is known", () => {
+    const scan = {
+      ...root,
+      path: "/work",
+      scanIssues: {
+        unreadableCount: 1,
+        samplePaths: ["/work/project/private"],
+      },
+    }
+    expect(mayContainUnobservedContents(scan, project, "macos")).toBe(true)
+    expect(
+      mayContainUnobservedContents(
+        scan,
+        { ...project, path: "/work/other" },
+        "macos"
+      )
+    ).toBe(false)
+  })
+
+  it("warns for any directory when scanner samples were capped", () => {
+    const scan = {
+      ...root,
+      path: "/work",
+      scanIssues: {
+        unreadableCount: 13,
+        samplePaths: ["/work/project/private"],
+      },
+    }
+    expect(
+      mayContainUnobservedContents(
+        scan,
+        { ...project, path: "/work/other" },
+        "macos"
+      )
+    ).toBe(true)
+    expect(
+      mayContainUnobservedContents(scan, { ...project, isDir: false }, "macos")
+    ).toBe(false)
+  })
+})
+
 describe("includeHiddenSpace", () => {
   it("withholds physical reclaim claims until clone capability and shared-storage visibility are verified", () => {
     expect(isPhysicalByteAccounting("macos", drive)).toBe(true)
@@ -47,52 +91,128 @@ describe("includeHiddenSpace", () => {
     expect(isPhysicalByteAccounting("linux")).toBe(true)
     expect(isPhysicalByteAccounting("windows", drive)).toBe(false)
     expect(isPhysicalByteAccounting("windows")).toBe(false)
-    expect(isPhysicalByteAccounting("macos", { ...drive, type: "network" })).toBe(false)
-    expect(isPhysicalByteAccounting("linux", { ...drive, type: "network" })).toBe(false)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos")).toBe(true)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "linux")).toBe(true)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos", drive)).toBe(true)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root, cloneMetadata: { state: "unknown" } }, "macos", drive)).toBe(true)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root, cloneMetadata: { state: "available" } }, "macos", drive)).toBe(true)
     expect(
-      hasUnverifiedPhysicalCloneAccounting(
-        { ...root, cloneMetadata: { state: "available" }, sharedStorageEvidence: "partial" },
-        "macos",
-        drive,
-      ),
+      isPhysicalByteAccounting("macos", { ...drive, type: "network" })
+    ).toBe(false)
+    expect(
+      isPhysicalByteAccounting("linux", { ...drive, type: "network" })
+    ).toBe(false)
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos")).toBe(
+      true
+    )
+    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "linux")).toBe(
+      true
+    )
+    expect(
+      hasUnverifiedPhysicalCloneAccounting({ ...root }, "macos", drive)
     ).toBe(true)
     expect(
       hasUnverifiedPhysicalCloneAccounting(
-        { ...root, cloneMetadata: { state: "available" }, sharedStorageEvidence: "complete" },
+        { ...root, cloneMetadata: { state: "unknown" } },
         "macos",
-        drive,
-      ),
+        drive
+      )
+    ).toBe(true)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting(
+        { ...root, cloneMetadata: { state: "available" } },
+        "macos",
+        drive
+      )
+    ).toBe(true)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting(
+        {
+          ...root,
+          cloneMetadata: { state: "available" },
+          sharedStorageEvidence: "partial",
+        },
+        "macos",
+        drive
+      )
+    ).toBe(true)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting(
+        {
+          ...root,
+          cloneMetadata: { state: "available" },
+          sharedStorageEvidence: "complete",
+        },
+        "macos",
+        drive
+      )
     ).toBe(false)
-    expect(hasUnverifiedPhysicalCloneAccounting({ ...root }, "windows", drive)).toBe(false)
+    expect(
+      hasUnverifiedPhysicalCloneAccounting({ ...root }, "windows", drive)
+    ).toBe(false)
   })
 
   it("toggles a bounded pinned-scan list without merging case-distinct Windows locations", () => {
     const initial = [{ path: "C:\\Code\\App", label: "App" }]
-    expect(isPinnedScanLocation(initial, "C:\\Code\\App\\", "windows")).toBe(true)
-    expect(isPinnedScanLocation(initial, "c:\\code\\app\\", "windows")).toBe(false)
-    expect(togglePinnedScanLocation(initial, { path: "C:\\Code\\App\\", label: "Duplicate" }, "windows")).toEqual([])
-    expect(togglePinnedScanLocation(initial, { path: "c:\\CODE\\app", label: "Distinct" }, "windows")).toEqual([
-      ...initial,
-      { path: "c:\\CODE\\app", label: "Distinct" },
-    ])
+    expect(isPinnedScanLocation(initial, "C:\\Code\\App\\", "windows")).toBe(
+      true
+    )
+    expect(isPinnedScanLocation(initial, "c:\\code\\app\\", "windows")).toBe(
+      false
+    )
+    expect(
+      togglePinnedScanLocation(
+        initial,
+        { path: "C:\\Code\\App\\", label: "Duplicate" },
+        "windows"
+      )
+    ).toEqual([])
+    expect(
+      togglePinnedScanLocation(
+        initial,
+        { path: "c:\\CODE\\app", label: "Distinct" },
+        "windows"
+      )
+    ).toEqual([...initial, { path: "c:\\CODE\\app", label: "Distinct" }])
 
-    const locations = Array.from({ length: 12 }, (_, index) => ({ path: `/work/${index}`, label: `${index}` }))
-    const next = togglePinnedScanLocation(locations, { path: "/work/latest", label: "  Latest  " }, "linux")
+    const locations = Array.from({ length: 12 }, (_, index) => ({
+      path: `/work/${index}`,
+      label: `${index}`,
+    }))
+    const next = togglePinnedScanLocation(
+      locations,
+      { path: "/work/latest", label: "  Latest  " },
+      "linux"
+    )
     expect(next).toEqual(locations)
 
-    expect(togglePinnedScanLocation([], { path: "/work/latest", label: "  Latest  " }, "linux")).toEqual([
-      { path: "/work/latest", label: "Latest" },
-    ])
+    expect(
+      togglePinnedScanLocation(
+        [],
+        { path: "/work/latest", label: "  Latest  " },
+        "linux"
+      )
+    ).toEqual([{ path: "/work/latest", label: "Latest" }])
 
-    expect(isPinnedScanLocation([{ path: "/srv/name\\with\\slashes", label: "Literal" }], "/srv/name/with/slashes", "linux")).toBe(false)
-    expect(isPinnedScanLocation([{ path: "/srv//project/", label: "Project" }], "/srv/project", "linux")).toBe(true)
-    expect(diskPathIsWithin("/srv/project/cache", "/srv//project/", "linux")).toBe(true)
-    expect(diskPathIsWithin("/srv/name/with/slashes", "/srv/name\\with\\slashes", "linux")).toBe(false)
+    expect(
+      isPinnedScanLocation(
+        [{ path: "/srv/name\\with\\slashes", label: "Literal" }],
+        "/srv/name/with/slashes",
+        "linux"
+      )
+    ).toBe(false)
+    expect(
+      isPinnedScanLocation(
+        [{ path: "/srv//project/", label: "Project" }],
+        "/srv/project",
+        "linux"
+      )
+    ).toBe(true)
+    expect(
+      diskPathIsWithin("/srv/project/cache", "/srv//project/", "linux")
+    ).toBe(true)
+    expect(
+      diskPathIsWithin(
+        "/srv/name/with/slashes",
+        "/srv/name\\with\\slashes",
+        "linux"
+      )
+    ).toBe(false)
     expect(diskPathIsWithin("c:\\Work\\App", "C:\\Work", "windows")).toBe(false)
     expect(diskPathIsWithin("C:\\Work\\App", "C:\\Work", "windows")).toBe(true)
   })
@@ -126,14 +246,21 @@ describe("includeHiddenSpace", () => {
     expect(result).not.toBe(root)
     expect(root.size).toBe(60)
     expect(result.size).toBe(100)
-    expect(result.children[0]).toMatchObject({ name: "Hidden space", size: 40, isHidden: true, isOther: true })
+    expect(result.children[0]).toMatchObject({
+      name: "Hidden space",
+      size: 40,
+      isHidden: true,
+      isOther: true,
+    })
     expect(canActOnNode(result.children[0])).toBe(false)
   })
 
   it("does not invent hidden space for folder scans or stale smaller drive totals", () => {
     expect(includeHiddenSpace(root)).toBe(root)
     expect(includeHiddenSpace(root, { ...drive, used: 50 })).toBe(root)
-    expect(includeHiddenSpace({ ...root, path: "/Users/alex/project" }, drive)).toMatchObject({ size: 60 })
+    expect(
+      includeHiddenSpace({ ...root, path: "/Users/alex/project" }, drive)
+    ).toMatchObject({ size: 60 })
   })
 
   it("expands a focused subtree without losing ancestors or mutating the original scan", () => {
@@ -145,34 +272,95 @@ describe("includeHiddenSpace", () => {
       modifiedAt: 20,
       isCollapsed: true,
     }
-    const sibling = { ...root, name: "src", path: "/work/app/src", size: 60, modifiedAt: 30 }
-    const project = { ...root, name: "app", path: "/work/app", size: 100, children: [collapsed, sibling] }
+    const sibling = {
+      ...root,
+      name: "src",
+      path: "/work/app/src",
+      size: 60,
+      modifiedAt: 30,
+    }
+    const project = {
+      ...root,
+      name: "app",
+      path: "/work/app",
+      size: 100,
+      children: [collapsed, sibling],
+    }
     const expanded = {
       ...collapsed,
       size: 55,
       modifiedAt: 50,
       isCollapsed: undefined,
-      children: [{ ...root, name: "debug", path: "/work/app/target/debug", size: 55, modifiedAt: 50 }],
+      children: [
+        {
+          ...root,
+          name: "debug",
+          path: "/work/app/target/debug",
+          size: 55,
+          modifiedAt: 50,
+        },
+      ],
     }
 
-    const result = replaceScanSubtree(project, collapsed.path, expanded, "linux")
+    const result = replaceScanSubtree(
+      project,
+      collapsed.path,
+      expanded,
+      "linux"
+    )
 
     expect(result).not.toBe(project)
     expect(project.children[0]).toBe(collapsed)
-    expect(result).toMatchObject({ name: "app", path: "/work/app", size: 115, modifiedAt: 50 })
-    expect(result.children.map((child) => child.name)).toEqual(["src", "target"])
+    expect(result).toMatchObject({
+      name: "app",
+      path: "/work/app",
+      size: 115,
+      modifiedAt: 50,
+    })
+    expect(result.children.map((child) => child.name)).toEqual([
+      "src",
+      "target",
+    ])
     expect(result.children[1]).toBe(expanded)
-    expect(buildCrumbs(result, expanded).map((crumb) => crumb.name)).toEqual(["app", "target"])
+    expect(buildCrumbs(result, expanded).map((crumb) => crumb.name)).toEqual([
+      "app",
+      "target",
+    ])
   })
 
   it("matches focused Windows paths exactly and leaves case-distinct or missing paths untouched", () => {
-    const collapsed = { ...root, name: "node_modules", path: "C:\\Code\\App\\node_modules", isCollapsed: true }
+    const collapsed = {
+      ...root,
+      name: "node_modules",
+      path: "C:\\Code\\App\\node_modules",
+      isCollapsed: true,
+    }
     const project = { ...root, path: "C:\\Code\\App", children: [collapsed] }
-    const expanded = { ...collapsed, isCollapsed: undefined, children: [{ ...root, name: "pkg", path: "pkg" }] }
+    const expanded = {
+      ...collapsed,
+      isCollapsed: undefined,
+      children: [{ ...root, name: "pkg", path: "pkg" }],
+    }
 
-    expect(replaceScanSubtree(project, "C:\\Code\\App\\node_modules", expanded, "windows").children[0]).toBe(expanded)
-    expect(replaceScanSubtree(project, "c:\\code\\app\\NODE_MODULES", expanded, "windows")).toBe(project)
-    expect(replaceScanSubtree(project, "C:\\Code\\Missing", expanded, "windows")).toBe(project)
+    expect(
+      replaceScanSubtree(
+        project,
+        "C:\\Code\\App\\node_modules",
+        expanded,
+        "windows"
+      ).children[0]
+    ).toBe(expanded)
+    expect(
+      replaceScanSubtree(
+        project,
+        "c:\\code\\app\\NODE_MODULES",
+        expanded,
+        "windows"
+      )
+    ).toBe(project)
+    expect(
+      replaceScanSubtree(project, "C:\\Code\\Missing", expanded, "windows")
+    ).toBe(project)
   })
 
   it("keeps scan-boundary metadata root-only when a focused subtree is grafted into the map", () => {
@@ -192,7 +380,12 @@ describe("includeHiddenSpace", () => {
         excludedSamplePaths: [],
       },
     }
-    const collapsed = { ...root, name: "target", path: "/work/app/target", isCollapsed: true }
+    const collapsed = {
+      ...root,
+      name: "target",
+      path: "/work/app/target",
+      isCollapsed: true,
+    }
     const project: DiskScanNode = {
       ...root,
       name: "app",
@@ -202,7 +395,10 @@ describe("includeHiddenSpace", () => {
       cloneMetadata: { state: "available" },
       sharedStorageEvidence: "complete",
     }
-    const focusedInventory: DeveloperArtifactInventory = { ...inventory, status: { ...inventory.status } }
+    const focusedInventory: DeveloperArtifactInventory = {
+      ...inventory,
+      status: { ...inventory.status },
+    }
     const expanded: DiskScanNode = {
       ...collapsed,
       isCollapsed: undefined,
@@ -211,7 +407,12 @@ describe("includeHiddenSpace", () => {
       sharedStorageEvidence: "complete",
     }
 
-    const result = replaceScanSubtree(project, collapsed.path, expanded, "linux")
+    const result = replaceScanSubtree(
+      project,
+      collapsed.path,
+      expanded,
+      "linux"
+    )
 
     expect(result.developerArtifactInventory).toBe(inventory)
     expect(result.cloneMetadata).toEqual({ state: "available" })
@@ -229,7 +430,9 @@ describe("includeHiddenSpace", () => {
       sharedStorageEvidence: "complete",
     }
 
-    expect(replaceScanSubtree(root, root.path, replacement, "linux")).toBe(replacement)
+    expect(replaceScanSubtree(root, root.path, replacement, "linux")).toBe(
+      replacement
+    )
   })
 
   it("reconciles apparent bytes when focused subtrees change or are removed", () => {
@@ -241,87 +444,182 @@ describe("includeHiddenSpace", () => {
       logicalSize: 100,
       isDir: false,
     }
-    const sibling = { ...root, name: "docs", path: "/work/docs", size: 30, logicalSize: 40 }
-    const project = { ...root, name: "work", path: "/work", size: 40, logicalSize: 140, children: [sparse, sibling] }
+    const sibling = {
+      ...root,
+      name: "docs",
+      path: "/work/docs",
+      size: 30,
+      logicalSize: 40,
+    }
+    const project = {
+      ...root,
+      name: "work",
+      path: "/work",
+      size: 40,
+      logicalSize: 140,
+      children: [sparse, sibling],
+    }
     const expanded = { ...sparse, size: 20, logicalSize: 160 }
 
     const replaced = replaceScanSubtree(project, sparse.path, expanded, "linux")
     expect(replaced).toMatchObject({ size: 50, logicalSize: 200 })
 
     const removed = removeScanSubtrees(project, [sparse], "linux")!
-    expect(removed).toMatchObject({ size: 30, logicalSize: 40, children: [sibling] })
+    expect(removed).toMatchObject({
+      size: 30,
+      logicalSize: 40,
+      children: [sibling],
+    })
   })
 
   it("removes confirmed subtrees and updates every ancestor without mutating unaffected branches", () => {
-    const cache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 40, modifiedAt: 20 }
-    const downloads = { ...root, name: "Downloads", path: "/home/alex/Downloads", size: 60, modifiedAt: 30 }
-    const home = { ...root, name: "alex", path: "/home/alex", size: 100, children: [cache, downloads] }
-    const filesystem = { ...root, path: "/", size: 120, children: [home, { ...root, path: "/var", size: 20 }] }
+    const cache = {
+      ...root,
+      name: ".cache",
+      path: "/home/alex/.cache",
+      size: 40,
+      modifiedAt: 20,
+    }
+    const downloads = {
+      ...root,
+      name: "Downloads",
+      path: "/home/alex/Downloads",
+      size: 60,
+      modifiedAt: 30,
+    }
+    const home = {
+      ...root,
+      name: "alex",
+      path: "/home/alex",
+      size: 100,
+      children: [cache, downloads],
+    }
+    const filesystem = {
+      ...root,
+      path: "/",
+      size: 120,
+      children: [home, { ...root, path: "/var", size: 20 }],
+    }
 
     const result = removeScanSubtrees(filesystem, [cache], "linux")!
 
     expect(filesystem.children[0]).toBe(home)
     expect(result).toMatchObject({ path: "/", size: 80, modifiedAt: 30 })
     expect(result.children[0]).not.toBe(home)
-    expect(result.children[0]).toMatchObject({ path: "/home/alex", size: 60, children: [downloads] })
+    expect(result.children[0]).toMatchObject({
+      path: "/home/alex",
+      size: 60,
+      children: [downloads],
+    })
     expect(result.children[1]).toBe(filesystem.children[1])
   })
 
   it("removes Windows parents once, including nested selections, and can remove the scan root", () => {
     const child = { ...root, path: "C:\\Code\\App\\target\\debug", size: 30 }
-    const target = { ...root, path: "C:\\Code\\App\\target", size: 30, children: [child] }
-    const project = { ...root, path: "C:\\Code\\App", size: 50, children: [target] }
+    const target = {
+      ...root,
+      path: "C:\\Code\\App\\target",
+      size: 30,
+      children: [child],
+    }
+    const project = {
+      ...root,
+      path: "C:\\Code\\App",
+      size: 50,
+      children: [target],
+    }
 
-    expect(removeScanSubtrees(project, [target, child], "windows")).toMatchObject(
-      {
-        path: "C:\\Code\\App",
-        size: 20,
-        children: [],
-      },
-    )
+    expect(
+      removeScanSubtrees(project, [target, child], "windows")
+    ).toMatchObject({
+      path: "C:\\Code\\App",
+      size: 20,
+      children: [],
+    })
     expect(removeScanSubtrees(project, [project], "windows")).toBeNull()
-    expect(removeScanSubtrees(project, [{ ...target, path: "c:\\code\\app\\TARGET" }], "windows")).toBe(project)
-    expect(removeScanSubtrees(project, [{ ...root, path: "C:\\Missing" }], "windows")).toBe(project)
+    expect(
+      removeScanSubtrees(
+        project,
+        [{ ...target, path: "c:\\code\\app\\TARGET" }],
+        "windows"
+      )
+    ).toBe(project)
+    expect(
+      removeScanSubtrees(project, [{ ...root, path: "C:\\Missing" }], "windows")
+    ).toBe(project)
   })
 
   it("matches chosen folders to their deepest containing local or network volume", () => {
-    const archive = { ...drive, path: "/Volumes/Archive", name: "Archive", type: "network" as const }
-    expect(driveForPath("/Volumes/Archive/projects/app", [drive, archive], "macos")).toBe(archive)
+    const archive = {
+      ...drive,
+      path: "/Volumes/Archive",
+      name: "Archive",
+      type: "network" as const,
+    }
     expect(
-      driveForPath("z:\\team\\project", [{ ...drive, path: "Z:\\", name: "Team", type: "network" }], "windows")?.name,
+      driveForPath("/Volumes/Archive/projects/app", [drive, archive], "macos")
+    ).toBe(archive)
+    expect(
+      driveForPath(
+        "z:\\team\\project",
+        [{ ...drive, path: "Z:\\", name: "Team", type: "network" }],
+        "windows"
+      )?.name
     ).toBe("Team")
   })
 
   it("keeps protected OS paths visible but non-actionable", () => {
-    expect(canActOnNode({ ...root, path: "/System/Library" }, "macos")).toBe(false)
-    expect(canActOnNode({ ...root, path: "C:\\Windows\\System32" }, "windows")).toBe(false)
+    expect(canActOnNode({ ...root, path: "/System/Library" }, "macos")).toBe(
+      false
+    )
+    expect(
+      canActOnNode({ ...root, path: "C:\\Windows\\System32" }, "windows")
+    ).toBe(false)
     expect(canActOnNode({ ...root, path: "/Users/alex" }, "macos")).toBe(false)
     expect(canActOnNode({ ...root, path: "/home/alex" }, "linux")).toBe(false)
-    expect(canActOnNode({ ...root, path: "C:\\Users\\Alex" }, "windows")).toBe(false)
-    expect(canActOnNode({ ...root, path: "/home/alex/Downloads" }, "linux")).toBe(true)
-    expect(
-      canActOnNode({ ...root, path: "/home/alex/xai/node_modules" }, "linux", [{ path: "/home/alex/xai", label: "xai" }]),
-    ).toBe(false)
-    expect(canActOnNode({ ...root, path: "/home/alex/scratch/cache" }, "linux", [{ path: "/home/alex/xai", label: "xai" }])).toBe(
-      true,
+    expect(canActOnNode({ ...root, path: "C:\\Users\\Alex" }, "windows")).toBe(
+      false
     )
+    expect(
+      canActOnNode({ ...root, path: "/home/alex/Downloads" }, "linux")
+    ).toBe(true)
+    expect(
+      canActOnNode({ ...root, path: "/home/alex/xai/node_modules" }, "linux", [
+        { path: "/home/alex/xai", label: "xai" },
+      ])
+    ).toBe(false)
+    expect(
+      canActOnNode({ ...root, path: "/home/alex/scratch/cache" }, "linux", [
+        { path: "/home/alex/xai", label: "xai" },
+      ])
+    ).toBe(true)
   })
 
   it("does not advertise recognized cleanup inside protected operating-system paths", () => {
     const protectedLogs = { ...root, name: "log", path: "/var/log", size: 100 }
     const userLogs = { ...root, name: "Logs", path: "/home/alex/Logs", size: 5 }
-    const userCache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 40 }
+    const userCache = {
+      ...root,
+      name: ".cache",
+      path: "/home/alex/.cache",
+      size: 40,
+    }
     const summary = actionableReclaimSummary(
-      computeReclaim({ ...root, size: 145, children: [protectedLogs, userLogs, userCache] }),
-      "linux",
+      computeReclaim({
+        ...root,
+        size: 145,
+        children: [protectedLogs, userLogs, userCache],
+      }),
+      "linux"
     )
 
     expect(summary).toMatchObject({ totalBytes: 45, totalCount: 2 })
     expect(summary.buckets.map((bucket) => bucket.bytes)).toEqual([40, 5])
-    expect(summary.buckets.flatMap((bucket) => bucket.items.map((item) => item.node.path))).toEqual([
-      "/home/alex/.cache",
-      "/home/alex/Logs",
-    ])
+    expect(
+      summary.buckets.flatMap((bucket) =>
+        bucket.items.map((item) => item.node.path)
+      )
+    ).toEqual(["/home/alex/.cache", "/home/alex/Logs"])
   })
 
   it("removes clone-shared paths from the actionable reclaim total", () => {
@@ -331,12 +629,27 @@ describe("includeHiddenSpace", () => {
       path: "/home/alex/.cache/cache.bin",
       size: 100,
       isDir: false,
-      clone: { state: "shares-all-blocks" as const, cloneId: "clone-1", reportedFullCloneCount: 2 },
+      clone: {
+        state: "shares-all-blocks" as const,
+        cloneId: "clone-1",
+        reportedFullCloneCount: 2,
+      },
       cloneAccounting: "primary" as const,
     }
-    const cache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 100, children: [clone] }
+    const cache = {
+      ...root,
+      name: ".cache",
+      path: "/home/alex/.cache",
+      size: 100,
+      children: [clone],
+    }
 
-    expect(actionableReclaimSummary(computeReclaim({ ...root, size: 100, children: [cache] }), "linux")).toEqual({
+    expect(
+      actionableReclaimSummary(
+        computeReclaim({ ...root, size: 100, children: [cache] }),
+        "linux"
+      )
+    ).toEqual({
       totalBytes: 0,
       totalCount: 0,
       buckets: [],
@@ -352,9 +665,20 @@ describe("includeHiddenSpace", () => {
       isDir: false,
       hardLink: "primary" as const,
     }
-    const cache = { ...root, name: ".cache", path: "/home/alex/.cache", size: 100, children: [linked] }
+    const cache = {
+      ...root,
+      name: ".cache",
+      path: "/home/alex/.cache",
+      size: 100,
+      children: [linked],
+    }
 
-    expect(actionableReclaimSummary(computeReclaim({ ...root, size: 100, children: [cache] }), "linux")).toEqual({
+    expect(
+      actionableReclaimSummary(
+        computeReclaim({ ...root, size: 100, children: [cache] }),
+        "linux"
+      )
+    ).toEqual({
       totalBytes: 0,
       totalCount: 0,
       buckets: [],
@@ -366,15 +690,18 @@ describe("includeHiddenSpace", () => {
     const child = { ...root, path: "/Users/alex/Downloads/archive", size: 60 }
     const sibling = { ...root, path: "/Users/alex/Desktop/video.mov", size: 80 }
 
-    expect(uniqueDeletionRoots([child, sibling, parent], "macos")).toEqual([parent, sibling])
+    expect(uniqueDeletionRoots([child, sibling, parent], "macos")).toEqual([
+      parent,
+      sibling,
+    ])
     expect(
       uniqueDeletionRoots(
         [
           { ...child, path: "C:\\Users\\Alex\\Downloads\\archive" },
           { ...parent, path: "C:\\Users\\Alex\\Downloads" },
         ],
-        "windows",
-      ),
+        "windows"
+      )
     ).toHaveLength(1)
     expect(
       uniqueDeletionRoots(
@@ -382,8 +709,8 @@ describe("includeHiddenSpace", () => {
           { ...child, path: "C:\\Users\\Alex\\Downloads\\archive" },
           { ...parent, path: "c:\\users\\alex\\downloads" },
         ],
-        "windows",
-      ),
+        "windows"
+      )
     ).toHaveLength(2)
   })
 
@@ -394,7 +721,10 @@ describe("includeHiddenSpace", () => {
       path: `/home/alex/cache-${index}`,
       size: index,
     }))
-    const result = uniqueDeletionRoots([...nodes, { ...root, path: "/home/alex/project/target" }, parent], "linux")
+    const result = uniqueDeletionRoots(
+      [...nodes, { ...root, path: "/home/alex/project/target" }, parent],
+      "linux"
+    )
 
     expect(result).toHaveLength(4_001)
     expect(result).toContain(parent)
@@ -402,15 +732,23 @@ describe("includeHiddenSpace", () => {
 
   it("removes stale collected descendants after a parent is deleted", () => {
     const parent = { ...root, path: "C:\\Users\\Alex\\project", size: 100 }
-    const child = { ...root, path: "C:\\Users\\Alex\\project\\node_modules", size: 60 }
-    const caseDistinctChild = { ...child, path: "c:\\users\\alex\\project\\node_modules" }
+    const child = {
+      ...root,
+      path: "C:\\Users\\Alex\\project\\node_modules",
+      size: 60,
+    }
+    const caseDistinctChild = {
+      ...child,
+      path: "c:\\users\\alex\\project\\node_modules",
+    }
     const sibling = { ...root, path: "C:\\Users\\Alex\\other", size: 80 }
 
-    expect(withoutDeletedNodes([child, sibling], [parent], "windows")).toEqual([sibling])
-    expect(withoutDeletedNodes([caseDistinctChild, sibling], [parent], "windows")).toEqual([
-      caseDistinctChild,
+    expect(withoutDeletedNodes([child, sibling], [parent], "windows")).toEqual([
       sibling,
     ])
+    expect(
+      withoutDeletedNodes([caseDistinctChild, sibling], [parent], "windows")
+    ).toEqual([caseDistinctChild, sibling])
   })
 
   it("continues a batch after one native deletion fails", async () => {
@@ -423,7 +761,7 @@ describe("includeHiddenSpace", () => {
         calls.push(node.path)
         if (node === first) throw new Error("busy")
       },
-      "linux",
+      "linux"
     )
 
     expect(calls).toEqual([first.path, second.path])
@@ -441,7 +779,7 @@ describe("includeHiddenSpace", () => {
         calls.push(node.path)
       },
       "linux",
-      [{ path: "/home/alex/xai", label: "xai" }],
+      [{ path: "/home/alex/xai", label: "xai" }]
     )
 
     expect(calls).toEqual([open.path])

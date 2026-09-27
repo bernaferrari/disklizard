@@ -1,4 +1,7 @@
-import { MAC_TRAFFIC_LIGHT_INSET, WINDOWS_CAPTION_BUTTONS_INSET } from "./titlebar"
+import {
+  MAC_TRAFFIC_LIGHT_INSET,
+  WINDOWS_CAPTION_BUTTONS_INSET,
+} from "./titlebar"
 
 /**
  * Residual DiskLizard stylesheet.
@@ -96,10 +99,9 @@ export const DISK_UTILITY_STYLES = `
   .dl-treemap-overlay { padding-top: 48px; }
 }
 
-/* Idle command dock collapses its cleanup affordances. */
-.dl-command-dock-idle { display: none; }
-.dl-command-dock-idle .dl-command-dock-inner > div:first-child { visibility: hidden; }
-.dl-command-dock-idle .min-h-11 { min-height: 32px; }
+/* Keep the map's footprint fixed when selection reveals the command dock. */
+.dl-command-dock-idle { border-top-color: transparent; }
+.dl-command-dock-idle .dl-command-dock-inner { visibility: hidden; }
 
 /* Volume bar: settle flash after a scan lands, travelling stripes while scanning. */
 .dl-volume-bar-fill[data-settled] { animation: dl-volume-settle 420ms cubic-bezier(0.32, 0.72, 0, 1) 1; }

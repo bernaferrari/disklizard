@@ -23,7 +23,12 @@ function setup(paths = ["/", "/a", "/b", "/c"]) {
     onMove: (target) => moves.push(target.path),
     blocked: () => blocked,
   })
-  return { available, controller, moves, setBlocked: (value: boolean) => (blocked = value) }
+  return {
+    available,
+    controller,
+    moves,
+    setBlocked: (value: boolean) => (blocked = value),
+  }
 }
 
 describe("disk browse history controller", () => {
@@ -33,7 +38,11 @@ describe("disk browse history controller", () => {
     controller.visit("/a")
     controller.visit("/a")
 
-    expect(controller.history()).toEqual({ past: ["/"], current: "/a", future: [] })
+    expect(controller.history()).toEqual({
+      past: ["/"],
+      current: "/a",
+      future: [],
+    })
   })
 
   it("reports only moves that resolve to a current scan node", () => {
@@ -46,7 +55,11 @@ describe("disk browse history controller", () => {
     expect(controller.canMove("back")).toBe(true)
     controller.move("back")
 
-    expect(controller.history()).toEqual({ past: [], current: "/", future: ["/b"] })
+    expect(controller.history()).toEqual({
+      past: [],
+      current: "/",
+      future: ["/b"],
+    })
     available.delete("/b")
     expect(controller.canMove("forward")).toBe(false)
   })
@@ -58,12 +71,20 @@ describe("disk browse history controller", () => {
 
     controller.move("back")
     expect(moves).toEqual(["/"])
-    expect(controller.history()).toEqual({ past: [], current: "/", future: ["/b", "/c"] })
+    expect(controller.history()).toEqual({
+      past: [],
+      current: "/",
+      future: ["/b", "/c"],
+    })
 
     available.delete("/b")
     controller.move("forward")
     expect(moves).toEqual(["/", "/c"])
-    expect(controller.history()).toEqual({ past: ["/"], current: "/c", future: [] })
+    expect(controller.history()).toEqual({
+      past: ["/"],
+      current: "/c",
+      future: [],
+    })
   })
 
   it("does not mutate or dispatch moves while blocked", () => {
@@ -73,7 +94,11 @@ describe("disk browse history controller", () => {
 
     controller.move("back")
 
-    expect(controller.history()).toEqual({ past: ["/"], current: "/a", future: [] })
+    expect(controller.history()).toEqual({
+      past: ["/"],
+      current: "/a",
+      future: [],
+    })
     expect(moves).toEqual([])
   })
 })

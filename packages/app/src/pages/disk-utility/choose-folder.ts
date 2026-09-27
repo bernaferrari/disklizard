@@ -16,5 +16,9 @@ export async function chooseFolderAndScan(input: {
 }) {
   const path = await input.chooseFolder()
   if (!path) return
-  await input.startScan(path, scanFolderLabel(path), driveForPath(path, input.drives, input.os))
+  await input.startScan(
+    path,
+    scanFolderLabel(path),
+    driveForPath(path, input.drives, input.os)
+  )
 }

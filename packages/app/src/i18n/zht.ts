@@ -51,11 +51,13 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "檢查更新失敗。",
   "desktop.updater.dialog.checkFailed.title": "更新錯誤",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "目前已是最新版本。",
   "desktop.updater.dialog.upToDate.title": "沒有更新",
-  "desktop.updater.dialog.ready.message": "已下載更新 {{version}}。要立即重新啟動嗎？",
+  "desktop.updater.dialog.ready.message":
+    "已下載更新 {{version}}。要立即重新啟動嗎？",
   "desktop.updater.dialog.ready.title": "更新已就緒",
   "desktop.updater.dialog.restart": "重新啟動",
   "desktop.updater.dialog.retry": "Retry",
@@ -68,9 +70,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode 載入失敗",
   "desktop.recovery.terminated": "OpenCode 視窗意外終止",
   "desktop.recovery.unresponsive": "OpenCode 沒有回應",
-  "desktop.recovery.unresponsive.detail": "你可以重新啟動應用程式、開啟記錄檔，或繼續等待。",
-  "desktop.recovery.loadFailed.detail": "視窗：{{window}}\nURL：{{url}}\n錯誤：{{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "視窗：{{window}}\n原因：{{reason}}\n代碼：{{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "你可以重新啟動應用程式、開啟記錄檔，或繼續等待。",
+  "desktop.recovery.loadFailed.detail":
+    "視窗：{{window}}\nURL：{{url}}\n錯誤：{{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "視窗：{{window}}\n原因：{{reason}}\n代碼：{{code}}",
   "desktop.recovery.unknown": "<未知>",
 
   "desktop.dialog.chooseFolder": "選擇資料夾",
@@ -94,11 +99,14 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "OpenCode 更新完成，但 {{distro}} 回報的版本仍為 {{installed}}；預期版本為 {{expected}}",
   "desktop.wsl.error.noVersion": "無版本資訊",
-  "desktop.wsl.error.serverExited": "WSL 伺服器在啟動後結束 (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL 伺服器在啟動後結束 (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL 伺服器在健全狀態確認前結束 (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} 的 Sidecar 健全狀態檢查在 {{timeout}}ms 後逾時",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} 在 {{timeout}}ms 後逾時",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} 的 Sidecar 健全狀態檢查在 {{timeout}}ms 後逾時",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} 在 {{timeout}}ms 後逾時",
   "desktop.wsl.error.failedPort": "無法取得連接埠",
 
   "desktop.picker.error.notSelected": "檔案選擇器未選取檔案",
@@ -218,7 +226,8 @@ export const dict = {
   "dialog.provider.opencodeGo.tagline": "適合所有人的低成本訂閱",
   "dialog.provider.anthropic.note": "直接存取 Claude 模型，包括 Pro 和 Max",
   "dialog.provider.openai.note": "適合快速且功能強大的通用 AI 工作之 GPT 模型",
-  "dialog.provider.copilot.note": "透過 GitHub Copilot 使用程式設計輔助 AI 模型",
+  "dialog.provider.copilot.note":
+    "透過 GitHub Copilot 使用程式設計輔助 AI 模型",
   "dialog.provider.google.note": "Gemini 模型，提供快速且結構化的回應",
   "dialog.provider.openrouter.note": "從單一提供者存取所有支援的模型",
   "dialog.provider.vercel.note": "透過智慧路由統一存取 AI 模型",
@@ -250,14 +259,17 @@ export const dict = {
   "provider.connect.apiKey.label": "{{provider}} API 金鑰",
   "provider.connect.apiKey.placeholder": "API 金鑰",
   "provider.connect.apiKey.required": "API 金鑰為必填",
-  "provider.connect.opencodeZen.line1": "OpenCode Zen 為你提供一組精選的可靠最佳化模型，用於程式碼代理程式。",
-  "provider.connect.opencodeZen.line2": "只需一個 API 金鑰，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
+  "provider.connect.opencodeZen.line1":
+    "OpenCode Zen 為你提供一組精選的可靠最佳化模型，用於程式碼代理程式。",
+  "provider.connect.opencodeZen.line2":
+    "只需一個 API 金鑰，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
   "provider.connect.opencodeZen.visit.prefix": "造訪 ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " 取得你的 API 金鑰。",
   "provider.connect.oauth.code.visit.prefix": "造訪 ",
   "provider.connect.oauth.code.visit.link": "此連結",
-  "provider.connect.oauth.code.visit.suffix": " 取得授權碼，以連線你的帳戶並在 OpenCode 中使用 {{provider}} 模型。",
+  "provider.connect.oauth.code.visit.suffix":
+    " 取得授權碼，以連線你的帳戶並在 OpenCode 中使用 {{provider}} 模型。",
   "provider.connect.oauth.code.label": "{{method}} 授權碼",
   "provider.connect.oauth.code.placeholder": "授權碼",
   "provider.connect.oauth.code.required": "授權碼為必填",
@@ -268,7 +280,8 @@ export const dict = {
     " 並輸入以下程式碼，以連線你的帳戶並在 OpenCode 中使用 {{provider}} 模型。",
   "provider.connect.oauth.auto.confirmationCode": "確認碼",
   "provider.connect.toast.connected.title": "{{provider}} 已連線",
-  "provider.connect.toast.connected.description": "現在可以使用 {{provider}} 模型了。",
+  "provider.connect.toast.connected.description":
+    "現在可以使用 {{provider}} 模型了。",
 
   "provider.custom.title": "自訂提供者",
   "provider.custom.unavailable": "此伺服器無法使用自訂提供者",
@@ -277,14 +290,16 @@ export const dict = {
   "provider.custom.description.suffix": "。",
   "provider.custom.field.providerID.label": "提供者 ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "使用小寫字母、數字、連字號或底線",
+  "provider.custom.field.providerID.description":
+    "使用小寫字母、數字、連字號或底線",
   "provider.custom.field.name.label": "顯示名稱",
   "provider.custom.field.name.placeholder": "我的 AI 提供者",
   "provider.custom.field.baseURL.label": "基底 URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API 金鑰",
   "provider.custom.field.apiKey.placeholder": "API 金鑰",
-  "provider.custom.field.apiKey.description": "選填。若您透過標頭管理驗證，可留空。",
+  "provider.custom.field.apiKey.description":
+    "選填。若您透過標頭管理驗證，可留空。",
   "provider.custom.models.label": "模型",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -300,7 +315,8 @@ export const dict = {
   "provider.custom.headers.remove": "移除標頭",
   "provider.custom.headers.add": "新增標頭",
   "provider.custom.error.providerID.required": "提供者 ID 為必填",
-  "provider.custom.error.providerID.format": "請使用小寫字母、數字、連字號或底線",
+  "provider.custom.error.providerID.format":
+    "請使用小寫字母、數字、連字號或底線",
   "provider.custom.error.providerID.exists": "該提供者 ID 已存在",
   "provider.custom.error.name.required": "顯示名稱為必填",
   "provider.custom.error.baseURL.required": "基底 URL 為必填",
@@ -309,7 +325,8 @@ export const dict = {
   "provider.custom.error.duplicate": "重複",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} 已中斷連線",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} 模型已不再可用。",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} 模型已不再可用。",
   "model.tag.free": "免費",
   "model.tag.latest": "最新",
 
@@ -408,9 +425,11 @@ export const dict = {
 
   "prompt.toast.pasteUnsupported.title": "不支援的附件",
   "prompt.toast.attachmentDuplicate.title": "此檔案已上傳",
-  "prompt.toast.pasteUnsupported.description": "此處僅能附加圖片、PDF 或文字檔案。",
+  "prompt.toast.pasteUnsupported.description":
+    "此處僅能附加圖片、PDF 或文字檔案。",
   "prompt.toast.modelAgentRequired.title": "請選擇代理程式和模型",
-  "prompt.toast.modelAgentRequired.description": "傳送提示前請先選擇代理程式和模型。",
+  "prompt.toast.modelAgentRequired.description":
+    "傳送提示前請先選擇代理程式和模型。",
   "prompt.toast.worktreeCreateFailed.title": "建立工作樹失敗",
   "prompt.toast.sessionCreateFailed.title": "建立工作階段失敗",
   "prompt.toast.shellSendFailed.title": "傳送 shell 命令失敗",
@@ -457,7 +476,8 @@ export const dict = {
   "dialog.server.add.password": "密碼（選填）",
   "dialog.server.edit.title": "編輯伺服器",
   "dialog.server.default.title": "預設伺服器",
-  "dialog.server.default.description": "應用程式啟動時連線此伺服器，而不是啟動本機伺服器。需要重新啟動。",
+  "dialog.server.default.description":
+    "應用程式啟動時連線此伺服器，而不是啟動本機伺服器。需要重新啟動。",
   "dialog.server.default.none": "未選擇伺服器",
   "dialog.server.default.set": "將目前伺服器設為預設",
   "dialog.server.default.clear": "清除",
@@ -513,11 +533,14 @@ export const dict = {
   "wsl.onboarding.needAnotherDistro": "需要其他發行版？",
   "wsl.onboarding.needAnotherDistroHint": "從 WSL 目錄安裝 Linux 發行版",
   "wsl.onboarding.wslNotInstalled.title": "未安裝 WSL",
-  "wsl.onboarding.wslNotInstalled.description": "新增 WSL 伺服器前，必須先安裝 WSL（Windows Subsystem for Linux）",
+  "wsl.onboarding.wslNotInstalled.description":
+    "新增 WSL 伺服器前，必須先安裝 WSL（Windows Subsystem for Linux）",
   "wsl.onboarding.wslUnavailable.title": "WSL 無法使用",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode 無法確認此電腦上的 WSL。",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode 無法確認此電腦上的 WSL。",
   "wsl.onboarding.installWsl": "安裝 WSL",
-  "wsl.onboarding.windowsRestartRequired": "重新啟動 Windows 以完成 WSL 安裝，然後重新開啟 OpenCode。",
+  "wsl.onboarding.windowsRestartRequired":
+    "重新啟動 Windows 以完成 WSL 安裝，然後重新開啟 OpenCode。",
   "wsl.onboarding.next": "下一步",
   "wsl.onboarding.refresh": "重新整理",
   "wsl.onboarding.allDistrosAdded": "所有已安裝的發行版都已新增。",
@@ -537,7 +560,8 @@ export const dict = {
   "wsl.onboarding.versionMismatch": "已安裝版本與桌面應用程式版本不符。",
   "wsl.onboarding.adding": "新增中...",
 
-  "help.tabs.toast.ariaLabel": "分頁功能介紹。使用分頁整理工作和進行中的工作階段",
+  "help.tabs.toast.ariaLabel":
+    "分頁功能介紹。使用分頁整理工作和進行中的工作階段",
   "help.tabs.toast.dismiss": "關閉分頁功能資訊",
   "help.tabs.title": "分頁功能介紹",
   "help.tabs.description": "使用分頁整理工作和進行中的工作階段",
@@ -547,7 +571,8 @@ export const dict = {
     "在分頁中開始新的工作階段，或從任一專案開啟現有的工作階段。開始新工作時請開啟新分頁，完成後再將其關閉。",
   "help.tabs.organize":
     "同時開啟幾個分頁，可讓進行中的工作階段更容易整理。如果打算保留分頁，請將其重新命名為容易記住的名稱。",
-  "help.tabs.home": "你可以在新的首頁找到所有工作階段和專案。選取工作階段即可在分頁中開啟。",
+  "help.tabs.home":
+    "你可以在新的首頁找到所有工作階段和專案。選取工作階段即可在分頁中開啟。",
   "help.tabs.persistence": "重新開啟應用程式時，分頁仍會保持開啟。",
   "help.tabs.worktrees":
     "新版設計尚未支援 Git Worktrees，此功能即將推出。如果你偏好繼續使用先前的版面，可以在設定中切換版面。請留意，新版面將在幾週後成為永久版面。",
@@ -562,12 +587,14 @@ export const dict = {
   "dialog.project.edit.color.select": "選擇{{color}}顏色",
 
   "dialog.project.edit.worktree.startup": "工作區啟動腳本",
-  "dialog.project.edit.worktree.startup.description": "在建立新的工作區 (worktree) 後執行。",
+  "dialog.project.edit.worktree.startup.description":
+    "在建立新的工作區 (worktree) 後執行。",
   "dialog.project.edit.worktree.startup.placeholder": "例如 bun install",
   "dialog.usageExceeded.dontShowAgain": "不再顯示",
 
   "context.breakdown.title": "上下文細分",
-  "context.breakdown.note": "輸入 token 的概略細分。「其他」包含工具定義和額外負擔。",
+  "context.breakdown.note":
+    "輸入 token 的概略細分。「其他」包含工具定義和額外負擔。",
   "context.breakdown.system": "系統",
   "context.breakdown.user": "使用者",
   "context.breakdown.assistant": "助理",
@@ -667,8 +694,10 @@ export const dict = {
   "toast.update.description": "OpenCode 有新版本 ({{version}}) 可安裝。",
   "toast.update.action.installRestart": "安裝並重新啟動",
   "toast.update.action.notYet": "稍後",
-  "disk.accessGuidance.macos": "在「系統設定」中授予 DiskLizard「完整磁碟存取權」，然後重新掃描。",
-  "disk.accessGuidance.windows": "請使用有權存取此磁碟的帳號，或掃描您的帳號可讀取的資料夾。",
+  "disk.accessGuidance.macos":
+    "在「系統設定」中授予 DiskLizard「完整磁碟存取權」，然後重新掃描。",
+  "disk.accessGuidance.windows":
+    "請使用有權存取此磁碟的帳號，或掃描您的帳號可讀取的資料夾。",
   "disk.accessGuidance.linux": "檢查資料夾與掛載權限，然後重新掃描。",
   "disk.accessGuidance.default": "檢查這些資料夾的存取權限，然後重新掃描。",
   "disk.accessGuidance.rescan": "變更存取權後，請使用頂端列的「重新掃描」。",
@@ -691,9 +720,11 @@ export const dict = {
   "error.page.report.discord": "在 Discord 上",
   "error.page.version": "版本: {{version}}",
 
-  "error.dev.rootNotFound": "找不到根元素。你是不是忘了把它新增到 index.html？或者 id 屬性拼錯了？",
+  "error.dev.rootNotFound":
+    "找不到根元素。你是不是忘了把它新增到 index.html？或者 id 屬性拼錯了？",
 
-  "error.serverSync.connectFailed": "無法連線到伺服器。是否有伺服器正在 `{{url}}` 執行？",
+  "error.serverSync.connectFailed":
+    "無法連線到伺服器。是否有伺服器正在 `{{url}}` 執行？",
   "directory.error.invalidUrl": "URL 中的目錄無效。",
 
   "error.chain.unknown": "未知錯誤",
@@ -704,22 +735,30 @@ export const dict = {
   "error.chain.responseBody": "回應內容:\n{{body}}",
   "error.chain.didYouMean": "你是不是想輸入: {{suggestions}}",
   "error.chain.modelNotFound": "找不到模型: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "請檢查你的設定 (opencode.json) 中的 provider/model 名稱",
-  "error.chain.mcpFailed": "MCP 伺服器「{{name}}」啟動失敗。注意：OpenCode 尚不支援 MCP 驗證。",
-  "error.chain.providerAuthFailed": "提供者驗證失敗（{{provider}}）：{{message}}",
-  "error.chain.providerInitFailed": '無法初始化提供者 "{{provider}}"。請檢查憑證和設定。',
+  "error.chain.checkConfig":
+    "請檢查你的設定 (opencode.json) 中的 provider/model 名稱",
+  "error.chain.mcpFailed":
+    "MCP 伺服器「{{name}}」啟動失敗。注意：OpenCode 尚不支援 MCP 驗證。",
+  "error.chain.providerAuthFailed":
+    "提供者驗證失敗（{{provider}}）：{{message}}",
+  "error.chain.providerInitFailed":
+    '無法初始化提供者 "{{provider}}"。請檢查憑證和設定。',
   "error.chain.configJsonInvalid": "設定檔 {{path}} 不是有效的 JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "設定檔 {{path}} 不是有效的 JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "設定檔 {{path}} 不是有效的 JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} 中的目錄 "{{dir}}" 無效。請將目錄重新命名為 "{{suggestion}}" 或移除它。這是一個常見拼寫錯誤。',
-  "error.chain.configFrontmatterError": "無法解析 {{path}} 中的 frontmatter:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "無法解析 {{path}} 中的 frontmatter:\n{{message}}",
   "error.chain.configInvalid": "設定檔 {{path}} 無效",
   "error.chain.configInvalidWithMessage": "設定檔 {{path}} 無效: {{message}}",
 
   "notification.permission.title": "需要權限",
-  "notification.permission.description": "{{sessionTitle}}（{{projectName}}）需要權限",
+  "notification.permission.description":
+    "{{sessionTitle}}（{{projectName}}）需要權限",
   "notification.question.title": "問題",
-  "notification.question.description": "{{sessionTitle}}（{{projectName}}）有一個問題",
+  "notification.question.description":
+    "{{sessionTitle}}（{{projectName}}）有一個問題",
   "notification.action.goToSession": "前往工作階段",
 
   "notification.session.responseReady.title": "回覆已就緒",
@@ -744,7 +783,8 @@ export const dict = {
   "home.sessions.group.today": "今天",
   "home.sessions.group.yesterday": "昨天",
   "home.sessions.group.older": "更早",
-  "home.providerTip": "連線 75 個以上的提供者，使用 Claude、GPT、Gemini 等其他模型",
+  "home.providerTip":
+    "連線 75 個以上的提供者，使用 Claude、GPT、Gemini 等其他模型",
 
   "session.tab.session": "工作階段",
   "session.tab.review": "檢閱",
@@ -752,7 +792,8 @@ export const dict = {
   "session.tab.unknown": "未知的工作階段",
   "session.panel.reviewAndFiles": "檢閱與檔案",
   "session.error.notFound": "找不到此工作階段",
-  "session.error.notFound.description": "此分頁指向的工作階段已不存在於此伺服器。",
+  "session.error.notFound.description":
+    "此分頁指向的工作階段已不存在於此伺服器。",
   "session.error.notFound.closeTab": "關閉分頁",
   "session.error.serverConnection": "無法連線至此伺服器",
   "session.review.filesChanged": "{{count}} 個檔案變更",
@@ -826,8 +867,10 @@ export const dict = {
   "status.popover.action.manageServers": "管理伺服器",
 
   "session.share.popover.title": "發佈到網頁",
-  "session.share.popover.description.shared": "此工作階段已在網頁上公開。任何擁有連結的人都可以存取。",
-  "session.share.popover.description.unshared": "在網頁上公開分享此工作階段。任何擁有連結的人都可以存取。",
+  "session.share.popover.description.shared":
+    "此工作階段已在網頁上公開。任何擁有連結的人都可以存取。",
+  "session.share.popover.description.unshared":
+    "在網頁上公開分享此工作階段。任何擁有連結的人都可以存取。",
   "session.share.action.share": "分享",
   "session.share.action.publish": "發佈",
   "session.share.action.publishing": "正在發佈...",
@@ -847,8 +890,10 @@ export const dict = {
   "terminal.close": "關閉終端機",
 
   "terminal.connectionLost.title": "連線中斷",
-  "terminal.connectionLost.description": "終端機連線已中斷。這可能會在伺服器重新啟動時發生。",
-  "terminal.connectTicket.csrfError": "PTY 連線票證因來源或 CSRF 檢查而遭拒。請檢查伺服器 CORS 設定。",
+  "terminal.connectionLost.description":
+    "終端機連線已中斷。這可能會在伺服器重新啟動時發生。",
+  "terminal.connectTicket.csrfError":
+    "PTY 連線票證因來源或 CSRF 檢查而遭拒。請檢查伺服器 CORS 設定。",
   "terminal.connectTicket.statusError": "PTY 連線票證失敗，狀態為 {{status}}",
 
   "titlebar.update": "更新",
@@ -876,7 +921,8 @@ export const dict = {
   "sidebar.workspaces.disable": "停用工作區",
   "sidebar.gettingStarted.title": "開始使用",
   "sidebar.gettingStarted.line1": "OpenCode 提供免費模型，你可以立即開始使用。",
-  "sidebar.gettingStarted.line2": "連線任意提供者即可使用更多模型，如 Claude、GPT、Gemini 等。",
+  "sidebar.gettingStarted.line2":
+    "連線任意提供者即可使用更多模型，如 Claude、GPT、Gemini 等。",
   "sidebar.project.recentSessions": "最近工作階段",
   "sidebar.project.viewAllSessions": "查看全部工作階段",
   "sidebar.project.clearNotifications": "清除通知",
@@ -890,7 +936,8 @@ export const dict = {
   "settings.tab.shortcuts": "快速鍵",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL 整合",
-  "settings.desktop.wsl.description": "在 Windows 上的 WSL 中執行 OpenCode 伺服器。",
+  "settings.desktop.wsl.description":
+    "在 Windows 上的 WSL 中執行 OpenCode 伺服器。",
 
   "settings.general.section.appearance": "外觀",
   "settings.general.section.advanced": "進階",
@@ -903,13 +950,16 @@ export const dict = {
   "settings.general.row.language.title": "語言",
   "settings.general.row.language.description": "變更 OpenCode 的顯示語言",
   "settings.general.row.shell.title": "終端機 Shell",
-  "settings.general.row.shell.description": "選擇終端機使用的 Shell。相容的 Shell 也會用於代理程式工具呼叫。",
+  "settings.general.row.shell.description":
+    "選擇終端機使用的 Shell。相容的 Shell 也會用於代理程式工具呼叫。",
   "settings.general.row.shell.autoDefault": "自動（預設）",
   "settings.general.row.shell.terminalOnly": "僅限終端機",
   "settings.general.row.appearance.title": "外觀",
-  "settings.general.row.appearance.description": "自訂 OpenCode 在你的裝置上的外觀",
+  "settings.general.row.appearance.description":
+    "自訂 OpenCode 在你的裝置上的外觀",
   "settings.general.row.colorScheme.title": "配色方案",
-  "settings.general.row.colorScheme.description": "選擇 OpenCode 要跟隨系統、淺色或深色主題",
+  "settings.general.row.colorScheme.description":
+    "選擇 OpenCode 要跟隨系統、淺色或深色主題",
   "settings.general.row.theme.title": "主題",
   "settings.general.row.theme.description": "自訂 OpenCode 的主題。",
   "settings.general.row.font.title": "程式碼字型",
@@ -919,44 +969,58 @@ export const dict = {
   "settings.general.row.uiFont.title": "介面字型",
   "settings.general.row.uiFont.description": "自訂整個介面使用的字型",
   "settings.general.row.followup.title": "後續追問行為",
-  "settings.general.row.followup.description": "選擇後續追問提示是立即引導還是進入佇列等待",
+  "settings.general.row.followup.description":
+    "選擇後續追問提示是立即引導還是進入佇列等待",
   "settings.general.row.followup.option.queue": "佇列",
   "settings.general.row.followup.option.steer": "引導",
   "settings.general.row.showFileTree.title": "檔案樹",
   "settings.general.row.showFileTree.description": "在工作階段中顯示檔案樹面板",
   "settings.general.row.showNavigation.title": "導覽控制項",
-  "settings.general.row.showNavigation.description": "在桌面標題列中顯示上一頁和下一頁按鈕",
+  "settings.general.row.showNavigation.description":
+    "在桌面標題列中顯示上一頁和下一頁按鈕",
   "settings.general.row.showSearch.title": "命令面板",
-  "settings.general.row.showSearch.description": "在標題列中顯示搜尋和命令面板按鈕",
+  "settings.general.row.showSearch.description":
+    "在標題列中顯示搜尋和命令面板按鈕",
   "settings.general.row.showTerminal.title": "終端機",
-  "settings.general.row.showTerminal.description": "在桌面標題列中顯示終端機按鈕",
+  "settings.general.row.showTerminal.description":
+    "在桌面標題列中顯示終端機按鈕",
   "settings.general.row.showStatus.title": "伺服器狀態",
   "settings.general.row.showStatus.description": "在標題列中顯示伺服器狀態按鈕",
   "settings.general.row.mobileTitlebarBottom.title": "底部導覽",
-  "settings.general.row.mobileTitlebarBottom.description": "在行動裝置上將標題列和工作階段分頁置於畫面底部",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "在行動裝置上將標題列和工作階段分頁置於畫面底部",
   "settings.general.row.showCustomAgents.title": "自訂代理程式",
-  "settings.general.row.showCustomAgents.description": "在輸入區顯示代理程式選擇器",
+  "settings.general.row.showCustomAgents.description":
+    "在輸入區顯示代理程式選擇器",
   "settings.general.row.reasoningSummaries.title": "顯示推理摘要",
-  "settings.general.row.reasoningSummaries.description": "在時間軸中顯示模型推理摘要",
+  "settings.general.row.reasoningSummaries.description":
+    "在時間軸中顯示模型推理摘要",
 
   "settings.general.row.shellToolPartsExpanded.title": "展開 shell 工具區塊",
-  "settings.general.row.shellToolPartsExpanded.description": "在時間軸中預設展開 shell 工具區塊",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "在時間軸中預設展開 shell 工具區塊",
   "settings.general.row.editToolPartsExpanded.title": "展開 edit 工具區塊",
-  "settings.general.row.editToolPartsExpanded.description": "在時間軸中預設展開 edit、write 和 patch 工具區塊",
+  "settings.general.row.editToolPartsExpanded.description":
+    "在時間軸中預設展開 edit、write 和 patch 工具區塊",
   "settings.general.row.newInterface.title": "新版面",
   "settings.general.row.newInterface.badge": "新",
-  "settings.general.row.newInterface.description": "使用新的分頁和首頁版面。在限定時間內可切換版面。",
+  "settings.general.row.newInterface.description":
+    "使用新的分頁和首頁版面。在限定時間內可切換版面。",
   "settings.general.row.newInterfaceNotice.title": "你現在使用的是新版面",
   "settings.general.row.newInterfaceNotice.description": "先前的版面已無法使用",
   "settings.general.row.newInterfaceNotice.dismiss": "忽略",
   "settings.general.row.pinchZoom.title": "雙指縮放",
-  "settings.general.row.pinchZoom.description": "允許使用觸控板雙指開合和 Ctrl-捲動手勢縮放",
+  "settings.general.row.pinchZoom.description":
+    "允許使用觸控板雙指開合和 Ctrl-捲動手勢縮放",
   "settings.general.row.wayland.title": "使用原生 Wayland",
-  "settings.general.row.wayland.description": "在 Wayland 上停用 X11 後備模式。需要重新啟動。",
-  "settings.general.row.wayland.tooltip": "在混合更新率螢幕的 Linux 系統上，原生 Wayland 可能更穩定。",
+  "settings.general.row.wayland.description":
+    "在 Wayland 上停用 X11 後備模式。需要重新啟動。",
+  "settings.general.row.wayland.tooltip":
+    "在混合更新率螢幕的 Linux 系統上，原生 Wayland 可能更穩定。",
 
   "settings.general.row.releaseNotes.title": "發行說明",
-  "settings.general.row.releaseNotes.description": "更新後顯示「新功能」彈出視窗",
+  "settings.general.row.releaseNotes.description":
+    "更新後顯示「新功能」彈出視窗",
 
   "settings.updates.row.startup.title": "啟動時檢查更新",
   "settings.updates.row.startup.description": "在 OpenCode 啟動時自動檢查更新",
@@ -967,7 +1031,8 @@ export const dict = {
   "settings.updates.action.downloading": "下載中...",
   "settings.updates.action.installing": "安裝中...",
   "settings.updates.toast.latest.title": "已是最新版本",
-  "settings.updates.toast.latest.description": "你正在使用最新版本的 OpenCode。",
+  "settings.updates.toast.latest.description":
+    "你正在使用最新版本的 OpenCode。",
 
   "sound.option.none": "無",
   "sound.option.alert01": "警報 01",
@@ -1016,14 +1081,17 @@ export const dict = {
   "sound.option.yup05": "Yup 05",
   "sound.option.yup06": "Yup 06",
   "settings.general.notifications.agent.title": "代理程式",
-  "settings.general.notifications.agent.description": "當代理程式完成或需要注意時顯示系統通知",
+  "settings.general.notifications.agent.description":
+    "當代理程式完成或需要注意時顯示系統通知",
   "settings.general.notifications.permissions.title": "權限",
-  "settings.general.notifications.permissions.description": "當需要權限時顯示系統通知",
+  "settings.general.notifications.permissions.description":
+    "當需要權限時顯示系統通知",
   "settings.general.notifications.errors.title": "錯誤",
   "settings.general.notifications.errors.description": "發生錯誤時顯示系統通知",
 
   "settings.general.sounds.agent.title": "代理程式",
-  "settings.general.sounds.agent.description": "當代理程式完成或需要注意時播放聲音",
+  "settings.general.sounds.agent.description":
+    "當代理程式完成或需要注意時播放聲音",
   "settings.general.sounds.permissions.title": "權限",
   "settings.general.sounds.permissions.description": "當需要權限時播放聲音",
   "settings.general.sounds.errors.title": "錯誤",
@@ -1034,7 +1102,8 @@ export const dict = {
   "settings.shortcuts.reset.toast.title": "快速鍵已重設",
   "settings.shortcuts.reset.toast.description": "鍵盤快速鍵已重設為預設設定。",
   "settings.shortcuts.conflict.title": "快速鍵已被占用",
-  "settings.shortcuts.conflict.description": "{{keybind}} 已分配給 {{titles}}。",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} 已分配給 {{titles}}。",
   "settings.shortcuts.unassigned": "未設定",
   "settings.shortcuts.pressKeys": "按下按鍵",
   "settings.shortcuts.search.placeholder": "搜尋快速鍵",
@@ -1077,7 +1146,8 @@ export const dict = {
   "settings.permissions.tool.read.title": "讀取",
   "settings.permissions.tool.read.description": "讀取檔案（符合檔案路徑）",
   "settings.permissions.tool.edit.title": "編輯",
-  "settings.permissions.tool.edit.description": "修改檔案，包括編輯、寫入、修補和多重編輯",
+  "settings.permissions.tool.edit.description":
+    "修改檔案，包括編輯、寫入、修補和多重編輯",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "使用 glob 模式符合檔案",
   "settings.permissions.tool.grep.title": "Grep",
@@ -1099,9 +1169,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "搜尋網頁",
   "settings.permissions.tool.external_directory.title": "外部目錄",
-  "settings.permissions.tool.external_directory.description": "存取專案目錄之外的檔案",
+  "settings.permissions.tool.external_directory.description":
+    "存取專案目錄之外的檔案",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "偵測具有相同輸入的重複工具呼叫",
+  "settings.permissions.tool.doom_loop.description":
+    "偵測具有相同輸入的重複工具呼叫",
 
   "session.delete.failed.title": "刪除工作階段失敗",
   "session.delete.title": "刪除工作階段",
@@ -1146,7 +1218,8 @@ export const dict = {
   "common.time.hoursAgo.short": "{{count}}小時前",
   "common.time.daysAgo.short": "{{count}}天前",
   "settings.providers.connected.environmentDescription": "已從環境變數連線",
-  "settings.providers.custom.description": "透過基底 URL 新增與 OpenAI 相容的提供者。",
+  "settings.providers.custom.description":
+    "透過基底 URL 新增與 OpenAI 相容的提供者。",
 
   "app.server.unreachable": "無法連線至 {{server}}",
   "app.server.retrying": "正在自動重試...",
@@ -1155,7 +1228,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "密碼",
   "server.row.noUsername": "無使用者名稱",
   "session.review.noVcs.createGit.title": "建立 Git 儲存庫",
-  "session.review.noVcs.createGit.description": "追蹤、檢閱及復原此專案中的變更",
+  "session.review.noVcs.createGit.description":
+    "追蹤、檢閱及復原此專案中的變更",
   "session.review.noVcs.createGit.actionLoading": "正在建立 Git 儲存庫...",
   "session.review.noVcs.createGit.action": "建立 Git 儲存庫",
   "session.todo.progress": "已完成 {{done}} 個待辦事項（共 {{total}} 個）",
@@ -1182,7 +1256,8 @@ export const dict = {
   "debugBar.ariaLabel": "開發效能診斷",
   "debugBar.na": "不適用",
   "debugBar.nav.label": "NAV",
-  "debugBar.nav.tip": "最後一次完成的涉及工作階段頁面的路由轉換，從路由器啟動到穩定後的第一次繪製。",
+  "debugBar.nav.tip":
+    "最後一次完成的涉及工作階段頁面的路由轉換，從路由器啟動到穩定後的第一次繪製。",
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "過去 5 秒內的移動影格率。",
   "debugBar.frame.label": "FRAME",
@@ -1194,7 +1269,8 @@ export const dict = {
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "過去 5 秒內觀察到的最差輸入延遲。",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "過去 5 秒內的近似互動持續時間。這類似於 INP，而非官方的 Web Vitals INP。",
+  "debugBar.inp.tip":
+    "過去 5 秒內的近似互動持續時間。這類似於 INP，而非官方的 Web Vitals INP。",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "目前應用程式生命週期的累積版面配置位移。",
   "debugBar.mem.label": "MEM",
@@ -1205,7 +1281,8 @@ export const dict = {
   "debugBar.focus.on": "開啟",
   "debugBar.focus.off": "關閉",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "在不變更所選語言的情況下，強制設定整個應用程式的版面配置方向",
+  "debugBar.direction.tip":
+    "在不變更所選語言的情況下，強制設定整個應用程式的版面配置方向",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "common.key.ctrl": "Ctrl",
@@ -1227,7 +1304,8 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "無可用的伺服器",
   "error.serverSDK.serverNotAvailable": "伺服器無法使用",
   "error.childStore.persistedCacheCreateFailed": "建立持續性快取失敗",
-  "error.childStore.persistedProjectMetadataCreateFailed": "建立持續性專案中繼資料失敗",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "建立持續性專案中繼資料失敗",
   "error.childStore.persistedProjectIconCreateFailed": "建立持續性專案圖示失敗",
   "error.childStore.storeCreateFailed": "建立儲存區失敗",
   "terminal.connectionLost.abnormalClose": "WebSocket 異常關閉：{{code}}",

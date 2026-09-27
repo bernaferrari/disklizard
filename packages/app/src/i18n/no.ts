@@ -2,11 +2,16 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
-  "disk.accessGuidance.macos": "Gi DiskLizard Full disktilgang i Systeminnstillinger, og skann på nytt.",
-  "disk.accessGuidance.windows": "Bruk en konto med tilgang til denne stasjonen, eller skann en mappe kontoen din kan lese.",
-  "disk.accessGuidance.linux": "Kontroller mappe- og monteringsrettigheter, og skann på nytt.",
-  "disk.accessGuidance.default": "Kontroller tilgangen til disse mappene, og skann på nytt.",
-  "disk.accessGuidance.rescan": "Bruk Skann på nytt i toppfeltet etter at du har endret tilgangen.",
+  "disk.accessGuidance.macos":
+    "Gi DiskLizard Full disktilgang i Systeminnstillinger, og skann på nytt.",
+  "disk.accessGuidance.windows":
+    "Bruk en konto med tilgang til denne stasjonen, eller skann en mappe kontoen din kan lese.",
+  "disk.accessGuidance.linux":
+    "Kontroller mappe- og monteringsrettigheter, og skann på nytt.",
+  "disk.accessGuidance.default":
+    "Kontroller tilgangen til disse mappene, og skann på nytt.",
+  "disk.accessGuidance.rescan":
+    "Bruk Skann på nytt i toppfeltet etter at du har endret tilgangen.",
   "disk.common.rescan": "Skann på nytt",
   "desktop.menu.app": "OpenCode",
   "desktop.menu.file": "Arkiv",
@@ -54,13 +59,16 @@ export const dict = {
   "desktop.menu.reportBug": "Rapporter en feil",
   "desktop.menu.ariaLabel": "OpenCode-meny",
 
-  "desktop.updater.dialog.checkFailed.message": "Søket etter oppdateringer mislyktes.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Søket etter oppdateringer mislyktes.",
   "desktop.updater.dialog.checkFailed.title": "Oppdateringsfeil",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Du har den nyeste versjonen.",
   "desktop.updater.dialog.upToDate.title": "Ingen oppdateringer",
-  "desktop.updater.dialog.ready.message": "Oppdateringen {{version}} er lastet ned. Vil du starte på nytt nå?",
+  "desktop.updater.dialog.ready.message":
+    "Oppdateringen {{version}} er lastet ned. Vil du starte på nytt nå?",
   "desktop.updater.dialog.ready.title": "Oppdateringen er klar",
   "desktop.updater.dialog.restart": "Start på nytt",
   "desktop.updater.dialog.retry": "Retry",
@@ -73,9 +81,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode kunne ikke lastes inn",
   "desktop.recovery.terminated": "OpenCode-vinduet ble uventet avsluttet",
   "desktop.recovery.unresponsive": "OpenCode svarer ikke",
-  "desktop.recovery.unresponsive.detail": "Du kan starte appen på nytt, åpne loggene eller fortsette å vente.",
-  "desktop.recovery.loadFailed.detail": "Vindu: {{window}}\nURL: {{url}}\nFeil: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Vindu: {{window}}\nÅrsak: {{reason}}\nKode: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Du kan starte appen på nytt, åpne loggene eller fortsette å vente.",
+  "desktop.recovery.loadFailed.detail":
+    "Vindu: {{window}}\nURL: {{url}}\nFeil: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Vindu: {{window}}\nÅrsak: {{reason}}\nKode: {{code}}",
   "desktop.recovery.unknown": "<ukjent>",
 
   "desktop.dialog.chooseFolder": "Velg en mappe",
@@ -86,29 +97,39 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL er bare tilgjengelig på Windows",
   "desktop.wsl.error.unavailable": "WSL er utilgjengelig",
-  "desktop.wsl.error.listInstalled": "Kunne ikke vise installerte WSL-distribusjoner",
-  "desktop.wsl.error.listOnline": "Kunne ikke vise tilgjengelige WSL-distribusjoner",
-  "desktop.wsl.error.executeDistro": "Kan ikke kjøre kommandoer i distribusjonen",
+  "desktop.wsl.error.listInstalled":
+    "Kunne ikke vise installerte WSL-distribusjoner",
+  "desktop.wsl.error.listOnline":
+    "Kunne ikke vise tilgjengelige WSL-distribusjoner",
+  "desktop.wsl.error.executeDistro":
+    "Kan ikke kjøre kommandoer i distribusjonen",
   "desktop.wsl.error.installWsl": "Installasjonen av WSL mislyktes",
-  "desktop.wsl.error.installDistro": "Kunne ikke installere distribusjonen: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Kunne ikke installere distribusjonen: {{distro}}",
   "desktop.wsl.error.installOpencode": "Installasjonen av OpenCode mislyktes",
   "desktop.wsl.error.alreadyAdded": "{{distro}} er allerede lagt til",
-  "desktop.wsl.error.opencodeMissing": "opencode er ikke installert i denne distribusjonen",
-  "desktop.wsl.error.opencodeCannotRun": "opencode er installert, men kunne ikke kjøres",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode er ikke installert i {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode er ikke installert i denne distribusjonen",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode er installert, men kunne ikke kjøres",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode er ikke installert i {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Oppdateringen av OpenCode er fullført, men {{distro}} rapporterer fortsatt {{installed}}; forventet {{expected}}",
   "desktop.wsl.error.noVersion": "ingen versjon",
-  "desktop.wsl.error.serverExited": "WSL-serveren ble avsluttet etter oppstart (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL-serveren ble avsluttet etter oppstart (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL-serveren ble avsluttet før den var klar (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Tidsavbrudd for tilstandskontrollen av sidecar for {{distro}} etter {{timeout}} ms",
-  "desktop.wsl.error.commandTimeout": "Tidsavbrudd for {{command}} {{args}} etter {{timeout}} ms",
+  "desktop.wsl.error.commandTimeout":
+    "Tidsavbrudd for {{command}} {{args}} etter {{timeout}} ms",
   "desktop.wsl.error.failedPort": "Kunne ikke hente port",
 
   "desktop.picker.error.notSelected": "Ingen fil ble valgt i filvelgeren",
-  "desktop.picker.error.sizeLimit": "De valgte vedleggene overskrider grensen på {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "De valgte vedleggene overskrider grensen på {{limit}} MB",
 
   "command.category.suggested": "Foreslått",
   "command.category.view": "Visning",
@@ -158,7 +179,8 @@ export const dict = {
   "command.file.open": "Åpne fil",
   "command.tab.close": "Lukk fane",
   "command.context.addSelection": "Legg til markering i kontekst",
-  "command.context.addSelection.description": "Legg til valgte linjer fra gjeldende fil",
+  "command.context.addSelection.description":
+    "Legg til valgte linjer fra gjeldende fil",
   "command.input.focus": "Fokuser inndata",
   "command.terminal.toggle": "Veksle terminal",
   "command.fileTree.toggle": "Veksle filtre",
@@ -166,7 +188,8 @@ export const dict = {
   "command.terminal.new": "Ny terminal",
   "command.terminal.new.description": "Opprett en ny terminalfane",
   "command.steps.toggle": "Veksle trinn",
-  "command.steps.toggle.description": "Vis eller skjul trinn for gjeldende melding",
+  "command.steps.toggle.description":
+    "Vis eller skjul trinn for gjeldende melding",
   "command.message.previous": "Forrige melding",
   "command.message.previous.description": "Gå til forrige brukermelding",
   "command.message.next": "Neste melding",
@@ -184,24 +207,30 @@ export const dict = {
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Aksepter tillatelser automatisk",
-  "command.permissions.autoaccept.disable": "Stopp automatisk akseptering av tillatelser",
+  "command.permissions.autoaccept.disable":
+    "Stopp automatisk akseptering av tillatelser",
   "command.workspace.toggle": "Veksle arbeidsområder",
-  "command.workspace.toggle.description": "Aktiver eller deaktiver flere arbeidsområder i sidefeltet",
+  "command.workspace.toggle.description":
+    "Aktiver eller deaktiver flere arbeidsområder i sidefeltet",
   "command.session.undo": "Angre",
   "command.session.undo.description": "Angre siste melding",
   "command.session.redo": "Gjør om",
   "command.session.redo.description": "Gjør om siste angrede melding",
   "command.session.compact": "Komprimer sesjon",
-  "command.session.compact.description": "Oppsummer sesjonen for å redusere kontekststørrelsen",
+  "command.session.compact.description":
+    "Oppsummer sesjonen for å redusere kontekststørrelsen",
   "command.session.fork": "Forgren fra melding",
-  "command.session.fork.description": "Opprett en ny sesjon fra en tidligere melding",
+  "command.session.fork.description":
+    "Opprett en ny sesjon fra en tidligere melding",
   "command.session.share": "Del sesjon",
-  "command.session.share.description": "Del denne sesjonen og kopier URL-en til utklippstavlen",
+  "command.session.share.description":
+    "Del denne sesjonen og kopier URL-en til utklippstavlen",
   "command.session.unshare": "Slutt å dele sesjon",
   "command.session.unshare.description": "Slutt å dele denne sesjonen",
 
   "command.session.export": "Eksporter sesjon",
-  "command.session.export.description": "Eksporter hele sesjonsutskriften som JSON",
+  "command.session.export.description":
+    "Eksporter hele sesjonsutskriften som JSON",
 
   "palette.search.placeholder": "Søk i filer, kommandoer og sesjoner",
   "palette.search.placeholder.home": "Søk i kommandoer og sesjoner",
@@ -215,25 +244,33 @@ export const dict = {
   "dialog.provider.group.other": "Andre",
   "dialog.provider.custom.label": "Egendefinert OpenAI-kompatibel leverandør",
   "dialog.provider.tag.recommended": "Anbefalt",
-  "dialog.provider.opencode.note": "Utvalgte modeller inkludert Claude, GPT, Gemini og mer",
+  "dialog.provider.opencode.note":
+    "Utvalgte modeller inkludert Claude, GPT, Gemini og mer",
   "dialog.provider.opencode.tagline": "Pålitelige, optimaliserte modeller",
   "dialog.provider.opencodeGo.tagline": "Rimelig abonnement for alle",
-  "dialog.provider.anthropic.note": "Direkte tilgang til Claude-modeller, inkludert Pro og Max",
-  "dialog.provider.copilot.note": "AI-modeller for kodeassistanse via GitHub Copilot",
-  "dialog.provider.openai.note": "GPT-modeller for raske, dyktige generelle AI-oppgaver",
+  "dialog.provider.anthropic.note":
+    "Direkte tilgang til Claude-modeller, inkludert Pro og Max",
+  "dialog.provider.copilot.note":
+    "AI-modeller for kodeassistanse via GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT-modeller for raske, dyktige generelle AI-oppgaver",
   "dialog.provider.google.note": "Gemini-modeller for raske, strukturerte svar",
-  "dialog.provider.openrouter.note": "Tilgang til alle støttede modeller fra én leverandør",
-  "dialog.provider.vercel.note": "Enhetlig tilgang til AI-modeller med smart ruting",
+  "dialog.provider.openrouter.note":
+    "Tilgang til alle støttede modeller fra én leverandør",
+  "dialog.provider.vercel.note":
+    "Enhetlig tilgang til AI-modeller med smart ruting",
 
   "dialog.model.select.title": "Velg modell",
   "dialog.model.search.placeholder": "Søk etter modeller",
   "dialog.model.empty": "Ingen modellresultater",
   "dialog.model.manage": "Administrer modeller",
-  "dialog.model.manage.description": "Tilpass hvilke modeller som vises i modellvelgeren.",
+  "dialog.model.manage.description":
+    "Tilpass hvilke modeller som vises i modellvelgeren.",
   "dialog.model.manage.provider.toggle": "Veksle alle {{provider}}-modeller",
 
   "dialog.model.unpaid.freeModels.title": "Gratis modeller levert av OpenCode",
-  "dialog.model.unpaid.addMore.title": "Legg til flere modeller fra populære leverandører",
+  "dialog.model.unpaid.addMore.title":
+    "Legg til flere modeller fra populære leverandører",
   "dialog.model.unpaid.viewMoreProviders": "Se over 70 flere leverandører",
 
   "dialog.provider.viewAll": "Vis flere leverandører",
@@ -273,16 +310,21 @@ export const dict = {
     " og skriv inn koden nedenfor for å koble til kontoen din og bruke {{provider}}-modeller i OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Bekreftelseskode",
   "provider.connect.toast.connected.title": "{{provider}} tilkoblet",
-  "provider.connect.toast.connected.description": "{{provider}}-modeller er nå tilgjengelige.",
+  "provider.connect.toast.connected.description":
+    "{{provider}}-modeller er nå tilgjengelige.",
 
   "provider.custom.title": "Egendefinert leverandør",
-  "provider.custom.unavailable": "Egendefinerte leverandører er ikke tilgjengelige på denne serveren",
-  "provider.custom.description.prefix": "Konfigurer en OpenAI-kompatibel leverandør. Se ",
-  "provider.custom.description.link": "dokumentasjon for leverandørkonfigurasjon",
+  "provider.custom.unavailable":
+    "Egendefinerte leverandører er ikke tilgjengelige på denne serveren",
+  "provider.custom.description.prefix":
+    "Konfigurer en OpenAI-kompatibel leverandør. Se ",
+  "provider.custom.description.link":
+    "dokumentasjon for leverandørkonfigurasjon",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Leverandør-ID",
   "provider.custom.field.providerID.placeholder": "minleverandør",
-  "provider.custom.field.providerID.description": "Små bokstaver, tall, bindestreker eller understreker",
+  "provider.custom.field.providerID.description":
+    "Små bokstaver, tall, bindestreker eller understreker",
   "provider.custom.field.name.label": "Visningsnavn",
   "provider.custom.field.name.placeholder": "Min AI-leverandør",
   "provider.custom.field.baseURL.label": "Basis-URL",
@@ -306,16 +348,20 @@ export const dict = {
   "provider.custom.headers.remove": "Fjern HTTP-hode",
   "provider.custom.headers.add": "Legg til HTTP-hode",
   "provider.custom.error.providerID.required": "Leverandør-ID er påkrevd",
-  "provider.custom.error.providerID.format": "Bruk små bokstaver, tall, bindestreker eller understreker",
-  "provider.custom.error.providerID.exists": "Denne leverandør-ID-en finnes allerede",
+  "provider.custom.error.providerID.format":
+    "Bruk små bokstaver, tall, bindestreker eller understreker",
+  "provider.custom.error.providerID.exists":
+    "Denne leverandør-ID-en finnes allerede",
   "provider.custom.error.name.required": "Visningsnavn er påkrevd",
   "provider.custom.error.baseURL.required": "Basis-URL er påkrevd",
-  "provider.custom.error.baseURL.format": "Må starte med http:// eller https://",
+  "provider.custom.error.baseURL.format":
+    "Må starte med http:// eller https://",
   "provider.custom.error.required": "Påkrevd",
   "provider.custom.error.duplicate": "Duplikat",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} frakoblet",
-  "provider.disconnect.toast.disconnected.description": "Modeller fra {{provider}} er ikke lenger tilgjengelige.",
+  "provider.disconnect.toast.disconnected.description":
+    "Modeller fra {{provider}} er ikke lenger tilgjengelige.",
 
   "model.tag.free": "Gratis",
   "model.tag.latest": "Nyeste",
@@ -406,10 +452,13 @@ export const dict = {
   "prompt.action.stop": "Stopp",
 
   "prompt.toast.pasteUnsupported.title": "Ikke støttet vedlegg",
-  "prompt.toast.attachmentDuplicate.title": "Denne filen er allerede lastet opp",
-  "prompt.toast.pasteUnsupported.description": "Kun bilder, PDF-er eller tekstfiler kan legges ved her.",
+  "prompt.toast.attachmentDuplicate.title":
+    "Denne filen er allerede lastet opp",
+  "prompt.toast.pasteUnsupported.description":
+    "Kun bilder, PDF-er eller tekstfiler kan legges ved her.",
   "prompt.toast.modelAgentRequired.title": "Velg en agent og modell",
-  "prompt.toast.modelAgentRequired.description": "Velg en agent og modell før du sender en forespørsel.",
+  "prompt.toast.modelAgentRequired.description":
+    "Velg en agent og modell før du sender en forespørsel.",
   "prompt.toast.worktreeCreateFailed.title": "Kunne ikke opprette worktree",
   "prompt.toast.sessionCreateFailed.title": "Kunne ikke opprette sesjon",
   "prompt.toast.shellSendFailed.title": "Kunne ikke sende shell-kommando",
@@ -441,7 +490,8 @@ export const dict = {
   "dialog.directory.readError": "Kan ikke lese denne mappen",
 
   "dialog.server.title": "Servere",
-  "dialog.server.description": "Bytt hvilken OpenCode-server denne appen kobler til.",
+  "dialog.server.description":
+    "Bytt hvilken OpenCode-server denne appen kobler til.",
   "dialog.server.search.placeholder": "Søk etter servere",
   "dialog.server.empty": "Ingen servere ennå",
   "dialog.server.add.title": "Legg til en server",
@@ -479,7 +529,8 @@ export const dict = {
   "dialog.project.edit.color": "Farge",
   "dialog.project.edit.color.select": "Velg fargen {{color}}",
   "dialog.project.edit.worktree.startup": "Oppstartsskript for arbeidsområde",
-  "dialog.project.edit.worktree.startup.description": "Kjører etter at et nytt arbeidsområde (worktree) er opprettet.",
+  "dialog.project.edit.worktree.startup.description":
+    "Kjører etter at et nytt arbeidsområde (worktree) er opprettet.",
   "dialog.project.edit.worktree.startup.placeholder": "f.eks. bun install",
 
   "dialog.usageExceeded.dontShowAgain": "Ikke vis igjen",
@@ -546,51 +597,66 @@ export const dict = {
   "toast.scheme.title": "Fargevalg",
 
   "toast.workspace.enabled.title": "Arbeidsområder aktivert",
-  "toast.workspace.enabled.description": "Flere arbeidsområder vises nå i sidefeltet",
+  "toast.workspace.enabled.description":
+    "Flere arbeidsområder vises nå i sidefeltet",
   "toast.workspace.disabled.title": "Arbeidsområder deaktivert",
-  "toast.workspace.disabled.description": "Kun hovedarbeidsområdet vises i sidefeltet",
+  "toast.workspace.disabled.description":
+    "Kun hovedarbeidsområdet vises i sidefeltet",
 
   "toast.permissions.autoaccept.on.title": "Aksepterer tillatelser automatisk",
-  "toast.permissions.autoaccept.on.description": "Forespørsler om tillatelse vil bli godkjent automatisk",
-  "toast.permissions.autoaccept.off.title": "Stoppet automatisk akseptering av tillatelser",
-  "toast.permissions.autoaccept.off.description": "Forespørsler om tillatelse vil kreve godkjenning",
+  "toast.permissions.autoaccept.on.description":
+    "Forespørsler om tillatelse vil bli godkjent automatisk",
+  "toast.permissions.autoaccept.off.title":
+    "Stoppet automatisk akseptering av tillatelser",
+  "toast.permissions.autoaccept.off.description":
+    "Forespørsler om tillatelse vil kreve godkjenning",
 
   "toast.model.none.title": "Ingen modell valgt",
-  "toast.model.none.description": "Koble til en leverandør for å oppsummere denne sesjonen",
+  "toast.model.none.description":
+    "Koble til en leverandør for å oppsummere denne sesjonen",
 
   "toast.file.loadFailed.title": "Kunne ikke laste fil",
   "toast.file.listFailed.title": "Kunne ikke liste filer",
 
   "toast.context.noLineSelection.title": "Ingen linjevalg",
-  "toast.context.noLineSelection.description": "Velg først et linjeområde i en filfane.",
+  "toast.context.noLineSelection.description":
+    "Velg først et linjeområde i en filfane.",
 
-  "toast.session.share.copyFailed.title": "Kunne ikke kopiere URL til utklippstavlen",
+  "toast.session.share.copyFailed.title":
+    "Kunne ikke kopiere URL til utklippstavlen",
   "toast.session.share.success.title": "Sesjon delt",
-  "toast.session.share.success.description": "Delings-URL kopiert til utklippstavlen!",
+  "toast.session.share.success.description":
+    "Delings-URL kopiert til utklippstavlen!",
   "toast.session.share.failed.title": "Kunne ikke dele sesjon",
-  "toast.session.share.failed.description": "Det oppstod en feil under deling av sesjonen",
+  "toast.session.share.failed.description":
+    "Det oppstod en feil under deling av sesjonen",
 
   "toast.session.unshare.success.title": "Deling av sesjon stoppet",
   "toast.session.unshare.success.description": "Sesjonen deles ikke lenger!",
   "toast.session.unshare.failed.title": "Kunne ikke stoppe deling av sesjon",
-  "toast.session.unshare.failed.description": "Det oppstod en feil da delingen av sesjonen skulle stoppes",
+  "toast.session.unshare.failed.description":
+    "Det oppstod en feil da delingen av sesjonen skulle stoppes",
 
   "toast.session.export.success.title": "Sesjon eksportert",
-  "toast.session.export.success.description": "Sesjonen ble lagret i {{filename}}",
+  "toast.session.export.success.description":
+    "Sesjonen ble lagret i {{filename}}",
   "toast.session.export.failed.title": "Kunne ikke eksportere sesjon",
-  "toast.session.export.failed.description": "Det oppstod en feil under eksport av sesjonen",
+  "toast.session.export.failed.description":
+    "Det oppstod en feil under eksport av sesjonen",
 
   "toast.session.listFailed.title": "Kunne ikke laste sesjoner for {{project}}",
 
   "toast.update.title": "Oppdatering tilgjengelig",
-  "toast.update.description": "En ny versjon av OpenCode ({{version}}) er nå tilgjengelig for installasjon.",
+  "toast.update.description":
+    "En ny versjon av OpenCode ({{version}}) er nå tilgjengelig for installasjon.",
   "toast.update.action.installRestart": "Installer og start på nytt",
   "toast.update.action.notYet": "Ikke nå",
   "toast.update.installFailed.title": "Kunne ikke installere oppdateringen",
   "toast.update.installFailed.retry": "Prøv igjen",
 
   "error.page.title": "Noe gikk galt",
-  "error.page.description": "Det oppstod en feil under lasting av applikasjonen.",
+  "error.page.description":
+    "Det oppstod en feil under lasting av applikasjonen.",
   "error.page.details.label": "Feildetaljer",
   "error.page.action.restart": "Start på nytt",
   "error.page.action.report": "Rapporter feil",
@@ -598,14 +664,16 @@ export const dict = {
   "error.page.action.checking": "Sjekker...",
   "error.page.action.checkUpdates": "Se etter oppdateringer",
   "error.page.action.updateTo": "Oppdater til {{version}}",
-  "error.page.report.prefix": "Vennligst rapporter denne feilen til OpenCode-teamet",
+  "error.page.report.prefix":
+    "Vennligst rapporter denne feilen til OpenCode-teamet",
   "error.page.report.discord": "på Discord",
   "error.page.version": "Versjon: {{version}}",
 
   "error.dev.rootNotFound":
     "Rotelement ikke funnet. Glemte du å legge det til i index.html? Eller kanskje id-attributtet er feilstavet?",
 
-  "error.serverSync.connectFailed": "Kunne ikke koble til server. Kjører det en server på `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Kunne ikke koble til server. Kjører det en server på `{{url}}`?",
   "directory.error.invalidUrl": "Ugyldig mappe i URL-en.",
 
   "error.chain.unknown": "Ukjent feil",
@@ -616,23 +684,32 @@ export const dict = {
   "error.chain.responseBody": "Responsinnhold:\n{{body}}",
   "error.chain.didYouMean": "Mente du: {{suggestions}}",
   "error.chain.modelNotFound": "Modell ikke funnet: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Sjekk leverandør-/modellnavnene i konfigurasjonen din (opencode.json)",
-  "error.chain.mcpFailed": 'MCP-server "{{name}}" mislyktes. Merk at OpenCode ikke støtter MCP-autentisering ennå.',
-  "error.chain.providerAuthFailed": "Leverandørautentisering mislyktes ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Sjekk leverandør-/modellnavnene i konfigurasjonen din (opencode.json)",
+  "error.chain.mcpFailed":
+    'MCP-server "{{name}}" mislyktes. Merk at OpenCode ikke støtter MCP-autentisering ennå.',
+  "error.chain.providerAuthFailed":
+    "Leverandørautentisering mislyktes ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Kunne ikke initialisere leverandør "{{provider}}". Sjekk legitimasjon og konfigurasjon.',
-  "error.chain.configJsonInvalid": "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Mappen "{{dir}}" i {{path}} er ikke gyldig. Gi mappen nytt navn til "{{suggestion}}" eller fjern den. Dette er en vanlig skrivefeil.',
-  "error.chain.configFrontmatterError": "Kunne ikke analysere frontmatter i {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Kunne ikke analysere frontmatter i {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Konfigurasjonsfilen på {{path}} er ugyldig",
-  "error.chain.configInvalidWithMessage": "Konfigurasjonsfilen på {{path}} er ugyldig: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigurasjonsfilen på {{path}} er ugyldig: {{message}}",
 
   "notification.permission.title": "Tillatelse påkrevd",
-  "notification.permission.description": "{{sessionTitle}} i {{projectName}} trenger tillatelse",
+  "notification.permission.description":
+    "{{sessionTitle}} i {{projectName}} trenger tillatelse",
   "notification.question.title": "Spørsmål",
-  "notification.question.description": "{{sessionTitle}} i {{projectName}} har et spørsmål",
+  "notification.question.description":
+    "{{sessionTitle}} i {{projectName}} har et spørsmål",
   "notification.action.goToSession": "Gå til sesjon",
 
   "notification.session.responseReady.title": "Svar klart",
@@ -652,7 +729,8 @@ export const dict = {
   "session.review.change.other": "Endringer",
   "session.review.loadingChanges": "Laster endringer...",
   "session.review.empty": "Ingen endringer i denne sesjonen ennå",
-  "session.review.noVcs": "Ingen Git-versjonskontrollsystem oppdaget, endringer vises ikke",
+  "session.review.noVcs":
+    "Ingen Git-versjonskontrollsystem oppdaget, endringer vises ikke",
   "session.review.noSnapshot":
     "Snapshot-sporing er deaktivert i konfigurasjonen, så sesjonsendringer er ikke tilgjengelige",
   "session.review.noChanges": "Ingen endringer",
@@ -733,7 +811,8 @@ export const dict = {
     "Terminalforbindelsen ble avbrutt. Dette kan skje når serveren starter på nytt.",
   "terminal.connectTicket.csrfError":
     "Tilkoblingsbilletten for PTY ble avvist av opprinnelses- eller CSRF-kontroller. Kontroller serverens CORS-konfigurasjon.",
-  "terminal.connectTicket.statusError": "Tilkoblingsbilletten for PTY mislyktes med {{status}}",
+  "terminal.connectTicket.statusError":
+    "Tilkoblingsbilletten for PTY mislyktes med {{status}}",
 
   "titlebar.update": "Oppdater",
   "titlebar.updateVersion": "Oppdater {{version}}",
@@ -760,8 +839,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktiver arbeidsområder",
   "sidebar.workspaces.disable": "Deaktiver arbeidsområder",
   "sidebar.gettingStarted.title": "Kom i gang",
-  "sidebar.gettingStarted.line1": "OpenCode inkluderer gratis modeller så du kan starte umiddelbart.",
-  "sidebar.gettingStarted.line2": "Koble til en leverandør for å bruke modeller, inkl. Claude, GPT, Gemini osv.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode inkluderer gratis modeller så du kan starte umiddelbart.",
+  "sidebar.gettingStarted.line2":
+    "Koble til en leverandør for å bruke modeller, inkl. Claude, GPT, Gemini osv.",
   "sidebar.project.recentSessions": "Nylige sesjoner",
   "sidebar.project.viewAllSessions": "Vis alle sesjoner",
   "sidebar.project.clearNotifications": "Fjern varsler",
@@ -774,7 +855,8 @@ export const dict = {
   "settings.tab.shortcuts": "Snarveier",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL-integrasjon",
-  "settings.desktop.wsl.description": "Kjør OpenCode-serveren i WSL på Windows.",
+  "settings.desktop.wsl.description":
+    "Kjør OpenCode-serveren i WSL på Windows.",
 
   "settings.general.section.appearance": "Utseende",
   "settings.general.section.notifications": "Systemvarsler",
@@ -784,47 +866,61 @@ export const dict = {
   "settings.general.section.display": "Skjerm",
 
   "settings.general.row.language.title": "Språk",
-  "settings.general.row.language.description": "Endre visningsspråket for OpenCode",
+  "settings.general.row.language.description":
+    "Endre visningsspråket for OpenCode",
   "settings.general.row.appearance.title": "Utseende",
-  "settings.general.row.appearance.description": "Tilpass hvordan OpenCode ser ut på enheten din",
+  "settings.general.row.appearance.description":
+    "Tilpass hvordan OpenCode ser ut på enheten din",
   "settings.general.row.colorScheme.title": "Fargevalg",
   "settings.general.row.colorScheme.description":
     "Velg om OpenCode skal følge systeminnstillingen eller bruke lyst eller mørkt tema",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Tilpass temaet i OpenCode.",
   "settings.general.row.font.title": "Kodefont",
-  "settings.general.row.font.description": "Tilpass skrifttypen som brukes i kodeblokker",
+  "settings.general.row.font.description":
+    "Tilpass skrifttypen som brukes i kodeblokker",
   "settings.general.row.terminalFont.title": "Terminalskrift",
-  "settings.general.row.terminalFont.description": "Tilpass skrifttypen som brukes i terminalen",
+  "settings.general.row.terminalFont.description":
+    "Tilpass skrifttypen som brukes i terminalen",
   "settings.general.row.uiFont.title": "UI-skrift",
-  "settings.general.row.uiFont.description": "Tilpass skrifttypen som brukes i hele grensesnittet",
+  "settings.general.row.uiFont.description":
+    "Tilpass skrifttypen som brukes i hele grensesnittet",
   "settings.general.row.followup.title": "Oppfølgingsatferd",
-  "settings.general.row.followup.description": "Velg om oppfølgingsspørsmål skal kjøres umiddelbart eller vente i kø",
+  "settings.general.row.followup.description":
+    "Velg om oppfølgingsspørsmål skal kjøres umiddelbart eller vente i kø",
   "settings.general.row.followup.option.queue": "Kø",
   "settings.general.row.followup.option.steer": "Styr",
   "settings.general.row.reasoningSummaries.title": "Vis resonneringssammendrag",
-  "settings.general.row.reasoningSummaries.description": "Vis sammendrag av modellresonnering i tidslinjen",
-  "settings.general.row.shellToolPartsExpanded.title": "Utvid shell-verktøydeler",
-  "settings.general.row.shellToolPartsExpanded.description": "Vis shell-verktøydeler utvidet som standard i tidslinjen",
+  "settings.general.row.reasoningSummaries.description":
+    "Vis sammendrag av modellresonnering i tidslinjen",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Utvid shell-verktøydeler",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "Vis shell-verktøydeler utvidet som standard i tidslinjen",
   "settings.general.row.editToolPartsExpanded.title": "Utvid edit-verktøydeler",
   "settings.general.row.editToolPartsExpanded.description":
     "Vis edit-, write- og patch-verktøydeler utvidet som standard i tidslinjen",
   "settings.general.row.wayland.title": "Bruk Wayland direkte",
-  "settings.general.row.wayland.description": "Deaktiver X11-reserveløsningen på Wayland. Krever omstart.",
+  "settings.general.row.wayland.description":
+    "Deaktiver X11-reserveløsningen på Wayland. Krever omstart.",
   "settings.general.row.wayland.tooltip":
     "På Linux med skjermer med blandet oppdateringsfrekvens kan direkte Wayland-støtte være mer stabilt.",
 
   "settings.general.row.releaseNotes.title": "Utgivelsesnotater",
-  "settings.general.row.releaseNotes.description": 'Vis "Hva er nytt"-vinduer etter oppdateringer',
+  "settings.general.row.releaseNotes.description":
+    'Vis "Hva er nytt"-vinduer etter oppdateringer',
 
   "settings.updates.row.startup.title": "Se etter oppdateringer ved oppstart",
-  "settings.updates.row.startup.description": "Se automatisk etter oppdateringer når OpenCode starter",
+  "settings.updates.row.startup.description":
+    "Se automatisk etter oppdateringer når OpenCode starter",
   "settings.updates.row.check.title": "Se etter oppdateringer",
-  "settings.updates.row.check.description": "Se etter oppdateringer manuelt og installer hvis tilgjengelig",
+  "settings.updates.row.check.description":
+    "Se etter oppdateringer manuelt og installer hvis tilgjengelig",
   "settings.updates.action.checkNow": "Sjekk nå",
   "settings.updates.action.checking": "Sjekker...",
   "settings.updates.toast.latest.title": "OpenCode er oppdatert",
-  "settings.updates.toast.latest.description": "Du bruker den nyeste versjonen av OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Du bruker den nyeste versjonen av OpenCode.",
   "sound.option.none": "Ingen",
   "sound.option.alert01": "Varsel 01",
   "sound.option.alert02": "Varsel 02",
@@ -876,23 +972,30 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Vis systemvarsel når agenten er ferdig eller trenger oppmerksomhet",
   "settings.general.notifications.permissions.title": "Tillatelser",
-  "settings.general.notifications.permissions.description": "Vis systemvarsel når en tillatelse er påkrevd",
+  "settings.general.notifications.permissions.description":
+    "Vis systemvarsel når en tillatelse er påkrevd",
   "settings.general.notifications.errors.title": "Feil",
-  "settings.general.notifications.errors.description": "Vis systemvarsel når det oppstår en feil",
+  "settings.general.notifications.errors.description":
+    "Vis systemvarsel når det oppstår en feil",
 
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Spill av lyd når agenten er ferdig eller trenger oppmerksomhet",
+  "settings.general.sounds.agent.description":
+    "Spill av lyd når agenten er ferdig eller trenger oppmerksomhet",
   "settings.general.sounds.permissions.title": "Tillatelser",
-  "settings.general.sounds.permissions.description": "Spill av lyd når en tillatelse er påkrevd",
+  "settings.general.sounds.permissions.description":
+    "Spill av lyd når en tillatelse er påkrevd",
   "settings.general.sounds.errors.title": "Feil",
-  "settings.general.sounds.errors.description": "Spill av lyd når det oppstår en feil",
+  "settings.general.sounds.errors.description":
+    "Spill av lyd når det oppstår en feil",
 
   "settings.shortcuts.title": "Tastatursnarveier",
   "settings.shortcuts.reset.button": "Tilbakestill til standard",
   "settings.shortcuts.reset.toast.title": "Snarveier tilbakestilt",
-  "settings.shortcuts.reset.toast.description": "Tastatursnarveier er tilbakestilt til standard.",
+  "settings.shortcuts.reset.toast.description":
+    "Tastatursnarveier er tilbakestilt til standard.",
   "settings.shortcuts.conflict.title": "Snarvei allerede i bruk",
-  "settings.shortcuts.conflict.description": "{{keybind}} er allerede tilordnet {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} er allerede tilordnet {{titles}}.",
   "settings.shortcuts.unassigned": "Ikke tilordnet",
   "settings.shortcuts.pressKeys": "Trykk taster",
   "settings.shortcuts.search.placeholder": "Søk etter snarveier",
@@ -906,7 +1009,8 @@ export const dict = {
   "settings.shortcuts.group.prompt": "Prompt",
 
   "settings.providers.title": "Leverandører",
-  "settings.providers.description": "Leverandørinnstillinger vil kunne konfigureres her.",
+  "settings.providers.description":
+    "Leverandørinnstillinger vil kunne konfigureres her.",
   "settings.providers.section.connected": "Tilkoblede leverandører",
   "settings.providers.connected.empty": "Ingen tilkoblede leverandører",
   "settings.providers.section.popular": "Populære leverandører",
@@ -915,32 +1019,40 @@ export const dict = {
   "settings.providers.tag.custom": "Tilpasset",
   "settings.providers.tag.other": "Annet",
   "settings.models.title": "Modeller",
-  "settings.models.description": "Modellinnstillinger vil kunne konfigureres her.",
+  "settings.models.description":
+    "Modellinnstillinger vil kunne konfigureres her.",
   "settings.agents.title": "Agenter",
-  "settings.agents.description": "Agentinnstillinger vil kunne konfigureres her.",
+  "settings.agents.description":
+    "Agentinnstillinger vil kunne konfigureres her.",
   "settings.commands.title": "Kommandoer",
-  "settings.commands.description": "Kommandoinnstillinger vil kunne konfigureres her.",
+  "settings.commands.description":
+    "Kommandoinnstillinger vil kunne konfigureres her.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP-innstillinger vil kunne konfigureres her.",
 
   "settings.permissions.title": "Tillatelser",
-  "settings.permissions.description": "Kontroller hvilke verktøy serveren kan bruke som standard.",
+  "settings.permissions.description":
+    "Kontroller hvilke verktøy serveren kan bruke som standard.",
   "settings.permissions.section.tools": "Verktøy",
-  "settings.permissions.toast.updateFailed.title": "Kunne ikke oppdatere tillatelser",
+  "settings.permissions.toast.updateFailed.title":
+    "Kunne ikke oppdatere tillatelser",
 
   "settings.permissions.action.allow": "Tillat",
   "settings.permissions.action.ask": "Spør",
   "settings.permissions.action.deny": "Avslå",
 
   "settings.permissions.tool.read.title": "Les",
-  "settings.permissions.tool.read.description": "Lesing av en fil (matcher filbanen)",
+  "settings.permissions.tool.read.description":
+    "Lesing av en fil (matcher filbanen)",
   "settings.permissions.tool.edit.title": "Rediger",
   "settings.permissions.tool.edit.description":
     "Endre filer, inkludert redigeringer, skriving, patcher og multi-redigeringer",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Match filer ved hjelp av glob-mønstre",
+  "settings.permissions.tool.glob.description":
+    "Match filer ved hjelp av glob-mønstre",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Søk i filinnhold ved hjelp av regulære uttrykk",
+  "settings.permissions.tool.grep.description":
+    "Søk i filinnhold ved hjelp av regulære uttrykk",
   "settings.permissions.tool.list.title": "Liste",
   "settings.permissions.tool.list.description": "List opp filer i en mappe",
   "settings.permissions.tool.bash.title": "Bash",
@@ -958,9 +1070,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Websøk",
   "settings.permissions.tool.websearch.description": "Søk på nettet",
   "settings.permissions.tool.external_directory.title": "Ekstern mappe",
-  "settings.permissions.tool.external_directory.description": "Få tilgang til filer utenfor prosjektmappen",
+  "settings.permissions.tool.external_directory.description":
+    "Få tilgang til filer utenfor prosjektmappen",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Oppdager gjentatte verktøykall med identiske inndata",
+  "settings.permissions.tool.doom_loop.description":
+    "Oppdager gjentatte verktøykall med identiske inndata",
 
   "session.delete.failed.title": "Kunne ikke slette sesjon",
   "session.delete.title": "Slett sesjon",
@@ -976,12 +1090,14 @@ export const dict = {
   "workspace.resetting.description": "Dette kan ta et minutt.",
   "workspace.reset.failed.title": "Kunne ikke tilbakestille arbeidsområde",
   "workspace.reset.success.title": "Arbeidsområde tilbakestilt",
-  "workspace.reset.success.description": "Arbeidsområdet samsvarer nå med standardgrenen.",
+  "workspace.reset.success.description":
+    "Arbeidsområdet samsvarer nå med standardgrenen.",
   "workspace.error.stillPreparing": "Arbeidsområdet klargjøres fortsatt",
   "workspace.status.checking": "Sjekker for ikke-sammenslåtte endringer...",
   "workspace.status.error": "Kunne ikke bekrefte git-status.",
   "workspace.status.clean": "Ingen ikke-sammenslåtte endringer oppdaget.",
-  "workspace.status.dirty": "Ikke-sammenslåtte endringer oppdaget i dette arbeidsområdet.",
+  "workspace.status.dirty":
+    "Ikke-sammenslåtte endringer oppdaget i dette arbeidsområdet.",
   "workspace.delete.title": "Slett arbeidsområde",
   "workspace.delete.confirm": 'Slette arbeidsområdet "{{name}}"?',
   "workspace.delete.button": "Slett arbeidsområde",
@@ -991,21 +1107,25 @@ export const dict = {
   "workspace.reset.archived.none": "Ingen aktive sesjoner vil bli arkivert.",
   "workspace.reset.archived.one": "1 sesjon vil bli arkivert.",
   "workspace.reset.archived.many": "{{count}} sesjoner vil bli arkivert.",
-  "workspace.reset.note": "Dette vil tilbakestille arbeidsområdet til å samsvare med standardgrenen.",
+  "workspace.reset.note":
+    "Dette vil tilbakestille arbeidsområdet til å samsvare med standardgrenen.",
   "common.open": "Åpne",
   "dialog.releaseNotes.action.getStarted": "Kom i gang",
   "dialog.releaseNotes.action.next": "Neste",
   "dialog.releaseNotes.action.hideFuture": "Ikke vis disse igjen",
   "dialog.releaseNotes.media.alt": "Forhåndsvisning av utgivelse",
-  "toast.project.reloadFailed.title": "Kunne ikke laste inn {{project}} på nytt",
+  "toast.project.reloadFailed.title":
+    "Kunne ikke laste inn {{project}} på nytt",
   "error.server.invalidConfiguration": "Ugyldig konfigurasjon",
   "common.moreCountSuffix": " (+{{count}} mer)",
   "common.time.justNow": "Akkurat nå",
   "common.time.minutesAgo.short": "{{count}} m siden",
   "common.time.hoursAgo.short": "{{count}} t siden",
   "common.time.daysAgo.short": "{{count}} d siden",
-  "settings.providers.connected.environmentDescription": "Koblet til fra miljøvariablene dine",
-  "settings.providers.custom.description": "Legg til en OpenAI-kompatibel leverandør via en basis-URL.",
+  "settings.providers.connected.environmentDescription":
+    "Koblet til fra miljøvariablene dine",
+  "settings.providers.custom.description":
+    "Legg til en OpenAI-kompatibel leverandør via en basis-URL.",
 
   "app.server.unreachable": "Kunne ikke nå {{server}}",
   "app.server.retrying": "Prøver på nytt automatisk...",
@@ -1014,7 +1134,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "passord",
   "server.row.noUsername": "ikke noe brukernavn",
   "session.review.noVcs.createGit.title": "Opprett et Git-depot",
-  "session.review.noVcs.createGit.description": "Spor, gjennomgå og angre endringer i dette prosjektet",
+  "session.review.noVcs.createGit.description":
+    "Spor, gjennomgå og angre endringer i dette prosjektet",
   "session.review.noVcs.createGit.actionLoading": "Oppretter Git-depot...",
   "session.review.noVcs.createGit.action": "Opprett Git-depot",
   "session.todo.progress": "{{done}} av {{total}} oppgaver fullført",
@@ -1023,7 +1144,8 @@ export const dict = {
   "session.header.open.fileExplorer": "Filutforsker",
   "session.header.reveal.finder": "Vis i Finder",
   "session.header.reveal.fileExplorer": "Vis i Filutforsker",
-  "session.header.reveal.containingFolder": "Åpne mappen som inneholder dette elementet",
+  "session.header.reveal.containingFolder":
+    "Åpne mappen som inneholder dette elementet",
   "session.header.open.fileManager": "Filbehandler",
   "session.header.open.app.vscode": "VS Code",
   "session.header.open.app.cursor": "Cursor",
@@ -1050,23 +1172,28 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Bilder som tar over 32 ms i de siste 5 sekundene.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokkert tid og antall lange oppgaver i de siste 5 sekundene. Lengste oppgave: {{max}}.",
+  "debugBar.long.tip":
+    "Blokkert tid og antall lange oppgaver i de siste 5 sekundene. Lengste oppgave: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Lengste observerte inndataforsinkelse i de siste 5 sekundene.",
+  "debugBar.delay.tip":
+    "Lengste observerte inndataforsinkelse i de siste 5 sekundene.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Omtrentlig interaksjonsvarighet over de siste 5 sekundene. Dette er INP-lignende, ikke den offisielle Web Vitals INP.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "Kumulativ layoutforskyvning for gjeldende app-levetid.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Brukt JS-heap kontra heap-grense. Kun Chromium.",
-  "debugBar.mem.tip": "Brukt JS-heap kontra heap-grense. {{used}} av {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Brukt JS-heap kontra heap-grense. Kun Chromium.",
+  "debugBar.mem.tip":
+    "Brukt JS-heap kontra heap-grense. {{used}} av {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Tving fokusstiler på alle interaktive elementer",
   "debugBar.focus.on": "PÅ",
   "debugBar.focus.off": "AV",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Tving layoutretningen for hele appen uten å endre valgt språk",
+  "debugBar.direction.tip":
+    "Tving layoutretningen for hele appen uten å endre valgt språk",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "common.key.ctrl": "Ctrl",
@@ -1087,11 +1214,15 @@ export const dict = {
   "error.page.circular": "[Sirkulær]",
   "error.serverSDK.noServerAvailable": "Ingen server tilgjengelig",
   "error.serverSDK.serverNotAvailable": "Server ikke tilgjengelig",
-  "error.childStore.persistedCacheCreateFailed": "Kunne ikke opprette vedvarende hurtigbuffer",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Kunne ikke opprette vedvarende prosjektmetadata",
-  "error.childStore.persistedProjectIconCreateFailed": "Kunne ikke opprette vedvarende prosjektikon",
+  "error.childStore.persistedCacheCreateFailed":
+    "Kunne ikke opprette vedvarende hurtigbuffer",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Kunne ikke opprette vedvarende prosjektmetadata",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Kunne ikke opprette vedvarende prosjektikon",
   "error.childStore.storeCreateFailed": "Kunne ikke opprette lager",
-  "terminal.connectionLost.abnormalClose": "WebSocket lukket unormalt: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket lukket unormalt: {{code}}",
 
   "command.project.previous": "Forrige prosjekt",
   "command.project.next": "Neste prosjekt",
@@ -1106,7 +1237,8 @@ export const dict = {
 
   "common.clear": "Tøm",
 
-  "session.child.promptDisabled": "Underagentsesjoner kan ikke motta forespørsler.",
+  "session.child.promptDisabled":
+    "Underagentsesjoner kan ikke motta forespørsler.",
   "session.child.backToParent": "Tilbake til hovedsesjonen.",
 
   "wsl.server.add": "Legg til WSL-server",
@@ -1118,7 +1250,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Velg distribusjon",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Sjekker WSL...",
-  "wsl.onboarding.restartRequired": "Windows må startes på nytt for å fullføre installasjonen av WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows må startes på nytt for å fullføre installasjonen av WSL.",
   "wsl.onboarding.ready": "WSL er klart.",
   "wsl.onboarding.required": "WSL kreves for å fortsette.",
   "wsl.onboarding.checkingDistros": "Sjekker distribusjoner...",
@@ -1127,9 +1260,11 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Lister distribusjoner...",
   "wsl.onboarding.distroReady": "{{distro}} er klar.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} er ikke installert ennå.",
-  "wsl.onboarding.openDistroOnce": "Åpne {{distro}} én gang for å fullføre oppsettet.",
+  "wsl.onboarding.openDistroOnce":
+    "Åpne {{distro}} én gang for å fullføre oppsettet.",
   "wsl.onboarding.finishingDistro": "Fullfører oppsettet for {{distro}}.",
-  "wsl.onboarding.pickDistro": "Velg en distribusjon eller installer en nedenfor.",
+  "wsl.onboarding.pickDistro":
+    "Velg en distribusjon eller installer en nedenfor.",
   "wsl.onboarding.checkingOpencode": "Sjekker OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Sjekker OpenCode i {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Oppdaterer OpenCode...",
@@ -1151,18 +1286,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Mangler bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Ikke støttet · Bruk WSL 2",
   "wsl.onboarding.needAnotherDistro": "Trenger du en annen distribusjon?",
-  "wsl.onboarding.needAnotherDistroHint": "Installer en Linux-distribusjon fra WSL-katalogen",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Installer en Linux-distribusjon fra WSL-katalogen",
   "wsl.onboarding.wslNotInstalled.title": "WSL er ikke installert",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) kreves før OpenCode kan legge til en WSL-server",
   "wsl.onboarding.wslUnavailable.title": "WSL er utilgjengelig",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode kunne ikke bekrefte WSL på denne maskinen.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode kunne ikke bekrefte WSL på denne maskinen.",
   "wsl.onboarding.installWsl": "Installer WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Start Windows på nytt for å fullføre installasjonen av WSL, og åpne deretter OpenCode på nytt.",
   "wsl.onboarding.next": "Neste",
   "wsl.onboarding.refresh": "Oppdater",
-  "wsl.onboarding.allDistrosAdded": "Alle installerte distribusjoner er allerede lagt til.",
+  "wsl.onboarding.allDistrosAdded":
+    "Alle installerte distribusjoner er allerede lagt til.",
   "wsl.onboarding.noDistros": "Ingen distribusjoner oppdaget ennå.",
   "wsl.onboarding.install": "Installer",
   "wsl.onboarding.installing": "Installerer...",
@@ -1176,13 +1314,16 @@ export const dict = {
   "wsl.onboarding.version": "Versjon: {{version}}",
   "wsl.onboarding.unknown": "ukjent",
   "wsl.onboarding.desktopVersion": "skrivebordsapp {{version}}",
-  "wsl.onboarding.versionMismatch": "Den installerte versjonen samsvarer ikke med versjonen av skrivebordsappen.",
+  "wsl.onboarding.versionMismatch":
+    "Den installerte versjonen samsvarer ikke med versjonen av skrivebordsappen.",
   "wsl.onboarding.adding": "Legger til...",
 
-  "help.tabs.toast.ariaLabel": "Vi introduserer faner. Organiser arbeidet og de aktive sesjonene dine med faner",
+  "help.tabs.toast.ariaLabel":
+    "Vi introduserer faner. Organiser arbeidet og de aktive sesjonene dine med faner",
   "help.tabs.toast.dismiss": "Avvis informasjon om faner",
   "help.tabs.title": "Vi introduserer faner",
-  "help.tabs.description": "Organiser arbeidet og de aktive sesjonene dine med faner",
+  "help.tabs.description":
+    "Organiser arbeidet og de aktive sesjonene dine med faner",
   "help.tabs.date": "14. juli",
   "help.tabs.introduction": "OpenCode Desktop er nå bygget rundt faner.",
   "help.tabs.sessions":
@@ -1191,13 +1332,15 @@ export const dict = {
     "Når du har noen få faner åpne, blir det enklere å organisere de aktive sesjonene. Gi fanene navn som er lette å huske, hvis du planlegger å beholde dem.",
   "help.tabs.home":
     "Du finner alle sesjonene og prosjektene dine på den nye Hjem-skjermen. Når du velger en sesjon, åpnes den i en fane.",
-  "help.tabs.persistence": "Fanene er fortsatt åpne når du åpner appen på nytt.",
+  "help.tabs.persistence":
+    "Fanene er fortsatt åpne når du åpner appen på nytt.",
   "help.tabs.worktrees":
     "Det nye oppsettet støtter ikke Git Worktrees ennå, men støtte kommer snart. Hvis du foretrekker å fortsette med det forrige oppsettet, kan du bytte mellom oppsettene i Innstillinger. Vær oppmerksom på at det nye oppsettet blir permanent om noen uker.",
 
   "language.uk": "Українська",
 
-  "error.page.description.localServerStartup": "Det oppstod en feil under oppstart av den lokale serveren.",
+  "error.page.description.localServerStartup":
+    "Det oppstod en feil under oppstart av den lokale serveren.",
   "error.page.action.exportLogs": "Eksporter logger",
 
   "home.title": "Hjem",
@@ -1220,10 +1363,12 @@ export const dict = {
 
   "session.tab.unknown": "Ukjent sesjon",
   "session.error.notFound": "Denne sesjonen finnes ikke",
-  "session.error.notFound.description": "Denne fanen peker til en sesjon som ikke lenger finnes på denne serveren.",
+  "session.error.notFound.description":
+    "Denne fanen peker til en sesjon som ikke lenger finnes på denne serveren.",
   "session.error.notFound.closeTab": "Lukk fane",
   "session.error.serverConnection": "Kan ikke koble til denne serveren",
-  "session.review.noUncommittedChanges": "Ingen endringer som ikke er sjekket inn ennå",
+  "session.review.noUncommittedChanges":
+    "Ingen endringer som ikke er sjekket inn ennå",
   "session.review.noBranchChanges": "Ingen grenendringer ennå",
   "session.question.minimize": "Minimer spørsmål",
   "session.question.restore": "Gjenopprett spørsmål",
@@ -1248,16 +1393,20 @@ export const dict = {
   "settings.general.row.shell.autoDefault": "Automatisk (standard)",
   "settings.general.row.shell.terminalOnly": "kun terminal",
   "settings.general.row.showFileTree.title": "Filtre",
-  "settings.general.row.showFileTree.description": "Vis filtrepanelet i sesjoner",
+  "settings.general.row.showFileTree.description":
+    "Vis filtrepanelet i sesjoner",
   "settings.general.row.showNavigation.title": "Navigasjonskontroller",
   "settings.general.row.showNavigation.description":
     "Vis tilbake- og fremoverknappene på tittellinjen i skrivebordsappen",
   "settings.general.row.showSearch.title": "Kommandopalett",
-  "settings.general.row.showSearch.description": "Vis knappen for søk og kommandopalett på tittellinjen",
+  "settings.general.row.showSearch.description":
+    "Vis knappen for søk og kommandopalett på tittellinjen",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Vis terminalknappen på tittellinjen i skrivebordsappen",
+  "settings.general.row.showTerminal.description":
+    "Vis terminalknappen på tittellinjen i skrivebordsappen",
   "settings.general.row.showStatus.title": "Serverstatus",
-  "settings.general.row.showStatus.description": "Vis serverstatusknappen på tittellinjen",
+  "settings.general.row.showStatus.description":
+    "Vis serverstatusknappen på tittellinjen",
   "settings.general.row.mobileTitlebarBottom.title": "Navigasjon nederst",
   "settings.general.row.mobileTitlebarBottom.description":
     "Plasser tittellinjen og sesjonsfanene nederst på mobilskjermen",
@@ -1268,11 +1417,14 @@ export const dict = {
   "settings.general.row.newInterface.badge": "Ny",
   "settings.general.row.newInterface.description":
     "Bruk de nye fanene og startsidens oppsett. I en begrenset periode kan du bytte mellom oppsettene.",
-  "settings.general.row.newInterfaceNotice.title": "Du bruker nå det nye oppsettet",
-  "settings.general.row.newInterfaceNotice.description": "Det forrige oppsettet er ikke lenger tilgjengelig",
+  "settings.general.row.newInterfaceNotice.title":
+    "Du bruker nå det nye oppsettet",
+  "settings.general.row.newInterfaceNotice.description":
+    "Det forrige oppsettet er ikke lenger tilgjengelig",
   "settings.general.row.newInterfaceNotice.dismiss": "Avvis",
   "settings.general.row.pinchZoom.title": "Knip for å zoome",
-  "settings.general.row.pinchZoom.description": "Tillat knipebevegelser på styreflaten og Ctrl-rulling for å zoome",
+  "settings.general.row.pinchZoom.description":
+    "Tillat knipebevegelser på styreflaten og Ctrl-rulling for å zoome",
   "settings.updates.action.downloading": "Laster ned...",
   "settings.updates.action.installing": "Installerer...",
 } satisfies Partial<Record<Keys, string>>

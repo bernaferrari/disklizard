@@ -47,11 +47,13 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "Pemeriksaan pembaruan gagal.",
   "desktop.updater.dialog.checkFailed.title": "Kesalahan pembaruan",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Versi Anda sudah terbaru.",
   "desktop.updater.dialog.upToDate.title": "Tidak ada pembaruan",
-  "desktop.updater.dialog.ready.message": "Pembaruan {{version}} telah diunduh. Mulai ulang sekarang?",
+  "desktop.updater.dialog.ready.message":
+    "Pembaruan {{version}} telah diunduh. Mulai ulang sekarang?",
   "desktop.updater.dialog.ready.title": "Pembaruan siap",
   "desktop.updater.dialog.restart": "Mulai ulang",
   "desktop.updater.dialog.retry": "Retry",
@@ -62,11 +64,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "Tetap tunggu",
   "desktop.recovery.action.quit": "Keluar",
   "desktop.recovery.loadFailed": "OpenCode gagal dimuat",
-  "desktop.recovery.terminated": "Jendela OpenCode berhenti secara tidak terduga",
+  "desktop.recovery.terminated":
+    "Jendela OpenCode berhenti secara tidak terduga",
   "desktop.recovery.unresponsive": "OpenCode tidak merespons",
-  "desktop.recovery.unresponsive.detail": "Anda dapat meluncurkan ulang aplikasi, membuka log, atau tetap menunggu.",
-  "desktop.recovery.loadFailed.detail": "Jendela: {{window}}\nURL: {{url}}\nKesalahan: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Jendela: {{window}}\nAlasan: {{reason}}\nKode: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Anda dapat meluncurkan ulang aplikasi, membuka log, atau tetap menunggu.",
+  "desktop.recovery.loadFailed.detail":
+    "Jendela: {{window}}\nURL: {{url}}\nKesalahan: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Jendela: {{window}}\nAlasan: {{reason}}\nKode: {{code}}",
   "desktop.recovery.unknown": "<tidak diketahui>",
 
   "desktop.dialog.chooseFolder": "Pilih folder",
@@ -78,29 +84,36 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL hanya tersedia di Windows",
   "desktop.wsl.error.unavailable": "WSL tidak tersedia",
-  "desktop.wsl.error.listInstalled": "Gagal menampilkan daftar distro WSL yang terinstal",
+  "desktop.wsl.error.listInstalled":
+    "Gagal menampilkan daftar distro WSL yang terinstal",
   "desktop.wsl.error.listOnline": "Gagal menampilkan daftar distro WSL daring",
-  "desktop.wsl.error.executeDistro": "Tidak dapat menjalankan perintah di distro",
+  "desktop.wsl.error.executeDistro":
+    "Tidak dapat menjalankan perintah di distro",
   "desktop.wsl.error.installWsl": "Instalasi WSL gagal",
   "desktop.wsl.error.installDistro": "Gagal menginstal distro: {{distro}}",
   "desktop.wsl.error.installOpencode": "Instalasi OpenCode gagal",
   "desktop.wsl.error.alreadyAdded": "{{distro}} sudah ditambahkan",
   "desktop.wsl.error.opencodeMissing": "opencode belum terinstal di distro ini",
-  "desktop.wsl.error.opencodeCannotRun": "opencode telah terinstal, tetapi tidak dapat dijalankan",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode belum terinstal di {{distro}}",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode telah terinstal, tetapi tidak dapat dijalankan",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode belum terinstal di {{distro}}",
   "desktop.wsl.error.updateVersion":
     "Pembaruan OpenCode selesai, tetapi {{distro}} masih melaporkan {{installed}}; seharusnya {{expected}}",
   "desktop.wsl.error.noVersion": "tanpa versi",
-  "desktop.wsl.error.serverExited": "Server WSL berhenti setelah dimulai (kode={{code}} sinyal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "Server WSL berhenti setelah dimulai (kode={{code}} sinyal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "Server WSL berhenti sebelum siap (kode={{code}} sinyal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Pemeriksaan kesehatan sidecar untuk {{distro}} kehabisan waktu setelah {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} kehabisan waktu setelah {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} kehabisan waktu setelah {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Gagal mendapatkan porta",
 
   "desktop.picker.error.notSelected": "Berkas tidak dipilih melalui pemilih",
-  "desktop.picker.error.sizeLimit": "Lampiran yang dipilih melebihi batas {{limit}} MB",
+  "desktop.picker.error.sizeLimit":
+    "Lampiran yang dipilih melebihi batas {{limit}} MB",
 
   "command.category.suggested": "Disarankan",
   "command.category.view": "Tampilan",
@@ -154,7 +167,8 @@ export const dict = {
   "command.tab.close": "Tutup tab",
   "command.tab.reopenClosed": "Buka kembali tab yang ditutup",
   "command.context.addSelection": "Tambahkan pilihan ke konteks",
-  "command.context.addSelection.description": "Tambahkan baris yang dipilih dari berkas saat ini",
+  "command.context.addSelection.description":
+    "Tambahkan baris yang dipilih dari berkas saat ini",
   "command.input.focus": "Fokuskan masukan",
   "command.terminal.toggle": "Alihkan terminal",
   "command.fileTree.toggle": "Alihkan pohon berkas",
@@ -162,7 +176,8 @@ export const dict = {
   "command.terminal.new": "Terminal baru",
   "command.terminal.new.description": "Buat tab terminal baru",
   "command.steps.toggle": "Alihkan langkah",
-  "command.steps.toggle.description": "Tampilkan atau sembunyikan langkah untuk pesan saat ini",
+  "command.steps.toggle.description":
+    "Tampilkan atau sembunyikan langkah untuk pesan saat ini",
   "command.message.previous": "Pesan sebelumnya",
   "command.message.previous.description": "Pergi ke pesan pengguna sebelumnya",
   "command.message.next": "Pesan berikutnya",
@@ -176,28 +191,33 @@ export const dict = {
   "command.agent.cycle.reverse": "Ganti agen mundur",
   "command.agent.cycle.reverse.description": "Beralih ke agen sebelumnya",
   "command.model.variant.cycle": "Ganti usaha berpikir",
-  "command.model.variant.cycle.description": "Beralih ke tingkat usaha berikutnya",
+  "command.model.variant.cycle.description":
+    "Beralih ke tingkat usaha berikutnya",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Prompt",
   "command.permissions.autoaccept.enable": "Terima izin otomatis",
   "command.permissions.autoaccept.disable": "Hentikan penerimaan izin otomatis",
   "command.workspace.toggle": "Alihkan ruang kerja",
-  "command.workspace.toggle.description": "Aktifkan atau nonaktifkan beberapa ruang kerja di panel samping",
+  "command.workspace.toggle.description":
+    "Aktifkan atau nonaktifkan beberapa ruang kerja di panel samping",
   "command.session.undo": "Urungkan",
   "command.session.undo.description": "Urungkan pesan terakhir",
   "command.session.redo": "Ulangi",
   "command.session.redo.description": "Ulangi pesan yang diurungkan",
   "command.session.compact": "Ringkas sesi",
-  "command.session.compact.description": "Ringkas sesi untuk mengurangi ukuran konteks",
+  "command.session.compact.description":
+    "Ringkas sesi untuk mengurangi ukuran konteks",
   "command.session.fork": "Fork dari pesan",
   "command.session.fork.description": "Buat sesi baru dari pesan sebelumnya",
   "command.session.share": "Bagikan sesi",
-  "command.session.share.description": "Bagikan sesi ini dan salin URL ke papan klip",
+  "command.session.share.description":
+    "Bagikan sesi ini dan salin URL ke papan klip",
   "command.session.unshare": "Hentikan berbagi",
   "command.session.unshare.description": "Hentikan berbagi sesi ini",
 
   "command.session.export": "Ekspor sesi",
-  "command.session.export.description": "Ekspor transkrip sesi lengkap sebagai JSON",
+  "command.session.export.description":
+    "Ekspor transkrip sesi lengkap sebagai JSON",
 
   "palette.search.placeholder": "Cari berkas, perintah, dan sesi",
   "palette.search.placeholder.home": "Cari perintah dan sesi",
@@ -209,27 +229,39 @@ export const dict = {
   "dialog.provider.empty": "Penyedia tidak ditemukan",
   "dialog.provider.group.popular": "Populer",
   "dialog.provider.group.other": "Lainnya",
-  "dialog.provider.custom.label": "Penyedia kustom yang kompatibel dengan OpenAI",
+  "dialog.provider.custom.label":
+    "Penyedia kustom yang kompatibel dengan OpenAI",
   "dialog.provider.tag.recommended": "Direkomendasikan",
-  "dialog.provider.opencode.note": "Model pilihan, termasuk Claude, GPT, Gemini, dan lainnya",
+  "dialog.provider.opencode.note":
+    "Model pilihan, termasuk Claude, GPT, Gemini, dan lainnya",
   "dialog.provider.opencode.tagline": "Model andal yang dioptimalkan",
-  "dialog.provider.opencodeGo.tagline": "Langganan terjangkau untuk semua orang",
-  "dialog.provider.anthropic.note": "Akses langsung ke model Claude, termasuk Pro dan Max",
-  "dialog.provider.copilot.note": "Model AI untuk bantuan pengodean melalui GitHub Copilot",
-  "dialog.provider.openai.note": "Model GPT untuk tugas AI umum yang cepat dan mumpuni",
-  "dialog.provider.google.note": "Model Gemini untuk respons cepat dan terstruktur",
-  "dialog.provider.openrouter.note": "Akses semua model yang didukung dari satu penyedia",
-  "dialog.provider.vercel.note": "Akses terpadu ke model AI dengan perutean cerdas",
+  "dialog.provider.opencodeGo.tagline":
+    "Langganan terjangkau untuk semua orang",
+  "dialog.provider.anthropic.note":
+    "Akses langsung ke model Claude, termasuk Pro dan Max",
+  "dialog.provider.copilot.note":
+    "Model AI untuk bantuan pengodean melalui GitHub Copilot",
+  "dialog.provider.openai.note":
+    "Model GPT untuk tugas AI umum yang cepat dan mumpuni",
+  "dialog.provider.google.note":
+    "Model Gemini untuk respons cepat dan terstruktur",
+  "dialog.provider.openrouter.note":
+    "Akses semua model yang didukung dari satu penyedia",
+  "dialog.provider.vercel.note":
+    "Akses terpadu ke model AI dengan perutean cerdas",
 
   "dialog.model.select.title": "Pilih model",
   "dialog.model.search.placeholder": "Cari model",
   "dialog.model.empty": "Tidak ada hasil model",
   "dialog.model.manage": "Kelola model",
-  "dialog.model.manage.description": "Sesuaikan model mana yang muncul di pemilih model.",
+  "dialog.model.manage.description":
+    "Sesuaikan model mana yang muncul di pemilih model.",
   "dialog.model.manage.provider.toggle": "Alihkan semua model {{provider}}",
 
-  "dialog.model.unpaid.freeModels.title": "Model gratis disediakan oleh OpenCode",
-  "dialog.model.unpaid.addMore.title": "Tambahkan lebih banyak model dari penyedia populer",
+  "dialog.model.unpaid.freeModels.title":
+    "Model gratis disediakan oleh OpenCode",
+  "dialog.model.unpaid.addMore.title":
+    "Tambahkan lebih banyak model dari penyedia populer",
   "dialog.model.unpaid.viewMoreProviders": "Lihat 70+ penyedia lainnya",
 
   "dialog.provider.viewAll": "Tampilkan lebih banyak penyedia",
@@ -254,7 +286,8 @@ export const dict = {
     "Dengan satu kunci API, Anda akan mendapatkan akses ke model seperti Claude, GPT, Gemini, GLM dan lainnya.",
   "provider.connect.opencodeZen.visit.prefix": "Kunjungi ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": " untuk mendapatkan kunci API Anda.",
+  "provider.connect.opencodeZen.visit.suffix":
+    " untuk mendapatkan kunci API Anda.",
   "provider.connect.oauth.code.visit.prefix": "Kunjungi ",
   "provider.connect.oauth.code.visit.link": "tautan ini",
   "provider.connect.oauth.code.visit.suffix":
@@ -269,23 +302,27 @@ export const dict = {
     " dan masukkan kode di bawah untuk menghubungkan akun dan menggunakan model {{provider}} di OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Kode konfirmasi",
   "provider.connect.toast.connected.title": "{{provider}} terhubung",
-  "provider.connect.toast.connected.description": "Model {{provider}} sekarang tersedia untuk digunakan.",
+  "provider.connect.toast.connected.description":
+    "Model {{provider}} sekarang tersedia untuk digunakan.",
 
   "provider.custom.title": "Penyedia kustom",
   "provider.custom.unavailable": "Penyedia kustom tidak tersedia di server ini",
-  "provider.custom.description.prefix": "Konfigurasikan penyedia yang kompatibel dengan OpenAI. Lihat ",
+  "provider.custom.description.prefix":
+    "Konfigurasikan penyedia yang kompatibel dengan OpenAI. Lihat ",
   "provider.custom.description.link": "dokumen konfigurasi penyedia",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID Penyedia",
   "provider.custom.field.providerID.placeholder": "penyediaku",
-  "provider.custom.field.providerID.description": "Huruf kecil, angka, tanda hubung, atau garis bawah",
+  "provider.custom.field.providerID.description":
+    "Huruf kecil, angka, tanda hubung, atau garis bawah",
   "provider.custom.field.name.label": "Nama tampilan",
   "provider.custom.field.name.placeholder": "Penyedia AI Saya",
   "provider.custom.field.baseURL.label": "URL Dasar",
   "provider.custom.field.baseURL.placeholder": "https://api.penyediaku.com/v1",
   "provider.custom.field.apiKey.label": "Kunci API",
   "provider.custom.field.apiKey.placeholder": "Kunci API",
-  "provider.custom.field.apiKey.description": "Opsional. Kosongkan jika Anda mengelola autentikasi melalui tajuk.",
+  "provider.custom.field.apiKey.description":
+    "Opsional. Kosongkan jika Anda mengelola autentikasi melalui tajuk.",
   "provider.custom.models.label": "Model",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -301,16 +338,19 @@ export const dict = {
   "provider.custom.headers.remove": "Hapus tajuk",
   "provider.custom.headers.add": "Tambah tajuk",
   "provider.custom.error.providerID.required": "ID Penyedia diperlukan",
-  "provider.custom.error.providerID.format": "Gunakan huruf kecil, angka, tanda hubung, atau garis bawah",
+  "provider.custom.error.providerID.format":
+    "Gunakan huruf kecil, angka, tanda hubung, atau garis bawah",
   "provider.custom.error.providerID.exists": "ID penyedia tersebut sudah ada",
   "provider.custom.error.name.required": "Nama tampilan diperlukan",
   "provider.custom.error.baseURL.required": "URL Dasar diperlukan",
-  "provider.custom.error.baseURL.format": "Harus dimulai dengan http:// atau https://",
+  "provider.custom.error.baseURL.format":
+    "Harus dimulai dengan http:// atau https://",
   "provider.custom.error.required": "Diperlukan",
   "provider.custom.error.duplicate": "Duplikat",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} terputus",
-  "provider.disconnect.toast.disconnected.description": "Model {{provider}} tidak lagi tersedia.",
+  "provider.disconnect.toast.disconnected.description":
+    "Model {{provider}} tidak lagi tersedia.",
 
   "model.tag.free": "Gratis",
   "model.tag.latest": "Terbaru",
@@ -410,10 +450,12 @@ export const dict = {
   "prompt.action.stop": "Hentikan",
 
   "prompt.toast.pasteUnsupported.title": "Lampiran tidak didukung",
-  "prompt.toast.pasteUnsupported.description": "Hanya gambar, PDF, atau berkas teks yang dapat dilampirkan di sini.",
+  "prompt.toast.pasteUnsupported.description":
+    "Hanya gambar, PDF, atau berkas teks yang dapat dilampirkan di sini.",
   "prompt.toast.attachmentDuplicate.title": "Berkas ini sudah diunggah",
   "prompt.toast.modelAgentRequired.title": "Pilih agen dan model",
-  "prompt.toast.modelAgentRequired.description": "Pilih agen dan model sebelum mengirim prompt.",
+  "prompt.toast.modelAgentRequired.description":
+    "Pilih agen dan model sebelum mengirim prompt.",
   "prompt.toast.worktreeCreateFailed.title": "Gagal membuat worktree",
   "prompt.toast.sessionCreateFailed.title": "Gagal membuat sesi",
   "prompt.toast.shellSendFailed.title": "Gagal mengirim perintah shell",
@@ -449,7 +491,8 @@ export const dict = {
   "app.server.otherServers": "Server lainnya",
 
   "dialog.server.title": "Server",
-  "dialog.server.description": "Ganti server OpenCode mana yang terhubung dengan aplikasi ini.",
+  "dialog.server.description":
+    "Ganti server OpenCode mana yang terhubung dengan aplikasi ini.",
   "dialog.server.search.placeholder": "Cari server",
   "dialog.server.empty": "Belum ada server",
   "dialog.server.add.title": "Tambah server",
@@ -488,7 +531,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Pilih distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Memeriksa WSL...",
-  "wsl.onboarding.restartRequired": "Windows perlu dimulai ulang untuk menyelesaikan instalasi WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows perlu dimulai ulang untuk menyelesaikan instalasi WSL.",
   "wsl.onboarding.ready": "WSL siap.",
   "wsl.onboarding.required": "WSL diperlukan untuk melanjutkan.",
   "wsl.onboarding.checkingDistros": "Memeriksa distro...",
@@ -497,8 +541,10 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Memuat daftar distro...",
   "wsl.onboarding.distroReady": "{{distro}} siap.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} belum terinstal.",
-  "wsl.onboarding.openDistroOnce": "Buka {{distro}} sekali untuk menyelesaikan pengaturan.",
-  "wsl.onboarding.finishingDistro": "Menyelesaikan pengaturan untuk {{distro}}.",
+  "wsl.onboarding.openDistroOnce":
+    "Buka {{distro}} sekali untuk menyelesaikan pengaturan.",
+  "wsl.onboarding.finishingDistro":
+    "Menyelesaikan pengaturan untuk {{distro}}.",
   "wsl.onboarding.pickDistro": "Pilih distro atau instal salah satu di bawah.",
   "wsl.onboarding.checkingOpencode": "Memeriksa OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Memeriksa OpenCode di {{distro}}...",
@@ -521,18 +567,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "bash dan curl tidak tersedia",
   "wsl.onboarding.distroStatus.unsupported": "Tidak didukung · Gunakan WSL 2",
   "wsl.onboarding.needAnotherDistro": "Perlu distro lain?",
-  "wsl.onboarding.needAnotherDistroHint": "Instal distribusi Linux dari katalog WSL",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Instal distribusi Linux dari katalog WSL",
   "wsl.onboarding.wslNotInstalled.title": "WSL belum terinstal",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) diperlukan sebelum OpenCode dapat menambahkan server WSL",
   "wsl.onboarding.wslUnavailable.title": "WSL tidak tersedia",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode tidak dapat memverifikasi WSL di komputer ini.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode tidak dapat memverifikasi WSL di komputer ini.",
   "wsl.onboarding.installWsl": "Instal WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Mulai ulang Windows untuk menyelesaikan instalasi WSL, lalu buka kembali OpenCode.",
   "wsl.onboarding.next": "Berikutnya",
   "wsl.onboarding.refresh": "Muat ulang",
-  "wsl.onboarding.allDistrosAdded": "Semua distro yang terinstal sudah ditambahkan.",
+  "wsl.onboarding.allDistrosAdded":
+    "Semua distro yang terinstal sudah ditambahkan.",
   "wsl.onboarding.noDistros": "Belum ada distro terdeteksi.",
   "wsl.onboarding.install": "Instal",
   "wsl.onboarding.installing": "Menginstal...",
@@ -546,21 +595,26 @@ export const dict = {
   "wsl.onboarding.version": "Versi: {{version}}",
   "wsl.onboarding.unknown": "tidak diketahui",
   "wsl.onboarding.desktopVersion": "desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Versi terinstal tidak cocok dengan versi aplikasi desktop.",
+  "wsl.onboarding.versionMismatch":
+    "Versi terinstal tidak cocok dengan versi aplikasi desktop.",
   "wsl.onboarding.adding": "Menambahkan...",
 
-  "help.tabs.toast.ariaLabel": "Memperkenalkan Tab. Atur pekerjaan dan sesi aktif Anda dengan tab",
+  "help.tabs.toast.ariaLabel":
+    "Memperkenalkan Tab. Atur pekerjaan dan sesi aktif Anda dengan tab",
   "help.tabs.toast.dismiss": "Tutup informasi tentang Tab",
   "help.tabs.title": "Memperkenalkan Tab",
   "help.tabs.description": "Atur pekerjaan dan sesi aktif Anda dengan tab",
   "help.tabs.date": "14 Juli",
-  "help.tabs.introduction": "OpenCode Desktop kini dirancang dengan tab sebagai pusatnya.",
+  "help.tabs.introduction":
+    "OpenCode Desktop kini dirancang dengan tab sebagai pusatnya.",
   "help.tabs.sessions":
     "Mulai sesi baru di tab, atau buka sesi yang sudah ada dari proyek Anda. Buka tab baru saat Anda memulai sesuatu yang baru, lalu tutup setelah selesai.",
   "help.tabs.organize":
     "Membiarkan beberapa tab tetap terbuka memudahkan Anda mengatur sesi aktif. Ganti nama tab agar mudah diingat jika Anda berencana mempertahankannya.",
-  "help.tabs.home": "Semua sesi dan proyek Anda tersedia di layar Beranda baru. Memilih sesi akan membukanya di tab.",
-  "help.tabs.persistence": "Saat Anda membuka kembali aplikasi, tab Anda tetap terbuka.",
+  "help.tabs.home":
+    "Semua sesi dan proyek Anda tersedia di layar Beranda baru. Memilih sesi akan membukanya di tab.",
+  "help.tabs.persistence":
+    "Saat Anda membuka kembali aplikasi, tab Anda tetap terbuka.",
   "help.tabs.worktrees":
     "Desain baru belum mendukung Git Worktrees, tetapi dukungan tersebut akan segera hadir. Jika Anda ingin tetap menggunakan tata letak sebelumnya, Anda dapat beralih antartata letak di Pengaturan. Perlu diingat bahwa tata letak baru akan menjadi permanen dalam beberapa minggu.",
   "server.row.noUsername": "tanpa nama pengguna",
@@ -574,7 +628,8 @@ export const dict = {
   "dialog.project.edit.color": "Warna",
   "dialog.project.edit.color.select": "Pilih warna {{color}}",
   "dialog.project.edit.worktree.startup": "Skrip awal ruang kerja",
-  "dialog.project.edit.worktree.startup.description": "Berjalan setelah membuat ruang kerja (worktree) baru.",
+  "dialog.project.edit.worktree.startup.description":
+    "Berjalan setelah membuat ruang kerja (worktree) baru.",
   "dialog.project.edit.worktree.startup.placeholder": "mis. bun install",
 
   "dialog.releaseNotes.action.getStarted": "Mulai",
@@ -585,7 +640,8 @@ export const dict = {
   "dialog.usageExceeded.dontShowAgain": "Jangan tampilkan lagi",
 
   "context.breakdown.title": "Rincian Konteks",
-  "context.breakdown.note": 'Perkiraan rincian token masukan. "Lainnya" mencakup definisi alat dan beban tambahan.',
+  "context.breakdown.note":
+    'Perkiraan rincian token masukan. "Lainnya" mencakup definisi alat dan beban tambahan.',
   "context.breakdown.system": "Sistem",
   "context.breakdown.user": "Pengguna",
   "context.breakdown.assistant": "Asisten",
@@ -645,14 +701,18 @@ export const dict = {
   "toast.scheme.title": "Skema warna",
 
   "toast.workspace.enabled.title": "Ruang kerja diaktifkan",
-  "toast.workspace.enabled.description": "Beberapa worktree sekarang ditampilkan di panel samping",
+  "toast.workspace.enabled.description":
+    "Beberapa worktree sekarang ditampilkan di panel samping",
   "toast.workspace.disabled.title": "Ruang kerja dinonaktifkan",
-  "toast.workspace.disabled.description": "Hanya worktree utama yang ditampilkan di panel samping",
+  "toast.workspace.disabled.description":
+    "Hanya worktree utama yang ditampilkan di panel samping",
 
   "toast.permissions.autoaccept.on.title": "Menerima izin secara otomatis",
-  "toast.permissions.autoaccept.on.description": "Permintaan izin akan disetujui secara otomatis",
+  "toast.permissions.autoaccept.on.description":
+    "Permintaan izin akan disetujui secara otomatis",
   "toast.permissions.autoaccept.off.title": "Berhenti menerima izin otomatis",
-  "toast.permissions.autoaccept.off.description": "Permintaan izin akan memerlukan persetujuan",
+  "toast.permissions.autoaccept.off.description":
+    "Permintaan izin akan memerlukan persetujuan",
 
   "toast.model.none.title": "Tidak ada model dipilih",
   "toast.model.none.description": "Hubungkan penyedia untuk meringkas sesi ini",
@@ -661,43 +721,56 @@ export const dict = {
   "toast.file.listFailed.title": "Gagal mendaftar berkas",
 
   "toast.context.noLineSelection.title": "Tidak ada pilihan baris",
-  "toast.context.noLineSelection.description": "Pilih rentang baris di tab berkas terlebih dahulu.",
+  "toast.context.noLineSelection.description":
+    "Pilih rentang baris di tab berkas terlebih dahulu.",
 
   "toast.session.share.copyFailed.title": "Gagal menyalin URL ke papan klip",
   "toast.session.share.success.title": "Sesi dibagikan",
-  "toast.session.share.success.description": "URL berbagi disalin ke papan klip!",
+  "toast.session.share.success.description":
+    "URL berbagi disalin ke papan klip!",
   "toast.session.share.failed.title": "Gagal membagikan sesi",
-  "toast.session.share.failed.description": "Terjadi kesalahan saat membagikan sesi",
+  "toast.session.share.failed.description":
+    "Terjadi kesalahan saat membagikan sesi",
 
   "toast.session.unshare.success.title": "Berbagi sesi dihentikan",
-  "toast.session.unshare.success.description": "Berbagi sesi berhasil dihentikan!",
+  "toast.session.unshare.success.description":
+    "Berbagi sesi berhasil dihentikan!",
   "toast.session.unshare.failed.title": "Gagal menghentikan berbagi sesi",
-  "toast.session.unshare.failed.description": "Terjadi kesalahan saat menghentikan berbagi sesi",
+  "toast.session.unshare.failed.description":
+    "Terjadi kesalahan saat menghentikan berbagi sesi",
 
   "toast.session.export.success.title": "Sesi diekspor",
   "toast.session.export.success.description": "Sesi disimpan ke {{filename}}",
   "toast.session.export.failed.title": "Gagal mengekspor sesi",
-  "toast.session.export.failed.description": "Terjadi kesalahan saat mengekspor sesi",
+  "toast.session.export.failed.description":
+    "Terjadi kesalahan saat mengekspor sesi",
 
   "toast.session.listFailed.title": "Gagal memuat sesi untuk {{project}}",
   "toast.project.reloadFailed.title": "Gagal memuat ulang {{project}}",
 
   "toast.update.title": "Pembaruan tersedia",
-  "toast.update.description": "Versi baru OpenCode ({{version}}) sekarang tersedia untuk diinstal.",
+  "toast.update.description":
+    "Versi baru OpenCode ({{version}}) sekarang tersedia untuk diinstal.",
   "toast.update.action.installRestart": "Instal dan mulai ulang",
   "toast.update.action.notYet": "Nanti saja",
-  "disk.accessGuidance.macos": "Berikan Full Disk Access kepada DiskLizard di System Settings, lalu pindai lagi.",
-  "disk.accessGuidance.windows": "Gunakan akun yang memiliki akses ke drive ini, atau pindai folder yang dapat dibaca oleh akun Anda.",
-  "disk.accessGuidance.linux": "Periksa izin folder dan mount, lalu pindai lagi.",
-  "disk.accessGuidance.default": "Periksa akses ke folder-folder ini, lalu pindai lagi.",
-  "disk.accessGuidance.rescan": "Gunakan Pindai Ulang di bilah atas setelah mengubah akses.",
+  "disk.accessGuidance.macos":
+    "Berikan Full Disk Access kepada DiskLizard di System Settings, lalu pindai lagi.",
+  "disk.accessGuidance.windows":
+    "Gunakan akun yang memiliki akses ke drive ini, atau pindai folder yang dapat dibaca oleh akun Anda.",
+  "disk.accessGuidance.linux":
+    "Periksa izin folder dan mount, lalu pindai lagi.",
+  "disk.accessGuidance.default":
+    "Periksa akses ke folder-folder ini, lalu pindai lagi.",
+  "disk.accessGuidance.rescan":
+    "Gunakan Pindai Ulang di bilah atas setelah mengubah akses.",
   "disk.common.rescan": "Pindai ulang",
   "toast.update.installFailed.title": "Tidak dapat menginstal pembaruan",
   "toast.update.installFailed.retry": "Coba lagi",
 
   "error.page.title": "Terjadi kesalahan",
   "error.page.description": "Terjadi kesalahan saat memuat aplikasi.",
-  "error.page.description.localServerStartup": "Terjadi kesalahan saat memulai server lokal.",
+  "error.page.description.localServerStartup":
+    "Terjadi kesalahan saat memulai server lokal.",
   "error.page.details.label": "Detail Kesalahan",
   "error.page.action.restart": "Mulai Ulang",
   "error.page.action.report": "Laporkan Kesalahan",
@@ -714,12 +787,16 @@ export const dict = {
   "error.dev.rootNotFound":
     "Elemen root tidak ditemukan. Apakah Anda lupa menambahkannya ke index.html? Atau mungkin atribut id salah eja?",
 
-  "error.serverSync.connectFailed": "Tidak dapat terhubung ke server. Apakah ada server yang berjalan di `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Tidak dapat terhubung ke server. Apakah ada server yang berjalan di `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Tidak ada server tersedia",
   "error.serverSDK.serverNotAvailable": "Server tidak tersedia",
-  "error.childStore.persistedCacheCreateFailed": "Gagal membuat tembolok persisten",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Gagal membuat metadata proyek persisten",
-  "error.childStore.persistedProjectIconCreateFailed": "Gagal membuat ikon proyek persisten",
+  "error.childStore.persistedCacheCreateFailed":
+    "Gagal membuat tembolok persisten",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Gagal membuat metadata proyek persisten",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Gagal membuat ikon proyek persisten",
   "error.childStore.storeCreateFailed": "Gagal membuat penyimpanan",
   "directory.error.invalidUrl": "Direktori tidak valid di URL.",
 
@@ -732,23 +809,32 @@ export const dict = {
   "error.chain.responseBody": "Isi respons:\n{{body}}",
   "error.chain.didYouMean": "Maksud Anda: {{suggestions}}",
   "error.chain.modelNotFound": "Model tidak ditemukan: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Periksa nama penyedia/model di konfigurasi Anda (opencode.json)",
-  "error.chain.mcpFailed": 'Server MCP "{{name}}" gagal. Catatan: OpenCode belum mendukung autentikasi MCP.',
-  "error.chain.providerAuthFailed": "Autentikasi penyedia gagal ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Periksa nama penyedia/model di konfigurasi Anda (opencode.json)",
+  "error.chain.mcpFailed":
+    'Server MCP "{{name}}" gagal. Catatan: OpenCode belum mendukung autentikasi MCP.',
+  "error.chain.providerAuthFailed":
+    "Autentikasi penyedia gagal ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Gagal menginisialisasi penyedia "{{provider}}". Periksa kredensial dan konfigurasi.',
-  "error.chain.configJsonInvalid": "Berkas konfigurasi di {{path}} bukan JSON(C) yang valid",
-  "error.chain.configJsonInvalidWithMessage": "Berkas konfigurasi di {{path}} bukan JSON(C) yang valid: {{message}}",
+  "error.chain.configJsonInvalid":
+    "Berkas konfigurasi di {{path}} bukan JSON(C) yang valid",
+  "error.chain.configJsonInvalidWithMessage":
+    "Berkas konfigurasi di {{path}} bukan JSON(C) yang valid: {{message}}",
   "error.chain.configDirectoryTypo":
     'Direktori "{{dir}}" di {{path}} tidak valid. Ganti nama direktori menjadi "{{suggestion}}" atau hapus. Ini adalah kesalahan ketik yang umum.',
-  "error.chain.configFrontmatterError": "Gagal mengurai frontmatter di {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Gagal mengurai frontmatter di {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Berkas konfigurasi di {{path}} tidak valid",
-  "error.chain.configInvalidWithMessage": "Berkas konfigurasi di {{path}} tidak valid: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Berkas konfigurasi di {{path}} tidak valid: {{message}}",
 
   "notification.permission.title": "Izin diperlukan",
-  "notification.permission.description": "{{sessionTitle}} di {{projectName}} memerlukan izin",
+  "notification.permission.description":
+    "{{sessionTitle}} di {{projectName}} memerlukan izin",
   "notification.question.title": "Pertanyaan",
-  "notification.question.description": "{{sessionTitle}} di {{projectName}} memiliki pertanyaan",
+  "notification.question.description":
+    "{{sessionTitle}} di {{projectName}} memiliki pertanyaan",
   "notification.action.goToSession": "Pergi ke sesi",
 
   "notification.session.responseReady.title": "Respons siap",
@@ -782,7 +868,8 @@ export const dict = {
   "session.tab.unknown": "Sesi Tidak Dikenal",
   "session.panel.reviewAndFiles": "Tinjauan dan berkas",
   "session.error.notFound": "Sesi ini tidak dapat ditemukan",
-  "session.error.notFound.description": "Tab ini mengarah ke sesi yang sudah tidak ada di server ini.",
+  "session.error.notFound.description":
+    "Tab ini mengarah ke sesi yang sudah tidak ada di server ini.",
   "session.error.notFound.closeTab": "Tutup Tab",
   "session.error.serverConnection": "Tidak dapat terhubung ke server ini",
   "session.review.filesChanged": "{{count}} Berkas Berubah",
@@ -790,21 +877,25 @@ export const dict = {
   "session.review.change.other": "Perubahan",
   "session.review.loadingChanges": "Memuat perubahan...",
   "session.review.empty": "Belum ada perubahan di sesi ini",
-  "session.review.noVcs": "Tidak ada sistem kontrol versi Git yang terdeteksi, perubahan tidak ditampilkan",
+  "session.review.noVcs":
+    "Tidak ada sistem kontrol versi Git yang terdeteksi, perubahan tidak ditampilkan",
   "session.review.noVcs.createGit.title": "Buat repositori Git",
-  "session.review.noVcs.createGit.description": "Lacak, tinjau, dan urungkan perubahan di proyek ini",
+  "session.review.noVcs.createGit.description":
+    "Lacak, tinjau, dan urungkan perubahan di proyek ini",
   "session.review.noVcs.createGit.actionLoading": "Membuat repositori Git...",
   "session.review.noVcs.createGit.action": "Buat repositori Git",
   "session.review.noSnapshot":
     "Pelacakan snapshot dinonaktifkan di konfigurasi, sehingga perubahan sesi tidak tersedia",
   "session.review.noChanges": "Tidak ada perubahan",
-  "session.review.noUncommittedChanges": "Belum ada perubahan yang belum dikomit",
+  "session.review.noUncommittedChanges":
+    "Belum ada perubahan yang belum dikomit",
   "session.review.noBranchChanges": "Belum ada perubahan cabang",
 
   "session.files.selectToOpen": "Pilih berkas untuk dibuka",
   "session.files.all": "Semua berkas",
   "session.files.empty": "Tidak ada berkas",
-  "session.files.binaryContent": "Berkas biner (konten tidak dapat ditampilkan)",
+  "session.files.binaryContent":
+    "Berkas biner (konten tidak dapat ditampilkan)",
 
   "session.messages.renderEarlier": "Tampilkan pesan sebelumnya",
   "session.messages.loadingEarlier": "Memuat pesan sebelumnya...",
@@ -884,7 +975,8 @@ export const dict = {
   "status.popover.action.manageServers": "Kelola server",
 
   "session.share.popover.title": "Publikasikan di web",
-  "session.share.popover.description.shared": "Sesi ini publik di web. Siapa pun dengan tautan dapat mengaksesnya.",
+  "session.share.popover.description.shared":
+    "Sesi ini publik di web. Siapa pun dengan tautan dapat mengaksesnya.",
   "session.share.popover.description.unshared":
     "Bagikan sesi secara publik di web. Siapa pun dengan tautan dapat mengaksesnya.",
   "session.share.action.share": "Bagikan",
@@ -905,11 +997,14 @@ export const dict = {
   "terminal.title.numbered": "Terminal {{number}}",
   "terminal.close": "Tutup terminal",
   "terminal.connectionLost.title": "Koneksi Terputus",
-  "terminal.connectionLost.abnormalClose": "WebSocket ditutup secara tidak normal: {{code}}",
-  "terminal.connectionLost.description": "Koneksi terminal terputus. Ini bisa terjadi saat server dimulai ulang.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket ditutup secara tidak normal: {{code}}",
+  "terminal.connectionLost.description":
+    "Koneksi terminal terputus. Ini bisa terjadi saat server dimulai ulang.",
   "terminal.connectTicket.csrfError":
     "Tiket koneksi PTY ditolak oleh pemeriksaan asal atau CSRF. Periksa konfigurasi CORS server.",
-  "terminal.connectTicket.statusError": "Tiket koneksi PTY gagal dengan status {{status}}",
+  "terminal.connectTicket.statusError":
+    "Tiket koneksi PTY gagal dengan status {{status}}",
   "titlebar.update": "Perbarui",
   "titlebar.updateVersion": "Perbarui {{version}}",
 
@@ -956,7 +1051,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktifkan ruang kerja",
   "sidebar.workspaces.disable": "Nonaktifkan ruang kerja",
   "sidebar.gettingStarted.title": "Memulai",
-  "sidebar.gettingStarted.line1": "OpenCode menyertakan model gratis sehingga Anda dapat memulai dengan segera.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode menyertakan model gratis sehingga Anda dapat memulai dengan segera.",
   "sidebar.gettingStarted.line2":
     "Hubungkan penyedia mana pun untuk menggunakan model, termasuk Claude, GPT, Gemini, dll.",
   "sidebar.project.recentSessions": "Sesi terbaru",
@@ -971,28 +1067,36 @@ export const dict = {
   "debugBar.nav.tip":
     "Transisi rute terakhir yang mencapai halaman sesi, diukur sejak perute dimulai hingga render pertama setelah stabil.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Frame per detik yang dihitung secara bergulir selama 5 detik terakhir.",
+  "debugBar.fps.tip":
+    "Frame per detik yang dihitung secara bergulir selama 5 detik terakhir.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Waktu frame terburuk selama 5 detik terakhir.",
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Frame di atas 32ms dalam 5 detik terakhir.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Waktu terblokir dan jumlah tugas panjang dalam 5 detik terakhir. Tugas maks: {{max}}.",
+  "debugBar.long.tip":
+    "Waktu terblokir dan jumlah tugas panjang dalam 5 detik terakhir. Tugas maks: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Penundaan masukan terburuk yang diamati dalam 5 detik terakhir.",
+  "debugBar.delay.tip":
+    "Penundaan masukan terburuk yang diamati dalam 5 detik terakhir.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "Perkiraan durasi interaksi selama 5 detik terakhir. Ini mirip INP, bukan INP Web Vitals resmi.",
+  "debugBar.inp.tip":
+    "Perkiraan durasi interaksi selama 5 detik terakhir. Ini mirip INP, bukan INP Web Vitals resmi.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Pergeseran tata letak kumulatif untuk masa pakai aplikasi saat ini.",
+  "debugBar.cls.tip":
+    "Pergeseran tata letak kumulatif untuk masa pakai aplikasi saat ini.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Heap JS terpakai vs batas heap. Khusus Chromium.",
-  "debugBar.mem.tip": "Heap JS terpakai vs batas heap. {{used}} dari {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Heap JS terpakai vs batas heap. Khusus Chromium.",
+  "debugBar.mem.tip":
+    "Heap JS terpakai vs batas heap. {{used}} dari {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Paksa gaya fokus pada semua elemen interaktif",
   "debugBar.focus.on": "AKTIF",
   "debugBar.focus.off": "NONAKTIF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Paksa arah tata letak seluruh aplikasi tanpa mengubah bahasa yang dipilih",
+  "debugBar.direction.tip":
+    "Paksa arah tata letak seluruh aplikasi tanpa mengubah bahasa yang dipilih",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
 
@@ -1004,7 +1108,8 @@ export const dict = {
   "settings.tab.shortcuts": "Pintasan",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "Integrasi WSL",
-  "settings.desktop.wsl.description": "Jalankan server OpenCode di dalam WSL di Windows.",
+  "settings.desktop.wsl.description":
+    "Jalankan server OpenCode di dalam WSL di Windows.",
 
   "settings.general.section.appearance": "Tampilan",
   "settings.general.section.advanced": "Lanjutan",
@@ -1015,81 +1120,104 @@ export const dict = {
   "settings.general.section.display": "Tampilan",
 
   "settings.general.row.language.title": "Bahasa",
-  "settings.general.row.language.description": "Ubah bahasa tampilan untuk OpenCode",
+  "settings.general.row.language.description":
+    "Ubah bahasa tampilan untuk OpenCode",
   "settings.general.row.shell.title": "Shell terminal",
-  "settings.general.row.shell.description": "Shell yang digunakan oleh terminal dan alat agen",
+  "settings.general.row.shell.description":
+    "Shell yang digunakan oleh terminal dan alat agen",
   "settings.general.row.shell.autoDefault": "Otomatis (Bawaan)",
   "settings.general.row.shell.terminalOnly": "hanya terminal",
   "settings.general.row.appearance.title": "Tampilan",
-  "settings.general.row.appearance.description": "Sesuaikan tampilan OpenCode di perangkat Anda",
+  "settings.general.row.appearance.description":
+    "Sesuaikan tampilan OpenCode di perangkat Anda",
   "settings.general.row.colorScheme.title": "Skema warna",
-  "settings.general.row.colorScheme.description": "Pilih apakah OpenCode mengikuti tema sistem, terang, atau gelap",
+  "settings.general.row.colorScheme.description":
+    "Pilih apakah OpenCode mengikuti tema sistem, terang, atau gelap",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Sesuaikan tema OpenCode.",
   "settings.general.row.font.title": "Font kode",
-  "settings.general.row.font.description": "Sesuaikan font yang digunakan di blok kode",
+  "settings.general.row.font.description":
+    "Sesuaikan font yang digunakan di blok kode",
   "settings.general.row.terminalFont.title": "Font terminal",
-  "settings.general.row.terminalFont.description": "Sesuaikan font yang digunakan di terminal",
+  "settings.general.row.terminalFont.description":
+    "Sesuaikan font yang digunakan di terminal",
   "settings.general.row.uiFont.title": "Font UI",
-  "settings.general.row.uiFont.description": "Sesuaikan font yang digunakan di seluruh antarmuka",
+  "settings.general.row.uiFont.description":
+    "Sesuaikan font yang digunakan di seluruh antarmuka",
   "settings.general.row.followup.title": "Perilaku lanjutan",
   "settings.general.row.followup.description":
     "Pilih apakah prompt lanjutan segera mengarahkan atau menunggu dalam antrean",
   "settings.general.row.followup.option.queue": "Antrean",
   "settings.general.row.followup.option.steer": "Arahkan",
   "settings.general.row.showFileTree.title": "Pohon berkas",
-  "settings.general.row.showFileTree.description": "Tampilkan panel pohon berkas di sesi",
+  "settings.general.row.showFileTree.description":
+    "Tampilkan panel pohon berkas di sesi",
   "settings.general.row.showNavigation.title": "Kontrol navigasi",
-  "settings.general.row.showNavigation.description": "Tampilkan tombol mundur dan maju di bilah judul desktop",
+  "settings.general.row.showNavigation.description":
+    "Tampilkan tombol mundur dan maju di bilah judul desktop",
   "settings.general.row.showSearch.title": "Palet perintah",
-  "settings.general.row.showSearch.description": "Tampilkan tombol pencarian dan palet perintah di bilah judul",
+  "settings.general.row.showSearch.description":
+    "Tampilkan tombol pencarian dan palet perintah di bilah judul",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Tampilkan tombol terminal di bilah judul desktop",
+  "settings.general.row.showTerminal.description":
+    "Tampilkan tombol terminal di bilah judul desktop",
   "settings.general.row.showStatus.title": "Status server",
-  "settings.general.row.showStatus.description": "Tampilkan tombol status server di bilah judul",
+  "settings.general.row.showStatus.description":
+    "Tampilkan tombol status server di bilah judul",
   "settings.general.row.mobileTitlebarBottom.title": "Navigasi bawah",
   "settings.general.row.mobileTitlebarBottom.description":
     "Tempatkan bilah judul dan tab sesi di bagian bawah layar pada perangkat seluler",
   "settings.general.row.showCustomAgents.title": "Tampilkan agen",
   "settings.general.row.showCustomAgents.description":
     "Beralih antaragen di penyusun. Saat disembunyikan, Agen Build digunakan sebagai bawaan.",
-  "settings.general.row.reasoningSummaries.title": "Tampilkan ringkasan penalaran",
-  "settings.general.row.reasoningSummaries.description": "Tampilkan ringkasan penalaran model di linimasa",
-  "settings.general.row.shellToolPartsExpanded.title": "Bentangkan bagian alat shell",
+  "settings.general.row.reasoningSummaries.title":
+    "Tampilkan ringkasan penalaran",
+  "settings.general.row.reasoningSummaries.description":
+    "Tampilkan ringkasan penalaran model di linimasa",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Bentangkan bagian alat shell",
   "settings.general.row.shellToolPartsExpanded.description":
     "Tampilkan bagian alat shell yang dibentangkan secara bawaan di linimasa",
-  "settings.general.row.editToolPartsExpanded.title": "Bentangkan bagian alat edit",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Bentangkan bagian alat edit",
   "settings.general.row.editToolPartsExpanded.description":
     "Tampilkan bagian alat edit, tulis, dan patch yang dibentangkan secara bawaan di linimasa",
   "settings.general.row.newInterface.title": "Tata letak baru",
   "settings.general.row.newInterface.badge": "Baru",
   "settings.general.row.newInterface.description":
     "Gunakan tab dan tata letak beranda baru. Beralihlah antartata letak untuk waktu terbatas.",
-  "settings.general.row.newInterfaceNotice.title": "Anda sekarang menggunakan tata letak baru",
-  "settings.general.row.newInterfaceNotice.description": "Tata letak sebelumnya sudah tidak tersedia",
+  "settings.general.row.newInterfaceNotice.title":
+    "Anda sekarang menggunakan tata letak baru",
+  "settings.general.row.newInterfaceNotice.description":
+    "Tata letak sebelumnya sudah tidak tersedia",
   "settings.general.row.newInterfaceNotice.dismiss": "Tutup",
   "settings.general.row.pinchZoom.title": "Cubit untuk zum",
   "settings.general.row.pinchZoom.description":
     "Izinkan gerakan cubit pada trackpad dan Ctrl-gulir untuk melakukan zum",
 
   "settings.general.row.wayland.title": "Gunakan Wayland asli",
-  "settings.general.row.wayland.description": "Nonaktifkan sistem cadangan X11 di Wayland. Memerlukan mulai ulang.",
+  "settings.general.row.wayland.description":
+    "Nonaktifkan sistem cadangan X11 di Wayland. Memerlukan mulai ulang.",
   "settings.general.row.wayland.tooltip":
     "Di Linux dengan monitor berlaju penyegaran berbeda, Wayland asli bisa lebih stabil.",
 
   "settings.general.row.releaseNotes.title": "Catatan rilis",
-  "settings.general.row.releaseNotes.description": "Tampilkan pop-up Apa yang Baru setelah pembaruan",
+  "settings.general.row.releaseNotes.description":
+    "Tampilkan pop-up Apa yang Baru setelah pembaruan",
 
   "settings.updates.row.startup.title": "Periksa pembaruan saat dimulai",
-  "settings.updates.row.startup.description": "Secara otomatis memeriksa pembaruan saat OpenCode diluncurkan",
+  "settings.updates.row.startup.description":
+    "Secara otomatis memeriksa pembaruan saat OpenCode diluncurkan",
   "settings.updates.row.check.title": "Periksa pembaruan",
-  "settings.updates.row.check.description": "Periksa pembaruan secara manual dan instal jika tersedia",
+  "settings.updates.row.check.description":
+    "Periksa pembaruan secara manual dan instal jika tersedia",
   "settings.updates.action.checkNow": "Periksa sekarang",
   "settings.updates.action.checking": "Memeriksa...",
   "settings.updates.action.downloading": "Mengunduh...",
   "settings.updates.action.installing": "Menginstal...",
   "settings.updates.toast.latest.title": "Versi Anda sudah terbaru",
-  "settings.updates.toast.latest.description": "Anda menjalankan versi terbaru OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Anda menjalankan versi terbaru OpenCode.",
   "sound.option.none": "Tidak ada",
   "sound.option.alert01": "Peringatan 01",
   "sound.option.alert02": "Peringatan 02",
@@ -1141,23 +1269,30 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Tampilkan notifikasi sistem saat agen selesai atau memerlukan perhatian",
   "settings.general.notifications.permissions.title": "Izin",
-  "settings.general.notifications.permissions.description": "Tampilkan notifikasi sistem saat izin diperlukan",
+  "settings.general.notifications.permissions.description":
+    "Tampilkan notifikasi sistem saat izin diperlukan",
   "settings.general.notifications.errors.title": "Kesalahan",
-  "settings.general.notifications.errors.description": "Tampilkan notifikasi sistem saat terjadi kesalahan",
+  "settings.general.notifications.errors.description":
+    "Tampilkan notifikasi sistem saat terjadi kesalahan",
 
   "settings.general.sounds.agent.title": "Agen",
-  "settings.general.sounds.agent.description": "Mainkan suara saat agen selesai atau memerlukan perhatian",
+  "settings.general.sounds.agent.description":
+    "Mainkan suara saat agen selesai atau memerlukan perhatian",
   "settings.general.sounds.permissions.title": "Izin",
-  "settings.general.sounds.permissions.description": "Mainkan suara saat izin diperlukan",
+  "settings.general.sounds.permissions.description":
+    "Mainkan suara saat izin diperlukan",
   "settings.general.sounds.errors.title": "Kesalahan",
-  "settings.general.sounds.errors.description": "Mainkan suara saat terjadi kesalahan",
+  "settings.general.sounds.errors.description":
+    "Mainkan suara saat terjadi kesalahan",
 
   "settings.shortcuts.title": "Pintasan keyboard",
   "settings.shortcuts.reset.button": "Atur ulang ke bawaan",
   "settings.shortcuts.reset.toast.title": "Pintasan diatur ulang",
-  "settings.shortcuts.reset.toast.description": "Pintasan keyboard telah diatur ulang ke bawaan.",
+  "settings.shortcuts.reset.toast.description":
+    "Pintasan keyboard telah diatur ulang ke bawaan.",
   "settings.shortcuts.conflict.title": "Pintasan sudah digunakan",
-  "settings.shortcuts.conflict.description": "{{keybind}} sudah ditetapkan ke {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} sudah ditetapkan ke {{titles}}.",
   "settings.shortcuts.unassigned": "Belum ditetapkan",
   "settings.shortcuts.pressKeys": "Tekan tombol",
   "settings.shortcuts.search.placeholder": "Cari pintasan",
@@ -1171,27 +1306,35 @@ export const dict = {
   "settings.shortcuts.group.prompt": "Prompt",
 
   "settings.providers.title": "Penyedia",
-  "settings.providers.description": "Pengaturan penyedia akan dapat dikonfigurasi di sini.",
+  "settings.providers.description":
+    "Pengaturan penyedia akan dapat dikonfigurasi di sini.",
   "settings.providers.section.connected": "Penyedia terhubung",
   "settings.providers.connected.empty": "Tidak ada penyedia terhubung",
-  "settings.providers.connected.environmentDescription": "Terhubung dari variabel lingkungan Anda",
+  "settings.providers.connected.environmentDescription":
+    "Terhubung dari variabel lingkungan Anda",
   "settings.providers.section.popular": "Penyedia populer",
-  "settings.providers.custom.description": "Tambahkan penyedia yang kompatibel dengan OpenAI berdasarkan URL dasar.",
+  "settings.providers.custom.description":
+    "Tambahkan penyedia yang kompatibel dengan OpenAI berdasarkan URL dasar.",
   "settings.providers.tag.environment": "Lingkungan",
   "settings.providers.tag.config": "Konfigurasi",
   "settings.providers.tag.custom": "Kustom",
   "settings.providers.tag.other": "Lainnya",
   "settings.models.title": "Model",
-  "settings.models.description": "Pengaturan model akan dapat dikonfigurasi di sini.",
+  "settings.models.description":
+    "Pengaturan model akan dapat dikonfigurasi di sini.",
   "settings.agents.title": "Agen",
-  "settings.agents.description": "Pengaturan agen akan dapat dikonfigurasi di sini.",
+  "settings.agents.description":
+    "Pengaturan agen akan dapat dikonfigurasi di sini.",
   "settings.commands.title": "Perintah",
-  "settings.commands.description": "Pengaturan perintah akan dapat dikonfigurasi di sini.",
+  "settings.commands.description":
+    "Pengaturan perintah akan dapat dikonfigurasi di sini.",
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "Pengaturan MCP akan dapat dikonfigurasi di sini.",
+  "settings.mcp.description":
+    "Pengaturan MCP akan dapat dikonfigurasi di sini.",
 
   "settings.permissions.title": "Izin",
-  "settings.permissions.description": "Kontrol alat apa yang dapat digunakan server secara bawaan.",
+  "settings.permissions.description":
+    "Kontrol alat apa yang dapat digunakan server secara bawaan.",
   "settings.permissions.section.tools": "Alat",
   "settings.permissions.toast.updateFailed.title": "Gagal memperbarui izin",
 
@@ -1200,21 +1343,27 @@ export const dict = {
   "settings.permissions.action.deny": "Tolak",
 
   "settings.permissions.tool.read.title": "Baca",
-  "settings.permissions.tool.read.description": "Membaca berkas (mencocokkan jalur berkas)",
+  "settings.permissions.tool.read.description":
+    "Membaca berkas (mencocokkan jalur berkas)",
   "settings.permissions.tool.edit.title": "Sunting",
-  "settings.permissions.tool.edit.description": "Memodifikasi berkas, termasuk suntingan, tulisan, dan patch",
+  "settings.permissions.tool.edit.description":
+    "Memodifikasi berkas, termasuk suntingan, tulisan, dan patch",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Cocokkan berkas menggunakan pola glob",
+  "settings.permissions.tool.glob.description":
+    "Cocokkan berkas menggunakan pola glob",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Cari konten berkas menggunakan ekspresi reguler",
+  "settings.permissions.tool.grep.description":
+    "Cari konten berkas menggunakan ekspresi reguler",
   "settings.permissions.tool.list.title": "Daftar",
-  "settings.permissions.tool.list.description": "Daftarkan berkas dalam direktori",
+  "settings.permissions.tool.list.description":
+    "Daftarkan berkas dalam direktori",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "Jalankan perintah shell",
   "settings.permissions.tool.task.title": "Tugas",
   "settings.permissions.tool.task.description": "Luncurkan sub-agen",
   "settings.permissions.tool.skill.title": "Keahlian",
-  "settings.permissions.tool.skill.description": "Muat keahlian berdasarkan nama",
+  "settings.permissions.tool.skill.description":
+    "Muat keahlian berdasarkan nama",
   "settings.permissions.tool.lsp.title": "LSP",
   "settings.permissions.tool.lsp.description": "Jalankan kueri server bahasa",
   "settings.permissions.tool.todowrite.title": "Tulis Tugas",
@@ -1224,9 +1373,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Pencarian Web",
   "settings.permissions.tool.websearch.description": "Cari di web",
   "settings.permissions.tool.external_directory.title": "Direktori Eksternal",
-  "settings.permissions.tool.external_directory.description": "Akses berkas di luar direktori proyek",
+  "settings.permissions.tool.external_directory.description":
+    "Akses berkas di luar direktori proyek",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Deteksi panggilan alat berulang dengan masukan yang identik",
+  "settings.permissions.tool.doom_loop.description":
+    "Deteksi panggilan alat berulang dengan masukan yang identik",
 
   "session.delete.failed.title": "Gagal menghapus sesi",
   "session.delete.title": "Hapus sesi",
@@ -1242,12 +1393,14 @@ export const dict = {
   "workspace.resetting.description": "Ini mungkin memakan waktu sebentar.",
   "workspace.reset.failed.title": "Gagal mengatur ulang ruang kerja",
   "workspace.reset.success.title": "Ruang kerja diatur ulang",
-  "workspace.reset.success.description": "Ruang kerja sekarang cocok dengan cabang bawaan.",
+  "workspace.reset.success.description":
+    "Ruang kerja sekarang cocok dengan cabang bawaan.",
   "workspace.error.stillPreparing": "Ruang kerja masih disiapkan",
   "workspace.status.checking": "Memeriksa perubahan yang belum digabung...",
   "workspace.status.error": "Tidak dapat memverifikasi status Git.",
   "workspace.status.clean": "Tidak terdeteksi perubahan yang belum digabung.",
-  "workspace.status.dirty": "Terdeteksi perubahan yang belum digabung di ruang kerja ini.",
+  "workspace.status.dirty":
+    "Terdeteksi perubahan yang belum digabung di ruang kerja ini.",
   "workspace.delete.title": "Hapus ruang kerja",
   "workspace.delete.confirm": 'Hapus ruang kerja "{{name}}"?',
   "workspace.delete.button": "Hapus ruang kerja",
@@ -1257,5 +1410,6 @@ export const dict = {
   "workspace.reset.archived.none": "Tidak ada sesi aktif yang akan diarsipkan.",
   "workspace.reset.archived.one": "1 sesi akan diarsipkan.",
   "workspace.reset.archived.many": "{{count}} sesi akan diarsipkan.",
-  "workspace.reset.note": "Ini akan mengatur ulang ruang kerja agar cocok dengan cabang bawaan.",
+  "workspace.reset.note":
+    "Ini akan mengatur ulang ruang kerja agar cocok dengan cabang bawaan.",
 }

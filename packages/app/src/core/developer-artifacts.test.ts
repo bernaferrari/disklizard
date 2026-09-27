@@ -9,7 +9,9 @@ import {
 describe("developer artifact inventory rules", () => {
   test("keeps a conventional name at review until local evidence corroborates it", () => {
     // A basename match justifies discovery, not verified disposability.
-    expect(classifyDeveloperArtifact("node_modules", "project", [])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("node_modules", "project", [])
+    ).toMatchObject({
       ecosystem: "node",
       confidence: "likely",
       cleanup: "review",
@@ -19,7 +21,9 @@ describe("developer artifact inventory rules", () => {
       confidence: "likely",
       cleanup: "review",
     })
-    expect(classifyDeveloperArtifact("deriveddata", "project", [])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("deriveddata", "project", [])
+    ).toMatchObject({
       ecosystem: "apple",
       confidence: "likely",
       cleanup: "review",
@@ -29,23 +33,34 @@ describe("developer artifact inventory rules", () => {
       confidence: "likely",
       cleanup: "review",
     })
-    expect(classifyDeveloperArtifact("target", "project", ["debug"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("target", "project", ["debug"])
+    ).toMatchObject({
       ecosystem: "rust",
       confidence: "likely",
       cleanup: "review",
     })
-    expect(classifyDeveloperArtifact("target", "project", [".rustc_info.json", "debug"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("target", "project", [
+        ".rustc_info.json",
+        "debug",
+      ])
+    ).toMatchObject({
       ecosystem: "rust",
       confidence: "verified",
       cleanup: "eligible",
       evidence: ["name:target", "contains:.rustc_info.json", "contains:debug"],
     })
-    expect(classifyDeveloperArtifact("target", "project", ["classes"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("target", "project", ["classes"])
+    ).toMatchObject({
       ecosystem: "jvm",
       confidence: "likely",
       cleanup: "review",
     })
-    expect(classifyDeveloperArtifact("build", "project", ["CMakeCache.txt"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("build", "project", ["CMakeCache.txt"])
+    ).toMatchObject({
       ecosystem: "cpp",
       confidence: "verified",
       cleanup: "eligible",
@@ -77,17 +92,30 @@ describe("developer artifact inventory rules", () => {
 
   test("sibling project markers corroborate identity and a reinstall path", () => {
     expect(
-      classifyDeveloperArtifact("node_modules", "web", [], ["readme.md", "package.json", "package-lock.json"]),
+      classifyDeveloperArtifact(
+        "node_modules",
+        "web",
+        [],
+        ["readme.md", "package.json", "package-lock.json"]
+      )
     ).toMatchObject({
       confidence: "verified",
       cleanup: "eligible",
-      evidence: ["name:node_modules", "parent:package-lock.json", "parent:package.json"],
+      evidence: [
+        "name:node_modules",
+        "parent:package-lock.json",
+        "parent:package.json",
+      ],
     })
-    expect(classifyDeveloperArtifact("node_modules", "web", [], ["readme.md"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("node_modules", "web", [], ["readme.md"])
+    ).toMatchObject({
       confidence: "likely",
       cleanup: "review",
     })
-    expect(classifyDeveloperArtifact("__pycache__", "api", [], ["pyproject.toml"])).toMatchObject({
+    expect(
+      classifyDeveloperArtifact("__pycache__", "api", [], ["pyproject.toml"])
+    ).toMatchObject({
       confidence: "verified",
       cleanup: "eligible",
     })
@@ -102,7 +130,7 @@ describe("developer artifact inventory rules", () => {
         fixture.name,
         fixture.parent,
         fixture.signatures,
-        fixture.parentMarkers,
+        fixture.parentMarkers
       )
       if (fixture.expected === null) {
         expect(actual).toBeUndefined()
@@ -113,15 +141,22 @@ describe("developer artifact inventory rules", () => {
   })
 
   test("normalizes the opt-in bounded inventory request", () => {
-    expect(normalizeDeveloperArtifactInventoryOptions(undefined)).toBeUndefined()
+    expect(
+      normalizeDeveloperArtifactInventoryOptions(undefined)
+    ).toBeUndefined()
     expect(normalizeDeveloperArtifactInventoryOptions(false)).toBeUndefined()
     expect(normalizeDeveloperArtifactInventoryOptions(true)).toEqual({
       maxItems: DEFAULT_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
     })
-    expect(normalizeDeveloperArtifactInventoryOptions({ maxItems: 0 })).toEqual({ maxItems: 1 })
-    expect(normalizeDeveloperArtifactInventoryOptions({ maxItems: Number.MAX_SAFE_INTEGER })).toEqual({
+    expect(normalizeDeveloperArtifactInventoryOptions({ maxItems: 0 })).toEqual(
+      { maxItems: 1 }
+    )
+    expect(
+      normalizeDeveloperArtifactInventoryOptions({
+        maxItems: Number.MAX_SAFE_INTEGER,
+      })
+    ).toEqual({
       maxItems: MAX_DEVELOPER_ARTIFACT_INVENTORY_MAX_ITEMS,
     })
   })
 })
-

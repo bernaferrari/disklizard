@@ -12,6 +12,7 @@
 - The main renderer uses React 19, Base UI/shadcn, and Tailwind v4. Do not restore the retired Solid UI workspace.
 - From the repository root, `bun run dev:desktop` starts the native Electron app. `bun run --cwd packages/app dev` runs the browser fixture only.
 - Validate renderer changes with `bun run --cwd packages/app typecheck` and `bun run --cwd packages/app test`.
+- After making changes, run `bun run lint` and fix all errors.
 - Keep native filesystem access behind the desktop preload bridge. Browser fixture data must not enter the desktop bootstrap.
 
 ## Localization

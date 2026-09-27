@@ -14,8 +14,10 @@ export function SegmentedButton(props: {
     <button
       type="button"
       className={cn(
-        "flex min-h-11 min-w-11 items-center gap-1.5 rounded-[6px] px-3 text-13-semibold font-medium outline-none transition-[background-color,color,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96] hover:bg-surface-raised-base aria-pressed:bg-surface-raised-strong aria-pressed:shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_1px_3px_rgb(0_0_0/0.2)]",
-        props.active ? "text-text-strong" : "hover:text-text-strong text-text-weak",
+        "text-13-semibold flex min-h-11 min-w-11 items-center gap-1.5 rounded-[6px] px-3 font-medium transition-[background-color,color,box-shadow] duration-100 outline-none hover:bg-surface-raised-base focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96] aria-pressed:bg-surface-raised-strong aria-pressed:shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_1px_3px_rgb(0_0_0/0.2)]",
+        props.active
+          ? "text-text-strong"
+          : "text-text-weak hover:text-text-strong"
       )}
       onClick={props.onClick}
       aria-pressed={props.active}
@@ -43,7 +45,11 @@ export function SegmentedButton(props: {
         )}
       </svg>
       <span>{props.label}</span>
-      {props.shortcut ? <kbd className="hidden ml-0.5 text-13-regular opacity-45">{props.shortcut}</kbd> : null}
+      {props.shortcut ? (
+        <kbd className="text-13-regular ml-0.5 hidden opacity-45">
+          {props.shortcut}
+        </kbd>
+      ) : null}
     </button>
   )
 }
@@ -56,7 +62,10 @@ export function IndexLensButton(props: {
   disabled?: boolean
   title?: string
 }) {
-  const explanationID = props.disabled && props.title ? `disklizard-lens-${props.label.toLowerCase()}-reason` : undefined
+  const explanationID =
+    props.disabled && props.title
+      ? `disklizard-lens-${props.label.toLowerCase()}-reason`
+      : undefined
   return (
     <span className="contents">
       <button
@@ -65,11 +74,11 @@ export function IndexLensButton(props: {
         aria-disabled={props.disabled ? "true" : undefined}
         aria-describedby={explanationID}
         className={cn(
-          "flex min-w-0 min-h-8 items-center justify-center px-2 text-xs font-medium leading-none rounded-md outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring hover:text-text-strong aria-pressed:bg-surface-raised-base",
+          "flex min-h-8 min-w-0 items-center justify-center rounded-md px-2 text-xs leading-none font-medium transition-colors duration-150 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-ring aria-pressed:bg-surface-raised-base",
 
           props.active && "text-text-strong shadow-sm",
           !props.active && "text-text-weak",
-          props.disabled && "cursor-not-allowed opacity-50",
+          props.disabled && "cursor-not-allowed opacity-50"
         )}
         onClick={() => {
           if (props.disabled) return
@@ -79,7 +88,11 @@ export function IndexLensButton(props: {
         <Icon name={props.icon} className="hidden size-3.5" />
         {props.label}
       </button>
-      {explanationID ? <span id={explanationID} className="sr-only">{props.title}</span> : null}
+      {explanationID ? (
+        <span id={explanationID} className="sr-only">
+          {props.title}
+        </span>
+      ) : null}
     </span>
   )
 }
@@ -107,15 +120,17 @@ export function DeveloperCategoryButton(props: {
       }
       title={props.description}
       className={cn(
-        "flex min-h-11 min-w-11 shrink-0 items-center gap-1.5 rounded-full px-3 text-13-semibold outline-none transition-[color,background-color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
+        "text-13-semibold flex min-h-11 min-w-11 shrink-0 items-center gap-1.5 rounded-full px-3 transition-[color,background-color,box-shadow,transform] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96]",
         props.active
           ? "bg-[oklch(0.74_0.13_252/0.12)] text-text-strong shadow-[inset_0_0_0_1px_oklch(0.74_0.13_252/0.28)]"
-          : "hover:text-text-strong bg-background-base/45 text-text-weak",
+          : "bg-background-base/45 text-text-weak hover:text-text-strong"
       )}
       onClick={props.onClick}
     >
       <span>{props.label}</span>
-      <span className="tabular-nums text-text-weaker">{shortBytes(props.bytes)}</span>
+      <span className="text-text-weaker tabular-nums">
+        {shortBytes(props.bytes)}
+      </span>
     </button>
   )
 }

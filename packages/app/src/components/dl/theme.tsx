@@ -10,10 +10,14 @@ interface ThemeContextValue {
   setScheme: (scheme: ColorScheme) => void
 }
 
-const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefined)
+const ThemeContext = React.createContext<ThemeContextValue | undefined>(
+  undefined
+)
 
 function systemScheme(): "light" | "dark" {
-  return globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  return globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
 }
 
 /**
@@ -26,11 +30,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const saved = globalThis.localStorage?.getItem(STORAGE_KEY)
     return saved === "light" || saved === "dark" ? saved : "system"
   })
-  const [system, setSystem] = React.useState<"light" | "dark">(() => systemScheme())
+  const [system, setSystem] = React.useState<"light" | "dark">(() =>
+    systemScheme()
+  )
 
   React.useEffect(() => {
     const query = globalThis.matchMedia?.("(prefers-color-scheme: dark)")
-    if (!query) return
+    if (!query) return undefined
     const onChange = () => setSystem(systemScheme())
     query.addEventListener("change", onChange)
     return () => query.removeEventListener("change", onChange)
@@ -55,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         else globalThis.localStorage?.setItem(STORAGE_KEY, next)
       },
     }),
-    [scheme, resolved],
+    [scheme, resolved]
   )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

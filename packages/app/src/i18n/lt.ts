@@ -98,7 +98,9 @@ const desktop = [
 ]
 
 export const dict = {
-  ...Object.fromEntries(DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])),
+  ...Object.fromEntries(
+    DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])
+  ),
   "command.category.suggested": "Siūloma",
   "command.category.view": "Rodinys",
   "command.category.project": "Projektas",
@@ -145,7 +147,8 @@ export const dict = {
   "command.tab.close": "Uždaryti skirtuką",
   "command.tab.reopenClosed": "Iš naujo atidaryti uždarytą skirtuką",
   "command.context.addSelection": "Pridėkite pasirinkimą prie konteksto",
-  "command.context.addSelection.description": "Pridėkite pasirinktas eilutes iš dabartinio failo",
+  "command.context.addSelection.description":
+    "Pridėkite pasirinktas eilutes iš dabartinio failo",
   "command.input.focus": "Fokusuoti įvesties lauką",
   "command.terminal.toggle": "Perjungti terminalą",
   "command.fileTree.toggle": "Perjungti failų medį",
@@ -153,9 +156,11 @@ export const dict = {
   "command.terminal.new": "Naujas terminalas",
   "command.terminal.new.description": "Sukurkite naują terminalo skirtuką",
   "command.steps.toggle": "Perjungti žingsnius",
-  "command.steps.toggle.description": "Rodyti arba slėpti dabartinio pranešimo veiksmus",
+  "command.steps.toggle.description":
+    "Rodyti arba slėpti dabartinio pranešimo veiksmus",
   "command.message.previous": "Ankstesnė žinutė",
-  "command.message.previous.description": "Eikite į ankstesnį vartotojo pranešimą",
+  "command.message.previous.description":
+    "Eikite į ankstesnį vartotojo pranešimą",
   "command.message.next": "Kitas pranešimas",
   "command.message.next.description": "Eikite į kitą vartotojo pranešimą",
   "command.model.choose": "Pasirinkite modelį",
@@ -171,23 +176,30 @@ export const dict = {
   "command.prompt.mode.shell": "Apvalkalas",
   "command.prompt.mode.normal": "Užklausa",
   "command.permissions.autoaccept.enable": "Automatiškai priimti leidimus",
-  "command.permissions.autoaccept.disable": "Sustabdykite automatinį leidimų priėmimą",
+  "command.permissions.autoaccept.disable":
+    "Sustabdykite automatinį leidimų priėmimą",
   "command.workspace.toggle": "Perjungti darbo sritis",
-  "command.workspace.toggle.description": "Šoninėje juostoje įgalinkite arba išjunkite kelias darbo sritis",
+  "command.workspace.toggle.description":
+    "Šoninėje juostoje įgalinkite arba išjunkite kelias darbo sritis",
   "command.session.undo": "Anuliuoti",
   "command.session.undo.description": "Anuliuoti paskutinį pranešimą",
   "command.session.redo": "Perdaryti",
-  "command.session.redo.description": "Pakartokite paskutinį anuliuotą pranešimą",
+  "command.session.redo.description":
+    "Pakartokite paskutinį anuliuotą pranešimą",
   "command.session.compact": "Glaudinti seansą",
-  "command.session.compact.description": "Apibendrinti seansą, kad sumažėtų kontekstas",
+  "command.session.compact.description":
+    "Apibendrinti seansą, kad sumažėtų kontekstas",
   "command.session.fork": "Atskirti nuo pranešimo",
-  "command.session.fork.description": "Sukurti naują seansą iš ankstesnio pranešimo",
+  "command.session.fork.description":
+    "Sukurti naują seansą iš ankstesnio pranešimo",
   "command.session.share": "Bendrinti seansą",
-  "command.session.share.description": "Bendrinti šį seansą ir nukopijuoti URL į mainų sritį",
+  "command.session.share.description":
+    "Bendrinti šį seansą ir nukopijuoti URL į mainų sritį",
   "command.session.unshare": "Atšaukti seanso bendrinimą",
   "command.session.unshare.description": "Nebebendrinti šio seanso",
   "command.session.export": "Eksportuoti seansą",
-  "command.session.export.description": "Eksportuokite visą seanso stenogramą kaip JSON",
+  "command.session.export.description":
+    "Eksportuokite visą seanso stenogramą kaip JSON",
   "palette.search.placeholder": "Ieškokite failų, komandų ir seansų",
   "palette.search.placeholder.home": "Ieškoti komandų ir seansų",
   "palette.empty": "Rezultatų nerasta",
@@ -197,30 +209,43 @@ export const dict = {
   "dialog.provider.empty": "Teikėjų nerasta",
   "dialog.provider.group.popular": "Populiarus",
   "dialog.provider.group.other": "Kita",
-  "dialog.provider.custom.label": "Pasirinktinis su OpenAI suderinamas tiekėjas",
+  "dialog.provider.custom.label":
+    "Pasirinktinis su OpenAI suderinamas tiekėjas",
   "dialog.provider.tag.recommended": "Rekomenduojama",
-  "dialog.provider.opencode.note": "Kuruojami modeliai, įskaitant Claude, GPT, Gemini ir kt.",
+  "dialog.provider.opencode.note":
+    "Kuruojami modeliai, įskaitant Claude, GPT, Gemini ir kt.",
   "dialog.provider.opencode.tagline": "Patikimi optimizuoti modeliai",
   "dialog.provider.opencodeGo.tagline": "Mažos kainos abonementas visiems",
-  "dialog.provider.anthropic.note": "Tiesioginė prieiga prie Claude modelių, įskaitant Pro ir Max",
-  "dialog.provider.copilot.note": "AI modeliai, skirti kodavimo pagalbai per GitHub Copilot",
-  "dialog.provider.openai.note": "GPT modeliai, skirti greitoms, bendroms AI užduotims atlikti",
-  "dialog.provider.google.note": "Gemini modeliai greitiems, struktūriniams atsakymams",
-  "dialog.provider.openrouter.note": "Pasiekite visus palaikomus modelius iš vieno tiekėjo",
-  "dialog.provider.vercel.note": "Vieninga prieiga prie AI modelių su išmaniuoju maršruto parinkimu",
+  "dialog.provider.anthropic.note":
+    "Tiesioginė prieiga prie Claude modelių, įskaitant Pro ir Max",
+  "dialog.provider.copilot.note":
+    "AI modeliai, skirti kodavimo pagalbai per GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT modeliai, skirti greitoms, bendroms AI užduotims atlikti",
+  "dialog.provider.google.note":
+    "Gemini modeliai greitiems, struktūriniams atsakymams",
+  "dialog.provider.openrouter.note":
+    "Pasiekite visus palaikomus modelius iš vieno tiekėjo",
+  "dialog.provider.vercel.note":
+    "Vieninga prieiga prie AI modelių su išmaniuoju maršruto parinkimu",
   "dialog.model.select.title": "Pasirinkite modelį",
   "dialog.model.search.placeholder": "Ieškoti modelių",
   "dialog.model.empty": "Nėra modelio rezultatų",
   "dialog.model.manage": "Tvarkyti modelius",
-  "dialog.model.manage.description": "Tinkinkite, kurie modeliai rodomi modelio parinkiklyje.",
-  "dialog.model.manage.provider.toggle": "Perjungti visus {{provider}} modelius",
+  "dialog.model.manage.description":
+    "Tinkinkite, kurie modeliai rodomi modelio parinkiklyje.",
+  "dialog.model.manage.provider.toggle":
+    "Perjungti visus {{provider}} modelius",
   "dialog.model.unpaid.freeModels.title": "Nemokami OpenCode modeliai",
-  "dialog.model.unpaid.addMore.title": "Pridėkite daugiau populiarių tiekėjų modelių",
+  "dialog.model.unpaid.addMore.title":
+    "Pridėkite daugiau populiarių tiekėjų modelių",
   "dialog.model.unpaid.viewMoreProviders": "Žr. daugiau nei 70 tiekėjų",
   "dialog.provider.viewAll": "Rodyti daugiau teikėjų",
   "provider.connect.title": "Prijunkite {{provider}}",
-  "provider.connect.title.anthropicProMax": "Prisijunkite naudodami Claude Pro/Max",
-  "provider.connect.selectMethod": "Pasirinkite {{provider}} prisijungimo būdą.",
+  "provider.connect.title.anthropicProMax":
+    "Prisijunkite naudodami Claude Pro/Max",
+  "provider.connect.selectMethod":
+    "Pasirinkite {{provider}} prisijungimo būdą.",
   "provider.connect.method.apiKey": "API raktas",
   "provider.connect.method.browser": "Naršyklė",
   "provider.connect.method.headless": "Be galvos",
@@ -238,7 +263,8 @@ export const dict = {
     "Su vienu API raktu galėsite pasiekti tokius modelius kaip Claude, GPT, Gemini, GLM ir kt.",
   "provider.connect.opencodeZen.visit.prefix": "Aplankykite",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": "norėdami pasiimti savo API raktą.",
+  "provider.connect.opencodeZen.visit.suffix":
+    "norėdami pasiimti savo API raktą.",
   "provider.connect.oauth.code.visit.prefix": "Aplankykite",
   "provider.connect.oauth.code.visit.link": "šią nuorodą",
   "provider.connect.oauth.code.visit.suffix":
@@ -253,15 +279,19 @@ export const dict = {
     "ir įveskite toliau esantį kodą, kad susietumėte paskyrą ir naudotumėte {{provider}} modelius OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Patvirtinimo kodas",
   "provider.connect.toast.connected.title": "{{provider}} prijungtas",
-  "provider.connect.toast.connected.description": "Dabar galima naudoti {{provider}} modelius.",
+  "provider.connect.toast.connected.description":
+    "Dabar galima naudoti {{provider}} modelius.",
   "provider.custom.title": "Pasirinktinis teikėjas",
-  "provider.custom.unavailable": "Pasirinktiniai teikėjai šiame serveryje nepasiekiami",
-  "provider.custom.description.prefix": "Sukonfigūruokite su OpenAI suderinamą teikėją. Žiūrėkite",
+  "provider.custom.unavailable":
+    "Pasirinktiniai teikėjai šiame serveryje nepasiekiami",
+  "provider.custom.description.prefix":
+    "Sukonfigūruokite su OpenAI suderinamą teikėją. Žiūrėkite",
   "provider.custom.description.link": "teikėjo konfigūracijos dokumentai",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Teikėjo ID",
   "provider.custom.field.providerID.placeholder": "mano teikėjas",
-  "provider.custom.field.providerID.description": "Mažosios raidės, skaičiai, brūkšneliai arba apatiniai brūkšniai",
+  "provider.custom.field.providerID.description":
+    "Mažosios raidės, skaičiai, brūkšneliai arba apatiniai brūkšniai",
   "provider.custom.field.name.label": "Rodomas vardas",
   "provider.custom.field.name.placeholder": "Mano AI teikėjas",
   "provider.custom.field.baseURL.label": "Pagrindas URL",
@@ -290,11 +320,13 @@ export const dict = {
   "provider.custom.error.providerID.exists": "Tas teikėjo ID jau yra",
   "provider.custom.error.name.required": "Būtinas rodomas vardas",
   "provider.custom.error.baseURL.required": "Reikalingas pagrindas URL",
-  "provider.custom.error.baseURL.format": "Turi prasidėti http:// arba https://",
+  "provider.custom.error.baseURL.format":
+    "Turi prasidėti http:// arba https://",
   "provider.custom.error.required": "Privaloma",
   "provider.custom.error.duplicate": "Pasikartoti",
   "provider.disconnect.toast.disconnected.title": "{{provider}} atjungtas",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modeliai nebepasiekiami.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modeliai nebepasiekiami.",
   "model.tag.free": "Nemokama",
   "model.tag.latest": "Naujausias",
   "model.provider.anthropic": "Anthropic",
@@ -356,7 +388,8 @@ export const dict = {
   "prompt.example.12": "Pridėti įvesties patvirtinimą",
   "prompt.example.13": "Sukurkite naują komponentą...",
   "prompt.example.14": "Kaip įdiegti šį projektą?",
-  "prompt.example.15": "Peržiūrėkite mano kodą, kad gautumėte geriausią praktiką",
+  "prompt.example.15":
+    "Peržiūrėkite mano kodą, kad gautumėte geriausią praktiką",
   "prompt.example.16": "Prie šios funkcijos pridėkite klaidų tvarkymą",
   "prompt.example.17": "Paaiškinkite šį reguliarųjį reiškinį",
   "prompt.example.18": "Konvertuokite tai į TypeScript",
@@ -388,10 +421,12 @@ export const dict = {
   "prompt.action.send": "Siųsti",
   "prompt.action.stop": "Stabdyti",
   "prompt.toast.pasteUnsupported.title": "Nepalaikomas priedas",
-  "prompt.toast.pasteUnsupported.description": "Čia galima pridėti tik vaizdus, ​​PDF arba tekstinius failus.",
+  "prompt.toast.pasteUnsupported.description":
+    "Čia galima pridėti tik vaizdus, ​​PDF arba tekstinius failus.",
   "prompt.toast.attachmentDuplicate.title": "Šis failas jau buvo įkeltas",
   "prompt.toast.modelAgentRequired.title": "Pasirinkite agentą ir modelį",
-  "prompt.toast.modelAgentRequired.description": "Prieš siųsdami raginimą, pasirinkite agentą ir modelį.",
+  "prompt.toast.modelAgentRequired.description":
+    "Prieš siųsdami raginimą, pasirinkite agentą ir modelį.",
   "prompt.toast.worktreeCreateFailed.title": "Nepavyko sukurti darbo medžio",
   "prompt.toast.sessionCreateFailed.title": "Nepavyko sukurti seanso",
   "prompt.toast.shellSendFailed.title": "Nepavyko išsiųsti apvalkalo komandos",
@@ -420,7 +455,8 @@ export const dict = {
   "app.server.retrying": "Automatiškai bandoma iš naujo...",
   "app.server.otherServers": "Kiti serveriai",
   "dialog.server.title": "Serveriai",
-  "dialog.server.description": "Perjunkite, prie kurio OpenCode serverio jungiasi ši programa.",
+  "dialog.server.description":
+    "Perjunkite, prie kurio OpenCode serverio jungiasi ši programa.",
   "dialog.server.search.placeholder": "Paieškos serveriai",
   "dialog.server.empty": "Serverių dar nėra",
   "dialog.server.add.title": "Pridėti serverį",
@@ -458,7 +494,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Pasirinkite distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Tikrinama WSL...",
-  "wsl.onboarding.restartRequired": "Windows reikia paleisti iš naujo, kad būtų baigtas WSL diegimas.",
+  "wsl.onboarding.restartRequired":
+    "Windows reikia paleisti iš naujo, kad būtų baigtas WSL diegimas.",
   "wsl.onboarding.ready": "WSL yra paruoštas.",
   "wsl.onboarding.required": "Norint tęsti, reikia WSL.",
   "wsl.onboarding.checkingDistros": "Tikrinamos distribucijos...",
@@ -467,7 +504,8 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Sąrašas platinimo...",
   "wsl.onboarding.distroReady": "{{distro}} yra paruoštas.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} dar neįdiegtas.",
-  "wsl.onboarding.openDistroOnce": "Atidarykite {{distro}} vieną kartą, kad užbaigtumėte sąranką.",
+  "wsl.onboarding.openDistroOnce":
+    "Atidarykite {{distro}} vieną kartą, kad užbaigtumėte sąranką.",
   "wsl.onboarding.finishingDistro": "{{distro}} apdailos sąranka.",
   "wsl.onboarding.pickDistro": "Pasirinkite platinimą arba įdiekite jį žemiau.",
   "wsl.onboarding.checkingOpencode": "Tikrinama OpenCode...",
@@ -491,18 +529,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Trūksta bash, curl",
   "wsl.onboarding.distroStatus.unsupported": "Nepalaikoma · Naudokite WSL 2",
   "wsl.onboarding.needAnotherDistro": "Reikia kito platinimo?",
-  "wsl.onboarding.needAnotherDistroHint": "Įdiekite Linux paskirstymą iš WSL katalogo",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Įdiekite Linux paskirstymą iš WSL katalogo",
   "wsl.onboarding.wslNotInstalled.title": "WSL neįdiegtas",
   "wsl.onboarding.wslNotInstalled.description":
     "Kad OpenCode galėtų pridėti WSL serverį, reikalingas WSL (Windows posistemis, skirtas Linux)",
   "wsl.onboarding.wslUnavailable.title": "WSL nepasiekiamas",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode nepavyko patikrinti WSL šiame įrenginyje.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode nepavyko patikrinti WSL šiame įrenginyje.",
   "wsl.onboarding.installWsl": "Įdiekite WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Iš naujo paleiskite Windows, kad užbaigtumėte WSL diegimą, tada iš naujo atidarykite OpenCode.",
   "wsl.onboarding.next": "Kitas",
   "wsl.onboarding.refresh": "Atnaujinti",
-  "wsl.onboarding.allDistrosAdded": "Visos įdiegtos distribucijos jau pridėtos.",
+  "wsl.onboarding.allDistrosAdded":
+    "Visos įdiegtos distribucijos jau pridėtos.",
   "wsl.onboarding.noDistros": "Dar neaptikta jokių paskirstymų.",
   "wsl.onboarding.install": "Įdiegti",
   "wsl.onboarding.installing": "Diegiama...",
@@ -516,12 +557,15 @@ export const dict = {
   "wsl.onboarding.version": "Versija: {{version}}",
   "wsl.onboarding.unknown": "nežinomas",
   "wsl.onboarding.desktopVersion": "darbalaukis {{version}}",
-  "wsl.onboarding.versionMismatch": "Įdiegta versija neatitinka darbalaukio programos versijos.",
+  "wsl.onboarding.versionMismatch":
+    "Įdiegta versija neatitinka darbalaukio programos versijos.",
   "wsl.onboarding.adding": "Pridedama...",
-  "help.tabs.toast.ariaLabel": "Pristatome Tab. Tvarkykite savo darbą ir aktyvias sesijas naudodami skirtukus",
+  "help.tabs.toast.ariaLabel":
+    "Pristatome Tab. Tvarkykite savo darbą ir aktyvias sesijas naudodami skirtukus",
   "help.tabs.toast.dismiss": "Atsisakyti Tabs informacijos",
   "help.tabs.title": "Pristatome Tab",
-  "help.tabs.description": "Tvarkykite savo darbą ir aktyvias sesijas naudodami skirtukus",
+  "help.tabs.description":
+    "Tvarkykite savo darbą ir aktyvias sesijas naudodami skirtukus",
   "help.tabs.date": "liepos 14 d",
   "help.tabs.introduction": "OpenCode Desktop dabar sukurtas iš skirtukų.",
   "help.tabs.sessions":
@@ -530,7 +574,8 @@ export const dict = {
     "Jei atidarysite kelis skirtukus, bus lengviau organizuoti aktyvias sesijas. Pervardykite skirtukus į kažką įsimintino, jei planuojate juos palikti.",
   "help.tabs.home":
     "Visas savo sesijas ir projektus rasite naujajame Home ekrane. Pasirinkus sesiją, ji atidaroma skirtuke.",
-  "help.tabs.persistence": "Kai iš naujo atidarote programą, skirtukai vis dar yra atidaryti.",
+  "help.tabs.persistence":
+    "Kai iš naujo atidarote programą, skirtukai vis dar yra atidaryti.",
   "help.tabs.worktrees":
     "Naujasis dizainas dar nepalaiko Git Worktrees, jis pasirodys netrukus. Taigi, jei norite ir toliau naudoti ankstesnį išdėstymą, galite perjungti išdėstymus nustatymuose. Tiesiog nepamirškite, kad naujasis išdėstymas taps nuolatinis po kelių savaičių.",
   "server.row.noUsername": "jokio vartotojo vardo",
@@ -543,7 +588,8 @@ export const dict = {
   "dialog.project.edit.color": "Spalva",
   "dialog.project.edit.color.select": "Pasirinkite {{color}} spalvą",
   "dialog.project.edit.worktree.startup": "Darbo srities paleidimo scenarijus",
-  "dialog.project.edit.worktree.startup.description": "Veikia sukūrus naują darbo sritį (darbo medį).",
+  "dialog.project.edit.worktree.startup.description":
+    "Veikia sukūrus naują darbo sritį (darbo medį).",
   "dialog.project.edit.worktree.startup.placeholder": "pvz. bandelė įdiegti",
   "dialog.releaseNotes.action.getStarted": "Pradėkite",
   "dialog.releaseNotes.action.next": "Kitas",
@@ -604,48 +650,68 @@ export const dict = {
   "toast.theme.title": "Tema perjungta",
   "toast.scheme.title": "Spalvų schema",
   "toast.workspace.enabled.title": "Darbo sritys įjungtos",
-  "toast.workspace.enabled.description": "Dabar šoninėje juostoje rodomi keli darbo medžiai",
+  "toast.workspace.enabled.description":
+    "Dabar šoninėje juostoje rodomi keli darbo medžiai",
   "toast.workspace.disabled.title": "Darbo vietos išjungtos",
-  "toast.workspace.disabled.description": "Šoninėje juostoje rodomas tik pagrindinis darbo medis",
+  "toast.workspace.disabled.description":
+    "Šoninėje juostoje rodomas tik pagrindinis darbo medis",
   "toast.permissions.autoaccept.on.title": "Automatinis leidimų priėmimas",
-  "toast.permissions.autoaccept.on.description": "Leidimų prašymai bus patvirtinti automatiškai",
-  "toast.permissions.autoaccept.off.title": "Sustabdė automatinį leidimų priėmimą",
-  "toast.permissions.autoaccept.off.description": "Reikės patvirtinti leidimo prašymus",
+  "toast.permissions.autoaccept.on.description":
+    "Leidimų prašymai bus patvirtinti automatiškai",
+  "toast.permissions.autoaccept.off.title":
+    "Sustabdė automatinį leidimų priėmimą",
+  "toast.permissions.autoaccept.off.description":
+    "Reikės patvirtinti leidimo prašymus",
   "toast.model.none.title": "Nepasirinktas joks modelis",
-  "toast.model.none.description": "Prisijunkite prie teikėjo, kad apibendrintumėte šią sesiją",
+  "toast.model.none.description":
+    "Prisijunkite prie teikėjo, kad apibendrintumėte šią sesiją",
   "toast.file.loadFailed.title": "Nepavyko įkelti failo",
   "toast.file.listFailed.title": "Nepavyko įtraukti failų sąrašo",
   "toast.context.noLineSelection.title": "Nėra linijos pasirinkimo",
-  "toast.context.noLineSelection.description": "Pirmiausia failo skirtuke pasirinkite eilučių diapazoną.",
-  "toast.session.share.copyFailed.title": "Nepavyko nukopijuoti URL į mainų sritį",
+  "toast.context.noLineSelection.description":
+    "Pirmiausia failo skirtuke pasirinkite eilučių diapazoną.",
+  "toast.session.share.copyFailed.title":
+    "Nepavyko nukopijuoti URL į mainų sritį",
   "toast.session.share.success.title": "Seansas bendrinamas",
-  "toast.session.share.success.description": "Dalintis URL nukopijuotas į iškarpinę!",
+  "toast.session.share.success.description":
+    "Dalintis URL nukopijuotas į iškarpinę!",
   "toast.session.share.failed.title": "Nepavyko bendrinti seanso",
   "toast.session.share.failed.description": "Bendrinant seansą įvyko klaida",
   "toast.session.unshare.success.title": "Seanso bendrinimas atšauktas",
-  "toast.session.unshare.success.description": "Seanso bendrinimas sėkmingai atšauktas!",
+  "toast.session.unshare.success.description":
+    "Seanso bendrinimas sėkmingai atšauktas!",
   "toast.session.unshare.failed.title": "Nepavyko atšaukti seanso bendrinimo",
-  "toast.session.unshare.failed.description": "Atšaukiant seanso bendrinimą įvyko klaida",
+  "toast.session.unshare.failed.description":
+    "Atšaukiant seanso bendrinimą įvyko klaida",
   "toast.session.export.success.title": "Seansas eksportuotas",
   "toast.session.export.success.description": "Seansas išsaugotas {{filename}}",
   "toast.session.export.failed.title": "Nepavyko eksportuoti seanso",
-  "toast.session.export.failed.description": "Eksportuojant seansą įvyko klaida",
-  "toast.session.listFailed.title": "Nepavyko įkelti seansų, skirtų {{project}}",
+  "toast.session.export.failed.description":
+    "Eksportuojant seansą įvyko klaida",
+  "toast.session.listFailed.title":
+    "Nepavyko įkelti seansų, skirtų {{project}}",
   "toast.project.reloadFailed.title": "Nepavyko iš naujo įkelti {{project}}",
   "toast.update.title": "Galimas atnaujinimas",
-  "toast.update.description": "Dabar galima įdiegti naują OpenCode ({{version}}) versiją.",
+  "toast.update.description":
+    "Dabar galima įdiegti naują OpenCode ({{version}}) versiją.",
   "toast.update.action.installRestart": "Įdiekite ir paleiskite iš naujo",
-  "disk.accessGuidance.macos": "Sisteminiuose nustatymuose suteikite DiskLizard prieigą „Full Disk Access“ ir nuskaitykite diską dar kartą.",
-  "disk.accessGuidance.windows": "Naudokite paskyrą su prieiga prie šio disko arba nuskaitykite aplanką, kurį jūsų paskyra gali skaityti.",
-  "disk.accessGuidance.linux": "Peržiūrėkite aplankų ir prijungimo taškų teises ir nuskaitykite dar kartą.",
-  "disk.accessGuidance.default": "Peržiūrėkite prieigą prie šių aplankų ir nuskaitykite dar kartą.",
-  "disk.accessGuidance.rescan": "Pakeitus prieigą naudokite komandą Rescan viršutinėje juostoje.",
+  "disk.accessGuidance.macos":
+    "Sisteminiuose nustatymuose suteikite DiskLizard prieigą „Full Disk Access“ ir nuskaitykite diską dar kartą.",
+  "disk.accessGuidance.windows":
+    "Naudokite paskyrą su prieiga prie šio disko arba nuskaitykite aplanką, kurį jūsų paskyra gali skaityti.",
+  "disk.accessGuidance.linux":
+    "Peržiūrėkite aplankų ir prijungimo taškų teises ir nuskaitykite dar kartą.",
+  "disk.accessGuidance.default":
+    "Peržiūrėkite prieigą prie šių aplankų ir nuskaitykite dar kartą.",
+  "disk.accessGuidance.rescan":
+    "Pakeitus prieigą naudokite komandą Rescan viršutinėje juostoje.",
   "toast.update.action.notYet": "Dar ne",
   "toast.update.installFailed.title": "Nepavyko įdiegti naujinio",
   "toast.update.installFailed.retry": "Bandyti dar kartą",
   "error.page.title": "Kažkas nutiko",
   "error.page.description": "Įkeliant programą įvyko klaida.",
-  "error.page.description.localServerStartup": "Paleidžiant vietinį serverį įvyko klaida.",
+  "error.page.description.localServerStartup":
+    "Paleidžiant vietinį serverį įvyko klaida.",
   "error.page.details.label": "Išsami informacija apie klaidą",
   "error.page.action.restart": "Paleisti iš naujo",
   "error.page.action.report": "Pranešti apie klaidą",
@@ -660,12 +726,16 @@ export const dict = {
   "error.page.version": "Versija: {{version}}",
   "error.dev.rootNotFound":
     "Šakninis elementas nerastas. Ar pamiršote jį įtraukti į index.html? O gal id atributas buvo neteisingai parašytas?",
-  "error.serverSync.connectFailed": "Nepavyko prisijungti prie serverio. Ar `{{url}}` veikia serveris?",
+  "error.serverSync.connectFailed":
+    "Nepavyko prisijungti prie serverio. Ar `{{url}}` veikia serveris?",
   "error.serverSDK.noServerAvailable": "Nėra serverio",
   "error.serverSDK.serverNotAvailable": "Serveris nepasiekiamas",
-  "error.childStore.persistedCacheCreateFailed": "Nepavyko sukurti nuolatinės talpyklos",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Nepavyko sukurti išliekančių projekto metaduomenų",
-  "error.childStore.persistedProjectIconCreateFailed": "Nepavyko sukurti išliekančio projekto piktogramos",
+  "error.childStore.persistedCacheCreateFailed":
+    "Nepavyko sukurti nuolatinės talpyklos",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Nepavyko sukurti išliekančių projekto metaduomenų",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Nepavyko sukurti išliekančio projekto piktogramos",
   "error.childStore.storeCreateFailed": "Nepavyko sukurti parduotuvės",
   "directory.error.invalidUrl": "Neteisingas katalogas URL.",
   "error.chain.unknown": "Nežinoma klaida",
@@ -677,23 +747,31 @@ export const dict = {
   "error.chain.responseBody": "Atsakymo turinys:\n{{body}}",
   "error.chain.didYouMean": "Ar turėjote omenyje: {{suggestions}}",
   "error.chain.modelNotFound": "Modelis nerastas: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Patikrinkite konfigūracijos (opencode.json) teikėjo / modelio pavadinimus",
+  "error.chain.checkConfig":
+    "Patikrinkite konfigūracijos (opencode.json) teikėjo / modelio pavadinimus",
   "error.chain.mcpFailed":
     "MCP serveris „{{name}}“ nepavyko. Atminkite, kad OpenCode dar nepalaiko MCP autentifikavimo.",
-  "error.chain.providerAuthFailed": "Teikėjo autentifikavimas nepavyko ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Teikėjo autentifikavimas nepavyko ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "Nepavyko inicijuoti teikėjo „{{provider}}“. Patikrinkite kredencialus ir konfigūraciją.",
-  "error.chain.configJsonInvalid": "{{path}} konfigūracijos failas negalioja JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} konfigūracijos failas negalioja JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "{{path}} konfigūracijos failas negalioja JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} konfigūracijos failas negalioja JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     "Katalogas „{{dir}}“, esantis {{path}}, negalioja. Pervardykite katalogą į „{{suggestion}}“ arba pašalinkite jį. Tai dažna rašybos klaida.",
-  "error.chain.configFrontmatterError": "Nepavyko išanalizuoti frontmatter {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Nepavyko išanalizuoti frontmatter {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Konfigūracijos failas {{path}} yra neteisingas",
-  "error.chain.configInvalidWithMessage": "Konfigūracijos failas, esantis {{path}}, yra neteisingas: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigūracijos failas, esantis {{path}}, yra neteisingas: {{message}}",
   "notification.permission.title": "Reikalingas leidimas",
-  "notification.permission.description": "{{sessionTitle}} {{projectName}} reikia leidimo",
+  "notification.permission.description":
+    "{{sessionTitle}} {{projectName}} reikia leidimo",
   "notification.question.title": "Klausimas",
-  "notification.question.description": "{{sessionTitle}} {{projectName}} turi klausimą",
+  "notification.question.description":
+    "{{sessionTitle}} {{projectName}} turi klausimą",
   "notification.action.goToSession": "Eiti į sesiją",
   "notification.session.responseReady.title": "Atsakymas paruoštas",
   "notification.session.error.title": "Seanso klaida",
@@ -724,7 +802,8 @@ export const dict = {
   "session.tab.unknown": "Nežinomas seansas",
   "session.panel.reviewAndFiles": "Apžvalga ir failai",
   "session.error.notFound": "Šios sesijos rasti nepavyko",
-  "session.error.notFound.description": "Šis skirtukas nurodo seansą, kurio šiame serveryje nebėra.",
+  "session.error.notFound.description":
+    "Šis skirtukas nurodo seansą, kurio šiame serveryje nebėra.",
   "session.error.notFound.closeTab": "Uždarykite Tab",
   "session.error.serverConnection": "Nepavyksta prisijungti prie šio serverio",
   "session.review.filesChanged": "Failai pakeisti {{count}}",
@@ -732,9 +811,11 @@ export const dict = {
   "session.review.change.other": "Pakeitimai",
   "session.review.loadingChanges": "Įkeliami pakeitimai...",
   "session.review.empty": "Pakeitimų šioje sesijoje dar nėra",
-  "session.review.noVcs": "Neaptikta Git versijos valdymo sistema, pakeitimai nerodomi",
+  "session.review.noVcs":
+    "Neaptikta Git versijos valdymo sistema, pakeitimai nerodomi",
   "session.review.noVcs.createGit.title": "Sukurkite Git saugyklą",
-  "session.review.noVcs.createGit.description": "Stebėkite, peržiūrėkite ir anuliuokite šio projekto pakeitimus",
+  "session.review.noVcs.createGit.description":
+    "Stebėkite, peržiūrėkite ir anuliuokite šio projekto pakeitimus",
   "session.review.noVcs.createGit.actionLoading": "Kuriama Git saugykla...",
   "session.review.noVcs.createGit.action": "Sukurkite Git saugyklą",
   "session.review.noSnapshot":
@@ -745,7 +826,8 @@ export const dict = {
   "session.files.selectToOpen": "Pasirinkite failą, kurį norite atidaryti",
   "session.files.all": "Visi failai",
   "session.files.empty": "Failų nėra",
-  "session.files.binaryContent": "Dvejetainis failas (turinys negali būti rodomas)",
+  "session.files.binaryContent":
+    "Dvejetainis failas (turinys negali būti rodomas)",
   "session.messages.renderEarlier": "Pateikti ankstesnius pranešimus",
   "session.messages.loadingEarlier": "Įkeliami ankstesni pranešimai...",
   "session.messages.loadEarlier": "Įkelti ankstesnius pranešimus",
@@ -825,7 +907,8 @@ export const dict = {
   "status.popover.tab.plugins": "Papildiniai",
   "status.popover.action.manageServers": "Tvarkyti serverius",
   "session.share.popover.title": "Paskelbti internete",
-  "session.share.popover.description.shared": "Ši sesija yra vieša internete. Ją gali pasiekti visi, turintys nuorodą.",
+  "session.share.popover.description.shared":
+    "Ši sesija yra vieša internete. Ją gali pasiekti visi, turintys nuorodą.",
   "session.share.popover.description.unshared":
     "Bendrinkite sesiją viešai žiniatinklyje. Ją galės pasiekti visi, turintys nuorodą.",
   "session.share.action.share": "Dalintis",
@@ -844,12 +927,14 @@ export const dict = {
   "terminal.title.numbered": "Terminalas {{number}}",
   "terminal.close": "Uždarykite terminalą",
   "terminal.connectionLost.title": "Ryšys nutrūko",
-  "terminal.connectionLost.abnormalClose": "WebSocket neįprastai uždarytas: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket neįprastai uždarytas: {{code}}",
   "terminal.connectionLost.description":
     "Terminalo ryšys nutrūko. Tai gali atsitikti, kai serveris paleidžiamas iš naujo.",
   "terminal.connectTicket.csrfError":
     "PTY prijungimo bilietas atmestas dėl kilmės arba CSRF patikrinimų. Patikrinkite serverio CORS konfigūraciją.",
-  "terminal.connectTicket.statusError": "PTY prisijungimo bilietas nepavyko naudojant {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY prisijungimo bilietas nepavyko naudojant {{status}}",
   "titlebar.update": "Atnaujinti",
   "titlebar.updateVersion": "Atnaujinkite {{version}}",
   "common.closeTab": "Uždaryti skirtuką",
@@ -893,7 +978,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Įgalinti darbo sritis",
   "sidebar.workspaces.disable": "Išjungti darbo sritis",
   "sidebar.gettingStarted.title": "Darbo pradžia",
-  "sidebar.gettingStarted.line1": "OpenCode apima nemokamus modelius, todėl galite pradėti iš karto.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode apima nemokamus modelius, todėl galite pradėti iš karto.",
   "sidebar.gettingStarted.line2":
     "Prijunkite bet kurį teikėją, kad galėtumėte naudoti modelius, įskaitant. Claude, GPT, Gemini ir kt.",
   "sidebar.project.recentSessions": "Naujausi seansai",
@@ -907,7 +993,8 @@ export const dict = {
   "debugBar.nav.tip":
     "Paskutinis baigtas maršruto perėjimas, liečiant seanso puslapį, matuojant nuo maršrutizatoriaus pradžios iki pirmojo dažymo po to, kai jis nusistovi.",
   "debugBar.fps.label": "FPS",
-  "debugBar.fps.tip": "Slenkantys kadrai per sekundę per paskutines 5 sekundes.",
+  "debugBar.fps.tip":
+    "Slenkantys kadrai per sekundę per paskutines 5 sekundes.",
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Blogiausias kadro laikas per paskutines 5 sekundes.",
   "debugBar.jank.label": "JANK",
@@ -916,21 +1003,26 @@ export const dict = {
   "debugBar.long.tip":
     "Užblokuotas laikas ir ilgų užduočių skaičius per paskutines 5 sekundes. Maksimali užduotis: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Blogiausias pastebėtas įvesties delsimas per paskutines 5 sekundes.",
+  "debugBar.delay.tip":
+    "Blogiausias pastebėtas įvesties delsimas per paskutines 5 sekundes.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Apytikslė sąveikos trukmė per paskutines 5 sekundes. Tai panašu į INP, o ne į oficialų „Web Vitals INP“.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Suminis išdėstymo poslinkis dabartiniam programos veikimo laikui.",
+  "debugBar.cls.tip":
+    "Suminis išdėstymo poslinkis dabartiniam programos veikimo laikui.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Naudota JS krūva ir krūvos riba. Tik Chromium.",
-  "debugBar.mem.tip": "Naudota JS krūva ir krūvos riba. {{used}} arba {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Naudota JS krūva ir krūvos riba. Tik Chromium.",
+  "debugBar.mem.tip":
+    "Naudota JS krūva ir krūvos riba. {{used}} arba {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Priverskite fokusuoti visus interaktyvius elementus",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Priverskite visą programos išdėstymo kryptį nekeisdami pasirinktos kalbos",
+  "debugBar.direction.tip":
+    "Priverskite visą programos išdėstymo kryptį nekeisdami pasirinktos kalbos",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode darbalaukis",
@@ -940,7 +1032,8 @@ export const dict = {
   "settings.tab.shortcuts": "Spartieji klavišai",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL integracija",
-  "settings.desktop.wsl.description": "Paleiskite OpenCode serverį WSL viduje Windows.",
+  "settings.desktop.wsl.description":
+    "Paleiskite OpenCode serverį WSL viduje Windows.",
   "settings.general.section.appearance": "Išvaizda",
   "settings.general.section.advanced": "Išplėstinė",
   "settings.general.section.notifications": "Sistemos pranešimai",
@@ -949,77 +1042,102 @@ export const dict = {
   "settings.general.section.feed": "Pašaras",
   "settings.general.section.display": "Ekranas",
   "settings.general.row.language.title": "Kalba",
-  "settings.general.row.language.description": "Pakeiskite OpenCode ekrano kalbą",
+  "settings.general.row.language.description":
+    "Pakeiskite OpenCode ekrano kalbą",
   "settings.general.row.shell.title": "Terminalo apvalkalas",
-  "settings.general.row.shell.description": "Terminalo ir agento įrankių naudojamas apvalkalas",
+  "settings.general.row.shell.description":
+    "Terminalo ir agento įrankių naudojamas apvalkalas",
   "settings.general.row.shell.autoDefault": "Automatinis (numatytasis)",
   "settings.general.row.shell.terminalOnly": "tik terminalas",
   "settings.general.row.appearance.title": "Išvaizda",
-  "settings.general.row.appearance.description": "Tinkinkite, kaip OpenCode atrodo jūsų įrenginyje",
+  "settings.general.row.appearance.description":
+    "Tinkinkite, kaip OpenCode atrodo jūsų įrenginyje",
   "settings.general.row.colorScheme.title": "Spalvų schema",
-  "settings.general.row.colorScheme.description": "Pasirinkite, ar OpenCode seka sistemos, šviesios ar tamsios temos",
+  "settings.general.row.colorScheme.description":
+    "Pasirinkite, ar OpenCode seka sistemos, šviesios ar tamsios temos",
   "settings.general.row.theme.title": "tema",
   "settings.general.row.theme.description": "Tinkinkite OpenCode temą.",
   "settings.general.row.font.title": "Kodo šriftas",
-  "settings.general.row.font.description": "Tinkinkite kodo blokuose naudojamą šriftą",
+  "settings.general.row.font.description":
+    "Tinkinkite kodo blokuose naudojamą šriftą",
   "settings.general.row.terminalFont.title": "Šriftas Terminal",
-  "settings.general.row.terminalFont.description": "Tinkinkite terminale naudojamą šriftą",
+  "settings.general.row.terminalFont.description":
+    "Tinkinkite terminale naudojamą šriftą",
   "settings.general.row.uiFont.title": "UI šriftas",
-  "settings.general.row.uiFont.description": "Tinkinkite visoje sąsajoje naudojamą šriftą",
+  "settings.general.row.uiFont.description":
+    "Tinkinkite visoje sąsajoje naudojamą šriftą",
   "settings.general.row.followup.title": "Tolesnis elgesys",
   "settings.general.row.followup.description":
     "Pasirinkite, ar tolesni raginimai bus nukreipti nedelsiant, ar laukti eilėje",
   "settings.general.row.followup.option.queue": "Eilė",
   "settings.general.row.followup.option.steer": "Vairuoti",
   "settings.general.row.showFileTree.title": "Failų medis",
-  "settings.general.row.showFileTree.description": "Rodyti failų medžio skydelį seansuose",
+  "settings.general.row.showFileTree.description":
+    "Rodyti failų medžio skydelį seansuose",
   "settings.general.row.showNavigation.title": "Navigacijos valdikliai",
-  "settings.general.row.showNavigation.description": "Rodyti mygtukus atgal ir pirmyn darbalaukio pavadinimo juostoje",
+  "settings.general.row.showNavigation.description":
+    "Rodyti mygtukus atgal ir pirmyn darbalaukio pavadinimo juostoje",
   "settings.general.row.showSearch.title": "Komandų paletė",
-  "settings.general.row.showSearch.description": "Rodyti paieškos ir komandų paletės mygtuką pavadinimo juostoje",
+  "settings.general.row.showSearch.description":
+    "Rodyti paieškos ir komandų paletės mygtuką pavadinimo juostoje",
   "settings.general.row.showTerminal.title": "Terminalas",
-  "settings.general.row.showTerminal.description": "Rodyti terminalo mygtuką darbalaukio pavadinimo juostoje",
+  "settings.general.row.showTerminal.description":
+    "Rodyti terminalo mygtuką darbalaukio pavadinimo juostoje",
   "settings.general.row.showStatus.title": "Serverio būsena",
-  "settings.general.row.showStatus.description": "Rodyti serverio būsenos mygtuką pavadinimo juostoje",
+  "settings.general.row.showStatus.description":
+    "Rodyti serverio būsenos mygtuką pavadinimo juostoje",
   "settings.general.row.mobileTitlebarBottom.title": "Apatinė navigacija",
   "settings.general.row.mobileTitlebarBottom.description":
     "Įdėkite pavadinimo juostą ir seanso skirtukus mobiliojo telefono ekrano apačioje",
   "settings.general.row.showCustomAgents.title": "Rodyti agentą",
   "settings.general.row.showCustomAgents.description":
     "Perjunkite tarp kompozitoriaus agentų. Kai paslėpta, numatytasis kūrimo agentas.",
-  "settings.general.row.reasoningSummaries.title": "Rodyti samprotavimų santraukas",
-  "settings.general.row.reasoningSummaries.description": "Rodyti modelio motyvų santraukas laiko juostoje",
-  "settings.general.row.shellToolPartsExpanded.title": "Išskleiskite apvalkalo įrankių dalis",
+  "settings.general.row.reasoningSummaries.title":
+    "Rodyti samprotavimų santraukas",
+  "settings.general.row.reasoningSummaries.description":
+    "Rodyti modelio motyvų santraukas laiko juostoje",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Išskleiskite apvalkalo įrankių dalis",
   "settings.general.row.shellToolPartsExpanded.description":
     "Rodyti pagal numatytuosius nustatymus išplėstas apvalkalo įrankio dalis laiko juostoje",
-  "settings.general.row.editToolPartsExpanded.title": "Išplėskite redagavimo įrankio dalis",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Išplėskite redagavimo įrankio dalis",
   "settings.general.row.editToolPartsExpanded.description":
     "Rodyti pagal numatytuosius nustatymus laiko juostoje išplėstas redagavimo, rašymo ir pataisymo įrankio dalis",
   "settings.general.row.newInterface.title": "Naujas išdėstymas",
   "settings.general.row.newInterface.badge": "Nauja",
   "settings.general.row.newInterface.description":
     "Naudokite naujus skirtukus ir pagrindinio puslapio išdėstymą. Perjungti išdėstymą ribotą laiką.",
-  "settings.general.row.newInterfaceNotice.title": "Dabar naudojate naują išdėstymą",
-  "settings.general.row.newInterfaceNotice.description": "Ankstesnis išdėstymas nebepasiekiamas",
+  "settings.general.row.newInterfaceNotice.title":
+    "Dabar naudojate naują išdėstymą",
+  "settings.general.row.newInterfaceNotice.description":
+    "Ankstesnis išdėstymas nebepasiekiamas",
   "settings.general.row.newInterfaceNotice.dismiss": "Atsisakyti",
   "settings.general.row.pinchZoom.title": "Suimkite, kad padidintumėte mastelį",
-  "settings.general.row.pinchZoom.description": "Leiskite priartinti valdiklį ir Ctrl slinkimo gestus",
+  "settings.general.row.pinchZoom.description":
+    "Leiskite priartinti valdiklį ir Ctrl slinkimo gestus",
   "settings.general.row.wayland.title": "Naudokite vietinį Wayland",
-  "settings.general.row.wayland.description": "Išjungti atsarginį X11 Wayland. Reikia paleisti iš naujo.",
+  "settings.general.row.wayland.description":
+    "Išjungti atsarginį X11 Wayland. Reikia paleisti iš naujo.",
   "settings.general.row.wayland.tooltip":
     "Linux su mišraus atnaujinimo dažnio monitoriais vietinis Wayland gali būti stabilesnis.",
   "settings.general.row.releaseNotes.title": "Išleidimo pastabos",
-  "settings.general.row.releaseNotes.description": "Po atnaujinimų rodyti iššokančius langus „Kas naujo“.",
-  "settings.updates.row.startup.title": "Patikrinkite, ar nėra naujinimų paleidžiant",
-  "settings.updates.row.startup.description": "Automatiškai patikrinkite, ar nėra naujinimų, kai paleidžiamas OpenCode",
+  "settings.general.row.releaseNotes.description":
+    "Po atnaujinimų rodyti iššokančius langus „Kas naujo“.",
+  "settings.updates.row.startup.title":
+    "Patikrinkite, ar nėra naujinimų paleidžiant",
+  "settings.updates.row.startup.description":
+    "Automatiškai patikrinkite, ar nėra naujinimų, kai paleidžiamas OpenCode",
   "settings.updates.row.check.title": "Patikrinkite, ar nėra atnaujinimų",
-  "settings.updates.row.check.description": "Rankiniu būdu patikrinkite, ar nėra naujinimų, ir įdiekite, jei yra",
+  "settings.updates.row.check.description":
+    "Rankiniu būdu patikrinkite, ar nėra naujinimų, ir įdiekite, jei yra",
   "settings.updates.action.checkNow": "Patikrinkite dabar",
   "settings.updates.action.checking": "Tikrinama...",
   "settings.updates.action.downloading": "Atsisiunčiama...",
   "settings.updates.action.installing": "Diegiama...",
   "settings.updates.toast.latest.title": "Jūs esate atnaujintas",
-  "settings.updates.toast.latest.description": "Naudojate naujausią OpenCode versiją.",
+  "settings.updates.toast.latest.description":
+    "Naudojate naujausią OpenCode versiją.",
   "sound.option.none": "Nėra",
   "sound.option.alert01": "Įspėjimas 01",
   "sound.option.alert02": "Įspėjimas 02",
@@ -1070,21 +1188,29 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Rodyti sistemos pranešimą, kai agentas baigtas arba jam reikia dėmesio",
   "settings.general.notifications.permissions.title": "Leidimai",
-  "settings.general.notifications.permissions.description": "Rodyti sistemos pranešimą, kai reikalingas leidimas",
+  "settings.general.notifications.permissions.description":
+    "Rodyti sistemos pranešimą, kai reikalingas leidimas",
   "settings.general.notifications.errors.title": "Klaidos",
-  "settings.general.notifications.errors.description": "Rodyti sistemos pranešimą, kai įvyksta klaida",
+  "settings.general.notifications.errors.description":
+    "Rodyti sistemos pranešimą, kai įvyksta klaida",
   "settings.general.sounds.agent.title": "Agentas",
-  "settings.general.sounds.agent.description": "Leisti garsą, kai agentas baigtas arba jam reikia dėmesio",
+  "settings.general.sounds.agent.description":
+    "Leisti garsą, kai agentas baigtas arba jam reikia dėmesio",
   "settings.general.sounds.permissions.title": "Leidimai",
-  "settings.general.sounds.permissions.description": "Leisti garsą, kai reikia leidimo",
+  "settings.general.sounds.permissions.description":
+    "Leisti garsą, kai reikia leidimo",
   "settings.general.sounds.errors.title": "Klaidos",
-  "settings.general.sounds.errors.description": "Leisti garsą, kai įvyksta klaida",
+  "settings.general.sounds.errors.description":
+    "Leisti garsą, kai įvyksta klaida",
   "settings.shortcuts.title": "Spartieji klavišai",
   "settings.shortcuts.reset.button": "Atstatyti į numatytuosius nustatymus",
-  "settings.shortcuts.reset.toast.title": "Spartieji klavišai nustatyti iš naujo",
-  "settings.shortcuts.reset.toast.description": "Spartieji klavišai buvo atkurti į numatytuosius nustatymus.",
+  "settings.shortcuts.reset.toast.title":
+    "Spartieji klavišai nustatyti iš naujo",
+  "settings.shortcuts.reset.toast.description":
+    "Spartieji klavišai buvo atkurti į numatytuosius nustatymus.",
   "settings.shortcuts.conflict.title": "Spartusis klavišas jau naudojamas",
-  "settings.shortcuts.conflict.description": "{{keybind}} jau priskirtas {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} jau priskirtas {{titles}}.",
   "settings.shortcuts.unassigned": "Nepriskirta",
   "settings.shortcuts.pressKeys": "Paspauskite klavišus",
   "settings.shortcuts.search.placeholder": "Paieškos spartieji klavišai",
@@ -1096,12 +1222,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminalas",
   "settings.shortcuts.group.prompt": "Užklausa",
   "settings.providers.title": "Teikėjai",
-  "settings.providers.description": "Teikėjo nustatymus bus galima konfigūruoti čia.",
+  "settings.providers.description":
+    "Teikėjo nustatymus bus galima konfigūruoti čia.",
   "settings.providers.section.connected": "Prisijungę teikėjai",
   "settings.providers.connected.empty": "Nėra prisijungusių teikėjų",
-  "settings.providers.connected.environmentDescription": "Prisijungta iš jūsų aplinkos kintamųjų",
+  "settings.providers.connected.environmentDescription":
+    "Prisijungta iš jūsų aplinkos kintamųjų",
   "settings.providers.section.popular": "Populiarūs tiekėjai",
-  "settings.providers.custom.description": "Pridėkite su OpenAI suderinamą tiekėją pagal bazinį URL.",
+  "settings.providers.custom.description":
+    "Pridėkite su OpenAI suderinamą tiekėją pagal bazinį URL.",
   "settings.providers.tag.environment": "Aplinka",
   "settings.providers.tag.config": "Konfigūracija",
   "settings.providers.tag.custom": "Pasirinktinis",
@@ -1109,27 +1238,34 @@ export const dict = {
   "settings.models.title": "Modeliai",
   "settings.models.description": "Čia bus konfigūruojami modelio nustatymai.",
   "settings.agents.title": "Agentai",
-  "settings.agents.description": "Agento nustatymus bus galima konfigūruoti čia.",
+  "settings.agents.description":
+    "Agento nustatymus bus galima konfigūruoti čia.",
   "settings.commands.title": "Komandos",
-  "settings.commands.description": "Čia bus galima konfigūruoti komandų nustatymus.",
+  "settings.commands.description":
+    "Čia bus galima konfigūruoti komandų nustatymus.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Čia bus galima konfigūruoti MCP nustatymus.",
   "settings.permissions.title": "Leidimai",
   "settings.permissions.description":
     "Valdykite, kokius įrankius serveris gali naudoti pagal numatytuosius nustatymus.",
   "settings.permissions.section.tools": "Įrankiai",
-  "settings.permissions.toast.updateFailed.title": "Nepavyko atnaujinti leidimų",
+  "settings.permissions.toast.updateFailed.title":
+    "Nepavyko atnaujinti leidimų",
   "settings.permissions.action.allow": "Leisti",
   "settings.permissions.action.ask": "Paklausk",
   "settings.permissions.action.deny": "Neigti",
   "settings.permissions.tool.read.title": "Skaityti",
-  "settings.permissions.tool.read.description": "Failo skaitymas (atitinka failo kelią)",
+  "settings.permissions.tool.read.description":
+    "Failo skaitymas (atitinka failo kelią)",
   "settings.permissions.tool.edit.title": "Redaguoti",
-  "settings.permissions.tool.edit.description": "Keiskite failus, įskaitant redagavimus, įrašus ir pataisas",
+  "settings.permissions.tool.edit.description":
+    "Keiskite failus, įskaitant redagavimus, įrašus ir pataisas",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Suderinkite failus naudodami globos šablonus",
+  "settings.permissions.tool.glob.description":
+    "Suderinkite failus naudodami globos šablonus",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Ieškokite failo turinio naudodami įprastus posakius",
+  "settings.permissions.tool.grep.description":
+    "Ieškokite failo turinio naudodami įprastus posakius",
   "settings.permissions.tool.list.title": "Sąrašas",
   "settings.permissions.tool.list.description": "Išvardykite failus kataloge",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1137,17 +1273,21 @@ export const dict = {
   "settings.permissions.tool.task.title": "Užduotis",
   "settings.permissions.tool.task.description": "Paleisti antrinius agentus",
   "settings.permissions.tool.skill.title": "Įgūdis",
-  "settings.permissions.tool.skill.description": "Įkelkite įgūdžius pagal pavadinimą",
+  "settings.permissions.tool.skill.description":
+    "Įkelkite įgūdžius pagal pavadinimą",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Vykdykite kalbos serverio užklausas",
+  "settings.permissions.tool.lsp.description":
+    "Vykdykite kalbos serverio užklausas",
   "settings.permissions.tool.todowrite.title": "Todo Rašyti",
-  "settings.permissions.tool.todowrite.description": "Atnaujinkite darbų sąrašą",
+  "settings.permissions.tool.todowrite.description":
+    "Atnaujinkite darbų sąrašą",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
   "settings.permissions.tool.webfetch.description": "Gaukite turinį iš URL",
   "settings.permissions.tool.websearch.title": "Interneto paieška",
   "settings.permissions.tool.websearch.description": "Ieškokite internete",
   "settings.permissions.tool.external_directory.title": "Išorinis katalogas",
-  "settings.permissions.tool.external_directory.description": "Pasiekite failus už projekto katalogo ribų",
+  "settings.permissions.tool.external_directory.description":
+    "Pasiekite failus už projekto katalogo ribų",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
   "settings.permissions.tool.doom_loop.description":
     "Aptikti pasikartojančius įrankių iškvietimus naudojant identišką įvestį",
@@ -1164,12 +1304,14 @@ export const dict = {
   "workspace.resetting.description": "Tai gali užtrukti minutę.",
   "workspace.reset.failed.title": "Nepavyko iš naujo nustatyti darbo srities",
   "workspace.reset.success.title": "Darbo sritis nustatyta iš naujo",
-  "workspace.reset.success.description": "Dabar darbo sritis atitinka numatytąją šaką.",
+  "workspace.reset.success.description":
+    "Dabar darbo sritis atitinka numatytąją šaką.",
   "workspace.error.stillPreparing": "Darbo vieta vis dar ruošiama",
   "workspace.status.checking": "Tikrinama, ar nėra nesujungtų pakeitimų...",
   "workspace.status.error": "Nepavyko patvirtinti git būsenos.",
   "workspace.status.clean": "Neaptikta jokių nesujungtų pakeitimų.",
-  "workspace.status.dirty": "Šioje darbo srityje aptikti nesujungti pakeitimai.",
+  "workspace.status.dirty":
+    "Šioje darbo srityje aptikti nesujungti pakeitimai.",
   "workspace.delete.title": "Ištrinti darbo sritį",
   "workspace.delete.confirm": 'Ištrinti darbo sritį "{{name}}"?',
   "workspace.delete.button": "Ištrinti darbo sritį",
@@ -1179,6 +1321,7 @@ export const dict = {
   "workspace.reset.archived.none": "Jokia aktyvi sesija nebus archyvuojama.",
   "workspace.reset.archived.one": "1 sesija bus suarchyvuota.",
   "workspace.reset.archived.many": "{{count}} sesijos bus archyvuojamos.",
-  "workspace.reset.note": "Tai iš naujo nustatys darbo sritį, kad ji atitiktų numatytąją šaką.",
+  "workspace.reset.note":
+    "Tai iš naujo nustatys darbo sritį, kad ji atitiktų numatytąją šaką.",
   "dialog.usageExceeded.dontShowAgain": "Daugiau nerodyti",
 }

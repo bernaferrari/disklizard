@@ -1,9 +1,14 @@
 export const dict = {
-  "disk.accessGuidance.macos": "시스템 설정에서 DiskLizard에 전체 디스크 접근 권한을 부여한 후 다시 스캔하세요.",
-  "disk.accessGuidance.windows": "이 드라이브에 접근할 수 있는 계정을 사용하거나, 내 계정이 읽을 수 있는 폴더를 스캔하세요.",
-  "disk.accessGuidance.linux": "폴더 및 마운트 권한을 확인한 후 다시 스캔하세요.",
-  "disk.accessGuidance.default": "이 폴더들에 대한 접근을 확인한 후 다시 스캔하세요.",
-  "disk.accessGuidance.rescan": "접근 권한을 변경한 후 상단 바의 다시 스캔을 사용하세요.",
+  "disk.accessGuidance.macos":
+    "시스템 설정에서 DiskLizard에 전체 디스크 접근 권한을 부여한 후 다시 스캔하세요.",
+  "disk.accessGuidance.windows":
+    "이 드라이브에 접근할 수 있는 계정을 사용하거나, 내 계정이 읽을 수 있는 폴더를 스캔하세요.",
+  "disk.accessGuidance.linux":
+    "폴더 및 마운트 권한을 확인한 후 다시 스캔하세요.",
+  "disk.accessGuidance.default":
+    "이 폴더들에 대한 접근을 확인한 후 다시 스캔하세요.",
+  "disk.accessGuidance.rescan":
+    "접근 권한을 변경한 후 상단 바의 다시 스캔을 사용하세요.",
   "disk.common.rescan": "다시 스캔",
   "command.category.suggested": "추천",
   "command.category.view": "보기",
@@ -74,17 +79,20 @@ export const dict = {
   "command.permissions.autoaccept.enable": "권한 자동 수락",
   "command.permissions.autoaccept.disable": "권한 자동 수락 중지",
   "command.workspace.toggle": "작업 공간 전환",
-  "command.workspace.toggle.description": "사이드바에서 다중 작업 공간 활성화 또는 비활성화",
+  "command.workspace.toggle.description":
+    "사이드바에서 다중 작업 공간 활성화 또는 비활성화",
   "command.session.undo": "실행 취소",
   "command.session.undo.description": "마지막 메시지 실행 취소",
   "command.session.redo": "다시 실행",
   "command.session.redo.description": "마지막 실행 취소된 메시지 다시 실행",
   "command.session.compact": "세션 압축",
-  "command.session.compact.description": "컨텍스트 크기를 줄이기 위해 세션 요약",
+  "command.session.compact.description":
+    "컨텍스트 크기를 줄이기 위해 세션 요약",
   "command.session.fork": "메시지에서 분기",
   "command.session.fork.description": "이전 메시지에서 새 세션 생성",
   "command.session.share": "세션 공유",
-  "command.session.share.description": "이 세션을 공유하고 URL을 클립보드에 복사",
+  "command.session.share.description":
+    "이 세션을 공유하고 URL을 클립보드에 복사",
   "command.session.unshare": "세션 공유 중지",
   "command.session.unshare.description": "이 세션 공유 중지",
   "command.session.export": "세션 내보내기",
@@ -101,10 +109,12 @@ export const dict = {
   "dialog.provider.group.other": "기타",
   "dialog.provider.custom.label": "OpenAI 호환 사용자 지정 공급자",
   "dialog.provider.tag.recommended": "추천",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini 등을 포함한 엄선된 모델",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini 등을 포함한 엄선된 모델",
   "dialog.provider.opencode.tagline": "신뢰할 수 있는 최적화 모델",
   "dialog.provider.opencodeGo.tagline": "모두를 위한 저렴한 구독",
-  "dialog.provider.anthropic.note": "Pro 및 Max를 포함한 Claude 모델에 직접 액세스",
+  "dialog.provider.anthropic.note":
+    "Pro 및 Max를 포함한 Claude 모델에 직접 액세스",
   "dialog.provider.copilot.note": "GitHub Copilot을 통한 코딩 지원용 AI 모델",
   "dialog.provider.openai.note": "빠르고 강력한 범용 AI 작업을 위한 GPT 모델",
   "dialog.provider.google.note": "빠르고 구조화된 응답을 위한 Gemini 모델",
@@ -136,7 +146,8 @@ export const dict = {
   "provider.connect.apiKey.required": "API 키가 필요합니다",
   "provider.connect.opencodeZen.line1":
     "OpenCode Zen은 코딩 에이전트를 위해 최적화된 신뢰할 수 있는 엄선된 모델에 대한 액세스를 제공합니다.",
-  "provider.connect.opencodeZen.line2": "단일 API 키로 Claude, GPT, Gemini, GLM 등 다양한 모델에 액세스할 수 있습니다.",
+  "provider.connect.opencodeZen.line2":
+    "단일 API 키로 Claude, GPT, Gemini, GLM 등 다양한 모델에 액세스할 수 있습니다.",
   "provider.connect.opencodeZen.visit.prefix": "다음 ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": "을 방문하여 API 키를 받으세요.",
@@ -154,22 +165,26 @@ export const dict = {
     "를 방문하고 아래 코드를 입력하여 계정을 연결하고 OpenCode에서 {{provider}} 모델을 사용하세요.",
   "provider.connect.oauth.auto.confirmationCode": "확인 코드",
   "provider.connect.toast.connected.title": "{{provider}} 연결됨",
-  "provider.connect.toast.connected.description": "이제 {{provider}} 모델을 사용할 수 있습니다.",
+  "provider.connect.toast.connected.description":
+    "이제 {{provider}} 모델을 사용할 수 있습니다.",
   "provider.custom.title": "사용자 지정 공급자",
-  "provider.custom.unavailable": "이 서버에서는 사용자 지정 공급자를 사용할 수 없습니다",
+  "provider.custom.unavailable":
+    "이 서버에서는 사용자 지정 공급자를 사용할 수 없습니다",
   "provider.custom.description.prefix": "OpenAI 호환 공급자를 구성합니다. ",
   "provider.custom.description.link": "공급자 구성 문서",
   "provider.custom.description.suffix": "를 참조하세요.",
   "provider.custom.field.providerID.label": "공급자 ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "소문자, 숫자, 하이픈 또는 밑줄",
+  "provider.custom.field.providerID.description":
+    "소문자, 숫자, 하이픈 또는 밑줄",
   "provider.custom.field.name.label": "표시 이름",
   "provider.custom.field.name.placeholder": "내 AI 공급자",
   "provider.custom.field.baseURL.label": "기본 URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API 키",
   "provider.custom.field.apiKey.placeholder": "API 키",
-  "provider.custom.field.apiKey.description": "선택 사항입니다. 헤더를 통해 인증을 관리하는 경우 비워 두세요.",
+  "provider.custom.field.apiKey.description":
+    "선택 사항입니다. 헤더를 통해 인증을 관리하는 경우 비워 두세요.",
   "provider.custom.models.label": "모델",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -185,15 +200,18 @@ export const dict = {
   "provider.custom.headers.remove": "헤더 제거",
   "provider.custom.headers.add": "헤더 추가",
   "provider.custom.error.providerID.required": "공급자 ID가 필요합니다",
-  "provider.custom.error.providerID.format": "소문자, 숫자, 하이픈 또는 밑줄을 사용하세요",
+  "provider.custom.error.providerID.format":
+    "소문자, 숫자, 하이픈 또는 밑줄을 사용하세요",
   "provider.custom.error.providerID.exists": "해당 공급자 ID가 이미 존재합니다",
   "provider.custom.error.name.required": "표시 이름이 필요합니다",
   "provider.custom.error.baseURL.required": "기본 URL이 필요합니다",
-  "provider.custom.error.baseURL.format": "http:// 또는 https://로 시작해야 합니다",
+  "provider.custom.error.baseURL.format":
+    "http:// 또는 https://로 시작해야 합니다",
   "provider.custom.error.required": "필수",
   "provider.custom.error.duplicate": "중복",
   "provider.disconnect.toast.disconnected.title": "{{provider}} 연결 해제됨",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} 모델을 더 이상 사용할 수 없습니다.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} 모델을 더 이상 사용할 수 없습니다.",
   "model.tag.free": "무료",
   "model.tag.latest": "최신",
   "model.provider.anthropic": "Anthropic",
@@ -279,9 +297,11 @@ export const dict = {
   "prompt.action.stop": "중지",
   "prompt.toast.pasteUnsupported.title": "지원되지 않는 첨부 파일",
   "prompt.toast.attachmentDuplicate.title": "이 파일은 이미 업로드되었습니다",
-  "prompt.toast.pasteUnsupported.description": "이미지, PDF 또는 텍스트 파일만 첨부할 수 있습니다.",
+  "prompt.toast.pasteUnsupported.description":
+    "이미지, PDF 또는 텍스트 파일만 첨부할 수 있습니다.",
   "prompt.toast.modelAgentRequired.title": "에이전트 및 모델 선택",
-  "prompt.toast.modelAgentRequired.description": "프롬프트를 보내기 전에 에이전트와 모델을 선택하세요.",
+  "prompt.toast.modelAgentRequired.description":
+    "프롬프트를 보내기 전에 에이전트와 모델을 선택하세요.",
   "prompt.toast.worktreeCreateFailed.title": "작업 트리 생성 실패",
   "prompt.toast.sessionCreateFailed.title": "세션 생성 실패",
   "prompt.toast.shellSendFailed.title": "셸 명령 전송 실패",
@@ -343,12 +363,14 @@ export const dict = {
   "dialog.project.edit.color": "색상",
   "dialog.project.edit.color.select": "{{color}} 색상 선택",
   "dialog.project.edit.worktree.startup": "작업 공간 시작 스크립트",
-  "dialog.project.edit.worktree.startup.description": "새 작업 공간(작업 트리)을 만든 뒤 실행됩니다.",
+  "dialog.project.edit.worktree.startup.description":
+    "새 작업 공간(작업 트리)을 만든 뒤 실행됩니다.",
   "dialog.project.edit.worktree.startup.placeholder": "예: bun install",
   "dialog.usageExceeded.dontShowAgain": "다시 표시하지 않기",
 
   "context.breakdown.title": "컨텍스트 분석",
-  "context.breakdown.note": '입력 토큰의 대략적인 분석입니다. "기타"에는 도구 정의 및 오버헤드가 포함됩니다.',
+  "context.breakdown.note":
+    '입력 토큰의 대략적인 분석입니다. "기타"에는 도구 정의 및 오버헤드가 포함됩니다.',
   "context.breakdown.system": "시스템",
   "context.breakdown.user": "사용자",
   "context.breakdown.assistant": "어시스턴트",
@@ -401,36 +423,48 @@ export const dict = {
   "toast.theme.title": "테마 전환됨",
   "toast.scheme.title": "색상 테마",
   "toast.workspace.enabled.title": "작업 공간 활성화됨",
-  "toast.workspace.enabled.description": "이제 사이드바에 여러 작업 트리가 표시됩니다",
+  "toast.workspace.enabled.description":
+    "이제 사이드바에 여러 작업 트리가 표시됩니다",
   "toast.workspace.disabled.title": "작업 공간 비활성화됨",
-  "toast.workspace.disabled.description": "사이드바에 메인 작업 트리만 표시됩니다",
+  "toast.workspace.disabled.description":
+    "사이드바에 메인 작업 트리만 표시됩니다",
   "toast.permissions.autoaccept.on.title": "권한 자동 수락 중",
-  "toast.permissions.autoaccept.on.description": "권한 요청이 자동으로 승인됩니다",
+  "toast.permissions.autoaccept.on.description":
+    "권한 요청이 자동으로 승인됩니다",
   "toast.permissions.autoaccept.off.title": "권한 자동 수락 중지됨",
-  "toast.permissions.autoaccept.off.description": "권한 요청에 승인이 필요합니다",
+  "toast.permissions.autoaccept.off.description":
+    "권한 요청에 승인이 필요합니다",
   "toast.model.none.title": "선택된 모델 없음",
   "toast.model.none.description": "이 세션을 요약하려면 공급자를 연결하세요",
   "toast.file.loadFailed.title": "파일 로드 실패",
   "toast.file.listFailed.title": "파일 목록을 불러오지 못했습니다",
   "toast.context.noLineSelection.title": "줄 선택 없음",
-  "toast.context.noLineSelection.description": "먼저 파일 탭에서 줄 범위를 선택하세요.",
+  "toast.context.noLineSelection.description":
+    "먼저 파일 탭에서 줄 범위를 선택하세요.",
   "toast.session.share.copyFailed.title": "URL 클립보드 복사 실패",
   "toast.session.share.success.title": "세션 공유됨",
-  "toast.session.share.success.description": "공유 URL이 클립보드에 복사되었습니다!",
+  "toast.session.share.success.description":
+    "공유 URL이 클립보드에 복사되었습니다!",
   "toast.session.share.failed.title": "세션 공유 실패",
-  "toast.session.share.failed.description": "세션을 공유하는 동안 오류가 발생했습니다",
+  "toast.session.share.failed.description":
+    "세션을 공유하는 동안 오류가 발생했습니다",
   "toast.session.unshare.success.title": "세션 공유 해제됨",
-  "toast.session.unshare.success.description": "세션 공유가 성공적으로 해제되었습니다!",
+  "toast.session.unshare.success.description":
+    "세션 공유가 성공적으로 해제되었습니다!",
   "toast.session.unshare.failed.title": "세션 공유 해제 실패",
-  "toast.session.unshare.failed.description": "세션 공유를 해제하는 동안 오류가 발생했습니다",
+  "toast.session.unshare.failed.description":
+    "세션 공유를 해제하는 동안 오류가 발생했습니다",
   "toast.session.export.success.title": "세션을 내보냈습니다",
   "toast.session.export.success.description": "세션 저장 위치: {{filename}}",
   "toast.session.export.failed.title": "세션 내보내기 실패",
-  "toast.session.export.failed.description": "세션을 내보내는 동안 오류가 발생했습니다",
+  "toast.session.export.failed.description":
+    "세션을 내보내는 동안 오류가 발생했습니다",
 
-  "toast.session.listFailed.title": "{{project}}에 대한 세션을 로드하지 못했습니다",
+  "toast.session.listFailed.title":
+    "{{project}}에 대한 세션을 로드하지 못했습니다",
   "toast.update.title": "업데이트 가능",
-  "toast.update.description": "OpenCode의 새 버전({{version}})을 설치할 수 있습니다.",
+  "toast.update.description":
+    "OpenCode의 새 버전({{version}})을 설치할 수 있습니다.",
   "toast.update.action.installRestart": "설치 및 다시 시작",
   "toast.update.action.notYet": "나중에",
   "toast.update.installFailed.title": "업데이트를 설치할 수 없습니다",
@@ -449,7 +483,8 @@ export const dict = {
   "error.page.version": "버전: {{version}}",
   "error.dev.rootNotFound":
     "루트 요소를 찾을 수 없습니다. index.html에 추가하는 것을 잊으셨나요? 또는 id 속성의 철자가 틀렸을 수 있습니다.",
-  "error.serverSync.connectFailed": "서버에 연결할 수 없습니다. `{{url}}`에서 서버가 실행 중인가요?",
+  "error.serverSync.connectFailed":
+    "서버에 연결할 수 없습니다. `{{url}}`에서 서버가 실행 중인가요?",
   "directory.error.invalidUrl": "URL에 유효하지 않은 디렉터리가 있습니다.",
   "error.chain.unknown": "알 수 없는 오류",
   "error.chain.causedBy": "원인:",
@@ -459,21 +494,31 @@ export const dict = {
   "error.chain.responseBody": "응답 본문:\n{{body}}",
   "error.chain.didYouMean": "혹시 {{suggestions}}을(를) 의미하셨나요?",
   "error.chain.modelNotFound": "모델을 찾을 수 없음: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "구성(opencode.json)의 공급자/모델 이름을 확인하세요",
-  "error.chain.mcpFailed": 'MCP 서버 "{{name}}" 실패. 참고: OpenCode는 아직 MCP 인증을 지원하지 않습니다.',
-  "error.chain.providerAuthFailed": "공급자 인증 실패 ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": '공급자 "{{provider}}" 초기화 실패. 자격 증명과 구성을 확인하세요.',
-  "error.chain.configJsonInvalid": "{{path}}의 구성 파일이 유효한 JSON(C)가 아닙니다",
-  "error.chain.configJsonInvalidWithMessage": "{{path}}의 구성 파일이 유효한 JSON(C)가 아닙니다: {{message}}",
+  "error.chain.checkConfig":
+    "구성(opencode.json)의 공급자/모델 이름을 확인하세요",
+  "error.chain.mcpFailed":
+    'MCP 서버 "{{name}}" 실패. 참고: OpenCode는 아직 MCP 인증을 지원하지 않습니다.',
+  "error.chain.providerAuthFailed":
+    "공급자 인증 실패 ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    '공급자 "{{provider}}" 초기화 실패. 자격 증명과 구성을 확인하세요.',
+  "error.chain.configJsonInvalid":
+    "{{path}}의 구성 파일이 유효한 JSON(C)가 아닙니다",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}}의 구성 파일이 유효한 JSON(C)가 아닙니다: {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}}의 "{{dir}}" 디렉터리가 유효하지 않습니다. 디렉터리 이름을 "{{suggestion}}"으로 변경하거나 제거하세요. 이는 흔한 오타입니다.',
-  "error.chain.configFrontmatterError": "{{path}}의 frontmatter 파싱 실패:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}}의 frontmatter 파싱 실패:\n{{message}}",
   "error.chain.configInvalid": "{{path}}의 구성 파일이 유효하지 않습니다",
-  "error.chain.configInvalidWithMessage": "{{path}}의 구성 파일이 유효하지 않습니다: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}}의 구성 파일이 유효하지 않습니다: {{message}}",
   "notification.permission.title": "권한 필요",
-  "notification.permission.description": "{{projectName}}의 {{sessionTitle}}에서 권한이 필요합니다",
+  "notification.permission.description":
+    "{{projectName}}의 {{sessionTitle}}에서 권한이 필요합니다",
   "notification.question.title": "질문",
-  "notification.question.description": "{{projectName}}의 {{sessionTitle}}에서 질문이 있습니다",
+  "notification.question.description":
+    "{{projectName}}의 {{sessionTitle}}에서 질문이 있습니다",
   "notification.action.goToSession": "세션으로 이동",
   "notification.session.responseReady.title": "응답 준비됨",
   "notification.session.error.title": "세션 오류",
@@ -490,8 +535,10 @@ export const dict = {
   "session.review.change.other": "변경",
   "session.review.loadingChanges": "변경 사항 로드 중...",
   "session.review.empty": "이 세션에 변경 사항이 아직 없습니다",
-  "session.review.noVcs": "Git 버전 관리 시스템이 감지되지 않아 변경 사항이 표시되지 않습니다",
-  "session.review.noSnapshot": "구성에서 스냅샷 추적이 비활성화되어 있어 세션 변경 사항을 사용할 수 없습니다",
+  "session.review.noVcs":
+    "Git 버전 관리 시스템이 감지되지 않아 변경 사항이 표시되지 않습니다",
+  "session.review.noSnapshot":
+    "구성에서 스냅샷 추적이 비활성화되어 있어 세션 변경 사항을 사용할 수 없습니다",
   "session.review.noChanges": "변경 없음",
   "session.files.selectToOpen": "열 파일을 선택하세요",
   "session.files.all": "모든 파일",
@@ -537,7 +584,8 @@ export const dict = {
   "status.popover.tab.plugins": "플러그인",
   "status.popover.action.manageServers": "서버 관리",
   "session.share.popover.title": "웹에 게시",
-  "session.share.popover.description.shared": "이 세션은 웹에 공개되었습니다. 링크가 있는 누구나 액세스할 수 있습니다.",
+  "session.share.popover.description.shared":
+    "이 세션은 웹에 공개되었습니다. 링크가 있는 누구나 액세스할 수 있습니다.",
   "session.share.popover.description.unshared":
     "세션을 웹에 공개적으로 공유합니다. 링크가 있는 누구나 액세스할 수 있습니다.",
   "session.share.action.share": "공유",
@@ -579,8 +627,10 @@ export const dict = {
   "sidebar.workspaces.enable": "작업 공간 활성화",
   "sidebar.workspaces.disable": "작업 공간 비활성화",
   "sidebar.gettingStarted.title": "시작하기",
-  "sidebar.gettingStarted.line1": "OpenCode에는 무료 모델이 포함되어 있어 즉시 시작할 수 있습니다.",
-  "sidebar.gettingStarted.line2": "Claude, GPT, Gemini 등을 포함한 모델을 사용하려면 공급자를 연결하세요.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode에는 무료 모델이 포함되어 있어 즉시 시작할 수 있습니다.",
+  "sidebar.gettingStarted.line2":
+    "Claude, GPT, Gemini 등을 포함한 모델을 사용하려면 공급자를 연결하세요.",
   "sidebar.project.recentSessions": "최근 세션",
   "sidebar.project.viewAllSessions": "모든 세션 보기",
   "sidebar.project.clearNotifications": "알림 지우기",
@@ -591,7 +641,8 @@ export const dict = {
   "settings.tab.shortcuts": "단축키",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL 통합",
-  "settings.desktop.wsl.description": "Windows의 WSL 내부에서 OpenCode 서버를 실행합니다.",
+  "settings.desktop.wsl.description":
+    "Windows의 WSL 내부에서 OpenCode 서버를 실행합니다.",
   "settings.general.section.appearance": "모양",
   "settings.general.section.notifications": "시스템 알림",
   "settings.general.section.updates": "업데이트",
@@ -601,23 +652,30 @@ export const dict = {
   "settings.general.row.language.title": "언어",
   "settings.general.row.language.description": "OpenCode 표시 언어 변경",
   "settings.general.row.appearance.title": "모양",
-  "settings.general.row.appearance.description": "기기에서 OpenCode가 보이는 방식 사용자 지정",
+  "settings.general.row.appearance.description":
+    "기기에서 OpenCode가 보이는 방식 사용자 지정",
   "settings.general.row.colorScheme.title": "색상 테마",
-  "settings.general.row.colorScheme.description": "OpenCode가 시스템, 라이트 또는 다크 테마를 따를지 선택하세요",
+  "settings.general.row.colorScheme.description":
+    "OpenCode가 시스템, 라이트 또는 다크 테마를 따를지 선택하세요",
   "settings.general.row.theme.title": "테마",
   "settings.general.row.theme.description": "OpenCode 테마 사용자 지정",
   "settings.general.row.font.title": "코드 글꼴",
-  "settings.general.row.font.description": "코드 블록에 사용되는 글꼴을 사용자 지정",
+  "settings.general.row.font.description":
+    "코드 블록에 사용되는 글꼴을 사용자 지정",
   "settings.general.row.terminalFont.title": "터미널 글꼴",
-  "settings.general.row.terminalFont.description": "터미널에서 사용할 글꼴을 설정합니다",
+  "settings.general.row.terminalFont.description":
+    "터미널에서 사용할 글꼴을 설정합니다",
   "settings.general.row.uiFont.title": "UI 글꼴",
-  "settings.general.row.uiFont.description": "인터페이스 전반에 사용되는 글꼴을 사용자 지정",
+  "settings.general.row.uiFont.description":
+    "인터페이스 전반에 사용되는 글꼴을 사용자 지정",
   "settings.general.row.followup.title": "후속 조치 동작",
-  "settings.general.row.followup.description": "후속 프롬프트를 즉시 실행할지 대기열에 넣을지 선택하세요",
+  "settings.general.row.followup.description":
+    "후속 프롬프트를 즉시 실행할지 대기열에 넣을지 선택하세요",
   "settings.general.row.followup.option.queue": "대기열",
   "settings.general.row.followup.option.steer": "즉시 반영",
   "settings.general.row.reasoningSummaries.title": "추론 요약 표시",
-  "settings.general.row.reasoningSummaries.description": "타임라인에 모델 추론 요약 표시",
+  "settings.general.row.reasoningSummaries.description":
+    "타임라인에 모델 추론 요약 표시",
   "settings.general.row.shellToolPartsExpanded.title": "shell 도구 항목 펼치기",
   "settings.general.row.shellToolPartsExpanded.description":
     "타임라인에서 기본적으로 shell 도구 항목을 펼친 상태로 표시합니다",
@@ -625,19 +683,24 @@ export const dict = {
   "settings.general.row.editToolPartsExpanded.description":
     "타임라인에서 기본적으로 edit, write, patch 도구 항목을 펼친 상태로 표시합니다",
   "settings.general.row.wayland.title": "네이티브 Wayland 사용",
-  "settings.general.row.wayland.description": "Wayland에서 X11 폴백을 비활성화합니다. 다시 시작해야 합니다.",
+  "settings.general.row.wayland.description":
+    "Wayland에서 X11 폴백을 비활성화합니다. 다시 시작해야 합니다.",
   "settings.general.row.wayland.tooltip":
     "혼합 주사율 모니터가 있는 Linux에서는 네이티브 Wayland가 더 안정적일 수 있습니다.",
   "settings.general.row.releaseNotes.title": "릴리스 노트",
-  "settings.general.row.releaseNotes.description": "업데이트 후 '새 소식' 팝업 표시",
+  "settings.general.row.releaseNotes.description":
+    "업데이트 후 '새 소식' 팝업 표시",
   "settings.updates.row.startup.title": "시작 시 업데이트 확인",
-  "settings.updates.row.startup.description": "OpenCode를 실행할 때 업데이트를 자동으로 확인합니다",
+  "settings.updates.row.startup.description":
+    "OpenCode를 실행할 때 업데이트를 자동으로 확인합니다",
   "settings.updates.row.check.title": "업데이트 확인",
-  "settings.updates.row.check.description": "업데이트를 수동으로 확인하고, 사용 가능하면 설치합니다",
+  "settings.updates.row.check.description":
+    "업데이트를 수동으로 확인하고, 사용 가능하면 설치합니다",
   "settings.updates.action.checkNow": "지금 확인",
   "settings.updates.action.checking": "확인 중...",
   "settings.updates.toast.latest.title": "최신 상태입니다",
-  "settings.updates.toast.latest.description": "현재 최신 버전의 OpenCode를 사용 중입니다.",
+  "settings.updates.toast.latest.description":
+    "현재 최신 버전의 OpenCode를 사용 중입니다.",
   "sound.option.none": "없음",
   "sound.option.alert01": "알림 01",
   "sound.option.alert02": "알림 02",
@@ -685,23 +748,30 @@ export const dict = {
   "sound.option.yup05": "네 05",
   "sound.option.yup06": "네 06",
   "settings.general.notifications.agent.title": "에이전트",
-  "settings.general.notifications.agent.description": "에이전트가 완료되거나 주의가 필요할 때 시스템 알림 표시",
+  "settings.general.notifications.agent.description":
+    "에이전트가 완료되거나 주의가 필요할 때 시스템 알림 표시",
   "settings.general.notifications.permissions.title": "권한",
-  "settings.general.notifications.permissions.description": "권한이 필요할 때 시스템 알림 표시",
+  "settings.general.notifications.permissions.description":
+    "권한이 필요할 때 시스템 알림 표시",
   "settings.general.notifications.errors.title": "오류",
-  "settings.general.notifications.errors.description": "오류가 발생했을 때 시스템 알림 표시",
+  "settings.general.notifications.errors.description":
+    "오류가 발생했을 때 시스템 알림 표시",
   "settings.general.sounds.agent.title": "에이전트",
-  "settings.general.sounds.agent.description": "에이전트가 완료되거나 주의가 필요할 때 소리 재생",
+  "settings.general.sounds.agent.description":
+    "에이전트가 완료되거나 주의가 필요할 때 소리 재생",
   "settings.general.sounds.permissions.title": "권한",
-  "settings.general.sounds.permissions.description": "권한이 필요할 때 소리 재생",
+  "settings.general.sounds.permissions.description":
+    "권한이 필요할 때 소리 재생",
   "settings.general.sounds.errors.title": "오류",
   "settings.general.sounds.errors.description": "오류가 발생했을 때 소리 재생",
   "settings.shortcuts.title": "키보드 단축키",
   "settings.shortcuts.reset.button": "기본값으로 초기화",
   "settings.shortcuts.reset.toast.title": "단축키 초기화됨",
-  "settings.shortcuts.reset.toast.description": "키보드 단축키가 기본값으로 초기화되었습니다.",
+  "settings.shortcuts.reset.toast.description":
+    "키보드 단축키가 기본값으로 초기화되었습니다.",
   "settings.shortcuts.conflict.title": "단축키가 이미 사용 중임",
-  "settings.shortcuts.conflict.description": "{{keybind}}은(는) 이미 {{titles}}에 할당되어 있습니다.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}}은(는) 이미 {{titles}}에 할당되어 있습니다.",
   "settings.shortcuts.unassigned": "할당되지 않음",
   "settings.shortcuts.pressKeys": "키 누르기",
   "settings.shortcuts.search.placeholder": "단축키 검색",
@@ -730,7 +800,8 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP 설정은 여기서 구성할 수 있습니다.",
   "settings.permissions.title": "권한",
-  "settings.permissions.description": "서버가 기본적으로 사용할 수 있는 도구를 제어합니다.",
+  "settings.permissions.description":
+    "서버가 기본적으로 사용할 수 있는 도구를 제어합니다.",
   "settings.permissions.section.tools": "도구",
   "settings.permissions.toast.updateFailed.title": "권한 업데이트 실패",
   "settings.permissions.action.allow": "허용",
@@ -739,11 +810,14 @@ export const dict = {
   "settings.permissions.tool.read.title": "읽기",
   "settings.permissions.tool.read.description": "파일 읽기 (파일 경로와 일치)",
   "settings.permissions.tool.edit.title": "편집",
-  "settings.permissions.tool.edit.description": "파일 수정 (편집, 쓰기, 패치 및 다중 편집 포함)",
+  "settings.permissions.tool.edit.description":
+    "파일 수정 (편집, 쓰기, 패치 및 다중 편집 포함)",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "glob 패턴을 사용하여 파일 일치",
+  "settings.permissions.tool.glob.description":
+    "glob 패턴을 사용하여 파일 일치",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "정규식을 사용하여 파일 내용 검색",
+  "settings.permissions.tool.grep.description":
+    "정규식을 사용하여 파일 내용 검색",
   "settings.permissions.tool.list.title": "목록",
   "settings.permissions.tool.list.description": "디렉터리 내 파일 나열",
   "settings.permissions.tool.bash.title": "Bash",
@@ -761,9 +835,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "웹 검색",
   "settings.permissions.tool.websearch.description": "웹 검색",
   "settings.permissions.tool.external_directory.title": "외부 디렉터리",
-  "settings.permissions.tool.external_directory.description": "프로젝트 디렉터리 외부의 파일에 액세스",
+  "settings.permissions.tool.external_directory.description":
+    "프로젝트 디렉터리 외부의 파일에 액세스",
   "settings.permissions.tool.doom_loop.title": "무한 반복",
-  "settings.permissions.tool.doom_loop.description": "동일한 입력으로 반복되는 도구 호출 감지",
+  "settings.permissions.tool.doom_loop.description":
+    "동일한 입력으로 반복되는 도구 호출 감지",
   "session.delete.failed.title": "세션 삭제 실패",
   "session.delete.title": "세션 삭제",
   "session.delete.confirm": '"{{name}}" 세션을 삭제하시겠습니까?',
@@ -777,12 +853,14 @@ export const dict = {
   "workspace.resetting.description": "잠시 시간이 걸릴 수 있습니다.",
   "workspace.reset.failed.title": "작업 공간 재설정 실패",
   "workspace.reset.success.title": "작업 공간 재설정됨",
-  "workspace.reset.success.description": "작업 공간이 이제 기본 브랜치와 일치합니다.",
+  "workspace.reset.success.description":
+    "작업 공간이 이제 기본 브랜치와 일치합니다.",
   "workspace.error.stillPreparing": "작업 공간이 아직 준비 중입니다",
   "workspace.status.checking": "병합되지 않은 변경 사항 확인 중...",
   "workspace.status.error": "Git 상태를 확인할 수 없습니다.",
   "workspace.status.clean": "병합되지 않은 변경 사항이 감지되지 않았습니다.",
-  "workspace.status.dirty": "이 작업 공간에서 병합되지 않은 변경 사항이 감지되었습니다.",
+  "workspace.status.dirty":
+    "이 작업 공간에서 병합되지 않은 변경 사항이 감지되었습니다.",
   "workspace.delete.title": "작업 공간 삭제",
   "workspace.delete.confirm": '"{{name}}" 작업 공간을 삭제하시겠습니까?',
   "workspace.delete.button": "작업 공간 삭제",
@@ -792,7 +870,8 @@ export const dict = {
   "workspace.reset.archived.none": "활성 세션이 보관되지 않습니다.",
   "workspace.reset.archived.one": "1개의 세션이 보관됩니다.",
   "workspace.reset.archived.many": "{{count}}개의 세션이 보관됩니다.",
-  "workspace.reset.note": "이 작업은 작업 공간을 기본 브랜치와 일치하도록 재설정합니다.",
+  "workspace.reset.note":
+    "이 작업은 작업 공간을 기본 브랜치와 일치하도록 재설정합니다.",
   "common.open": "열기",
   "dialog.releaseNotes.action.getStarted": "시작하기",
   "dialog.releaseNotes.action.next": "다음",
@@ -806,7 +885,8 @@ export const dict = {
   "common.time.hoursAgo.short": "{{count}}시간 전",
   "common.time.daysAgo.short": "{{count}}일 전",
   "settings.providers.connected.environmentDescription": "환경 변수에서 연결됨",
-  "settings.providers.custom.description": "기본 URL로 OpenAI 호환 공급자를 추가합니다.",
+  "settings.providers.custom.description":
+    "기본 URL로 OpenAI 호환 공급자를 추가합니다.",
 
   "app.server.unreachable": "{{server}}에 연결할 수 없습니다",
   "app.server.retrying": "자동으로 재시도 중...",
@@ -815,7 +895,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "비밀번호",
   "server.row.noUsername": "사용자 이름 없음",
   "session.review.noVcs.createGit.title": "Git 저장소 생성",
-  "session.review.noVcs.createGit.description": "이 프로젝트의 변경 사항을 추적, 검토 및 실행 취소",
+  "session.review.noVcs.createGit.description":
+    "이 프로젝트의 변경 사항을 추적, 검토 및 실행 취소",
   "session.review.noVcs.createGit.actionLoading": "Git 저장소 생성 중...",
   "session.review.noVcs.createGit.action": "Git 저장소 생성",
   "session.todo.progress": "{{total}}개의 할 일 중 {{done}}개 완료",
@@ -851,11 +932,13 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "지난 5초간 32ms를 초과한 프레임.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "지난 5초간의 차단된 시간 및 긴 작업 수. 최대 작업: {{max}}.",
+  "debugBar.long.tip":
+    "지난 5초간의 차단된 시간 및 긴 작업 수. 최대 작업: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "지난 5초간 관찰된 최악의 입력 지연.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "지난 5초간의 대략적인 상호작용 지속 시간. 이것은 공식 Web Vitals INP가 아닌 INP와 유사합니다.",
+  "debugBar.inp.tip":
+    "지난 5초간의 대략적인 상호작용 지속 시간. 이것은 공식 Web Vitals INP가 아닌 INP와 유사합니다.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "현재 앱 수명 동안의 누적 레이아웃 이동.",
   "debugBar.mem.label": "MEM",
@@ -866,7 +949,8 @@ export const dict = {
   "debugBar.focus.on": "켬",
   "debugBar.focus.off": "끔",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "선택한 언어를 변경하지 않고 전체 앱의 레이아웃 방향 강제 설정",
+  "debugBar.direction.tip":
+    "선택한 언어를 변경하지 않고 전체 앱의 레이아웃 방향 강제 설정",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "common.key.ctrl": "Ctrl",
@@ -888,10 +972,13 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "사용 가능한 서버 없음",
   "error.serverSDK.serverNotAvailable": "서버를 사용할 수 없음",
   "error.childStore.persistedCacheCreateFailed": "영구 캐시 생성 실패",
-  "error.childStore.persistedProjectMetadataCreateFailed": "영구 프로젝트 메타데이터 생성 실패",
-  "error.childStore.persistedProjectIconCreateFailed": "영구 프로젝트 아이콘 생성 실패",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "영구 프로젝트 메타데이터 생성 실패",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "영구 프로젝트 아이콘 생성 실패",
   "error.childStore.storeCreateFailed": "저장소 생성 실패",
-  "terminal.connectionLost.abnormalClose": "WebSocket이 비정상적으로 닫힘: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket이 비정상적으로 닫힘: {{code}}",
   "terminal.connectTicket.csrfError":
     "PTY 연결 티켓이 오리진 또는 CSRF 검사에서 거부되었습니다. 서버의 CORS 구성을 확인하세요.",
   "terminal.connectTicket.statusError": "PTY 연결 티켓 실패(상태: {{status}})",
@@ -909,7 +996,8 @@ export const dict = {
   "model.tooltip.provider": "공급자",
   "model.tooltip.reasoning": "추론",
   "common.clear": "지우기",
-  "session.child.promptDisabled": "하위 에이전트 세션에는 프롬프트를 입력할 수 없습니다.",
+  "session.child.promptDisabled":
+    "하위 에이전트 세션에는 프롬프트를 입력할 수 없습니다.",
   "session.child.backToParent": "메인 세션으로 돌아가기.",
 
   "wsl.server.add": "WSL 서버 추가",
@@ -921,7 +1009,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "배포판 선택",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL 확인 중...",
-  "wsl.onboarding.restartRequired": "WSL 설치를 완료하려면 Windows를 다시 시작해야 합니다.",
+  "wsl.onboarding.restartRequired":
+    "WSL 설치를 완료하려면 Windows를 다시 시작해야 합니다.",
   "wsl.onboarding.ready": "WSL이 준비되었습니다.",
   "wsl.onboarding.required": "계속하려면 WSL이 필요합니다.",
   "wsl.onboarding.checkingDistros": "배포판 확인 중...",
@@ -929,17 +1018,22 @@ export const dict = {
   "wsl.onboarding.checkingDistro": "{{distro}} 배포판 확인 중...",
   "wsl.onboarding.listingDistros": "배포판 목록 확인 중...",
   "wsl.onboarding.distroReady": "{{distro}} 배포판이 준비되었습니다.",
-  "wsl.onboarding.distroNotInstalled": "{{distro}} 배포판이 아직 설치되지 않았습니다.",
-  "wsl.onboarding.openDistroOnce": "설정을 완료하려면 {{distro}} 배포판을 한 번 여세요.",
-  "wsl.onboarding.finishingDistro": "{{distro}} 배포판 설정을 마무리하는 중입니다.",
+  "wsl.onboarding.distroNotInstalled":
+    "{{distro}} 배포판이 아직 설치되지 않았습니다.",
+  "wsl.onboarding.openDistroOnce":
+    "설정을 완료하려면 {{distro}} 배포판을 한 번 여세요.",
+  "wsl.onboarding.finishingDistro":
+    "{{distro}} 배포판 설정을 마무리하는 중입니다.",
   "wsl.onboarding.pickDistro": "배포판을 선택하거나 아래에서 설치하세요.",
   "wsl.onboarding.checkingOpencode": "OpenCode 확인 중...",
   "wsl.onboarding.checkingOpencodeIn": "{{distro}}에서 OpenCode 확인 중...",
   "wsl.onboarding.updatingOpencode": "OpenCode 업데이트 중...",
   "wsl.onboarding.updatingOpencodeIn": "{{distro}}에서 OpenCode 업데이트 중...",
-  "wsl.onboarding.updateOpencodeIn": "{{distro}}에서 OpenCode를 업데이트하세요.",
+  "wsl.onboarding.updateOpencodeIn":
+    "{{distro}}에서 OpenCode를 업데이트하세요.",
   "wsl.onboarding.updateOpencode": "OpenCode 업데이트",
-  "wsl.onboarding.opencodeReadyIn": "{{distro}}에서 OpenCode를 사용할 준비가 되었습니다.",
+  "wsl.onboarding.opencodeReadyIn":
+    "{{distro}}에서 OpenCode를 사용할 준비가 되었습니다.",
   "wsl.onboarding.opencodeReady": "OpenCode가 준비되었습니다.",
   "wsl.onboarding.installOpencodeIn": "{{distro}}에 OpenCode를 설치하세요.",
   "wsl.onboarding.installOpencode": "OpenCode 설치",
@@ -954,14 +1048,17 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "bash, curl 없음",
   "wsl.onboarding.distroStatus.unsupported": "지원되지 않음 · WSL 2 사용",
   "wsl.onboarding.needAnotherDistro": "다른 배포판이 필요하신가요?",
-  "wsl.onboarding.needAnotherDistroHint": "WSL 카탈로그에서 Linux 배포판을 설치하세요",
+  "wsl.onboarding.needAnotherDistroHint":
+    "WSL 카탈로그에서 Linux 배포판을 설치하세요",
   "wsl.onboarding.wslNotInstalled.title": "WSL이 설치되지 않음",
   "wsl.onboarding.wslNotInstalled.description":
     "OpenCode에서 WSL 서버를 추가하려면 WSL (Windows Subsystem for Linux)이 필요합니다",
   "wsl.onboarding.wslUnavailable.title": "WSL을 사용할 수 없음",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode에서 이 컴퓨터의 WSL을 확인할 수 없습니다.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode에서 이 컴퓨터의 WSL을 확인할 수 없습니다.",
   "wsl.onboarding.installWsl": "WSL 설치",
-  "wsl.onboarding.windowsRestartRequired": "WSL 설치를 완료하려면 Windows를 다시 시작한 다음 OpenCode를 다시 여세요.",
+  "wsl.onboarding.windowsRestartRequired":
+    "WSL 설치를 완료하려면 Windows를 다시 시작한 다음 OpenCode를 다시 여세요.",
   "wsl.onboarding.next": "다음",
   "wsl.onboarding.refresh": "새로 고침",
   "wsl.onboarding.allDistrosAdded": "설치된 모든 배포판이 이미 추가되었습니다.",
@@ -978,11 +1075,13 @@ export const dict = {
   "wsl.onboarding.version": "버전: {{version}}",
   "wsl.onboarding.unknown": "알 수 없음",
   "wsl.onboarding.desktopVersion": "데스크톱 {{version}}",
-  "wsl.onboarding.versionMismatch": "설치된 버전이 데스크톱 앱 버전과 일치하지 않습니다.",
+  "wsl.onboarding.versionMismatch":
+    "설치된 버전이 데스크톱 앱 버전과 일치하지 않습니다.",
   "wsl.onboarding.adding": "추가 중...",
 
   "language.uk": "Українська",
-  "error.page.description.localServerStartup": "로컬 서버를 시작하는 동안 오류가 발생했습니다.",
+  "error.page.description.localServerStartup":
+    "로컬 서버를 시작하는 동안 오류가 발생했습니다.",
   "error.page.action.exportLogs": "로그 내보내기",
 
   "home.title": "홈",
@@ -994,20 +1093,24 @@ export const dict = {
   "home.sessions.search.placeholder": "세션 검색",
   "home.sessions.search.placeholder.scoped": "{{scope}}에서 세션 검색",
   "home.sessions.search.sessions": "세션",
-  "home.sessions.search.noResults": "{{query}}에 해당하는 세션을 찾을 수 없습니다",
+  "home.sessions.search.noResults":
+    "{{query}}에 해당하는 세션을 찾을 수 없습니다",
   "home.sessions.empty": "아직 아무것도 없습니다",
   "home.sessions.empty.description": "세션을 생성하여 시작하세요",
   "home.sessions.group.today": "오늘",
   "home.sessions.group.yesterday": "어제",
   "home.sessions.group.older": "이전",
-  "home.providerTip": "75개 이상의 공급자에 연결하여 Claude, GPT, Gemini 등의 다른 모델을 사용하세요",
+  "home.providerTip":
+    "75개 이상의 공급자에 연결하여 Claude, GPT, Gemini 등의 다른 모델을 사용하세요",
 
   "session.tab.unknown": "알 수 없는 세션",
   "session.error.notFound": "이 세션을 찾을 수 없습니다",
-  "session.error.notFound.description": "이 탭은 이 서버에 더 이상 존재하지 않는 세션을 가리킵니다.",
+  "session.error.notFound.description":
+    "이 탭은 이 서버에 더 이상 존재하지 않는 세션을 가리킵니다.",
   "session.error.notFound.closeTab": "탭 닫기",
   "session.error.serverConnection": "이 서버에 연결할 수 없습니다",
-  "session.review.noUncommittedChanges": "아직 커밋되지 않은 변경 사항이 없습니다",
+  "session.review.noUncommittedChanges":
+    "아직 커밋되지 않은 변경 사항이 없습니다",
   "session.review.noBranchChanges": "아직 브랜치 변경 사항이 없습니다",
   "session.question.minimize": "질문 최소화",
   "session.question.restore": "질문 복원",
@@ -1034,15 +1137,20 @@ export const dict = {
   "settings.general.row.showFileTree.title": "파일 트리",
   "settings.general.row.showFileTree.description": "세션에 파일 트리 패널 표시",
   "settings.general.row.showNavigation.title": "탐색 컨트롤",
-  "settings.general.row.showNavigation.description": "데스크톱 제목 표시줄에 뒤로 및 앞으로 버튼 표시",
+  "settings.general.row.showNavigation.description":
+    "데스크톱 제목 표시줄에 뒤로 및 앞으로 버튼 표시",
   "settings.general.row.showSearch.title": "명령 팔레트",
-  "settings.general.row.showSearch.description": "제목 표시줄에 검색 및 명령 팔레트 버튼 표시",
+  "settings.general.row.showSearch.description":
+    "제목 표시줄에 검색 및 명령 팔레트 버튼 표시",
   "settings.general.row.showTerminal.title": "터미널",
-  "settings.general.row.showTerminal.description": "데스크톱 제목 표시줄에 터미널 버튼 표시",
+  "settings.general.row.showTerminal.description":
+    "데스크톱 제목 표시줄에 터미널 버튼 표시",
   "settings.general.row.showStatus.title": "서버 상태",
-  "settings.general.row.showStatus.description": "제목 표시줄에 서버 상태 버튼 표시",
+  "settings.general.row.showStatus.description":
+    "제목 표시줄에 서버 상태 버튼 표시",
   "settings.general.row.mobileTitlebarBottom.title": "하단 탐색",
-  "settings.general.row.mobileTitlebarBottom.description": "모바일에서 제목 표시줄과 세션 탭을 화면 하단에 배치",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "모바일에서 제목 표시줄과 세션 탭을 화면 하단에 배치",
   "settings.general.row.showCustomAgents.title": "에이전트 표시",
   "settings.general.row.showCustomAgents.description":
     "입력창에서 에이전트를 전환합니다. 숨기면 기본적으로 Build 에이전트를 사용합니다.",
@@ -1050,17 +1158,21 @@ export const dict = {
   "settings.general.row.newInterface.badge": "신규",
   "settings.general.row.newInterface.description":
     "새 탭과 홈 화면 레이아웃을 사용합니다. 제한된 기간 동안 레이아웃을 전환할 수 있습니다.",
-  "settings.general.row.newInterfaceNotice.title": "이제 새 레이아웃을 사용 중입니다",
-  "settings.general.row.newInterfaceNotice.description": "이전 레이아웃은 더 이상 사용할 수 없습니다",
+  "settings.general.row.newInterfaceNotice.title":
+    "이제 새 레이아웃을 사용 중입니다",
+  "settings.general.row.newInterfaceNotice.description":
+    "이전 레이아웃은 더 이상 사용할 수 없습니다",
   "settings.general.row.newInterfaceNotice.dismiss": "닫기",
   "settings.general.row.pinchZoom.title": "핀치 줌",
-  "settings.general.row.pinchZoom.description": "트랙패드 핀치 및 Ctrl-스크롤 제스처로 확대/축소 허용",
+  "settings.general.row.pinchZoom.description":
+    "트랙패드 핀치 및 Ctrl-스크롤 제스처로 확대/축소 허용",
   "settings.updates.action.downloading": "다운로드 중...",
   "settings.updates.action.installing": "설치 중...",
 
   "command.logs.export": "로그 내보내기",
 
-  "help.tabs.toast.ariaLabel": "탭을 소개합니다. 탭으로 작업과 활성 세션을 정리하세요",
+  "help.tabs.toast.ariaLabel":
+    "탭을 소개합니다. 탭으로 작업과 활성 세션을 정리하세요",
   "help.tabs.toast.dismiss": "탭 정보 닫기",
   "help.tabs.title": "탭 소개",
   "help.tabs.description": "탭으로 작업과 활성 세션을 정리하세요",
@@ -1070,7 +1182,8 @@ export const dict = {
     "탭에서 새 세션을 시작하거나 프로젝트에서 기존 세션을 여세요. 새로운 작업을 시작할 때 새 탭을 열고, 작업을 마치면 닫으세요.",
   "help.tabs.organize":
     "탭을 몇 개 열어 두면 활성 세션을 더 쉽게 정리할 수 있습니다. 탭을 계속 열어 둘 예정이라면 기억하기 쉬운 이름으로 바꾸세요.",
-  "help.tabs.home": "새 홈 화면에서 모든 세션과 프로젝트를 확인할 수 있습니다. 세션을 선택하면 탭에서 열립니다.",
+  "help.tabs.home":
+    "새 홈 화면에서 모든 세션과 프로젝트를 확인할 수 있습니다. 세션을 선택하면 탭에서 열립니다.",
   "help.tabs.persistence": "앱을 다시 열어도 탭은 그대로 열려 있습니다.",
   "help.tabs.worktrees":
     "새 디자인은 아직 Git Worktrees를 지원하지 않지만 곧 지원할 예정입니다. 이전 레이아웃을 계속 사용하려면 설정에서 레이아웃을 전환할 수 있습니다. 단, 몇 주 후에는 새 레이아웃이 영구 적용됩니다.",
@@ -1121,13 +1234,16 @@ export const dict = {
   "desktop.menu.reportBug": "버그 신고",
   "desktop.menu.ariaLabel": "OpenCode 메뉴",
 
-  "desktop.updater.dialog.checkFailed.message": "업데이트를 확인하지 못했습니다.",
+  "desktop.updater.dialog.checkFailed.message":
+    "업데이트를 확인하지 못했습니다.",
   "desktop.updater.dialog.checkFailed.title": "업데이트 오류",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "최신 버전을 사용 중입니다.",
   "desktop.updater.dialog.upToDate.title": "업데이트 없음",
-  "desktop.updater.dialog.ready.message": "업데이트 {{version}} 다운로드가 완료되었습니다. 지금 다시 시작할까요?",
+  "desktop.updater.dialog.ready.message":
+    "업데이트 {{version}} 다운로드가 완료되었습니다. 지금 다시 시작할까요?",
   "desktop.updater.dialog.ready.title": "업데이트 준비 완료",
   "desktop.updater.dialog.restart": "다시 시작",
   "desktop.updater.dialog.retry": "Retry",
@@ -1140,9 +1256,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCode를 불러오지 못했습니다",
   "desktop.recovery.terminated": "OpenCode 윈도우가 예기치 않게 종료되었습니다",
   "desktop.recovery.unresponsive": "OpenCode가 응답하지 않습니다",
-  "desktop.recovery.unresponsive.detail": "앱을 다시 실행하거나 로그를 열거나 계속 기다릴 수 있습니다.",
-  "desktop.recovery.loadFailed.detail": "윈도우: {{window}}\nURL: {{url}}\n오류: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "윈도우: {{window}}\n원인: {{reason}}\n코드: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "앱을 다시 실행하거나 로그를 열거나 계속 기다릴 수 있습니다.",
+  "desktop.recovery.loadFailed.detail":
+    "윈도우: {{window}}\nURL: {{url}}\n오류: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "윈도우: {{window}}\n원인: {{reason}}\n코드: {{code}}",
   "desktop.recovery.unknown": "<알 수 없음>",
 
   "desktop.dialog.chooseFolder": "폴더 선택",
@@ -1153,26 +1272,35 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL은 Windows에서만 사용할 수 있습니다",
   "desktop.wsl.error.unavailable": "WSL을 사용할 수 없습니다",
-  "desktop.wsl.error.listInstalled": "설치된 WSL 배포판 목록을 가져오지 못했습니다",
-  "desktop.wsl.error.listOnline": "온라인 WSL 배포판 목록을 가져오지 못했습니다",
+  "desktop.wsl.error.listInstalled":
+    "설치된 WSL 배포판 목록을 가져오지 못했습니다",
+  "desktop.wsl.error.listOnline":
+    "온라인 WSL 배포판 목록을 가져오지 못했습니다",
   "desktop.wsl.error.executeDistro": "배포판에서 명령을 실행할 수 없습니다",
   "desktop.wsl.error.installWsl": "WSL 설치 실패",
   "desktop.wsl.error.installDistro": "배포판 설치 실패: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode 설치 실패",
   "desktop.wsl.error.alreadyAdded": "{{distro}} 배포판은 이미 추가되었습니다",
-  "desktop.wsl.error.opencodeMissing": "이 배포판에 opencode가 설치되어 있지 않습니다",
-  "desktop.wsl.error.opencodeCannotRun": "opencode가 설치되어 있지만 실행할 수 없습니다",
-  "desktop.wsl.error.opencodeNotInstalled": "{{distro}}에 OpenCode가 설치되어 있지 않습니다",
+  "desktop.wsl.error.opencodeMissing":
+    "이 배포판에 opencode가 설치되어 있지 않습니다",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode가 설치되어 있지만 실행할 수 없습니다",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "{{distro}}에 OpenCode가 설치되어 있지 않습니다",
   "desktop.wsl.error.updateVersion":
     "OpenCode 업데이트가 완료되었지만 {{distro}}에서 여전히 {{installed}} 버전으로 표시됩니다. 예상 버전: {{expected}}",
   "desktop.wsl.error.noVersion": "버전 없음",
-  "desktop.wsl.error.serverExited": "WSL 서버가 시작 후 종료되었습니다(코드={{code}} 신호={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL 서버가 시작 후 종료되었습니다(코드={{code}} 신호={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL 서버가 정상 상태가 되기 전에 종료되었습니다(코드={{code}} 신호={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} 사이드카의 상태 확인이 {{timeout}}ms 후 시간 초과되었습니다",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} 명령이 {{timeout}}ms 후 시간 초과되었습니다",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} 사이드카의 상태 확인이 {{timeout}}ms 후 시간 초과되었습니다",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} 명령이 {{timeout}}ms 후 시간 초과되었습니다",
   "desktop.wsl.error.failedPort": "포트를 가져오지 못했습니다",
 
   "desktop.picker.error.notSelected": "선택기에서 파일을 선택하지 않았습니다",
-  "desktop.picker.error.sizeLimit": "선택한 첨부 파일이 {{limit}} MB 제한을 초과합니다",
+  "desktop.picker.error.sizeLimit":
+    "선택한 첨부 파일이 {{limit}} MB 제한을 초과합니다",
 }

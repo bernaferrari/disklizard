@@ -3,26 +3,52 @@ import type { DiskScanNode } from "./types"
 import { centerOverlayBehavior, indexEmptyCopy } from "./DiskUtilityEmptyStates"
 
 function directory(name: string): DiskScanNode {
-  return { name, path: `/workspace/${name}`, size: 1, isDir: true, children: [], ext: "" }
+  return {
+    name,
+    path: `/workspace/${name}`,
+    size: 1,
+    isDir: true,
+    children: [],
+    ext: "",
+  }
 }
 
 describe("centerOverlayBehavior", () => {
   it("does not advertise Open or Enter for a deep inventory-only result", () => {
-    const deepArtifact = { ...directory("node_modules"), inventoryOnly: true } as DiskScanNode & { inventoryOnly: true }
+    const deepArtifact = {
+      ...directory("node_modules"),
+      inventoryOnly: true,
+    } as DiskScanNode & { inventoryOnly: true }
     expect(centerOverlayBehavior(deepArtifact, true, true)).toEqual({
       canOpen: false,
       inventoryOnly: true,
-      reviewOnlyCopy: "Deep inventory result · review it from the results list. It can’t be opened in the map.",
+      reviewOnlyCopy:
+        "Found while scanning developer folders. Show it in the file browser to inspect its contents.",
     })
   })
 
   it("keeps the open affordance for a materialized directory", () => {
-    expect(centerOverlayBehavior(directory("src"), true, false)).toEqual({ canOpen: true, inventoryOnly: false })
-    expect(centerOverlayBehavior({ ...directory("Other"), isOther: true, otherCount: 20 }, true, false)).toEqual({
+    expect(centerOverlayBehavior(directory("src"), true, false)).toEqual({
       canOpen: true,
       inventoryOnly: false,
     })
-    expect(centerOverlayBehavior({ ...directory("package.json"), isDir: false }, true, false)).toEqual({
+    expect(
+      centerOverlayBehavior(
+        { ...directory("Other"), isOther: true, otherCount: 20 },
+        true,
+        false
+      )
+    ).toEqual({
+      canOpen: true,
+      inventoryOnly: false,
+    })
+    expect(
+      centerOverlayBehavior(
+        { ...directory("package.json"), isDir: false },
+        true,
+        false
+      )
+    ).toEqual({
       canOpen: false,
       inventoryOnly: false,
     })
@@ -32,7 +58,9 @@ describe("centerOverlayBehavior", () => {
 describe("indexEmptyCopy", () => {
   it("explains product lenses instead of blaming generic filters", () => {
     expect(indexEmptyCopy("developer").title).toBe("No developer storage found")
-    expect(indexEmptyCopy("recommendations").title).toBe("Nothing is ready for cleanup")
+    expect(indexEmptyCopy("recommendations").title).toBe(
+      "Nothing is ready for cleanup"
+    )
     expect(indexEmptyCopy("recent").title).toBe("Nothing was modified today")
     expect(indexEmptyCopy("search").title).toBe("No matching files")
     expect(indexEmptyCopy("folder").title).toBe("This folder is empty")

@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test"
-import { createScanHistory, disjointChangedPaths, filterScanHistoryEntries, summarizeScanChanges } from "./scan-history"
+import {
+  createScanHistory,
+  disjointChangedPaths,
+  filterScanHistoryEntries,
+  summarizeScanChanges,
+} from "./scan-history"
 import type { DiskScanNode } from "./types"
 
 const file = (path: string, size: number): DiskScanNode => ({
@@ -22,9 +27,19 @@ const root = (children: DiskScanNode[]): DiskScanNode => ({
 
 describe("scan history", () => {
   test("records truthful before/after bytes for additions, removals, and changes", () => {
-    const before = root([file("/scan/grown.bin", 10), file("/scan/removed.bin", 8)])
-    const after = root([file("/scan/grown.bin", 16), file("/scan/added.bin", 5)])
-    const summary = summarizeScanChanges(before, after, ["/scan/grown.bin", "/scan/removed.bin", "/scan/added.bin"])
+    const before = root([
+      file("/scan/grown.bin", 10),
+      file("/scan/removed.bin", 8),
+    ])
+    const after = root([
+      file("/scan/grown.bin", 16),
+      file("/scan/added.bin", 5),
+    ])
+    const summary = summarizeScanChanges(before, after, [
+      "/scan/grown.bin",
+      "/scan/removed.bin",
+      "/scan/added.bin",
+    ])
 
     expect(summary.totalDeltaBytes).toBe(3)
     expect(summary.changes).toEqual([
@@ -59,18 +74,30 @@ describe("scan history", () => {
   })
 
   test("deduplicates nested watcher paths and Windows path casing", () => {
-    expect(disjointChangedPaths(["C:\\Work\\cache", "c:/work/cache/item.bin", "C:/WORK/cache"], "windows")).toEqual([
-      "C:\\Work\\cache",
-    ])
+    expect(
+      disjointChangedPaths(
+        ["C:\\Work\\cache", "c:/work/cache/item.bin", "C:/WORK/cache"],
+        "windows"
+      )
+    ).toEqual(["C:\\Work\\cache"])
   })
 
   test("retains a bounded newest-first summary without recording errors", () => {
     let timestamp = 100
-    const history = createScanHistory({ maxEntries: 2, maxChangesPerEntry: 1, now: () => ++timestamp })
+    const history = createScanHistory({
+      maxEntries: 2,
+      maxChangesPerEntry: 1,
+      now: () => ++timestamp,
+    })
     history.seed("scan", root([file("/scan/a.bin", 1), file("/scan/b.bin", 1)]))
 
     const firstRoot = root([file("/scan/a.bin", 2), file("/scan/b.bin", 1)])
-    const first = history.record({ scanId: "scan", rootPath: "/scan", root: firstRoot, changedPaths: ["/scan/a.bin"] })
+    const first = history.record({
+      scanId: "scan",
+      rootPath: "/scan",
+      root: firstRoot,
+      changedPaths: ["/scan/a.bin"],
+    })
     expect(first?.totalDeltaBytes).toBe(1)
 
     const errorRoot = root([file("/scan/a.bin", 3), file("/scan/b.bin", 1)])
@@ -81,7 +108,7 @@ describe("scan history", () => {
         root: errorRoot,
         changedPaths: ["/scan/a.bin"],
         watchError: "watch paused",
-      }),
+      })
     ).toBeUndefined()
 
     const secondRoot = root([file("/scan/a.bin", 4), file("/scan/b.bin", 7)])
@@ -95,10 +122,17 @@ describe("scan history", () => {
     expect(second?.totalDeltaBytes).toBe(7)
 
     const thirdRoot = root([file("/scan/a.bin", 4), file("/scan/b.bin", 9)])
-    history.record({ scanId: "scan", rootPath: "/scan", root: thirdRoot, changedPaths: ["/scan/b.bin"] })
+    history.record({
+      scanId: "scan",
+      rootPath: "/scan",
+      root: thirdRoot,
+      changedPaths: ["/scan/b.bin"],
+    })
 
     expect(history.entries()).toHaveLength(2)
-    expect(history.entries().map((entry) => entry.recordedAt)).toEqual([103, 102])
+    expect(history.entries().map((entry) => entry.recordedAt)).toEqual([
+      103, 102,
+    ])
     history.clear()
     expect(history.entries()).toEqual([])
   })
@@ -146,7 +180,9 @@ describe("scan history", () => {
 
     const filtered = filterScanHistoryEntries(entries, "scan-a", "beta")
     expect(filtered).toHaveLength(1)
-    expect(filtered[0].changes.map((change) => change.name)).toEqual(["beta.bin"])
+    expect(filtered[0].changes.map((change) => change.name)).toEqual([
+      "beta.bin",
+    ])
     expect(filterScanHistoryEntries(entries, undefined)).toEqual([])
   })
 })
@@ -155,7 +191,10 @@ test("whole-volume notifications identify changed descendants without double-cou
   const before = root([file("/scan/a", 10), file("/scan/b", 20)])
   const after = root([file("/scan/a", 14), file("/scan/b", 17)])
   const result = summarizeScanChanges(before, after, ["/scan"])
-  expect(result.changes.map(change => change.path)).toEqual(["/scan/a", "/scan/b"])
+  expect(result.changes.map((change) => change.path)).toEqual([
+    "/scan/a",
+    "/scan/b",
+  ])
   expect(result.totalDeltaBytes).toBe(1)
 })
 
@@ -163,6 +202,6 @@ test("keeps a truthful volume fallback when retained children cannot explain the
   const before = root([file("/scan/a", 10)])
   const after = { ...root([file("/scan/a", 14)]), size: 30 }
   const result = summarizeScanChanges(before, after, ["/scan"])
-  expect(result.changes.map(change => change.path)).toEqual(["/scan"])
+  expect(result.changes.map((change) => change.path)).toEqual(["/scan"])
   expect(result.totalDeltaBytes).toBe(20)
 })

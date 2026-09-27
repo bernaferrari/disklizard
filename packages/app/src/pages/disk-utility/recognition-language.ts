@@ -158,8 +158,9 @@ export const DISK_RECOGNITION_LANGUAGE_KEYS = [
   "mvn clean regenerates it",
 ] as const
 
-export type DiskRecognitionLanguageKey = (typeof DISK_RECOGNITION_LANGUAGE_KEYS)[number]
+export type DiskRecognitionLanguageKey =
+  (typeof DISK_RECOGNITION_LANGUAGE_KEYS)[number]
 
 export const DISK_RECOGNITION_LANGUAGE_TEXT = Object.fromEntries(
-  DISK_RECOGNITION_LANGUAGE_KEYS.map((key) => [key, key]),
+  DISK_RECOGNITION_LANGUAGE_KEYS.map((key) => [key, key])
 ) as { readonly [Key in DiskRecognitionLanguageKey]: Key }

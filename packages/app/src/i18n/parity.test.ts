@@ -64,15 +64,16 @@ const appLocales = [
   "tk",
   "uz",
 ] as const
-const desktopLocales = appLocales
 const pluralCategories = new Map(
   appLocales.map(
     (locale) =>
       [
         locale,
-        desktopNativePluralCategories(locale).filter((category) => category !== "one" && category !== "other"),
-      ] as const,
-  ),
+        desktopNativePluralCategories(locale).filter(
+          (category) => category !== "one" && category !== "other"
+        ),
+      ] as const
+  )
 )
 
 const domains = [
@@ -90,12 +91,18 @@ describe("i18n parity", () => {
       const source = await dictionary(domain.source)
       for (const locale of domain.locales) {
         const target = await dictionary(domain.target(locale))
-        const missing = Object.keys(source).filter((key) => !Object.hasOwn(target, key))
+        const missing = Object.keys(source).filter(
+          (key) => !Object.hasOwn(target, key)
+        )
         const extra = Object.keys(target)
           .filter((key) => !Object.hasOwn(source, key))
           .sort()
         const expected = pluralFamilies(source)
-          .flatMap((key) => (pluralCategories.get(locale) ?? []).map((category) => `${key}.${category}`))
+          .flatMap((key) =>
+            (pluralCategories.get(locale) ?? []).map(
+              (category) => `${key}.${category}`
+            )
+          )
           .sort()
         expect({ domain: domain.name, locale, missing, extra }).toEqual({
           domain: domain.name,
@@ -113,14 +120,26 @@ describe("i18n parity", () => {
       for (const locale of domain.locales) {
         const target = await dictionary(domain.target(locale))
         const mismatched = Object.keys(source).filter(
-          (key) => Object.hasOwn(target, key) && placeholders(source[key]).join() !== placeholders(target[key]).join(),
+          (key) =>
+            Object.hasOwn(target, key) &&
+            placeholders(source[key]).join() !==
+              placeholders(target[key]).join()
         )
         const pluralMismatched = pluralFamilies(source).flatMap((key) =>
           (pluralCategories.get(locale) ?? [])
             .map((category) => `${key}.${category}`)
-            .filter((variant) => placeholders(source[`${key}.other`]).join() !== placeholders(target[variant]).join()),
+            .filter(
+              (variant) =>
+                placeholders(source[`${key}.other`]).join() !==
+                placeholders(target[variant]).join()
+            )
         )
-        expect({ domain: domain.name, locale, mismatched, pluralMismatched }).toEqual({
+        expect({
+          domain: domain.name,
+          locale,
+          mismatched,
+          pluralMismatched,
+        }).toEqual({
           domain: domain.name,
           locale,
           mismatched: [],
@@ -134,13 +153,15 @@ describe("i18n parity", () => {
     const source = await dictionary("./en.ts")
     for (const locale of appLocales) {
       const target = await dictionary(`./${locale}.ts`)
-      for (const key of ["command.session.previous.unseen", "command.session.next.unseen"]) {
+      for (const key of [
+        "command.session.previous.unseen",
+        "command.session.next.unseen",
+      ]) {
         expect(target[key]).toBeDefined()
         expect(target[key]).not.toBe(source[key])
       }
     }
   })
-
 })
 
 describe("i18n plural parity", () => {
@@ -153,7 +174,7 @@ describe("i18n plural parity", () => {
         const missing = families.flatMap((key) =>
           (pluralCategories.get(locale) ?? [])
             .map((category) => `${key}.${category}`)
-            .filter((variant) => !Object.hasOwn(target, variant)),
+            .filter((variant) => !Object.hasOwn(target, variant))
         )
         const mismatched = families.flatMap((key) =>
           (pluralCategories.get(locale) ?? [])
@@ -161,8 +182,9 @@ describe("i18n plural parity", () => {
             .filter(
               (variant) =>
                 Object.hasOwn(target, variant) &&
-                placeholders(source[`${key}.other`]).join() !== placeholders(target[variant]).join(),
-            ),
+                placeholders(source[`${key}.other`]).join() !==
+                  placeholders(target[variant]).join()
+            )
         )
         expect({ domain: domain.name, locale, missing, mismatched }).toEqual({
           domain: domain.name,
@@ -177,19 +199,28 @@ describe("i18n plural parity", () => {
 
 async function dictionary(file: string) {
   const module: unknown = await import(file)
-  if (typeof module !== "object" || module === null || !("dict" in module) || !isDictionary(module.dict)) {
+  if (
+    typeof module !== "object" ||
+    module === null ||
+    !("dict" in module) ||
+    !isDictionary(module.dict)
+  ) {
     throw new Error(`Invalid translation dictionary: ${file}`)
   }
   return module.dict
 }
 
 function isDictionary(value: unknown): value is Record<string, string> {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return false
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    return false
   return Object.values(value).every((item) => typeof item === "string")
 }
 
 function placeholders(value: string) {
-  return Array.from(value.matchAll(/{{\s*([^}]+?)\s*}}/g), (match) => match[1]).sort()
+  return Array.from(
+    value.matchAll(/{{\s*([^}]+?)\s*}}/g),
+    (match) => match[1]
+  ).sort((a, b) => a.localeCompare(b))
 }
 
 function pluralFamilies(dictionary: Record<string, string>) {
@@ -198,7 +229,7 @@ function pluralFamilies(dictionary: Record<string, string>) {
       (key) =>
         key.endsWith(".one") &&
         dictionary[key].includes("{{count}}") &&
-        dictionary[`${key.slice(0, -4)}.other`]?.includes("{{count}}"),
+        dictionary[`${key.slice(0, -4)}.other`]?.includes("{{count}}")
     )
     .map((key) => key.slice(0, -4))
 }

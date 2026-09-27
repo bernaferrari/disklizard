@@ -47,11 +47,14 @@ export const dict = {
 
   "desktop.updater.dialog.checkFailed.message": "अपडेट की जाँच विफल रही।",
   "desktop.updater.dialog.checkFailed.title": "अपडेट त्रुटि",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
-  "desktop.updater.dialog.upToDate.message": "आप नवीनतम संस्करण का उपयोग कर रहे हैं।",
+  "desktop.updater.dialog.upToDate.message":
+    "आप नवीनतम संस्करण का उपयोग कर रहे हैं।",
   "desktop.updater.dialog.upToDate.title": "कोई अपडेट नहीं",
-  "desktop.updater.dialog.ready.message": "अपडेट {{version}} डाउनलोड हो गया है। अभी पुनः आरंभ करें?",
+  "desktop.updater.dialog.ready.message":
+    "अपडेट {{version}} डाउनलोड हो गया है। अभी पुनः आरंभ करें?",
   "desktop.updater.dialog.ready.title": "अपडेट तैयार है",
   "desktop.updater.dialog.restart": "पुनः आरंभ करें",
   "desktop.updater.dialog.retry": "Retry",
@@ -66,8 +69,10 @@ export const dict = {
   "desktop.recovery.unresponsive": "OpenCode प्रतिसाद नहीं दे रहा है",
   "desktop.recovery.unresponsive.detail":
     "आप ऐप को पुनः लॉन्च कर सकते हैं, लॉग खोल सकते हैं या प्रतीक्षा जारी रख सकते हैं।",
-  "desktop.recovery.loadFailed.detail": "विंडो: {{window}}\nURL: {{url}}\nत्रुटि: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "विंडो: {{window}}\nकारण: {{reason}}\nकोड: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "विंडो: {{window}}\nURL: {{url}}\nत्रुटि: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "विंडो: {{window}}\nकारण: {{reason}}\nकोड: {{code}}",
   "desktop.recovery.unknown": "<अज्ञात>",
 
   "desktop.dialog.chooseFolder": "फ़ोल्डर चुनें",
@@ -78,7 +83,8 @@ export const dict = {
 
   "desktop.wsl.error.windowsOnly": "WSL केवल Windows पर उपलब्ध है",
   "desktop.wsl.error.unavailable": "WSL उपलब्ध नहीं है",
-  "desktop.wsl.error.listInstalled": "इंस्टॉल किए गए WSL डिस्ट्रो की सूची नहीं बनाई जा सकी",
+  "desktop.wsl.error.listInstalled":
+    "इंस्टॉल किए गए WSL डिस्ट्रो की सूची नहीं बनाई जा सकी",
   "desktop.wsl.error.listOnline": "ऑनलाइन WSL डिस्ट्रो की सूची नहीं बनाई जा सकी",
   "desktop.wsl.error.executeDistro": "डिस्ट्रो में कमांड निष्पादित नहीं किए जा सकते",
   "desktop.wsl.error.installWsl": "WSL इंस्टॉल नहीं हो सका",
@@ -91,11 +97,14 @@ export const dict = {
   "desktop.wsl.error.updateVersion":
     "OpenCode अपडेट पूरा हो गया, लेकिन {{distro}} अब भी {{installed}} रिपोर्ट कर रहा है; अपेक्षित संस्करण {{expected}} है",
   "desktop.wsl.error.noVersion": "कोई संस्करण नहीं",
-  "desktop.wsl.error.serverExited": "WSL सर्वर स्टार्टअप के बाद बंद हो गया (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL सर्वर स्टार्टअप के बाद बंद हो गया (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL सर्वर के सुचारु होने से पहले बंद हो गया (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "{{distro}} के Sidecar की स्वास्थ्य जाँच {{timeout}}ms के बाद समय-सीमा पार कर गई",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} ने {{timeout}}ms के बाद समय-सीमा पार कर दी",
+  "desktop.wsl.error.healthTimeout":
+    "{{distro}} के Sidecar की स्वास्थ्य जाँच {{timeout}}ms के बाद समय-सीमा पार कर गई",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} ने {{timeout}}ms के बाद समय-सीमा पार कर दी",
   "desktop.wsl.error.failedPort": "पोर्ट प्राप्त नहीं किया जा सका",
 
   "desktop.picker.error.notSelected": "पिकर में फ़ाइल नहीं चुनी गई",
@@ -175,21 +184,25 @@ export const dict = {
   "command.permissions.autoaccept.enable": "अनुमतियाँ स्वतः स्वीकार करें",
   "command.permissions.autoaccept.disable": "अनुमतियाँ स्वत: स्वीकार करना बंद करें",
   "command.workspace.toggle": "वर्कस्पेस टॉगल करें",
-  "command.workspace.toggle.description": "साइडबार में एकाधिक वर्कस्पेस को सक्षम या अक्षम करें",
+  "command.workspace.toggle.description":
+    "साइडबार में एकाधिक वर्कस्पेस को सक्षम या अक्षम करें",
   "command.session.undo": "पूर्ववत",
   "command.session.undo.description": "अंतिम संदेश पूर्ववत करें",
   "command.session.redo": "फिर से करें",
   "command.session.redo.description": "अंतिम पूर्ववत संदेश को पुनः करें",
   "command.session.compact": "सेशन संक्षिप्त करें",
-  "command.session.compact.description": "कॉन्टेक्स्ट आकार को कम करने के लिए सेशन को सारांशित करें",
+  "command.session.compact.description":
+    "कॉन्टेक्स्ट आकार को कम करने के लिए सेशन को सारांशित करें",
   "command.session.fork": "संदेश से फ़ोर्क",
   "command.session.fork.description": "पिछले संदेश से एक नया सेशन बनाएं",
   "command.session.share": "सेशन साझा करें",
-  "command.session.share.description": "इस सेशन को साझा करें और URL को क्लिपबोर्ड पर कॉपी करें",
+  "command.session.share.description":
+    "इस सेशन को साझा करें और URL को क्लिपबोर्ड पर कॉपी करें",
   "command.session.unshare": "सेशन साझा करना बंद करें",
   "command.session.unshare.description": "इस सेशन को साझा करना बंद करें",
   "command.session.export": "सेशन निर्यात करें",
-  "command.session.export.description": "सेशन की पूरी ट्रांसक्रिप्ट को JSON के रूप में निर्यात करें",
+  "command.session.export.description":
+    "सेशन की पूरी ट्रांसक्रिप्ट को JSON के रूप में निर्यात करें",
 
   "palette.search.placeholder": "फ़ाइलें, कमांड और सेशन खोजें",
   "palette.search.placeholder.home": "कमांड और सेशन खोजें",
@@ -202,11 +215,13 @@ export const dict = {
   "dialog.provider.group.other": "अन्य",
   "dialog.provider.custom.label": "कस्टम OpenAI-संगत प्रोवाइडर",
   "dialog.provider.tag.recommended": "अनुशंसित",
-  "dialog.provider.opencode.note": "Claude, GPT, Gemini और अधिक सहित क्यूरेटेड मॉडल",
+  "dialog.provider.opencode.note":
+    "Claude, GPT, Gemini और अधिक सहित क्यूरेटेड मॉडल",
   "dialog.provider.opencode.tagline": "विश्वसनीय अनुकूलित मॉडल",
   "dialog.provider.opencodeGo.tagline": "सभी के लिए कम लागत वाली सदस्यता",
   "dialog.provider.anthropic.note": "प्रो और मैक्स सहित Claude मॉडल तक सीधी पहुँच",
-  "dialog.provider.copilot.note": "GitHub Copilot के माध्यम से कोडिंग सहायता के लिए AI मॉडल",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot के माध्यम से कोडिंग सहायता के लिए AI मॉडल",
   "dialog.provider.openai.note": "तेज़, सक्षम सामान्य AI कार्यों के लिए GPT मॉडल",
   "dialog.provider.google.note": "तेज़, संरचित प्रतिक्रियाओं के लिए Gemini मॉडल",
   "dialog.provider.openrouter.note": "एक प्रोवाइडर से सभी समर्थित मॉडल तक पहुँचें",
@@ -215,7 +230,8 @@ export const dict = {
   "dialog.model.search.placeholder": "मॉडल खोजें",
   "dialog.model.empty": "कोई मॉडल परिणाम नहीं",
   "dialog.model.manage": "मॉडल प्रबंधित करें",
-  "dialog.model.manage.description": "तय करें कि मॉडल चयनकर्ता में कौन-से मॉडल दिखाई दें।",
+  "dialog.model.manage.description":
+    "तय करें कि मॉडल चयनकर्ता में कौन-से मॉडल दिखाई दें।",
   "dialog.model.manage.provider.toggle": "सभी {{provider}} मॉडल को टॉगल करें",
   "dialog.model.unpaid.freeModels.title": "OpenCode द्वारा उपलब्ध निःशुल्क मॉडल",
   "dialog.model.unpaid.addMore.title": "लोकप्रिय प्रोवाइडर से अधिक मॉडल जोड़ें",
@@ -237,7 +253,8 @@ export const dict = {
   "provider.connect.apiKey.required": "API कुंजी आवश्यक है",
   "provider.connect.opencodeZen.line1":
     "OpenCode Zen आपको कोडिंग एजेंटों के लिए चुने गए विश्वसनीय, अनुकूलित मॉडलों तक पहुँच देता है।",
-  "provider.connect.opencodeZen.line2": "एक API कुंजी से आपको Claude, GPT, Gemini, GLM जैसे कई मॉडलों तक पहुँच मिलेगी।",
+  "provider.connect.opencodeZen.line2":
+    "एक API कुंजी से आपको Claude, GPT, Gemini, GLM जैसे कई मॉडलों तक पहुँच मिलेगी।",
   "provider.connect.opencodeZen.visit.prefix": "यहाँ जाएँ: ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " अपनी API कुंजी प्राप्त करने के लिए।",
@@ -255,15 +272,18 @@ export const dict = {
     " और अपने खाते को कनेक्ट करने तथा OpenCode में {{provider}} मॉडल का उपयोग करने के लिए नीचे दिया गया कोड दर्ज करें।",
   "provider.connect.oauth.auto.confirmationCode": "पुष्टि कोड",
   "provider.connect.toast.connected.title": "{{provider}} कनेक्ट हो गया",
-  "provider.connect.toast.connected.description": "{{provider}} मॉडल अब उपयोग के लिए उपलब्ध हैं।",
+  "provider.connect.toast.connected.description":
+    "{{provider}} मॉडल अब उपयोग के लिए उपलब्ध हैं।",
   "provider.custom.title": "कस्टम प्रोवाइडर",
   "provider.custom.unavailable": "इस सर्वर पर कस्टम प्रोवाइडर उपलब्ध नहीं हैं",
-  "provider.custom.description.prefix": "एक OpenAI-संगत प्रोवाइडर कॉन्फ़िगर करें। देखें ",
+  "provider.custom.description.prefix":
+    "एक OpenAI-संगत प्रोवाइडर कॉन्फ़िगर करें। देखें ",
   "provider.custom.description.link": "प्रोवाइडर कॉन्फ़िगरेशन दस्तावेज़",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "प्रोवाइडर ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "छोटे अक्षर, संख्याएँ, हाइफ़न, या अंडरस्कोर",
+  "provider.custom.field.providerID.description":
+    "छोटे अक्षर, संख्याएँ, हाइफ़न, या अंडरस्कोर",
   "provider.custom.field.name.label": "प्रदर्शित होने वाला नाम",
   "provider.custom.field.name.placeholder": "मेरा AI प्रोवाइडर",
   "provider.custom.field.baseURL.label": "आधार URL",
@@ -287,15 +307,18 @@ export const dict = {
   "provider.custom.headers.remove": "हेडर हटाएँ",
   "provider.custom.headers.add": "हेडर जोड़ें",
   "provider.custom.error.providerID.required": "प्रोवाइडर ID आवश्यक है",
-  "provider.custom.error.providerID.format": "छोटे अक्षरों, संख्याओं, हाइफ़न या अंडरस्कोर का उपयोग करें",
+  "provider.custom.error.providerID.format":
+    "छोटे अक्षरों, संख्याओं, हाइफ़न या अंडरस्कोर का उपयोग करें",
   "provider.custom.error.providerID.exists": "वह प्रोवाइडर ID पहले से मौजूद है",
   "provider.custom.error.name.required": "प्रदर्शन नाम आवश्यक है",
   "provider.custom.error.baseURL.required": "आधार URL आवश्यक है",
-  "provider.custom.error.baseURL.format": "http:// या https:// से प्रारंभ होना चाहिए",
+  "provider.custom.error.baseURL.format":
+    "http:// या https:// से प्रारंभ होना चाहिए",
   "provider.custom.error.required": "आवश्यक",
   "provider.custom.error.duplicate": "डुप्लिकेट",
   "provider.disconnect.toast.disconnected.title": "{{provider}} डिस्कनेक्ट हो गया",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} मॉडल अब उपलब्ध नहीं हैं।",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} मॉडल अब उपलब्ध नहीं हैं।",
   "model.tag.free": "निःशुल्क",
   "model.tag.latest": "नवीनतम",
   "model.provider.anthropic": "Anthropic",
@@ -389,10 +412,12 @@ export const dict = {
   "prompt.action.send": "भेजें",
   "prompt.action.stop": "रोकें",
   "prompt.toast.pasteUnsupported.title": "असमर्थित अनुलग्नक",
-  "prompt.toast.pasteUnsupported.description": "यहां केवल छवियां, PDFs, या टेक्स्ट फ़ाइलें संलग्न की जा सकती हैं।",
+  "prompt.toast.pasteUnsupported.description":
+    "यहां केवल छवियां, PDFs, या टेक्स्ट फ़ाइलें संलग्न की जा सकती हैं।",
   "prompt.toast.attachmentDuplicate.title": "यह फ़ाइल पहले ही अपलोड की जा चुकी है",
   "prompt.toast.modelAgentRequired.title": "एक एजेंट और मॉडल चुनें",
-  "prompt.toast.modelAgentRequired.description": "प्रॉम्प्ट भेजने से पहले एक एजेंट और मॉडल चुनें।",
+  "prompt.toast.modelAgentRequired.description":
+    "प्रॉम्प्ट भेजने से पहले एक एजेंट और मॉडल चुनें।",
   "prompt.toast.worktreeCreateFailed.title": "वर्कट्री बनाने में विफल",
   "prompt.toast.sessionCreateFailed.title": "सेशन बनाने में विफल",
   "prompt.toast.shellSendFailed.title": "शेल कमांड भेजने में विफल",
@@ -421,7 +446,8 @@ export const dict = {
   "app.server.retrying": "स्वचालित रूप से पुनः प्रयास किया जा रहा है...",
   "app.server.otherServers": "अन्य सर्वर",
   "dialog.server.title": "सर्वर",
-  "dialog.server.description": "स्विच करें कि यह ऐप किस OpenCode सर्वर से कनेक्ट होता है।",
+  "dialog.server.description":
+    "स्विच करें कि यह ऐप किस OpenCode सर्वर से कनेक्ट होता है।",
   "dialog.server.search.placeholder": "सर्वर खोजें",
   "dialog.server.empty": "अभी तक कोई सर्वर नहीं है",
   "dialog.server.add.title": "सर्वर जोड़ें",
@@ -459,7 +485,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "डिस्ट्रो चुनें",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "WSL की जाँच हो रही है...",
-  "wsl.onboarding.restartRequired": "WSL की स्थापना पूरी करने के लिए Windows को पुनः आरंभ करना होगा।",
+  "wsl.onboarding.restartRequired":
+    "WSL की स्थापना पूरी करने के लिए Windows को पुनः आरंभ करना होगा।",
   "wsl.onboarding.ready": "WSL तैयार है।",
   "wsl.onboarding.required": "जारी रखने के लिए WSL आवश्यक है।",
   "wsl.onboarding.checkingDistros": "डिस्ट्रोज़ की जाँच हो रही है...",
@@ -472,7 +499,8 @@ export const dict = {
   "wsl.onboarding.finishingDistro": "{{distro}} का सेटअप पूरा किया जा रहा है।",
   "wsl.onboarding.pickDistro": "एक डिस्ट्रो चुनें या नीचे एक स्थापित करें।",
   "wsl.onboarding.checkingOpencode": "OpenCode की जाँच हो रही है...",
-  "wsl.onboarding.checkingOpencodeIn": "{{distro}} में OpenCode की जाँच हो रही है...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "{{distro}} में OpenCode की जाँच हो रही है...",
   "wsl.onboarding.updatingOpencode": "OpenCode अपडेट हो रहा है...",
   "wsl.onboarding.updatingOpencodeIn": "{{distro}} में OpenCode अपडेट हो रहा है...",
   "wsl.onboarding.updateOpencodeIn": "{{distro}} में OpenCode को अपडेट करें।",
@@ -497,7 +525,8 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "OpenCode द्वारा WSL सर्वर जोड़ने से पहले WSL (Linux के लिए Windows सबसिस्टम) आवश्यक है",
   "wsl.onboarding.wslUnavailable.title": "WSL अनुपलब्ध है",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode इस मशीन पर WSL को सत्यापित नहीं कर सका।",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode इस मशीन पर WSL को सत्यापित नहीं कर सका।",
   "wsl.onboarding.installWsl": "WSL स्थापित करें",
   "wsl.onboarding.windowsRestartRequired":
     "WSL की स्थापना समाप्त करने के लिए Windows को पुनरारंभ करें, फिर OpenCode को फिर से खोलें।",
@@ -517,9 +546,11 @@ export const dict = {
   "wsl.onboarding.version": "संस्करण: {{version}}",
   "wsl.onboarding.unknown": "अज्ञात",
   "wsl.onboarding.desktopVersion": "डेस्कटॉप {{version}}",
-  "wsl.onboarding.versionMismatch": "इंस्टॉल किया गया संस्करण डेस्कटॉप ऐप संस्करण से मेल नहीं खाता।",
+  "wsl.onboarding.versionMismatch":
+    "इंस्टॉल किया गया संस्करण डेस्कटॉप ऐप संस्करण से मेल नहीं खाता।",
   "wsl.onboarding.adding": "जोड़ा जा रहा है...",
-  "help.tabs.toast.ariaLabel": "टैब प्रस्तुत हैं। टैब की सहायता से अपना काम और सक्रिय सेशन व्यवस्थित करें",
+  "help.tabs.toast.ariaLabel":
+    "टैब प्रस्तुत हैं। टैब की सहायता से अपना काम और सक्रिय सेशन व्यवस्थित करें",
   "help.tabs.toast.dismiss": "टैब की जानकारी हटाएँ",
   "help.tabs.title": "टैब प्रस्तुत हैं",
   "help.tabs.description": "टैब की सहायता से अपना काम और सक्रिय सेशन व्यवस्थित करें",
@@ -529,7 +560,8 @@ export const dict = {
     "किसी टैब में नया सेशन शुरू करें या अपने किसी भी प्रोजेक्ट से मौजूदा सेशन खोलें। कुछ नया शुरू करते समय नया टैब खोलें और काम पूरा होने पर उसे बंद कर दें।",
   "help.tabs.organize":
     "कुछ टैब खुले रखने से सक्रिय सेशन व्यवस्थित करना आसान होता है। यदि आप टैब खुले रखना चाहते हैं, तो उन्हें कोई याद रहने वाला नाम दें।",
-  "help.tabs.home": "आपके सभी सेशन और प्रोजेक्ट नई होम स्क्रीन पर मिलेंगे। किसी सेशन को चुनने पर वह टैब में खुलता है।",
+  "help.tabs.home":
+    "आपके सभी सेशन और प्रोजेक्ट नई होम स्क्रीन पर मिलेंगे। किसी सेशन को चुनने पर वह टैब में खुलता है।",
   "help.tabs.persistence": "ऐप दोबारा खोलने पर भी आपके टैब खुले रहते हैं।",
   "help.tabs.worktrees":
     "नया डिज़ाइन अभी Git Worktrees का समर्थन नहीं करता है, यह सुविधा जल्द आ रही है। इसलिए यदि आप पिछले लेआउट का उपयोग जारी रखना चाहते हैं, तो सेटिंग्स में लेआउट के बीच स्विच कर सकते हैं। ध्यान रखें कि नया लेआउट कुछ सप्ताह में स्थायी हो जाएगा।",
@@ -543,7 +575,8 @@ export const dict = {
   "dialog.project.edit.color": "रंग",
   "dialog.project.edit.color.select": "{{color}} रंग चुनें",
   "dialog.project.edit.worktree.startup": "वर्कस्पेस स्टार्टअप स्क्रिप्ट",
-  "dialog.project.edit.worktree.startup.description": "एक नया वर्कस्पेस (वर्कट्री) बनाने के बाद चलता है।",
+  "dialog.project.edit.worktree.startup.description":
+    "एक नया वर्कस्पेस (वर्कट्री) बनाने के बाद चलता है।",
   "dialog.project.edit.worktree.startup.placeholder": "जैसे: bun install",
   "dialog.releaseNotes.action.getStarted": "शुरू करें",
   "dialog.releaseNotes.action.next": "अगला",
@@ -552,7 +585,8 @@ export const dict = {
   "dialog.usageExceeded.dontShowAgain": "फिर से न दिखाएँ",
 
   "context.breakdown.title": "कॉन्टेक्स्ट ब्रेकडाउन",
-  "context.breakdown.note": 'इनपुट टोकन का अनुमानित विभाजन। "अन्य" में टूल की परिभाषाएँ और अतिरिक्त खर्च शामिल हैं।',
+  "context.breakdown.note":
+    'इनपुट टोकन का अनुमानित विभाजन। "अन्य" में टूल की परिभाषाएँ और अतिरिक्त खर्च शामिल हैं।',
   "context.breakdown.system": "सिस्टम",
   "context.breakdown.user": "उपयोगकर्ता",
   "context.breakdown.assistant": "सहायक",
@@ -606,28 +640,37 @@ export const dict = {
   "toast.theme.title": "थीम स्विच किया गया",
   "toast.scheme.title": "रंग योजना",
   "toast.workspace.enabled.title": "वर्कस्पेस सक्षम",
-  "toast.workspace.enabled.description": "एकाधिक वर्कट्री अब साइडबार में दिखाए गए हैं",
+  "toast.workspace.enabled.description":
+    "एकाधिक वर्कट्री अब साइडबार में दिखाए गए हैं",
   "toast.workspace.disabled.title": "वर्कस्पेस अक्षम",
-  "toast.workspace.disabled.description": "साइडबार में केवल मुख्य वर्कट्री दिखाया गया है",
+  "toast.workspace.disabled.description":
+    "साइडबार में केवल मुख्य वर्कट्री दिखाया गया है",
   "toast.permissions.autoaccept.on.title": "अनुमतियाँ स्वतः स्वीकार करना",
-  "toast.permissions.autoaccept.on.description": "अनुमति अनुरोध स्वचालित रूप से स्वीकृत हो जाएंगे",
-  "toast.permissions.autoaccept.off.title": "अनुमतियों को स्वतः स्वीकार करना बंद कर दिया गया",
-  "toast.permissions.autoaccept.off.description": "अनुमति अनुरोधों के लिए अनुमोदन की आवश्यकता होगी",
+  "toast.permissions.autoaccept.on.description":
+    "अनुमति अनुरोध स्वचालित रूप से स्वीकृत हो जाएंगे",
+  "toast.permissions.autoaccept.off.title":
+    "अनुमतियों को स्वतः स्वीकार करना बंद कर दिया गया",
+  "toast.permissions.autoaccept.off.description":
+    "अनुमति अनुरोधों के लिए अनुमोदन की आवश्यकता होगी",
   "toast.model.none.title": "कोई मॉडल चयनित नहीं",
-  "toast.model.none.description": "इस सेशन को सारांशित करने के लिए एक प्रोवाइडर कनेक्ट करें",
+  "toast.model.none.description":
+    "इस सेशन को सारांशित करने के लिए एक प्रोवाइडर कनेक्ट करें",
   "toast.file.loadFailed.title": "फ़ाइल लोड करने में विफल",
   "toast.file.listFailed.title": "फ़ाइलें सूचीबद्ध करने में विफल",
   "toast.context.noLineSelection.title": "कोई पंक्ति चयन नहीं",
-  "toast.context.noLineSelection.description": "पहले फ़ाइल टैब में एक पंक्ति श्रेणी का चयन करें।",
+  "toast.context.noLineSelection.description":
+    "पहले फ़ाइल टैब में एक पंक्ति श्रेणी का चयन करें।",
   "toast.session.share.copyFailed.title": "URL को क्लिपबोर्ड पर कॉपी करने में विफल",
   "toast.session.share.success.title": "सेशन साझा किया गया",
-  "toast.session.share.success.description": "साझा URL क्लिपबोर्ड पर कॉपी किया गया!",
+  "toast.session.share.success.description":
+    "साझा URL क्लिपबोर्ड पर कॉपी किया गया!",
   "toast.session.share.failed.title": "सेशन साझा करने में विफल",
   "toast.session.share.failed.description": "सेशन साझा करते समय एक त्रुटि उत्पन्न हुई",
   "toast.session.unshare.success.title": "सेशन अनशेयर किया गया",
   "toast.session.unshare.success.description": "सेशन सफलतापूर्वक अनशेयर किया गया!",
   "toast.session.unshare.failed.title": "सेशन को अनशेयर करने में विफल",
-  "toast.session.unshare.failed.description": "सेशन को अनशेयर करते समय एक त्रुटि उत्पन्न हुई",
+  "toast.session.unshare.failed.description":
+    "सेशन को अनशेयर करते समय एक त्रुटि उत्पन्न हुई",
   "toast.session.export.success.title": "सेशन निर्यात किया गया",
   "toast.session.export.success.description": "सेशन को {{filename}} में सहेजा गया",
   "toast.session.export.failed.title": "सेशन निर्यात करने में विफल",
@@ -636,20 +679,25 @@ export const dict = {
   "toast.session.listFailed.title": "{{project}} के लिए सेशन लोड करने में विफल",
   "toast.project.reloadFailed.title": "{{project}} को पुनः लोड करने में विफल",
   "toast.update.title": "उपलब्ध अद्यतन",
-  "toast.update.description": "OpenCode ({{version}}) का एक नया संस्करण अब इंस्टॉल करने के लिए उपलब्ध है।",
+  "toast.update.description":
+    "OpenCode ({{version}}) का एक नया संस्करण अब इंस्टॉल करने के लिए उपलब्ध है।",
   "toast.update.action.installRestart": "स्थापित करें और पुनः आरंभ करें",
   "toast.update.action.notYet": "अभी नहीं",
-  "disk.accessGuidance.macos": "System Settings में DiskLizard को Full Disk Access दें, फिर दोबारा स्कैन करें।",
-  "disk.accessGuidance.windows": "ऐसे खाते का उपयोग करें जिसे इस ड्राइव तक पहुँच है, या कोई ऐसा फ़ोल्डर स्कैन करें जिसे आपका खाता पढ़ सके।",
+  "disk.accessGuidance.macos":
+    "System Settings में DiskLizard को Full Disk Access दें, फिर दोबारा स्कैन करें।",
+  "disk.accessGuidance.windows":
+    "ऐसे खाते का उपयोग करें जिसे इस ड्राइव तक पहुँच है, या कोई ऐसा फ़ोल्डर स्कैन करें जिसे आपका खाता पढ़ सके।",
   "disk.accessGuidance.linux": "फ़ोल्डर और माउंट अनुमतियाँ जाँचें, फिर दोबारा स्कैन करें।",
   "disk.accessGuidance.default": "इन फ़ोल्डरों तक पहुँच जाँचें, फिर दोबारा स्कैन करें।",
-  "disk.accessGuidance.rescan": "पहुँच बदलने के बाद ऊपरी पट्टी में Rescan का उपयोग करें।",
+  "disk.accessGuidance.rescan":
+    "पहुँच बदलने के बाद ऊपरी पट्टी में Rescan का उपयोग करें।",
   "disk.common.rescan": "फिर से स्कैन करें",
   "toast.update.installFailed.title": "अपडेट इंस्टॉल नहीं हो सका",
   "toast.update.installFailed.retry": "पुनः प्रयास",
   "error.page.title": "कुछ गलत हो गया",
   "error.page.description": "एप्लिकेशन लोड करते समय एक त्रुटि हुई।",
-  "error.page.description.localServerStartup": "स्थानीय सर्वर शुरू करते समय एक त्रुटि हुई।",
+  "error.page.description.localServerStartup":
+    "स्थानीय सर्वर शुरू करते समय एक त्रुटि हुई।",
   "error.page.details.label": "त्रुटि विवरण",
   "error.page.action.restart": "पुनः आरंभ करें",
   "error.page.action.report": "त्रुटि की रिपोर्ट करें",
@@ -664,12 +712,15 @@ export const dict = {
   "error.page.version": "संस्करण: {{version}}",
   "error.dev.rootNotFound":
     "मूल तत्व नहीं मिला. क्या आप इसे अपने index.html में जोड़ना भूल गए? या हो सकता है कि आईडी विशेषता गलत वर्तनी हो गई हो?",
-  "error.serverSync.connectFailed": "सर्वर से कनेक्ट नहीं कर सका। क्या `{{url}}` पर कोई सर्वर चल रहा है?",
+  "error.serverSync.connectFailed":
+    "सर्वर से कनेक्ट नहीं कर सका। क्या `{{url}}` पर कोई सर्वर चल रहा है?",
   "error.serverSDK.noServerAvailable": "कोई सर्वर उपलब्ध नहीं है",
   "error.serverSDK.serverNotAvailable": "सर्वर उपलब्ध नहीं है",
   "error.childStore.persistedCacheCreateFailed": "सतत कैश बनाने में विफल",
-  "error.childStore.persistedProjectMetadataCreateFailed": "निरंतर प्रोजेक्ट मेटाडेटा बनाने में विफल",
-  "error.childStore.persistedProjectIconCreateFailed": "स्थायी प्रोजेक्ट आइकन बनाने में विफल",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "निरंतर प्रोजेक्ट मेटाडेटा बनाने में विफल",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "स्थायी प्रोजेक्ट आइकन बनाने में विफल",
   "error.childStore.storeCreateFailed": "स्टोर बनाने में विफल",
   "directory.error.invalidUrl": "URL में अमान्य निर्देशिका।",
   "error.chain.unknown": "अज्ञात त्रुटि",
@@ -681,23 +732,31 @@ export const dict = {
   "error.chain.responseBody": "प्रतिक्रिया निकाय:\n{{body}}",
   "error.chain.didYouMean": "क्या आपका मतलब था: {{suggestions}}",
   "error.chain.modelNotFound": "मॉडल नहीं मिला: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "अपने कॉन्फ़िगरेशन (opencode.json) प्रोवाइडर/मॉडल नामों की जाँच करें",
+  "error.chain.checkConfig":
+    "अपने कॉन्फ़िगरेशन (opencode.json) प्रोवाइडर/मॉडल नामों की जाँच करें",
   "error.chain.mcpFailed":
     'MCP सर्वर "{{name}}" विफल रहा। ध्यान दें, OpenCode अभी तक MCP प्रमाणीकरण का समर्थन नहीं करता है।',
-  "error.chain.providerAuthFailed": "प्रोवाइडर प्रमाणीकरण विफल ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "प्रोवाइडर प्रमाणीकरण विफल ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'प्रोवाइडर "{{provider}}" शुरू नहीं किया जा सका। क्रेडेंशियल और कॉन्फ़िगरेशन की जाँच करें।',
-  "error.chain.configJsonInvalid": "{{path}} पर कॉन्फ़िगरेशन फ़ाइल वैध JSON(C) नहीं है",
-  "error.chain.configJsonInvalidWithMessage": "{{path}} पर कॉन्फ़िगरेशन फ़ाइल वैध नहीं है JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "{{path}} पर कॉन्फ़िगरेशन फ़ाइल वैध JSON(C) नहीं है",
+  "error.chain.configJsonInvalidWithMessage":
+    "{{path}} पर कॉन्फ़िगरेशन फ़ाइल वैध नहीं है JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     '{{path}} में निर्देशिका "{{dir}}" मान्य नहीं है। निर्देशिका का नाम बदलकर "{{suggestion}}" करें या इसे हटा दें। यह वर्तनी की एक सामान्य त्रुटि है।',
-  "error.chain.configFrontmatterError": "{{path}} में फ्रंटमैटर को पार्स करने में विफल:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "{{path}} में फ्रंटमैटर को पार्स करने में विफल:\n{{message}}",
   "error.chain.configInvalid": "{{path}} पर कॉन्फ़िगरेशन फ़ाइल अमान्य है",
-  "error.chain.configInvalidWithMessage": "{{path}} पर कॉन्फ़िगरेशन फ़ाइल अमान्य है: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} पर कॉन्फ़िगरेशन फ़ाइल अमान्य है: {{message}}",
   "notification.permission.title": "अनुमति आवश्यक है",
-  "notification.permission.description": "{{projectName}} में {{sessionTitle}} को अनुमति की आवश्यकता है",
+  "notification.permission.description":
+    "{{projectName}} में {{sessionTitle}} को अनुमति की आवश्यकता है",
   "notification.question.title": "प्रश्न",
-  "notification.question.description": "{{projectName}} में {{sessionTitle}} का एक प्रश्न है",
+  "notification.question.description":
+    "{{projectName}} में {{sessionTitle}} का एक प्रश्न है",
   "notification.action.goToSession": "सेशन पर जाएं",
   "notification.session.responseReady.title": "प्रतिक्रिया तैयार",
   "notification.session.error.title": "सेशन त्रुटि",
@@ -720,14 +779,16 @@ export const dict = {
   "home.sessions.group.today": "आज",
   "home.sessions.group.yesterday": "कल",
   "home.sessions.group.older": "पुराने",
-  "home.providerTip": "Claude, GPT, Gemini आदि सहित अन्य मॉडल का उपयोग करने के लिए 75+ प्रोवाइडर से कनेक्ट करें",
+  "home.providerTip":
+    "Claude, GPT, Gemini आदि सहित अन्य मॉडल का उपयोग करने के लिए 75+ प्रोवाइडर से कनेक्ट करें",
   "session.tab.session": "सेशन",
   "session.tab.review": "समीक्षा",
   "session.tab.context": "कॉन्टेक्स्ट",
   "session.tab.unknown": "अज्ञात सेशन",
   "session.panel.reviewAndFiles": "समीक्षा और फ़ाइलें",
   "session.error.notFound": "यह सेशन नहीं मिल सका",
-  "session.error.notFound.description": "यह टैब एक सेशन की ओर इशारा करता है जो अब इस सर्वर पर मौजूद नहीं है।",
+  "session.error.notFound.description":
+    "यह टैब एक सेशन की ओर इशारा करता है जो अब इस सर्वर पर मौजूद नहीं है।",
   "session.error.notFound.closeTab": "टैब बंद करें",
   "session.error.serverConnection": "इस सर्वर से कनेक्ट नहीं किया जा सकता",
   "session.review.filesChanged": "बदली गई फ़ाइलें: {{count}}",
@@ -735,13 +796,16 @@ export const dict = {
   "session.review.change.other": "परिवर्तन",
   "session.review.loadingChanges": "परिवर्तन लोड हो रहे हैं...",
   "session.review.empty": "इस सेशन में अभी तक कोई बदलाव नहीं हुआ है",
-  "session.review.noVcs": "कोई Git संस्करण नियंत्रण प्रणाली नहीं पाई गई, परिवर्तन प्रदर्शित नहीं हुए",
+  "session.review.noVcs":
+    "कोई Git संस्करण नियंत्रण प्रणाली नहीं पाई गई, परिवर्तन प्रदर्शित नहीं हुए",
   "session.review.noVcs.createGit.title": "एक Git रिपॉजिटरी बनाएं",
   "session.review.noVcs.createGit.description":
     "इस प्रोजेक्ट में परिवर्तनों को ट्रैक करें, समीक्षा करें और पूर्ववत करें",
-  "session.review.noVcs.createGit.actionLoading": "Git रिपॉजिटरी बनाई जा रही है...",
+  "session.review.noVcs.createGit.actionLoading":
+    "Git रिपॉजिटरी बनाई जा रही है...",
   "session.review.noVcs.createGit.action": "Git रिपॉजिटरी बनाएं",
-  "session.review.noSnapshot": "कॉन्फ़िगरेशन में स्नैपशॉट ट्रैकिंग अक्षम है, इसलिए सेशन परिवर्तन अनुपलब्ध हैं",
+  "session.review.noSnapshot":
+    "कॉन्फ़िगरेशन में स्नैपशॉट ट्रैकिंग अक्षम है, इसलिए सेशन परिवर्तन अनुपलब्ध हैं",
   "session.review.noChanges": "कोई परिवर्तन नहीं",
   "session.review.noUncommittedChanges": "अभी तक कोई अप्रतिबद्ध परिवर्तन नहीं",
   "session.review.noBranchChanges": "अभी तक शाखा में कोई परिवर्तन नहीं",
@@ -842,11 +906,14 @@ export const dict = {
   "terminal.title.numbered": "टर्मिनल {{number}}",
   "terminal.close": "टर्मिनल बंद करें",
   "terminal.connectionLost.title": "कनेक्शन टूट गया",
-  "terminal.connectionLost.abnormalClose": "WebSocket असामान्य रूप से बंद हुआ: {{code}}",
-  "terminal.connectionLost.description": "टर्मिनल कनेक्शन बाधित हो गया था। ऐसा तब हो सकता है जब सर्वर पुनरारंभ हो।",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket असामान्य रूप से बंद हुआ: {{code}}",
+  "terminal.connectionLost.description":
+    "टर्मिनल कनेक्शन बाधित हो गया था। ऐसा तब हो सकता है जब सर्वर पुनरारंभ हो।",
   "terminal.connectTicket.csrfError":
     "ओरिजिन या CSRF जाँच के कारण PTY कनेक्ट टिकट अस्वीकार कर दिया गया। सर्वर का CORS कॉन्फ़िगरेशन जाँचें।",
-  "terminal.connectTicket.statusError": "PTY कनेक्ट टिकट विफल रहा (स्थिति: {{status}})",
+  "terminal.connectTicket.statusError":
+    "PTY कनेक्ट टिकट विफल रहा (स्थिति: {{status}})",
   "titlebar.update": "अपडेट करें",
   "titlebar.updateVersion": "अपडेट करें {{version}}",
   "common.closeTab": "टैब बंद करें",
@@ -890,8 +957,10 @@ export const dict = {
   "sidebar.workspaces.enable": "वर्कस्पेस सक्षम करें",
   "sidebar.workspaces.disable": "वर्कस्पेस अक्षम करें",
   "sidebar.gettingStarted.title": "शुरुआत करें",
-  "sidebar.gettingStarted.line1": "OpenCode में निःशुल्क मॉडल शामिल है ताकि आप तुरंत शुरू कर सकें।",
-  "sidebar.gettingStarted.line2": "Claude, GPT, Gemini आदि मॉडल उपयोग करने के लिए किसी भी प्रोवाइडर को कनेक्ट करें।",
+  "sidebar.gettingStarted.line1":
+    "OpenCode में निःशुल्क मॉडल शामिल है ताकि आप तुरंत शुरू कर सकें।",
+  "sidebar.gettingStarted.line2":
+    "Claude, GPT, Gemini आदि मॉडल उपयोग करने के लिए किसी भी प्रोवाइडर को कनेक्ट करें।",
   "sidebar.project.recentSessions": "हाल ही में सेशन",
   "sidebar.project.viewAllSessions": "सभी सेशन देखें",
   "sidebar.project.clearNotifications": "सूचनाएँ साफ़ करें",
@@ -909,22 +978,27 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "अंतिम 5 सेकंड में 32 एमएस से अधिक फ़्रेम।",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "पिछले 5 सेकंड में अवरुद्ध समय और लंबे कार्यों की संख्या। सबसे लंबा कार्य: {{max}}।",
+  "debugBar.long.tip":
+    "पिछले 5 सेकंड में अवरुद्ध समय और लंबे कार्यों की संख्या। सबसे लंबा कार्य: {{max}}।",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "पिछले 5 सेकंड में सबसे खराब इनपुट विलंब देखा गया।",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "पिछले 5 सेकंड में अनुमानित इंटरैक्शन अवधि। यह INP जैसा है, आधिकारिक Web Vitals INP नहीं।",
+  "debugBar.inp.tip":
+    "पिछले 5 सेकंड में अनुमानित इंटरैक्शन अवधि। यह INP जैसा है, आधिकारिक Web Vitals INP नहीं।",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "वर्तमान ऐप जीवनकाल के लिए संचयी लेआउट बदलाव।",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "उपयोग किया गया JS हीप बनाम हीप सीमा। केवल Chromium।",
-  "debugBar.mem.tip": "उपयोग किया गया JS हीप बनाम हीप सीमा। {{limit}} में से {{used}}।",
+  "debugBar.mem.tipUnavailable":
+    "उपयोग किया गया JS हीप बनाम हीप सीमा। केवल Chromium।",
+  "debugBar.mem.tip":
+    "उपयोग किया गया JS हीप बनाम हीप सीमा। {{limit}} में से {{used}}।",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "सभी इंटरैक्टिव एलिमेंट पर फ़ोकस स्टाइल ज़बरदस्ती लागू करें",
   "debugBar.focus.on": "चालू",
   "debugBar.focus.off": "बंद",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "चुनी गई भाषा बदले बिना पूरे ऐप की लेआउट दिशा ज़बरदस्ती सेट करें",
+  "debugBar.direction.tip":
+    "चुनी गई भाषा बदले बिना पूरे ऐप की लेआउट दिशा ज़बरदस्ती सेट करें",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -934,7 +1008,8 @@ export const dict = {
   "settings.tab.shortcuts": "शॉर्टकट",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL एकीकरण",
-  "settings.desktop.wsl.description": "Windows पर WSL के अंदर OpenCode सर्वर चलाएँ।",
+  "settings.desktop.wsl.description":
+    "Windows पर WSL के अंदर OpenCode सर्वर चलाएँ।",
   "settings.general.section.appearance": "उपस्थिति",
   "settings.general.section.advanced": "उन्नत",
   "settings.general.section.notifications": "सिस्टम सूचनाएँ",
@@ -945,21 +1020,27 @@ export const dict = {
   "settings.general.row.language.title": "भाषा",
   "settings.general.row.language.description": "OpenCode के लिए प्रदर्शन भाषा बदलें",
   "settings.general.row.shell.title": "टर्मिनल शेल",
-  "settings.general.row.shell.description": "शेल का उपयोग टर्मिनल और एजेंट टूल द्वारा किया जाता है",
+  "settings.general.row.shell.description":
+    "शेल का उपयोग टर्मिनल और एजेंट टूल द्वारा किया जाता है",
   "settings.general.row.shell.autoDefault": "स्वतः (डिफ़ॉल्ट)",
   "settings.general.row.shell.terminalOnly": "केवल टर्मिनल",
   "settings.general.row.appearance.title": "उपस्थिति",
-  "settings.general.row.appearance.description": "अनुकूलित करें कि OpenCode आपके डिवाइस पर कैसा दिखता है",
+  "settings.general.row.appearance.description":
+    "अनुकूलित करें कि OpenCode आपके डिवाइस पर कैसा दिखता है",
   "settings.general.row.colorScheme.title": "रंग योजना",
-  "settings.general.row.colorScheme.description": "चुनें कि OpenCode सिस्टम, हल्की या गहरी थीम में से किसका उपयोग करे",
+  "settings.general.row.colorScheme.description":
+    "चुनें कि OpenCode सिस्टम, हल्की या गहरी थीम में से किसका उपयोग करे",
   "settings.general.row.theme.title": "थीम",
-  "settings.general.row.theme.description": "अनुकूलित करें कि OpenCode की थीम कैसी है।",
+  "settings.general.row.theme.description":
+    "अनुकूलित करें कि OpenCode की थीम कैसी है।",
   "settings.general.row.font.title": "कोड फ़ॉन्ट",
   "settings.general.row.font.description": "कोड ब्लॉक में प्रयुक्त फ़ॉन्ट को अनुकूलित करें",
   "settings.general.row.terminalFont.title": "टर्मिनल फ़ॉन्ट",
-  "settings.general.row.terminalFont.description": "टर्मिनल में प्रयुक्त फ़ॉन्ट को अनुकूलित करें",
+  "settings.general.row.terminalFont.description":
+    "टर्मिनल में प्रयुक्त फ़ॉन्ट को अनुकूलित करें",
   "settings.general.row.uiFont.title": "UI फ़ॉन्ट",
-  "settings.general.row.uiFont.description": "पूरे इंटरफ़ेस में उपयोग किए गए फ़ॉन्ट को कस्टमाइज़ करें",
+  "settings.general.row.uiFont.description":
+    "पूरे इंटरफ़ेस में उपयोग किए गए फ़ॉन्ट को कस्टमाइज़ करें",
   "settings.general.row.followup.title": "अनुवर्ती व्यवहार",
   "settings.general.row.followup.description":
     "चुनें कि क्या अनुवर्ती प्रॉम्प्ट तुरंत आगे बढ़ेगा या कतार में प्रतीक्षा करेगा",
@@ -968,51 +1049,67 @@ export const dict = {
   "settings.general.row.showFileTree.title": "फ़ाइल वृक्ष",
   "settings.general.row.showFileTree.description": "सेशन में फ़ाइल ट्री पैनल दिखाएँ",
   "settings.general.row.showNavigation.title": "नेविगेशन नियंत्रण",
-  "settings.general.row.showNavigation.description": "डेस्कटॉप टाइटल बार में पीछे और आगे के बटन दिखाएँ",
+  "settings.general.row.showNavigation.description":
+    "डेस्कटॉप टाइटल बार में पीछे और आगे के बटन दिखाएँ",
   "settings.general.row.showSearch.title": "कमांड पैलेट",
-  "settings.general.row.showSearch.description": "टाइटल बार में खोज और कमांड पैलेट बटन दिखाएँ",
+  "settings.general.row.showSearch.description":
+    "टाइटल बार में खोज और कमांड पैलेट बटन दिखाएँ",
   "settings.general.row.showTerminal.title": "टर्मिनल",
-  "settings.general.row.showTerminal.description": "डेस्कटॉप टाइटल बार में टर्मिनल बटन दिखाएँ",
+  "settings.general.row.showTerminal.description":
+    "डेस्कटॉप टाइटल बार में टर्मिनल बटन दिखाएँ",
   "settings.general.row.showStatus.title": "सर्वर की स्थिति",
-  "settings.general.row.showStatus.description": "टाइटल बार में सर्वर स्थिति बटन दिखाएँ",
+  "settings.general.row.showStatus.description":
+    "टाइटल बार में सर्वर स्थिति बटन दिखाएँ",
   "settings.general.row.mobileTitlebarBottom.title": "निचला नेविगेशन",
-  "settings.general.row.mobileTitlebarBottom.description": "मोबाइल पर स्क्रीन के नीचे टाइटल बार और सेशन टैब रखें",
+  "settings.general.row.mobileTitlebarBottom.description":
+    "मोबाइल पर स्क्रीन के नीचे टाइटल बार और सेशन टैब रखें",
   "settings.general.row.showCustomAgents.title": "एजेंट दिखाएँ",
   "settings.general.row.showCustomAgents.description":
     "कंपोज़र में एजेंट के बीच स्विच करें। छिपाए जाने पर, डिफ़ॉल्ट रूप से बिल्ड एजेंट हो जाता है।",
   "settings.general.row.reasoningSummaries.title": "तर्क सारांश दिखाएँ",
-  "settings.general.row.reasoningSummaries.description": "टाइमलाइन में मॉडल तर्क सारांश प्रदर्शित करें",
-  "settings.general.row.shellToolPartsExpanded.title": "शेल टूल पार्ट्स का विस्तार करें",
+  "settings.general.row.reasoningSummaries.description":
+    "टाइमलाइन में मॉडल तर्क सारांश प्रदर्शित करें",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "शेल टूल पार्ट्स का विस्तार करें",
   "settings.general.row.shellToolPartsExpanded.description":
     "टाइमलाइन में डिफ़ॉल्ट रूप से विस्तारित शेल टूल पार्ट्स दिखाएं",
-  "settings.general.row.editToolPartsExpanded.title": "संपादन टूल भागों का विस्तार करें",
+  "settings.general.row.editToolPartsExpanded.title":
+    "संपादन टूल भागों का विस्तार करें",
   "settings.general.row.editToolPartsExpanded.description":
     "टाइमलाइन में डिफ़ॉल्ट रूप से विस्तारित संपादित करें, लिखें और पैच टूल पार्ट्स दिखाएं",
   "settings.general.row.newInterface.title": "नया लेआउट",
   "settings.general.row.newInterface.badge": "नया",
   "settings.general.row.newInterface.description":
     "नए टैब और होम लेआउट का उपयोग करें. सीमित समय के लिए लेआउट के बीच स्विच करें।",
-  "settings.general.row.newInterfaceNotice.title": "अब आप नए लेआउट का उपयोग कर रहे हैं",
-  "settings.general.row.newInterfaceNotice.description": "पिछला लेआउट अब उपलब्ध नहीं है",
+  "settings.general.row.newInterfaceNotice.title":
+    "अब आप नए लेआउट का उपयोग कर रहे हैं",
+  "settings.general.row.newInterfaceNotice.description":
+    "पिछला लेआउट अब उपलब्ध नहीं है",
   "settings.general.row.newInterfaceNotice.dismiss": "हटाएँ",
   "settings.general.row.pinchZoom.title": "ज़ूम करने के लिए पिंच करें",
-  "settings.general.row.pinchZoom.description": "ट्रैकपैड पिंच और Ctrl-स्क्रॉल जेस्चर को ज़ूम करने की अनुमति दें",
+  "settings.general.row.pinchZoom.description":
+    "ट्रैकपैड पिंच और Ctrl-स्क्रॉल जेस्चर को ज़ूम करने की अनुमति दें",
   "settings.general.row.wayland.title": "नेटिव Wayland का उपयोग करें",
-  "settings.general.row.wayland.description": "Wayland पर X11 फ़ॉलबैक अक्षम करें। पुनः आरंभ करना आवश्यक है।",
+  "settings.general.row.wayland.description":
+    "Wayland पर X11 फ़ॉलबैक अक्षम करें। पुनः आरंभ करना आवश्यक है।",
   "settings.general.row.wayland.tooltip":
     "अलग-अलग रीफ़्रेश दर वाले मॉनिटर के साथ Linux पर नेटिव Wayland अधिक स्थिर हो सकता है।",
   "settings.general.row.releaseNotes.title": "रिलीज़ नोट्स",
-  "settings.general.row.releaseNotes.description": "अपडेट के बाद 'नया क्या है' पॉपअप दिखाएँ",
+  "settings.general.row.releaseNotes.description":
+    "अपडेट के बाद 'नया क्या है' पॉपअप दिखाएँ",
   "settings.updates.row.startup.title": "स्टार्टअप पर अपडेट की जाँच करें",
-  "settings.updates.row.startup.description": "OpenCode लॉन्च होने पर अपने-आप अपडेट की जाँच करें",
+  "settings.updates.row.startup.description":
+    "OpenCode लॉन्च होने पर अपने-आप अपडेट की जाँच करें",
   "settings.updates.row.check.title": "अद्यतन के लिए जाँच",
-  "settings.updates.row.check.description": "अपडेट के लिए मैन्युअल रूप से जाँच करें और यदि उपलब्ध हो तो इंस्टॉल करें",
+  "settings.updates.row.check.description":
+    "अपडेट के लिए मैन्युअल रूप से जाँच करें और यदि उपलब्ध हो तो इंस्टॉल करें",
   "settings.updates.action.checkNow": "अभी जाँचें",
   "settings.updates.action.checking": "जाँच हो रही है...",
   "settings.updates.action.downloading": "डाउनलोड हो रहा है...",
   "settings.updates.action.installing": "स्थापित किया जा रहा है...",
   "settings.updates.toast.latest.title": "आपके पास नवीनतम संस्करण है",
-  "settings.updates.toast.latest.description": "आप OpenCode का नवीनतम संस्करण चला रहे हैं।",
+  "settings.updates.toast.latest.description":
+    "आप OpenCode का नवीनतम संस्करण चला रहे हैं।",
   "sound.option.none": "कोई नहीं",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -1063,21 +1160,27 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "जब एजेंट पूरा हो जाए या ध्यान देने की आवश्यकता हो तो सिस्टम अधिसूचना दिखाएं",
   "settings.general.notifications.permissions.title": "अनुमतियाँ",
-  "settings.general.notifications.permissions.description": "अनुमति की आवश्यकता होने पर सिस्टम अधिसूचना दिखाएं",
+  "settings.general.notifications.permissions.description":
+    "अनुमति की आवश्यकता होने पर सिस्टम अधिसूचना दिखाएं",
   "settings.general.notifications.errors.title": "त्रुटियाँ",
-  "settings.general.notifications.errors.description": "त्रुटि होने पर सिस्टम अधिसूचना दिखाएं",
+  "settings.general.notifications.errors.description":
+    "त्रुटि होने पर सिस्टम अधिसूचना दिखाएं",
   "settings.general.sounds.agent.title": "एजेंट",
-  "settings.general.sounds.agent.description": "जब एजेंट पूरा हो जाए या ध्यान देने की आवश्यकता हो तो ध्वनि बजाएं",
+  "settings.general.sounds.agent.description":
+    "जब एजेंट पूरा हो जाए या ध्यान देने की आवश्यकता हो तो ध्वनि बजाएं",
   "settings.general.sounds.permissions.title": "अनुमतियाँ",
-  "settings.general.sounds.permissions.description": "अनुमति की आवश्यकता होने पर ध्वनि बजाएं",
+  "settings.general.sounds.permissions.description":
+    "अनुमति की आवश्यकता होने पर ध्वनि बजाएं",
   "settings.general.sounds.errors.title": "त्रुटियाँ",
   "settings.general.sounds.errors.description": "कोई त्रुटि होने पर ध्वनि बजाएं",
   "settings.shortcuts.title": "कीबोर्ड शॉर्टकट",
   "settings.shortcuts.reset.button": "डिफ़ॉल्ट पर पुनः सेट करें",
   "settings.shortcuts.reset.toast.title": "शॉर्टकट रीसेट",
-  "settings.shortcuts.reset.toast.description": "कीबोर्ड शॉर्टकट को डिफ़ॉल्ट पर रीसेट कर दिया गया है।",
+  "settings.shortcuts.reset.toast.description":
+    "कीबोर्ड शॉर्टकट को डिफ़ॉल्ट पर रीसेट कर दिया गया है।",
   "settings.shortcuts.conflict.title": "शॉर्टकट पहले से ही उपयोग में है",
-  "settings.shortcuts.conflict.description": "{{keybind}} पहले से ही {{titles}} को सौंपा गया है।",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} पहले से ही {{titles}} को सौंपा गया है।",
   "settings.shortcuts.unassigned": "सौंपे नहीं गए",
   "settings.shortcuts.pressKeys": "कुंजियाँ दबाएँ",
   "settings.shortcuts.search.placeholder": "शॉर्टकट खोजें",
@@ -1092,9 +1195,11 @@ export const dict = {
   "settings.providers.description": "प्रोवाइडर सेटिंग्स यहां कॉन्फ़िगर करने योग्य होंगी।",
   "settings.providers.section.connected": "कनेक्टेड प्रोवाइडर",
   "settings.providers.connected.empty": "कोई कनेक्टेड प्रोवाइडर नहीं",
-  "settings.providers.connected.environmentDescription": "आपके एनवायरनमेंट वेरिएबल से कनेक्ट किया गया",
+  "settings.providers.connected.environmentDescription":
+    "आपके एनवायरनमेंट वेरिएबल से कनेक्ट किया गया",
   "settings.providers.section.popular": "लोकप्रिय प्रोवाइडर",
-  "settings.providers.custom.description": "आधार URL द्वारा एक OpenAI-संगत प्रोवाइडर जोड़ें।",
+  "settings.providers.custom.description":
+    "आधार URL द्वारा एक OpenAI-संगत प्रोवाइडर जोड़ें।",
   "settings.providers.tag.environment": "एनवायरनमेंट",
   "settings.providers.tag.config": "कॉन्फ़िगरेशन",
   "settings.providers.tag.custom": "कस्टम",
@@ -1108,22 +1213,28 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP सेटिंग्स यहां कॉन्फ़िगर करने योग्य होंगी।",
   "settings.permissions.title": "अनुमतियाँ",
-  "settings.permissions.description": "नियंत्रित करें कि सर्वर डिफ़ॉल्ट रूप से कौन से टूल का उपयोग कर सकता है।",
+  "settings.permissions.description":
+    "नियंत्रित करें कि सर्वर डिफ़ॉल्ट रूप से कौन से टूल का उपयोग कर सकता है।",
   "settings.permissions.section.tools": "टूल",
   "settings.permissions.toast.updateFailed.title": "अनुमतियाँ अद्यतन करने में विफल",
   "settings.permissions.action.allow": "अनुमति दें",
   "settings.permissions.action.ask": "पूछें",
   "settings.permissions.action.deny": "अस्वीकार करें",
   "settings.permissions.tool.read.title": "पढ़ें",
-  "settings.permissions.tool.read.description": "फ़ाइल पढ़ना (फ़ाइल पथ से मेल खाता है)",
+  "settings.permissions.tool.read.description":
+    "फ़ाइल पढ़ना (फ़ाइल पथ से मेल खाता है)",
   "settings.permissions.tool.edit.title": "संपादित करें",
-  "settings.permissions.tool.edit.description": "संपादन, लेखन और पैच सहित फ़ाइलों को संशोधित करें",
+  "settings.permissions.tool.edit.description":
+    "संपादन, लेखन और पैच सहित फ़ाइलों को संशोधित करें",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "ग्लोब पैटर्न का उपयोग करके फ़ाइलों का मिलान करें",
+  "settings.permissions.tool.glob.description":
+    "ग्लोब पैटर्न का उपयोग करके फ़ाइलों का मिलान करें",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "रेगुलर एक्सप्रेशन का उपयोग करके फ़ाइल सामग्री खोजें",
+  "settings.permissions.tool.grep.description":
+    "रेगुलर एक्सप्रेशन का उपयोग करके फ़ाइल सामग्री खोजें",
   "settings.permissions.tool.list.title": "सूची",
-  "settings.permissions.tool.list.description": "किसी निर्देशिका में फ़ाइलों की सूची बनाएं",
+  "settings.permissions.tool.list.description":
+    "किसी निर्देशिका में फ़ाइलों की सूची बनाएं",
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "शेल कमांड चलाएँ",
   "settings.permissions.tool.task.title": "कार्य",
@@ -1139,9 +1250,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "वेब खोज",
   "settings.permissions.tool.external_directory.title": "बाह्य निर्देशिका",
-  "settings.permissions.tool.external_directory.description": "प्रोजेक्ट निर्देशिका के बाहर फ़ाइलों तक पहुँचें",
+  "settings.permissions.tool.external_directory.description":
+    "प्रोजेक्ट निर्देशिका के बाहर फ़ाइलों तक पहुँचें",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "समान इनपुट के साथ बार-बार टूल कॉल का पता लगाएं",
+  "settings.permissions.tool.doom_loop.description":
+    "समान इनपुट के साथ बार-बार टूल कॉल का पता लगाएं",
   "session.delete.failed.title": "सेशन को हटाने में विफल",
   "session.delete.title": "सेशन हटाएं",
   "session.delete.confirm": 'सेशन "{{name}}" हटाएं?',
@@ -1170,5 +1283,6 @@ export const dict = {
   "workspace.reset.archived.none": "कोई सक्रिय सेशन संग्रहित नहीं किया जाएगा।",
   "workspace.reset.archived.one": "1 सेशन संग्रहित किया जाएगा।",
   "workspace.reset.archived.many": "{{count}} सेशन संग्रहित किए जाएँगे।",
-  "workspace.reset.note": "यह डिफ़ॉल्ट शाखा से मिलान करने के लिए वर्कस्पेस को रीसेट कर देगा।",
+  "workspace.reset.note":
+    "यह डिफ़ॉल्ट शाखा से मिलान करने के लिए वर्कस्पेस को रीसेट कर देगा।",
 }

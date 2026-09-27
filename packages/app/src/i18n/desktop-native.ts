@@ -72,10 +72,13 @@ export type DesktopNativeLocale = (typeof DESKTOP_NATIVE_LOCALES)[number]
  * not product locales until the complete DiskLizard surface is translated.
  */
 export const DISKLIZARD_RELEASE_LOCALES = ["en"] as const
-export type DiskLizardReleaseLocale = (typeof DISKLIZARD_RELEASE_LOCALES)[number]
+export type DiskLizardReleaseLocale =
+  (typeof DISKLIZARD_RELEASE_LOCALES)[number]
 export const DISKLIZARD_RELEASE_LOCALE: DiskLizardReleaseLocale = "en"
 
-export function resolveDiskLizardReleaseLocale(_languages: readonly string[] = []): DiskLizardReleaseLocale {
+export function resolveDiskLizardReleaseLocale(
+  _languages: readonly string[] = []
+): DiskLizardReleaseLocale {
   return DISKLIZARD_RELEASE_LOCALE
 }
 
@@ -209,14 +212,19 @@ export const DESKTOP_NATIVE_LOCALE_TAGS: Record<DesktopNativeLocale, string> = {
   uz: "uz-Latn-UZ",
 }
 
-export function detectDesktopNativeLocale(languages: readonly string[]): DesktopNativeLocale {
+export function detectDesktopNativeLocale(
+  languages: readonly string[]
+): DesktopNativeLocale {
   for (const language of languages) {
     const source = locale(language)
     if (!source) continue
     if (["no", "nb", "nn"].includes(source.language)) return "no"
     const match = DESKTOP_NATIVE_LOCALES.find((candidate) => {
       const target = locale(DESKTOP_NATIVE_LOCALE_TAGS[candidate])
-      return target?.language === source.language && compatibleScript(target.script, source.script)
+      return (
+        target?.language === source.language &&
+        compatibleScript(target.script, source.script)
+      )
     })
     if (match) return match
   }
@@ -230,7 +238,9 @@ function compatibleScript(target?: string, source?: string) {
 }
 
 export function desktopNativePluralCategories(locale: DesktopNativeLocale) {
-  return new Intl.PluralRules(DESKTOP_NATIVE_LOCALE_TAGS[locale]).resolvedOptions().pluralCategories
+  return new Intl.PluralRules(
+    DESKTOP_NATIVE_LOCALE_TAGS[locale]
+  ).resolvedOptions().pluralCategories
 }
 
 function locale(value: string) {
@@ -296,7 +306,8 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.updater.dialog.installFailed.title": "Couldn't Install Update",
   "desktop.updater.dialog.upToDate.message": "You're up to date.",
   "desktop.updater.dialog.upToDate.title": "No Updates",
-  "desktop.updater.dialog.ready.message": "Update {{version}} downloaded. Restart now?",
+  "desktop.updater.dialog.ready.message":
+    "Update {{version}} downloaded. Restart now?",
   "desktop.updater.dialog.ready.title": "Update Ready",
   "desktop.updater.dialog.restart": "Restart",
   "desktop.updater.dialog.retry": "Retry",
@@ -309,9 +320,12 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.recovery.loadFailed": "DiskLizard failed to load",
   "desktop.recovery.terminated": "DiskLizard window terminated unexpectedly",
   "desktop.recovery.unresponsive": "DiskLizard is not responding",
-  "desktop.recovery.unresponsive.detail": "You can relaunch the app, open the logs, or keep waiting.",
-  "desktop.recovery.loadFailed.detail": "Window: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Window: {{window}}\nReason: {{reason}}\nCode: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "You can relaunch the app, open the logs, or keep waiting.",
+  "desktop.recovery.loadFailed.detail":
+    "Window: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Window: {{window}}\nReason: {{reason}}\nCode: {{code}}",
   "desktop.recovery.unknown": "<unknown>",
 
   "desktop.dialog.chooseFolder": "Scan Folder...",
@@ -329,33 +343,45 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.wsl.error.installDistro": "Failed to install distro: {{distro}}",
   "desktop.wsl.error.installOpencode": "DiskLizard installation failed",
   "desktop.wsl.error.alreadyAdded": "{{distro}} is already added",
-  "desktop.wsl.error.opencodeMissing": "DiskLizard is not installed in this distro",
-  "desktop.wsl.error.opencodeCannotRun": "DiskLizard is installed but could not run",
-  "desktop.wsl.error.opencodeNotInstalled": "DiskLizard is not installed in {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "DiskLizard is not installed in this distro",
+  "desktop.wsl.error.opencodeCannotRun":
+    "DiskLizard is installed but could not run",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "DiskLizard is not installed in {{distro}}",
   "desktop.wsl.error.updateVersion":
     "DiskLizard update finished but {{distro}} still reports {{installed}}; expected {{expected}}",
   "desktop.wsl.error.noVersion": "no version",
-  "desktop.wsl.error.serverExited": "WSL server exited after startup (code={{code}} signal={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL server exited after startup (code={{code}} signal={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL server exited before becoming healthy (code={{code}} signal={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Sidecar for {{distro}} health check timed out after {{timeout}}ms",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} timed out after {{timeout}}ms",
+  "desktop.wsl.error.healthTimeout":
+    "Sidecar for {{distro}} health check timed out after {{timeout}}ms",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} timed out after {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Failed to get port",
 
   "desktop.picker.error.notSelected": "File was not selected by the picker",
-  "desktop.picker.error.sizeLimit": "Selected attachments exceed the {{limit}} MB limit",
+  "desktop.picker.error.sizeLimit":
+    "Selected attachments exceed the {{limit}} MB limit",
 } as const
 
 export type DesktopNativeKey = keyof typeof DESKTOP_NATIVE_ENGLISH
 export type DesktopNativeMessages = Record<DesktopNativeKey, string>
-export type DesktopNativeBundle = { locale: DesktopNativeLocale; messages: DesktopNativeMessages }
+export type DesktopNativeBundle = {
+  locale: DesktopNativeLocale
+  messages: DesktopNativeMessages
+}
 
-export const DESKTOP_NATIVE_KEYS = Object.keys(DESKTOP_NATIVE_ENGLISH) as DesktopNativeKey[]
+export const DESKTOP_NATIVE_KEYS = Object.keys(
+  DESKTOP_NATIVE_ENGLISH
+) as DesktopNativeKey[]
 export const DESKTOP_NATIVE_MAX_PAYLOAD_BYTES = 64 * 1024
 
 export function createDesktopNativeBundle(
   locale: DesktopNativeLocale,
-  translate: (key: DesktopNativeKey) => string,
+  translate: (key: DesktopNativeKey) => string
 ): DesktopNativeBundle {
   return {
     locale,
@@ -364,30 +390,50 @@ export function createDesktopNativeBundle(
     // so normalize it at the standalone bundle boundary while retaining the
     // surrounding translation.
     messages: Object.fromEntries(
-      DESKTOP_NATIVE_KEYS.map((key) => [key, translate(key).replace(/open[\s_-]*code/giu, "DiskLizard")]),
+      DESKTOP_NATIVE_KEYS.map((key) => [
+        key,
+        translate(key).replace(/open[\s_-]*code/giu, "DiskLizard"),
+      ])
     ) as DesktopNativeMessages,
   }
 }
 
-export function parseDesktopNativeBundle(value: unknown): DesktopNativeBundle | undefined {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined
+export function parseDesktopNativeBundle(
+  value: unknown
+): DesktopNativeBundle | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return undefined
   try {
-    if (new TextEncoder().encode(JSON.stringify(value)).byteLength > DESKTOP_NATIVE_MAX_PAYLOAD_BYTES) return undefined
+    if (
+      new TextEncoder().encode(JSON.stringify(value)).byteLength >
+      DESKTOP_NATIVE_MAX_PAYLOAD_BYTES
+    )
+      return undefined
   } catch {
     return undefined
   }
   const bundle = value as { locale?: unknown; messages?: unknown }
-  if (!DESKTOP_NATIVE_LOCALES.some((locale) => locale === bundle.locale)) return undefined
-  if (!bundle.messages || typeof bundle.messages !== "object" || Array.isArray(bundle.messages)) return undefined
+  if (!DESKTOP_NATIVE_LOCALES.some((locale) => locale === bundle.locale))
+    return undefined
+  if (
+    !bundle.messages ||
+    typeof bundle.messages !== "object" ||
+    Array.isArray(bundle.messages)
+  )
+    return undefined
   const messages = bundle.messages as Record<string, unknown>
   const keys = Object.keys(messages)
   if (keys.length !== DESKTOP_NATIVE_KEYS.length) return undefined
-  if (!DESKTOP_NATIVE_KEYS.every((key) => typeof messages[key] === "string")) return undefined
+  if (!DESKTOP_NATIVE_KEYS.every((key) => typeof messages[key] === "string"))
+    return undefined
   if (!keys.every((key) => key in DESKTOP_NATIVE_ENGLISH)) return undefined
   return bundle as DesktopNativeBundle
 }
 
-export function formatDesktopNativeMessage(message: string, params?: Record<string, string | number>) {
+export function formatDesktopNativeMessage(
+  message: string,
+  params?: Record<string, string | number>
+) {
   if (!params) return message
   return message.replace(/\{\{([^{}]+)\}\}/g, (match, key: string) => {
     const value = params[key]

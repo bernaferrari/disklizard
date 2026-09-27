@@ -14,7 +14,9 @@ import {
 
 describe("desktop native translations", () => {
   test("uses native language names independent of the active locale", () => {
-    expect(DESKTOP_NATIVE_LOCALES.map((locale) => DESKTOP_NATIVE_LABELS[locale])).toEqual([
+    expect(
+      DESKTOP_NATIVE_LOCALES.map((locale) => DESKTOP_NATIVE_LABELS[locale])
+    ).toEqual([
       "English",
       "简体中文",
       "繁體中文",
@@ -81,7 +83,10 @@ describe("desktop native translations", () => {
   })
 
   test("accepts the exact typed bundle", () => {
-    const bundle = createDesktopNativeBundle("en", (key) => DESKTOP_NATIVE_ENGLISH[key])
+    const bundle = createDesktopNativeBundle(
+      "en",
+      (key) => DESKTOP_NATIVE_ENGLISH[key]
+    )
     expect(parseDesktopNativeBundle(bundle)).toEqual(bundle)
   })
 
@@ -89,40 +94,65 @@ describe("desktop native translations", () => {
     const bundle = createDesktopNativeBundle("fr", (key) =>
       key.startsWith("desktop.menu.") || key.startsWith("desktop.recovery.")
         ? `Localized OpenCode ${key}`
-        : DESKTOP_NATIVE_ENGLISH[key],
+        : DESKTOP_NATIVE_ENGLISH[key]
     )
     const visibleShellMessages = DESKTOP_NATIVE_KEYS.filter(
-      (key) => key.startsWith("desktop.menu.") || key.startsWith("desktop.recovery."),
+      (key) =>
+        key.startsWith("desktop.menu.") || key.startsWith("desktop.recovery.")
     ).map((key) => bundle.messages[key])
 
     expect(visibleShellMessages.join("\n")).not.toMatch(/opencode/i)
     expect(visibleShellMessages.join("\n")).toContain("DiskLizard")
-    expect(Object.values(DESKTOP_NATIVE_ENGLISH).join("\n")).not.toMatch(/opencode/i)
+    expect(Object.values(DESKTOP_NATIVE_ENGLISH).join("\n")).not.toMatch(
+      /opencode/i
+    )
   })
 
   test("rejects unsupported locales and mismatched key sets", () => {
-    const bundle = createDesktopNativeBundle("en", (key) => DESKTOP_NATIVE_ENGLISH[key])
-    expect(parseDesktopNativeBundle({ ...bundle, locale: "en-US" })).toBeUndefined()
+    const bundle = createDesktopNativeBundle(
+      "en",
+      (key) => DESKTOP_NATIVE_ENGLISH[key]
+    )
+    expect(
+      parseDesktopNativeBundle({ ...bundle, locale: "en-US" })
+    ).toBeUndefined()
     expect(
       parseDesktopNativeBundle({
         ...bundle,
-        messages: Object.fromEntries(DESKTOP_NATIVE_KEYS.slice(1).map((key) => [key, bundle.messages[key]])),
-      }),
+        messages: Object.fromEntries(
+          DESKTOP_NATIVE_KEYS.slice(1).map((key) => [key, bundle.messages[key]])
+        ),
+      })
     ).toBeUndefined()
-    expect(parseDesktopNativeBundle({ ...bundle, messages: { ...bundle.messages, extra: "no" } })).toBeUndefined()
     expect(
       parseDesktopNativeBundle({
         ...bundle,
-        messages: { ...bundle.messages, [DESKTOP_NATIVE_KEYS[0]]: "x".repeat(DESKTOP_NATIVE_MAX_PAYLOAD_BYTES) },
-      }),
+        messages: { ...bundle.messages, extra: "no" },
+      })
     ).toBeUndefined()
     expect(
-      parseDesktopNativeBundle({ ...bundle, messages: { ...bundle.messages, [DESKTOP_NATIVE_KEYS[0]]: 1 } }),
+      parseDesktopNativeBundle({
+        ...bundle,
+        messages: {
+          ...bundle.messages,
+          [DESKTOP_NATIVE_KEYS[0]]: "x".repeat(
+            DESKTOP_NATIVE_MAX_PAYLOAD_BYTES
+          ),
+        },
+      })
+    ).toBeUndefined()
+    expect(
+      parseDesktopNativeBundle({
+        ...bundle,
+        messages: { ...bundle.messages, [DESKTOP_NATIVE_KEYS[0]]: 1 },
+      })
     ).toBeUndefined()
   })
 
   test("interpolates native templates without changing unknown placeholders", () => {
-    expect(formatDesktopNativeMessage("{{known}} {{unknown}}", { known: "yes" })).toBe("yes {{unknown}}")
+    expect(
+      formatDesktopNativeMessage("{{known}} {{unknown}}", { known: "yes" })
+    ).toBe("yes {{unknown}}")
   })
 })
 
@@ -159,7 +189,10 @@ describe("desktop native ICU data", () => {
       expect(() => new Intl.DateTimeFormat(tag), `${locale} date`).not.toThrow()
       expect(() => new Intl.PluralRules(tag), `${locale} plural`).not.toThrow()
       expect(() => new Intl.ListFormat(tag), `${locale} list`).not.toThrow()
-      expect(() => new Intl.DisplayNames(tag, { type: "language" }), `${locale} names`).not.toThrow()
+      expect(
+        () => new Intl.DisplayNames(tag, { type: "language" }),
+        `${locale} names`
+      ).not.toThrow()
       expect(() => new Intl.Segmenter(tag), `${locale} segmenter`).not.toThrow()
     }
   })

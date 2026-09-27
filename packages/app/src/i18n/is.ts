@@ -98,7 +98,9 @@ const desktop = [
 ]
 
 export const dict = {
-  ...Object.fromEntries(DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])),
+  ...Object.fromEntries(
+    DESKTOP_NATIVE_KEYS.map((key, index) => [key, desktop[index]])
+  ),
   "command.category.suggested": "Tillögur",
   "command.category.view": "Skoða",
   "command.category.project": "Verkefni",
@@ -145,7 +147,8 @@ export const dict = {
   "command.tab.close": "Loka flipa",
   "command.tab.reopenClosed": "Opnaðu aftur lokaðan flipa",
   "command.context.addSelection": "Bættu vali við samhengi",
-  "command.context.addSelection.description": "Bættu við völdum línum úr núverandi skrá",
+  "command.context.addSelection.description":
+    "Bættu við völdum línum úr núverandi skrá",
   "command.input.focus": "Færa fókus í innslátt",
   "command.terminal.toggle": "Víxla skjáhermi",
   "command.fileTree.toggle": "Skiptu um skráartré",
@@ -153,7 +156,8 @@ export const dict = {
   "command.terminal.new": "Nýr skjáhermir",
   "command.terminal.new.description": "Stofna nýjan skjáhermisflipa",
   "command.steps.toggle": "Skiptu um skref",
-  "command.steps.toggle.description": "Sýna eða fela skref fyrir núverandi skilaboð",
+  "command.steps.toggle.description":
+    "Sýna eða fela skref fyrir núverandi skilaboð",
   "command.message.previous": "Fyrri skilaboð",
   "command.message.previous.description": "Farðu í fyrri notandaskilaboð",
   "command.message.next": "Næsta skilaboð",
@@ -171,19 +175,25 @@ export const dict = {
   "command.prompt.mode.shell": "Skel",
   "command.prompt.mode.normal": "Kvaðning",
   "command.permissions.autoaccept.enable": "Samþykkja sjálfkrafa heimildir",
-  "command.permissions.autoaccept.disable": "Hætta að samþykkja heimildir sjálfkrafa",
+  "command.permissions.autoaccept.disable":
+    "Hætta að samþykkja heimildir sjálfkrafa",
   "command.workspace.toggle": "Skiptu um vinnusvæði",
-  "command.workspace.toggle.description": "Virkja eða slökkva á mörgum vinnusvæðum í hliðarstikunni",
+  "command.workspace.toggle.description":
+    "Virkja eða slökkva á mörgum vinnusvæðum í hliðarstikunni",
   "command.session.undo": "Afturkalla",
   "command.session.undo.description": "Afturkalla síðustu skilaboð",
   "command.session.redo": "Endurtaka",
-  "command.session.redo.description": "Endurtaktu síðustu afturkölluðu skilaboðin",
+  "command.session.redo.description":
+    "Endurtaktu síðustu afturkölluðu skilaboðin",
   "command.session.compact": "Þjappa setu",
-  "command.session.compact.description": "Draga setuna saman til að minnka samhengi",
+  "command.session.compact.description":
+    "Draga setuna saman til að minnka samhengi",
   "command.session.fork": "Kvíslast frá skilaboðum",
-  "command.session.fork.description": "Stofna nýja setu út frá fyrri skilaboðum",
+  "command.session.fork.description":
+    "Stofna nýja setu út frá fyrri skilaboðum",
   "command.session.share": "Deila setu",
-  "command.session.share.description": "Deila þessari setu og afrita slóðina á klippispjaldið",
+  "command.session.share.description":
+    "Deila þessari setu og afrita slóðina á klippispjaldið",
   "command.session.unshare": "Hætta að deila setu",
   "command.session.unshare.description": "Hætta að deila þessari setu",
   "command.session.export": "Flytja út setu",
@@ -199,28 +209,38 @@ export const dict = {
   "dialog.provider.group.other": "Annað",
   "dialog.provider.custom.label": "Sérsniðin OpenAI-samhæfður veitandi",
   "dialog.provider.tag.recommended": "Mælt er með",
-  "dialog.provider.opencode.note": "Sýndar gerðir þar á meðal Claude, GPT, Gemini og fleira",
+  "dialog.provider.opencode.note":
+    "Sýndar gerðir þar á meðal Claude, GPT, Gemini og fleira",
   "dialog.provider.opencode.tagline": "Áreiðanleg bjartsýni módel",
   "dialog.provider.opencodeGo.tagline": "Lággjaldaáskrift fyrir alla",
-  "dialog.provider.anthropic.note": "Beinn aðgangur að Claude gerðum, þar á meðal Pro og Max",
-  "dialog.provider.copilot.note": "AI módel fyrir kóðaaðstoð í gegnum GitHub Copilot",
-  "dialog.provider.openai.note": "GPT gerðir fyrir hröð, fær almenn gervigreind verkefni",
+  "dialog.provider.anthropic.note":
+    "Beinn aðgangur að Claude gerðum, þar á meðal Pro og Max",
+  "dialog.provider.copilot.note":
+    "AI módel fyrir kóðaaðstoð í gegnum GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT gerðir fyrir hröð, fær almenn gervigreind verkefni",
   "dialog.provider.google.note": "Gemini módel fyrir hröð, skipulögð viðbrögð",
-  "dialog.provider.openrouter.note": "Fáðu aðgang að öllum studdum gerðum frá einum þjónustuaðila",
-  "dialog.provider.vercel.note": "Sameinaður aðgangur að gervigreindum gerðum með snjallri leið",
+  "dialog.provider.openrouter.note":
+    "Fáðu aðgang að öllum studdum gerðum frá einum þjónustuaðila",
+  "dialog.provider.vercel.note":
+    "Sameinaður aðgangur að gervigreindum gerðum með snjallri leið",
   "dialog.model.select.title": "Veldu líkan",
   "dialog.model.search.placeholder": "Leitaðu að gerðum",
   "dialog.model.empty": "Engar niðurstöður líkana",
   "dialog.model.manage": "Stjórna módelum",
-  "dialog.model.manage.description": "Sérsníddu hvaða gerðir birtast í gerðavalinu.",
+  "dialog.model.manage.description":
+    "Sérsníddu hvaða gerðir birtast í gerðavalinu.",
   "dialog.model.manage.provider.toggle": "Skiptu um allar {{provider}} gerðir",
   "dialog.model.unpaid.freeModels.title": "Ókeypis gerðir frá OpenCode",
-  "dialog.model.unpaid.addMore.title": "Bættu við fleiri gerðum frá vinsælum veitendum",
-  "dialog.model.unpaid.viewMoreProviders": "Sjáðu 70+ þjónustuveitendur í viðbót",
+  "dialog.model.unpaid.addMore.title":
+    "Bættu við fleiri gerðum frá vinsælum veitendum",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Sjáðu 70+ þjónustuveitendur í viðbót",
   "dialog.provider.viewAll": "Sýna fleiri veitendur",
   "provider.connect.title": "Tengdu {{provider}}",
   "provider.connect.title.anthropicProMax": "Skráðu þig inn með Claude Pro/Max",
-  "provider.connect.selectMethod": "Veldu innskráningaraðferð fyrir {{provider}}.",
+  "provider.connect.selectMethod":
+    "Veldu innskráningaraðferð fyrir {{provider}}.",
   "provider.connect.method.apiKey": "API lykill",
   "provider.connect.method.browser": "Vafri",
   "provider.connect.method.headless": "Höfuðlaus",
@@ -238,7 +258,8 @@ export const dict = {
     "Með einum API lykli færðu aðgang að gerðum eins og Claude, GPT, Gemini, GLM og fleira.",
   "provider.connect.opencodeZen.visit.prefix": "Heimsókn",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": "til að safna API lykilnum þínum.",
+  "provider.connect.opencodeZen.visit.suffix":
+    "til að safna API lykilnum þínum.",
   "provider.connect.oauth.code.visit.prefix": "Heimsókn",
   "provider.connect.oauth.code.visit.link": "þennan hlekk",
   "provider.connect.oauth.code.visit.suffix":
@@ -253,15 +274,19 @@ export const dict = {
     "og sláðu inn kóðann hér að neðan til að tengja reikninginn þinn og nota {{provider}} gerðir í OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Staðfestingarkóði",
   "provider.connect.toast.connected.title": "{{provider}} tengdur",
-  "provider.connect.toast.connected.description": "{{provider}} gerðir eru nú fáanlegar til notkunar.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} gerðir eru nú fáanlegar til notkunar.",
   "provider.custom.title": "Sérsniðin veitandi",
-  "provider.custom.unavailable": "Sérsniðnar veitendur eru ekki tiltækar á þessum netþjóni",
-  "provider.custom.description.prefix": "Stilltu OpenAI-samhæfan þjónustuaðila. Sjáðu",
+  "provider.custom.unavailable":
+    "Sérsniðnar veitendur eru ekki tiltækar á þessum netþjóni",
+  "provider.custom.description.prefix":
+    "Stilltu OpenAI-samhæfan þjónustuaðila. Sjáðu",
   "provider.custom.description.link": "stillingarskjöl fyrir veitanda",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Auðkenni veitanda",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Lágstafir, tölustafir, bandstrik eða undirstrik",
+  "provider.custom.field.providerID.description":
+    "Lágstafir, tölustafir, bandstrik eða undirstrik",
   "provider.custom.field.name.label": "Birta nafn",
   "provider.custom.field.name.placeholder": "AI veitandinn minn",
   "provider.custom.field.baseURL.label": "Grunnur URL",
@@ -284,16 +309,21 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "gildi",
   "provider.custom.headers.remove": "Fjarlægðu haus",
   "provider.custom.headers.add": "Bæta við haus",
-  "provider.custom.error.providerID.required": "Auðkenni þjónustuveitanda er krafist",
-  "provider.custom.error.providerID.format": "Notaðu lágstafi, tölustafi, bandstrik eða undirstrik",
-  "provider.custom.error.providerID.exists": "Þetta auðkenni þjónustuveitunnar er þegar til",
+  "provider.custom.error.providerID.required":
+    "Auðkenni þjónustuveitanda er krafist",
+  "provider.custom.error.providerID.format":
+    "Notaðu lágstafi, tölustafi, bandstrik eða undirstrik",
+  "provider.custom.error.providerID.exists":
+    "Þetta auðkenni þjónustuveitunnar er þegar til",
   "provider.custom.error.name.required": "Birtingarnafn er áskilið",
   "provider.custom.error.baseURL.required": "Base URL er krafist",
-  "provider.custom.error.baseURL.format": "Verður að byrja á http:// eða https://",
+  "provider.custom.error.baseURL.format":
+    "Verður að byrja á http:// eða https://",
   "provider.custom.error.required": "Áskilið",
   "provider.custom.error.duplicate": "Afrit",
   "provider.disconnect.toast.disconnected.title": "{{provider}} aftengdur",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} gerðir eru ekki lengur fáanlegar.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} gerðir eru ekki lengur fáanlegar.",
   "model.tag.free": "Ókeypis",
   "model.tag.latest": "Nýjasta",
   "model.provider.anthropic": "Anthropic",
@@ -387,10 +417,13 @@ export const dict = {
   "prompt.action.send": "Senda",
   "prompt.action.stop": "Stöðva",
   "prompt.toast.pasteUnsupported.title": "Óstudd viðhengi",
-  "prompt.toast.pasteUnsupported.description": "Aðeins er hægt að hengja myndir, PDF-skjöl eða textaskrár hér við.",
-  "prompt.toast.attachmentDuplicate.title": "Þessari skrá hefur þegar verið hlaðið upp",
+  "prompt.toast.pasteUnsupported.description":
+    "Aðeins er hægt að hengja myndir, PDF-skjöl eða textaskrár hér við.",
+  "prompt.toast.attachmentDuplicate.title":
+    "Þessari skrá hefur þegar verið hlaðið upp",
   "prompt.toast.modelAgentRequired.title": "Veldu fulltrúa og líkan",
-  "prompt.toast.modelAgentRequired.description": "Veldu fulltrúa og líkan áður en þú sendir kvaðningu.",
+  "prompt.toast.modelAgentRequired.description":
+    "Veldu fulltrúa og líkan áður en þú sendir kvaðningu.",
   "prompt.toast.worktreeCreateFailed.title": "Mistókst að búa til vinnutré",
   "prompt.toast.sessionCreateFailed.title": "Ekki tókst að búa til lotu",
   "prompt.toast.shellSendFailed.title": "Mistókst að senda skel skipun",
@@ -419,7 +452,8 @@ export const dict = {
   "app.server.retrying": "Reynir sjálfkrafa aftur...",
   "app.server.otherServers": "Aðrir netþjónar",
   "dialog.server.title": "Netþjónar",
-  "dialog.server.description": "Skiptu um hvaða OpenCode miðlara þetta app tengist.",
+  "dialog.server.description":
+    "Skiptu um hvaða OpenCode miðlara þetta app tengist.",
   "dialog.server.search.placeholder": "Leitaðu að netþjónum",
   "dialog.server.empty": "Engir netþjónar ennþá",
   "dialog.server.add.title": "Bæta við netþjóni",
@@ -457,7 +491,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Veldu distro",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Athugar WSL...",
-  "wsl.onboarding.restartRequired": "Windows þarf endurræsingu til að klára uppsetningu WSL.",
+  "wsl.onboarding.restartRequired":
+    "Windows þarf endurræsingu til að klára uppsetningu WSL.",
   "wsl.onboarding.ready": "WSL er tilbúinn.",
   "wsl.onboarding.required": "WSL þarf til að halda áfram.",
   "wsl.onboarding.checkingDistros": "Athugar dreifingar...",
@@ -466,7 +501,8 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Birtir dreifingar...",
   "wsl.onboarding.distroReady": "{{distro}} er tilbúinn.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} er ekki uppsett ennþá.",
-  "wsl.onboarding.openDistroOnce": "Opnaðu {{distro}} einu sinni til að ljúka uppsetningu.",
+  "wsl.onboarding.openDistroOnce":
+    "Opnaðu {{distro}} einu sinni til að ljúka uppsetningu.",
   "wsl.onboarding.finishingDistro": "Að klára uppsetningu fyrir {{distro}}.",
   "wsl.onboarding.pickDistro": "Veldu dreifingu eða settu upp fyrir neðan.",
   "wsl.onboarding.checkingOpencode": "Athugar OpenCode...",
@@ -490,18 +526,21 @@ export const dict = {
   "wsl.onboarding.distroStatus.missingTools": "Vantar bash, krullu",
   "wsl.onboarding.distroStatus.unsupported": "Óstudd · Notaðu WSL 2",
   "wsl.onboarding.needAnotherDistro": "Þarftu aðra dreifingu?",
-  "wsl.onboarding.needAnotherDistroHint": "Settu upp Linux dreifingu úr WSL vörulistanum",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Settu upp Linux dreifingu úr WSL vörulistanum",
   "wsl.onboarding.wslNotInstalled.title": "WSL ekki uppsett",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows undirkerfi fyrir Linux) þarf áður en OpenCode getur bætt við WSL netþjóni",
   "wsl.onboarding.wslUnavailable.title": "WSL ekki í boði",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode gat ekki staðfest WSL á þessari vél.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode gat ekki staðfest WSL á þessari vél.",
   "wsl.onboarding.installWsl": "Settu upp WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Endurræstu Windows til að klára að setja upp WSL, opnaðu síðan OpenCode aftur.",
   "wsl.onboarding.next": "Næst",
   "wsl.onboarding.refresh": "Endurnýja",
-  "wsl.onboarding.allDistrosAdded": "Öllum uppsettum dreifingum er þegar bætt við.",
+  "wsl.onboarding.allDistrosAdded":
+    "Öllum uppsettum dreifingum er þegar bætt við.",
   "wsl.onboarding.noDistros": "Engin dreifing hefur fundist ennþá.",
   "wsl.onboarding.install": "Settu upp",
   "wsl.onboarding.installing": "Setur upp...",
@@ -515,9 +554,11 @@ export const dict = {
   "wsl.onboarding.version": "Útgáfa: {{version}}",
   "wsl.onboarding.unknown": "óþekkt",
   "wsl.onboarding.desktopVersion": "skrifborð {{version}}",
-  "wsl.onboarding.versionMismatch": "Uppsett útgáfa passar ekki við útgáfu skrifborðsforritsins.",
+  "wsl.onboarding.versionMismatch":
+    "Uppsett útgáfa passar ekki við útgáfu skrifborðsforritsins.",
   "wsl.onboarding.adding": "Bætir við...",
-  "help.tabs.toast.ariaLabel": "Við kynnum Tab. Skipuleggðu vinnu þína og virkar lotur með flipa",
+  "help.tabs.toast.ariaLabel":
+    "Við kynnum Tab. Skipuleggðu vinnu þína og virkar lotur með flipa",
   "help.tabs.toast.dismiss": "Hunsa upplýsingar Tab",
   "help.tabs.title": "Við kynnum Tab",
   "help.tabs.description": "Skipuleggðu vinnu þína og virkar lotur með flipa",
@@ -527,8 +568,10 @@ export const dict = {
     "Byrjaðu nýja lotu í flipa eða opnaðu fyrirliggjandi lotu úr einhverju verkefnanna þinna. Opnaðu nýjan flipa þegar þú ert að byrja á einhverju nýju og lokaðu honum þegar þú ert búinn.",
   "help.tabs.organize":
     "Með því að hafa nokkra flipa opna er auðveldara að skipuleggja virku seturnar þínar. Endurnefndu flipa á eftirminnilegan hátt ef þú ætlar að geyma þá.",
-  "help.tabs.home": "Þú finnur allar lotur og verkefni á nýja Home skjánum. Með því að velja lotu opnast það í flipa.",
-  "help.tabs.persistence": "Þegar þú opnar forritið aftur eru fliparnir þínir enn opnir.",
+  "help.tabs.home":
+    "Þú finnur allar lotur og verkefni á nýja Home skjánum. Með því að velja lotu opnast það í flipa.",
+  "help.tabs.persistence":
+    "Þegar þú opnar forritið aftur eru fliparnir þínir enn opnir.",
   "help.tabs.worktrees":
     "Nýja hönnunin styður ekki Git Worktrees ennþá, hún kemur fljótlega. Þannig að ef þú vilt halda áfram að nota fyrra útlitið geturðu skipt á milli útlita í stillingum. Hafðu bara í huga að nýja skipulagið verður varanlegt eftir nokkrar vikur.",
   "server.row.noUsername": "ekkert notendanafn",
@@ -541,7 +584,8 @@ export const dict = {
   "dialog.project.edit.color": "Litur",
   "dialog.project.edit.color.select": "Veldu {{color}} lit",
   "dialog.project.edit.worktree.startup": "Ræsingarhandrit vinnusvæðis",
-  "dialog.project.edit.worktree.startup.description": "Keyrir eftir að nýtt vinnusvæði (worktree) er búið til.",
+  "dialog.project.edit.worktree.startup.description":
+    "Keyrir eftir að nýtt vinnusvæði (worktree) er búið til.",
   "dialog.project.edit.worktree.startup.placeholder": "t.d. bun setja upp",
   "dialog.releaseNotes.action.getStarted": "Byrjaðu",
   "dialog.releaseNotes.action.next": "Næst",
@@ -602,48 +646,68 @@ export const dict = {
   "toast.theme.title": "Þema skipt",
   "toast.scheme.title": "Litasamsetning",
   "toast.workspace.enabled.title": "Vinnusvæði virkt",
-  "toast.workspace.enabled.description": "Mörg vinnutré eru nú sýnd í hliðarstikunni",
+  "toast.workspace.enabled.description":
+    "Mörg vinnutré eru nú sýnd í hliðarstikunni",
   "toast.workspace.disabled.title": "Vinnusvæði óvirk",
-  "toast.workspace.disabled.description": "Aðeins aðalvinnutréð er sýnt í hliðarstikunni",
+  "toast.workspace.disabled.description":
+    "Aðeins aðalvinnutréð er sýnt í hliðarstikunni",
   "toast.permissions.autoaccept.on.title": "Sjálfvirkt samþykki heimilda",
-  "toast.permissions.autoaccept.on.description": "Leyfibeiðnir verða sjálfkrafa samþykktar",
-  "toast.permissions.autoaccept.off.title": "Hætti að samþykkja heimildir sjálfkrafa",
-  "toast.permissions.autoaccept.off.description": "Leyfisbeiðnir þurfa samþykki",
+  "toast.permissions.autoaccept.on.description":
+    "Leyfibeiðnir verða sjálfkrafa samþykktar",
+  "toast.permissions.autoaccept.off.title":
+    "Hætti að samþykkja heimildir sjálfkrafa",
+  "toast.permissions.autoaccept.off.description":
+    "Leyfisbeiðnir þurfa samþykki",
   "toast.model.none.title": "Engin gerð valin",
-  "toast.model.none.description": "Tengdu þjónustuaðila til að draga saman þessa lotu",
+  "toast.model.none.description":
+    "Tengdu þjónustuaðila til að draga saman þessa lotu",
   "toast.file.loadFailed.title": "Mistókst að hlaða skrá",
   "toast.file.listFailed.title": "Mistókst að skrá skrár",
   "toast.context.noLineSelection.title": "Ekkert línuval",
-  "toast.context.noLineSelection.description": "Veldu línusvið í skráarflipa fyrst.",
-  "toast.session.share.copyFailed.title": "Mistókst að afrita URL á klemmuspjald",
+  "toast.context.noLineSelection.description":
+    "Veldu línusvið í skráarflipa fyrst.",
+  "toast.session.share.copyFailed.title":
+    "Mistókst að afrita URL á klemmuspjald",
   "toast.session.share.success.title": "Fundi deilt",
-  "toast.session.share.success.description": "Deildu URL afritað á klemmuspjald!",
+  "toast.session.share.success.description":
+    "Deildu URL afritað á klemmuspjald!",
   "toast.session.share.failed.title": "Ekki tókst að deila setu",
-  "toast.session.share.failed.description": "Villa kom upp þegar lotunni var deilt",
+  "toast.session.share.failed.description":
+    "Villa kom upp þegar lotunni var deilt",
   "toast.session.unshare.success.title": "Ekki deilt lotu",
-  "toast.session.unshare.success.description": "Lokað var við deilingu lotunnar!",
+  "toast.session.unshare.success.description":
+    "Lokað var við deilingu lotunnar!",
   "toast.session.unshare.failed.title": "Mistókst að hætta við deilingu lotu",
-  "toast.session.unshare.failed.description": "Villa kom upp við að hætta að deila lotunni",
+  "toast.session.unshare.failed.description":
+    "Villa kom upp við að hætta að deila lotunni",
   "toast.session.export.success.title": "Session flutt út",
   "toast.session.export.success.description": "Vistað lota í {{filename}}",
   "toast.session.export.failed.title": "Mistókst að flytja út lotu",
-  "toast.session.export.failed.description": "Villa kom upp við útflutning á lotunni",
+  "toast.session.export.failed.description":
+    "Villa kom upp við útflutning á lotunni",
   "toast.session.listFailed.title": "Mistókst að hlaða lotum fyrir {{project}}",
   "toast.project.reloadFailed.title": "Mistókst að endurhlaða {{project}}",
   "toast.update.title": "Uppfærsla í boði",
-  "toast.update.description": "Ný útgáfa af OpenCode ({{version}}) er nú fáanleg til uppsetningar.",
+  "toast.update.description":
+    "Ný útgáfa af OpenCode ({{version}}) er nú fáanleg til uppsetningar.",
   "toast.update.action.installRestart": "Settu upp og endurræstu",
-  "disk.accessGuidance.macos": "Gefðu DiskLizard Full Disk Access í Kerfisstillingum og skannaðu aftur.",
-  "disk.accessGuidance.windows": "Notaðu aðgang sem hefur aðgang að þessu drifi eða skannaðu möppu sem aðgangurinn þinn getur lesið.",
-  "disk.accessGuidance.linux": "Yfirfarðu möppu- og tengingarheimildir og skannaðu aftur.",
-  "disk.accessGuidance.default": "Yfirfarðu aðgang að þessum möppum og skannaðu aftur.",
-  "disk.accessGuidance.rescan": "Notaðu Endurskanna í efri stiku eftir að hafa breytt aðgangi.",
+  "disk.accessGuidance.macos":
+    "Gefðu DiskLizard Full Disk Access í Kerfisstillingum og skannaðu aftur.",
+  "disk.accessGuidance.windows":
+    "Notaðu aðgang sem hefur aðgang að þessu drifi eða skannaðu möppu sem aðgangurinn þinn getur lesið.",
+  "disk.accessGuidance.linux":
+    "Yfirfarðu möppu- og tengingarheimildir og skannaðu aftur.",
+  "disk.accessGuidance.default":
+    "Yfirfarðu aðgang að þessum möppum og skannaðu aftur.",
+  "disk.accessGuidance.rescan":
+    "Notaðu Endurskanna í efri stiku eftir að hafa breytt aðgangi.",
   "toast.update.action.notYet": "Ekki enn",
   "toast.update.installFailed.title": "Ekki tókst að setja upp uppfærsluna",
   "toast.update.installFailed.retry": "Reyndu aftur",
   "error.page.title": "Eitthvað fór úrskeiðis",
   "error.page.description": "Villa kom upp við að hlaða forritinu.",
-  "error.page.description.localServerStartup": "Villa kom upp þegar staðbundinn þjónn var ræstur.",
+  "error.page.description.localServerStartup":
+    "Villa kom upp þegar staðbundinn þjónn var ræstur.",
   "error.page.details.label": "Villuupplýsingar",
   "error.page.action.restart": "Endurræstu",
   "error.page.action.report": "Tilkynna villu",
@@ -653,17 +717,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Leitaðu að uppfærslum",
   "error.page.action.updateTo": "Uppfærsla í {{version}}",
   "error.page.circular": "[Hringbréf]",
-  "error.page.report.prefix": "Vinsamlegast tilkynnið þessa villu til OpenCode teymisins",
+  "error.page.report.prefix":
+    "Vinsamlegast tilkynnið þessa villu til OpenCode teymisins",
   "error.page.report.discord": "á Discord",
   "error.page.version": "Útgáfa: {{version}}",
   "error.dev.rootNotFound":
     "Rótarþáttur fannst ekki. Gleymdirðu að bæta því við index.html þinn? Eða er id eigindin kannski rangt stafsett?",
-  "error.serverSync.connectFailed": "Gat ekki tengst þjóninum. Er netþjónn í gangi hjá `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Gat ekki tengst þjóninum. Er netþjónn í gangi hjá `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Enginn netþjónn tiltækur",
   "error.serverSDK.serverNotAvailable": "Miðlari ekki tiltækur",
-  "error.childStore.persistedCacheCreateFailed": "Mistókst að búa til viðvarandi skyndiminni",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Mistókst að búa til viðvarandi lýsigögn verkefnis",
-  "error.childStore.persistedProjectIconCreateFailed": "Mistókst að búa til viðvarandi verkefnistákn",
+  "error.childStore.persistedCacheCreateFailed":
+    "Mistókst að búa til viðvarandi skyndiminni",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Mistókst að búa til viðvarandi lýsigögn verkefnis",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Mistókst að búa til viðvarandi verkefnistákn",
   "error.childStore.storeCreateFailed": "Mistókst að búa til verslun",
   "directory.error.invalidUrl": "Ógild skrá í URL.",
   "error.chain.unknown": "Óþekkt villa",
@@ -675,22 +744,31 @@ export const dict = {
   "error.chain.responseBody": "Svarhluti:\n{{body}}",
   "error.chain.didYouMean": "Áttirðu við: {{suggestions}}",
   "error.chain.modelNotFound": "Gerð fannst ekki: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Athugaðu stillingar (opencode.json) þjónustuveitu/módelheiti",
-  "error.chain.mcpFailed": "MCP þjónn „{{name}}“ mistókst. Athugið, OpenCode styður ekki MCP auðkenningu ennþá.",
-  "error.chain.providerAuthFailed": "Auðkenning veitu mistókst ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Athugaðu stillingar (opencode.json) þjónustuveitu/módelheiti",
+  "error.chain.mcpFailed":
+    "MCP þjónn „{{name}}“ mistókst. Athugið, OpenCode styður ekki MCP auðkenningu ennþá.",
+  "error.chain.providerAuthFailed":
+    "Auðkenning veitu mistókst ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     "Mistókst að frumstilla þjónustuveituna „{{provider}}“. Athugaðu skilríki og stillingar.",
-  "error.chain.configJsonInvalid": "Stillingarskrá á {{path}} er ekki gild JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Stillingarskrá á {{path}} er ekki gild JSON(C): {{message}}",
+  "error.chain.configJsonInvalid":
+    "Stillingarskrá á {{path}} er ekki gild JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Stillingarskrá á {{path}} er ekki gild JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Skráin „{{dir}}“ í {{path}} er ekki gild. Endurnefna möppuna í "{{suggestion}}" eða fjarlægðu hana. Þetta er algeng innsláttarvilla.',
-  "error.chain.configFrontmatterError": "Mistókst að flokka frammál í {{path}}:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Mistókst að flokka frammál í {{path}}:\n{{message}}",
   "error.chain.configInvalid": "Stillingarskrá á {{path}} er ógild",
-  "error.chain.configInvalidWithMessage": "Stillingarskrá á {{path}} er ógild: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Stillingarskrá á {{path}} er ógild: {{message}}",
   "notification.permission.title": "Leyfi krafist",
-  "notification.permission.description": "{{sessionTitle}} í {{projectName}} þarf leyfi",
+  "notification.permission.description":
+    "{{sessionTitle}} í {{projectName}} þarf leyfi",
   "notification.question.title": "Spurning",
-  "notification.question.description": "{{sessionTitle}} í {{projectName}} hefur spurningu",
+  "notification.question.description":
+    "{{sessionTitle}} í {{projectName}} hefur spurningu",
   "notification.action.goToSession": "Farðu á fund",
   "notification.session.responseReady.title": "Svar tilbúið",
   "notification.session.error.title": "Lotuvilla",
@@ -713,14 +791,16 @@ export const dict = {
   "home.sessions.group.today": "Í dag",
   "home.sessions.group.yesterday": "Í gær",
   "home.sessions.group.older": "Eldri",
-  "home.providerTip": "Tengstu við 75+ veitendur til að nota aðrar gerðir, þar á meðal Claude, GPT, Gemini, osfrv",
+  "home.providerTip":
+    "Tengstu við 75+ veitendur til að nota aðrar gerðir, þar á meðal Claude, GPT, Gemini, osfrv",
   "session.tab.session": "Lota",
   "session.tab.review": "Upprifjun",
   "session.tab.context": "Samhengi",
   "session.tab.unknown": "Óþekkt lota",
   "session.panel.reviewAndFiles": "Yfirferð og skrár",
   "session.error.notFound": "Þessi lota finnst ekki",
-  "session.error.notFound.description": "Þessi flipi bendir á lotu sem er ekki lengur til á þessum netþjóni.",
+  "session.error.notFound.description":
+    "Þessi flipi bendir á lotu sem er ekki lengur til á þessum netþjóni.",
   "session.error.notFound.closeTab": "Lokaðu Tab",
   "session.error.serverConnection": "Get ekki tengst þessum þjóni",
   "session.review.filesChanged": "Skráum breytt {{count}}",
@@ -728,9 +808,11 @@ export const dict = {
   "session.review.change.other": "Breytingar",
   "session.review.loadingChanges": "Hleður breytingum...",
   "session.review.empty": "Engar breytingar á þessu þingi ennþá",
-  "session.review.noVcs": "Ekkert Git útgáfustýringarkerfi fannst, breytingar ekki birtar",
+  "session.review.noVcs":
+    "Ekkert Git útgáfustýringarkerfi fannst, breytingar ekki birtar",
   "session.review.noVcs.createGit.title": "Búðu til Git geymslu",
-  "session.review.noVcs.createGit.description": "Fylgstu með, skoðaðu og afturkallaðu breytingar á þessu verkefni",
+  "session.review.noVcs.createGit.description":
+    "Fylgstu með, skoðaðu og afturkallaðu breytingar á þessu verkefni",
   "session.review.noVcs.createGit.actionLoading": "Býr til Git geymslu...",
   "session.review.noVcs.createGit.action": "Búðu til Git geymslu",
   "session.review.noSnapshot":
@@ -835,8 +917,10 @@ export const dict = {
   "terminal.title.numbered": "Skjáhermir {{number}}",
   "terminal.close": "Lokaðu flugstöðinni",
   "terminal.connectionLost.title": "Tenging rofin",
-  "terminal.connectionLost.abnormalClose": "WebSocket lokað óeðlilega: {{code}}",
-  "terminal.connectionLost.description": "Tengingin var rofin. Þetta getur gerst þegar þjónninn endurræsir sig.",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket lokað óeðlilega: {{code}}",
+  "terminal.connectionLost.description":
+    "Tengingin var rofin. Þetta getur gerst þegar þjónninn endurræsir sig.",
   "terminal.connectTicket.csrfError":
     "PTY tengimiði hafnað af uppruna eða CSRF ávísun. Athugaðu þjóninn CORS stillingar.",
   "terminal.connectTicket.statusError": "PTY tengimiði mistókst með {{status}}",
@@ -883,7 +967,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Virkjaðu vinnusvæði",
   "sidebar.workspaces.disable": "Slökktu á vinnusvæðum",
   "sidebar.gettingStarted.title": "Að byrja",
-  "sidebar.gettingStarted.line1": "OpenCode inniheldur ókeypis gerðir svo þú getir byrjað strax.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode inniheldur ókeypis gerðir svo þú getir byrjað strax.",
   "sidebar.gettingStarted.line2":
     "Tengdu hvaða þjónustuaðila sem er til að nota módel, inc. Claude, GPT, Gemini osfrv.",
   "sidebar.project.recentSessions": "Nýlegar setur",
@@ -903,22 +988,28 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Rammar yfir 32ms á síðustu 5 sekúndum.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Útilokaður tími og löng verkefni á síðustu 5 sekúndum. Hámarksverkefni: {{max}}.",
+  "debugBar.long.tip":
+    "Útilokaður tími og löng verkefni á síðustu 5 sekúndum. Hámarksverkefni: {{max}}.",
   "debugBar.delay.label": "DELAY",
-  "debugBar.delay.tip": "Versta inntakseinkun sem hefur sést á síðustu 5 sekúndum.",
+  "debugBar.delay.tip":
+    "Versta inntakseinkun sem hefur sést á síðustu 5 sekúndum.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "Áætluð lengd víxlverkunar síðustu 5 sekúndur. Þetta er INP-líkt, ekki opinberu Web Vitals INP.",
+  "debugBar.inp.tip":
+    "Áætluð lengd víxlverkunar síðustu 5 sekúndur. Þetta er INP-líkt, ekki opinberu Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Uppsöfnuð skipulagsbreyting fyrir núverandi líftíma appsins.",
+  "debugBar.cls.tip":
+    "Uppsöfnuð skipulagsbreyting fyrir núverandi líftíma appsins.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Notað JS hrúga vs hrúgutakmark. Aðeins Chromium.",
+  "debugBar.mem.tipUnavailable":
+    "Notað JS hrúga vs hrúgutakmark. Aðeins Chromium.",
   "debugBar.mem.tip": "Notað JS hrúga vs hrúgutakmark. {{used}} af {{limit}}.",
   "debugBar.focus.label": "FOCUS",
   "debugBar.focus.tip": "Þvingaðu fókusstíla á alla gagnvirka þætti",
   "debugBar.focus.on": "ON",
   "debugBar.focus.off": "OFF",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Þvingaðu stefnu útlits forritsins í heild sinni án þess að breyta valnu tungumáli",
+  "debugBar.direction.tip":
+    "Þvingaðu stefnu útlits forritsins í heild sinni án þess að breyta valnu tungumáli",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode skjáborð",
@@ -928,7 +1019,8 @@ export const dict = {
   "settings.tab.shortcuts": "Flýtileiðir",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL samþætting",
-  "settings.desktop.wsl.description": "Keyrðu OpenCode netþjóninn inni í WSL á Windows.",
+  "settings.desktop.wsl.description":
+    "Keyrðu OpenCode netþjóninn inni í WSL á Windows.",
   "settings.general.section.appearance": "Útlit",
   "settings.general.section.advanced": "Ítarlegri",
   "settings.general.section.notifications": "Kerfistilkynningar",
@@ -937,75 +1029,102 @@ export const dict = {
   "settings.general.section.feed": "Fæða",
   "settings.general.section.display": "Skjár",
   "settings.general.row.language.title": "Tungumál",
-  "settings.general.row.language.description": "Breyttu skjátungumálinu fyrir OpenCode",
+  "settings.general.row.language.description":
+    "Breyttu skjátungumálinu fyrir OpenCode",
   "settings.general.row.shell.title": "Skel skjáhermis",
-  "settings.general.row.shell.description": "Skelin sem skjáhermirinn og verkfæri fulltrúans nota",
+  "settings.general.row.shell.description":
+    "Skelin sem skjáhermirinn og verkfæri fulltrúans nota",
   "settings.general.row.shell.autoDefault": "Sjálfvirkt (sjálfgefið)",
   "settings.general.row.shell.terminalOnly": "eingöngu flugstöð",
   "settings.general.row.appearance.title": "Útlit",
-  "settings.general.row.appearance.description": "Sérsníddu hvernig OpenCode lítur út á tækinu þínu",
+  "settings.general.row.appearance.description":
+    "Sérsníddu hvernig OpenCode lítur út á tækinu þínu",
   "settings.general.row.colorScheme.title": "Litasamsetning",
-  "settings.general.row.colorScheme.description": "Veldu hvort OpenCode fylgir kerfis-, ljósu eða dökku þema",
+  "settings.general.row.colorScheme.description":
+    "Veldu hvort OpenCode fylgir kerfis-, ljósu eða dökku þema",
   "settings.general.row.theme.title": "Þema",
-  "settings.general.row.theme.description": "Sérsníddu hvernig OpenCode er þema.",
+  "settings.general.row.theme.description":
+    "Sérsníddu hvernig OpenCode er þema.",
   "settings.general.row.font.title": "Kóða leturgerð",
-  "settings.general.row.font.description": "Sérsníddu leturgerðina sem notuð er í kóðablokkum",
+  "settings.general.row.font.description":
+    "Sérsníddu leturgerðina sem notuð er í kóðablokkum",
   "settings.general.row.terminalFont.title": "Leturgerð skjáhermis",
-  "settings.general.row.terminalFont.description": "Sérsníddu leturgerðina sem notuð er í flugstöðinni",
+  "settings.general.row.terminalFont.description":
+    "Sérsníddu leturgerðina sem notuð er í flugstöðinni",
   "settings.general.row.uiFont.title": "UI leturgerð",
-  "settings.general.row.uiFont.description": "Sérsníddu leturgerðina sem notuð er í öllu viðmótinu",
+  "settings.general.row.uiFont.description":
+    "Sérsníddu leturgerðina sem notuð er í öllu viðmótinu",
   "settings.general.row.followup.title": "Eftirfylgnihegðun",
-  "settings.general.row.followup.description": "Veldu hvort eftirfylgnibeiðnir stýra strax eða bíða í biðröð",
+  "settings.general.row.followup.description":
+    "Veldu hvort eftirfylgnibeiðnir stýra strax eða bíða í biðröð",
   "settings.general.row.followup.option.queue": "Biðröð",
   "settings.general.row.followup.option.steer": "Stýra",
   "settings.general.row.showFileTree.title": "Skráartré",
-  "settings.general.row.showFileTree.description": "Sýndu skráartréspjaldið í lotum",
+  "settings.general.row.showFileTree.description":
+    "Sýndu skráartréspjaldið í lotum",
   "settings.general.row.showNavigation.title": "Leiðsögustýringar",
-  "settings.general.row.showNavigation.description": "Sýndu aftur- og áframhnappana á titilstikunni á skjáborðinu",
+  "settings.general.row.showNavigation.description":
+    "Sýndu aftur- og áframhnappana á titilstikunni á skjáborðinu",
   "settings.general.row.showSearch.title": "Skipunarspjald",
-  "settings.general.row.showSearch.description": "Sýndu leitar- og skipanaspjaldhnappinn á titilstikunni",
+  "settings.general.row.showSearch.description":
+    "Sýndu leitar- og skipanaspjaldhnappinn á titilstikunni",
   "settings.general.row.showTerminal.title": "Skel",
-  "settings.general.row.showTerminal.description": "Sýndu flugstöðvarhnappinn á titilstikunni á skjáborðinu",
+  "settings.general.row.showTerminal.description":
+    "Sýndu flugstöðvarhnappinn á titilstikunni á skjáborðinu",
   "settings.general.row.showStatus.title": "Staða netþjóns",
-  "settings.general.row.showStatus.description": "Sýndu stöðuhnapp netþjónsins á titilstikunni",
+  "settings.general.row.showStatus.description":
+    "Sýndu stöðuhnapp netþjónsins á titilstikunni",
   "settings.general.row.mobileTitlebarBottom.title": "Botnleiðsögn",
   "settings.general.row.mobileTitlebarBottom.description":
     "Settu titilstikuna og lotuflipana neðst á skjánum á farsímanum",
   "settings.general.row.showCustomAgents.title": "Sýna fulltrúa",
   "settings.general.row.showCustomAgents.description":
     "Skiptu á milli fulltrúa í innsláttarreitnum. Þegar þeir eru faldir er Build-fulltrúinn sjálfgefinn.",
-  "settings.general.row.reasoningSummaries.title": "Sýndu samantektir um rökstuðning",
-  "settings.general.row.reasoningSummaries.description": "Birta rökstuðningssamantektir líkana á tímalínunni",
-  "settings.general.row.shellToolPartsExpanded.title": "Stækkaðu hluta skeljaverkfæra",
-  "settings.general.row.shellToolPartsExpanded.description": "Sýna hluta skelverkfæra stækkað sjálfgefið á tímalínunni",
-  "settings.general.row.editToolPartsExpanded.title": "Stækkaðu breytingaverkfærahluta",
+  "settings.general.row.reasoningSummaries.title":
+    "Sýndu samantektir um rökstuðning",
+  "settings.general.row.reasoningSummaries.description":
+    "Birta rökstuðningssamantektir líkana á tímalínunni",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Stækkaðu hluta skeljaverkfæra",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "Sýna hluta skelverkfæra stækkað sjálfgefið á tímalínunni",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Stækkaðu breytingaverkfærahluta",
   "settings.general.row.editToolPartsExpanded.description":
     "Sýna breytinga-, skrifa- og plástraverkfæri hluta sjálfgefið stækkað á tímalínunni",
   "settings.general.row.newInterface.title": "Nýtt skipulag",
   "settings.general.row.newInterface.badge": "Nýtt",
   "settings.general.row.newInterface.description":
     "Notaðu nýju flipana og heimilisútlitið. Skiptu á milli útlita í takmarkaðan tíma.",
-  "settings.general.row.newInterfaceNotice.title": "Þú ert núna að nota nýtt skipulag",
-  "settings.general.row.newInterfaceNotice.description": "Fyrra skipulagið er ekki lengur tiltækt",
+  "settings.general.row.newInterfaceNotice.title":
+    "Þú ert núna að nota nýtt skipulag",
+  "settings.general.row.newInterfaceNotice.description":
+    "Fyrra skipulagið er ekki lengur tiltækt",
   "settings.general.row.newInterfaceNotice.dismiss": "Segja frá",
   "settings.general.row.pinchZoom.title": "Klíptu til að þysja",
-  "settings.general.row.pinchZoom.description": "Leyfðu að klípa og Ctrl-fletta bendingar til að þysja",
+  "settings.general.row.pinchZoom.description":
+    "Leyfðu að klípa og Ctrl-fletta bendingar til að þysja",
   "settings.general.row.wayland.title": "Notaðu innfæddan Wayland",
-  "settings.general.row.wayland.description": "Slökktu á X11 fallback á Wayland. Krefst endurræsingar.",
+  "settings.general.row.wayland.description":
+    "Slökktu á X11 fallback á Wayland. Krefst endurræsingar.",
   "settings.general.row.wayland.tooltip":
     "Á Linux með skjám með blönduðum hressingarhraða getur innfæddur Wayland verið stöðugri.",
   "settings.general.row.releaseNotes.title": "Útgáfuskýrslur",
-  "settings.general.row.releaseNotes.description": "Sýna hvað er nýtt sprettiglugga eftir uppfærslur",
+  "settings.general.row.releaseNotes.description":
+    "Sýna hvað er nýtt sprettiglugga eftir uppfærslur",
   "settings.updates.row.startup.title": "Leitaðu að uppfærslum við ræsingu",
-  "settings.updates.row.startup.description": "Athugaðu sjálfkrafa fyrir uppfærslur þegar OpenCode ræsir",
+  "settings.updates.row.startup.description":
+    "Athugaðu sjálfkrafa fyrir uppfærslur þegar OpenCode ræsir",
   "settings.updates.row.check.title": "Leitaðu að uppfærslum",
-  "settings.updates.row.check.description": "Athugaðu handvirkt fyrir uppfærslur og settu upp ef það er tiltækt",
+  "settings.updates.row.check.description":
+    "Athugaðu handvirkt fyrir uppfærslur og settu upp ef það er tiltækt",
   "settings.updates.action.checkNow": "Athugaðu núna",
   "settings.updates.action.checking": "Athugar...",
   "settings.updates.action.downloading": "Sækir...",
   "settings.updates.action.installing": "Setur upp...",
   "settings.updates.toast.latest.title": "Þú ert uppfærður",
-  "settings.updates.toast.latest.description": "Þú ert að keyra nýjustu útgáfuna af OpenCode.",
+  "settings.updates.toast.latest.description":
+    "Þú ert að keyra nýjustu útgáfuna af OpenCode.",
   "sound.option.none": "Engin",
   "sound.option.alert01": "Viðvörun 01",
   "sound.option.alert02": "Viðvörun 02",
@@ -1056,21 +1175,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Sýna kerfistilkynningu þegar fulltrúi lýkur verki eða þarfnast athygli",
   "settings.general.notifications.permissions.title": "Heimildir",
-  "settings.general.notifications.permissions.description": "Sýna kerfistilkynningu þegar leyfi er krafist",
+  "settings.general.notifications.permissions.description":
+    "Sýna kerfistilkynningu þegar leyfi er krafist",
   "settings.general.notifications.errors.title": "Villur",
-  "settings.general.notifications.errors.description": "Sýna kerfistilkynningu þegar villa kemur upp",
+  "settings.general.notifications.errors.description":
+    "Sýna kerfistilkynningu þegar villa kemur upp",
   "settings.general.sounds.agent.title": "Fulltrúi",
-  "settings.general.sounds.agent.description": "Spila hljóð þegar fulltrúinn lýkur verki eða þarfnast athygli",
+  "settings.general.sounds.agent.description":
+    "Spila hljóð þegar fulltrúinn lýkur verki eða þarfnast athygli",
   "settings.general.sounds.permissions.title": "Heimildir",
-  "settings.general.sounds.permissions.description": "Spilaðu hljóð þegar leyfi er krafist",
+  "settings.general.sounds.permissions.description":
+    "Spilaðu hljóð þegar leyfi er krafist",
   "settings.general.sounds.errors.title": "Villur",
-  "settings.general.sounds.errors.description": "Spilaðu hljóð þegar villa kemur upp",
+  "settings.general.sounds.errors.description":
+    "Spilaðu hljóð þegar villa kemur upp",
   "settings.shortcuts.title": "Flýtivísar",
   "settings.shortcuts.reset.button": "Endurstilla í sjálfgefna stillingar",
   "settings.shortcuts.reset.toast.title": "Flýtivísar endurstillt",
-  "settings.shortcuts.reset.toast.description": "Flýtivísar hafa verið endurstilltir á sjálfgefnar stillingar.",
+  "settings.shortcuts.reset.toast.description":
+    "Flýtivísar hafa verið endurstilltir á sjálfgefnar stillingar.",
   "settings.shortcuts.conflict.title": "Flýtileið þegar í notkun",
-  "settings.shortcuts.conflict.description": "{{keybind}} er þegar úthlutað til {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} er þegar úthlutað til {{titles}}.",
   "settings.shortcuts.unassigned": "Óúthlutað",
   "settings.shortcuts.pressKeys": "Ýttu á takka",
   "settings.shortcuts.search.placeholder": "Leitarflýtivísar",
@@ -1082,12 +1208,15 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Skel",
   "settings.shortcuts.group.prompt": "Kvaðning",
   "settings.providers.title": "Veitendur",
-  "settings.providers.description": "Stillingar þjónustuveitunnar verða stillanlegar hér.",
+  "settings.providers.description":
+    "Stillingar þjónustuveitunnar verða stillanlegar hér.",
   "settings.providers.section.connected": "Tengdar veitendur",
   "settings.providers.connected.empty": "Engar tengdar veitendur",
-  "settings.providers.connected.environmentDescription": "Tengdur frá umhverfisbreytum þínum",
+  "settings.providers.connected.environmentDescription":
+    "Tengdur frá umhverfisbreytum þínum",
   "settings.providers.section.popular": "Vinsælir veitendur",
-  "settings.providers.custom.description": "Bættu við OpenAI-samhæfðum veitanda með grunni URL.",
+  "settings.providers.custom.description":
+    "Bættu við OpenAI-samhæfðum veitanda með grunni URL.",
   "settings.providers.tag.environment": "Umhverfi",
   "settings.providers.tag.config": "Uppsetning",
   "settings.providers.tag.custom": "Sérsniðin",
@@ -1095,26 +1224,33 @@ export const dict = {
   "settings.models.title": "Fyrirmyndir",
   "settings.models.description": "Líkanstillingar verða stillanlegar hér.",
   "settings.agents.title": "Umboðsmenn",
-  "settings.agents.description": "Umboðsmannsstillingar verða stillanlegar hér.",
+  "settings.agents.description":
+    "Umboðsmannsstillingar verða stillanlegar hér.",
   "settings.commands.title": "Skipanir",
   "settings.commands.description": "Skipunarstillingar verða stillanlegar hér.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP stillingar verða stillanlegar hér.",
   "settings.permissions.title": "Heimildir",
-  "settings.permissions.description": "Stjórnaðu því hvaða verkfæri þjónninn getur notað sjálfgefið.",
+  "settings.permissions.description":
+    "Stjórnaðu því hvaða verkfæri þjónninn getur notað sjálfgefið.",
   "settings.permissions.section.tools": "Verkfæri",
-  "settings.permissions.toast.updateFailed.title": "Mistókst að uppfæra heimildir",
+  "settings.permissions.toast.updateFailed.title":
+    "Mistókst að uppfæra heimildir",
   "settings.permissions.action.allow": "Leyfa",
   "settings.permissions.action.ask": "Spurðu",
   "settings.permissions.action.deny": "Neita",
   "settings.permissions.tool.read.title": "Lestu",
-  "settings.permissions.tool.read.description": "Að lesa skrá (passar við skráarslóðina)",
+  "settings.permissions.tool.read.description":
+    "Að lesa skrá (passar við skráarslóðina)",
   "settings.permissions.tool.edit.title": "Breyta",
-  "settings.permissions.tool.edit.description": "Breyttu skrám, þar með talið breytingum, skrifum og plástra",
+  "settings.permissions.tool.edit.description":
+    "Breyttu skrám, þar með talið breytingum, skrifum og plástra",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Passaðu skrár með því að nota glob mynstur",
+  "settings.permissions.tool.glob.description":
+    "Passaðu skrár með því að nota glob mynstur",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Leitaðu að innihaldi skráar með því að nota reglulegar tjáningar",
+  "settings.permissions.tool.grep.description":
+    "Leitaðu að innihaldi skráar með því að nota reglulegar tjáningar",
   "settings.permissions.tool.list.title": "Listi",
   "settings.permissions.tool.list.description": "Listaðu skrár í möppu",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1124,7 +1260,8 @@ export const dict = {
   "settings.permissions.tool.skill.title": "Færni",
   "settings.permissions.tool.skill.description": "Hlaða hæfileika með nafni",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Keyra fyrirspurnir um tungumálaþjón",
+  "settings.permissions.tool.lsp.description":
+    "Keyra fyrirspurnir um tungumálaþjón",
   "settings.permissions.tool.todowrite.title": "Todo Skrifa",
   "settings.permissions.tool.todowrite.description": "Uppfærðu verkefnalistann",
   "settings.permissions.tool.webfetch.title": "Vefur sækja",
@@ -1132,9 +1269,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Vefleit",
   "settings.permissions.tool.websearch.description": "Leitaðu á vefnum",
   "settings.permissions.tool.external_directory.title": "Ytri skráarskrá",
-  "settings.permissions.tool.external_directory.description": "Fáðu aðgang að skrám utan verkefnaskránnar",
+  "settings.permissions.tool.external_directory.description":
+    "Fáðu aðgang að skrám utan verkefnaskránnar",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Finndu endurtekin verkfærasímtöl með eins inntak",
+  "settings.permissions.tool.doom_loop.description":
+    "Finndu endurtekin verkfærasímtöl með eins inntak",
   "session.delete.failed.title": "Ekki tókst að eyða lotu",
   "session.delete.title": "Eyða setu",
   "session.delete.confirm": 'Eyða setunni "{{name}}"?',
@@ -1148,7 +1287,8 @@ export const dict = {
   "workspace.resetting.description": "Þetta gæti tekið eina mínútu.",
   "workspace.reset.failed.title": "Mistókst að endurstilla vinnusvæði",
   "workspace.reset.success.title": "Vinnusvæði endurstillt",
-  "workspace.reset.success.description": "Vinnusvæði passar nú við sjálfgefna útibúið.",
+  "workspace.reset.success.description":
+    "Vinnusvæði passar nú við sjálfgefna útibúið.",
   "workspace.error.stillPreparing": "Vinnusvæði er enn í undirbúningi",
   "workspace.status.checking": "Leitar að ósameinuðum breytingum...",
   "workspace.status.error": "Ekki hægt að staðfesta git stöðu.",
@@ -1163,6 +1303,7 @@ export const dict = {
   "workspace.reset.archived.none": "Engar virkar lotur verða settar í geymslu.",
   "workspace.reset.archived.one": "1 seta verður sett í geymslu.",
   "workspace.reset.archived.many": "{{count}} setur verða settar í geymslu.",
-  "workspace.reset.note": "Þetta mun endurstilla vinnusvæðið til að passa við sjálfgefna útibúið.",
+  "workspace.reset.note":
+    "Þetta mun endurstilla vinnusvæðið til að passa við sjálfgefna útibúið.",
   "dialog.usageExceeded.dontShowAgain": "Ekki sýna aftur",
 }

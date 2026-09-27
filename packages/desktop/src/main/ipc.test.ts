@@ -142,7 +142,7 @@ mock.module("./disk-snapshot", () => ({
   },
 }))
 
-const { registerIpcHandlers } = await import("./ipc")
+const { registerIpcHandlers, volumeIconLookupAllowed } = await import("./ipc")
 
 registerIpcHandlers({
   relaunch: () => undefined,
@@ -201,7 +201,8 @@ const stopWatching = handlers.get("disklizard:stop-watching") as (
 const authorizeDeletePaths = handlers.get("disklizard:authorize-delete-paths") as (
   event: IpcMainInvokeEvent,
   paths: readonly string[],
-) => Promise<Array<{ path: string; authorization: string }>>
+) => Promise<Array<{ path: string; authorization?: string; error?: string }>>
+const checkDeleteAccess = handlers.get("disklizard:check-delete-access")!
 const previewPath = handlers.get("disklizard:preview-path")!
 const systemPreviewPath = handlers.get("disklizard:system-preview-path")!
 const openPath = handlers.get("disklizard:open-path")!
@@ -216,6 +217,13 @@ describe("disk snapshot IPC lifecycle", () => {
       expect(await handlers.get(channel)!(event(sender), "/not-a-mounted-volume")).toBe(false)
     }
     expect(await handlers.get("disklizard:volume-info")!(event(sender), "/not-a-mounted-volume")).toBeNull()
+  })
+
+  test("does not look up a macOS icon for the boot volume", () => {
+    expect(volumeIconLookupAllowed("/", "darwin")).toBe(false)
+    expect(volumeIconLookupAllowed("/Users", "darwin")).toBe(false)
+    expect(volumeIconLookupAllowed("/Volumes/Backup", "darwin")).toBe(false)
+    expect(volumeIconLookupAllowed("C:\\", "win32")).toBe(true)
   })
   test("rejects privileged IPC from a subframe", () => {
     const sender = new FakeSender(40)
@@ -440,9 +448,9 @@ describe("disk snapshot IPC lifecycle", () => {
       await scanPath(event(sender), focusedPath, {}, "expand")
       await stopWatching(event(sender), "expand")
 
-      await expect(authorizeDeletePaths(event(sender), [expandedPath])).rejects.toThrow(
-        "Item is not part of an active scan",
-      )
+      await expect(authorizeDeletePaths(event(sender), [expandedPath])).resolves.toEqual([
+        { path: expandedPath, error: "Item is not part of an active scan — rescan before moving it to Trash." },
+      ])
 
       await scanPath(event(sender), focusedPath, {}, "expand")
       for (const options of [
@@ -471,6 +479,30 @@ describe("disk snapshot IPC lifecycle", () => {
         { path: expandedPath, authorization: expect.any(String) },
       ])
       await stopWatching(event(sender), "primary")
+    } finally {
+      await rm(rootPath, { recursive: true, force: true })
+    }
+  })
+
+  test("checks delete access only for a path in the sender's active scan", async () => {
+    const rootPath = await mkdtemp(path.join(tmpdir(), "disklizard-ipc-access-"))
+    const filePath = path.join(rootPath, "candidate.txt")
+    await writeFile(filePath, "candidate")
+    try {
+      const sender = new FakeSender(47)
+      await expect(Promise.resolve().then(() => checkDeleteAccess(event(sender), filePath))).rejects.toThrow(
+        "Item is not part of an active scan",
+      )
+      diskSnapshots.roots.set(rootPath, {
+        name: path.basename(rootPath), path: rootPath, size: 9, isDir: true, ext: "",
+        children: [{ name: "candidate.txt", path: filePath, size: 9, isDir: false, ext: "txt", children: [] }],
+      })
+      await scanPath(event(sender), rootPath, {}, "access")
+      await expect(checkDeleteAccess(event(sender), filePath)).resolves.toEqual({ state: "likely" })
+      await stopWatching(event(sender), "access")
+      await expect(Promise.resolve().then(() => checkDeleteAccess(event(sender), filePath))).rejects.toThrow(
+        "Item is not part of an active scan",
+      )
     } finally {
       await rm(rootPath, { recursive: true, force: true })
     }

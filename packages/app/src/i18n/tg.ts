@@ -46,11 +46,13 @@ export const dict = {
   "desktop.menu.ariaLabel": "OpenCode меню",
   "desktop.updater.dialog.checkFailed.message": "Санҷиши навсозӣ ноком шуд.",
   "desktop.updater.dialog.checkFailed.title": "Хатои навсозӣ",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Шумо навсозӣ доред.",
   "desktop.updater.dialog.upToDate.title": "Навсозиҳо нест",
-  "desktop.updater.dialog.ready.message": "Навсозии {{version}} бор карда шуд. Ҳоло аз нав оғоз кунед?",
+  "desktop.updater.dialog.ready.message":
+    "Навсозии {{version}} бор карда шуд. Ҳоло аз нав оғоз кунед?",
   "desktop.updater.dialog.ready.title": "Навсозӣ омода аст",
   "desktop.updater.dialog.restart": "Оғози дубора",
   "desktop.updater.dialog.retry": "Retry",
@@ -60,12 +62,15 @@ export const dict = {
   "desktop.recovery.action.keepWaiting": "Интизор бошед",
   "desktop.recovery.action.quit": "Истед",
   "desktop.recovery.loadFailed": "OpenCode бор карда натавонист",
-  "desktop.recovery.terminated": "OpenCode тиреза ба таври ғайричашмдошт қатъ карда шуд",
+  "desktop.recovery.terminated":
+    "OpenCode тиреза ба таври ғайричашмдошт қатъ карда шуд",
   "desktop.recovery.unresponsive": "OpenCode ҷавоб намедиҳад",
   "desktop.recovery.unresponsive.detail":
     "Шумо метавонед барномаро аз нав оғоз кунед, гузоришҳоро кушоед ё интизор шавед.",
-  "desktop.recovery.loadFailed.detail": "Тиреза: {{window}}\nURL: {{url}}\nХатогӣ: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Тиреза: {{window}}\nСабаб: {{reason}}\nРамз: {{code}}",
+  "desktop.recovery.loadFailed.detail":
+    "Тиреза: {{window}}\nURL: {{url}}\nХатогӣ: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Тиреза: {{window}}\nСабаб: {{reason}}\nРамз: {{code}}",
   "desktop.recovery.unknown": "<номаълум>",
   "desktop.dialog.chooseFolder": "Папкаро интихоб кунед",
   "desktop.dialog.chooseFile": "Файлро интихоб кунед",
@@ -74,27 +79,38 @@ export const dict = {
   "desktop.server.local": "Сервери маҳаллӣ",
   "desktop.wsl.error.windowsOnly": "WSL танҳо дар Windows дастрас аст",
   "desktop.wsl.error.unavailable": "WSL дастрас нест",
-  "desktop.wsl.error.listInstalled": "Рӯйхати WSL дистрибюторҳои насбшуда иҷро нашуд",
+  "desktop.wsl.error.listInstalled":
+    "Рӯйхати WSL дистрибюторҳои насбшуда иҷро нашуд",
   "desktop.wsl.error.listOnline": "Рӯйхати WSL паҳнкунии онлайн номуваффақ шуд",
-  "desktop.wsl.error.executeDistro": "Фармонҳоро дар distro иҷро карда наметавонад",
+  "desktop.wsl.error.executeDistro":
+    "Фармонҳоро дар distro иҷро карда наметавонад",
   "desktop.wsl.error.installWsl": "WSL насб карда нашуд",
-  "desktop.wsl.error.installDistro": "Насб кардани distro иҷро нашуд: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Насб кардани distro иҷро нашуд: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCode насб карда нашуд",
   "desktop.wsl.error.alreadyAdded": "{{distro}} аллакай илова карда шудааст",
-  "desktop.wsl.error.opencodeMissing": "opencode дар ин паҳнкунӣ насб нашудааст",
-  "desktop.wsl.error.opencodeCannotRun": "opencode насб шудааст, аммо иҷро карда натавонист",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCode дар {{distro}} насб нашудааст",
+  "desktop.wsl.error.opencodeMissing":
+    "opencode дар ин паҳнкунӣ насб нашудааст",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode насб шудааст, аммо иҷро карда натавонист",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCode дар {{distro}} насб нашудааст",
   "desktop.wsl.error.updateVersion":
     "OpenCode навсозӣ анҷом ёфт, аммо {{distro}} то ҳол гузориш медиҳад {{installed}}; интизорӣ {{expected}}",
   "desktop.wsl.error.noVersion": "версия нест",
-  "desktop.wsl.error.serverExited": "WSL сервер пас аз оғозшавӣ хориҷ шуд (рамз = {{code}} сигнал = {{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL сервер пас аз оғозшавӣ хориҷ шуд (рамз = {{code}} сигнал = {{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL сервер пеш аз солим шудан хориҷ шуд (рамз={{code}} сигнал ={{signal}}){{output}}",
-  "desktop.wsl.error.healthTimeout": "Санҷиши саломатии Sidecar барои {{distro}} пас аз {{timeout}} мс ба охир расид",
-  "desktop.wsl.error.commandTimeout": "{{command}} {{args}} пас аз {{timeout}}мс ба охир расид",
+  "desktop.wsl.error.healthTimeout":
+    "Санҷиши саломатии Sidecar барои {{distro}} пас аз {{timeout}} мс ба охир расид",
+  "desktop.wsl.error.commandTimeout":
+    "{{command}} {{args}} пас аз {{timeout}}мс ба охир расид",
   "desktop.wsl.error.failedPort": "Ба даст овардани порт муяссар нашуд",
-  "desktop.picker.error.notSelected": "Файлро интихобкунанда интихоб накардааст",
-  "desktop.picker.error.sizeLimit": "Замимаҳои интихобшуда аз ҳадди {{limit}} МБ зиёданд",
+  "desktop.picker.error.notSelected":
+    "Файлро интихобкунанда интихоб накардааст",
+  "desktop.picker.error.sizeLimit":
+    "Замимаҳои интихобшуда аз ҳадди {{limit}} МБ зиёданд",
   "command.category.suggested": "Тавсия дода мешавад",
   "command.category.view": "Намоиш",
   "command.category.project": "Лоиҳа",
@@ -141,7 +157,8 @@ export const dict = {
   "command.tab.close": "Варақаро пӯшед",
   "command.tab.reopenClosed": "Варақаи пӯшидаро аз нав кушоед",
   "command.context.addSelection": "Интихобро ба контекст илова кунед",
-  "command.context.addSelection.description": "Аз файли ҷорӣ сатрҳои интихобшударо илова кунед",
+  "command.context.addSelection.description":
+    "Аз файли ҷорӣ сатрҳои интихобшударо илова кунед",
   "command.input.focus": "Вуруди фокус",
   "command.terminal.toggle": "Терминалро иваз кунед",
   "command.fileTree.toggle": "Гузариш кардани дарахти файл",
@@ -149,7 +166,8 @@ export const dict = {
   "command.terminal.new": "Терминали нав",
   "command.terminal.new.description": "Варақаи нави терминал эҷод кунед",
   "command.steps.toggle": "Қадамҳоро иваз кунед",
-  "command.steps.toggle.description": "Қадамҳоро барои паёми ҷорӣ нишон диҳед ё пинҳон кунед",
+  "command.steps.toggle.description":
+    "Қадамҳоро барои паёми ҷорӣ нишон диҳед ё пинҳон кунед",
   "command.message.previous": "Паёми қаблӣ",
   "command.message.previous.description": "Ба паёми пешинаи корбар гузаред",
   "command.message.next": "Паёми навбатӣ",
@@ -163,27 +181,33 @@ export const dict = {
   "command.agent.cycle.reverse": "Агенти даврӣ ба ақиб",
   "command.agent.cycle.reverse.description": "Ба агенти қаблӣ гузаред",
   "command.model.variant.cycle": "Кӯшиши фикрронии даврӣ",
-  "command.model.variant.cycle.description": "Ба сатҳи навбатии кӯшишҳо гузаред",
+  "command.model.variant.cycle.description":
+    "Ба сатҳи навбатии кӯшишҳо гузаред",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Промпт",
   "command.permissions.autoaccept.enable": "Иҷозатҳоро худкор қабул кунед",
-  "command.permissions.autoaccept.disable": "Қабули худкори иҷозатҳоро қатъ кунед",
+  "command.permissions.autoaccept.disable":
+    "Қабули худкори иҷозатҳоро қатъ кунед",
   "command.workspace.toggle": "Ҷойҳои корӣ иваз кунед",
-  "command.workspace.toggle.description": "Дар панели паҳлӯ ҷойҳои кории сершуморро фаъол ё ғайрифаъол кунед",
+  "command.workspace.toggle.description":
+    "Дар панели паҳлӯ ҷойҳои кории сершуморро фаъол ё ғайрифаъол кунед",
   "command.session.undo": "Бекор кардан",
   "command.session.undo.description": "Паёми охиринро бекор кунед",
   "command.session.redo": "Такрор кунед",
   "command.session.redo.description": "Паёми охирини бекоршударо такрор кунед",
   "command.session.compact": "Сеанси компакт",
-  "command.session.compact.description": "Барои кам кардани андозаи контекст ҷаласаро ҷамъбаст кунед",
+  "command.session.compact.description":
+    "Барои кам кардани андозаи контекст ҷаласаро ҷамъбаст кунед",
   "command.session.fork": "Аз паём шоха созед",
   "command.session.fork.description": "Аз паёми қаблӣ сессияи нав эҷод кунед",
   "command.session.share": "Сеанси мубодила",
-  "command.session.share.description": "Ин сессияро мубодила кунед ва URL-ро ба буфер нусхабардорӣ кунед",
+  "command.session.share.description":
+    "Ин сессияро мубодила кунед ва URL-ро ба буфер нусхабардорӣ кунед",
   "command.session.unshare": "Бекор кардани сеанс",
   "command.session.unshare.description": "Мубодилаи ин сессияро бас кунед",
   "command.session.export": "Сеанси содирот",
-  "command.session.export.description": "Транскрипти пурраи сессияро ҳамчун JSON содир кунед",
+  "command.session.export.description":
+    "Транскрипти пурраи сессияро ҳамчун JSON содир кунед",
   "palette.search.placeholder": "Ҷустуҷӯи файлҳо, фармонҳо ва сессияҳо",
   "palette.search.placeholder.home": "Фармонҳо ва сессияҳоро ҷустуҷӯ кунед",
   "palette.empty": "Ягон натиҷа ёфт нашуд",
@@ -195,28 +219,39 @@ export const dict = {
   "dialog.provider.group.other": "Дигар",
   "dialog.provider.custom.label": "Фармоишгар OpenAI-провайдери мувофиқ",
   "dialog.provider.tag.recommended": "Тавсия дода мешавад",
-  "dialog.provider.opencode.note": "Моделҳои интихобшуда, аз ҷумла Claude, GPT, Gemini ва ғайра",
+  "dialog.provider.opencode.note":
+    "Моделҳои интихобшуда, аз ҷумла Claude, GPT, Gemini ва ғайра",
   "dialog.provider.opencode.tagline": "Моделҳои боэътимоди оптимизатсияшуда",
   "dialog.provider.opencodeGo.tagline": "Обунаи арзон барои ҳама",
-  "dialog.provider.anthropic.note": "Дастрасии мустақим ба моделҳои Claude, аз ҷумла Pro ва Max",
-  "dialog.provider.copilot.note": "Моделҳои AI барои кӯмаки рамзгузорӣ тавассути GitHub Copilot",
-  "dialog.provider.openai.note": "GPT моделҳо барои вазифаҳои зуд ва тавонои умумии AI",
+  "dialog.provider.anthropic.note":
+    "Дастрасии мустақим ба моделҳои Claude, аз ҷумла Pro ва Max",
+  "dialog.provider.copilot.note":
+    "Моделҳои AI барои кӯмаки рамзгузорӣ тавассути GitHub Copilot",
+  "dialog.provider.openai.note":
+    "GPT моделҳо барои вазифаҳои зуд ва тавонои умумии AI",
   "dialog.provider.google.note": "Gemini моделҳо барои посухҳои зуд ва сохторӣ",
-  "dialog.provider.openrouter.note": "Ба ҳама моделҳои дастгирӣшаванда аз як провайдер дастрасӣ пайдо кунед",
-  "dialog.provider.vercel.note": "Дастрасии ягона ба моделҳои AI бо масири оқилона",
+  "dialog.provider.openrouter.note":
+    "Ба ҳама моделҳои дастгирӣшаванда аз як провайдер дастрасӣ пайдо кунед",
+  "dialog.provider.vercel.note":
+    "Дастрасии ягона ба моделҳои AI бо масири оқилона",
   "dialog.model.select.title": "Модели интихоб кунед",
   "dialog.model.search.placeholder": "Ҷустуҷӯи моделҳо",
   "dialog.model.empty": "Натоиҷи модел нест",
   "dialog.model.manage": "Моделҳоро идора кунед",
-  "dialog.model.manage.description": "Муайян кунед, ки кадом моделҳо дар интихоби модел пайдо мешаванд.",
-  "dialog.model.manage.provider.toggle": "Ҳама моделҳои {{provider}}-ро иваз кунед",
-  "dialog.model.unpaid.freeModels.title": "Моделҳои ройгон аз ҷониби OpenCode пешниҳодшуда",
-  "dialog.model.unpaid.addMore.title": "Моделҳои бештар аз провайдерҳои маъмул илова кунед",
+  "dialog.model.manage.description":
+    "Муайян кунед, ки кадом моделҳо дар интихоби модел пайдо мешаванд.",
+  "dialog.model.manage.provider.toggle":
+    "Ҳама моделҳои {{provider}}-ро иваз кунед",
+  "dialog.model.unpaid.freeModels.title":
+    "Моделҳои ройгон аз ҷониби OpenCode пешниҳодшуда",
+  "dialog.model.unpaid.addMore.title":
+    "Моделҳои бештар аз провайдерҳои маъмул илова кунед",
   "dialog.model.unpaid.viewMoreProviders": "Ба 70+ провайдерҳои дигар нигаред",
   "dialog.provider.viewAll": "Провайдерҳои бештарро нишон диҳед",
   "provider.connect.title": "Пайвастшавӣ {{provider}}",
   "provider.connect.title.anthropicProMax": "Воридшавӣ бо Claude Pro/Max",
-  "provider.connect.selectMethod": "Усули воридшавиро барои {{provider}} интихоб кунед.",
+  "provider.connect.selectMethod":
+    "Усули воридшавиро барои {{provider}} интихоб кунед.",
   "provider.connect.method.apiKey": "API калид",
   "provider.connect.method.browser": "Браузер",
   "provider.connect.method.headless": "Бесар",
@@ -234,7 +269,8 @@ export const dict = {
     "Бо як калиди API шумо метавонед ба моделҳое мисли Claude, GPT, Gemini, GLM ва ғайра дастрасӣ пайдо кунед.",
   "provider.connect.opencodeZen.visit.prefix": "Ташриф",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
-  "provider.connect.opencodeZen.visit.suffix": "барои гирифтани калиди API худ.",
+  "provider.connect.opencodeZen.visit.suffix":
+    "барои гирифтани калиди API худ.",
   "provider.connect.oauth.code.visit.prefix": "Ташриф",
   "provider.connect.oauth.code.visit.link": "ин пайванд",
   "provider.connect.oauth.code.visit.suffix":
@@ -249,15 +285,19 @@ export const dict = {
     "ва рамзи зерро ворид кунед, то ҳисоби худро пайваст кунед ва моделҳои {{provider}}-ро дар OpenCode истифода баред.",
   "provider.connect.oauth.auto.confirmationCode": "Рамзи тасдиқ",
   "provider.connect.toast.connected.title": "{{provider}} пайваст",
-  "provider.connect.toast.connected.description": "{{provider}} моделҳо ҳоло барои истифода дастрасанд.",
+  "provider.connect.toast.connected.description":
+    "{{provider}} моделҳо ҳоло барои истифода дастрасанд.",
   "provider.custom.title": "Провайдери фармоишӣ",
-  "provider.custom.unavailable": "Провайдерҳои фармоишӣ дар ин сервер дастрас нестанд",
-  "provider.custom.description.prefix": "Провайдери OpenAI-мувофиқро танзим кунед. нигаред",
+  "provider.custom.unavailable":
+    "Провайдерҳои фармоишӣ дар ин сервер дастрас нестанд",
+  "provider.custom.description.prefix":
+    "Провайдери OpenAI-мувофиқро танзим кунед. нигаред",
   "provider.custom.description.link": "ҳуҷҷатҳои конфигуратсияи провайдер",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID провайдер",
   "provider.custom.field.providerID.placeholder": "провайдери ман",
-  "provider.custom.field.providerID.description": "Ҳарфҳои хурд, рақамҳо, дефис ё зерхат",
+  "provider.custom.field.providerID.description":
+    "Ҳарфҳои хурд, рақамҳо, дефис ё зерхат",
   "provider.custom.field.name.label": "Бозтоби ном",
   "provider.custom.field.name.placeholder": "Провайдери ман AI",
   "provider.custom.field.baseURL.label": "Асос URL",
@@ -281,15 +321,20 @@ export const dict = {
   "provider.custom.headers.remove": "Сарлавҳаро хориҷ кунед",
   "provider.custom.headers.add": "Иловаи сарлавҳа",
   "provider.custom.error.providerID.required": "ID провайдер лозим аст",
-  "provider.custom.error.providerID.format": "Ҳарфҳои хурд, рақамҳо, дефис ё зерхатро истифода баред",
-  "provider.custom.error.providerID.exists": "Ин ID провайдер аллакай вуҷуд дорад",
+  "provider.custom.error.providerID.format":
+    "Ҳарфҳои хурд, рақамҳо, дефис ё зерхатро истифода баред",
+  "provider.custom.error.providerID.exists":
+    "Ин ID провайдер аллакай вуҷуд дорад",
   "provider.custom.error.name.required": "Номи намоиш талаб карда мешавад",
   "provider.custom.error.baseURL.required": "Базаи URL талаб карда мешавад",
-  "provider.custom.error.baseURL.format": "Бояд бо http:// ё https:// оғоз шавад",
+  "provider.custom.error.baseURL.format":
+    "Бояд бо http:// ё https:// оғоз шавад",
   "provider.custom.error.required": "Талаб карда мешавад",
   "provider.custom.error.duplicate": "Дубликат",
-  "provider.disconnect.toast.disconnected.title": "{{provider}} ҷудо карда шудааст",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} моделҳо дигар дастрас нестанд.",
+  "provider.disconnect.toast.disconnected.title":
+    "{{provider}} ҷудо карда шудааст",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} моделҳо дигар дастрас нестанд.",
   "model.tag.free": "Озод",
   "model.tag.latest": "Охирин",
   "model.provider.anthropic": "Anthropic",
@@ -335,7 +380,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Промпт",
   "prompt.mode.shell.exit": "esc барои баромадан",
-  "session.child.promptDisabled": "Сеансҳои субагентро дархост кардан мумкин нест.",
+  "session.child.promptDisabled":
+    "Сеансҳои субагентро дархост кардан мумкин нест.",
   "session.child.backToParent": "Бозгашт ба ҷаласаи асосӣ.",
   "prompt.example.1": "TODO-ро дар пойгоҳи код ислоҳ кунед",
   "prompt.example.2": "Андозаи техникии ин лоиҳа чӣ гуна аст?",
@@ -351,7 +397,8 @@ export const dict = {
   "prompt.example.12": "Иловаи тасдиқи вуруд",
   "prompt.example.13": "Эҷоди ҷузъи нав барои...",
   "prompt.example.14": "Чӣ тавр ман ин лоиҳаро татбиқ мекунам?",
-  "prompt.example.15": "Рамзи маро барои таҷрибаҳои беҳтарин аз назар гузаронед",
+  "prompt.example.15":
+    "Рамзи маро барои таҷрибаҳои беҳтарин аз назар гузаронед",
   "prompt.example.16": "Ба ин функсия коркарди хатогиҳоро илова кунед",
   "prompt.example.17": "Ин намунаи регексро шарҳ диҳед",
   "prompt.example.18": "Инро ба TypeScript табдил диҳед",
@@ -361,7 +408,8 @@ export const dict = {
   "prompt.example.22": "Барои ин нуқтаи ниҳоӣ кэшро иҷро кунед",
   "prompt.example.23": "Ба ин рӯйхат саҳифагузорӣ илова кунед",
   "prompt.example.24": "Фармони CLI барои...",
-  "prompt.example.25": "Дар ин ҷо тағирёбандаҳои муҳити зист чӣ гуна кор мекунанд?",
+  "prompt.example.25":
+    "Дар ин ҷо тағирёбандаҳои муҳити зист чӣ гуна кор мекунанд?",
   "prompt.popover.emptyResults": "Натоиҷи мувофиқ нест",
   "prompt.popover.emptyCommands": "Фармонҳои мувофиқ нест",
   "prompt.dropzone.label": "Тасвирҳо, PDFс ё файлҳои матниро дар ин ҷо гузоред",
@@ -387,13 +435,15 @@ export const dict = {
     "Дар ин ҷо танҳо тасвирҳо, PDFс ё файлҳои матнӣ замима кардан мумкин аст.",
   "prompt.toast.attachmentDuplicate.title": "Ин файл аллакай бор карда шудааст",
   "prompt.toast.modelAgentRequired.title": "Агент ва моделро интихоб кунед",
-  "prompt.toast.modelAgentRequired.description": "Пеш аз фиристодани промпт агент ва моделро интихоб кунед.",
+  "prompt.toast.modelAgentRequired.description":
+    "Пеш аз фиристодани промпт агент ва моделро интихоб кунед.",
   "prompt.toast.worktreeCreateFailed.title": "Эҷоди Git worktree муяссар нашуд",
   "prompt.toast.sessionCreateFailed.title": "Эҷоди сессия натавонист",
   "prompt.toast.shellSendFailed.title": "Фармони shell фиристода нашуд",
   "prompt.toast.commandSendFailed.title": "Фармон фиристода нашуд",
   "prompt.toast.promptSendFailed.title": "Ирсоли промпт муяссар нашуд",
-  "prompt.toast.promptSendFailed.description": "Сеансро дарёфт кардан ғайриимкон аст",
+  "prompt.toast.promptSendFailed.description":
+    "Сеансро дарёфт кардан ғайриимкон аст",
   "dialog.mcp.title": "MCPс",
   "dialog.mcp.description": "{{enabled}} аз {{total}} фаъол",
   "dialog.mcp.empty": "Ягон MCP танзим карда нашудааст",
@@ -416,7 +466,8 @@ export const dict = {
   "app.server.retrying": "Кӯшиши худкор...",
   "app.server.otherServers": "Дигар серверҳо",
   "dialog.server.title": "Серверҳо",
-  "dialog.server.description": "Гузариш кунед, ки ин барнома ба кадом сервери OpenCode пайваст мешавад.",
+  "dialog.server.description":
+    "Гузариш кунед, ки ин барнома ба кадом сервери OpenCode пайваст мешавад.",
   "dialog.server.search.placeholder": "Ҷустуҷӯи серверҳо",
   "dialog.server.empty": "Ҳанӯз сервер нест",
   "dialog.server.add.title": "Илова кардани сервер",
@@ -454,7 +505,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Дистро интихоб кунед",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Санҷиш WSL...",
-  "wsl.onboarding.restartRequired": "Windows барои анҷом додани насби WSL аз нав оғоз кардан лозим аст.",
+  "wsl.onboarding.restartRequired":
+    "Windows барои анҷом додани насби WSL аз нав оғоз кардан лозим аст.",
   "wsl.onboarding.ready": "WSL тайёр аст.",
   "wsl.onboarding.required": "WSL давом додан лозим аст.",
   "wsl.onboarding.checkingDistros": "Санҷиши дистрибюторҳо...",
@@ -463,9 +515,11 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Рӯйхати дистрибюсияҳо...",
   "wsl.onboarding.distroReady": "{{distro}} тайёр аст.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} хануз насб карда нашудааст.",
-  "wsl.onboarding.openDistroOnce": "Барои анҷом додани танзим {{distro}} -ро як маротиба кушоед.",
+  "wsl.onboarding.openDistroOnce":
+    "Барои анҷом додани танзим {{distro}} -ро як маротиба кушоед.",
   "wsl.onboarding.finishingDistro": "Анҷоми насб барои {{distro}}.",
-  "wsl.onboarding.pickDistro": "Дистро-ро интихоб кунед ё якеро дар зер насб кунед.",
+  "wsl.onboarding.pickDistro":
+    "Дистро-ро интихоб кунед ё якеро дар зер насб кунед.",
   "wsl.onboarding.checkingOpencode": "Санҷиш OpenCode...",
   "wsl.onboarding.checkingOpencodeIn": "Санҷиш OpenCode дар {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Навсозӣ OpenCode...",
@@ -485,20 +539,24 @@ export const dict = {
   "wsl.onboarding.distroStatus.checking": "Санҷиш...",
   "wsl.onboarding.distroStatus.opencodeMissing": "OpenCode насб нашудааст",
   "wsl.onboarding.distroStatus.missingTools": "Бедарак bash, curl",
-  "wsl.onboarding.distroStatus.unsupported": "Дастгирнашаванда · Истифода WSL 2",
+  "wsl.onboarding.distroStatus.unsupported":
+    "Дастгирнашаванда · Истифода WSL 2",
   "wsl.onboarding.needAnotherDistro": "Дистрои дигар лозим аст?",
-  "wsl.onboarding.needAnotherDistroHint": "Аз каталоги WSL тақсимоти Linux насб кунед",
+  "wsl.onboarding.needAnotherDistroHint":
+    "Аз каталоги WSL тақсимоти Linux насб кунед",
   "wsl.onboarding.wslNotInstalled.title": "WSL насб нашудааст",
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) лозим аст, то OpenCode сервери WSL илова карда шавад",
   "wsl.onboarding.wslUnavailable.title": "WSL дастрас нест",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode WSL-ро дар ин мошин тафтиш карда натавонист.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode WSL-ро дар ин мошин тафтиш карда натавонист.",
   "wsl.onboarding.installWsl": "Насб кунед WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Барои анҷом додани насби WSL Windows-ро аз нав оғоз кунед, сипас OpenCode-ро боз кунед.",
   "wsl.onboarding.next": "Баъдӣ",
   "wsl.onboarding.refresh": "Навсозӣ",
-  "wsl.onboarding.allDistrosAdded": "Ҳама дистрибюторҳои насбшуда аллакай илова карда шудаанд.",
+  "wsl.onboarding.allDistrosAdded":
+    "Ҳама дистрибюторҳои насбшуда аллакай илова карда шудаанд.",
   "wsl.onboarding.noDistros": "То ҳол ягон паҳнкунӣ ошкор нашудааст.",
   "wsl.onboarding.install": "Насб кунед",
   "wsl.onboarding.installing": "Насб карда мешавад...",
@@ -512,21 +570,26 @@ export const dict = {
   "wsl.onboarding.version": "Версия: {{version}}",
   "wsl.onboarding.unknown": "номаълум",
   "wsl.onboarding.desktopVersion": "мизи корӣ {{version}}",
-  "wsl.onboarding.versionMismatch": "Версияи насбшуда ба версияи барномаи мизи корӣ мувофиқат намекунад.",
+  "wsl.onboarding.versionMismatch":
+    "Версияи насбшуда ба версияи барномаи мизи корӣ мувофиқат намекунад.",
   "wsl.onboarding.adding": "Илова кардан...",
-  "help.tabs.toast.ariaLabel": "Муаррифии ҷадвалҳо. Кор ва ҷаласаҳои фаъоли худро бо ҷадвалҳо ташкил кунед",
+  "help.tabs.toast.ariaLabel":
+    "Муаррифии ҷадвалҳо. Кор ва ҷаласаҳои фаъоли худро бо ҷадвалҳо ташкил кунед",
   "help.tabs.toast.dismiss": "Бекор кардани маълумоти ҷадвалҳо",
   "help.tabs.title": "Муаррифии ҷадвалҳо",
-  "help.tabs.description": "Кор ва ҷаласаҳои фаъоли худро бо ҷадвалҳо ташкил кунед",
+  "help.tabs.description":
+    "Кор ва ҷаласаҳои фаъоли худро бо ҷадвалҳо ташкил кунед",
   "help.tabs.date": "14 июл",
-  "help.tabs.introduction": "OpenCode Desktop ҳоло дар атрофи ҷадвалҳо сохта шудааст.",
+  "help.tabs.introduction":
+    "OpenCode Desktop ҳоло дар атрофи ҷадвалҳо сохта шудааст.",
   "help.tabs.sessions":
     "Сеанси навро дар ҷадвал оғоз кунед ё сеанси мавҷударо аз ягон лоиҳаи худ кушоед. Вақте ки шумо ягон чизи навро оғоз мекунед, ҷадвали нав кушоед ва пас аз анҷоми он онро пӯшед.",
   "help.tabs.organize":
     "Кушодани якчанд ҷадвалҳо ташкили ҷаласаҳои фаъоли шуморо осонтар мекунад. Номи ҷадвалҳоро ба чизи фаромӯшнашаванда тағир диҳед, агар шумо ният доред, ки онҳоро дар гирду атроф нигоҳ доред.",
   "help.tabs.home":
     "Шумо тамоми сессияҳо ва лоиҳаҳои худро дар экрани нави асосӣ пайдо мекунед. Интихоби сессия онро дар ҷадвал мекушояд.",
-  "help.tabs.persistence": "Вақте ки шумо барномаро аз нав мекушоед, ҷадвалҳои шумо ҳанӯз кушода мешаванд.",
+  "help.tabs.persistence":
+    "Вақте ки шумо барномаро аз нав мекушоед, ҷадвалҳои шумо ҳанӯз кушода мешаванд.",
   "help.tabs.worktrees":
     "Тарҳи нав то ҳол Git Worktrees-ро дастгирӣ намекунад, он ба зудӣ меояд. Пас, агар шумо хоҳед, ки истифодаи тарҳи қаблиро идома диҳед, шумо метавонед дар Танзимот байни тарҳҳо гузаред. Танҳо дар хотир доред, ки тарҳи нав пас аз чанд ҳафта доимӣ хоҳад шуд.",
   "server.row.noUsername": "номи корбар нест",
@@ -539,7 +602,8 @@ export const dict = {
   "dialog.project.edit.color": "Ранги",
   "dialog.project.edit.color.select": "Ранги {{color}}-ро интихоб кунед",
   "dialog.project.edit.worktree.startup": "Скрипти оғозёбии фазои корӣ",
-  "dialog.project.edit.worktree.startup.description": "Пас аз эҷоди фазои нави корӣ (Git worktree) иҷро мешавад.",
+  "dialog.project.edit.worktree.startup.description":
+    "Пас аз эҷоди фазои нави корӣ (Git worktree) иҷро мешавад.",
   "dialog.project.edit.worktree.startup.placeholder": "масалан. bun install",
   "dialog.releaseNotes.action.getStarted": "Оғоз кунед",
   "dialog.releaseNotes.action.next": "Баъдӣ",
@@ -600,50 +664,72 @@ export const dict = {
   "toast.theme.title": "Мавзӯъ иваз карда шуд",
   "toast.scheme.title": "Схемаи ранг",
   "toast.workspace.enabled.title": "Ҷойҳои корӣ фаъол карда шуданд",
-  "toast.workspace.enabled.description": "Ҳоло дар панели паҳлӯ якчанд Git worktree нишон дода шудаанд",
+  "toast.workspace.enabled.description":
+    "Ҳоло дар панели паҳлӯ якчанд Git worktree нишон дода шудаанд",
   "toast.workspace.disabled.title": "Ҷойҳои корӣ ғайрифаъол",
-  "toast.workspace.disabled.description": "Дар панели паҳлӯ танҳо Git worktree-и асосӣ нишон дода мешавад",
+  "toast.workspace.disabled.description":
+    "Дар панели паҳлӯ танҳо Git worktree-и асосӣ нишон дода мешавад",
   "toast.permissions.autoaccept.on.title": "Қабули худкор иҷозатҳо",
-  "toast.permissions.autoaccept.on.description": "Дархостҳои иҷозат ба таври худкор тасдиқ карда мешаванд",
-  "toast.permissions.autoaccept.off.title": "Қабули худкори иҷозатҳоро қатъ кард",
-  "toast.permissions.autoaccept.off.description": "Дархостҳои иҷозат тасдиқро талаб мекунанд",
+  "toast.permissions.autoaccept.on.description":
+    "Дархостҳои иҷозат ба таври худкор тасдиқ карда мешаванд",
+  "toast.permissions.autoaccept.off.title":
+    "Қабули худкори иҷозатҳоро қатъ кард",
+  "toast.permissions.autoaccept.off.description":
+    "Дархостҳои иҷозат тасдиқро талаб мекунанд",
   "toast.model.none.title": "Ягон модел интихоб нашудааст",
-  "toast.model.none.description": "Барои ҷамъбасти ин сессия провайдерро пайваст кунед",
+  "toast.model.none.description":
+    "Барои ҷамъбасти ин сессия провайдерро пайваст кунед",
   "toast.file.loadFailed.title": "Файлро бор карда натавонист",
   "toast.file.listFailed.title": "Рӯйхати файлҳо муяссар нашуд",
   "toast.context.noLineSelection.title": "Интихоби сатр нест",
-  "toast.context.noLineSelection.description": "Аввал дар ҷадвали файл диапазони сатрро интихоб кунед.",
-  "toast.session.share.copyFailed.title": "URL ба буфер нусхабардорӣ карда нашуд",
+  "toast.context.noLineSelection.description":
+    "Аввал дар ҷадвали файл диапазони сатрро интихоб кунед.",
+  "toast.session.share.copyFailed.title":
+    "URL ба буфер нусхабардорӣ карда нашуд",
   "toast.session.share.success.title": "Сеанс муштарак",
-  "toast.session.share.success.description": "Мубодилаи URL ба буфер нусхабардорӣ карда шуд!",
+  "toast.session.share.success.description":
+    "Мубодилаи URL ба буфер нусхабардорӣ карда шуд!",
   "toast.session.share.failed.title": "Мубодилаи сеанс",
-  "toast.session.share.failed.description": "Ҳангоми мубодилаи сессия хатогӣ рух дод",
+  "toast.session.share.failed.description":
+    "Ҳангоми мубодилаи сессия хатогӣ рух дод",
   "toast.session.unshare.success.title": "Сеанс тақсим нашудааст",
-  "toast.session.unshare.success.description": "Сеанс бо муваффақият ҷудо карда шуд!",
+  "toast.session.unshare.success.description":
+    "Сеанс бо муваффақият ҷудо карда шуд!",
   "toast.session.unshare.failed.title": "Сеансро ҷудо кардан натавонист",
-  "toast.session.unshare.failed.description": "Ҳангоми ҷудо кардани сеанс хатогӣ рух дод",
+  "toast.session.unshare.failed.description":
+    "Ҳангоми ҷудо кардани сеанс хатогӣ рух дод",
   "toast.session.export.success.title": "Сеанс содир карда шуд",
-  "toast.session.export.success.description": "Сеанс ба {{filename}} захира карда шуд",
+  "toast.session.export.success.description":
+    "Сеанс ба {{filename}} захира карда шуд",
   "toast.session.export.failed.title": "Сеанс содир карда нашуд",
-  "toast.session.export.failed.description": "Ҳангоми содироти сессия хатогӣ рӯй дод",
+  "toast.session.export.failed.description":
+    "Ҳангоми содироти сессия хатогӣ рӯй дод",
   "toast.session.listFailed.title": "Сеансҳо барои {{project}} бор карда нашуд",
-  "toast.project.reloadFailed.title": "Аз нав бор кардан муяссар нашуд {{project}}",
+  "toast.project.reloadFailed.title":
+    "Аз нав бор кардан муяссар нашуд {{project}}",
   "toast.update.title": "Навсозии дастрас",
-  "toast.update.description": "Версияи нави OpenCode ({{version}}) ҳоло барои насб дастрас аст.",
+  "toast.update.description":
+    "Версияи нави OpenCode ({{version}}) ҳоло барои насб дастрас аст.",
   "toast.update.action.installRestart": "Насб кунед ва аз нав оғоз кунед",
   "toast.update.action.notYet": "Ҳанӯз не",
   "toast.update.installFailed.title": "Насбкунии навсозӣ имконнопазир шуд",
   "toast.update.installFailed.retry": "Кӯшиши дубора",
 
-  "disk.accessGuidance.macos": "Дар System Settings ба DiskLizard иҷозати Full Disk Access диҳед, сипас аз нав санҷед.",
-  "disk.accessGuidance.windows": "Ҳисобе, ки ба ин диск дастрасӣ дорад, истифода баред ё папкаеро, ки ҳисоби шумо хонда метавонад, санҷед.",
-  "disk.accessGuidance.linux": "Иҷозатҳои папка ва нуқтаҳои васлшударо аз назар гузаронед, сипас аз нав санҷед.",
-  "disk.accessGuidance.default": "Дастрасӣ ба ин папкаҳоро аз назар гузаронед, сипас аз нав санҷед.",
-  "disk.accessGuidance.rescan": "Баъд аз тағйири дастрасӣ аз Rescan дар навори болоӣ истифода баред.",
+  "disk.accessGuidance.macos":
+    "Дар System Settings ба DiskLizard иҷозати Full Disk Access диҳед, сипас аз нав санҷед.",
+  "disk.accessGuidance.windows":
+    "Ҳисобе, ки ба ин диск дастрасӣ дорад, истифода баред ё папкаеро, ки ҳисоби шумо хонда метавонад, санҷед.",
+  "disk.accessGuidance.linux":
+    "Иҷозатҳои папка ва нуқтаҳои васлшударо аз назар гузаронед, сипас аз нав санҷед.",
+  "disk.accessGuidance.default":
+    "Дастрасӣ ба ин папкаҳоро аз назар гузаронед, сипас аз нав санҷед.",
+  "disk.accessGuidance.rescan":
+    "Баъд аз тағйири дастрасӣ аз Rescan дар навори болоӣ истифода баред.",
   "disk.common.rescan": "Дубора скан кунед",
   "error.page.title": "Чизе хато рафт",
   "error.page.description": "Ҳангоми боркунии барнома хатогӣ рӯй дод.",
-  "error.page.description.localServerStartup": "Ҳангоми оғоз кардани сервери маҳаллӣ хатогӣ рӯй дод.",
+  "error.page.description.localServerStartup":
+    "Ҳангоми оғоз кардани сервери маҳаллӣ хатогӣ рӯй дод.",
   "error.page.details.label": "Тафсилоти хато",
   "error.page.action.restart": "Оғози дубора",
   "error.page.action.report": "Гузориши хато",
@@ -653,17 +739,22 @@ export const dict = {
   "error.page.action.checkUpdates": "Барои навсозиҳо санҷед",
   "error.page.action.updateTo": "Навсозӣ ба {{version}}",
   "error.page.circular": "[Даврача]",
-  "error.page.report.prefix": "Лутфан дар бораи ин хато ба дастаи OpenCode хабар диҳед",
+  "error.page.report.prefix":
+    "Лутфан дар бораи ин хато ба дастаи OpenCode хабар диҳед",
   "error.page.report.discord": "дар Discord",
   "error.page.version": "Версия: {{version}}",
   "error.dev.rootNotFound":
     "Элементи решавӣ ёфт нашуд. Оё шумо онро ба index.html илова карданро фаромӯш кардаед? Ё шояд атрибути id хато навишта шудааст?",
-  "error.serverSync.connectFailed": "Ба сервер пайваст шуда натавонист. Оё сервере дар `{{url}}` кор мекунад?",
+  "error.serverSync.connectFailed":
+    "Ба сервер пайваст шуда натавонист. Оё сервере дар `{{url}}` кор мекунад?",
   "error.serverSDK.noServerAvailable": "Ҳеҷ сервер дастрас нест",
   "error.serverSDK.serverNotAvailable": "Сервер дастрас нест",
-  "error.childStore.persistedCacheCreateFailed": "Эҷоди кэши доимӣ муяссар нашуд",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Эҷоди метамаълумоти доимии лоиҳа натавонист",
-  "error.childStore.persistedProjectIconCreateFailed": "Эҷоди нишонаи лоиҳаи доимӣ ноком шуд",
+  "error.childStore.persistedCacheCreateFailed":
+    "Эҷоди кэши доимӣ муяссар нашуд",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Эҷоди метамаълумоти доимии лоиҳа натавонист",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Эҷоди нишонаи лоиҳаи доимӣ ноком шуд",
   "error.childStore.storeCreateFailed": "Эҷоди мағоза ноком шуд",
   "directory.error.invalidUrl": "Феҳристи нодуруст дар URL.",
   "error.chain.unknown": "Хатогии номаълум",
@@ -675,22 +766,31 @@ export const dict = {
   "error.chain.responseBody": "Мақомоти вокуниш:\n{{body}}",
   "error.chain.didYouMean": "Оё шумо дар назар доштед: {{suggestions}}",
   "error.chain.modelNotFound": "Модели ёфт нашуд: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Номҳои провайдери конфигуратсияи худро (opencode.json) санҷед",
+  "error.chain.checkConfig":
+    "Номҳои провайдери конфигуратсияи худро (opencode.json) санҷед",
   "error.chain.mcpFailed":
     'MCP сервери "{{name}}" ноком шуд. Дар хотир доред, ки OpenCode тасдиқи MCP-ро ҳанӯз дастгирӣ намекунад.',
-  "error.chain.providerAuthFailed": "Аутентификатсияи провайдер ноком шуд ({{provider}}): {{message}}",
-  "error.chain.providerInitFailed": 'Провайдери "{{provider}}" оғоз карда нашуд. Санҷиши эътимоднома ва конфигуратсия.',
-  "error.chain.configJsonInvalid": "Файли танзимот дар {{path}} эътибор надорад JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Файли танзимот дар {{path}} эътибор надорад JSON(C): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Аутентификатсияи провайдер ноком шуд ({{provider}}): {{message}}",
+  "error.chain.providerInitFailed":
+    'Провайдери "{{provider}}" оғоз карда нашуд. Санҷиши эътимоднома ва конфигуратсия.',
+  "error.chain.configJsonInvalid":
+    "Файли танзимот дар {{path}} эътибор надорад JSON(C)",
+  "error.chain.configJsonInvalidWithMessage":
+    "Файли танзимот дар {{path}} эътибор надорад JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Феҳристи "{{dir}}" дар {{path}} эътибор надорад. Номи директорияро ба "{{suggestion}}" иваз кунед ё онро хориҷ кунед. Ин як хатои маъмул аст.',
-  "error.chain.configFrontmatterError": "frontmatter дар {{path}} таҳлил карда нашуд:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "frontmatter дар {{path}} таҳлил карда нашуд:\n{{message}}",
   "error.chain.configInvalid": "Файли танзимот дар {{path}} нодуруст аст",
-  "error.chain.configInvalidWithMessage": "Файли танзимот дар {{path}} нодуруст аст: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Файли танзимот дар {{path}} нодуруст аст: {{message}}",
   "notification.permission.title": "Иҷозат талаб карда мешавад",
-  "notification.permission.description": "{{sessionTitle}} дар {{projectName}} ичозат лозим аст",
+  "notification.permission.description":
+    "{{sessionTitle}} дар {{projectName}} ичозат лозим аст",
   "notification.question.title": "Савол",
-  "notification.question.description": "{{sessionTitle}} дар {{projectName}} савол дорад",
+  "notification.question.description":
+    "{{sessionTitle}} дар {{projectName}} савол дорад",
   "notification.action.goToSession": "Ба сессия равед",
   "notification.session.responseReady.title": "Ҷавоб омода",
   "notification.session.error.title": "Хатогии сессия",
@@ -709,7 +809,8 @@ export const dict = {
   "home.sessions.search.sessions": "Сеансхо",
   "home.sessions.search.noResults": "Ягон сессия барои {{query}} ёфт нашуд",
   "home.sessions.empty": "Дар ин ҷо ҳанӯз чизе нест",
-  "home.sessions.empty.description": "Барои оғоз кардани сессия сессия эҷод кунед",
+  "home.sessions.empty.description":
+    "Барои оғоз кардани сессия сессия эҷод кунед",
   "home.sessions.group.today": "Имруз",
   "home.sessions.group.yesterday": "Дируз",
   "home.sessions.group.older": "калонсолтар",
@@ -721,7 +822,8 @@ export const dict = {
   "session.tab.unknown": "Сеанси номаълум",
   "session.panel.reviewAndFiles": "Барраси ва файлҳо",
   "session.error.notFound": "Ин сессияро ёфтан мумкин нест",
-  "session.error.notFound.description": "Ин ҷадвал ба сессияе ишора мекунад, ки дигар дар ин сервер вуҷуд надорад.",
+  "session.error.notFound.description":
+    "Ин ҷадвал ба сессияе ишора мекунад, ки дигар дар ин сервер вуҷуд надорад.",
   "session.error.notFound.closeTab": "Варақаро пӯшед",
   "session.error.serverConnection": "Ба ин сервер пайваст шудан мумкин нест",
   "session.review.filesChanged": "Файлҳо тағир дода шуданд {{count}}",
@@ -729,9 +831,11 @@ export const dict = {
   "session.review.change.other": "Тағйирот",
   "session.review.loadingChanges": "Тағйирот бор карда мешавад...",
   "session.review.empty": "Дар ин иҷлосия ҳанӯз тағирот нест",
-  "session.review.noVcs": "Не Git Системаи Идоракунии Версия ошкор нашудааст, тағирот нишон дода нашудааст",
+  "session.review.noVcs":
+    "Не Git Системаи Идоракунии Версия ошкор нашудааст, тағирот нишон дода нашудааст",
   "session.review.noVcs.createGit.title": "Анбори Git эҷод кунед",
-  "session.review.noVcs.createGit.description": "Тағиротро дар ин лоиҳа пайгирӣ кунед, баррасӣ кунед ва бекор кунед",
+  "session.review.noVcs.createGit.description":
+    "Тағиротро дар ин лоиҳа пайгирӣ кунед, баррасӣ кунед ва бекор кунед",
   "session.review.noVcs.createGit.actionLoading": "Эҷоди Git анбор...",
   "session.review.noVcs.createGit.action": "Эҷоди Git репозиторий",
   "session.review.noSnapshot":
@@ -816,7 +920,8 @@ export const dict = {
   "status.popover.tab.plugins": "Плагинҳо",
   "status.popover.action.manageServers": "Серверҳоро идора кунед",
   "session.share.popover.title": "Дар веб нашр кунед",
-  "session.share.popover.description.shared": "Ин ҷаласа дар веб оммавӣ аст. Он барои ҳама бо истинод дастрас аст.",
+  "session.share.popover.description.shared":
+    "Ин ҷаласа дар веб оммавӣ аст. Он барои ҳама бо истинод дастрас аст.",
   "session.share.popover.description.unshared":
     "Сеансро дар интернет ба таври оммавӣ мубодила кунед. Он барои ҳар касе, ки пайванд дорад, дастрас хоҳад буд.",
   "session.share.action.share": "Мубодила",
@@ -835,12 +940,14 @@ export const dict = {
   "terminal.title.numbered": "Терминал {{number}}",
   "terminal.close": "Терминалро пӯшед",
   "terminal.connectionLost.title": "Пайвастшавӣ гум шуд",
-  "terminal.connectionLost.abnormalClose": "WebSocket ғайримуқаррарӣ баста шуд: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket ғайримуқаррарӣ баста шуд: {{code}}",
   "terminal.connectionLost.description":
     "Пайвасти терминал қатъ шуд. Ин метавонад ҳангоми аз нав оғоз шудани сервер рӯй диҳад.",
   "terminal.connectTicket.csrfError":
     "PTY пайвастшавӣ чиптаи аз рӯи пайдоиш рад ё CSRF чек. Танзимоти сервер CORS-ро санҷед.",
-  "terminal.connectTicket.statusError": "PTY чиптаи пайвастшавӣ бо {{status}} ноком шуд",
+  "terminal.connectTicket.statusError":
+    "PTY чиптаи пайвастшавӣ бо {{status}} ноком шуд",
   "titlebar.update": "Навсозӣ",
   "titlebar.updateVersion": "Навсозӣ {{version}}",
   "common.closeTab": "Варақаро пӯшед",
@@ -884,7 +991,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Фазои кории фаъолро фаъол созед",
   "sidebar.workspaces.disable": "Ҷойҳои кории худро ғайрифаъол кунед",
   "sidebar.gettingStarted.title": "Сар кардани кор",
-  "sidebar.gettingStarted.line1": "OpenCode моделҳои ройгонро дар бар мегирад, то шумо метавонед фавран оғоз кунед.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode моделҳои ройгонро дар бар мегирад, то шумо метавонед фавран оғоз кунед.",
   "sidebar.gettingStarted.line2":
     "Ҳар як провайдерро барои истифодаи моделҳо пайваст кунед, Inc. Claude, GPT, Gemini ва гайра.",
   "sidebar.project.recentSessions": "Сеансхои охирин",
@@ -909,18 +1017,23 @@ export const dict = {
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Бадтарин таъхири вуруд дар 5 сонияи охир.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "Давомнокии тахминии ҳамкорӣ дар 5 сонияи охир. Ин ба INP монанд аст, на ба Web Vitals INP.",
+  "debugBar.inp.tip":
+    "Давомнокии тахминии ҳамкорӣ дар 5 сонияи охир. Ин ба INP монанд аст, на ба Web Vitals INP.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "Тағйирёбии тарҳбандии маҷмӯӣ барои умри замимаи ҷорӣ.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Тӯдаи истифодашудаи JS против маҳдудияти теппа. танҳо Chromium.",
-  "debugBar.mem.tip": "Тӯдаи истифодашудаи JS против маҳдудияти теппа. {{used}} аз {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Тӯдаи истифодашудаи JS против маҳдудияти теппа. танҳо Chromium.",
+  "debugBar.mem.tip":
+    "Тӯдаи истифодашудаи JS против маҳдудияти теппа. {{used}} аз {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Сабкҳои фокусро ба ҳама унсурҳои интерактивӣ маҷбур кунед",
+  "debugBar.focus.tip":
+    "Сабкҳои фокусро ба ҳама унсурҳои интерактивӣ маҷбур кунед",
   "debugBar.focus.on": "ДАР БОРАИ",
   "debugBar.focus.off": "ХОМӮШ",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Бе тағир додани забони интихобшуда самти тарҳбандии пурраи барномаро маҷбур кунед",
+  "debugBar.direction.tip":
+    "Бе тағир додани забони интихобшуда самти тарҳбандии пурраи барномаро маҷбур кунед",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -930,7 +1043,8 @@ export const dict = {
   "settings.tab.shortcuts": "Миёнабурҳо",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL интеграция",
-  "settings.desktop.wsl.description": "Сервери OpenCode-ро дар WSL дар Windows иҷро кунед.",
+  "settings.desktop.wsl.description":
+    "Сервери OpenCode-ро дар WSL дар Windows иҷро кунед.",
   "settings.general.section.appearance": "Намуди зоҳирӣ",
   "settings.general.section.advanced": "Мукаммал",
   "settings.general.section.notifications": "Огоҳиҳои система",
@@ -939,9 +1053,11 @@ export const dict = {
   "settings.general.section.feed": "Ғизо",
   "settings.general.section.display": "Намоиш",
   "settings.general.row.language.title": "Забон",
-  "settings.general.row.language.description": "Забони намоишро барои OpenCode иваз кунед",
+  "settings.general.row.language.description":
+    "Забони намоишро барои OpenCode иваз кунед",
   "settings.general.row.shell.title": "Терминал shell",
-  "settings.general.row.shell.description": "Shell воситаи терминал ва агент истифода мешавад",
+  "settings.general.row.shell.description":
+    "Shell воситаи терминал ва агент истифода мешавад",
   "settings.general.row.shell.autoDefault": "Авто (Пешфарз)",
   "settings.general.row.shell.terminalOnly": "танҳо терминал",
   "settings.general.row.appearance.title": "Намуди зоҳирӣ",
@@ -951,48 +1067,63 @@ export const dict = {
   "settings.general.row.colorScheme.description":
     "Интихоб кунед, ки OpenCode аз рӯи система, равшанӣ ё мавзӯи торик пайравӣ мекунад",
   "settings.general.row.theme.title": "Мавзӯъ",
-  "settings.general.row.theme.description": "Чӣ тавр OpenCode мавзӯъро танзим кунед.",
+  "settings.general.row.theme.description":
+    "Чӣ тавр OpenCode мавзӯъро танзим кунед.",
   "settings.general.row.font.title": "Шрифти код",
-  "settings.general.row.font.description": "Ҳарферо, ки дар блокҳои код истифода мешавад, танзим кунед",
+  "settings.general.row.font.description":
+    "Ҳарферо, ки дар блокҳои код истифода мешавад, танзим кунед",
   "settings.general.row.terminalFont.title": "Шрифти терминал",
-  "settings.general.row.terminalFont.description": "Ҳарферо, ки дар терминал истифода мешавад, танзим кунед",
+  "settings.general.row.terminalFont.description":
+    "Ҳарферо, ки дар терминал истифода мешавад, танзим кунед",
   "settings.general.row.uiFont.title": "Шрифти UI",
-  "settings.general.row.uiFont.description": "Ҳарферо, ки дар тамоми интерфейс истифода мешавад, танзим кунед",
+  "settings.general.row.uiFont.description":
+    "Ҳарферо, ки дар тамоми интерфейс истифода мешавад, танзим кунед",
   "settings.general.row.followup.title": "Рафтори пайгирӣ",
   "settings.general.row.followup.description":
     "Интихоб кунед, ки паёмҳои пайгирӣ фавран идора мешаванд ё дар навбат интизор мешаванд",
   "settings.general.row.followup.option.queue": "Навбат",
   "settings.general.row.followup.option.steer": "Роҳбарӣ кардан",
   "settings.general.row.showFileTree.title": "Дарахти файл",
-  "settings.general.row.showFileTree.description": "Панели дарахти файлро дар сессияҳо нишон диҳед",
+  "settings.general.row.showFileTree.description":
+    "Панели дарахти файлро дар сессияҳо нишон диҳед",
   "settings.general.row.showNavigation.title": "Назорати навигатсионӣ",
-  "settings.general.row.showNavigation.description": "Тугмаҳои қафо ва пешро дар сатри унвони мизи корӣ нишон диҳед",
+  "settings.general.row.showNavigation.description":
+    "Тугмаҳои қафо ва пешро дар сатри унвони мизи корӣ нишон диҳед",
   "settings.general.row.showSearch.title": "Палитраи фармон",
-  "settings.general.row.showSearch.description": "Тугмаи палитраи ҷустуҷӯ ва фармонро дар сатри унвон нишон диҳед",
+  "settings.general.row.showSearch.description":
+    "Тугмаи палитраи ҷустуҷӯ ва фармонро дар сатри унвон нишон диҳед",
   "settings.general.row.showTerminal.title": "Терминал",
-  "settings.general.row.showTerminal.description": "Тугмаи терминалро дар сатри унвони мизи корӣ нишон диҳед",
+  "settings.general.row.showTerminal.description":
+    "Тугмаи терминалро дар сатри унвони мизи корӣ нишон диҳед",
   "settings.general.row.showStatus.title": "Ҳолати сервер",
-  "settings.general.row.showStatus.description": "Тугмаи ҳолати серверро дар сатри унвон нишон диҳед",
+  "settings.general.row.showStatus.description":
+    "Тугмаи ҳолати серверро дар сатри унвон нишон диҳед",
   "settings.general.row.mobileTitlebarBottom.title": "Навигатсия дар поён",
   "settings.general.row.mobileTitlebarBottom.description":
     "Сатри унвон ва ҷадвалҳои сессияро дар поёни экран дар мобилӣ ҷойгир кунед",
   "settings.general.row.showCustomAgents.title": "Намоиши агент",
   "settings.general.row.showCustomAgents.description":
     "Гузариш байни агентҳо дар оҳангсоз. Ҳангоми пинҳон, пешфарз ба Сохтани агент.",
-  "settings.general.row.reasoningSummaries.title": "Ҷамъбасти далелҳоро нишон диҳед",
-  "settings.general.row.reasoningSummaries.description": "Дар ҷадвали вақт хулосаҳои далелҳои моделиро нишон диҳед",
-  "settings.general.row.shellToolPartsExpanded.title": "Қисмҳои shell асбобро васеъ кунед",
+  "settings.general.row.reasoningSummaries.title":
+    "Ҷамъбасти далелҳоро нишон диҳед",
+  "settings.general.row.reasoningSummaries.description":
+    "Дар ҷадвали вақт хулосаҳои далелҳои моделиро нишон диҳед",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Қисмҳои shell асбобро васеъ кунед",
   "settings.general.row.shellToolPartsExpanded.description":
     "Дар ҷадвали вақт қисмҳои асбобҳои shell васеъшударо нишон диҳед",
-  "settings.general.row.editToolPartsExpanded.title": "Қисмҳои таҳрири асбобро васеъ кунед",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Қисмҳои таҳрири асбобро васеъ кунед",
   "settings.general.row.editToolPartsExpanded.description":
     "Намоиши қисмҳои абзори таҳрир, навиштан ва часбкунӣ, ки ба таври нобаёнӣ дар ҷадвали вақт васеъ карда шудаанд",
   "settings.general.row.newInterface.title": "Тарҳбандии нав",
   "settings.general.row.newInterface.badge": "Нав",
   "settings.general.row.newInterface.description":
     "Варақаҳои нав ва тарҳбандии хонаро истифода баред. Дар муддати маҳдуд байни тарҳҳо гузаред.",
-  "settings.general.row.newInterfaceNotice.title": "Шумо ҳоло тарҳбандии навро истифода мебаред",
-  "settings.general.row.newInterfaceNotice.description": "Тарҳбандии қаблӣ дигар дастрас нест",
+  "settings.general.row.newInterfaceNotice.title":
+    "Шумо ҳоло тарҳбандии навро истифода мебаред",
+  "settings.general.row.newInterfaceNotice.description":
+    "Тарҳбандии қаблӣ дигар дастрас нест",
   "settings.general.row.newInterfaceNotice.dismiss": "Рад кардан",
   "settings.general.row.pinchZoom.title": "Барои калон кардан чимч кунед",
   "settings.general.row.pinchZoom.description":
@@ -1003,17 +1134,21 @@ export const dict = {
   "settings.general.row.wayland.tooltip":
     "Дар Linux бо мониторҳои омехтаи суръати навсозӣ, Wayland ватанӣ метавонад устувортар бошад.",
   "settings.general.row.releaseNotes.title": "Қайдҳои нашр",
-  "settings.general.row.releaseNotes.description": 'Пас аз навсозиҳо поп-апҳои "Чӣ нав"-ро нишон диҳед',
+  "settings.general.row.releaseNotes.description":
+    'Пас аз навсозиҳо поп-апҳои "Чӣ нав"-ро нишон диҳед',
   "settings.updates.row.startup.title": "Барои навсозиҳо дар оғозёбӣ санҷед",
-  "settings.updates.row.startup.description": "Ҳангоми оғоз кардани OpenCode навсозиҳо ба таври худкор санҷед",
+  "settings.updates.row.startup.description":
+    "Ҳангоми оғоз кардани OpenCode навсозиҳо ба таври худкор санҷед",
   "settings.updates.row.check.title": "Барои навсозиҳо санҷед",
-  "settings.updates.row.check.description": "Навсозиро дастӣ тафтиш кунед ва агар дастрас бошад, насб кунед",
+  "settings.updates.row.check.description":
+    "Навсозиро дастӣ тафтиш кунед ва агар дастрас бошад, насб кунед",
   "settings.updates.action.checkNow": "Ҳоло санҷед",
   "settings.updates.action.checking": "Санҷиш...",
   "settings.updates.action.downloading": "Зеркашӣ карда мешавад...",
   "settings.updates.action.installing": "Насб карда мешавад...",
   "settings.updates.toast.latest.title": "Шумо навсозӣ доред",
-  "settings.updates.toast.latest.description": "Шумо версияи охирини OpenCode-ро иҷро карда истодаед.",
+  "settings.updates.toast.latest.description":
+    "Шумо версияи охирини OpenCode-ро иҷро карда истодаед.",
   "sound.option.none": "Ҳеҷ",
   "sound.option.alert01": "Огоҳӣ 01",
   "sound.option.alert02": "Огоҳӣ 02",
@@ -1064,21 +1199,29 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Вақте ки агент пурра аст ё ба таваҷҷӯҳ ниёз дорад, огоҳии системаро нишон диҳед",
   "settings.general.notifications.permissions.title": "Иҷозатҳо",
-  "settings.general.notifications.permissions.description": "Вақте ки иҷозат лозим аст, огоҳии системаро нишон диҳед",
+  "settings.general.notifications.permissions.description":
+    "Вақте ки иҷозат лозим аст, огоҳии системаро нишон диҳед",
   "settings.general.notifications.errors.title": "Хатогиҳо",
-  "settings.general.notifications.errors.description": "Ҳангоми рух додани хато огоҳии системаро нишон диҳед",
+  "settings.general.notifications.errors.description":
+    "Ҳангоми рух додани хато огоҳии системаро нишон диҳед",
   "settings.general.sounds.agent.title": "Агент",
-  "settings.general.sounds.agent.description": "Вақте ки агент пурра аст ё ба таваҷҷӯҳ ниёз дорад, садоро пахш кунед",
+  "settings.general.sounds.agent.description":
+    "Вақте ки агент пурра аст ё ба таваҷҷӯҳ ниёз дорад, садоро пахш кунед",
   "settings.general.sounds.permissions.title": "Иҷозатҳо",
-  "settings.general.sounds.permissions.description": "Вақте ки иҷозат лозим аст, садо навозед",
+  "settings.general.sounds.permissions.description":
+    "Вақте ки иҷозат лозим аст, садо навозед",
   "settings.general.sounds.errors.title": "Хатогиҳо",
-  "settings.general.sounds.errors.description": "Вақте ки хатогӣ рух медиҳад, садоро пахш кунед",
+  "settings.general.sounds.errors.description":
+    "Вақте ки хатогӣ рух медиҳад, садоро пахш кунед",
   "settings.shortcuts.title": "Миёнабурҳои клавиатура",
   "settings.shortcuts.reset.button": "Ба пешфарзҳо баргардонед",
-  "settings.shortcuts.reset.toast.title": "Миёнабурҳо аз нав барқарор карда мешаванд",
-  "settings.shortcuts.reset.toast.description": "Миёнабурҳои клавиатура ба пешфарзҳо барқарор карда шуданд.",
+  "settings.shortcuts.reset.toast.title":
+    "Миёнабурҳо аз нав барқарор карда мешаванд",
+  "settings.shortcuts.reset.toast.description":
+    "Миёнабурҳои клавиатура ба пешфарзҳо барқарор карда шуданд.",
   "settings.shortcuts.conflict.title": "Миёнабур аллакай истифода мешавад",
-  "settings.shortcuts.conflict.description": "{{keybind}} аллакай ба {{titles}} таъин шудааст.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} аллакай ба {{titles}} таъин шудааст.",
   "settings.shortcuts.unassigned": "Таъиннашуда",
   "settings.shortcuts.pressKeys": "Тугмаҳоро пахш кунед",
   "settings.shortcuts.search.placeholder": "Ҷустуҷӯи миёнабурҳо",
@@ -1090,59 +1233,78 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Терминал",
   "settings.shortcuts.group.prompt": "Промпт",
   "settings.providers.title": "Таъминкунандагон",
-  "settings.providers.description": "Танзимоти провайдер дар ин ҷо танзим карда мешавад.",
+  "settings.providers.description":
+    "Танзимоти провайдер дар ин ҷо танзим карда мешавад.",
   "settings.providers.section.connected": "Провайдерҳои пайвастшуда",
   "settings.providers.connected.empty": "Провайдерҳои пайвастшуда нест",
-  "settings.providers.connected.environmentDescription": "Аз тағирёбандаҳои муҳити шумо пайваст карда шудааст",
+  "settings.providers.connected.environmentDescription":
+    "Аз тағирёбандаҳои муҳити шумо пайваст карда шудааст",
   "settings.providers.section.popular": "Провайдерҳои машҳур",
-  "settings.providers.custom.description": "Илова кардани провайдери OpenAI-мувофиқ аз рӯи асос URL.",
+  "settings.providers.custom.description":
+    "Илова кардани провайдери OpenAI-мувофиқ аз рӯи асос URL.",
   "settings.providers.tag.environment": "Муҳити зист",
   "settings.providers.tag.config": "Конфигуратсия",
   "settings.providers.tag.custom": "Фармоишгар",
   "settings.providers.tag.other": "Дигар",
   "settings.models.title": "Моделҳо",
-  "settings.models.description": "Танзимоти модел дар ин ҷо танзим карда мешавад.",
+  "settings.models.description":
+    "Танзимоти модел дар ин ҷо танзим карда мешавад.",
   "settings.agents.title": "Агентҳо",
-  "settings.agents.description": "Танзимоти агент дар ин ҷо танзим карда мешавад.",
+  "settings.agents.description":
+    "Танзимоти агент дар ин ҷо танзим карда мешавад.",
   "settings.commands.title": "Фармонҳо",
-  "settings.commands.description": "Танзимоти фармон дар ин ҷо танзим карда мешавад.",
+  "settings.commands.description":
+    "Танзимоти фармон дар ин ҷо танзим карда мешавад.",
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP танзимот дар ин ҷо танзим карда мешаванд.",
   "settings.permissions.title": "Иҷозатҳо",
-  "settings.permissions.description": "Назорат кунед, ки кадом асбобҳоро сервер бо нобаёнӣ истифода бурда метавонад.",
+  "settings.permissions.description":
+    "Назорат кунед, ки кадом асбобҳоро сервер бо нобаёнӣ истифода бурда метавонад.",
   "settings.permissions.section.tools": "Воситаҳо",
-  "settings.permissions.toast.updateFailed.title": "Навсозии иҷозатҳо муяссар нашуд",
+  "settings.permissions.toast.updateFailed.title":
+    "Навсозии иҷозатҳо муяссар нашуд",
   "settings.permissions.action.allow": "Иҷозат диҳед",
   "settings.permissions.action.ask": "Пурсед",
   "settings.permissions.action.deny": "Инкор кардан",
   "settings.permissions.tool.read.title": "Хондан",
-  "settings.permissions.tool.read.description": "Хондани файл (бо роҳи файл мувофиқат мекунад)",
+  "settings.permissions.tool.read.description":
+    "Хондани файл (бо роҳи файл мувофиқат мекунад)",
   "settings.permissions.tool.edit.title": "Таҳрир",
-  "settings.permissions.tool.edit.description": "Тағир додани файлҳо, аз ҷумла таҳрир, навиштан ва часбҳо",
+  "settings.permissions.tool.edit.description":
+    "Тағир додани файлҳо, аз ҷумла таҳрир, навиштан ва часбҳо",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Бо истифода аз намунаҳои glob файлҳоро мувофиқ кунед",
+  "settings.permissions.tool.glob.description":
+    "Бо истифода аз намунаҳои glob файлҳоро мувофиқ кунед",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Ҷустуҷӯи мундариҷаи файл бо истифода аз ибораҳои муқаррарӣ",
+  "settings.permissions.tool.grep.description":
+    "Ҷустуҷӯи мундариҷаи файл бо истифода аз ибораҳои муқаррарӣ",
   "settings.permissions.tool.list.title": "Рӯйхат",
-  "settings.permissions.tool.list.description": "Рӯйхати файлҳо дар дохили директория",
+  "settings.permissions.tool.list.description":
+    "Рӯйхати файлҳо дар дохили директория",
   "settings.permissions.tool.bash.title": "Баш",
-  "settings.permissions.tool.bash.description": "Фармонҳои shell -ро иҷро кунед",
+  "settings.permissions.tool.bash.description":
+    "Фармонҳои shell -ро иҷро кунед",
   "settings.permissions.tool.task.title": "Вазифа",
   "settings.permissions.tool.task.description": "Зер-агентҳоро оғоз кунед",
   "settings.permissions.tool.skill.title": "Маҳорат",
   "settings.permissions.tool.skill.description": "Маҳоратро бо ном бор кунед",
   "settings.permissions.tool.lsp.title": "LSP",
-  "settings.permissions.tool.lsp.description": "Дархостҳои сервери забонро иҷро кунед",
+  "settings.permissions.tool.lsp.description":
+    "Дархостҳои сервери забонро иҷро кунед",
   "settings.permissions.tool.todowrite.title": "Барои навиштан",
-  "settings.permissions.tool.todowrite.description": "Рӯйхати вазифаҳоро навсозӣ кунед",
+  "settings.permissions.tool.todowrite.description":
+    "Рӯйхати вазифаҳоро навсозӣ кунед",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
-  "settings.permissions.tool.webfetch.description": "Гирифтани мундариҷа аз URL",
+  "settings.permissions.tool.webfetch.description":
+    "Гирифтани мундариҷа аз URL",
   "settings.permissions.tool.websearch.title": "Ҷустуҷӯи веб",
   "settings.permissions.tool.websearch.description": "Дар веб ҷустуҷӯ кунед",
   "settings.permissions.tool.external_directory.title": "Директорияи беруна",
-  "settings.permissions.tool.external_directory.description": "Дастрасӣ ба файлҳои берун аз феҳристи лоиҳа",
+  "settings.permissions.tool.external_directory.description":
+    "Дастрасӣ ба файлҳои берун аз феҳристи лоиҳа",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Зангҳои такрории асбобро бо вуруди якхела ошкор кунед",
+  "settings.permissions.tool.doom_loop.description":
+    "Зангҳои такрории асбобро бо вуруди якхела ошкор кунед",
   "session.delete.failed.title": "Сеансро нест карда натавонист",
   "session.delete.title": "Сеансро нест кунед",
   "session.delete.confirm": 'Сеанси "{{name}}" нест карда шавад?',
@@ -1156,21 +1318,25 @@ export const dict = {
   "workspace.resetting.description": "Ин метавонад як дақиқа вақт гирад.",
   "workspace.reset.failed.title": "Муваффақият барқарор кардани фазои корӣ",
   "workspace.reset.success.title": "Бозсозии фазои корӣ",
-  "workspace.reset.success.description": "Фазои корӣ ҳоло ба филиали пешфарз мувофиқат мекунад.",
+  "workspace.reset.success.description":
+    "Фазои корӣ ҳоло ба филиали пешфарз мувофиқат мекунад.",
   "workspace.error.stillPreparing": "Майдони корӣ ҳоло ҳам омода мешавад",
   "workspace.status.checking": "Тафтиши тағироти муттаҳиднашуда...",
   "workspace.status.error": "Ҳолати git-ро тафтиш кардан ғайриимкон аст.",
   "workspace.status.clean": "Ягон тағироти муттаҳидшуда ошкор нашудааст.",
-  "workspace.status.dirty": "Тағироти муттаҳиднашуда дар ин фазои корӣ ошкор карда шуданд.",
+  "workspace.status.dirty":
+    "Тағироти муттаҳиднашуда дар ин фазои корӣ ошкор карда шуданд.",
   "workspace.delete.title": "Нест кардани фазои корӣ",
   "workspace.delete.confirm": 'Фазои кории "{{name}}" нест карда шавад?',
   "workspace.delete.button": "Нест кардани фазои корӣ",
   "workspace.reset.title": "Фазои корӣ аз нав танзим кунед",
   "workspace.reset.confirm": 'Фазои кории "{{name}}" барқарор карда шавад?',
   "workspace.reset.button": "Фазои корӣ аз нав танзим кунед",
-  "workspace.reset.archived.none": "Ягон сессияҳои фаъол бойгонӣ карда намешаванд.",
+  "workspace.reset.archived.none":
+    "Ягон сессияҳои фаъол бойгонӣ карда намешаванд.",
   "workspace.reset.archived.one": "1 сессия архив карда мешавад.",
   "workspace.reset.archived.many": "{{count}} сессия архив карда мешаванд.",
-  "workspace.reset.note": "Ин фазои кориро барои мувофиқ кардани филиали пешфарз барқарор мекунад.",
+  "workspace.reset.note":
+    "Ин фазои кориро барои мувофиқ кардани филиали пешфарз барқарор мекунад.",
   "dialog.usageExceeded.dontShowAgain": "Дигар нишон надиҳед",
 }

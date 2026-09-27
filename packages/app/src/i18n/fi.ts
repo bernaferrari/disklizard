@@ -44,7 +44,8 @@ export const dict = {
   "command.tab.close": "Sulje välilehti",
   "command.tab.reopenClosed": "Avaa suljettu välilehti uudelleen",
   "command.context.addSelection": "Lisää valinta kontekstiin",
-  "command.context.addSelection.description": "Lisää valitut rivit nykyisestä tiedostosta",
+  "command.context.addSelection.description":
+    "Lisää valitut rivit nykyisestä tiedostosta",
   "command.input.focus": "Kohdista syötekenttään",
   "command.terminal.toggle": "Näytä tai piilota terminaali",
   "command.fileTree.toggle": "Näytä tai piilota tiedostopuu",
@@ -52,9 +53,11 @@ export const dict = {
   "command.terminal.new": "Uusi terminaali",
   "command.terminal.new.description": "Luo uusi terminaalivälilehti",
   "command.steps.toggle": "Näytä tai piilota vaiheet",
-  "command.steps.toggle.description": "Näytä tai piilota nykyisen viestin vaiheet",
+  "command.steps.toggle.description":
+    "Näytä tai piilota nykyisen viestin vaiheet",
   "command.message.previous": "Edellinen viesti",
-  "command.message.previous.description": "Siirry edelliseen käyttäjän viestiin",
+  "command.message.previous.description":
+    "Siirry edelliseen käyttäjän viestiin",
   "command.message.next": "Seuraava viesti",
   "command.message.next.description": "Siirry seuraavaan käyttäjäviestiin",
   "command.model.choose": "Valitse malli",
@@ -66,27 +69,34 @@ export const dict = {
   "command.agent.cycle.reverse": "Vaihda agenttia taaksepäin",
   "command.agent.cycle.reverse.description": "Vaihda edelliseen agenttiin",
   "command.model.variant.cycle": "Vaihda päättelyn tasoa",
-  "command.model.variant.cycle.description": "Vaihda seuraavalle päättelyn tasolle",
+  "command.model.variant.cycle.description":
+    "Vaihda seuraavalle päättelyn tasolle",
   "command.prompt.mode.shell": "Shell",
   "command.prompt.mode.normal": "Kehote",
-  "command.permissions.autoaccept.enable": "Hyväksy käyttöoikeudet automaattisesti",
-  "command.permissions.autoaccept.disable": "Lopeta käyttöoikeuksien automaattinen hyväksyminen",
+  "command.permissions.autoaccept.enable":
+    "Hyväksy käyttöoikeudet automaattisesti",
+  "command.permissions.autoaccept.disable":
+    "Lopeta käyttöoikeuksien automaattinen hyväksyminen",
   "command.workspace.toggle": "Vaihda työtiloja",
-  "command.workspace.toggle.description": "Ota käyttöön tai poista käytöstä useita työtiloja sivupalkissa",
+  "command.workspace.toggle.description":
+    "Ota käyttöön tai poista käytöstä useita työtiloja sivupalkissa",
   "command.session.undo": "Kumoa",
   "command.session.undo.description": "Kumoa viimeinen viesti",
   "command.session.redo": "Toista",
   "command.session.redo.description": "Toista viimeisin kumottu viesti",
   "command.session.compact": "Tiivistä istunto",
-  "command.session.compact.description": "Tee yhteenveto istunnosta pienentääksesi kontekstin kokoa",
+  "command.session.compact.description":
+    "Tee yhteenveto istunnosta pienentääksesi kontekstin kokoa",
   "command.session.fork": "Haarauta viestistä",
   "command.session.fork.description": "Luo uusi istunto edellisestä viestistä",
   "command.session.share": "Jaa istunto",
-  "command.session.share.description": "Jaa tämä istunto ja kopioi URL-osoite leikepöydälle",
+  "command.session.share.description":
+    "Jaa tämä istunto ja kopioi URL-osoite leikepöydälle",
   "command.session.unshare": "Peru istunnon jakaminen",
   "command.session.unshare.description": "Lopeta tämän istunnon jakaminen",
   "command.session.export": "Vie istunto",
-  "command.session.export.description": "Vie istunnon koko transkriptio JSON-muodossa",
+  "command.session.export.description":
+    "Vie istunnon koko transkriptio JSON-muodossa",
 
   "palette.search.placeholder": "Hae tiedostoja, komentoja ja istuntoja",
   "palette.search.placeholder.home": "Hae komentoja ja istuntoja",
@@ -97,30 +107,44 @@ export const dict = {
   "dialog.provider.empty": "Palveluntarjoajia ei löytynyt",
   "dialog.provider.group.popular": "Suositut",
   "dialog.provider.group.other": "Muut",
-  "dialog.provider.custom.label": "Mukautettu OpenAI-yhteensopiva palveluntarjoaja",
+  "dialog.provider.custom.label":
+    "Mukautettu OpenAI-yhteensopiva palveluntarjoaja",
   "dialog.provider.tag.recommended": "Suositeltu",
-  "dialog.provider.opencode.note": "Kuratoituja malleja, kuten Claude, GPT, Gemini ja muita",
+  "dialog.provider.opencode.note":
+    "Kuratoituja malleja, kuten Claude, GPT, Gemini ja muita",
   "dialog.provider.opencode.tagline": "Luotettavat optimoidut mallit",
   "dialog.provider.opencodeGo.tagline": "Edullinen tilaus kaikille",
-  "dialog.provider.anthropic.note": "Suora pääsy Claude-malleihin, mukaan lukien Pro ja Max",
-  "dialog.provider.copilot.note": "AI-malleja koodausapuun GitHub Copilotin kautta",
-  "dialog.provider.openai.note": "GPT-mallit nopeisiin, suorituskykyisiin yleisiin tekoälytehtäviin",
-  "dialog.provider.google.note": "Gemini-mallit nopeisiin, jäsenneltyihin vastauksiin",
-  "dialog.provider.openrouter.note": "Käytä kaikkia tuettuja malleja yhdeltä palveluntarjoajalta",
-  "dialog.provider.vercel.note": "Yhdistetty pääsy AI-malleihin älykkäällä reitityksellä",
+  "dialog.provider.anthropic.note":
+    "Suora pääsy Claude-malleihin, mukaan lukien Pro ja Max",
+  "dialog.provider.copilot.note":
+    "AI-malleja koodausapuun GitHub Copilotin kautta",
+  "dialog.provider.openai.note":
+    "GPT-mallit nopeisiin, suorituskykyisiin yleisiin tekoälytehtäviin",
+  "dialog.provider.google.note":
+    "Gemini-mallit nopeisiin, jäsenneltyihin vastauksiin",
+  "dialog.provider.openrouter.note":
+    "Käytä kaikkia tuettuja malleja yhdeltä palveluntarjoajalta",
+  "dialog.provider.vercel.note":
+    "Yhdistetty pääsy AI-malleihin älykkäällä reitityksellä",
   "dialog.model.select.title": "Valitse malli",
   "dialog.model.search.placeholder": "Hae malleja",
   "dialog.model.empty": "Ei mallituloksia",
   "dialog.model.manage": "Hallitse malleja",
-  "dialog.model.manage.description": "Mukauta, mitkä mallit näkyvät mallivalitsimessa.",
-  "dialog.model.manage.provider.toggle": "Ota kaikki palveluntarjoajan {{provider}} mallit käyttöön tai pois käytöstä",
+  "dialog.model.manage.description":
+    "Mukauta, mitkä mallit näkyvät mallivalitsimessa.",
+  "dialog.model.manage.provider.toggle":
+    "Ota kaikki palveluntarjoajan {{provider}} mallit käyttöön tai pois käytöstä",
   "dialog.model.unpaid.freeModels.title": "OpenCoden tarjoamat ilmaiset mallit",
-  "dialog.model.unpaid.addMore.title": "Lisää malleja suosituilta palveluntarjoajilta",
-  "dialog.model.unpaid.viewMoreProviders": "Katso yli 70 muuta palveluntarjoajaa",
+  "dialog.model.unpaid.addMore.title":
+    "Lisää malleja suosituilta palveluntarjoajilta",
+  "dialog.model.unpaid.viewMoreProviders":
+    "Katso yli 70 muuta palveluntarjoajaa",
   "dialog.provider.viewAll": "Näytä lisää palveluntarjoajia",
   "provider.connect.title": "Yhdistä {{provider}}",
-  "provider.connect.title.anthropicProMax": "Kirjaudu sisään Claude Pro/Maxilla",
-  "provider.connect.selectMethod": "Valitse kirjautumistapa palvelulle {{provider}}.",
+  "provider.connect.title.anthropicProMax":
+    "Kirjaudu sisään Claude Pro/Maxilla",
+  "provider.connect.selectMethod":
+    "Valitse kirjautumistapa palvelulle {{provider}}.",
   "provider.connect.method.apiKey": "API-avain",
   "provider.connect.method.browser": "Selain",
   "provider.connect.method.headless": "Päätön",
@@ -153,22 +177,27 @@ export const dict = {
     " ja anna alla oleva koodi yhdistääksesi tilisi ja käyttääksesi {{provider}}-malleja OpenCodessa.",
   "provider.connect.oauth.auto.confirmationCode": "Vahvistuskoodi",
   "provider.connect.toast.connected.title": "{{provider}} yhdistetty",
-  "provider.connect.toast.connected.description": "{{provider}}-mallit ovat nyt käytettävissä.",
+  "provider.connect.toast.connected.description":
+    "{{provider}}-mallit ovat nyt käytettävissä.",
   "provider.custom.title": "Mukautettu palveluntarjoaja",
-  "provider.custom.unavailable": "Mukautetut palveluntarjoajat eivät ole käytettävissä tällä palvelimella",
-  "provider.custom.description.prefix": "Määritä OpenAI-yhteensopiva palveluntarjoaja. Katso ",
+  "provider.custom.unavailable":
+    "Mukautetut palveluntarjoajat eivät ole käytettävissä tällä palvelimella",
+  "provider.custom.description.prefix":
+    "Määritä OpenAI-yhteensopiva palveluntarjoaja. Katso ",
   "provider.custom.description.link": "palveluntarjoajan asetusdokumentit",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Palveluntarjoajan tunnus",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Pienet kirjaimet, numerot, yhdysmerkit tai alaviivat",
+  "provider.custom.field.providerID.description":
+    "Pienet kirjaimet, numerot, yhdysmerkit tai alaviivat",
   "provider.custom.field.name.label": "Näyttönimi",
   "provider.custom.field.name.placeholder": "Oma tekoälypalveluni",
   "provider.custom.field.baseURL.label": "Perus-URL-osoite",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API-avain",
   "provider.custom.field.apiKey.placeholder": "API-avain",
-  "provider.custom.field.apiKey.description": "Valinnainen. Jätä tyhjäksi, jos hallitset todennusta otsikoiden avulla.",
+  "provider.custom.field.apiKey.description":
+    "Valinnainen. Jätä tyhjäksi, jos hallitset todennusta otsikoiden avulla.",
   "provider.custom.models.label": "Mallit",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -183,16 +212,22 @@ export const dict = {
   "provider.custom.headers.value.placeholder": "value",
   "provider.custom.headers.remove": "Poista otsikko",
   "provider.custom.headers.add": "Lisää otsikko",
-  "provider.custom.error.providerID.required": "Palveluntarjoajan tunnus vaaditaan",
-  "provider.custom.error.providerID.format": "Käytä pieniä kirjaimia, numeroita, tavuviivoja tai alaviivoja",
-  "provider.custom.error.providerID.exists": "Palveluntarjoajan tunnus on jo olemassa",
+  "provider.custom.error.providerID.required":
+    "Palveluntarjoajan tunnus vaaditaan",
+  "provider.custom.error.providerID.format":
+    "Käytä pieniä kirjaimia, numeroita, tavuviivoja tai alaviivoja",
+  "provider.custom.error.providerID.exists":
+    "Palveluntarjoajan tunnus on jo olemassa",
   "provider.custom.error.name.required": "Näyttönimi vaaditaan",
   "provider.custom.error.baseURL.required": "Perus-URL-osoite vaaditaan",
-  "provider.custom.error.baseURL.format": "Alussa on oltava http:// tai https://",
+  "provider.custom.error.baseURL.format":
+    "Alussa on oltava http:// tai https://",
   "provider.custom.error.required": "Pakollinen",
   "provider.custom.error.duplicate": "Kaksoiskappale",
-  "provider.disconnect.toast.disconnected.title": "Yhteys palveluntarjoajaan {{provider}} katkaistu",
-  "provider.disconnect.toast.disconnected.description": "{{provider}}-mallit eivät ole enää saatavilla.",
+  "provider.disconnect.toast.disconnected.title":
+    "Yhteys palveluntarjoajaan {{provider}} katkaistu",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}}-mallit eivät ole enää saatavilla.",
   "model.tag.free": "Ilmainen",
   "model.tag.latest": "Uusin",
   "model.provider.anthropic": "Anthropic",
@@ -238,7 +273,8 @@ export const dict = {
   "prompt.mode.shell": "Shell",
   "prompt.mode.normal": "Kehote",
   "prompt.mode.shell.exit": "poistu painamalla Esc",
-  "session.child.promptDisabled": "Aliagentti-istuntoihin ei voi lähettää kehotteita.",
+  "session.child.promptDisabled":
+    "Aliagentti-istuntoihin ei voi lähettää kehotteita.",
   "session.child.backToParent": "Takaisin pääistuntoon.",
   "prompt.example.1": "Korjaa TODO koodikannassa",
   "prompt.example.2": "Mikä on tämän projektin teknologiapino?",
@@ -267,7 +303,8 @@ export const dict = {
   "prompt.example.25": "Miten ympäristömuuttujat toimivat tässä?",
   "prompt.popover.emptyResults": "Ei vastaavia tuloksia",
   "prompt.popover.emptyCommands": "Ei vastaavia komentoja",
-  "prompt.dropzone.label": "Pudota kuvia, PDF-tiedostoja tai tekstitiedostoja tähän",
+  "prompt.dropzone.label":
+    "Pudota kuvia, PDF-tiedostoja tai tekstitiedostoja tähän",
   "prompt.dropzone.file.label": "Pudota lisätäksesi tiedoston @-mainintana",
   "prompt.slash.badge.custom": "mukautettu",
   "prompt.slash.badge.skill": "taito",
@@ -286,13 +323,16 @@ export const dict = {
   "prompt.action.send": "Lähetä",
   "prompt.action.stop": "Pysäytä",
   "prompt.toast.pasteUnsupported.title": "Liitettä ei tueta",
-  "prompt.toast.pasteUnsupported.description": "Vain kuvia, PDF-tiedostoja tai tekstitiedostoja voi liittää tähän.",
+  "prompt.toast.pasteUnsupported.description":
+    "Vain kuvia, PDF-tiedostoja tai tekstitiedostoja voi liittää tähän.",
   "prompt.toast.attachmentDuplicate.title": "Tämä tiedosto on jo ladattu",
   "prompt.toast.modelAgentRequired.title": "Valitse agentti ja malli",
-  "prompt.toast.modelAgentRequired.description": "Valitse agentti ja malli ennen kehotteen lähettämistä.",
+  "prompt.toast.modelAgentRequired.description":
+    "Valitse agentti ja malli ennen kehotteen lähettämistä.",
   "prompt.toast.worktreeCreateFailed.title": "Työpuun luominen epäonnistui",
   "prompt.toast.sessionCreateFailed.title": "Istunnon luominen epäonnistui",
-  "prompt.toast.shellSendFailed.title": "Shell-komennon lähettäminen epäonnistui",
+  "prompt.toast.shellSendFailed.title":
+    "Shell-komennon lähettäminen epäonnistui",
   "prompt.toast.commandSendFailed.title": "Komennon lähettäminen epäonnistui",
   "prompt.toast.promptSendFailed.title": "Kehotteen lähettäminen epäonnistui",
   "prompt.toast.promptSendFailed.description": "Istuntoa ei voi noutaa",
@@ -318,7 +358,8 @@ export const dict = {
   "app.server.retrying": "Yritetään automaattisesti uudelleen...",
   "app.server.otherServers": "Muut palvelimet",
   "dialog.server.title": "Palvelimet",
-  "dialog.server.description": "Vaihda OpenCode-palvelimeen, johon tämä sovellus muodostaa yhteyden.",
+  "dialog.server.description":
+    "Vaihda OpenCode-palvelimeen, johon tämä sovellus muodostaa yhteyden.",
   "dialog.server.search.placeholder": "Etsi palvelimia",
   "dialog.server.empty": "Ei vielä palvelimia",
   "dialog.server.add.title": "Lisää palvelin",
@@ -356,7 +397,8 @@ export const dict = {
   "wsl.onboarding.step.distro": "Valitse jakelu",
   "wsl.onboarding.step.opencode": "OpenCode",
   "wsl.onboarding.checkingRuntime": "Tarkistetaan WSL...",
-  "wsl.onboarding.restartRequired": "Windows tarvitsee uudelleenkäynnistyksen WSL:n asennuksen viimeistelemiseksi.",
+  "wsl.onboarding.restartRequired":
+    "Windows tarvitsee uudelleenkäynnistyksen WSL:n asennuksen viimeistelemiseksi.",
   "wsl.onboarding.ready": "WSL on valmis.",
   "wsl.onboarding.required": "WSL vaaditaan jatkamiseen.",
   "wsl.onboarding.checkingDistros": "Tarkistetaan jakeluja...",
@@ -365,13 +407,17 @@ export const dict = {
   "wsl.onboarding.listingDistros": "Luetteloidaan jakeluja...",
   "wsl.onboarding.distroReady": "{{distro}} on valmis.",
   "wsl.onboarding.distroNotInstalled": "{{distro}} ei ole vielä asennettu.",
-  "wsl.onboarding.openDistroOnce": "Avaa {{distro}} kerran viimeistelläksesi asetukset.",
-  "wsl.onboarding.finishingDistro": "Viimeistellään jakelun {{distro}} asennusta.",
+  "wsl.onboarding.openDistroOnce":
+    "Avaa {{distro}} kerran viimeistelläksesi asetukset.",
+  "wsl.onboarding.finishingDistro":
+    "Viimeistellään jakelun {{distro}} asennusta.",
   "wsl.onboarding.pickDistro": "Valitse jakelu tai asenna sellainen alta.",
   "wsl.onboarding.checkingOpencode": "Tarkistetaan OpenCodea...",
-  "wsl.onboarding.checkingOpencodeIn": "Tarkistetaan OpenCodea kohteessa {{distro}}...",
+  "wsl.onboarding.checkingOpencodeIn":
+    "Tarkistetaan OpenCodea kohteessa {{distro}}...",
   "wsl.onboarding.updatingOpencode": "Päivitetään OpenCodea...",
-  "wsl.onboarding.updatingOpencodeIn": "Päivitetään OpenCodea kohteessa {{distro}}...",
+  "wsl.onboarding.updatingOpencodeIn":
+    "Päivitetään OpenCodea kohteessa {{distro}}...",
   "wsl.onboarding.updateOpencodeIn": "Päivitä OpenCode jakelussa {{distro}}.",
   "wsl.onboarding.updateOpencode": "Päivitä OpenCode",
   "wsl.onboarding.opencodeReadyIn": "OpenCode on valmis jakelussa {{distro}}.",
@@ -394,7 +440,8 @@ export const dict = {
   "wsl.onboarding.wslNotInstalled.description":
     "WSL (Windows Subsystem for Linux) vaaditaan ennen kuin OpenCode voi lisätä WSL-palvelimen",
   "wsl.onboarding.wslUnavailable.title": "WSL ei ole käytettävissä",
-  "wsl.onboarding.wslUnavailable.description": "OpenCode ei voinut vahvistaa WSL:ää tällä koneella.",
+  "wsl.onboarding.wslUnavailable.description":
+    "OpenCode ei voinut vahvistaa WSL:ää tällä koneella.",
   "wsl.onboarding.installWsl": "Asenna WSL",
   "wsl.onboarding.windowsRestartRequired":
     "Viimeistele WSL:n asennus käynnistämällä Windows uudelleen ja avaa sitten OpenCode uudelleen.",
@@ -414,7 +461,8 @@ export const dict = {
   "wsl.onboarding.version": "Versio: {{version}}",
   "wsl.onboarding.unknown": "tuntematon",
   "wsl.onboarding.desktopVersion": "Desktop {{version}}",
-  "wsl.onboarding.versionMismatch": "Asennettu versio ei vastaa työpöytäsovelluksen versiota.",
+  "wsl.onboarding.versionMismatch":
+    "Asennettu versio ei vastaa työpöytäsovelluksen versiota.",
   "wsl.onboarding.adding": "Lisätään...",
   "server.row.noUsername": "ei käyttäjätunnusta",
   "dialog.project.edit.title": "Muokkaa projektia",
@@ -426,7 +474,8 @@ export const dict = {
   "dialog.project.edit.color": "Väri",
   "dialog.project.edit.color.select": "Valitse väri {{color}}",
   "dialog.project.edit.worktree.startup": "Työtilan käynnistysskripti",
-  "dialog.project.edit.worktree.startup.description": "Suoritetaan uuden työtilan (työpuun) luomisen jälkeen.",
+  "dialog.project.edit.worktree.startup.description":
+    "Suoritetaan uuden työtilan (työpuun) luomisen jälkeen.",
   "dialog.project.edit.worktree.startup.placeholder": "esim. bun install",
   "dialog.releaseNotes.action.getStarted": "Aloita",
   "dialog.releaseNotes.action.next": "Seuraava",
@@ -490,50 +539,74 @@ export const dict = {
   "toast.theme.title": "Teema vaihdettu",
   "toast.scheme.title": "Värimalli",
   "toast.workspace.enabled.title": "Työtilat käytössä",
-  "toast.workspace.enabled.description": "Sivupalkissa näkyy nyt useita työpuita",
+  "toast.workspace.enabled.description":
+    "Sivupalkissa näkyy nyt useita työpuita",
   "toast.workspace.disabled.title": "Työtilat pois käytöstä",
   "toast.workspace.disabled.description": "Vain päätyöpuu näkyy sivupalkissa",
-  "toast.permissions.autoaccept.on.title": "Käyttöoikeudet hyväksytään automaattisesti",
-  "toast.permissions.autoaccept.on.description": "Lupapyynnöt hyväksytään automaattisesti",
-  "toast.permissions.autoaccept.off.title": "Lupien automaattinen hyväksyminen lopetettu",
-  "toast.permissions.autoaccept.off.description": "Lupapyynnöt vaativat hyväksynnän",
+  "toast.permissions.autoaccept.on.title":
+    "Käyttöoikeudet hyväksytään automaattisesti",
+  "toast.permissions.autoaccept.on.description":
+    "Lupapyynnöt hyväksytään automaattisesti",
+  "toast.permissions.autoaccept.off.title":
+    "Lupien automaattinen hyväksyminen lopetettu",
+  "toast.permissions.autoaccept.off.description":
+    "Lupapyynnöt vaativat hyväksynnän",
   "toast.model.none.title": "Mallia ei ole valittu",
-  "toast.model.none.description": "Yhdistä palveluntarjoaja tehdäksesi yhteenvedon tästä istunnosta",
+  "toast.model.none.description":
+    "Yhdistä palveluntarjoaja tehdäksesi yhteenvedon tästä istunnosta",
   "toast.file.loadFailed.title": "Tiedoston lataaminen epäonnistui",
   "toast.file.listFailed.title": "Tiedostojen luettelointi epäonnistui",
   "toast.context.noLineSelection.title": "Ei rivivalintaa",
-  "toast.context.noLineSelection.description": "Valitse ensin riviväli tiedostovälilehdeltä.",
-  "toast.session.share.copyFailed.title": "URL-osoitteen kopioiminen leikepöydälle epäonnistui",
+  "toast.context.noLineSelection.description":
+    "Valitse ensin riviväli tiedostovälilehdeltä.",
+  "toast.session.share.copyFailed.title":
+    "URL-osoitteen kopioiminen leikepöydälle epäonnistui",
   "toast.session.share.success.title": "Istunto jaettu",
-  "toast.session.share.success.description": "Jakolinkki kopioitu leikepöydälle!",
+  "toast.session.share.success.description":
+    "Jakolinkki kopioitu leikepöydälle!",
   "toast.session.share.failed.title": "Istunnon jakaminen epäonnistui",
-  "toast.session.share.failed.description": "Istunnon jakamisessa tapahtui virhe",
+  "toast.session.share.failed.description":
+    "Istunnon jakamisessa tapahtui virhe",
   "toast.session.unshare.success.title": "Istunnon jako peruttu",
-  "toast.session.unshare.success.description": "Istunnon jakaminen peruutettu onnistuneesti!",
-  "toast.session.unshare.failed.title": "Istunnon jakamisen peruuttaminen epäonnistui",
-  "toast.session.unshare.failed.description": "Virhe peruttaessa istunnon jakamista",
+  "toast.session.unshare.success.description":
+    "Istunnon jakaminen peruutettu onnistuneesti!",
+  "toast.session.unshare.failed.title":
+    "Istunnon jakamisen peruuttaminen epäonnistui",
+  "toast.session.unshare.failed.description":
+    "Virhe peruttaessa istunnon jakamista",
   "toast.session.export.success.title": "Istunto viety",
-  "toast.session.export.success.description": "Istunto tallennettu tiedostoon {{filename}}",
+  "toast.session.export.success.description":
+    "Istunto tallennettu tiedostoon {{filename}}",
   "toast.session.export.failed.title": "Istunnon vieminen epäonnistui",
-  "toast.session.export.failed.description": "Istuntoa vietäessä tapahtui virhe",
+  "toast.session.export.failed.description":
+    "Istuntoa vietäessä tapahtui virhe",
 
-  "toast.session.listFailed.title": "Projektin {{project}} istuntojen lataaminen epäonnistui",
-  "toast.project.reloadFailed.title": "Projektin {{project}} lataaminen uudelleen epäonnistui",
+  "toast.session.listFailed.title":
+    "Projektin {{project}} istuntojen lataaminen epäonnistui",
+  "toast.project.reloadFailed.title":
+    "Projektin {{project}} lataaminen uudelleen epäonnistui",
   "toast.update.title": "Päivitys saatavilla",
-  "toast.update.description": "OpenCoden uusi versio ({{version}}) on nyt saatavana asennettavaksi.",
+  "toast.update.description":
+    "OpenCoden uusi versio ({{version}}) on nyt saatavana asennettavaksi.",
   "toast.update.action.installRestart": "Asenna ja käynnistä uudelleen",
   "toast.update.action.notYet": "Ei vielä",
-  "disk.accessGuidance.macos": "Myönnä DiskLizardille täysi levyn käyttöoikeus Järjestelmäasetuksissa ja skannaa uudelleen.",
-  "disk.accessGuidance.windows": "Käytä tiliä, jolla on pääsy tähän asemaan, tai skannaa kansio, jonka tilisi voi lukea.",
-  "disk.accessGuidance.linux": "Tarkista kansioiden ja liitoskohtien käyttöoikeudet ja skannaa uudelleen.",
-  "disk.accessGuidance.default": "Tarkista pääsy näihin kansioihin ja skannaa uudelleen.",
-  "disk.accessGuidance.rescan": "Kun olet muuttanut käyttöoikeuksia, käytä yläpalkissa olevaa Skannaa uudelleen -toimintoa.",
+  "disk.accessGuidance.macos":
+    "Myönnä DiskLizardille täysi levyn käyttöoikeus Järjestelmäasetuksissa ja skannaa uudelleen.",
+  "disk.accessGuidance.windows":
+    "Käytä tiliä, jolla on pääsy tähän asemaan, tai skannaa kansio, jonka tilisi voi lukea.",
+  "disk.accessGuidance.linux":
+    "Tarkista kansioiden ja liitoskohtien käyttöoikeudet ja skannaa uudelleen.",
+  "disk.accessGuidance.default":
+    "Tarkista pääsy näihin kansioihin ja skannaa uudelleen.",
+  "disk.accessGuidance.rescan":
+    "Kun olet muuttanut käyttöoikeuksia, käytä yläpalkissa olevaa Skannaa uudelleen -toimintoa.",
   "disk.common.rescan": "Skannaa uudelleen",
   "toast.update.installFailed.title": "Päivitystä ei voitu asentaa",
   "toast.update.installFailed.retry": "Yritä uudelleen",
   "error.page.title": "Jotain meni pieleen",
   "error.page.description": "Sovellusta ladattaessa tapahtui virhe.",
-  "error.page.description.localServerStartup": "Paikallista palvelinta käynnistettäessä tapahtui virhe.",
+  "error.page.description.localServerStartup":
+    "Paikallista palvelinta käynnistettäessä tapahtui virhe.",
   "error.page.details.label": "Virheen tiedot",
   "error.page.action.restart": "Käynnistä uudelleen",
   "error.page.action.report": "Ilmoita virheestä",
@@ -552,9 +625,12 @@ export const dict = {
     "Ei voitu muodostaa yhteyttä palvelimeen. Onko osoitteessa `{{url}}` käynnissä palvelin?",
   "error.serverSDK.noServerAvailable": "Palvelinta ei ole saatavilla",
   "error.serverSDK.serverNotAvailable": "Palvelin ei ole käytettävissä",
-  "error.childStore.persistedCacheCreateFailed": "Pysyvän välimuistin luominen epäonnistui",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Projektin pysyvien metatietojen luominen epäonnistui",
-  "error.childStore.persistedProjectIconCreateFailed": "Pysyvän projektin kuvakkeen luominen epäonnistui",
+  "error.childStore.persistedCacheCreateFailed":
+    "Pysyvän välimuistin luominen epäonnistui",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Projektin pysyvien metatietojen luominen epäonnistui",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Pysyvän projektin kuvakkeen luominen epäonnistui",
   "error.childStore.storeCreateFailed": "Tietovaraston luominen epäonnistui",
   "directory.error.invalidUrl": "Virheellinen hakemisto URL-osoitteessa.",
   "error.chain.unknown": "Tuntematon virhe",
@@ -566,23 +642,32 @@ export const dict = {
   "error.chain.responseBody": "Vastausteksti:\n{{body}}",
   "error.chain.didYouMean": "Tarkoititko: {{suggestions}}",
   "error.chain.modelNotFound": "Mallia ei löydy: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Tarkista määritysten (opencode.json) palveluntarjoajien ja mallien nimet",
-  "error.chain.mcpFailed": 'MCP-palvelin "{{name}}" epäonnistui. Huomaa, että OpenCode ei vielä tue MCP-todennusta.',
-  "error.chain.providerAuthFailed": "Palveluntarjoajan todennus epäonnistui ({{provider}}): {{message}}",
+  "error.chain.checkConfig":
+    "Tarkista määritysten (opencode.json) palveluntarjoajien ja mallien nimet",
+  "error.chain.mcpFailed":
+    'MCP-palvelin "{{name}}" epäonnistui. Huomaa, että OpenCode ei vielä tue MCP-todennusta.',
+  "error.chain.providerAuthFailed":
+    "Palveluntarjoajan todennus epäonnistui ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Palveluntarjoajan "{{provider}}" alustaminen epäonnistui. Tarkista tunnistetiedot ja määritykset.',
-  "error.chain.configJsonInvalid": "Polun {{path}} määritystiedosto ei ole kelvollista JSON(C)-muotoa",
+  "error.chain.configJsonInvalid":
+    "Polun {{path}} määritystiedosto ei ole kelvollista JSON(C)-muotoa",
   "error.chain.configJsonInvalidWithMessage":
     "Polun {{path}} määritystiedosto ei ole kelvollista JSON(C)-muotoa: {{message}}",
   "error.chain.configDirectoryTypo":
     'Hakemisto "{{dir}}" polussa {{path}} ei kelpaa. Nimeä hakemisto uudelleen nimellä "{{suggestion}}" tai poista se. Tämä on yleinen kirjoitusvirhe.',
-  "error.chain.configFrontmatterError": "Polun {{path}} front matter -tietojen jäsentäminen epäonnistui:\n{{message}}",
-  "error.chain.configInvalid": "Polun {{path}} määritystiedosto on virheellinen",
-  "error.chain.configInvalidWithMessage": "Polun {{path}} määritystiedosto on virheellinen: {{message}}",
+  "error.chain.configFrontmatterError":
+    "Polun {{path}} front matter -tietojen jäsentäminen epäonnistui:\n{{message}}",
+  "error.chain.configInvalid":
+    "Polun {{path}} määritystiedosto on virheellinen",
+  "error.chain.configInvalidWithMessage":
+    "Polun {{path}} määritystiedosto on virheellinen: {{message}}",
   "notification.permission.title": "Lupa vaaditaan",
-  "notification.permission.description": "Istunto {{sessionTitle}} projektissa {{projectName}} tarvitsee luvan",
+  "notification.permission.description":
+    "Istunto {{sessionTitle}} projektissa {{projectName}} tarvitsee luvan",
   "notification.question.title": "Kysymys",
-  "notification.question.description": "Istunto {{sessionTitle}} projektissa {{projectName}} esittää kysymyksen",
+  "notification.question.description":
+    "Istunto {{sessionTitle}} projektissa {{projectName}} esittää kysymyksen",
   "notification.action.goToSession": "Siirry istuntoon",
   "notification.session.responseReady.title": "Vastaus valmiina",
   "notification.session.error.title": "Istuntovirhe",
@@ -597,7 +682,8 @@ export const dict = {
   "home.server.collapse": "Kutista palvelimen projektit",
   "home.server.expand": "Laajenna palvelimen projektit",
   "home.sessions.search.placeholder": "Hae istuntoja",
-  "home.sessions.search.placeholder.scoped": "Hae istuntoja kohteesta {{scope}}",
+  "home.sessions.search.placeholder.scoped":
+    "Hae istuntoja kohteesta {{scope}}",
   "home.sessions.search.sessions": "Istunnot",
   "home.sessions.search.noResults": "Ei istuntoja haulle {{query}}",
   "home.sessions.empty": "Ei täällä vielä mitään",
@@ -605,24 +691,29 @@ export const dict = {
   "home.sessions.group.today": "Tänään",
   "home.sessions.group.yesterday": "Eilen",
   "home.sessions.group.older": "Vanhemmat",
-  "home.providerTip": "Yhdistä yli 75 palveluntarjoajaan käyttääksesi muita malleja, kuten Claude, GPT, Gemini jne",
+  "home.providerTip":
+    "Yhdistä yli 75 palveluntarjoajaan käyttääksesi muita malleja, kuten Claude, GPT, Gemini jne",
   "session.tab.session": "Istunto",
   "session.tab.review": "Tarkistus",
   "session.tab.context": "Konteksti",
   "session.tab.unknown": "Tuntematon istunto",
   "session.panel.reviewAndFiles": "Tarkistus ja tiedostot",
   "session.error.notFound": "Tätä istuntoa ei löydy",
-  "session.error.notFound.description": "Tämä välilehti osoittaa istuntoon, jota ei enää ole tällä palvelimella.",
+  "session.error.notFound.description":
+    "Tämä välilehti osoittaa istuntoon, jota ei enää ole tällä palvelimella.",
   "session.error.notFound.closeTab": "Sulje välilehti",
-  "session.error.serverConnection": "Ei voi muodostaa yhteyttä tähän palvelimeen",
+  "session.error.serverConnection":
+    "Ei voi muodostaa yhteyttä tähän palvelimeen",
   "session.review.filesChanged": "Muutettuja tiedostoja: {{count}}",
   "session.review.change.one": "Muutos",
   "session.review.change.other": "Muutokset",
   "session.review.loadingChanges": "Ladataan muutoksia...",
   "session.review.empty": "Tässä istunnossa ei vielä muutoksia",
-  "session.review.noVcs": "Git-versionhallintaa ei havaittu, joten muutoksia ei näytetä",
+  "session.review.noVcs":
+    "Git-versionhallintaa ei havaittu, joten muutoksia ei näytetä",
   "session.review.noVcs.createGit.title": "Luo Git-säilö",
-  "session.review.noVcs.createGit.description": "Seuraa, tarkista ja kumoa muutoksia tässä projektissa",
+  "session.review.noVcs.createGit.description":
+    "Seuraa, tarkista ja kumoa muutoksia tässä projektissa",
   "session.review.noVcs.createGit.actionLoading": "Luodaan Git-säilöä...",
   "session.review.noVcs.createGit.action": "Luo Git-säilö",
   "session.review.noSnapshot":
@@ -727,12 +818,14 @@ export const dict = {
   "terminal.title.numbered": "Terminaali {{number}}",
   "terminal.close": "Sulje terminaali",
   "terminal.connectionLost.title": "Yhteys katkesi",
-  "terminal.connectionLost.abnormalClose": "WebSocket sulkeutui poikkeavasti: {{code}}",
+  "terminal.connectionLost.abnormalClose":
+    "WebSocket sulkeutui poikkeavasti: {{code}}",
   "terminal.connectionLost.description":
     "Terminaaliyhteys katkesi. Näin voi tapahtua, kun palvelin käynnistyy uudelleen.",
   "terminal.connectTicket.csrfError":
     "PTY-yhteyslippu hylättiin alkuperä- tai CSRF-tarkistuksessa. Tarkista palvelimen CORS-määritys.",
-  "terminal.connectTicket.statusError": "PTY-yhteyslippu epäonnistui tilakoodilla {{status}}",
+  "terminal.connectTicket.statusError":
+    "PTY-yhteyslippu epäonnistui tilakoodilla {{status}}",
   "titlebar.update": "Päivitä",
   "titlebar.updateVersion": "Päivitä {{version}}",
   "common.closeTab": "Sulje välilehti",
@@ -776,7 +869,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Ota työtilat käyttöön",
   "sidebar.workspaces.disable": "Poista työtilat käytöstä",
   "sidebar.gettingStarted.title": "Aloittaminen",
-  "sidebar.gettingStarted.line1": "OpenCode sisältää ilmaisia malleja, joten voit aloittaa heti.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode sisältää ilmaisia malleja, joten voit aloittaa heti.",
   "sidebar.gettingStarted.line2":
     "Yhdistä mikä tahansa palveluntarjoaja käyttääksesi malleja, mm. Claude, GPT, Gemini jne.",
   "sidebar.project.recentSessions": "Viimeaikaiset istunnot",
@@ -794,25 +888,33 @@ export const dict = {
   "debugBar.frame.label": "FRAME",
   "debugBar.frame.tip": "Pisin kuvan piirtoaika viimeisten 5 sekunnin aikana.",
   "debugBar.jank.label": "JANK",
-  "debugBar.jank.tip": "Yli 32 ms kestäneet kuvat viimeisten 5 sekunnin aikana.",
+  "debugBar.jank.tip":
+    "Yli 32 ms kestäneet kuvat viimeisten 5 sekunnin aikana.",
   "debugBar.long.label": "PITKÄ",
-  "debugBar.long.tip": "Estetty aika ja pitkien tehtävien määrä viimeisten 5 sekunnin aikana. Pisin tehtävä: {{max}}.",
+  "debugBar.long.tip":
+    "Estetty aika ja pitkien tehtävien määrä viimeisten 5 sekunnin aikana. Pisin tehtävä: {{max}}.",
   "debugBar.delay.label": "VIIVE",
-  "debugBar.delay.tip": "Pisin havaittu syöttöviive viimeisten 5 sekunnin aikana.",
+  "debugBar.delay.tip":
+    "Pisin havaittu syöttöviive viimeisten 5 sekunnin aikana.",
   "debugBar.inp.label": "INP",
   "debugBar.inp.tip":
     "Vuorovaikutuksen arvioitu kesto viimeisen 5 sekunnin ajalta. Tämä on INP-tyyppinen, ei virallinen Web Vitals INP.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Kumulatiivinen asettelusiirtymä sovelluksen nykyisen käyttöjakson aikana.",
+  "debugBar.cls.tip":
+    "Kumulatiivinen asettelusiirtymä sovelluksen nykyisen käyttöjakson aikana.",
   "debugBar.mem.label": "MEM",
-  "debugBar.mem.tipUnavailable": "Käytetty JS-keko suhteessa keon rajaan. Vain Chromium.",
-  "debugBar.mem.tip": "Käytetty JS-keko suhteessa keon rajaan. {{used}} / {{limit}}.",
+  "debugBar.mem.tipUnavailable":
+    "Käytetty JS-keko suhteessa keon rajaan. Vain Chromium.",
+  "debugBar.mem.tip":
+    "Käytetty JS-keko suhteessa keon rajaan. {{used}} / {{limit}}.",
   "debugBar.focus.label": "FOCUS",
-  "debugBar.focus.tip": "Pakota kohdistustyylit kaikkiin vuorovaikutteisiin elementteihin",
+  "debugBar.focus.tip":
+    "Pakota kohdistustyylit kaikkiin vuorovaikutteisiin elementteihin",
   "debugBar.focus.on": "KÄYTÖSSÄ",
   "debugBar.focus.off": "EI KÄYTÖSSÄ",
   "debugBar.direction.label": "DIR",
-  "debugBar.direction.tip": "Pakota koko sovelluksen asettelun suunta valittua kieltä muuttamatta",
+  "debugBar.direction.tip":
+    "Pakota koko sovelluksen asettelun suunta valittua kieltä muuttamatta",
   "debugBar.direction.ltr": "LTR",
   "debugBar.direction.rtl": "RTL",
   "app.name.desktop": "OpenCode Desktop",
@@ -822,7 +924,8 @@ export const dict = {
   "settings.tab.shortcuts": "Pikanäppäimet",
   "settings.desktop.section.wsl": "WSL",
   "settings.desktop.wsl.title": "WSL-integraatio",
-  "settings.desktop.wsl.description": "Suorita OpenCode-palvelin WSL:n sisällä Windowsissa.",
+  "settings.desktop.wsl.description":
+    "Suorita OpenCode-palvelin WSL:n sisällä Windowsissa.",
   "settings.general.section.appearance": "Ulkonäkö",
   "settings.general.section.advanced": "Lisäasetukset",
   "settings.general.section.notifications": "Järjestelmän ilmoitukset",
@@ -833,49 +936,63 @@ export const dict = {
   "settings.general.row.language.title": "Kieli",
   "settings.general.row.language.description": "Vaihda OpenCoden näyttökieli",
   "settings.general.row.shell.title": "Terminaalin komentotulkki",
-  "settings.general.row.shell.description": "Terminaalin ja agenttityökalujen käyttämä komentotulkki",
+  "settings.general.row.shell.description":
+    "Terminaalin ja agenttityökalujen käyttämä komentotulkki",
   "settings.general.row.shell.autoDefault": "Automaattinen (oletus)",
   "settings.general.row.shell.terminalOnly": "vain terminaali",
   "settings.general.row.appearance.title": "Ulkonäkö",
-  "settings.general.row.appearance.description": "Mukauta, miltä OpenCode näyttää laitteellasi",
+  "settings.general.row.appearance.description":
+    "Mukauta, miltä OpenCode näyttää laitteellasi",
   "settings.general.row.colorScheme.title": "Värimalli",
   "settings.general.row.colorScheme.description":
     "Valitse, käyttääkö OpenCode järjestelmän mukaista, vaaleaa vai tummaa teemaa",
   "settings.general.row.theme.title": "Teema",
   "settings.general.row.theme.description": "Mukauta OpenCoden teemaa.",
   "settings.general.row.font.title": "Koodifontti",
-  "settings.general.row.font.description": "Mukauta koodilohkoissa käytettyä fonttia",
+  "settings.general.row.font.description":
+    "Mukauta koodilohkoissa käytettyä fonttia",
   "settings.general.row.terminalFont.title": "Terminaalin fontti",
-  "settings.general.row.terminalFont.description": "Mukauta terminaalissa käytettävää fonttia",
+  "settings.general.row.terminalFont.description":
+    "Mukauta terminaalissa käytettävää fonttia",
   "settings.general.row.uiFont.title": "Käyttöliittymän fontti",
-  "settings.general.row.uiFont.description": "Mukauta koko käyttöliittymässä käytettyä fonttia",
+  "settings.general.row.uiFont.description":
+    "Mukauta koko käyttöliittymässä käytettyä fonttia",
   "settings.general.row.followup.title": "Jatkokehotteiden toiminta",
-  "settings.general.row.followup.description": "Valitse, ohjaavatko jatkokehotteet heti vai odottavatko ne jonossa",
+  "settings.general.row.followup.description":
+    "Valitse, ohjaavatko jatkokehotteet heti vai odottavatko ne jonossa",
   "settings.general.row.followup.option.queue": "Jonota",
   "settings.general.row.followup.option.steer": "Ohjaa heti",
   "settings.general.row.showFileTree.title": "Tiedostopuu",
-  "settings.general.row.showFileTree.description": "Näytä tiedostopuupaneeli istunnoissa",
+  "settings.general.row.showFileTree.description":
+    "Näytä tiedostopuupaneeli istunnoissa",
   "settings.general.row.showNavigation.title": "Navigointiohjaimet",
   "settings.general.row.showNavigation.description":
     "Näytä taaksepäin- ja eteenpäin-painikkeet työpöydän otsikkorivillä",
   "settings.general.row.showSearch.title": "Komentopaletti",
-  "settings.general.row.showSearch.description": "Näytä haku- ja komentopalettipainike otsikkorivillä",
+  "settings.general.row.showSearch.description":
+    "Näytä haku- ja komentopalettipainike otsikkorivillä",
   "settings.general.row.showTerminal.title": "Terminaali",
-  "settings.general.row.showTerminal.description": "Näytä terminaalipainike työpöydän otsikkorivillä",
+  "settings.general.row.showTerminal.description":
+    "Näytä terminaalipainike työpöydän otsikkorivillä",
   "settings.general.row.showStatus.title": "Palvelimen tila",
-  "settings.general.row.showStatus.description": "Näytä palvelimen tilapainike otsikkorivillä",
+  "settings.general.row.showStatus.description":
+    "Näytä palvelimen tilapainike otsikkorivillä",
   "settings.general.row.mobileTitlebarBottom.title": "Navigointi alareunassa",
   "settings.general.row.mobileTitlebarBottom.description":
     "Sijoita otsikkopalkki ja istuntovälilehdet mobiililaitteen näytön alareunaan",
   "settings.general.row.showCustomAgents.title": "Näytä agentin valinta",
   "settings.general.row.showCustomAgents.description":
     "Vaihda agenttien välillä viestikentässä. Kun valinta on piilotettu, Build-agenttia käytetään oletuksena.",
-  "settings.general.row.reasoningSummaries.title": "Näytä päättelyn yhteenvedot",
-  "settings.general.row.reasoningSummaries.description": "Näytä mallin päättelyn yhteenvedot aikajanalla",
-  "settings.general.row.shellToolPartsExpanded.title": "Laajenna shell-työkalun osat",
+  "settings.general.row.reasoningSummaries.title":
+    "Näytä päättelyn yhteenvedot",
+  "settings.general.row.reasoningSummaries.description":
+    "Näytä mallin päättelyn yhteenvedot aikajanalla",
+  "settings.general.row.shellToolPartsExpanded.title":
+    "Laajenna shell-työkalun osat",
   "settings.general.row.shellToolPartsExpanded.description":
     "Näytä shell-työkalun osat oletuksena laajennettuina aikajanalla",
-  "settings.general.row.editToolPartsExpanded.title": "Laajenna muokkaustyökalun osat",
+  "settings.general.row.editToolPartsExpanded.title":
+    "Laajenna muokkaustyökalun osat",
   "settings.general.row.editToolPartsExpanded.description":
     "Näytä muokkaus-, kirjoitus- ja paikkaustyökalun osat oletusarvoisesti laajennettuina aikajanalla",
   "settings.general.row.newInterface.title": "Uusi asettelu",
@@ -883,27 +1000,34 @@ export const dict = {
   "settings.general.row.newInterface.description":
     "Käytä uusia välilehtiä ja etusivun asettelua. Vaihda asettelujen välillä rajoitetun ajan.",
   "settings.general.row.newInterfaceNotice.title": "Käytät nyt uutta asettelua",
-  "settings.general.row.newInterfaceNotice.description": "Edellinen asettelu ei ole enää käytettävissä",
+  "settings.general.row.newInterfaceNotice.description":
+    "Edellinen asettelu ei ole enää käytettävissä",
   "settings.general.row.newInterfaceNotice.dismiss": "Hylkää",
   "settings.general.row.pinchZoom.title": "Zoomaa nipistämällä",
-  "settings.general.row.pinchZoom.description": "Salli zoomaus ohjauslevyn nipistyseleellä ja Ctrl-vierityksellä",
+  "settings.general.row.pinchZoom.description":
+    "Salli zoomaus ohjauslevyn nipistyseleellä ja Ctrl-vierityksellä",
   "settings.general.row.wayland.title": "Käytä alkuperäistä Waylandia",
   "settings.general.row.wayland.description":
     "Poista X11-varatila käytöstä Waylandissa. Vaatii uudelleenkäynnistyksen.",
   "settings.general.row.wayland.tooltip":
     "Linuxissa alkuperäinen Wayland voi olla vakaampi käytettäessä näyttöjä, joiden virkistystaajuudet eroavat toisistaan.",
   "settings.general.row.releaseNotes.title": "Julkaisutiedot",
-  "settings.general.row.releaseNotes.description": "Näytä Mitä uutta -ponnahdusikkunat päivitysten jälkeen",
-  "settings.updates.row.startup.title": "Tarkista päivitykset käynnistyksen yhteydessä",
-  "settings.updates.row.startup.description": "Tarkista päivitykset automaattisesti, kun OpenCode käynnistyy",
+  "settings.general.row.releaseNotes.description":
+    "Näytä Mitä uutta -ponnahdusikkunat päivitysten jälkeen",
+  "settings.updates.row.startup.title":
+    "Tarkista päivitykset käynnistyksen yhteydessä",
+  "settings.updates.row.startup.description":
+    "Tarkista päivitykset automaattisesti, kun OpenCode käynnistyy",
   "settings.updates.row.check.title": "Tarkista päivitykset",
-  "settings.updates.row.check.description": "Tarkista päivitykset manuaalisesti ja asenna, jos niitä on saatavilla",
+  "settings.updates.row.check.description":
+    "Tarkista päivitykset manuaalisesti ja asenna, jos niitä on saatavilla",
   "settings.updates.action.checkNow": "Tarkista nyt",
   "settings.updates.action.checking": "Tarkistetaan...",
   "settings.updates.action.downloading": "Ladataan...",
   "settings.updates.action.installing": "Asennetaan...",
   "settings.updates.toast.latest.title": "Olet ajan tasalla",
-  "settings.updates.toast.latest.description": "Käytät OpenCoden uusinta versiota.",
+  "settings.updates.toast.latest.description":
+    "Käytät OpenCoden uusinta versiota.",
   "sound.option.none": "Ei mitään",
   "sound.option.alert01": "Alert 01",
   "sound.option.alert02": "Alert 02",
@@ -954,21 +1078,28 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Näytä järjestelmäilmoitus, kun agentti on valmis tai tarvitsee huomiota",
   "settings.general.notifications.permissions.title": "Käyttöoikeudet",
-  "settings.general.notifications.permissions.description": "Näytä järjestelmäilmoitus, kun lupa vaaditaan",
+  "settings.general.notifications.permissions.description":
+    "Näytä järjestelmäilmoitus, kun lupa vaaditaan",
   "settings.general.notifications.errors.title": "Virheet",
-  "settings.general.notifications.errors.description": "Näytä järjestelmäilmoitus, kun tapahtuu virhe",
+  "settings.general.notifications.errors.description":
+    "Näytä järjestelmäilmoitus, kun tapahtuu virhe",
   "settings.general.sounds.agent.title": "Agentti",
-  "settings.general.sounds.agent.description": "Toista ääni, kun agentti on valmis tai tarvitsee huomiota",
+  "settings.general.sounds.agent.description":
+    "Toista ääni, kun agentti on valmis tai tarvitsee huomiota",
   "settings.general.sounds.permissions.title": "Käyttöoikeudet",
-  "settings.general.sounds.permissions.description": "Toista ääni, kun vaaditaan lupa",
+  "settings.general.sounds.permissions.description":
+    "Toista ääni, kun vaaditaan lupa",
   "settings.general.sounds.errors.title": "Virheet",
-  "settings.general.sounds.errors.description": "Toista ääni, kun tapahtuu virhe",
+  "settings.general.sounds.errors.description":
+    "Toista ääni, kun tapahtuu virhe",
   "settings.shortcuts.title": "Pikanäppäimet",
   "settings.shortcuts.reset.button": "Palauta oletusasetukset",
   "settings.shortcuts.reset.toast.title": "Pikanäppäimet palautettu",
-  "settings.shortcuts.reset.toast.description": "Pikanäppäimet on palautettu oletusasetuksiin.",
+  "settings.shortcuts.reset.toast.description":
+    "Pikanäppäimet on palautettu oletusasetuksiin.",
   "settings.shortcuts.conflict.title": "Pikanäppäin on jo käytössä",
-  "settings.shortcuts.conflict.description": "{{keybind}} on jo määritetty toiminnolle {{titles}}.",
+  "settings.shortcuts.conflict.description":
+    "{{keybind}} on jo määritetty toiminnolle {{titles}}.",
   "settings.shortcuts.unassigned": "Ei määritetty",
   "settings.shortcuts.pressKeys": "Paina näppäimiä",
   "settings.shortcuts.search.placeholder": "Hae pikanäppäimiä",
@@ -980,10 +1111,12 @@ export const dict = {
   "settings.shortcuts.group.terminal": "Terminaali",
   "settings.shortcuts.group.prompt": "Kehote",
   "settings.providers.title": "Palveluntarjoajat",
-  "settings.providers.description": "Palveluntarjoajan asetukset voidaan määrittää täällä.",
+  "settings.providers.description":
+    "Palveluntarjoajan asetukset voidaan määrittää täällä.",
   "settings.providers.section.connected": "Yhdistetyt palveluntarjoajat",
   "settings.providers.connected.empty": "Ei yhdistettyjä palveluntarjoajia",
-  "settings.providers.connected.environmentDescription": "Yhdistetty ympäristömuuttujien kautta",
+  "settings.providers.connected.environmentDescription":
+    "Yhdistetty ympäristömuuttujien kautta",
   "settings.providers.section.popular": "Suositut palveluntarjoajat",
   "settings.providers.custom.description":
     "Lisää OpenAI-yhteensopiva palveluntarjoaja perus-URL-osoitteen perusteella.",
@@ -1000,21 +1133,26 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP-asetukset voidaan määrittää täällä.",
   "settings.permissions.title": "Käyttöoikeudet",
-  "settings.permissions.description": "Hallitse, mitä työkaluja palvelin voi käyttää oletuksena.",
+  "settings.permissions.description":
+    "Hallitse, mitä työkaluja palvelin voi käyttää oletuksena.",
   "settings.permissions.section.tools": "Työkalut",
-  "settings.permissions.toast.updateFailed.title": "Käyttöoikeuksien päivittäminen epäonnistui",
+  "settings.permissions.toast.updateFailed.title":
+    "Käyttöoikeuksien päivittäminen epäonnistui",
   "settings.permissions.action.allow": "Salli",
   "settings.permissions.action.ask": "Kysy",
   "settings.permissions.action.deny": "Kiellä",
   "settings.permissions.tool.read.title": "Lue",
-  "settings.permissions.tool.read.description": "Tiedoston lukeminen (vastaa tiedostopolkua)",
+  "settings.permissions.tool.read.description":
+    "Tiedoston lukeminen (vastaa tiedostopolkua)",
   "settings.permissions.tool.edit.title": "Muokkaa",
   "settings.permissions.tool.edit.description":
     "Tiedostojen muokkaaminen, mukaan lukien muokkaus-, kirjoitus- ja paikkaustoiminnot",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Etsi glob-malleja vastaavia tiedostoja",
+  "settings.permissions.tool.glob.description":
+    "Etsi glob-malleja vastaavia tiedostoja",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Hae tiedostojen sisällöstä säännöllisten lausekkeiden avulla",
+  "settings.permissions.tool.grep.description":
+    "Hae tiedostojen sisällöstä säännöllisten lausekkeiden avulla",
   "settings.permissions.tool.list.title": "Luettelo",
   "settings.permissions.tool.list.description": "Listaa tiedostot hakemistossa",
   "settings.permissions.tool.bash.title": "Bash",
@@ -1022,19 +1160,23 @@ export const dict = {
   "settings.permissions.tool.task.title": "Tehtävä",
   "settings.permissions.tool.task.description": "Käynnistä aliagentit",
   "settings.permissions.tool.skill.title": "Taito",
-  "settings.permissions.tool.skill.description": "Lataa taito nimen perusteella",
+  "settings.permissions.tool.skill.description":
+    "Lataa taito nimen perusteella",
   "settings.permissions.tool.lsp.title": "LSP",
   "settings.permissions.tool.lsp.description": "Suorita kielipalvelinkyselyt",
   "settings.permissions.tool.todowrite.title": "Tehtävälistan päivitys",
   "settings.permissions.tool.todowrite.description": "Päivitä tehtävälista",
   "settings.permissions.tool.webfetch.title": "Web Fetch",
-  "settings.permissions.tool.webfetch.description": "Nouda sisältöä URL-osoitteesta",
+  "settings.permissions.tool.webfetch.description":
+    "Nouda sisältöä URL-osoitteesta",
   "settings.permissions.tool.websearch.title": "Verkkohaku",
   "settings.permissions.tool.websearch.description": "Hae verkosta",
   "settings.permissions.tool.external_directory.title": "Ulkoinen hakemisto",
-  "settings.permissions.tool.external_directory.description": "Käytä tiedostoja projektihakemiston ulkopuolella",
+  "settings.permissions.tool.external_directory.description":
+    "Käytä tiedostoja projektihakemiston ulkopuolella",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Tunnista toistuvat työkalukutsut samalla syötteellä",
+  "settings.permissions.tool.doom_loop.description":
+    "Tunnista toistuvat työkalukutsut samalla syötteellä",
   "session.delete.failed.title": "Istunnon poistaminen epäonnistui",
   "session.delete.title": "Poista istunto",
   "session.delete.confirm": 'Poistetaanko istunto "{{name}}"?',
@@ -1053,7 +1195,8 @@ export const dict = {
   "workspace.status.checking": "Tarkistetaan yhdistämättömiä muutoksia...",
   "workspace.status.error": "Gitin tilaa ei voi vahvistaa.",
   "workspace.status.clean": "Yhdistämättömiä muutoksia ei havaittu.",
-  "workspace.status.dirty": "Tässä työtilassa havaittu yhdistämättömiä muutoksia.",
+  "workspace.status.dirty":
+    "Tässä työtilassa havaittu yhdistämättömiä muutoksia.",
   "workspace.delete.title": "Poista työtila",
   "workspace.delete.confirm": 'Poistetaanko työtila "{{name}}"?',
   "workspace.delete.button": "Poista työtila",
@@ -1109,13 +1252,16 @@ export const dict = {
   "desktop.menu.shareFeedback": "Anna palautetta",
   "desktop.menu.reportBug": "Ilmoita ohjelmavirheestä",
   "desktop.menu.ariaLabel": "OpenCode-valikko",
-  "desktop.updater.dialog.checkFailed.message": "Päivitysten tarkistus epäonnistui.",
+  "desktop.updater.dialog.checkFailed.message":
+    "Päivitysten tarkistus epäonnistui.",
   "desktop.updater.dialog.checkFailed.title": "Päivitysvirhe",
-  "desktop.updater.dialog.installFailed.message": "Update installation failed. Try again, or install it later.",
+  "desktop.updater.dialog.installFailed.message":
+    "Update installation failed. Try again, or install it later.",
   "desktop.updater.dialog.installFailed.title": "Couldn't install update",
   "desktop.updater.dialog.upToDate.message": "Olet ajan tasalla.",
   "desktop.updater.dialog.upToDate.title": "Ei päivityksiä",
-  "desktop.updater.dialog.ready.message": "Päivitys {{version}} on ladattu. Käynnistetäänkö nyt uudelleen?",
+  "desktop.updater.dialog.ready.message":
+    "Päivitys {{version}} on ladattu. Käynnistetäänkö nyt uudelleen?",
   "desktop.updater.dialog.ready.title": "Päivitys valmis",
   "desktop.updater.dialog.restart": "Käynnistä uudelleen",
   "desktop.updater.dialog.retry": "Retry",
@@ -1127,9 +1273,12 @@ export const dict = {
   "desktop.recovery.loadFailed": "OpenCoden lataaminen epäonnistui",
   "desktop.recovery.terminated": "OpenCode-ikkuna sulkeutui odottamatta",
   "desktop.recovery.unresponsive": "OpenCode ei vastaa",
-  "desktop.recovery.unresponsive.detail": "Voit käynnistää sovelluksen uudelleen, avata lokit tai jatkaa odottamista.",
-  "desktop.recovery.loadFailed.detail": "Ikkuna: {{window}}\nURL: {{url}}\nVirhe: {{code}} {{description}}",
-  "desktop.recovery.terminated.detail": "Ikkuna: {{window}}\nSyy: {{reason}}\nKoodi: {{code}}",
+  "desktop.recovery.unresponsive.detail":
+    "Voit käynnistää sovelluksen uudelleen, avata lokit tai jatkaa odottamista.",
+  "desktop.recovery.loadFailed.detail":
+    "Ikkuna: {{window}}\nURL: {{url}}\nVirhe: {{code}} {{description}}",
+  "desktop.recovery.terminated.detail":
+    "Ikkuna: {{window}}\nSyy: {{reason}}\nKoodi: {{code}}",
   "desktop.recovery.unknown": "<tuntematon>",
   "desktop.dialog.chooseFolder": "Valitse kansio",
   "desktop.dialog.chooseFile": "Valitse tiedosto",
@@ -1138,33 +1287,45 @@ export const dict = {
   "desktop.server.local": "Paikallinen palvelin",
   "desktop.wsl.error.windowsOnly": "WSL on käytettävissä vain Windowsissa",
   "desktop.wsl.error.unavailable": "WSL ei ole käytettävissä",
-  "desktop.wsl.error.listInstalled": "Asennettujen WSL-jakelujen luettelointi epäonnistui",
-  "desktop.wsl.error.listOnline": "Verkossa saatavilla olevien WSL-jakelujen luettelointi epäonnistui",
+  "desktop.wsl.error.listInstalled":
+    "Asennettujen WSL-jakelujen luettelointi epäonnistui",
+  "desktop.wsl.error.listOnline":
+    "Verkossa saatavilla olevien WSL-jakelujen luettelointi epäonnistui",
   "desktop.wsl.error.executeDistro": "Jakelussa ei voi suorittaa komentoja",
   "desktop.wsl.error.installWsl": "WSL:n asennus epäonnistui",
-  "desktop.wsl.error.installDistro": "Jakelun asentaminen epäonnistui: {{distro}}",
+  "desktop.wsl.error.installDistro":
+    "Jakelun asentaminen epäonnistui: {{distro}}",
   "desktop.wsl.error.installOpencode": "OpenCoden asennus epäonnistui",
   "desktop.wsl.error.alreadyAdded": "{{distro}} on jo lisätty",
-  "desktop.wsl.error.opencodeMissing": "opencodea ei ole asennettu tähän jakeluun",
-  "desktop.wsl.error.opencodeCannotRun": "opencode on asennettu, mutta sitä ei voitu suorittaa",
-  "desktop.wsl.error.opencodeNotInstalled": "OpenCodea ei ole asennettu jakeluun {{distro}}",
+  "desktop.wsl.error.opencodeMissing":
+    "opencodea ei ole asennettu tähän jakeluun",
+  "desktop.wsl.error.opencodeCannotRun":
+    "opencode on asennettu, mutta sitä ei voitu suorittaa",
+  "desktop.wsl.error.opencodeNotInstalled":
+    "OpenCodea ei ole asennettu jakeluun {{distro}}",
   "desktop.wsl.error.updateVersion":
     "OpenCoden päivitys valmistui, mutta {{distro}} ilmoittaa yhä version {{installed}}; odotettu versio on {{expected}}",
   "desktop.wsl.error.noVersion": "ei versiota",
-  "desktop.wsl.error.serverExited": "WSL-palvelin sulkeutui käynnistyksen jälkeen (koodi={{code}} signaali={{signal}})",
+  "desktop.wsl.error.serverExited":
+    "WSL-palvelin sulkeutui käynnistyksen jälkeen (koodi={{code}} signaali={{signal}})",
   "desktop.wsl.error.serverExitedBeforeHealthy":
     "WSL-palvelin sulkeutui ennen toimintavalmiutta (koodi={{code}} signaali={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout":
     "Jakelun {{distro}} sivuprosessin kuntotarkistus aikakatkaistiin {{timeout}} ms:n jälkeen",
-  "desktop.wsl.error.commandTimeout": "Komento {{command}} {{args}} aikakatkaistiin {{timeout}} ms:n jälkeen",
+  "desktop.wsl.error.commandTimeout":
+    "Komento {{command}} {{args}} aikakatkaistiin {{timeout}} ms:n jälkeen",
   "desktop.wsl.error.failedPort": "Portin noutaminen epäonnistui",
-  "desktop.picker.error.notSelected": "Tiedostovalitsimessa ei valittu tiedostoa",
-  "desktop.picker.error.sizeLimit": "Valitut liitteet ylittävät {{limit}} Mt:n rajan",
+  "desktop.picker.error.notSelected":
+    "Tiedostovalitsimessa ei valittu tiedostoa",
+  "desktop.picker.error.sizeLimit":
+    "Valitut liitteet ylittävät {{limit}} Mt:n rajan",
   "command.logs.export": "Vie lokit",
-  "help.tabs.toast.ariaLabel": "Esittelyssä välilehdet. Järjestä työsi ja aktiiviset istuntosi välilehtien avulla",
+  "help.tabs.toast.ariaLabel":
+    "Esittelyssä välilehdet. Järjestä työsi ja aktiiviset istuntosi välilehtien avulla",
   "help.tabs.toast.dismiss": "Sulje välilehtien tiedot",
   "help.tabs.title": "Esittelyssä välilehdet",
-  "help.tabs.description": "Järjestä työsi ja aktiiviset istuntosi välilehtien avulla",
+  "help.tabs.description":
+    "Järjestä työsi ja aktiiviset istuntosi välilehtien avulla",
   "help.tabs.date": "14. heinäkuuta",
   "help.tabs.introduction": "OpenCode Desktop perustuu nyt välilehtiin.",
   "help.tabs.sessions":
@@ -1173,7 +1334,8 @@ export const dict = {
     "Muutaman välilehden pitäminen avoinna helpottaa aktiivisten istuntojen järjestämistä. Nimeä välilehdet helposti muistettaviksi, jos aiot pitää ne avoinna.",
   "help.tabs.home":
     "Kaikki istuntosi ja projektisi ovat uudessa etusivunäkymässä. Istunnon valitseminen avaa sen välilehteen.",
-  "help.tabs.persistence": "Kun avaat sovelluksen uudelleen, välilehtesi ovat yhä avoinna.",
+  "help.tabs.persistence":
+    "Kun avaat sovelluksen uudelleen, välilehtesi ovat yhä avoinna.",
   "help.tabs.worktrees":
     "Uusi ulkoasu ei vielä tue Git-työpuita, mutta tuki on tulossa pian. Jos haluat jatkaa aiemman ulkoasun käyttöä, voit vaihtaa ulkoasua asetuksissa. Huomaa kuitenkin, että uudesta ulkoasusta tulee pysyvä muutaman viikon kuluttua.",
 }

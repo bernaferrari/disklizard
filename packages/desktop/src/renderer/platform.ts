@@ -47,6 +47,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
       cancelScan: (scanId) => window.api.disklizard.cancelScan(scanId),
       stopWatching: (scanId) => window.api.disklizard.stopWatching(scanId),
       authorizeDeletePaths: (paths) => window.api.disklizard.authorizeDeletePaths(paths),
+      checkDeleteAccess: (path) => window.api.disklizard.checkDeleteAccess(path),
       deletePath: (path, options) => window.api.disklizard.deletePath(path, options),
       previewPath: (path) => window.api.disklizard.previewPath(path),
       systemPreviewPath: (path) => window.api.disklizard.systemPreviewPath(path),

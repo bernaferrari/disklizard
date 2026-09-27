@@ -47,10 +47,12 @@ describe("scan-bound delete authorization", () => {
     const validate = await manager.consume(7, filePath, prepared.authorization)
     await expect(validate()).resolves.toBeUndefined()
     await expect(validate()).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
-    await expect(manager.authorize(8, [filePath], async () => undefined)).rejects.toThrow(UNSCANNED_DELETE_TARGET_ERROR)
-    await expect(manager.authorize(7, [join(rootPath, "other.txt")], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(8, [filePath], async () => undefined)).resolves.toEqual([
+      { path: filePath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
+    await expect(manager.authorize(7, [join(rootPath, "other.txt")], async () => undefined)).resolves.toEqual([
+      { path: join(rootPath, "other.txt"), error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
   })
 
   test("trusts preview and open paths only while the sender owns their exact scan generation", () => {
@@ -105,9 +107,9 @@ describe("scan-bound delete authorization", () => {
 
     expect(() => manager.assertTrustedPath(23, "C:\\work\\A.txt")).not.toThrow()
     expect(() => manager.assertTrustedPath(23, "C:\\work\\a.txt")).toThrow(UNSCANNED_DELETE_TARGET_ERROR)
-    await expect(manager.authorize(23, ["C:\\work\\a.txt"], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(23, ["C:\\work\\a.txt"], async () => undefined)).resolves.toEqual([
+      { path: "C:\\work\\a.txt", error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
   })
 
   test("rejects a one-time authorization after the file identity changes", async () => {
@@ -156,10 +158,10 @@ describe("scan-bound delete authorization", () => {
           children: [],
         })
       }),
-    ).rejects.toThrow(UNSCANNED_DELETE_TARGET_ERROR)
-    await expect(manager.authorize(11, [filePath], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    ).resolves.toEqual([{ path: filePath, error: UNSCANNED_DELETE_TARGET_ERROR }])
+    await expect(manager.authorize(11, [filePath], async () => undefined)).resolves.toEqual([
+      { path: filePath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
   })
 
   test("bounds filesystem checks while preserving reviewed batch order", async () => {
@@ -315,9 +317,9 @@ describe("scan-bound delete authorization", () => {
     const [stale] = await manager.authorize(17, [filePath], async () => undefined)
     manager.updateRoot("17:primary", 17, { ...primaryRoot, children: [] })
     await expect(manager.consume(17, filePath, stale.authorization)).rejects.toThrow(INVALID_DELETE_AUTHORIZATION_ERROR)
-    await expect(manager.authorize(17, [filePath], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(17, [filePath], async () => undefined)).resolves.toEqual([
+      { path: filePath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
 
     manager.updateRoot("17:primary", 17, primaryRoot)
     manager.updateRoot("17:expand", 17, focusedRoot)
@@ -380,9 +382,9 @@ describe("scan-bound delete authorization", () => {
     await expect(manager.consume(21, oldPath, oldAuthorization.authorization)).rejects.toThrow(
       INVALID_DELETE_AUTHORIZATION_ERROR,
     )
-    await expect(manager.authorize(21, [oldPath], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(21, [oldPath], async () => undefined)).resolves.toEqual([
+      { path: oldPath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
     await expect(manager.authorize(21, [freshPath], async () => undefined)).resolves.toHaveLength(1)
   })
 
@@ -448,9 +450,9 @@ describe("scan-bound delete authorization", () => {
     await expect(manager.consume(23, filePath, prepared.authorization)).rejects.toThrow(
       INVALID_DELETE_AUTHORIZATION_ERROR,
     )
-    await expect(manager.authorize(23, [filePath], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(23, [filePath], async () => undefined)).resolves.toEqual([
+      { path: filePath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
   })
 
   test("renews a complete 4,096-item authorization group during a slow sequential cleanup", async () => {
@@ -640,9 +642,9 @@ describe("scan-bound delete authorization", () => {
       expect(manager.retainOwnerAsTrustedSubtree(`19:expand-${index}`)).toBe(true)
     }
 
-    await expect(manager.authorize(19, [focused[0]!.filePath], async () => undefined)).rejects.toThrow(
-      UNSCANNED_DELETE_TARGET_ERROR,
-    )
+    await expect(manager.authorize(19, [focused[0]!.filePath], async () => undefined)).resolves.toEqual([
+      { path: focused[0]!.filePath, error: UNSCANNED_DELETE_TARGET_ERROR },
+    ])
     await expect(manager.authorize(19, [focused.at(-1)!.filePath], async () => undefined)).resolves.toHaveLength(1)
   })
 })

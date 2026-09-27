@@ -407,10 +407,8 @@ export function assertMetainfoIdentity(
   if (/<!DOCTYPE/i.test(text)) throw new Error(`${format} metainfo must not contain a document type`)
   const errors: string[] = []
   const document = new DOMParser({
-    errorHandler: {
-      warning: (message) => errors.push(String(message)),
-      error: (message) => errors.push(String(message)),
-      fatalError: (message) => errors.push(String(message)),
+    onError: (_level, message) => {
+      errors.push(String(message))
     },
   }).parseFromString(text, "application/xml")
   const component = document.documentElement

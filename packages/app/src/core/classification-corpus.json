@@ -20,147 +20,300 @@
       "parent": "project",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "dependencies", "ecosystem": "node", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "dependencies",
+        "ecosystem": "node",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "node_modules",
       "parent": "web",
       "signatures": [],
       "parentMarkers": ["package.json", "package-lock.json"],
-      "expected": { "kind": "dependencies", "ecosystem": "node", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "dependencies",
+        "ecosystem": "node",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "node_modules",
       "parent": "web",
       "signatures": [],
       "parentMarkers": ["yarn.lock"],
-      "expected": { "kind": "dependencies", "ecosystem": "node", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "dependencies",
+        "ecosystem": "node",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": ".output",
       "parent": "project",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "node", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "node",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": ".next",
       "parent": "storefront",
       "signatures": [],
       "parentMarkers": ["package.json", "pnpm-lock.yaml"],
-      "expected": { "kind": "build-output", "ecosystem": "node", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "node",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "deriveddata",
       "parent": "Xcode",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "apple", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "apple",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "gocache",
       "parent": "project",
       "signatures": [],
       "parentMarkers": ["go.mod"],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "go", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "go",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "__pycache__",
       "parent": "api",
       "signatures": [],
       "parentMarkers": ["pyproject.toml"],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "python", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "python",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": ".venv",
       "parent": "api",
       "signatures": [],
       "parentMarkers": ["requirements.txt", "main.py"],
-      "expected": { "kind": "dependencies", "ecosystem": "python", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "dependencies",
+        "ecosystem": "python",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": ".dart_tool",
       "parent": "app",
       "signatures": [],
       "parentMarkers": ["pubspec.yaml"],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "dart", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "dart",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "target",
       "parent": "project",
       "signatures": [".rustc_info.json", "debug"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "rust", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "rust",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "target",
       "parent": "project",
       "signatures": ["debug"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "rust", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "rust",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
+    },
+    {
+      "name": "target",
+      "parent": "payments",
+      "signatures": ["debug"],
+      "parentMarkers": ["Cargo.toml"],
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "rust",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
+    },
+    {
+      "name": "target",
+      "parent": "payments",
+      "signatures": ["classes"],
+      "parentMarkers": ["pom.xml"],
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "jvm",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
+    },
+    {
+      "name": "target",
+      "parent": "payments",
+      "signatures": [],
+      "parentMarkers": ["pom.xml"],
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "generic",
+        "confidence": "ambiguous",
+        "cleanup": "review"
+      }
     },
     {
       "name": "target",
       "parent": "project",
       "signatures": ["classes"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "jvm", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "jvm",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "target",
       "parent": "project",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "generic", "confidence": "ambiguous", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "generic",
+        "confidence": "ambiguous",
+        "cleanup": "review"
+      }
     },
     {
       "name": "build",
       "parent": "project",
       "signatures": ["cmakecache.txt"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "cpp", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "cpp",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
+    },
+    {
+      "name": "build",
+      "parent": "service",
+      "signatures": ["classes"],
+      "parentMarkers": ["build.gradle.kts"],
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "jvm",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "build",
       "parent": "project",
       "signatures": ["build.ninja"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "cpp", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "cpp",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "build",
       "parent": "project",
       "signatures": ["classes", "libs"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "jvm", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "jvm",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "build",
       "parent": "project",
       "signatures": ["bin", "obj"],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "dotnet", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "dotnet",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "build",
       "parent": "project",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "generic", "confidence": "ambiguous", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "generic",
+        "confidence": "ambiguous",
+        "cleanup": "review"
+      }
     },
     {
       "name": "dist",
       "parent": "project",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "build-output", "ecosystem": "generic", "confidence": "ambiguous", "cleanup": "review" }
+      "expected": {
+        "kind": "build-output",
+        "ecosystem": "generic",
+        "confidence": "ambiguous",
+        "cleanup": "review"
+      }
     },
     {
       "name": "caches",
       "parent": ".gradle",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "jvm", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "jvm",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "caches",
@@ -174,28 +327,48 @@
       "parent": ".m2",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "jvm", "confidence": "likely", "cleanup": "review" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "jvm",
+        "confidence": "likely",
+        "cleanup": "review"
+      }
     },
     {
       "name": "registry",
       "parent": ".cargo",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "rust", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "rust",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "packages",
       "parent": ".nuget",
       "signatures": [],
       "parentMarkers": [],
-      "expected": { "kind": "toolchain-cache", "ecosystem": "dotnet", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "toolchain-cache",
+        "ecosystem": "dotnet",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     },
     {
       "name": "node_modules",
       "parent": "worktrees",
       "signatures": [],
       "parentMarkers": ["package.json"],
-      "expected": { "kind": "dependencies", "ecosystem": "node", "confidence": "verified", "cleanup": "eligible" }
+      "expected": {
+        "kind": "dependencies",
+        "ecosystem": "node",
+        "confidence": "verified",
+        "cleanup": "eligible"
+      }
     }
   ]
 }
