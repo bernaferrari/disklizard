@@ -1,3 +1,4 @@
+import { Icon } from "@/components/dl/icon"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
 import { formatBytes } from "./format"
 import { useLanguage } from "./runtime"
@@ -15,39 +16,36 @@ export function VolumeCapacitySummary(props: {
       : Math.max(free, Math.min(props.drive.total, props.drive.available))
   const hidden = props.root.children.find((node) => node.isHidden)
   return (
-    <div className="text-12-regular shrink-0 border-t border-border-weaker-base px-5 py-3 text-text-weak">
-      <div className="flex items-center gap-2.5 py-1">
-        <span aria-hidden className="size-1.5 rounded-full bg-text-weak" />
+    <details className="text-12-regular group mt-1 text-text-weak">
+      <summary className="flex min-h-7 cursor-pointer list-none items-center gap-2 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden">
         <span>{language.t("disk.capacity.free")}</span>
-        <span className="ml-auto tabular-nums">{formatBytes(free)}</span>
-      </div>
-      {available !== undefined && available > free && (
-        <div
-          className="flex items-center gap-2.5 py-1"
-          title={language.t("disk.drive.availableDetails", {
-            free: formatBytes(free),
-            reclaimable: formatBytes(available - free),
-          })}
-        >
-          <span aria-hidden className="w-1.5">
-            ≈
-          </span>
-          <span>{language.t("disk.capacity.available")}</span>
-          <span className="ml-auto tabular-nums">{formatBytes(available)}</span>
-        </div>
-      )}
-      <details className="mt-1">
-        <summary className="cursor-pointer py-1 text-text-weaker hover:text-text-strong">
-          {language.t("disk.capacity.details")}
-        </summary>
-        <p className="pt-1 leading-relaxed">
+        <span className="tabular-nums">{formatBytes(free)}</span>
+        <Icon
+          name="chevron-down"
+          className="text-icon-weak size-3 transition-transform duration-150 group-open:rotate-180"
+        />
+      </summary>
+      <div className="max-w-[45ch] pt-1 pb-2 leading-relaxed">
+        {available !== undefined && available > free ? (
+          <p
+            className="flex items-center gap-2 tabular-nums"
+            title={language.t("disk.drive.availableDetails", {
+              free: formatBytes(free),
+              reclaimable: formatBytes(available - free),
+            })}
+          >
+            <span>{language.t("disk.capacity.available")}</span>
+            <span>{formatBytes(available)}</span>
+          </p>
+        ) : null}
+        <p className="mt-1 text-text-weaker">
           {language.t(
             hidden
               ? "disk.capacity.hiddenExplanation"
               : "disk.capacity.allocationExplanation"
           )}
         </p>
-      </details>
-    </div>
+      </div>
+    </details>
   )
 }

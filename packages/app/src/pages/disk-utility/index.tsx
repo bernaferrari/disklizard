@@ -1,4 +1,5 @@
 import { VolumeCapacitySummary } from "./VolumeCapacitySummary"
+import { ScanCoverageDisclosure } from "./ScanCoverageDisclosure"
 import {
   showCollectionDragPreview,
   moveCollectionDragPreview,
@@ -31,7 +32,7 @@ import { ChartPie, LayoutGrid, Layers } from "lucide-react"
  */
 
 import { DiskUtilitySearchTools } from "./DiskUtilitySearchTools"
-import { DiskUtilityWorkspaceTabs } from "./DiskUtilityWorkspaceTabs"
+import { DiskUtilityWorkspaceMenu } from "./DiskUtilityWorkspaceMenu"
 import { DiskUtilityHoverContents } from "./DiskUtilityHoverContents"
 import { useHoverPreview } from "./use-hover-preview"
 import { Button } from "@/components/dl/button"
@@ -457,6 +458,8 @@ export default function DiskUtilityPage() {
   const [deletionProgress, setDeletionProgress] =
     useState<DeletionProgress | null>(null)
   const [query, setQuery] = useState("")
+  const [searchOpen, setSearchOpen] = useState(false)
+  const searchTriggerRef = useRef<HTMLButtonElement | null>(null)
   const [announcedSelection, setAnnouncedSelection] = useState("")
   const [indexFilter, setIndexFilter] = useState<IndexFilter>({
     lens: "all",
@@ -2034,6 +2037,19 @@ export default function DiskUtilityPage() {
       setFocusIdx(nextIndex)
       scrollIndexIntoViewRef.current?.(nextIndex)
     }
+  }
+
+  function openSearch() {
+    setSearchOpen(true)
+    requestAnimationFrame(() =>
+      document.getElementById("disklizard-scan-search")?.focus()
+    )
+  }
+
+  function closeSearch() {
+    updateQuery("")
+    setSearchOpen(false)
+    searchTriggerRef.current?.focus({ preventScroll: true })
   }
 
   const viewTransitionVersionRef = useRef(0)
@@ -3751,6 +3767,17 @@ export default function DiskUtilityPage() {
       else preview.close()
       return
     }
+    if (
+      view === "scan" &&
+      !scanning &&
+      (e.metaKey || e.ctrlKey) &&
+      !e.altKey &&
+      e.key.toLowerCase() === "f"
+    ) {
+      e.preventDefault()
+      openSearch()
+      return
+    }
     if (!shouldHandleDiskShortcut(e.target, e.defaultPrevented)) return
     if (view !== "scan") return
     const supportsRangeNavigation = !e.metaKey && !e.ctrlKey && !e.altKey
@@ -4281,6 +4308,14 @@ export default function DiskUtilityPage() {
       : cleanupWorkspace
         ? "cleanup"
         : "all"
+  const searchVisible = workspaceTab !== "all" || searchOpen || !!query.trim()
+  const showVolumeCapacity =
+    !!scanDrive &&
+    !!treeRoot &&
+    !!viewNode &&
+    diskPathEquals(viewNode.path, scanDrive.path, platform.os) &&
+    indexFilter.lens === "all" &&
+    !query.trim()
   const hoverPreviewVisible =
     workspaceTab === "all" &&
     scanMode === "map" &&
@@ -4462,10 +4497,10 @@ export default function DiskUtilityPage() {
           />
         )}
         {view === "scan" && !scanning ? (
-          <DiskUtilityWorkspaceTabs
+          <DiskUtilityWorkspaceMenu
             value={workspaceTab}
             onChange={changeWorkspaceTab}
-            className="hidden w-[232px] shrink-0 min-[841px]:block"
+            className="shrink-0"
           />
         ) : null}
       </header>
@@ -4651,64 +4686,64 @@ export default function DiskUtilityPage() {
                           : "max-[840px]:grid-rows-[minmax(220px,40%)_minmax(0,1fr)] max-[760px]:grid-rows-[240px_minmax(0,1fr)]"
                       )}
                     >
-                      <div
-                        className={cn(
-                          "absolute bottom-3 left-3 z-20 flex flex-col items-start gap-2 max-[840px]:top-3 max-[840px]:right-3 max-[840px]:bottom-auto max-[840px]:left-auto",
-                          effectiveCollection.length === 0 &&
-                            "max-[840px]:hidden"
-                        )}
-                      >
-                        <CollectionDropTarget
-                          setElement={(element) => {
-                            collectionDropElementRef.current =
-                              element ?? undefined
-                          }}
-                          node={collectionDragNode}
-                          acceptsNode={
-                            !collectionDragNode ||
-                            canModifyNode(collectionDragNode)
-                          }
-                          active={collectionDropActive}
-                          count={effectiveCollection.length}
-                          bytes={collectionSize}
-                          hasSharedPhysicalStorage={
-                            collectionHasSharedPhysicalStorage ||
-                            (collectionDragNode
-                              ? containsSharedPhysicalStorage(
-                                  collectionDragNode
-                                )
-                              : false)
-                          }
-                          hasUnverifiedPhysicalStorage={
-                            physicalCloneAccountingUncertain
-                          }
-                          requiresDeepInventoryRefresh={
-                            collectionNeedsDeepInventoryRefresh ||
-                            (collectionDragNode
-                              ? requiresDeepInventoryRefresh([
-                                  collectionDragNode,
-                                ])
-                              : false)
-                          }
-                          trashName={nativeTrashName(platform.os)}
-                          onReview={() => collectionSurface.open()}
-                          onClear={clearCollection}
-                          onDragEnter={collectionDragEnter}
-                          onDragOver={collectionDragOver}
-                          onDragLeave={collectionDragLeave}
-                          onDrop={collectDroppedNode}
-                        />
-                        {cleanupResults.length > 0 ? (
-                          <Button
-                            size="small"
-                            variant="secondary"
-                            className="min-h-9"
-                            onClick={() => setCleanupResultsOpen(true)}
-                          >
-                            {language.t("disk.results.reopen")}
-                          </Button>
-                        ) : null}
-                      </div>
+                      {effectiveCollection.length > 0 ||
+                      collectionDragNode ||
+                      cleanupResults.length > 0 ? (
+                        <div className="absolute bottom-3 left-3 z-20 flex flex-col items-start gap-2 max-[840px]:top-3 max-[840px]:right-3 max-[840px]:bottom-auto max-[840px]:left-auto">
+                          {effectiveCollection.length > 0 ||
+                          collectionDragNode ? (
+                            <CollectionDropTarget
+                              setElement={(element) => {
+                                collectionDropElementRef.current =
+                                  element ?? undefined
+                              }}
+                              node={collectionDragNode}
+                              acceptsNode={
+                                !collectionDragNode ||
+                                canModifyNode(collectionDragNode)
+                              }
+                              active={collectionDropActive}
+                              count={effectiveCollection.length}
+                              bytes={collectionSize}
+                              hasSharedPhysicalStorage={
+                                collectionHasSharedPhysicalStorage ||
+                                (collectionDragNode
+                                  ? containsSharedPhysicalStorage(
+                                      collectionDragNode
+                                    )
+                                  : false)
+                              }
+                              hasUnverifiedPhysicalStorage={
+                                physicalCloneAccountingUncertain
+                              }
+                              requiresDeepInventoryRefresh={
+                                collectionNeedsDeepInventoryRefresh ||
+                                (collectionDragNode
+                                  ? requiresDeepInventoryRefresh([
+                                      collectionDragNode,
+                                    ])
+                                  : false)
+                              }
+                              trashName={nativeTrashName(platform.os)}
+                              onReview={() => collectionSurface.open()}
+                              onDragEnter={collectionDragEnter}
+                              onDragOver={collectionDragOver}
+                              onDragLeave={collectionDragLeave}
+                              onDrop={collectDroppedNode}
+                            />
+                          ) : null}
+                          {cleanupResults.length > 0 ? (
+                            <Button
+                              size="small"
+                              variant="secondary"
+                              className="min-h-9"
+                              onClick={() => setCleanupResultsOpen(true)}
+                            >
+                              {language.t("disk.results.reopen")}
+                            </Button>
+                          ) : null}
+                        </div>
+                      ) : null}
                       {showLandscape ? (
                         <section
                           ref={(el: HTMLElement | null) => {
@@ -4888,49 +4923,82 @@ export default function DiskUtilityPage() {
                               />
                             </div>
                           ) : null}
-                          <div className="absolute top-auto right-auto bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-lg border-0 bg-transparent p-1 shadow-none max-[760px]:bottom-2.5">
-                            <Tabs
-                              value={scanMode}
-                              onValueChange={(value, details) =>
-                                chooseScanMode(
-                                  value as ScanMode,
-                                  details.event.type.startsWith("key")
-                                    ? "keyboard"
-                                    : "pointer",
-                                  false
-                                )
-                              }
-                            >
-                              <TabsList
-                                className="h-10"
-                                aria-label={language.t("disk.explore.choose")}
+                          <div className="absolute right-3 bottom-3 flex items-center gap-0.5 rounded-lg border-0 bg-transparent p-1 shadow-none max-[760px]:bottom-2.5">
+                            <DropdownMenu placement="top-start" gutter={6}>
+                              <DropdownMenu.Trigger
+                                as={Button}
+                                size="small"
+                                variant="secondary"
+                                className="min-h-10 gap-2 rounded-lg border border-border-weaker-base/70 bg-surface-raised-base/85 px-3 text-text-strong shadow-none"
                               >
-                                <TabsTrigger
-                                  value="map"
-                                  className="px-3"
-                                  aria-keyshortcuts="1"
-                                >
-                                  <ChartPie />
-                                  {language.t("disk.common.map")}
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="grid"
-                                  className="px-3"
-                                  aria-keyshortcuts="2"
-                                >
-                                  <LayoutGrid />
-                                  {language.t("disk.common.tiles")}
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="icicle"
-                                  className="px-3"
-                                  aria-keyshortcuts="3"
-                                >
-                                  <Layers />
-                                  {language.t("disk.common.icicle")}
-                                </TabsTrigger>
-                              </TabsList>
-                            </Tabs>
+                                {scanMode === "map" ? (
+                                  <ChartPie className="size-4" />
+                                ) : scanMode === "grid" ? (
+                                  <LayoutGrid className="size-4" />
+                                ) : (
+                                  <Layers className="size-4" />
+                                )}
+                                <span className="text-13-medium">
+                                  {language.t(
+                                    scanMode === "map"
+                                      ? "disk.common.map"
+                                      : scanMode === "grid"
+                                        ? "disk.common.tiles"
+                                        : "disk.common.icicle"
+                                  )}
+                                </span>
+                                <Icon
+                                  name="chevron-down"
+                                  className="text-icon-weak size-3"
+                                />
+                              </DropdownMenu.Trigger>
+                              <DropdownMenu.Portal>
+                                <DropdownMenu.Content>
+                                  <DropdownMenu.RadioGroup
+                                    value={scanMode}
+                                    onChange={(value) =>
+                                      chooseScanMode(
+                                        value as ScanMode,
+                                        "pointer",
+                                        false
+                                      )
+                                    }
+                                    aria-label={language.t(
+                                      "disk.explore.choose"
+                                    )}
+                                  >
+                                    {(["map", "grid", "icicle"] as const).map(
+                                      (mode) => (
+                                        <DropdownMenu.RadioItem
+                                          key={mode}
+                                          value={mode}
+                                        >
+                                          {mode === "map" ? (
+                                            <ChartPie className="size-4" />
+                                          ) : mode === "grid" ? (
+                                            <LayoutGrid className="size-4" />
+                                          ) : (
+                                            <Layers className="size-4" />
+                                          )}
+                                          <DropdownMenu.ItemLabel>
+                                            {language.t(
+                                              mode === "map"
+                                                ? "disk.common.map"
+                                                : mode === "grid"
+                                                  ? "disk.common.tiles"
+                                                  : "disk.common.icicle"
+                                            )}
+                                          </DropdownMenu.ItemLabel>
+                                          <DropdownMenu.ItemIndicator>
+                                            <Icon name="check" />
+                                          </DropdownMenu.ItemIndicator>
+                                        </DropdownMenu.RadioItem>
+                                      )
+                                    )}
+                                  </DropdownMenu.RadioGroup>
+                                </DropdownMenu.Content>
+                              </DropdownMenu.Portal>
+                            </DropdownMenu>
                             {physicalCloneAccountingWarning ||
                             treeRoot?.scanIssues ? (
                               <DeveloperDisclosure
@@ -5117,60 +5185,6 @@ export default function DiskUtilityPage() {
                             "min-w-0 flex-1 pb-16"
                         )}
                       >
-                        {treeRoot?.scanIssues ? (
-                          <details className="group mx-4 mt-2 shrink-0 border-b border-border-weaker-base text-text-weak">
-                            <summary className="text-12-medium flex min-h-8 cursor-pointer list-none items-center gap-2 py-1 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
-                              <Icon
-                                name="warning"
-                                className="size-3.5 shrink-0 text-icon-warning-base"
-                              />
-                              <span className="min-w-0 flex-1">
-                                {language.t("disk.explore.unreadable", {
-                                  count: formatCount(
-                                    treeRoot.scanIssues.unreadableCount
-                                  ),
-                                  locations: language.plural(
-                                    "disk.count.locationNoun",
-                                    treeRoot.scanIssues.unreadableCount
-                                  ),
-                                })}{" "}
-                                · {language.t("disk.explore.totalsLow")}
-                              </span>
-                              <Icon
-                                name="chevron-down"
-                                className="text-icon-weak size-3 shrink-0 transition-transform duration-150 group-open:rotate-180"
-                              />
-                            </summary>
-                            <p className="text-12-regular mt-2 leading-relaxed text-text-weak">
-                              {language.t(scanAccessGuidance(platform.os))}{" "}
-                              {language.t("disk.accessGuidance.rescan")}
-                            </p>
-                            <Button
-                              className="mt-2 min-h-9"
-                              size="small"
-                              variant="secondary"
-                              onClick={() => void rescanCurrent(true)}
-                            >
-                              {language.t("disk.common.rescan")}
-                            </Button>
-                            <ul
-                              className="mt-2 max-h-36 space-y-1 overflow-y-auto font-mono text-xs text-text-weak"
-                              aria-label={language.t(
-                                "disk.explore.unreadableList"
-                              )}
-                            >
-                              {treeRoot.scanIssues.samplePaths.map((path) => (
-                                <li
-                                  key={path}
-                                  title={path}
-                                  className="truncate"
-                                >
-                                  {path}
-                                </li>
-                              ))}
-                            </ul>
-                          </details>
-                        ) : null}
                         <div
                           className={cn(
                             "flex min-h-0 w-full flex-1 flex-col",
@@ -5245,6 +5259,30 @@ export default function DiskUtilityPage() {
                                     )}
                                   </p>
                                 </div>
+                                {workspaceTab === "all" ? (
+                                  <button
+                                    ref={searchTriggerRef}
+                                    type="button"
+                                    className={cn(
+                                      "grid size-11 shrink-0 place-items-center rounded-lg text-text-weak transition-colors duration-150 outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak",
+                                      searchVisible &&
+                                        "bg-surface-raised-base text-text-strong"
+                                    )}
+                                    aria-label={language.t("disk.search.label")}
+                                    aria-expanded={searchVisible}
+                                    title={language.t("disk.search.label")}
+                                    onClick={() =>
+                                      searchVisible
+                                        ? closeSearch()
+                                        : openSearch()
+                                    }
+                                  >
+                                    <Icon
+                                      name="magnifying-glass"
+                                      className="size-4"
+                                    />
+                                  </button>
+                                ) : null}
                               </div>
                               {cleanupWorkspace &&
                               effectiveCollection.length > 0 ? (
@@ -5298,15 +5336,23 @@ export default function DiskUtilityPage() {
                                 </div>
                               ) : null}
                             </div>
+                            {showVolumeCapacity && scanDrive && treeRoot ? (
+                              <VolumeCapacitySummary
+                                drive={scanDrive}
+                                root={treeRoot}
+                              />
+                            ) : null}
+                            {treeRoot?.scanIssues ? (
+                              <ScanCoverageDisclosure
+                                issues={treeRoot.scanIssues}
+                                os={platform.os}
+                                onRescan={() => void rescanCurrent(true)}
+                              />
+                            ) : null}
                             <div className="border-0 pb-0 max-[840px]:mt-2 max-[760px]:pb-1">
                               <p className="sr-only">
                                 {language.t("disk.explore.heading")}
                               </p>
-                              <DiskUtilityWorkspaceTabs
-                                value={workspaceTab}
-                                onChange={changeWorkspaceTab}
-                                className="hidden max-[840px]:block"
-                              />
                               {cleanupWorkspace &&
                               !physicalCloneAccountingUncertain ? (
                                 <Tabs
@@ -5477,28 +5523,33 @@ export default function DiskUtilityPage() {
                               </>
                             ) : null}
                           </div>
-                          <DiskUtilitySearchTools
-                            compact={workspaceTab === "all"}
-                            developer={indexFilter.lens === "developer"}
-                            grouped={groupDeveloper}
-                            onGroup={setGroupDeveloper}
-                            query={query}
-                            label={language.t(
-                              indexFilter.lens === "changes"
-                                ? "disk.history.search"
-                                : "disk.search.label"
-                            )}
-                            placeholder={language.t(
-                              indexFilter.lens === "changes"
-                                ? "disk.history.search"
-                                : "disk.search.placeholder"
-                            )}
-                            sortKey={indexFilter.sortKey}
-                            sortDirection={indexFilter.sortDirection}
-                            showSort={indexFilter.lens !== "changes"}
-                            onQuery={updateQuery}
-                            onSort={updateSort}
-                          />
+                          {searchVisible ? (
+                            <DiskUtilitySearchTools
+                              compact={workspaceTab === "all"}
+                              developer={indexFilter.lens === "developer"}
+                              grouped={groupDeveloper}
+                              onGroup={setGroupDeveloper}
+                              query={query}
+                              label={language.t(
+                                indexFilter.lens === "changes"
+                                  ? "disk.history.search"
+                                  : "disk.search.label"
+                              )}
+                              placeholder={language.t(
+                                indexFilter.lens === "changes"
+                                  ? "disk.history.search"
+                                  : "disk.search.placeholder"
+                              )}
+                              sortKey={indexFilter.sortKey}
+                              sortDirection={indexFilter.sortDirection}
+                              showSort={indexFilter.lens !== "changes"}
+                              onQuery={updateQuery}
+                              onSort={updateSort}
+                              onDismiss={
+                                workspaceTab === "all" ? closeSearch : undefined
+                              }
+                            />
+                          ) : null}
 
                           {indexFilter.lens === "changes" ||
                           entries.length > 0 ? (
@@ -5989,21 +6040,6 @@ export default function DiskUtilityPage() {
                             </ScrollView>
                           )}
                         </div>
-                        {scanDrive &&
-                        treeRoot &&
-                        viewNode &&
-                        diskPathEquals(
-                          viewNode.path,
-                          scanDrive.path,
-                          platform.os
-                        ) &&
-                        indexFilter.lens === "all" &&
-                        !query.trim() ? (
-                          <VolumeCapacitySummary
-                            drive={scanDrive}
-                            root={treeRoot}
-                          />
-                        ) : null}
                         {hoverPreviewVisible && hoverPreviewNode ? (
                           <DiskUtilityHoverContents
                             node={hoverPreviewNode}

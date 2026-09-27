@@ -5,8 +5,8 @@ import { formatBytes } from "./format"
 import { useLanguage } from "./runtime"
 
 /**
- * A persistent cleanup destination. It stays visible before drag begins so the
- * interaction is discoverable, while keeping deletion behind a separate review.
+ * A cleanup destination that appears when the user collects or drags an item.
+ * Deletion remains behind a separate review.
  */
 export function CollectionDropTarget(props: {
   node: DiskScanNode | null
@@ -18,9 +18,8 @@ export function CollectionDropTarget(props: {
   hasUnverifiedPhysicalStorage: boolean
   requiresDeepInventoryRefresh: boolean
   trashName: string
-  setElement?: (element: HTMLElement) => void
+  setElement?: (element: HTMLElement | null) => void
   onReview: () => void
-  onClear: () => void
   onDragEnter: (event: DragEvent) => void
   onDragOver: (event: DragEvent) => void
   onDragLeave: (event: DragEvent) => void
@@ -67,13 +66,12 @@ export function CollectionDropTarget(props: {
     <button
       type="button"
       ref={(element) => {
-        if (element) props.setElement?.(element)
+        props.setElement?.(element)
       }}
       className={cn(
-        "relative grid size-12 place-items-center rounded-full border border-border-weaker-base bg-surface-raised-base text-text-weak shadow-sm transition-[background-color,transform] duration-150 outline-none hover:-translate-y-0.5 hover:bg-surface-raised-strong hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak motion-reduce:transition-none",
-        props.node && "ring-4 ring-text-weak/15",
-        props.active &&
-          "scale-110 bg-surface-raised-strong text-text-strong ring-4 ring-text-weak/40"
+        "relative flex min-h-11 max-w-[min(300px,58vw)] min-w-11 items-center gap-2 rounded-xl border border-border-weaker-base bg-surface-raised-base px-3 text-text-strong shadow-[0_8px_24px_rgb(0_0_0/0.12)] transition-[background-color,border-color] duration-150 outline-none hover:bg-surface-raised-strong focus-visible:ring-2 focus-visible:ring-text-weak motion-reduce:transition-none",
+        props.node && "border-text-weak/45",
+        props.active && "border-text-strong/70 bg-surface-raised-strong"
       )}
       onClick={() => {
         if (hasItems) props.onReview()
@@ -89,18 +87,15 @@ export function CollectionDropTarget(props: {
       }
       title={hasItems ? detail : language.t("disk.collection.instructions")}
     >
-      <Icon name="trash" className="size-5" />
-      {props.node && (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-full left-0 mb-3 max-w-[240px] truncate rounded-lg bg-surface-raised-strong px-3 py-2 text-xs font-medium text-text-strong shadow-md"
-        >
-          {title}
-        </span>
-      )}
+      <Icon name="trash" className="text-icon-weak size-4 shrink-0" />
+      <span className="text-12-medium min-w-0 truncate">
+        {props.node
+          ? title
+          : language.plural("disk.count.itemSelected", props.count)}
+      </span>
       {hasItems ? (
-        <span className="text-12-medium absolute -top-1 -right-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-text-strong px-1 text-background-base tabular-nums">
-          {props.count > 99 ? "99+" : props.count}
+        <span className="text-12-regular shrink-0 text-text-weak tabular-nums">
+          {formatBytes(props.bytes)}
         </span>
       ) : null}
       <span

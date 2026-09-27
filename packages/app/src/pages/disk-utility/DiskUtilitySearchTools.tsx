@@ -23,6 +23,7 @@ export function DiskUtilitySearchTools(props: {
   showSort: boolean
   onQuery: (value: string) => void
   onSort: (key: DiskEntrySortKey, direction: DiskEntrySortDirection) => void
+  onDismiss?: () => void
 }) {
   const language = useLanguage()
   return (
@@ -47,6 +48,12 @@ export function DiskUtilitySearchTools(props: {
           placeholder={props.placeholder}
           value={props.query}
           onChange={(event) => props.onQuery(event.currentTarget.value)}
+          onKeyDown={(event) => {
+            if (event.key !== "Escape" || !props.onDismiss) return
+            event.preventDefault()
+            event.stopPropagation()
+            props.onDismiss()
+          }}
           className="dl-search-input h-full min-w-0 flex-1 bg-transparent text-base text-text-strong outline-none placeholder:text-text-weaker sm:text-[13px]"
         />
         {props.query ? (
