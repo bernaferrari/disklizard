@@ -156,7 +156,21 @@ describe("primarySegmentColor", () => {
     }
   })
 
-  it("uses the same vivid storage palette in both app themes", () => {
+  it("keeps branch hues stable and files neutral across map depths", () => {
+    for (let index = 0; index < 10; index++) {
+      const branchHue = primaryHueForIndex(index)
+      for (let depth = 0; depth < 9; depth++) {
+        const folder = storageMapColor(index, depth)
+        const file = storageMapColor(index, depth, false)
+        expect(folder.endsWith(` ${branchHue})`)).toBe(true)
+        expect(Number(file.match(/oklch\([\d.]+ ([\d.]+)/)?.[1])).toBeLessThan(
+          0.02
+        )
+      }
+    }
+  })
+
+  it("uses the same storage palette in both app themes", () => {
     const previous = document.documentElement.dataset.colorScheme
     try {
       for (let index = 0; index < 10; index++) {

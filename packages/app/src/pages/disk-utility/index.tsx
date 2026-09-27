@@ -3903,8 +3903,8 @@ export default function DiskUtilityPage() {
     const sb = new Sunburst(el, {
       rings: 8,
       maxSegments: 720,
-      padAngle: 0.0016,
-      ringGap: 0.004,
+      padAngle: 0.001,
+      ringGap: 0.0025,
       enterAnimMs: sunburstEntryDuration(orbitEntryIntentRef.current),
       canDrag: (node) => live.current.canDragNode(node),
       onHover: (seg) => {
@@ -5118,18 +5118,28 @@ export default function DiskUtilityPage() {
                         )}
                       >
                         {treeRoot?.scanIssues ? (
-                          <details className="mx-4 mt-3 shrink-0 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-text-strong">
-                            <summary className="text-13-semibold min-h-9 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-icon-warning-base">
-                              {language.t("disk.explore.unreadable", {
-                                count: formatCount(
-                                  treeRoot.scanIssues.unreadableCount
-                                ),
-                                locations: language.plural(
-                                  "disk.count.locationNoun",
-                                  treeRoot.scanIssues.unreadableCount
-                                ),
-                              })}{" "}
-                              · {language.t("disk.explore.totalsLow")}
+                          <details className="group mx-4 mt-2 shrink-0 border-b border-border-weaker-base text-text-weak">
+                            <summary className="text-12-medium flex min-h-8 cursor-pointer list-none items-center gap-2 py-1 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
+                              <Icon
+                                name="warning"
+                                className="size-3.5 shrink-0 text-icon-warning-base"
+                              />
+                              <span className="min-w-0 flex-1">
+                                {language.t("disk.explore.unreadable", {
+                                  count: formatCount(
+                                    treeRoot.scanIssues.unreadableCount
+                                  ),
+                                  locations: language.plural(
+                                    "disk.count.locationNoun",
+                                    treeRoot.scanIssues.unreadableCount
+                                  ),
+                                })}{" "}
+                                · {language.t("disk.explore.totalsLow")}
+                              </span>
+                              <Icon
+                                name="chevron-down"
+                                className="text-icon-weak size-3 shrink-0 transition-transform duration-150 group-open:rotate-180"
+                              />
                             </summary>
                             <p className="text-12-regular mt-2 leading-relaxed text-text-weak">
                               {language.t(scanAccessGuidance(platform.os))}{" "}

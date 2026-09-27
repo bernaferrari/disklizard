@@ -19,7 +19,7 @@ import type { DiskScanNode } from "./types"
 import { surfaceRing } from "./ui-tokens"
 
 /** Keep the complete center summary inside the quiet disc at every desktop size. */
-const INNER_HOLE_RATIO = 0.29
+const INNER_HOLE_RATIO = 0.25
 
 /** Node shape the engine consumes — identical to DiskScanNode, aliased for seamless interop. */
 export type SunNode = DiskScanNode
@@ -140,7 +140,7 @@ function projectAngle(angle: number, start: number, end: number) {
 }
 
 /** Smaller arcs become hard to distinguish and target in a normal-size window. */
-export const MIN_VISIBLE_SEGMENT_ANGLE = 0.008
+export const MIN_VISIBLE_SEGMENT_ANGLE = 0.01
 
 function collapseVisualChildren(
   node: SunNode,
@@ -269,7 +269,8 @@ function layoutTree(
           parent.depth < rings - 1 &&
           child.isDir &&
           !child.isOther &&
-          child.children?.length
+          child.children?.length &&
+          segmentSpan >= MIN_VISIBLE_SEGMENT_ANGLE * 2
         ) {
           next.push({
             node: child,
@@ -399,8 +400,8 @@ export class Sunburst {
     this.options = {
       rings: 6,
       maxSegments: 560,
-      padAngle: 0.0016,
-      ringGap: 0.004,
+      padAngle: 0.001,
+      ringGap: 0.0025,
       animMs: 240,
       enterAnimMs: 560,
       ...options,
@@ -689,7 +690,7 @@ export class Sunburst {
       const toTone = {
         ...base,
         C: L.node.isOther ? base.C * 0.25 : base.C,
-        h: storageMapHue(L.hue, colorDepth),
+        h: L.node.isDir ? storageMapHue(L.hue, colorDepth) : 250,
       }
       const fromTone = prev?.tone ?? focus?.tone ?? toTone
       next.push({

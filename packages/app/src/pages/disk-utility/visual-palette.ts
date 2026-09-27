@@ -42,40 +42,21 @@ const fileTones = STORAGE_HUES.map((hue) =>
     gamutTone(0.66 + depth * 0.008, hue, 0.6)
   )
 )
-// The map carries no labels inside segments, so it can use a livelier branch
-// color than the tiles while still keeping every tone inside sRGB on hover.
-const MAP_DEPTH_LIGHTNESS = [
-  0, 0.045, -0.018, 0.035, -0.028, 0.025, -0.012, 0.018, -0.02,
-]
-const MAP_DEPTH_HUE_SHIFT = [0, -10, 4, -14, 7, -6, 10, -8, 5]
-export function storageMapHue(hue: number, depth = 0) {
-  const level = Math.max(0, Math.min(8, Math.floor(depth)))
-  return (hue + MAP_DEPTH_HUE_SHIFT[level] + 360) % 360
+// One hue means one branch. The outer levels recede gently so hierarchy reads
+// before individual wedges; changing hue at each ring obscures that relationship.
+export function storageMapHue(hue: number, _depth = 0) {
+  return hue
 }
 const mapFolderTones = STORAGE_HUES.map((hue) =>
   Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(
-      (hue >= 80 && hue <= 130
-        ? 0.81
-        : hue >= 140 && hue <= 170
-          ? 0.76
-          : 0.75) + MAP_DEPTH_LIGHTNESS[depth],
-      storageMapHue(hue, depth),
-      0.94,
-      0.035
-    )
+    gamutTone(0.77 - depth * 0.008, hue, 0.76 - depth * 0.025, 0.035)
   )
 )
-const mapFileTones = STORAGE_HUES.map((hue) =>
-  Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(
-      0.7 + MAP_DEPTH_LIGHTNESS[depth] * 0.55,
-      storageMapHue(hue, depth),
-      0.72,
-      0.035
-    )
-  )
-)
+// Files are neutral endpoints, not a new colored branch.
+const mapFileTones = Array.from({ length: 9 }, (_, depth) => ({
+  L: 0.68 - depth * 0.006,
+  C: 0.006,
+}))
 
 export function storageTone(hue: number, depth = 0, directory = true) {
   const index = Math.max(
@@ -93,7 +74,7 @@ export function storageMapTone(hue: number, depth = 0, directory = true) {
     STORAGE_HUES.indexOf(hue as (typeof STORAGE_HUES)[number])
   )
   const level = Math.max(0, Math.min(8, Math.floor(depth)))
-  return directory ? mapFolderTones[index][level] : mapFileTones[index][level]
+  return directory ? mapFolderTones[index][level] : mapFileTones[level]
 }
 
 export function storageMapColor(
@@ -107,7 +88,7 @@ export function storageMapColor(
         STORAGE_HUES.length
     ]
   const { L, C } = storageMapTone(hue, depth, directory)
-  return `oklch(${L} ${C} ${storageMapHue(hue, depth)})`
+  return `oklch(${L} ${C} ${directory ? storageMapHue(hue, depth) : 250})`
 }
 
 export function storageTileColor(index: number, depth: number) {

@@ -2,7 +2,6 @@ import { Button } from "@/components/dl/button"
 import { Icon, type IconName } from "@/components/dl/icon"
 import type { ReactNode } from "react"
 import type { DiskScanNode } from "./types"
-import { storageMapColor } from "./visual-palette"
 import { formatBytes } from "./format"
 import { diskLanguageText, useLanguage } from "./runtime"
 
@@ -197,10 +196,7 @@ export function CenterOverlay(props: { node: DiskScanNode | null }) {
       <div className="max-w-[29%] text-center @max-[399px]:max-w-[46%]">
         {props.node ? (
           <>
-            <p
-              className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap tabular-nums"
-              style={{ color: storageMapColor(0, 0) }}
-            >
+            <p className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums">
               {amount}
               <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
                 {unit}
