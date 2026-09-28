@@ -66,3 +66,16 @@ it("keeps remainder navigation attached to its containing folder", () => {
       .reduce((sum, cell) => sum + cell.node.size, 0)
   ).toBe(100)
 })
+it("shows tiny root items as the same aggregate used by the contents list", () => {
+  const children = [
+    ...Array.from({ length: 5 }, (_, index) => node(`large-${index}`, 100_000)),
+    ...Array.from({ length: 15 }, (_, index) => node(`small-${index}`, 4_096)),
+  ]
+  const cells = layoutNestedTreemap(children, 900, 650, "/repo")
+  const summary = cells.find(
+    (cell) => cell.node.path === "disklizard:list-more:/repo"
+  )
+  expect(summary?.node.otherCount).toBe(15)
+  expect(summary?.node.size).toBe(15 * 4_096)
+  expect(cells.filter((cell) => cell.depth === 0)).toHaveLength(6)
+})

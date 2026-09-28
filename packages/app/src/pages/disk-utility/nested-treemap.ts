@@ -1,5 +1,9 @@
 import type { DiskScanNode } from "./types"
-import { collapseTreemapChildren, layoutTreemap } from "./treemap"
+import {
+  collapseTreemapChildren,
+  groupSmallChildren,
+  layoutTreemap,
+} from "./treemap"
 
 export type NestedTile = {
   node: DiskScanNode
@@ -18,7 +22,9 @@ export type NestedTile = {
 export function layoutNestedTreemap(
   children: DiskScanNode[],
   width: number,
-  height: number
+  height: number,
+  rootPath = "",
+  rootSize = children.reduce((sum, child) => sum + child.size, 0)
 ): NestedTile[] {
   if (width <= 0 || height <= 0) return []
   const result: NestedTile[] = []
@@ -52,7 +58,11 @@ export function layoutNestedTreemap(
     )
     inner.h *= Math.min(1, accounted / Math.max(node.size, accounted))
     for (const rect of layoutTreemap(
-      collapseTreemapChildren(node.children, 32),
+      groupSmallChildren(
+        collapseTreemapChildren(node.children, 32),
+        node.path,
+        node.size
+      ),
       inner
     )) {
       visit(
@@ -68,7 +78,7 @@ export function layoutNestedTreemap(
     }
   }
   for (const rect of layoutTreemap(
-    collapseTreemapChildren(children),
+    groupSmallChildren(collapseTreemapChildren(children), rootPath, rootSize),
     undefined,
     true
   )) {

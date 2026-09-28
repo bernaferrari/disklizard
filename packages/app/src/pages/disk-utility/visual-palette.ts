@@ -1,6 +1,6 @@
 /** Branch hue identifies a location; color never communicates cleanup safety. */
 export const STORAGE_HUES = [
-  220, 25, 150, 280, 95, 245, 335, 125, 55, 265,
+  198, 25, 158, 278, 88, 228, 330, 165, 50, 300,
 ] as const
 
 function inSrgb(lightness: number, chroma: number, hue: number) {
@@ -35,11 +35,13 @@ function gamutTone(
 
 // Storage hues identify branches, independent of the surrounding app theme.
 const folderTones = STORAGE_HUES.map((hue) =>
-  Array.from({ length: 9 }, (_, depth) => gamutTone(0.77 + depth * 0.012, hue))
+  Array.from({ length: 9 }, (_, depth) =>
+    gamutTone(0.75 + depth * 0.009, hue, hue === 158 ? 0.7 : 0.86)
+  )
 )
 const fileTones = STORAGE_HUES.map((hue) =>
   Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(0.66 + depth * 0.008, hue, 0.6)
+    gamutTone(0.69 + depth * 0.006, hue, 0.58)
   )
 )
 // One hue means one branch. The outer levels recede gently so hierarchy reads
@@ -49,12 +51,17 @@ export function storageMapHue(hue: number, _depth = 0) {
 }
 const mapFolderTones = STORAGE_HUES.map((hue) =>
   Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(0.77 - depth * 0.008, hue, 0.76 - depth * 0.025, 0.035)
+    gamutTone(
+      0.78 - depth * 0.003,
+      hue,
+      (hue === 158 ? 0.74 : 0.9) - depth * 0.012,
+      0.035
+    )
   )
 )
 // Files are neutral endpoints, not a new colored branch.
 const mapFileTones = Array.from({ length: 9 }, (_, depth) => ({
-  L: 0.68 - depth * 0.006,
+  L: 0.69 - depth * 0.004,
   C: 0.006,
 }))
 

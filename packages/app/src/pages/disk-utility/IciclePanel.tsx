@@ -103,17 +103,17 @@ export function IciclePanel(props: {
                 height: 60,
                 opacity: retained === cell ? 0 : 1,
                 pointerEvents: retained === cell ? "none" : undefined,
-                backgroundColor:
-                  props.colorForNode(cell.node) ??
-                  primarySegmentColor(
-                    cell.colorIndex,
-                    1,
-                    cell.node.isDir,
-                    cell.depth
-                  ),
-                backgroundImage: cell.node.isOther
-                  ? "repeating-linear-gradient(135deg, transparent 0 5px, oklch(0.2 0.02 250 / 0.14) 5px 7px)"
-                  : undefined,
+                backgroundColor: cell.node.isOther
+                  ? cell.depth === 0
+                    ? "oklch(0.7 0.008 250)"
+                    : `color-mix(in oklab, ${primarySegmentColor(cell.colorIndex, 1, true, cell.depth)} 70%, oklch(0.87 0 0))`
+                  : (props.colorForNode(cell.node) ??
+                    primarySegmentColor(
+                      cell.colorIndex,
+                      1,
+                      cell.node.isDir,
+                      cell.depth
+                    )),
                 color: primarySegmentForeground(),
                 boxShadow:
                   props.selectedPath === cell.node.path

@@ -109,6 +109,44 @@ describe("small retained entries", () => {
     }))
     expect(groupSmallEntryTail(entries, "/repo", 1_200_000)).toEqual(entries)
   })
+
+  it("groups tiny entries even when a tiny folder interrupts the file tail", () => {
+    const entries = [
+      ...Array.from({ length: 5 }, (_, index) => ({
+        node: node(`large-${index}`, `/repo/large-${index}`, 100_000),
+        displaySize: 100_000,
+        colorIndex: index,
+        sourceIndex: index,
+      })),
+      ...Array.from({ length: 9 }, (_, index) => ({
+        node: node(`file-${index}`, `/repo/file-${index}`, 4_096),
+        displaySize: 4_096,
+        colorIndex: index + 5,
+        sourceIndex: index + 5,
+      })),
+      {
+        node: node("scripts", "/repo/scripts", 4_096, [
+          node("run", "/repo/scripts/run", 4_096),
+        ]),
+        displaySize: 4_096,
+        colorIndex: 14,
+        sourceIndex: 14,
+      },
+      ...Array.from({ length: 6 }, (_, index) => ({
+        node: node(`tail-${index}`, `/repo/tail-${index}`, 4_096),
+        displaySize: 4_096,
+        colorIndex: index + 15,
+        sourceIndex: index + 15,
+      })),
+    ]
+    const grouped = groupSmallEntryTail(entries, "/repo", 561_440)
+    expect(grouped).toHaveLength(6)
+    expect(grouped.at(-1)?.node.otherCount).toBe(16)
+    expect(
+      grouped.at(-1)?.node.children.some((child) => child.name === "scripts")
+    ).toBe(true)
+    expect(grouped.at(-1)?.node.path).toBe("disklizard:list-more:/repo")
+  })
 })
 
 describe("storage entry sorting", () => {

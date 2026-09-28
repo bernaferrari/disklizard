@@ -61,6 +61,39 @@ export function collapseTreemapChildren(
   ]
 }
 
+/** Use the same small-item summary in Tiles and the current-folder list. */
+export function groupSmallChildren(
+  children: DiskScanNode[],
+  parentPath: string,
+  parentSize: number
+): DiskScanNode[] {
+  const ranked = children
+    .filter((child) => child.size > 0)
+    .toSorted((a, b) => b.size - a.size)
+  if (ranked.length < 10) return ranked
+  const threshold = Math.max(16 * 1024, parentSize * 0.0016)
+  const kept: DiskScanNode[] = []
+  const small: DiskScanNode[] = []
+  for (const [index, child] of ranked.entries()) {
+    if (index < 5 || child.isOther || child.size > threshold) kept.push(child)
+    else small.push(child)
+  }
+  if (small.length < 4) return ranked
+  return [
+    ...kept,
+    {
+      name: "",
+      path: `disklizard:list-more:${parentPath}`,
+      size: small.reduce((sum, child) => sum + child.size, 0),
+      isDir: true,
+      isOther: true,
+      otherCount: small.length,
+      children: small,
+      ext: "",
+    },
+  ]
+}
+
 /** Worst (max) aspect ratio of a row laid along side `s`, row areas `row`. */
 function worstRatio(row: Item[], s: number): number {
   if (!row.length) return Infinity

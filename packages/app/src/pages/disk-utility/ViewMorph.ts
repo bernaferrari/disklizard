@@ -1,5 +1,5 @@
 /**
- * ViewMorph — the map⇄tiles transition.
+ * ViewMorph — the map, tiles, and layers transition.
  *
  * One persistent canvas carries both views: every primary sunburst wedge owns
  * a treemap tile twin, and switching modes flies each boundary point to (or
@@ -282,7 +282,6 @@ export class ViewMorph {
     const dpr = Math.min(2, window.devicePixelRatio || 1)
     ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
 
-    const roundRadius = raw > 0.6 ? ((raw - 0.6) / 0.4) * 4 * dpr : 0
     for (let i = 0; i < this.tiles.length; i++) {
       const source = this.sources[i]
       const destination = this.destinations[i]
@@ -294,6 +293,12 @@ export class ViewMorph {
       const toArc =
         tile.to.shape === "arc" ||
         (tile.to.shape === undefined && this.dir === "toMap")
+      const roundRadius =
+        !fromArc && !toArc
+          ? 4 * dpr
+          : raw > 0.6
+            ? ((raw - 0.6) / 0.4) * 4 * dpr
+            : 0
       if (fromArc !== toArc) {
         unwrapSector(
           pts,

@@ -1,4 +1,5 @@
 import type { DiskScanNode } from "./types"
+import { groupSmallChildren } from "./treemap"
 
 export type DiskEntrySortKey =
   | "size"
@@ -44,32 +45,19 @@ export function groupSmallEntryTail<
     sourceIndex: number
   },
 >(entries: readonly T[], parentPath: string, parentSize: number): T[] {
-  if (entries.length < 10) return [...entries]
-  const threshold = Math.max(16 * 1024, parentSize * 0.001)
-  let start = entries.length
-  while (start > 5) {
-    const entry = entries[start - 1]
-    if (entry.node.isDir || entry.node.isOther || entry.displaySize > threshold)
-      break
-    start--
-  }
-  if (entries.length - start < 4) return [...entries]
-  const tail = entries.slice(start)
-  const size = tail.reduce((sum, entry) => sum + entry.displaySize, 0)
-  const group: DiskScanNode = {
-    name: "",
-    path: `disklizard:list-more:${parentPath}`,
-    size,
-    isDir: true,
-    isOther: true,
-    otherCount: tail.length,
-    children: tail.map((entry) => entry.node),
-    ext: "",
-  }
-  return [
-    ...entries.slice(0, start),
-    { ...tail[0], node: group, displaySize: size },
-  ]
+  const grouped = groupSmallChildren(
+    entries.map((entry) => entry.node),
+    parentPath,
+    parentSize
+  )
+  if (grouped.length === entries.length) return [...entries]
+  const byPath = new Map(entries.map((entry) => [entry.node.path, entry]))
+  return grouped.map((node) => {
+    const source = byPath.get(node.children[0]?.path ?? "") ?? entries[0]
+    return node.isOther && node.path === `disklizard:list-more:${parentPath}`
+      ? { ...source, node, displaySize: node.size }
+      : byPath.get(node.path)!
+  })
 }
 
 function normalizedSearchText(value: string) {

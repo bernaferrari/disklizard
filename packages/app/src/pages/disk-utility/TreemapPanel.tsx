@@ -37,8 +37,14 @@ export function Treemap(props: {
   const language = useLanguage()
   const [bounds, setBounds] = useState({ width: 0, height: 0 })
   const rects = useMemo(
-    () => layoutNestedTreemap(props.children, bounds.width, bounds.height),
-    [props.children, bounds.width, bounds.height]
+    () =>
+      layoutNestedTreemap(
+        props.children,
+        bounds.width,
+        bounds.height,
+        props.rootPath
+      ),
+    [props.children, props.rootPath, bounds.width, bounds.height]
   )
   // Keep the native drag source mounted while the rest of the view reflows.
   const previousLayout = useRef(rects)
@@ -108,13 +114,13 @@ export function Treemap(props: {
           height: `${r.h}px`,
           opacity: retained === r ? 0 : 1,
           pointerEvents: retained === r ? ("none" as const) : undefined,
-          backgroundColor:
-            props.colorForPath(r.node.path) ??
-            props.colorForPath(props.rootPath) ??
-            storageTileColor(r.index, r.depth),
-          backgroundImage: r.node.isOther
-            ? "repeating-linear-gradient(135deg, transparent 0 5px, oklch(1 0 0 / 0.16) 5px 7px)"
-            : undefined,
+          backgroundColor: r.node.isOther
+            ? r.depth === 0
+              ? "oklch(0.7 0.008 250)"
+              : `color-mix(in oklab, ${props.colorForPath(r.parent?.path ?? props.rootPath) ?? storageTileColor(r.index, r.depth)} 70%, oklch(0.87 0 0))`
+            : (props.colorForPath(r.node.path) ??
+              props.colorForPath(props.rootPath) ??
+              storageTileColor(r.index, r.depth)),
           color: primarySegmentForeground(r.depth > 0 || r.node.isDir),
           boxShadow:
             props.selectedPath === r.node.path

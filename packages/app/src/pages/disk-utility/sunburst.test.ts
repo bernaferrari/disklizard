@@ -57,7 +57,7 @@ function node(
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
     expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([
-      220, 25, 150, 280, 125, 220,
+      198, 25, 158, 278, 165, 198,
     ])
   })
   it("keeps consecutive hues distinct", () => {

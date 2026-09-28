@@ -2070,7 +2070,6 @@ export default function DiskUtilityPage() {
     const canvas = canvasEl
     const landscape = landscapeElRef.current
     if (
-      (scanMode !== "map" && mode !== "map") ||
       !sb ||
       !canvas ||
       !landscape ||
@@ -4924,81 +4923,39 @@ export default function DiskUtilityPage() {
                             </div>
                           ) : null}
                           <div className="absolute right-3 bottom-3 flex items-center gap-0.5 rounded-lg border-0 bg-transparent p-1 shadow-none max-[760px]:bottom-2.5">
-                            <DropdownMenu placement="top-start" gutter={6}>
-                              <DropdownMenu.Trigger
-                                as={Button}
-                                size="small"
-                                variant="secondary"
-                                className="min-h-10 gap-2 rounded-lg border border-border-weaker-base/70 bg-surface-raised-base/85 px-3 text-text-strong shadow-none"
+                            <Tabs
+                              value={scanMode}
+                              onValueChange={(value, details) =>
+                                chooseScanMode(
+                                  value as ScanMode,
+                                  details.event.type.startsWith("key")
+                                    ? "keyboard"
+                                    : "pointer",
+                                  false
+                                )
+                              }
+                            >
+                              <TabsList
+                                className="h-10 border border-border-weaker-base/60 bg-surface-raised-base/90"
+                                aria-label={language.t("disk.explore.choose")}
                               >
-                                {scanMode === "map" ? (
+                                <TabsTrigger value="map" aria-keyshortcuts="1">
                                   <ChartPie className="size-4" />
-                                ) : scanMode === "grid" ? (
+                                  {language.t("disk.common.map")}
+                                </TabsTrigger>
+                                <TabsTrigger value="grid" aria-keyshortcuts="2">
                                   <LayoutGrid className="size-4" />
-                                ) : (
+                                  {language.t("disk.common.tiles")}
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="icicle"
+                                  aria-keyshortcuts="3"
+                                >
                                   <Layers className="size-4" />
-                                )}
-                                <span className="text-13-medium">
-                                  {language.t(
-                                    scanMode === "map"
-                                      ? "disk.common.map"
-                                      : scanMode === "grid"
-                                        ? "disk.common.tiles"
-                                        : "disk.common.icicle"
-                                  )}
-                                </span>
-                                <Icon
-                                  name="chevron-down"
-                                  className="text-icon-weak size-3"
-                                />
-                              </DropdownMenu.Trigger>
-                              <DropdownMenu.Portal>
-                                <DropdownMenu.Content>
-                                  <DropdownMenu.RadioGroup
-                                    value={scanMode}
-                                    onChange={(value) =>
-                                      chooseScanMode(
-                                        value as ScanMode,
-                                        "pointer",
-                                        false
-                                      )
-                                    }
-                                    aria-label={language.t(
-                                      "disk.explore.choose"
-                                    )}
-                                  >
-                                    {(["map", "grid", "icicle"] as const).map(
-                                      (mode) => (
-                                        <DropdownMenu.RadioItem
-                                          key={mode}
-                                          value={mode}
-                                        >
-                                          {mode === "map" ? (
-                                            <ChartPie className="size-4" />
-                                          ) : mode === "grid" ? (
-                                            <LayoutGrid className="size-4" />
-                                          ) : (
-                                            <Layers className="size-4" />
-                                          )}
-                                          <DropdownMenu.ItemLabel>
-                                            {language.t(
-                                              mode === "map"
-                                                ? "disk.common.map"
-                                                : mode === "grid"
-                                                  ? "disk.common.tiles"
-                                                  : "disk.common.icicle"
-                                            )}
-                                          </DropdownMenu.ItemLabel>
-                                          <DropdownMenu.ItemIndicator>
-                                            <Icon name="check" />
-                                          </DropdownMenu.ItemIndicator>
-                                        </DropdownMenu.RadioItem>
-                                      )
-                                    )}
-                                  </DropdownMenu.RadioGroup>
-                                </DropdownMenu.Content>
-                              </DropdownMenu.Portal>
-                            </DropdownMenu>
+                                  {language.t("disk.common.icicle")}
+                                </TabsTrigger>
+                              </TabsList>
+                            </Tabs>
                             {physicalCloneAccountingWarning ||
                             treeRoot?.scanIssues ? (
                               <DeveloperDisclosure
@@ -5227,7 +5184,7 @@ export default function DiskUtilityPage() {
                                 </p>
                                 <div className="dl-inspector-heading flex min-w-0 flex-1 items-baseline justify-between gap-3">
                                   <h2
-                                    className="text-18-semibold min-w-0 truncate text-text-strong"
+                                    className="text-18-medium min-w-0 truncate text-text-strong"
                                     title={viewNode?.path}
                                   >
                                     {indexFilter.lens === "developer"
@@ -5585,14 +5542,14 @@ export default function DiskUtilityPage() {
                                   return (
                                     <div
                                       className={cn(
-                                        "dl-index-row group relative flex h-full items-center border-b border-border-weaker-base/70 pr-11 transition-colors duration-150 hover:bg-[color-mix(in_oklch,var(--surface-raised-base)_55%,transparent)] has-[[aria-current=true]]:bg-surface-raised-strong",
+                                        "dl-index-row group relative flex h-full items-center rounded-md pr-11 transition-colors duration-150 hover:bg-[color-mix(in_oklch,var(--surface-raised-base)_55%,transparent)] has-[[aria-current=true]]:bg-surface-raised-strong",
                                         isActive() &&
                                           "bg-surface-raised-base/70 shadow-[inset_3px_0_0_var(--dl-accent)]",
                                         hoveredPath === entry.node.path &&
                                           !isActive() &&
                                           "bg-surface-raised-base/80 shadow-[inset_2px_0_0_var(--dl-accent)]",
                                         !!entry.node.isOther &&
-                                          "rounded-none border-t border-border-weaker-base border-b-transparent"
+                                          "mt-1 border-t border-border-weaker-base/60"
                                       )}
                                       onMouseEnter={() =>
                                         hoverEntry(entry.node.path, entry.node)
@@ -5711,25 +5668,26 @@ export default function DiskUtilityPage() {
                                                 <span
                                                   className="size-2 shrink-0 rounded-full"
                                                   style={{
-                                                    background:
-                                                      (scanMode === "grid"
-                                                        ? tileColor(
-                                                            entry.node.path
-                                                          )
-                                                        : branchColor(
-                                                            entry.node
-                                                          )) ??
-                                                      (entry.node.isOther
-                                                        ? "var(--text-weaker)"
-                                                        : primarySegmentColor(
-                                                            entry.colorIndex,
-                                                            1,
-                                                            entry.node.isDir
-                                                          )),
+                                                    background: entry.node
+                                                      .isOther
+                                                      ? "var(--text-weaker)"
+                                                      : ((scanMode === "grid" &&
+                                                        entry.node.isDir
+                                                          ? tileColor(
+                                                              entry.node.path
+                                                            )
+                                                          : branchColor(
+                                                              entry.node
+                                                            )) ??
+                                                        primarySegmentColor(
+                                                          entry.colorIndex,
+                                                          1,
+                                                          entry.node.isDir
+                                                        )),
                                                   }}
                                                   aria-hidden="true"
                                                 />
-                                                <span className="text-13-semibold truncate text-text-strong">
+                                                <span className="text-13-medium truncate text-text-strong">
                                                   <SearchHighlight
                                                     text={diskNodeDisplayName(
                                                       entry.node
@@ -5860,7 +5818,7 @@ export default function DiskUtilityPage() {
                                                 </span>
                                               ) : null}
                                             </span>
-                                            <span className="text-12-semibold w-[4.75rem] shrink-0 text-right text-text-strong tabular-nums">
+                                            <span className="text-12-medium w-[4.75rem] shrink-0 text-right text-text-strong tabular-nums">
                                               {shortBytes(entry.displaySize)}
                                             </span>
                                           </>
