@@ -1,4 +1,4 @@
-import { storageTileColor } from "./visual-palette"
+import { storageSummaryColor, storageTileColor } from "./visual-palette"
 import { useTileCamera } from "./use-tile-camera"
 /**
  * Treemap view — "dive into the squares." Squarified rects colored by the
@@ -115,9 +115,7 @@ export function Treemap(props: {
           opacity: retained === r ? 0 : 1,
           pointerEvents: retained === r ? ("none" as const) : undefined,
           backgroundColor: r.node.isOther
-            ? r.depth === 0
-              ? "oklch(0.7 0.008 250)"
-              : `color-mix(in oklab, ${props.colorForPath(r.parent?.path ?? props.rootPath) ?? storageTileColor(r.index, r.depth)} 70%, oklch(0.87 0 0))`
+            ? storageSummaryColor(r.index, r.depth, "tile")
             : (props.colorForPath(r.node.path) ??
               props.colorForPath(props.rootPath) ??
               storageTileColor(r.index, r.depth)),

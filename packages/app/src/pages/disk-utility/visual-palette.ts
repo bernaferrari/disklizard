@@ -1,6 +1,6 @@
 /** Branch hue identifies a location; color never communicates cleanup safety. */
 export const STORAGE_HUES = [
-  198, 25, 158, 278, 88, 228, 330, 165, 50, 300,
+  108, 155, 195, 230, 270, 305, 335, 20, 45, 75,
 ] as const
 
 function inSrgb(lightness: number, chroma: number, hue: number) {
@@ -36,7 +36,7 @@ function gamutTone(
 // Storage hues identify branches, independent of the surrounding app theme.
 const folderTones = STORAGE_HUES.map((hue) =>
   Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(0.75 + depth * 0.009, hue, hue === 158 ? 0.7 : 0.86)
+    gamutTone(0.8 + depth * 0.007, hue, hue === 155 ? 0.7 : 0.86)
   )
 )
 const fileTones = STORAGE_HUES.map((hue) =>
@@ -52,18 +52,33 @@ export function storageMapHue(hue: number, _depth = 0) {
 const mapFolderTones = STORAGE_HUES.map((hue) =>
   Array.from({ length: 9 }, (_, depth) =>
     gamutTone(
-      0.78 - depth * 0.003,
+      0.86 - depth * 0.003,
       hue,
-      (hue === 158 ? 0.74 : 0.9) - depth * 0.012,
+      (hue === 155 ? 0.74 : 0.9) - depth * 0.012,
       0.035
     )
   )
 )
-// Files are neutral endpoints, not a new colored branch.
-const mapFileTones = Array.from({ length: 9 }, (_, depth) => ({
-  L: 0.69 - depth * 0.004,
-  C: 0.006,
-}))
+// Files keep a softer tint of the same branch, so the outer rings still read
+// as one family without competing with directories.
+const mapFileTones = STORAGE_HUES.map((hue, index) =>
+  Array.from({ length: 9 }, (_, depth) => {
+    const tone = gamutTone(0.79 - depth * 0.004, hue, 0.62, 0.035)
+    return {
+      ...tone,
+      C: Math.min(
+        tone.C,
+        Math.floor(mapFolderTones[index][depth].C * 0.75 * 1000) / 1000
+      ),
+    }
+  })
+)
+
+function indexedHue(index: number) {
+  return STORAGE_HUES[
+    ((index % STORAGE_HUES.length) + STORAGE_HUES.length) % STORAGE_HUES.length
+  ]
+}
 
 export function storageTone(hue: number, depth = 0, directory = true) {
   const index = Math.max(
@@ -81,7 +96,7 @@ export function storageMapTone(hue: number, depth = 0, directory = true) {
     STORAGE_HUES.indexOf(hue as (typeof STORAGE_HUES)[number])
   )
   const level = Math.max(0, Math.min(8, Math.floor(depth)))
-  return directory ? mapFolderTones[index][level] : mapFileTones[level]
+  return directory ? mapFolderTones[index][level] : mapFileTones[index][level]
 }
 
 export function storageMapColor(
@@ -89,21 +104,27 @@ export function storageMapColor(
   depth: number,
   directory = true
 ) {
-  const hue =
-    STORAGE_HUES[
-      ((index % STORAGE_HUES.length) + STORAGE_HUES.length) %
-        STORAGE_HUES.length
-    ]
+  const hue = indexedHue(index)
   const { L, C } = storageMapTone(hue, depth, directory)
-  return `oklch(${L} ${C} ${directory ? storageMapHue(hue, depth) : 250})`
+  return `oklch(${L} ${C} ${storageMapHue(hue, depth)})`
 }
 
 export function storageTileColor(index: number, depth: number) {
-  const hue =
-    STORAGE_HUES[
-      ((index % STORAGE_HUES.length) + STORAGE_HUES.length) %
-        STORAGE_HUES.length
-    ]
+  const hue = indexedHue(index)
   const { L, C } = storageTone(hue, depth)
   return `oklch(${L} ${C} ${hue})`
+}
+
+/** Aggregates retain a recognizable branch hue at lower chroma. */
+export function storageSummaryColor(
+  index: number,
+  depth: number,
+  surface: "map" | "tile"
+) {
+  const hue = indexedHue(index)
+  const { L, C } =
+    surface === "map"
+      ? storageMapTone(hue, depth, true)
+      : storageTone(hue, depth, true)
+  return `oklch(${L} ${Math.floor(C * 0.62 * 1000) / 1000} ${hue})`
 }

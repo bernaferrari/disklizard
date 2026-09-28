@@ -689,8 +689,8 @@ export class Sunburst {
       const base = storageMapTone(L.hue, colorDepth, L.node.isDir)
       const toTone = {
         ...base,
-        C: L.node.isOther ? base.C * 0.25 : base.C,
-        h: L.node.isDir ? storageMapHue(L.hue, colorDepth) : 250,
+        C: L.node.isOther ? base.C * 0.62 : base.C,
+        h: storageMapHue(L.hue, colorDepth),
       }
       const fromTone = prev?.tone ?? focus?.tone ?? toTone
       next.push({
@@ -956,7 +956,7 @@ export class Sunburst {
         ? Math.sin(Math.PI * this.hoverPulseT)
         : 0
     const L = base.L + s.hover * 0.022 + breath * s.hover * 0.003
-    const C = s.node.isOther ? base.C * 0.25 : base.C
+    const C = base.C
     const isSel = this.selectedPath === s.path
 
     const lift = s.hover * (isPrimary ? 2.5 : 1.5) * this.dpr

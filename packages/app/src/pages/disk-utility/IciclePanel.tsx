@@ -4,6 +4,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react"
 import type { DiskScanNode } from "./types"
 import { layoutIcicle } from "./icicle"
 import { primarySegmentColor, primarySegmentForeground } from "./sunburst"
+import { storageSummaryColor } from "./visual-palette"
 import { diskNodeDisplayName } from "./node-display"
 import { formatBytes } from "./format"
 import { useLanguage } from "./runtime"
@@ -104,9 +105,7 @@ export function IciclePanel(props: {
                 opacity: retained === cell ? 0 : 1,
                 pointerEvents: retained === cell ? "none" : undefined,
                 backgroundColor: cell.node.isOther
-                  ? cell.depth === 0
-                    ? "oklch(0.7 0.008 250)"
-                    : `color-mix(in oklab, ${primarySegmentColor(cell.colorIndex, 1, true, cell.depth)} 70%, oklch(0.87 0 0))`
+                  ? storageSummaryColor(cell.colorIndex, cell.depth, "tile")
                   : (props.colorForNode(cell.node) ??
                     primarySegmentColor(
                       cell.colorIndex,

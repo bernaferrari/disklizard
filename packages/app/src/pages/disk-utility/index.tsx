@@ -6,7 +6,7 @@ import {
   hideCollectionDragPreview,
 } from "./collection-drag-preview"
 import { createBranchIdentity, createTileIdentity } from "./tile-identity"
-import { storageMapColor } from "./visual-palette"
+import { storageMapColor, storageSummaryColor } from "./visual-palette"
 import { LocationNavigation } from "./LocationNavigation"
 import { flushSync } from "react-dom"
 import { ParentFrame } from "./ParentFrame"
@@ -639,9 +639,13 @@ export default function DiskUtilityPage() {
     [treeRoot]
   )
   const branchColor = (node: DiskScanNode) => {
-    const identity = branchIdentity(node.path)
+    const identity =
+      branchIdentity(node.path) ??
+      (node.isOther ? branchIdentity(node.children[0]?.path ?? "") : undefined)
     return identity
-      ? storageMapColor(identity.index, identity.depth, node.isDir)
+      ? node.isOther
+        ? storageSummaryColor(identity.index, identity.depth, "map")
+        : storageMapColor(identity.index, identity.depth, node.isDir)
       : undefined
   }
   const tileColor = useMemo(() => createTileIdentity(treeRoot), [treeRoot])
@@ -2149,24 +2153,21 @@ export default function DiskUtilityPage() {
             inner: seg.inner,
             outer: seg.outer,
           }
+          const colorIndex =
+            Array.from({ length: 10 }, (_, i) => i).find(
+              (i) => primaryHueForIndex(i) === seg.hue
+            ) ?? 0
+          const mapColor = seg.node.isOther
+            ? storageSummaryColor(colorIndex, seg.depth, "map")
+            : (branchColor(seg.node) ??
+              primarySegmentColor(colorIndex, 1, seg.node.isDir))
           tiles.push({
             path: seg.path,
             node: seg.node,
             depth: seg.depth,
-            colorIndex:
-              Array.from({ length: 10 }, (_, i) => i).find(
-                (i) => primaryHueForIndex(i) === seg.hue
-              ) ?? 0,
-            fromColor:
-              previous === "map"
-                ? (branchColor(seg.node) ??
-                  primarySegmentColor(0, 1, seg.node.isDir))
-                : fromRect?.color,
-            toColor:
-              mode === "map"
-                ? (branchColor(seg.node) ??
-                  primarySegmentColor(0, 1, seg.node.isDir))
-                : toRect?.color,
+            colorIndex,
+            fromColor: previous === "map" ? mapColor : fromRect?.color,
+            toColor: mode === "map" ? mapColor : toRect?.color,
             fromOpacity: absentSource ? 0 : 1,
             toOpacity: absentTarget ? 0 : 1,
             from: {
@@ -5670,7 +5671,13 @@ export default function DiskUtilityPage() {
                                                   style={{
                                                     background: entry.node
                                                       .isOther
-                                                      ? "var(--text-weaker)"
+                                                      ? storageSummaryColor(
+                                                          entry.colorIndex,
+                                                          0,
+                                                          scanMode === "grid"
+                                                            ? "tile"
+                                                            : "map"
+                                                        )
                                                       : ((scanMode === "grid" &&
                                                         entry.node.isDir
                                                           ? tileColor(

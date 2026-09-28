@@ -1,4 +1,8 @@
-import { storageMapColor, storageTileColor } from "./visual-palette"
+import {
+  storageMapColor,
+  storageSummaryColor,
+  storageTileColor,
+} from "./visual-palette"
 import { describe, it, expect } from "bun:test"
 import type { DiskScanNode } from "./types"
 import {
@@ -57,7 +61,7 @@ function node(
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
     expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([
-      198, 25, 158, 278, 165, 198,
+      108, 155, 195, 230, 20, 108,
     ])
   })
   it("keeps consecutive hues distinct", () => {
@@ -100,7 +104,10 @@ describe("primarySegmentColor", () => {
     for (let index = 0; index < 10; index++) {
       const colors = [0, 1, 2].map((depth) => storageTileColor(index, depth))
       expect(new Set(colors).size).toBe(3)
-      for (const color of colors)
+      for (const color of [
+        ...colors,
+        ...[0, 1, 2].map((depth) => storageSummaryColor(index, depth, "tile")),
+      ])
         expect(
           contrastRatio(primarySegmentForeground(), color)
         ).toBeGreaterThanOrEqual(4.5)
@@ -156,16 +163,22 @@ describe("primarySegmentColor", () => {
     }
   })
 
-  it("keeps branch hues stable and files neutral across map depths", () => {
+  it("keeps branch hues stable and gives files and summaries softer tints", () => {
     for (let index = 0; index < 10; index++) {
       const branchHue = primaryHueForIndex(index)
       for (let depth = 0; depth < 9; depth++) {
         const folder = storageMapColor(index, depth)
         const file = storageMapColor(index, depth, false)
+        const summary = storageSummaryColor(index, depth, "map")
         expect(folder.endsWith(` ${branchHue})`)).toBe(true)
-        expect(Number(file.match(/oklch\([\d.]+ ([\d.]+)/)?.[1])).toBeLessThan(
-          0.02
-        )
+        expect(file.endsWith(` ${branchHue})`)).toBe(true)
+        expect(summary.endsWith(` ${branchHue})`)).toBe(true)
+        const chroma = (color: string) =>
+          Number(color.match(/oklch\([\d.]+ ([\d.]+)/)?.[1])
+        expect(chroma(file)).toBeGreaterThan(0)
+        expect(chroma(file)).toBeLessThan(chroma(folder))
+        expect(chroma(summary)).toBeGreaterThan(0)
+        expect(chroma(summary)).toBeLessThan(chroma(folder))
       }
     }
   })
