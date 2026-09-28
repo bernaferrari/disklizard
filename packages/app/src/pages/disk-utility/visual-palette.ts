@@ -1,6 +1,14 @@
 /** Branch hue identifies a location; color never communicates cleanup safety. */
 export const STORAGE_HUES = [
-  108, 155, 195, 230, 270, 305, 335, 20, 45, 75,
+  255, 25, 150, 285, 112, 194, 345, 55, 320, 85,
+] as const
+
+// Yellow needs more lightness than blue and violet to remain equally vivid.
+const MAP_LIGHTNESS = [
+  0.76, 0.8, 0.91, 0.68, 0.955, 0.93, 0.78, 0.87, 0.73, 0.93,
+] as const
+const TILE_LIGHTNESS = [
+  0.74, 0.8, 0.9, 0.67, 0.94, 0.92, 0.77, 0.86, 0.73, 0.92,
 ] as const
 
 function inSrgb(lightness: number, chroma: number, hue: number) {
@@ -19,14 +27,13 @@ function inSrgb(lightness: number, chroma: number, hue: number) {
 function gamutTone(
   L: number,
   hue: number,
-  chromaFraction = 0.76,
-  hoverLift = 0.025
+  chromaFraction = 0.76
 ) {
   let low = 0
   let high = 0.3
   for (let step = 0; step < 20; step++) {
     const mid = (low + high) / 2
-    if (inSrgb(L, mid, hue) && inSrgb(Math.min(0.97, L + hoverLift), mid, hue))
+    if (inSrgb(L, mid, hue))
       low = mid
     else high = mid
   }
@@ -34,28 +41,39 @@ function gamutTone(
 }
 
 // Storage hues identify branches, independent of the surrounding app theme.
-const folderTones = STORAGE_HUES.map((hue) =>
+const folderTones = STORAGE_HUES.map((hue, index) =>
   Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(0.8 + depth * 0.007, hue, hue === 155 ? 0.7 : 0.86)
+    gamutTone(
+      TILE_LIGHTNESS[index] + depth * 0.003,
+      hue,
+      hue >= 255 ? 0.95 : 0.82
+    )
   )
 )
-const fileTones = STORAGE_HUES.map((hue) =>
-  Array.from({ length: 9 }, (_, depth) =>
-    gamutTone(0.69 + depth * 0.006, hue, 0.58)
-  )
+const fileTones = STORAGE_HUES.map((hue, index) =>
+  Array.from({ length: 9 }, (_, depth) => {
+    const tone = gamutTone(
+      TILE_LIGHTNESS[index] - 0.035 + depth * 0.005,
+      hue,
+      0.68
+    )
+    return {
+      ...tone,
+      C: Math.min(tone.C, folderTones[index][depth].C * 0.72),
+    }
+  })
 )
 // One hue means one branch. The outer levels recede gently so hierarchy reads
 // before individual wedges; changing hue at each ring obscures that relationship.
 export function storageMapHue(hue: number, _depth = 0) {
   return hue
 }
-const mapFolderTones = STORAGE_HUES.map((hue) =>
+const mapFolderTones = STORAGE_HUES.map((hue, index) =>
   Array.from({ length: 9 }, (_, depth) =>
     gamutTone(
-      0.86 - depth * 0.003,
+      MAP_LIGHTNESS[index] - depth * 0.004,
       hue,
-      (hue === 155 ? 0.74 : 0.9) - depth * 0.012,
-      0.035
+      hue === 112 ? 0.75 : 0.95
     )
   )
 )
@@ -63,12 +81,16 @@ const mapFolderTones = STORAGE_HUES.map((hue) =>
 // as one family without competing with directories.
 const mapFileTones = STORAGE_HUES.map((hue, index) =>
   Array.from({ length: 9 }, (_, depth) => {
-    const tone = gamutTone(0.79 - depth * 0.004, hue, 0.62, 0.035)
+    const tone = gamutTone(
+      MAP_LIGHTNESS[index] - 0.04 - depth * 0.004,
+      hue,
+      0.76
+    )
     return {
       ...tone,
       C: Math.min(
         tone.C,
-        Math.floor(mapFolderTones[index][depth].C * 0.75 * 1000) / 1000
+        Math.floor(mapFolderTones[index][depth].C * 0.72 * 1000) / 1000
       ),
     }
   })
@@ -87,7 +109,7 @@ export function storageTone(hue: number, depth = 0, directory = true) {
   )
   const level = Math.max(0, Math.min(8, Math.floor(depth)))
   const tone = directory ? folderTones[index][level] : fileTones[index][level]
-  return directory ? tone : { L: tone.L, C: tone.C * 0.7 }
+  return tone
 }
 
 export function storageMapTone(hue: number, depth = 0, directory = true) {

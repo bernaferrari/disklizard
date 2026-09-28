@@ -955,8 +955,6 @@ export class Sunburst {
       this.highlightPath === s.path && !this.reducedMotion
         ? Math.sin(Math.PI * this.hoverPulseT)
         : 0
-    const L = base.L + s.hover * 0.022 + breath * s.hover * 0.003
-    const C = base.C
     const isSel = this.selectedPath === s.path
 
     const lift = s.hover * (isPrimary ? 2.5 : 1.5) * this.dpr
@@ -970,8 +968,14 @@ export class Sunburst {
     ctx.arc(this.cx, this.cy, outer, start, end)
     ctx.arc(this.cx, this.cy, inner, end, start, true)
     ctx.closePath()
-    ctx.fillStyle = oklchCss(L, C, s.tone?.h ?? s.hue)
+    ctx.fillStyle = oklchCss(base.L, base.C, s.tone?.h ?? s.hue)
     ctx.fill()
+    if (s.hover > 0.001) {
+      // A translucent wash brightens in the canvas's sRGB space. Raising OKLCH
+      // lightness would clip the luminous yellow and cyan segments on hover.
+      ctx.fillStyle = `oklch(1 0 0 / ${s.hover * (0.07 + breath * 0.015)})`
+      ctx.fill()
+    }
 
     // Leave the canvas visible between branches; this keeps small segments
     // distinct without outlining every ring like a technical chart.

@@ -61,7 +61,7 @@ function node(
 describe("primaryHueForIndex", () => {
   it("moves through a stable curated palette", () => {
     expect([0, 1, 2, 3, 7, 10].map(primaryHueForIndex)).toEqual([
-      108, 155, 195, 230, 20, 108,
+      255, 25, 150, 285, 55, 255,
     ])
   })
   it("keeps consecutive hues distinct", () => {
@@ -76,20 +76,15 @@ describe("primarySegmentColor", () => {
     expect(css.startsWith("oklch(")).toBe(true)
     expect(css).toContain(primaryHueForIndex(2).toFixed(1))
   })
-  it("keeps every directory and file depth inside sRGB, including hover", () => {
+  it("keeps every directory and file depth inside sRGB", () => {
     for (let index = 0; index < 10; index++) {
       for (let depth = 0; depth < 6; depth++) {
         for (const directory of [true, false]) {
           const css = primarySegmentColor(index, 1, directory, depth)
-          const hover = css.replace(
-            /oklch\(([\d.]+)/,
-            (_, lightness) => `oklch(${Number(lightness) + 0.025}`
-          )
-          for (const color of [css, hover])
-            for (const channel of oklchToLinearSrgb(color, false)) {
-              expect(channel).toBeGreaterThanOrEqual(0)
-              expect(channel).toBeLessThanOrEqual(1)
-            }
+          for (const channel of oklchToLinearSrgb(css, false)) {
+            expect(channel).toBeGreaterThanOrEqual(0)
+            expect(channel).toBeLessThanOrEqual(1)
+          }
         }
       }
     }
@@ -200,14 +195,6 @@ describe("primarySegmentColor", () => {
             )
             expect(primarySegmentForeground(directory)).toBe(lightForeground)
             for (const channel of oklchToLinearSrgb(light, false)) {
-              expect(channel).toBeGreaterThanOrEqual(0)
-              expect(channel).toBeLessThanOrEqual(1)
-            }
-            const hovered = light.replace(
-              /oklch\(([\d.]+)/,
-              (_, lightness) => `oklch(${Number(lightness) + 0.033}`
-            )
-            for (const channel of oklchToLinearSrgb(hovered, false)) {
               expect(channel).toBeGreaterThanOrEqual(0)
               expect(channel).toBeLessThanOrEqual(1)
             }
