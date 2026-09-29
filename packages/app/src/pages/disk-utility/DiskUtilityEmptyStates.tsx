@@ -1,5 +1,6 @@
 import { Button } from "@/components/dl/button"
 import { Icon, type IconName } from "@/components/dl/icon"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { ReactNode } from "react"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
@@ -188,22 +189,30 @@ export function centerOverlayBehavior(
 
 /** The open directory stays anchored while hover previews appear in the inspector. */
 export function CenterOverlay(props: { node: DiskScanNode | null }) {
+  const reducedMotion = useReducedMotion()
   const [amount, unit] = props.node
     ? formatBytes(props.node.size).split(" ")
     : []
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
       <div className="max-w-[29%] text-center @max-[399px]:max-w-[46%]">
-        {props.node ? (
-          <>
-            <p className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums">
+        <AnimatePresence initial={false} mode="wait">
+          {props.node ? (
+            <motion.p
+              key={`${props.node.path}:${props.node.size}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.14 }}
+              className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums"
+            >
               {amount}
               <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
                 {unit}
               </span>
-            </p>
-          </>
-        ) : null}
+            </motion.p>
+          ) : null}
+        </AnimatePresence>
       </div>
     </div>
   )

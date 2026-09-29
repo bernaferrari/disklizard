@@ -7,6 +7,8 @@ import {
 
 export type NestedTile = {
   node: DiskScanNode
+  displayName?: string
+  drillNode?: DiskScanNode
   index: number
   depth: number
   x: number
@@ -17,14 +19,14 @@ export type NestedTile = {
   parent?: DiskScanNode
 }
 
-/** Keep the outer rectangles identical to the map morph; reveal depth only
- * when there is room for a folder header and usable child targets. */
+/** Reveal child tiles under quiet folder labels, without drawing parent boxes. */
 export function layoutNestedTreemap(
   children: DiskScanNode[],
   width: number,
   height: number,
   rootPath = "",
-  rootSize = children.reduce((sum, child) => sum + child.size, 0)
+  rootSize = children.reduce((sum, child) => sum + child.size, 0),
+  rootIsAggregate = false
 ): NestedTile[] {
   if (width <= 0 || height <= 0) return []
   const result: NestedTile[] = []
@@ -39,29 +41,75 @@ export function layoutNestedTreemap(
     parent?: DiskScanNode
   ) => {
     if (w <= 0 || h <= 0) return
+    // A run of almost-identical single-child folders is one visual branch.
+    // Keep the original node as the click target, but spend the area on the
+    // first useful split instead of drawing concentric rectangles.
+    let source = node
+    const chain = [node]
+    while (
+      chain.length < 4 &&
+      source.isDir &&
+      source.children.length === 1 &&
+      source.children[0].isDir &&
+      !source.children[0].isOther &&
+      source.children[0].size >= source.size * 0.96
+    ) {
+      source = source.children[0]
+      chain.push(source)
+    }
+    // Available area decides how much detail to show. Depth is only a safety
+    // bound; a roomy branch should not become blank after three levels.
     const expanded =
-      depth < 4 &&
+      depth < 8 &&
       node.isDir &&
       !node.isOther &&
       w >= 128 &&
       h >= 100 &&
-      node.children.some((child) => child.size > 0) &&
+      source.children.some((child) => child.size > 0) &&
       result.length < 640
-    result.push({ node, index, depth, x, y, w, h, expanded, parent })
+    result.push({
+      node,
+      index,
+      depth,
+      x,
+      y,
+      w,
+      h,
+      expanded,
+      parent,
+      displayName:
+        chain.length > 1
+          ? chain.map((item) => item.name).join(" / ")
+          : undefined,
+      drillNode: chain.length > 1 ? source : undefined,
+    })
     if (!expanded) return
-    // Reserve a header for opening/selecting the parent. Descendants are sibling
-    // buttons in the DOM, never interactive elements nested inside a button.
-    const inner = { x: x + 5, y: y + 34, w: w - 10, h: h - 39 }
-    const accounted = node.children.reduce(
+    const inset = depth === 0 ? 4 : 3
+    const header = depth === 0 ? 34 : 28
+    const inner = {
+      x: x + inset,
+      y: y + header,
+      w: w - inset * 2,
+      h: h - header - inset,
+    }
+    const accounted = source.children.reduce(
       (sum, child) => sum + Math.max(0, child.size),
       0
     )
     inner.h *= Math.min(1, accounted / Math.max(node.size, accounted))
+    // Use the available pixels before rolling children into a remainder. A
+    // fixed limit of 24 made a screen-sized folder devote half its area to one
+    // anonymous "smaller items" tile even though more children fit directly.
+    const tileBudget = Math.max(
+      12,
+      Math.min(192, Math.floor((inner.w * inner.h) / 1_600))
+    )
     for (const rect of layoutTreemap(
       groupSmallChildren(
-        collapseTreemapChildren(node.children, 32),
-        node.path,
-        node.size
+        collapseTreemapChildren(source.children, tileBudget),
+        source.path,
+        source.size,
+        (source.size * 1_600) / Math.max(1, inner.w * inner.h)
       ),
       inner
     )) {
@@ -69,27 +117,48 @@ export function layoutNestedTreemap(
         rect.node,
         index,
         depth + 1,
-        rect.x + 1,
-        rect.y + 1,
-        rect.w - 2,
-        rect.h - 2,
+        rect.x + 1.5,
+        rect.y + 1.5,
+        rect.w - 3,
+        rect.h - 3,
         node
       )
     }
   }
-  for (const rect of layoutTreemap(
-    groupSmallChildren(collapseTreemapChildren(children), rootPath, rootSize),
-    undefined,
-    true
-  )) {
+  // An opened "smaller items" group already is the tail. Grouping its tail
+  // again creates recursive summary boxes and hundreds of unreadable dots.
+  let rootChildren: DiskScanNode[]
+  if (rootIsAggregate) {
+    if (children.length <= 24) {
+      rootChildren = children.filter((child) => child.size > 0)
+    } else {
+      const aggregateChildren = collapseTreemapChildren(children, 8)
+      const aggregateTail = aggregateChildren.at(-1)
+      rootChildren =
+        aggregateTail?.isOther && aggregateTail.size > rootSize * 0.9
+          ? collapseTreemapChildren(children, 1)
+          : aggregateChildren
+    }
+  } else {
+    rootChildren = groupSmallChildren(
+      collapseTreemapChildren(
+        children,
+        Math.max(12, Math.min(320, Math.floor((width * height) / 1_600)))
+      ),
+      rootPath,
+      rootSize,
+      (rootSize * 1_600) / Math.max(1, width * height)
+    )
+  }
+  for (const rect of layoutTreemap(rootChildren, undefined, true)) {
     visit(
       rect.node,
       rect.index,
       0,
-      rect.x * width + 4,
-      rect.y * height + 4,
-      rect.w * width - 8,
-      rect.h * height - 8
+      rect.x * width + 2,
+      rect.y * height + 2,
+      rect.w * width - 4,
+      rect.h * height - 4
     )
   }
   return result

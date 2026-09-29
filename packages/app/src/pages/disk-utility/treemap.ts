@@ -61,17 +61,18 @@ export function collapseTreemapChildren(
   ]
 }
 
-/** Use the same small-item summary in Tiles and the current-folder list. */
+/** Share summary identity; visual layouts can supply a pixel-based threshold. */
 export function groupSmallChildren(
   children: DiskScanNode[],
   parentPath: string,
-  parentSize: number
+  parentSize: number,
+  minimumVisibleSize = Math.max(16 * 1024, parentSize * 0.0016)
 ): DiskScanNode[] {
   const ranked = children
     .filter((child) => child.size > 0)
     .toSorted((a, b) => b.size - a.size)
   if (ranked.length < 10) return ranked
-  const threshold = Math.max(16 * 1024, parentSize * 0.0016)
+  const threshold = minimumVisibleSize
   const kept: DiskScanNode[] = []
   const small: DiskScanNode[] = []
   for (const [index, child] of ranked.entries()) {
@@ -167,19 +168,19 @@ export function layoutTreemap(
 
   const out: TreemapRect[] = []
   const area: Box = { ...box }
-  const remaining = [...items]
+  let cursor = 0
   let row: Item[] = []
 
-  while (remaining.length) {
+  while (cursor < items.length) {
     const shortest = Math.min(area.w, area.h)
-    const next = remaining[0]
+    const next = items[cursor]
     const withNext = [...row, next]
     if (
       row.length === 0 ||
       worstRatio(withNext, shortest) <= worstRatio(row, shortest)
     ) {
       row = withNext
-      remaining.shift()
+      cursor++
     } else {
       layoutRow(row, area, out)
       row = []

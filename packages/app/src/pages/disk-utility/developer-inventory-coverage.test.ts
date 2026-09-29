@@ -3,7 +3,7 @@ import type { DeveloperArtifactInventory } from "@/core"
 import {
   developerInventoryCoverage,
   developerInventoryIssueRows,
-} from "./DeveloperCleanupPolicy"
+} from "./developer-inventory-coverage"
 
 const inventory: DeveloperArtifactInventory = {
   items: [],

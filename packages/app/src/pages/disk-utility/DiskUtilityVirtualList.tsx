@@ -34,6 +34,7 @@ export function VirtualIndex(props: {
     extendRange?: boolean
   ) => number
   render: (entry: IndexEntry, index: () => number) => ReactNode
+  footer?: ReactNode
 }) {
   const language = useLanguage()
   // State (not ref): the ScrollView shim hands over the viewport in a passive effect, after
@@ -156,6 +157,7 @@ export function VirtualIndex(props: {
           )
         })}
       </ul>
+      {props.footer}
     </ScrollView>
   )
 }
@@ -265,7 +267,11 @@ export function VirtualRows<T>(props: {
   }, [activeIndex, props.items, props.isFocusable])
 
   return (
-    <ScrollView className="min-h-0 flex-1" viewportRef={bindViewport}>
+    <ScrollView
+      className="min-h-0 flex-1"
+      viewportClassName="absolute inset-0"
+      viewportRef={bindViewport}
+    >
       <ul
         ref={list}
         className="relative"

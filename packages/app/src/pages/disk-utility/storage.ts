@@ -298,14 +298,31 @@ export function removeScanSubtrees(
   removed: readonly DiskScanNode[],
   os?: "macos" | "windows" | "linux"
 ): DiskScanNode | null {
-  const targets = new Set(
-    uniqueDeletionRoots(removed, os).map((node) =>
-      normalizedDiskPath(node.path, os)
-    )
-  )
+  const deletionRoots = uniqueDeletionRoots(removed, os)
+  if (deletionRoots.some((target) => diskPathIsWithin(root.path, target.path, os)))
+    return null
+  const targets = new Set(deletionRoots.map((node) => normalizedDiskPath(node.path, os)))
+  const affectedAncestors = new Set<string>()
+  for (const target of targets) {
+    let ancestor = target
+    while (!affectedAncestors.has(ancestor)) {
+      affectedAncestors.add(ancestor)
+      const slash = ancestor.lastIndexOf("/")
+      if (slash < 0) break
+      const parent = normalizedDiskPath(ancestor.slice(0, slash) || "/", os)
+      if (parent === ancestor) break
+      ancestor = parent
+    }
+  }
+  const materializedTargets = new Set<string>()
 
   function visit(node: DiskScanNode): DiskScanNode | null {
-    if (targets.has(normalizedDiskPath(node.path, os))) return null
+    const path = normalizedDiskPath(node.path, os)
+    if (!affectedAncestors.has(path)) return node
+    if (targets.has(path)) {
+      materializedTargets.add(path)
+      return null
+    }
     const children = node.children
       .map(visit)
       .filter((child): child is DiskScanNode => child !== null)
@@ -318,7 +335,58 @@ export function removeScanSubtrees(
     return withReconciledChildren(node, children)
   }
 
-  return visit(root)
+  // Deep inventory rows can be inside a scanner-collapsed directory without
+  // appearing in `children`. Debit only that directory's unmaterialized bytes;
+  // an Other aggregate cannot be assigned to a particular pathname safely.
+  function debitCollapsed(node: DiskScanNode, target: DiskScanNode): DiskScanNode {
+    const childIndex = node.children.findIndex((child) =>
+      !child.isOther && diskPathIsWithin(target.path, child.path, os)
+    )
+    if (childIndex >= 0) {
+      const child = node.children[childIndex]
+      const updated = debitCollapsed(child, target)
+      if (updated === child) return node
+      const children = [...node.children]
+      children[childIndex] = updated
+      return withReconciledChildren(node, children)
+    }
+    const materializedBytes = node.children.reduce((sum, child) => sum + child.size, 0)
+    const materializedLogicalBytes = node.children.reduce(
+      (sum, child) => sum + apparentBytes(child), 0
+    )
+    const targetLogicalBytes = apparentBytes(target)
+    if (
+      !node.isDir ||
+      node.size - materializedBytes < target.size ||
+      apparentBytes(node) - materializedLogicalBytes < targetLogicalBytes
+    ) return node
+    const size = node.size - target.size
+    const logicalSize = apparentBytes(node) - targetLogicalBytes
+    const { logicalSize: _previousLogicalSize, ...unchanged } = node
+    return { ...unchanged, size, ...(logicalSize === size ? {} : { logicalSize }) }
+  }
+
+  let next = visit(root)
+  if (!next) return null
+  for (const target of deletionRoots) {
+    if (
+      root.developerArtifactInventory &&
+      "inventoryOnly" in target && target.inventoryOnly === true &&
+      !materializedTargets.has(normalizedDiskPath(target.path, os)) &&
+      diskPathIsWithin(target.path, next.path, os)
+    ) next = debitCollapsed(next, target)
+  }
+  // The deep index contains aggregate sizes and a bounded result cap. Even a
+  // visible deletion can change unseen entries, so discard that evidence for
+  // affected scan roots while keeping their navigable map.
+  if (
+    next.developerArtifactInventory &&
+    deletionRoots.some((target) => diskPathIsWithin(target.path, root.path, os))
+  ) {
+    const { developerArtifactInventory: _staleInventory, ...current } = next
+    next = current
+  }
+  return next
 }
 
 export function canActOnNode(

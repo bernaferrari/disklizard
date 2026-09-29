@@ -48,7 +48,7 @@ export function LocationNavigation(props: {
         type="button"
         data-disk-navigation-home
         onClick={props.onHome}
-        className="h-8 shrink-0 rounded-md px-2.5 text-xs text-text-weak hover:bg-surface-raised-base hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
+        className="ml-1 h-8 shrink-0 rounded-md border border-[var(--dl-separator)] bg-[var(--dl-well)] px-2.5 text-xs text-text-weaker transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
       >
         {language.t("disk.common.volumes")}
       </button>
@@ -73,7 +73,7 @@ export function LocationNavigation(props: {
               aria-current={
                 index === props.locations.length - 1 ? "page" : undefined
               }
-              className="h-8 max-w-[160px] truncate rounded-md px-2.5 text-xs text-text-weak hover:bg-surface-raised-base hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong aria-[current=page]:bg-surface-raised-strong aria-[current=page]:font-medium aria-[current=page]:text-text-strong"
+              className={`h-8 max-w-[160px] truncate rounded-md px-2.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-text-strong aria-[current=page]:font-medium aria-[current=page]:text-text-strong ${index === 0 ? "bg-[color-mix(in_oklch,var(--dl-accent)_13%,transparent)] font-medium text-text-strong hover:bg-[color-mix(in_oklch,var(--dl-accent)_21%,transparent)] aria-[current=page]:bg-[color-mix(in_oklch,var(--dl-accent)_21%,transparent)]" : "text-text-weak hover:bg-surface-raised-base hover:text-text-strong aria-[current=page]:bg-surface-raised-strong"}`}
             >
               {location.name}
             </button>

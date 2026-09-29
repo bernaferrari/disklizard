@@ -120,25 +120,55 @@ export function describeStorageNode(
  * That keeps breadcrumbs correct for POSIX, Windows drive paths, UNC shares,
  * and synthetic roots alike.
  */
-export function buildCrumbs(
-  root: DiskScanNode | null,
-  view: DiskScanNode | null
-): Crumb[] {
-  if (!root || !view) return []
-
+function retainedTrail(
+  root: DiskScanNode,
+  targetPath: string
+): DiskScanNode[] | null {
   const chain: DiskScanNode[] = []
-  const targetPath = view.path
+  const normalizedTarget =
+    targetPath.replaceAll("\\", "/").replace(/\/+$/, "") || "/"
   function visit(node: DiskScanNode): boolean {
     chain.push(node)
-    if (node.path === targetPath) return true
+    if (
+      node.path === targetPath ||
+      node.path.replaceAll("\\", "/").replace(/\/+$/, "") ===
+        normalizedTarget
+    )
+      return true
     for (const child of node.children ?? []) {
-      if (visit(child)) return true
+      const childPath =
+        child.path.replaceAll("\\", "/").replace(/\/+$/, "") || "/"
+      if (
+        (normalizedTarget === childPath ||
+          normalizedTarget.startsWith(
+            childPath.endsWith("/") ? childPath : `${childPath}/`
+          )) &&
+        visit(child)
+      )
+        return true
     }
     chain.pop()
     return false
   }
 
-  if (!visit(root))
+  return visit(root) ? chain : null
+}
+
+/** Resolve a retained node by its path without walking unrelated subtrees. */
+export function findRetainedNode(
+  root: DiskScanNode,
+  targetPath: string
+): DiskScanNode | undefined {
+  return retainedTrail(root, targetPath)?.at(-1)
+}
+
+export function buildCrumbs(
+  root: DiskScanNode | null,
+  view: DiskScanNode | null
+): Crumb[] {
+  if (!root || !view) return []
+  const chain = retainedTrail(root, view.path)
+  if (!chain)
     return [
       {
         name: root._label || root.name || root.path,

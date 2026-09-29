@@ -5,6 +5,13 @@ import type {
   DiskScanUpdate,
   DiskUtilityAPI,
 } from "@/pages/disk-utility/types"
+import {
+  DEMO_DRIVE_TOTAL,
+  demoPreviousBaseline,
+  demoScanTree,
+  demoSubtree,
+} from "./fixture-demo"
+import { baselineStorageKey } from "@/pages/disk-utility/scan-baseline"
 
 /**
  * Browser fixture: the demo data source that stood in for Electron IPC in the
@@ -167,8 +174,14 @@ const journeyScanTree: DiskScanNode = {
 
 // A browser-only QA journey with duplicate project names, a recent project,
 // ambiguous output, and one simulated permission failure during a batch move.
+// Theme overrides belong to this browser fixture, never the desktop bootstrap.
+const fixtureTheme = new URLSearchParams(window.location.search).get("theme")
+if (fixtureTheme === "light" || fixtureTheme === "dark")
+  window.localStorage.setItem("disklizard-color-scheme", fixtureTheme)
 const cleanupScenario =
   new URLSearchParams(window.location.search).get("fixture") === "cleanup"
+const demoScenario =
+  new URLSearchParams(window.location.search).get("fixture") === "demo"
 const cleanupScenarioPaths = {
   work: "/Users/alex/Projects/web/node_modules",
   archive: "/Users/alex/Archive/web/node_modules",
@@ -320,6 +333,8 @@ declare global {
 const progressListeners = new Set<(progress: DiskScanProgress) => void>()
 const updateListeners = new Set<(update: DiskScanUpdate) => void>()
 const storage = new Map<string, string>()
+if (demoScenario)
+  storage.set(baselineStorageKey("/"), JSON.stringify(demoPreviousBaseline()))
 let primaryScanId = "fixture-scan"
 
 const fixture: FixtureState = {
@@ -369,6 +384,31 @@ window.diskLizardFixture = fixture
 
 export const diskUtilityFixture: DiskUtilityAPI = {
   async getDrives() {
+    if (demoScenario) {
+      const used = demoScanTree().size
+      return [
+        {
+          path: "/",
+          name: "Macintosh HD",
+          label: "Macintosh HD",
+          total: DEMO_DRIVE_TOTAL,
+          used,
+          free: DEMO_DRIVE_TOTAL - used,
+          type: "local" as const,
+          filesystem: "apfs",
+        },
+        {
+          path: "/Volumes/Backup",
+          name: "Backup",
+          label: "Backup",
+          total: 4 * 1024 ** 4,
+          used: 2.9 * 1024 ** 4,
+          free: 1.1 * 1024 ** 4,
+          type: "removable" as const,
+          filesystem: "apfs",
+        },
+      ]
+    }
     const source = cleanupScenario ? cleanupScenarioTree : journeyScanTree
     const total = Math.max(1024 * MIB, Math.ceil(source.size * 1.25))
     return [
@@ -413,6 +453,70 @@ export const diskUtilityFixture: DiskUtilityAPI = {
       scanId,
       ...(options?.maxChildren ? { maxChildren: options.maxChildren } : {}),
     })
+    if (demoScenario) {
+      const demo = path === "/" ? demoScanTree() : demoSubtree(path)
+      if (demo) {
+        if (!options?.maxChildren) {
+          const steps = 28
+          const finished = demo.children
+            .filter((child) => child.size > 0)
+            .toSorted((a, b) => a.size - b.size)
+          for (let step = 1; step <= steps; step++) {
+            await new Promise((resolve) => setTimeout(resolve, 100))
+            const walk = demo.children.flatMap((child) => child.children)
+            const discovery =
+              finished[Math.floor(((step - 1) / steps) * finished.length)]
+            const announced =
+              step === steps ||
+              step %
+                Math.max(
+                  1,
+                  Math.floor(steps / Math.max(finished.length, 1))
+                ) ===
+                0
+            progressListeners.forEach((listener) =>
+              listener({
+                scanId,
+                filesScanned: Math.round((step / steps) * 1_284_331),
+                dirsScanned: Math.round((step / steps) * 212_004),
+                currentPath: walk[step % walk.length]?.path ?? path,
+                size: Math.round((step / steps) * demo.size),
+                percent: Math.round((step / steps) * 100),
+                ...(announced && discovery
+                  ? {
+                      discovery: {
+                        name: discovery.name,
+                        path: discovery.path,
+                        size: discovery.size,
+                        isDir: discovery.isDir,
+                      },
+                    }
+                  : {}),
+                ...(step === steps
+                  ? { done: true, source: "scan" as const }
+                  : {}),
+              })
+            )
+          }
+          for (const discovery of finished)
+            progressListeners.forEach((listener) =>
+              listener({
+                scanId,
+                filesScanned: 1_284_331,
+                currentPath: path,
+                size: demo.size,
+                discovery: {
+                  name: discovery.name,
+                  path: discovery.path,
+                  size: discovery.size,
+                  isDir: discovery.isDir,
+                },
+              })
+            )
+        }
+        return demo
+      }
+    }
     progressListeners.forEach((listener) =>
       listener({
         scanId,

@@ -1,3 +1,4 @@
+import type { PointerDragSource } from "./pointer-drag"
 import { X } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useLanguage } from "./runtime"
@@ -10,8 +11,7 @@ import { formatBytes } from "./format"
 /** Hover and smaller-item groups share a bounded, scrollable directory preview. */
 export function BranchPreview(props: {
   canDrag: (node: DiskScanNode) => boolean
-  onDragStart: (event: DragEvent, node: DiskScanNode) => void
-  onDragEnd: () => void
+  onDragStart: (event: PointerDragSource, node: DiskScanNode) => void
   onDismiss?: () => void
   node: DiskScanNode
   onOpen: (node: DiskScanNode) => void
@@ -75,11 +75,9 @@ export function BranchPreview(props: {
             return (
               <button
                 key={row.key}
-                draggable={props.canDrag(child)}
-                onDragStart={(event) =>
-                  props.onDragStart(event.nativeEvent, child)
-                }
-                onDragEnd={props.onDragEnd}
+                onPointerDown={(event) => {
+                  if (props.canDrag(child)) props.onDragStart(event, child)
+                }}
                 type="button"
                 className="text-13-regular absolute top-0 left-0 flex h-[30px] w-full items-center gap-3 rounded-md px-2 text-left text-text-strong hover:bg-surface-raised-strong focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-text-weak"
                 title={child.path}

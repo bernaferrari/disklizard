@@ -2,16 +2,29 @@
 import { diskLanguageText } from "./runtime"
 
 const UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
+
+/**
+ * macOS (Finder, Disk Utility) and Linux desktops count storage in decimal
+ * units, so a 1 TB disk reads “1 TB”. Windows Explorer counts in binary
+ * units under the same labels. Match the platform's own file manager.
+ */
+let unitBase: 1000 | 1024 = 1000
+export function setByteUnitBase(base: 1000 | 1024) {
+  unitBase = base
+}
+export function byteUnitBaseForOs(os: string | undefined): 1000 | 1024 {
+  return os === "windows" ? 1024 : 1000
+}
 const DAY_MS = 24 * 60 * 60 * 1_000
 export const DORMANT_AFTER_DAYS = 90
 
 export function formatBytes(bytes: number): string {
   if (!bytes || bytes === 0) return "0 B"
   const i = Math.min(
-    Math.floor(Math.log(bytes) / Math.log(1024)),
+    Math.floor(Math.log(bytes) / Math.log(unitBase)),
     UNITS.length - 1
   )
-  const val = bytes / Math.pow(1024, i)
+  const val = bytes / Math.pow(unitBase, i)
   if (val < 10) return `${val.toFixed(2)} ${UNITS[i]}`
   if (val < 100) return `${val.toFixed(1)} ${UNITS[i]}`
   return `${Math.round(val)} ${UNITS[i]}`
@@ -21,10 +34,10 @@ export function formatBytes(bytes: number): string {
 export function shortBytes(bytes: number): string {
   if (!bytes || bytes === 0) return "0 B"
   const i = Math.min(
-    Math.floor(Math.log(bytes) / Math.log(1024)),
+    Math.floor(Math.log(bytes) / Math.log(unitBase)),
     UNITS.length - 1
   )
-  const val = bytes / Math.pow(1024, i)
+  const val = bytes / Math.pow(unitBase, i)
   return `${val >= 100 ? Math.round(val) : val >= 10 ? val.toFixed(0) : val.toFixed(1)} ${UNITS[i]}`
 }
 

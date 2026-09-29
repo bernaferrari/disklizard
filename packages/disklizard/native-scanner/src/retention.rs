@@ -155,7 +155,7 @@ fn contains_preserved(node: &CompactNode, preserve_names: &HashSet<String>) -> b
             .any(|child| contains_preserved(child, preserve_names))
 }
 
-fn other_node(
+pub(crate) fn other_node(
     count: usize,
     size: u64,
     logical_size: u64,

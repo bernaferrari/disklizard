@@ -514,6 +514,60 @@ describe("includeHiddenSpace", () => {
     expect(result.children[1]).toBe(filesystem.children[1])
   })
 
+  it("updates a collapsed directory after a confirmed deep-inventory deletion", () => {
+    const inventory: DeveloperArtifactInventory = {
+      items: [],
+      status: {
+        state: "complete",
+        maxItems: 2_000,
+        scannedDirectories: 1,
+        matchedDirectories: 0,
+        truncated: false,
+        unreadableCount: 0,
+        unreadableSamplePaths: [],
+        skippedSymlinkCount: 0,
+        skippedSymlinkSamplePaths: [],
+        excludedCount: 0,
+        excludedSamplePaths: [],
+      },
+    }
+    const collapsed: DiskScanNode = {
+      ...root,
+      name: "node_modules",
+      path: "/work/node_modules",
+      size: 100,
+      logicalSize: 150,
+      isCollapsed: true,
+    }
+    const project: DiskScanNode = {
+      ...root,
+      name: "work",
+      path: "/work",
+      size: 100,
+      logicalSize: 150,
+      children: [collapsed],
+      developerArtifactInventory: inventory,
+    }
+    const removed: DiskScanNode & { inventoryOnly: true } = {
+      ...root,
+      name: "package",
+      path: "/work/node_modules/package",
+      size: 30,
+      logicalSize: 50,
+      inventoryOnly: true,
+    }
+
+    const updated = removeScanSubtrees(project, [removed], "macos")!
+
+    expect(updated).toMatchObject({ size: 70, logicalSize: 100 })
+    expect(updated.children[0]).toMatchObject({ size: 70, logicalSize: 100 })
+    expect(updated.developerArtifactInventory).toBeUndefined()
+
+    // A watcher update may arrive before the IPC delete result. Its missing
+    // inventory means the collapsed bytes have already been reconciled.
+    expect(removeScanSubtrees(updated, [removed], "macos")).toBe(updated)
+  })
+
   it("removes Windows parents once, including nested selections, and can remove the scan root", () => {
     const child = { ...root, path: "C:\\Code\\App\\target\\debug", size: 30 }
     const target = {
@@ -537,6 +591,7 @@ describe("includeHiddenSpace", () => {
       children: [],
     })
     expect(removeScanSubtrees(project, [project], "windows")).toBeNull()
+    expect(removeScanSubtrees(project, [{ ...root, path: "C:\\Code" }], "windows")).toBeNull()
     expect(
       removeScanSubtrees(
         project,

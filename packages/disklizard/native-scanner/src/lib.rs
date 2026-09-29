@@ -9,6 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
 mod accounting;
+mod budget;
 mod classification;
 mod clone_metadata;
 mod config;
@@ -79,6 +80,16 @@ pub(crate) struct DeveloperArtifactClassification {
 
 type Emit = dyn Fn(&ServerMessage) -> io::Result<()> + Send + Sync;
 
+/// The single map charge for one APFS full-clone group. Parallel traversal
+/// charges whichever member arrives first; after the walk the charge moves to
+/// the lexically first path so repeated scans place the bytes identically.
+struct CloneOwner {
+    charged: PathBuf,
+    owner: PathBuf,
+    size: u64,
+    logical_size: u64,
+}
+
 pub struct Scanner {
     state: Arc<State>,
     pool: rayon::ThreadPool,
@@ -92,6 +103,12 @@ struct State {
     excluded_children: HashMap<PathBuf, HashSet<OsString>>,
     /// The visual map's legacy device/identity traversal guard.
     hard_links: [Mutex<HashSet<(u64, u64)>>; 64],
+    /// APFS full-clone data streams already charged to the map. A full clone
+    /// (EF_SHARES_ALL_BLOCKS) owns no private blocks, so only the first
+    /// observed member of a clone ID is charged; later members cost 0 bytes.
+    /// Without this, apps that clone themselves (Chrome's code-sign clones,
+    /// Xcode, simulators) inflate totals far beyond the volume's used space.
+    full_clones: [Mutex<HashMap<String, CloneOwner>>; 64],
     visited_directories: Mutex<HashSet<(u64, u64)>>,
     root_device: AtomicU64,
     /// Root dev/inode is the deep inventory's cycle and device-scope boundary.
@@ -480,6 +497,7 @@ impl Scanner {
             signature_names: normalized_names(&request.signature_names),
             excluded_children: excluded_children(&exclude_paths),
             hard_links: std::array::from_fn(|_| Mutex::new(HashSet::new())),
+            full_clones: std::array::from_fn(|_| Mutex::new(HashMap::new())),
             visited_directories: Mutex::new(HashSet::new()),
             root_device: AtomicU64::new(0),
             root_directory_identity_available: AtomicBool::new(false),
@@ -532,7 +550,7 @@ impl Scanner {
                 #[cfg(not(target_os = "windows"))]
                 let entry = Entry::from_metadata(OsString::from(&name), &metadata);
                 self.state.observe_clone_metadata(&entry.clone_evidence);
-                return Ok(self.state.file_node(entry));
+                return Ok(self.state.file_node(entry, target.parent().unwrap_or(&target)));
             }
             if metadata.is_dir() {
                 let directory = Directory::open(&target)?;
@@ -577,7 +595,14 @@ impl Scanner {
         })?;
 
         if self.state.request.size_mode == SizeMode::Physical {
+            self.state.settle_clone_owners(&mut root, &target);
             accounting::normalize_complete_groups(&mut root);
+        }
+        // Bound the materialized tree after accounting so totals are final.
+        if budget::prune_to_budget(&mut root, budget::DEFAULT_MAX_NODES) {
+            self.state.mark_shared_storage_evidence_partial();
+        }
+        if self.state.request.size_mode == SizeMode::Physical {
             root.shared_storage_evidence = Some(self.state.shared_storage_evidence());
         }
         root.clone_metadata = Some(self.state.clone_metadata_capability());
@@ -1005,7 +1030,7 @@ impl State {
                     }
                 }
             } else {
-                let node = self.file_node(entry);
+                let node = self.file_node(entry, path);
                 if depth == 0 {
                     self.emit_discovery(&node, &path.join(&node.name));
                 }
@@ -1170,7 +1195,7 @@ impl State {
                     });
             }
             let has_shared_storage_risk = entry.may_share_physical_storage();
-            let measured = self.measure_file(&entry);
+            let measured = self.measure_file(&entry, path);
             self.files.fetch_add(1, Ordering::Relaxed);
             self.bytes.fetch_add(measured.0, Ordering::Relaxed);
             Measurement {
@@ -1226,9 +1251,10 @@ impl State {
         result
     }
 
-    fn file_node(&self, entry: Entry) -> CompactNode {
+    fn file_node(&self, entry: Entry, parent: &Path) -> CompactNode {
         let name = entry.name.to_string_lossy().into_owned();
-        let (size, logical_size, hard_link) = self.measure_file(&entry);
+        let (size, logical_size, hard_link, clone_accounting) =
+            self.measure_file(&entry, parent);
         let hard_link_metadata = (self.request.size_mode == SizeMode::Physical
             && entry.file_id > 0
             && entry.link_count > 1)
@@ -1246,7 +1272,7 @@ impl State {
             modified_at: entry.modified_at,
             hard_link,
             clone_evidence: emitted_clone_evidence(&entry.clone_evidence),
-            clone_accounting: None,
+            clone_accounting,
             clone_metadata: None,
             shared_storage_evidence: None,
             developer_artifact_inventory: None,
@@ -1264,7 +1290,40 @@ impl State {
         }
     }
 
-    fn measure_file(&self, entry: &Entry) -> (u64, Option<u64>, Option<HardLink>) {
+    /// Move each clone group's charge to its deterministic owner.
+    fn settle_clone_owners(&self, root: &mut CompactNode, root_path: &Path) {
+        for shard in &self.full_clones {
+            let owners = shard.lock().expect("clone lock poisoned");
+            for owner in owners.values() {
+                if owner.charged == owner.owner {
+                    continue;
+                }
+                let delta = owner.size as i128;
+                let moved_out = accounting::adjust_path_charge(
+                    root,
+                    root_path,
+                    &owner.charged,
+                    -delta,
+                    Some((CloneAccounting::Secondary, owner.logical_size)),
+                );
+                if moved_out {
+                    accounting::adjust_path_charge(
+                        root,
+                        root_path,
+                        &owner.owner,
+                        delta,
+                        Some((CloneAccounting::Primary, owner.logical_size)),
+                    );
+                }
+            }
+        }
+    }
+
+    fn measure_file(
+        &self,
+        entry: &Entry,
+        parent: &Path,
+    ) -> (u64, Option<u64>, Option<HardLink>, Option<CloneAccounting>) {
         let original_size = match self.request.size_mode {
             SizeMode::Physical => entry.allocated_size,
             SizeMode::Logical => entry.logical_size,
@@ -1294,8 +1353,56 @@ impl State {
                 hard_link = Some(HardLink::Secondary);
             }
         }
+        let mut clone_accounting = None;
+        if self.request.size_mode == SizeMode::Physical && hard_link.is_none() && size > 0 {
+            if let CloneEvidence::SharesAllBlocks {
+                clone_id: Some(clone_id),
+                reported_full_clone_count,
+            } = &entry.clone_evidence
+            {
+                if !clone_id.is_empty() && reported_full_clone_count.is_some_and(|count| count > 1) {
+                    let shard = clone_id
+                        .bytes()
+                        .fold(0usize, |hash, byte| hash.wrapping_mul(31).wrapping_add(byte as usize))
+                        & (self.full_clones.len() - 1);
+                    let file_path = parent.join(&entry.name);
+                    let mut owners = self.full_clones[shard].lock().expect("clone lock poisoned");
+                    let first = match owners.get_mut(clone_id) {
+                        Some(owner) => {
+                            if clone_metadata::compare_utf16(
+                                &file_path.to_string_lossy(),
+                                &owner.owner.to_string_lossy(),
+                            ) == std::cmp::Ordering::Less
+                            {
+                                owner.owner = file_path;
+                            }
+                            false
+                        }
+                        None => {
+                            owners.insert(
+                                clone_id.clone(),
+                                CloneOwner {
+                                    charged: file_path.clone(),
+                                    owner: file_path,
+                                    size,
+                                    logical_size: entry.logical_size,
+                                },
+                            );
+                            true
+                        }
+                    };
+                    drop(owners);
+                    if first {
+                        clone_accounting = Some(CloneAccounting::Primary);
+                    } else {
+                        size = 0;
+                        clone_accounting = Some(CloneAccounting::Secondary);
+                    }
+                }
+            }
+        }
         let logical_size = (entry.logical_size != size).then_some(entry.logical_size);
-        (size, logical_size, hard_link)
+        (size, logical_size, hard_link, clone_accounting)
     }
 
     /// Legacy visual-map traversal guard. Keep this independent from optional
@@ -2536,6 +2643,60 @@ mod tests {
     }
 
     #[test]
+    fn charges_an_apfs_full_clone_group_once() {
+        let root = tempfile::tempdir().unwrap();
+        let scanner = Scanner::new(request(root.path(), SizeMode::Physical), |_| Ok(())).unwrap();
+        let clone = |file_id: u64, clone_id: &str| Entry {
+            name: OsString::from(format!("copy-{file_id}.bin")),
+            kind: EntryKind::File,
+            logical_size: 4096,
+            allocated_size: 4096,
+            modified_at: None,
+            device: 7,
+            file_id,
+            link_count: 1,
+            clone_evidence: CloneEvidence::SharesAllBlocks {
+                clone_id: Some(clone_id.into()),
+                reported_full_clone_count: Some(3),
+            },
+        };
+
+        let first = scanner.state.measure_file(&clone(1, "42"), root.path());
+        let second = scanner.state.measure_file(&clone(2, "42"), root.path());
+        let third = scanner.state.measure_file(&clone(3, "42"), root.path());
+        let other_group = scanner.state.measure_file(&clone(4, "43"), root.path());
+        assert_eq!(first.0, 4096);
+        assert!(matches!(first.3, Some(CloneAccounting::Primary)));
+        assert_eq!(second.0, 0);
+        assert_eq!(second.1, Some(4096));
+        assert!(matches!(second.3, Some(CloneAccounting::Secondary)));
+        assert_eq!(third.0, 0);
+        assert_eq!(other_group.0, 4096);
+    }
+
+    #[test]
+    fn logical_scans_never_deduplicate_clones() {
+        let root = tempfile::tempdir().unwrap();
+        let scanner = Scanner::new(request(root.path(), SizeMode::Logical), |_| Ok(())).unwrap();
+        let entry = Entry {
+            name: OsString::from("clone.bin"),
+            kind: EntryKind::File,
+            logical_size: 4096,
+            allocated_size: 4096,
+            modified_at: None,
+            device: 7,
+            file_id: 1,
+            link_count: 1,
+            clone_evidence: CloneEvidence::SharesAllBlocks {
+                clone_id: Some("42".into()),
+                reported_full_clone_count: Some(2),
+            },
+        };
+        assert_eq!(scanner.state.measure_file(&entry, root.path()).0, 4096);
+        assert_eq!(scanner.state.measure_file(&entry, root.path()).0, 4096);
+    }
+
+    #[test]
     fn does_not_retain_every_unknown_windows_file_identity() {
         let root = tempfile::tempdir().unwrap();
         let scanner = Scanner::new(request(root.path(), SizeMode::Physical), |_| Ok(())).unwrap();
@@ -2553,8 +2714,8 @@ mod tests {
             },
         };
 
-        assert_eq!(scanner.state.measure_file(&entry).0, 32);
-        assert_eq!(scanner.state.measure_file(&entry).0, 32);
+        assert_eq!(scanner.state.measure_file(&entry, root.path()).0, 32);
+        assert_eq!(scanner.state.measure_file(&entry, root.path()).0, 32);
         assert!(scanner
             .state
             .hard_links

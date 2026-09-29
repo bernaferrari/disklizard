@@ -25,6 +25,8 @@ describe("volume presentation", () => {
     expect(volumeActionLabel(undefined)).toBe("Scan")
     expect(volumeActionLabel("scanning")).toBe("Cancel")
     expect(volumeActionLabel("complete")).toBe("View")
+    expect(volumeActionLabel(undefined, true)).toBe("View")
+    expect(volumeActionLabel("scanning", true)).toBe("Cancel")
     expect(volumeActionLabel("failed")).toBe("Retry")
   })
 
@@ -57,11 +59,11 @@ describe("volume presentation", () => {
       snapshotCount: 1,
     }
     expect(volumeSubtitle(drive)).toBe(
-      "926 GB startup disk 20.0 GB shared container free"
+      "994 GB startup disk 21.5 GB shared container free"
     )
     expect(
       volumeSubtitle({ ...drive, path: "/Volumes/Backup", type: "removable" })
-    ).toBe("926 GB removable disk 20.0 GB shared container free")
+    ).toBe("994 GB removable disk 21.5 GB shared container free")
   })
 })
 

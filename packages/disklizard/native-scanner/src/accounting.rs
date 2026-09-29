@@ -418,5 +418,75 @@ fn reduce_size_preserving_logical(node: &mut CompactNode, size: u64) {
     node.logical_size = (logical_size != node.size).then_some(logical_size);
 }
 
+/// Add `delta` bytes along the retained branch that holds `path`, stopping at
+/// the deepest materialized ancestor (or its `Other` aggregate). When the
+/// file itself is materialized, its size and clone marker are set directly.
+/// Returns false when the path is outside the tree or the charge cannot move
+/// without underflow, in which case nothing changes.
+pub(crate) fn adjust_path_charge(
+    root: &mut CompactNode,
+    root_path: &std::path::Path,
+    path: &std::path::Path,
+    delta: i128,
+    leaf: Option<(CloneAccounting, u64)>,
+) -> bool {
+    let Ok(relative) = path.strip_prefix(root_path) else {
+        return false;
+    };
+    let components: Vec<String> = relative
+        .components()
+        .map(|component| component.as_os_str().to_string_lossy().into_owned())
+        .collect();
+    // Validate first so a failed move never leaves a half-adjusted branch.
+    {
+        let mut node: &CompactNode = root;
+        if (node.size as i128) + delta < 0 {
+            return false;
+        }
+        for name in &components {
+            let next = node
+                .children
+                .iter()
+                .find(|child| !child.is_other && child.name == *name)
+                .or_else(|| node.children.iter().find(|child| child.is_other));
+            let Some(next) = next else { break };
+            if (next.size as i128) + delta < 0 {
+                return false;
+            }
+            if next.is_other {
+                break;
+            }
+            node = next;
+        }
+    }
+    let apply = |node: &mut CompactNode| {
+        let logical = node.logical_size.unwrap_or(node.size);
+        node.size = ((node.size as i128) + delta) as u64;
+        node.logical_size = (logical != node.size).then_some(logical);
+    };
+    apply(root);
+    let mut node = root;
+    for (depth, name) in components.iter().enumerate() {
+        let index = node
+            .children
+            .iter()
+            .position(|child| !child.is_other && child.name == *name)
+            .or_else(|| node.children.iter().position(|child| child.is_other));
+        let Some(index) = index else { break };
+        node = &mut node.children[index];
+        apply(node);
+        if node.is_other {
+            break;
+        }
+        if depth + 1 == components.len() && !node.is_dir {
+            if let Some((marker, logical_size)) = leaf {
+                node.clone_accounting = Some(marker);
+                node.logical_size = (logical_size != node.size).then_some(logical_size);
+            }
+        }
+    }
+    true
+}
+
 #[cfg(test)]
 mod tests;

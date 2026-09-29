@@ -1,5 +1,8 @@
 import { expect, it } from "bun:test"
-import { createGroupNavigation } from "./group-navigation"
+import {
+  createGroupNavigation,
+  containingFolderForVisualGroup,
+} from "./group-navigation"
 import type { DiskScanNode } from "./types"
 const node = (
   path: string,
@@ -74,4 +77,19 @@ it("does not create a self-parent breadcrumb for scanner-retained groups", () =>
     root.path,
     group.path,
   ])
+})
+
+it("reveals a visual smaller-items group in its real containing folder", () => {
+  const a = node("/disk/folder/a", 30),
+    b = node("/disk/folder/b", 20)
+  const folder = node("/disk/folder", 50, [a, b])
+  const root = node("/disk", 50, [folder])
+  const visualGroup = {
+    ...node("disklizard:mosaic-more:/disk/folder/b", 20, [b]),
+    isOther: true,
+  }
+  expect(containingFolderForVisualGroup(root, visualGroup)).toBe(folder)
+  expect(containingFolderForVisualGroup(root, folder)).toBeUndefined()
+  const scannerGroup = { ...node("/disk/folder/other", 20, [b]), isOther: true }
+  expect(containingFolderForVisualGroup(root, scannerGroup)).toBeUndefined()
 })

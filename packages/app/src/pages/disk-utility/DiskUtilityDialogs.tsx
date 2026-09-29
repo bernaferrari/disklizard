@@ -1,3 +1,14 @@
+import {
+  Check,
+  Copy,
+  Eye,
+  File as FileIcon,
+  Folder,
+  FolderSearch,
+  RotateCcw,
+  Trash2,
+  X,
+} from "lucide-react"
 import { Button } from "@/components/dl/button"
 import { Icon } from "@/components/dl/icon"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -104,14 +115,14 @@ export function CleanupProtectionsResetDialog(props: {
           panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
           panelRef.current
         }
-        className="block w-full max-w-md gap-0 rounded-2xl bg-surface-raised-strong p-5 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)] ring-0 sm:max-w-md"
+        className="block w-full max-w-md gap-0 rounded-2xl border-0 bg-[var(--dl-popover)] p-5 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-md"
       >
         <div className="flex items-start gap-3">
-          <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.12)] text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))]">
+          <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-danger)_14%,transparent)] text-[var(--dl-danger)]">
             <Icon name="shield" className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-13-semibold tracking-[0.14em] text-text-weaker uppercase">
+            <p className="text-[12px] font-medium text-text-weak">
               {language.t("disk.cleanup.resetHeading")}
             </p>
             <h2
@@ -148,7 +159,7 @@ export function CleanupProtectionsResetDialog(props: {
               ) : null}
               {resetting ? (
                 <p className="mt-3 flex items-center gap-2 text-text-strong">
-                  <Spin className="size-3.5 rounded-full border border-border-weaker-base border-t-current" />
+                  <Spin className="size-3.5 rounded-full border border-[var(--dl-separator)] border-t-current" />
                   {language.t("disk.cleanup.resetting")}
                 </p>
               ) : null}
@@ -223,6 +234,10 @@ export function CollectionDialog(props: {
   const [copyFailedPath, setCopyFailedPath] = useState<string | null>(null)
   const coverageKey = props.items.map((item) => item.path).join("\u0000")
   useEffect(() => setAcknowledgedPartialScan(false), [props.open, coverageKey])
+  const sortedItems = useMemo(
+    () => props.items.toSorted((a, b) => b.size - a.size),
+    [props.items]
+  )
   const locations = useMemo(
     () => distinguishingPathLabels(props.items.map((item) => item.path)),
     [props.items]
@@ -232,6 +247,14 @@ export function CollectionDialog(props: {
     size: formatBytes(props.bytes),
   })
   const open = props.open
+  const cautious =
+    props.requiresDeepInventoryRefresh ||
+    props.hasSharedPhysicalStorage ||
+    props.hasUnverifiedPhysicalStorage
+  const blocked =
+    props.deleting || (props.hasUnobservedContents && !acknowledgedPartialScan)
+  const iconAction =
+    "grid size-7 place-items-center rounded-md text-text-weak outline-none transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
   return (
     <Dialog
       open={open}
@@ -244,21 +267,21 @@ export function CollectionDialog(props: {
         showCloseButton={false}
         ref={panelRef}
         initialFocus={() => panelRef.current}
-        className="flex max-h-[min(680px,calc(100dvh-32px))] w-full max-w-[640px] flex-col gap-0 overflow-hidden rounded-2xl bg-surface-raised-strong p-0 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)] ring-0 sm:max-w-[640px]"
+        className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[600px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[600px]"
       >
-        <div className="flex items-start gap-3 border-b border-border-weaker-base p-5">
+        <div className="flex items-start gap-4 px-6 pt-6 pb-4">
           <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-medium text-text-weak">
+              {language.t("disk.dialog.collection.heading")}
+            </p>
             <h2
               id="collection-title"
-              className="text-20-medium tracking-[-0.02em] text-text-strong"
+              className="mt-1 text-[28px] leading-none font-semibold tracking-[-0.03em] text-text-strong tabular-nums"
             >
-              {language.t("disk.dialog.collection.heading")}
+              {formatBytes(props.bytes)}
             </h2>
-            <p className="text-13-regular mt-2 text-text-weak">
-              {props.requiresDeepInventoryRefresh ||
-              props.hasSharedPhysicalStorage ||
-              props.hasUnverifiedPhysicalStorage ||
-              props.hasUnobservedContents
+            <p className="mt-2 text-[13px] text-text-weak">
+              {cautious || props.hasUnobservedContents
                 ? language.t("disk.dialog.collection.selectedSizes", {
                     summary,
                   })
@@ -267,27 +290,65 @@ export function CollectionDialog(props: {
             <p className="sr-only">
               {language.t("disk.dialog.collection.body")}
             </p>
-            {props.requiresDeepInventoryRefresh ? (
-              <details className="group mt-3 border-l-2 border-icon-warning-base/55 pl-3 text-text-strong">
-                <summary className="text-13-medium flex min-h-9 cursor-pointer list-none items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
-                  {language.t("disk.dialog.collection.deepWarningSummary")}
-                  <Icon
-                    name="chevron-down"
-                    className="size-3 shrink-0 transition-transform group-open:rotate-180"
-                  />
-                </summary>
-                <p className="text-12-regular max-w-[68ch] pb-2 leading-relaxed text-text-weak">
-                  {language.t("disk.dialog.collection.deepWarning", {
-                    trash: props.trashName,
-                  })}
-                </p>
-              </details>
+          </div>
+          <button
+            type="button"
+            className="grid size-8 place-items-center rounded-full text-text-weak outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+            disabled={props.deleting}
+            onClick={props.onClose}
+            aria-label={language.t("disk.dialog.collection.close")}
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        </div>
+
+        {props.requiresDeepInventoryRefresh ||
+        props.hasSharedPhysicalStorage ||
+        props.hasUnverifiedPhysicalStorage ||
+        props.hasUnobservedContents ? (
+          <div className="mx-6 mb-4 shrink-0 overflow-hidden rounded-xl bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] text-[12px] leading-relaxed text-text-weak shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]">
+            {props.requiresDeepInventoryRefresh ||
+            props.hasSharedPhysicalStorage ||
+            props.hasUnverifiedPhysicalStorage ? (
+              <div className="px-3.5 py-2.5">
+                {props.requiresDeepInventoryRefresh ? (
+                  <>
+                    <p className="text-[12.5px] font-medium text-text-strong">
+                      {language.t("disk.dialog.collection.deepWarningSummary")}
+                    </p>
+                    <p className="mt-0.5">
+                      {language.t("disk.dialog.collection.deepWarning", {
+                        trash: props.trashName,
+                      })}
+                    </p>
+                  </>
+                ) : props.hasSharedPhysicalStorage ? (
+                  <p>
+                    {language.t("disk.dialog.collection.sharedWarning", {
+                      trash: props.trashName,
+                    })}
+                  </p>
+                ) : (
+                  <p>
+                    {language.t("disk.dialog.collection.unverifiedWarning", {
+                      trash: props.trashName,
+                    })}
+                  </p>
+                )}
+              </div>
             ) : null}
             {props.hasUnobservedContents ? (
-              <label className="text-13-regular mt-3 flex items-start gap-2 rounded-lg bg-surface-warning-weak/45 p-3 leading-relaxed text-text-strong">
+              <label
+                className={
+                  "flex cursor-pointer items-start gap-2.5 px-3.5 py-2.5 " +
+                  (cautious
+                    ? "border-t border-[color-mix(in_oklch,var(--dl-warning)_25%,transparent)]"
+                    : "")
+                }
+              >
                 <input
                   type="checkbox"
-                  className="mt-0.5 size-4 shrink-0"
+                  className="mt-0.5 size-4 shrink-0 accent-[var(--dl-accent)]"
                   checked={acknowledgedPartialScan}
                   disabled={props.deleting}
                   onChange={(event) =>
@@ -296,188 +357,158 @@ export function CollectionDialog(props: {
                 />
                 <span>
                   {language.t("disk.review.partialWarning")}{" "}
-                  <strong>
+                  <span className="font-medium text-text-strong">
                     {language.t("disk.review.partialAcknowledge")}
-                  </strong>
+                  </span>
                 </span>
               </label>
             ) : null}
-            {!props.requiresDeepInventoryRefresh &&
-            props.hasSharedPhysicalStorage ? (
-              <p className="text-13-regular mt-2 rounded-lg border border-icon-warning-base/35 bg-surface-warning-weak/45 px-2.5 py-2 leading-relaxed text-text-strong">
-                {language.t("disk.dialog.collection.sharedWarning", {
-                  trash: props.trashName,
-                })}
-              </p>
-            ) : null}
-            {!props.requiresDeepInventoryRefresh &&
-            !props.hasSharedPhysicalStorage &&
-            props.hasUnverifiedPhysicalStorage ? (
-              <p className="text-13-regular mt-2 rounded-lg border border-icon-warning-base/35 bg-surface-warning-weak/45 px-2.5 py-2 leading-relaxed text-text-strong">
-                {language.t("disk.dialog.collection.unverifiedWarning", {
-                  trash: props.trashName,
-                })}
-              </p>
-            ) : null}
           </div>
-          <Button
-            className="min-h-11 min-w-11"
-            size="small"
-            variant="ghost"
-            icon="close"
-            disabled={props.deleting}
-            onClick={props.onClose}
-            aria-label={language.t("disk.dialog.collection.close")}
-          />
-        </div>
-        <VirtualRows
-          items={props.items}
-          ariaLabel={language.t("disk.dialog.collection.itemsLabel")}
-          estimateSize={() => 136}
-          itemKey={(item) => item.path}
-          render={(item) => {
-            const recognition = props.recognitionFor?.(item) ?? recognize(item)
-            const identity = itemIdentity(item)
-            return (
-              <div className="mx-3 flex h-full flex-col justify-center gap-1 border-b border-border-weaker-base px-2 py-2 last:border-b-0">
-                <div className="flex min-w-0 items-center gap-2">
-                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-raised-base text-text-weak">
-                    <Icon
-                      name={item.isDir ? "folder" : "code-lines"}
-                      className="size-3.5"
-                    />
+        ) : null}
+
+        <div
+          className="flex min-h-[112px] shrink flex-col border-y border-[var(--dl-separator)]"
+          style={{ height: Math.min(props.items.length * 56 + 16, 460) }}
+        >
+          <VirtualRows
+            items={sortedItems}
+            ariaLabel={language.t("disk.dialog.collection.itemsLabel")}
+            estimateSize={() => 56}
+            itemKey={(item) => item.path}
+            render={(item) => {
+              const recognition =
+                props.recognitionFor?.(item) ?? recognize(item)
+              const identity = itemIdentity(item)
+              const hint = recognition.hint
+                ? language.t(recognition.hint)
+                : undefined
+              return (
+                <div className="group mx-3 flex h-full items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--dl-well)] text-text-weak">
+                    {item.isDir ? (
+                      <Folder className="size-4" strokeWidth={1.75} aria-hidden />
+                    ) : (
+                      <FileIcon className="size-4" strokeWidth={1.75} aria-hidden />
+                    )}
                   </span>
-                  <span className="min-w-0 flex-1" title={item.path}>
-                    <span className="flex min-w-0 items-center gap-1.5">
-                      <span className="text-13-semibold truncate text-text-strong">
-                        {identity.reviewTitle}
-                      </span>
-                      {recognition.tag ? (
-                        <span className="sr-only">
-                          {language.t(recognition.tag)}
-                        </span>
-                      ) : null}
+                  <span className="min-w-0 flex-1" title={hint ? `${item.path}\n${hint}` : item.path}>
+                    <span className="block truncate text-[13.5px] font-medium text-text-strong">
+                      {identity.reviewTitle}
                     </span>
+                    <span className="block truncate font-mono text-[11px] text-text-weaker">
+                      <span className="hidden sm:inline">{item.path}</span>
+                      <span className="sm:hidden">
+                        {locations.get(item.path) ?? item.path}
+                      </span>
+                    </span>
+                    {recognition.tag ? (
+                      <span className="sr-only">{language.t(recognition.tag)}</span>
+                    ) : null}
                   </span>
-                  <span className="text-13-semibold shrink-0 text-text-strong tabular-nums">
+                  <span className="flex shrink-0 items-center opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                    {!item.isOther && !item.isHidden ? (
+                      <>
+                        <button
+                          type="button"
+                          className={iconAction}
+                          disabled={props.deleting}
+                          aria-label={language.t(
+                            props.onQuickLook
+                              ? "disk.dialog.collection.quickLook"
+                              : "disk.dialog.collection.preview",
+                            { name: item.name }
+                          )}
+                          onClick={() =>
+                            props.onQuickLook
+                              ? props.onQuickLook(item)
+                              : props.onPreview(item)
+                          }
+                        >
+                          <Eye className="size-3.5" aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          className={iconAction}
+                          disabled={props.deleting}
+                          aria-label={language.t(
+                            "disk.dialog.collection.reveal",
+                            { name: item.name }
+                          )}
+                          onClick={() => props.onReveal(item)}
+                        >
+                          <FolderSearch className="size-3.5" aria-hidden />
+                        </button>
+                      </>
+                    ) : null}
+                    <button
+                      type="button"
+                      className={iconAction}
+                      aria-label={language.t(
+                        copyFailedPath === item.path
+                          ? "disk.dialog.collection.copyFailed"
+                          : copiedPath === item.path
+                            ? "disk.dialog.collection.copied"
+                            : "disk.dialog.collection.copyPath"
+                      )}
+                      title={language.t(
+                        copyFailedPath === item.path
+                          ? "disk.dialog.collection.copyFailed"
+                          : copiedPath === item.path
+                            ? "disk.dialog.collection.copied"
+                            : "disk.dialog.collection.copyPath"
+                      )}
+                      onClick={() => {
+                        void navigator.clipboard?.writeText(item.path).then(
+                          () => {
+                            setCopiedPath(item.path)
+                            setCopyFailedPath(null)
+                          },
+                          () => {
+                            setCopyFailedPath(item.path)
+                            setCopiedPath(null)
+                          }
+                        )
+                      }}
+                    >
+                      {copiedPath === item.path ? (
+                        <Check className="size-3.5" aria-hidden />
+                      ) : (
+                        <Copy className="size-3.5" aria-hidden />
+                      )}
+                    </button>
+                  </span>
+                  <span className="w-16 shrink-0 text-right text-[13px] text-text-base tabular-nums">
                     {shortBytes(item.size)}
                   </span>
-                  {!item.isOther && !item.isHidden ? (
-                    <>
-                      {props.onQuickLook ? (
-                        <Button
-                          className="min-h-11 min-w-11"
-                          size="small"
-                          variant="ghost"
-                          icon="eye"
-                          disabled={props.deleting}
-                          aria-label={language.t(
-                            "disk.dialog.collection.quickLook",
-                            { name: item.name }
-                          )}
-                          onClick={() => props.onQuickLook?.(item)}
-                        />
-                      ) : (
-                        <Button
-                          className="min-h-11 min-w-11"
-                          size="small"
-                          variant="ghost"
-                          icon="bullet-list"
-                          disabled={props.deleting}
-                          aria-label={language.t(
-                            "disk.dialog.collection.preview",
-                            { name: item.name }
-                          )}
-                          onClick={() => props.onPreview(item)}
-                        />
-                      )}
-                      <Button
-                        className="min-h-11 min-w-11"
-                        size="small"
-                        variant="ghost"
-                        icon="square-arrow-top-right"
-                        disabled={props.deleting}
-                        aria-label={language.t(
-                          "disk.dialog.collection.reveal",
-                          {
-                            name: item.name,
-                          }
-                        )}
-                        onClick={() => props.onReveal(item)}
-                      />
-                    </>
-                  ) : null}
-                  <Button
-                    className="min-h-11 min-w-11"
-                    size="small"
-                    variant="ghost"
-                    icon="close-small"
+                  <button
+                    type="button"
+                    className={iconAction}
                     disabled={props.deleting}
                     aria-label={language.t("disk.dialog.collection.remove", {
                       name: item.name,
                     })}
+                    title={language.t("disk.dialog.collection.remove", {
+                      name: item.name,
+                    })}
                     onClick={() => props.onRemove(item)}
-                  />
-                </div>
-                <div className="ml-10 flex min-w-0 items-center gap-3">
-                  <span
-                    className="text-12-regular hidden min-w-0 flex-1 truncate font-mono text-text-weak sm:block"
-                    title={item.path}
                   >
-                    {item.path}
-                  </span>
-                  <span
-                    className="text-12-regular min-w-0 flex-1 truncate font-mono text-text-weak sm:hidden"
-                    title={item.path}
-                  >
-                    {locations.get(item.path) ?? item.path}
-                  </span>
-                  <button
-                    type="button"
-                    className="text-12-regular min-h-11 shrink-0 rounded px-1 text-text-weak underline underline-offset-2 outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak"
-                    onClick={() => {
-                      void navigator.clipboard?.writeText(item.path).then(
-                        () => {
-                          setCopiedPath(item.path)
-                          setCopyFailedPath(null)
-                        },
-                        () => {
-                          setCopyFailedPath(item.path)
-                          setCopiedPath(null)
-                        }
-                      )
-                    }}
-                  >
-                    {language.t(
-                      copyFailedPath === item.path
-                        ? "disk.dialog.collection.copyFailed"
-                        : copiedPath === item.path
-                          ? "disk.dialog.collection.copied"
-                          : "disk.dialog.collection.copyPath"
-                    )}
+                    <X className="size-3.5" aria-hidden />
                   </button>
                 </div>
-                {recognition.hint ? (
-                  <span
-                    className="text-12-regular ml-10 block truncate text-text-weaker"
-                    title={language.t(recognition.hint)}
-                  >
-                    {language.t(recognition.hint)}
-                  </span>
-                ) : null}
-              </div>
-            )
-          }}
-        />
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
+              )
+            }}
+          />
+        </div>
+
+        <div className="flex shrink-0 flex-wrap items-center gap-3 px-6 py-4">
           {props.progress ? (
             <p
-              className="text-13-regular flex items-center gap-1.5 text-text-weak tabular-nums"
+              className="flex min-w-0 flex-1 items-center gap-2 text-[12.5px] text-text-weak tabular-nums"
               role="status"
               aria-live="polite"
               aria-atomic="true"
             >
-              <Spin className="size-3.5 rounded-full border border-border-weaker-base border-t-current" />
+              <Spin className="size-3.5 rounded-full border-2 border-[var(--dl-well-strong)] border-t-[var(--dl-accent)]" />
               {language.t("disk.dialog.collection.moving", {
                 current: props.progress.completed,
                 total: props.progress.total,
@@ -485,50 +516,46 @@ export function CollectionDialog(props: {
               …
             </p>
           ) : (
-            <div className="text-13-regular flex items-center gap-1.5 text-text-weak">
-              <Icon name="shield" className="size-3.5" />
-              {props.requiresDeepInventoryRefresh
-                ? language.t("disk.dialog.restore.rebuild", {
-                    trash: props.trashName,
-                  })
-                : props.hasSharedPhysicalStorage ||
-                    props.hasUnverifiedPhysicalStorage
-                  ? language.t("disk.dialog.restore.recompute", {
+            <p className="flex min-w-0 flex-1 items-center gap-2 text-[12px] leading-snug text-text-weak">
+              <RotateCcw className="size-3.5 shrink-0" aria-hidden />
+              <span className="min-w-0">
+                {props.requiresDeepInventoryRefresh
+                  ? language.t("disk.dialog.restore.rebuild", {
                       trash: props.trashName,
                     })
-                  : language.t("disk.dialog.restore.space", {
-                      trash: props.trashName,
-                    })}
-            </div>
+                  : cautious
+                    ? language.t("disk.dialog.restore.recompute", {
+                        trash: props.trashName,
+                      })
+                    : language.t("disk.dialog.restore.space", {
+                        trash: props.trashName,
+                      })}
+              </span>
+            </p>
           )}
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Button
-              className="min-h-11 min-w-11"
-              size="small"
-              variant="ghost"
+            <button
+              type="button"
+              className="inline-flex h-9 items-center rounded-lg px-3.5 text-[13px] font-medium text-text-strong outline-none hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
               disabled={props.deleting}
               onClick={props.onClose}
             >
               {language.t("disk.common.back")}
-            </Button>
-            <Button
-              className="min-h-11 min-w-11"
-              size="small"
-              variant="primary"
-              icon="trash"
-              disabled={
-                props.deleting ||
-                (props.hasUnobservedContents && !acknowledgedPartialScan)
-              }
+            </button>
+            <button
+              type="button"
+              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] outline-none transition-[filter,transform] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:pointer-events-none disabled:opacity-40"
+              disabled={blocked}
               onClick={props.onConfirm}
             >
+              <Trash2 className="size-4" aria-hidden />
               {props.progress
                 ? language.t("disk.dialog.collection.movingCompact", {
                     current: props.progress.completed,
                     total: props.progress.total,
                   })
                 : language.t("disk.detail.moveTo", { trash: props.trashName })}
-            </Button>
+            </button>
           </div>
         </div>
       </DialogContent>
@@ -536,7 +563,6 @@ export function CollectionDialog(props: {
   )
 }
 
-/** Slide-over drawer reviewing reclaimable items by category. */
 export function ReclaimDrawer(props: {
   open: boolean
   reclaim: () => ReclaimSummary
@@ -578,15 +604,15 @@ export function ReclaimDrawer(props: {
         aria-labelledby="reclaim-title"
         ref={panelRef}
         initialFocus={() => panelRef.current}
-        className="gap-0 overflow-hidden rounded-2xl bg-surface-raised-strong shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)] data-[side=right]:inset-y-2 data-[side=right]:right-2 data-[side=right]:h-auto data-[side=right]:w-[calc(100%-16px)] data-[side=right]:max-w-md data-[side=right]:border-l-0 data-[side=right]:sm:max-w-md"
+        className="gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] data-[side=right]:inset-y-2 data-[side=right]:right-2 data-[side=right]:h-auto data-[side=right]:w-[calc(100%-16px)] data-[side=right]:max-w-md data-[side=right]:border-l-0 data-[side=right]:sm:max-w-md"
       >
-        <div className="shrink-0 border-b border-border-weaker-base px-5 pt-5 pb-5">
+        <div className="shrink-0 border-b border-[var(--dl-separator)] px-5 pt-5 pb-5">
           <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.72_0.12_176/0.14)] text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--dl-well)] text-text-weak">
               <Icon name="shield" className="size-4.5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-13-semibold tracking-[0.14em] text-text-weaker uppercase">
+              <p className="text-[12px] font-medium text-text-weak">
                 {language.t("disk.common.recommendations")}
               </p>
               <h2
@@ -636,7 +662,7 @@ export function ReclaimDrawer(props: {
             return (
               <div
                 className={cn(
-                  "mx-4 flex h-full items-center gap-3 border-b border-border-weaker-base bg-background-base px-3 py-2",
+                  "mx-4 flex h-full items-center gap-3 border-b border-[var(--dl-separator)] bg-background-base px-3 py-2",
                   row.first && "rounded-t-xl",
                   row.last &&
                     "rounded-b-xl border-b-0 shadow-[0_4px_16px_rgb(0_0_0/0.04)]"
@@ -653,7 +679,7 @@ export function ReclaimDrawer(props: {
                     {row.item.node.name}
                   </p>
                   <p
-                    className="text-13-mono mt-0.5 truncate text-text-weaker"
+                    className="mt-0.5 truncate font-mono text-[11px] text-text-weaker"
                     title={
                       row.item.recognition.hint
                         ? language.t(row.item.recognition.hint)
@@ -709,7 +735,7 @@ export function ReclaimDrawer(props: {
             )
           }}
         />
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border-weaker-base bg-background-base/55 p-4">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[var(--dl-separator)] bg-[color-mix(in_oklch,var(--background-base)_60%,var(--dl-popover))] p-4">
           <div className="min-w-0">
             <p className="text-13-semibold text-text-strong">
               {language.plural(
@@ -760,6 +786,18 @@ export function DeleteConfirmDialog(props: {
     [props.open, props.node.path]
   )
   const open = props.open
+  const cautious =
+    props.requiresDeepInventoryRefresh ||
+    props.hasSharedPhysicalStorage ||
+    props.hasUnverifiedPhysicalStorage ||
+    props.hasUnobservedContents
+  const warning = props.requiresDeepInventoryRefresh
+    ? language.t("disk.dialog.delete.deepWarning")
+    : props.hasSharedPhysicalStorage
+      ? language.t("disk.dialog.delete.sharedWarning")
+      : props.hasUnverifiedPhysicalStorage
+        ? language.t("disk.dialog.delete.unverifiedWarning")
+        : undefined
   return (
     <Dialog
       open={open}
@@ -777,125 +815,123 @@ export function DeleteConfirmDialog(props: {
           panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
           panelRef.current
         }
-        className="block w-full max-w-md gap-0 rounded-2xl bg-surface-raised-strong p-5 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_24px_80px_rgb(0_0_0/0.24)] ring-0 sm:max-w-md"
+        className="block w-full max-w-[440px] gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[440px]"
       >
-        <div className="flex items-start gap-3">
-          <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.12)] text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))]">
-            <Icon name="trash" className="size-4" />
+        <div className="px-6 pt-6 pb-5">
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[color-mix(in_oklch,var(--dl-danger)_16%,transparent)] text-[var(--dl-danger)]">
+              <Trash2 className="size-[18px]" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[12px] font-medium text-text-weak">
+                {language.t("disk.dialog.delete.heading")}
+              </p>
+              <h3
+                id="delete-title"
+                className="text-[16px] font-semibold tracking-[-0.01em] text-text-strong"
+              >
+                {language.t("disk.dialog.delete.prompt", {
+                  trash: props.trashName,
+                })}
+              </h3>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-13-semibold tracking-[0.14em] text-text-weaker uppercase">
-              {language.t("disk.dialog.delete.heading")}
-            </p>
-            <h3
-              id="delete-title"
-              className="text-18-medium mt-1 tracking-[-0.025em] text-text-strong"
-            >
-              {language.t("disk.dialog.delete.prompt", {
-                trash: props.trashName,
-              })}
-            </h3>
-            <div
-              id="delete-description"
-              className="mt-4 rounded-xl bg-background-base/65 p-3 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]"
-            >
-              <p className="text-12-semibold truncate text-text-strong">
+          <div
+            id="delete-description"
+            className="mt-5 flex items-center gap-3 rounded-xl bg-[var(--dl-well)] px-4 py-3"
+          >
+            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--dl-well-strong)] text-text-weak">
+              {props.node.isDir ? (
+                <Folder className="size-4" strokeWidth={1.75} aria-hidden />
+              ) : (
+                <FileIcon className="size-4" strokeWidth={1.75} aria-hidden />
+              )}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13.5px] font-medium text-text-strong">
                 {itemIdentity(props.node).reviewTitle}
               </p>
-              <p className="text-13-mono mt-0.5 truncate text-text-weaker">
+              <p className="truncate font-mono text-[11px] text-text-weaker" title={props.node.path}>
                 {props.node.path}
               </p>
-              <p className="text-13-semibold mt-2 text-text-strong tabular-nums">
-                {props.requiresDeepInventoryRefresh ||
-                props.hasSharedPhysicalStorage ||
-                props.hasUnverifiedPhysicalStorage ||
-                props.hasUnobservedContents
+            </div>
+            <p
+              className="shrink-0 text-[15px] font-semibold text-text-strong tabular-nums"
+              title={
+                cautious
                   ? language.t("disk.dialog.delete.selectedSize", {
                       size: formatBytes(props.node.size),
                     })
-                  : formatBytes(props.node.size)}
-              </p>
+                  : undefined
+              }
+            >
+              {formatBytes(props.node.size)}
+            </p>
+          </div>
+          {warning || props.hasUnobservedContents ? (
+            <div className="mt-3 space-y-2 rounded-xl bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] px-3.5 py-3 text-[12.5px] leading-relaxed text-text-base shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]">
+              {warning ? <p>{warning}</p> : null}
+              {props.hasUnobservedContents ? (
+                <label className="flex cursor-pointer items-start gap-2.5">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 size-4 shrink-0 accent-[var(--dl-accent)]"
+                    checked={acknowledgedPartialScan}
+                    disabled={props.deleting}
+                    onChange={(event) =>
+                      setAcknowledgedPartialScan(event.currentTarget.checked)
+                    }
+                  />
+                  <span>
+                    {language.t("disk.review.partialWarning")}{" "}
+                    <span className="font-medium text-text-strong">
+                      {language.t("disk.review.partialAcknowledge")}
+                    </span>
+                  </span>
+                </label>
+              ) : null}
             </div>
-            <div className="text-13-regular mt-3 flex items-center gap-1.5 text-text-weak">
-              <Icon name="shield" className="size-3.5" />
-              {props.requiresDeepInventoryRefresh
-                ? language.t("disk.dialog.delete.restoreRebuild", {
+          ) : null}
+          <p className="mt-3 flex items-center gap-2 text-[12px] text-text-weak">
+            <RotateCcw className="size-3.5 shrink-0" aria-hidden />
+            {props.requiresDeepInventoryRefresh
+              ? language.t("disk.dialog.delete.restoreRebuild", {
+                  trash: props.trashName,
+                })
+              : props.hasSharedPhysicalStorage ||
+                  props.hasUnverifiedPhysicalStorage
+                ? language.t("disk.dialog.delete.restoreRecompute", {
                     trash: props.trashName,
                   })
-                : props.hasSharedPhysicalStorage ||
-                    props.hasUnverifiedPhysicalStorage
-                  ? language.t("disk.dialog.delete.restoreRecompute", {
-                      trash: props.trashName,
-                    })
-                  : language.t("disk.dialog.delete.restoreSpace", {
-                      trash: props.trashName,
-                    })}
-            </div>
-            {props.requiresDeepInventoryRefresh ? (
-              <p className="text-13-regular mt-2 rounded-lg border border-icon-warning-base/35 bg-surface-warning-weak/45 px-2.5 py-2 leading-relaxed text-text-strong">
-                {language.t("disk.dialog.delete.deepWarning")}
-              </p>
-            ) : null}
-            {props.hasUnobservedContents ? (
-              <label className="text-13-regular mt-3 flex items-start gap-2 rounded-lg bg-surface-warning-weak/45 p-3 leading-relaxed text-text-strong">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 size-4 shrink-0"
-                  checked={acknowledgedPartialScan}
-                  disabled={props.deleting}
-                  onChange={(event) =>
-                    setAcknowledgedPartialScan(event.currentTarget.checked)
-                  }
-                />
-                <span>
-                  {language.t("disk.review.partialWarning")}{" "}
-                  <strong>
-                    {language.t("disk.review.partialAcknowledge")}
-                  </strong>
-                </span>
-              </label>
-            ) : null}
-            {!props.requiresDeepInventoryRefresh &&
-            props.hasSharedPhysicalStorage ? (
-              <p className="text-13-regular mt-2 rounded-lg border border-icon-warning-base/35 bg-surface-warning-weak/45 px-2.5 py-2 leading-relaxed text-text-strong">
-                {language.t("disk.dialog.delete.sharedWarning")}
-              </p>
-            ) : null}
-            {!props.requiresDeepInventoryRefresh &&
-            !props.hasSharedPhysicalStorage &&
-            props.hasUnverifiedPhysicalStorage ? (
-              <p className="text-13-regular mt-2 rounded-lg border border-icon-warning-base/35 bg-surface-warning-weak/45 px-2.5 py-2 leading-relaxed text-text-strong">
-                {language.t("disk.dialog.delete.unverifiedWarning")}
-              </p>
-            ) : null}
-          </div>
+                : language.t("disk.dialog.delete.restoreSpace", {
+                    trash: props.trashName,
+                  })}
+          </p>
         </div>
-        <div className="mt-5 flex justify-end gap-2">
-          <Button
+        <div className="flex justify-end gap-2 border-t border-[var(--dl-separator)] px-6 py-4">
+          <button
+            type="button"
             data-autofocus
-            className="min-h-11 min-w-11"
-            size="small"
-            variant="ghost"
+            className="inline-flex h-9 items-center rounded-lg px-3.5 text-[13px] font-medium text-text-strong outline-none hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
             disabled={props.deleting}
             onClick={props.onClose}
           >
             {language.t("disk.dialog.delete.keep")}
-          </Button>
-          <Button
-            className="min-h-11 min-w-11"
-            size="small"
-            variant="primary"
+          </button>
+          <button
+            type="button"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] outline-none transition-[filter,transform] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:pointer-events-none disabled:opacity-40"
             disabled={
               props.deleting ||
               (props.hasUnobservedContents && !acknowledgedPartialScan)
             }
-            icon="trash"
             onClick={props.onConfirm}
           >
+            <Trash2 className="size-4" aria-hidden />
             {props.deleting
               ? language.t("disk.dialog.delete.moving")
               : language.t("disk.detail.moveTo", { trash: props.trashName })}
-          </Button>
+          </button>
         </div>
       </DialogContent>
     </Dialog>

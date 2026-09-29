@@ -5,7 +5,7 @@
 
 ## Debugging
 
-- NEVER try to restart the app, or the server process, EVER.
+- Restart the DiskLizard app or its development server when needed to debug or verify a change. Check for an existing instance first, and stop only processes started for this workspace.
 
 ## Local Dev
 

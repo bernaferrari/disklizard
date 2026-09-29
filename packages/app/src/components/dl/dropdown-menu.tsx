@@ -119,7 +119,13 @@ export const DropdownMenu = Object.assign(DropdownMenuRoot, {
     onSelect,
     ...rest
   }: React.ComponentProps<typeof Menu.Item> & { onSelect?: () => void }) {
-    return <Menu.Item className="dl-menu-item" onClick={onSelect} {...rest} />
+    return (
+      <Menu.Item
+        className="relative flex h-8 cursor-default items-center gap-2 rounded-md px-2.5 text-[13px] outline-hidden select-none focus:bg-[var(--dl-accent,var(--accent))] focus:text-white data-disabled:pointer-events-none data-disabled:opacity-40"
+        onClick={onSelect}
+        {...rest}
+      />
+    )
   },
   ItemLabel: function ItemLabel({
     className,

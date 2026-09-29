@@ -1,15 +1,32 @@
-import { describe, it, expect } from "bun:test"
+import { afterEach, beforeEach, describe, it, expect } from "bun:test"
 import {
   daysSinceChanged,
+  byteUnitBaseForOs,
   formatBytes,
   formatLastChanged,
+  setByteUnitBase,
   isDormant,
   shortBytes,
   formatPct,
   truncatePath,
 } from "./format"
 
+describe("byte units follow the platform file manager", () => {
+  it("counts decimal units on macOS and Linux, binary on Windows", () => {
+    expect(byteUnitBaseForOs("macos")).toBe(1000)
+    expect(byteUnitBaseForOs("linux")).toBe(1000)
+    expect(byteUnitBaseForOs("windows")).toBe(1024)
+  })
+  it("shows a 1 TB disk as 1 TB in decimal units", () => {
+    setByteUnitBase(1000)
+    expect(formatBytes(1_000_000_000_000)).toBe("1.00 TB")
+    expect(shortBytes(994_662_584_320)).toBe("995 GB")
+  })
+})
+
 describe("formatBytes", () => {
+  beforeEach(() => setByteUnitBase(1024))
+  afterEach(() => setByteUnitBase(1000))
   it("zero", () => {
     expect(formatBytes(0)).toBe("0 B")
   })
@@ -28,6 +45,8 @@ describe("formatBytes", () => {
 })
 
 describe("shortBytes", () => {
+  beforeEach(() => setByteUnitBase(1024))
+  afterEach(() => setByteUnitBase(1000))
   it("compact form", () => {
     expect(shortBytes(2.4 * 1024 ** 3)).toBe("2.4 GB")
     expect(shortBytes(890 * 1024 ** 2)).toBe("890 MB")

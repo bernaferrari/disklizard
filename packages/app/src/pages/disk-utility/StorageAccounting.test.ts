@@ -18,7 +18,7 @@ describe("storage accounting facts", () => {
       storageAccountingFacts(
         node({ logicalSize: 4_096, hardLink: "secondary" })
       ).map((fact) => fact.label)
-    ).toEqual(["File size 4.00 KB", "Shared hard link"])
+    ).toEqual(["File size 4.10 KB", "Shared hard link"])
   })
 
   it("surfaces APFS clone evidence without treating unavailable evidence as a claim", () => {
@@ -54,6 +54,6 @@ describe("storage accounting facts", () => {
           cloneAccounting: "secondary",
         })
       ).map((fact) => fact.label)
-    ).toEqual(["File size 1.00 KB", "Clone allocation counted once"])
+    ).toEqual(["File size 1.02 KB", "Clone allocation counted once"])
   })
 })

@@ -71,6 +71,7 @@ export class ViewMorph {
   private tiles: MorphTile[] = []
   private dir: MorphDirection = "toGrid"
   private startTime = 0
+  private pendingFirstFrame = false
   private duration = 1
   private plans: FlightPlan[] = []
   private sources: Point[][] = []
@@ -80,6 +81,7 @@ export class ViewMorph {
   private geometryCenter = { cx: NaN, cy: NaN, maxR: NaN }
   private raf: number | null = null
   private finished: (() => void) | null = null
+  private progress: ((fraction: number) => void) | null = null
   private _active = false
   /**
    * Monotonic per-flight token. `play` captures the incremented value in a
@@ -117,7 +119,12 @@ export class ViewMorph {
     return this._active
   }
 
-  play(tiles: MorphTile[], dir: MorphDirection, done: () => void): void {
+  play(
+    tiles: MorphTile[],
+    dir: MorphDirection,
+    done: () => void,
+    onProgress?: (fraction: number) => void
+  ): void {
     // An empty flight still supersedes whatever is airborne: cancel it (its
     // continuation runs, restoring the caller's pre-morph state) before
     // reporting the empty transition complete.
@@ -135,6 +142,7 @@ export class ViewMorph {
         .getPropertyValue("--border-weaker-base")
         .trim() || "#0c0c14"
     this.finished = done
+    this.progress = onProgress ?? null
     this.duration = this.reducedMotion()
       ? 1
       : dir === "toGrid"
@@ -157,8 +165,9 @@ export class ViewMorph {
     )
     this._active = true
     const generation = ++this.generation
-    this.startTime = performance.now()
-    this.draw(0)
+    // The caller mounts and measures the destination before we run. Preserve
+    // the exact source pixels until the first paint, then start the clock.
+    this.pendingFirstFrame = true
     this.raf = requestAnimationFrame((now) => this.frame(now, generation))
   }
 
@@ -193,6 +202,7 @@ export class ViewMorph {
       this.drawCtx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
     const cb = runCompletion ? this.finished : null
     this.finished = null
+    this.progress = null
     cb?.()
   }
 
@@ -201,11 +211,16 @@ export class ViewMorph {
     // tracks the current flight's scheduled frame.
     if (!this._active || generation !== this.generation) return
     this.raf = null
+    if (this.pendingFirstFrame) {
+      this.pendingFirstFrame = false
+      this.startTime = now - (this.duration <= 1 ? this.duration : 0)
+    }
     const raw =
       this.duration > 0
         ? Math.min(1, (now - this.startTime) / this.duration)
         : 1
     this.draw(raw)
+    this.progress?.(raw)
     if (raw >= 1) {
       this.settle(true)
       return
@@ -294,11 +309,13 @@ export class ViewMorph {
         tile.to.shape === "arc" ||
         (tile.to.shape === undefined && this.dir === "toMap")
       const roundRadius =
-        !fromArc && !toArc
-          ? 4 * dpr
-          : raw > 0.6
-            ? ((raw - 0.6) / 0.4) * 4 * dpr
-            : 0
+        fromArc === toArc
+          ? fromArc
+            ? 0
+            : 4 * dpr
+          : fromArc
+            ? Math.min(1, Math.max(0, (raw - 0.55) / 0.45)) * 4 * dpr
+            : Math.min(1, Math.max(0, (0.45 - raw) / 0.45)) * 4 * dpr
       if (fromArc !== toArc) {
         unwrapSector(
           pts,
@@ -325,9 +342,17 @@ export class ViewMorph {
           ? fromColor
           : `color-mix(in oklab, ${fromColor} ${(1 - t) * 100}%, ${toColor})`
       ctx.fill()
-      ctx.strokeStyle = this.border
-      ctx.lineWidth = 0.8 * dpr
-      ctx.stroke()
+      // The map has gaps, but no outline. The separator belongs to the tile
+      // pose and must fade in or out according to the direction of travel.
+      const separator =
+        this.dir === "toGrid"
+          ? Math.min(1, Math.max(0, (raw - 0.25) / 0.45))
+          : Math.min(1, Math.max(0, (0.75 - raw) / 0.45))
+      if (separator > 0) {
+        ctx.strokeStyle = this.border
+        ctx.lineWidth = 0.8 * dpr * separator
+        ctx.stroke()
+      }
       ctx.globalAlpha = 1
     }
   }

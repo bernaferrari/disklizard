@@ -414,8 +414,7 @@ async function requiresWholeRootPhysicalRefresh(
   return (
     (options.sizeMode ?? "physical") === "physical" &&
     comparable(targetPath) !== rootPath &&
-    ((await containsCrossSubtreePhysicalSharing(replacement, options.signal)) ||
-      replacement.sharedStorageEvidence !== "complete")
+    (await containsCrossSubtreePhysicalSharing(replacement, options.signal))
   )
 }
 
@@ -451,6 +450,15 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
     const { developerArtifactInventory: _inventory, ...next } = node
     return next
   }
+  const withoutRootOnlyEvidence = (node: DiskNode) => {
+    const {
+      developerArtifactInventory: _inventory,
+      cloneMetadata: _cloneMetadata,
+      sharedStorageEvidence: _sharedStorageEvidence,
+      ...child
+    } = node
+    return child
+  }
   let next = root
   for (const changedPath of changedPaths) {
     options.signal?.throwIfAborted()
@@ -473,9 +481,15 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       next = await replaceNode(
         next,
         comparable(changedPath),
-        localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+        localized ? withoutRootOnlyEvidence(replacement) : replacement,
         options.signal,
       )
+      // A partial local scan cannot uphold a prior whole-root proof, but it
+      // does not require another traversal just to report that uncertainty.
+      if (localized && (options.sizeMode ?? "physical") === "physical" &&
+          replacement.sharedStorageEvidence !== "complete") {
+        next = { ...next, sharedStorageEvidence: "partial" }
+      }
     } catch (error) {
       options.signal?.throwIfAborted()
       // A target can disappear between an FSEvent and the rescan. Refresh its
@@ -491,9 +505,13 @@ export async function applyDiskDelta(root: DiskNode, events: readonly WatchEvent
       next = await replaceNode(
         next,
         comparable(parent),
-        localized ? invalidateDeveloperArtifactInventory(replacement) : replacement,
+        localized ? withoutRootOnlyEvidence(replacement) : replacement,
         options.signal,
       )
+      if (localized && (options.sizeMode ?? "physical") === "physical" &&
+          replacement.sharedStorageEvidence !== "complete") {
+        next = { ...next, sharedStorageEvidence: "partial" }
+      }
     }
   }
   return { root: next, changedPaths }
@@ -848,11 +866,17 @@ export class DiskSnapshotManager {
     options = {
       ...options,
       onProgress: (progress) => {
-        latest = progress
+        // Reconciliation rescans changed subtrees, whose counters start at zero.
+        // Keep the operation-wide count from jumping backwards at the 85% phase boundary.
+        latest = {
+          ...progress,
+          filesScanned: Math.max(latest.filesScanned, progress.filesScanned),
+          dirsScanned: Math.max(latest.dirsScanned, progress.dirsScanned),
+        }
         const fraction = Math.max(0, Math.min(100, progress.percent ?? 0)) / 100
         const estimate = phase === "scan" ? fraction * 85 : phase === "reconcile" ? 85 + fraction * 10 : 98
         percent = Math.max(percent, estimate)
-        report?.({ ...progress, percent, phase, done: false })
+        report?.({ ...latest, percent, phase, done: false })
       },
     }
     stage("scan", 0)

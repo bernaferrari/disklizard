@@ -78,7 +78,7 @@ export function PreviewDialog(props: {
     if (preview.kind === "text") {
       return (
         <div className="flex size-full min-h-0 flex-col">
-          <div className="text-13-regular flex shrink-0 items-center justify-between border-b border-border-weaker-base px-4 py-2 text-text-weaker">
+          <div className="text-13-regular flex shrink-0 items-center justify-between border-b border-[var(--dl-separator)] px-4 py-2 text-text-weaker">
             <span>
               {language.t("disk.preview.lines", {
                 count: preview.text.split("\n").length.toLocaleString(),
@@ -155,10 +155,10 @@ export function PreviewDialog(props: {
             props.onNext()
           }
         }}
-        className="flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col gap-0 overflow-hidden rounded-2xl bg-surface-raised-strong p-0 shadow-[0_0_0_1px_rgb(127_127_127/0.13),0_28px_90px_rgb(0_0_0/0.28)] ring-0 sm:h-[min(760px,calc(100dvh-48px))] sm:max-w-5xl"
+        className="flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:h-[min(760px,calc(100dvh-48px))] sm:max-w-5xl"
       >
-        <header className="flex shrink-0 items-start gap-3 border-b border-border-weaker-base px-4 py-3.5 sm:px-5">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.72_0.12_176/0.14)] text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))]">
+        <header className="flex shrink-0 items-start gap-3 border-b border-[var(--dl-separator)] px-4 py-3.5 sm:px-5">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--dl-well)] text-text-weak">
             <Icon
               name={
                 props.node.isDir
@@ -171,18 +171,18 @@ export function PreviewDialog(props: {
             />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-13-semibold tracking-[0.14em] text-text-weaker uppercase">
+            <p className="text-[12px] font-medium text-text-weak">
               {language.t("disk.preview.heading")}
             </p>
             <h2
               id="preview-title"
-              className="text-16-semibold mt-0.5 truncate tracking-[-0.02em] text-text-strong"
+              className="mt-0.5 truncate text-[16px] font-semibold tracking-[-0.015em] text-text-strong"
             >
               {props.node.name}
             </h2>
             <p
               id="preview-description"
-              className="text-13-mono mt-0.5 truncate text-text-weaker"
+              className="mt-0.5 truncate font-mono text-[11px] text-text-weaker"
             >
               {props.node.path}
             </p>
@@ -197,7 +197,7 @@ export function PreviewDialog(props: {
           />
         </header>
 
-        <main className="relative min-h-0 flex-1 overflow-hidden bg-background-base/55">
+        <main className="relative min-h-0 flex-1 overflow-hidden bg-[color-mix(in_oklch,var(--background-base)_60%,var(--dl-popover))]">
           {props.loading ? (
             <div
               className="grid size-full place-items-center"
@@ -205,7 +205,7 @@ export function PreviewDialog(props: {
               aria-live="polite"
             >
               <div className="flex flex-col items-center gap-3 text-text-weak">
-                <Spin className="size-5 rounded-full border border-border-weaker-base border-t-current" />
+                <Spin className="size-5 rounded-full border border-[var(--dl-separator)] border-t-current" />
                 <p className="text-13-regular">
                   {language.t("disk.preview.loading")}
                 </p>
@@ -219,7 +219,7 @@ export function PreviewDialog(props: {
               role="alert"
             >
               <div className="max-w-sm">
-                <span className="mx-auto grid size-12 place-items-center rounded-full bg-[oklch(0.62_0.2_25/0.1)] text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))]">
+                <span className="mx-auto grid size-12 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-danger)_14%,transparent)] text-[var(--dl-danger)]">
                   <Icon name="warning" className="size-4.5" />
                 </span>
                 <h3 className="text-14-semibold mt-4 text-text-strong">
@@ -235,8 +235,8 @@ export function PreviewDialog(props: {
           {!props.loading && !props.error && props.node.isDir ? (
             <div className="flex size-full min-h-0 flex-col overflow-auto p-5 sm:p-8">
               <div className="mx-auto w-full max-w-2xl">
-                <div className="flex items-start gap-4 rounded-2xl bg-surface-raised-base/70 p-5 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.12)]">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-background-base/70 text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))]">
+                <div className="flex items-start gap-4 rounded-2xl bg-[var(--dl-well)] p-5">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--dl-well-strong)] text-text-weak">
                     <Icon name="folder" className="size-5" />
                   </span>
                   <div className="min-w-0">
@@ -305,7 +305,7 @@ export function PreviewDialog(props: {
           {loadedPreview ? renderLoadedPreview(loadedPreview) : null}
         </main>
 
-        <footer className="flex shrink-0 flex-wrap items-center gap-3 border-t border-border-weaker-base bg-surface-raised-strong px-4 py-3 sm:px-5">
+        <footer className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[var(--dl-separator)] bg-surface-raised-strong px-4 py-3 sm:px-5">
           <div
             className="flex shrink-0 items-center gap-1"
             role="group"

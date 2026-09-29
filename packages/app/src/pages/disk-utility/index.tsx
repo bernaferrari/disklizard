@@ -1,24 +1,44 @@
-import { VolumeCapacitySummary } from "./VolumeCapacitySummary"
-import { ScanCoverageDisclosure } from "./ScanCoverageDisclosure"
 import {
   showCollectionDragPreview,
   moveCollectionDragPreview,
   hideCollectionDragPreview,
 } from "./collection-drag-preview"
-import { createBranchIdentity, createTileIdentity } from "./tile-identity"
-import { storageMapColor, storageSummaryColor } from "./visual-palette"
+import { trackPointerDrag, type PointerDragSource } from "./pointer-drag"
 import { LocationNavigation } from "./LocationNavigation"
 import { flushSync } from "react-dom"
 import { ParentFrame } from "./ParentFrame"
 import { planOtherExpansion } from "./other-expansion"
-import { createGroupNavigation } from "./group-navigation"
 import {
-  DeveloperCategories,
-  DeveloperDisclosure,
-  DeveloperEntryContent,
-} from "./DeveloperPresentation"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChartPie, LayoutGrid, Layers } from "lucide-react"
+  containingFolderForVisualGroup,
+  createGroupNavigation,
+} from "./group-navigation"
+import { AnimatePresence, motion } from "framer-motion"
+import { CleanupView } from "./CleanupView"
+import { ChangesPanel } from "./ChangesPanel"
+import { StorageRow } from "./StorageRow"
+import { FolderContext } from "./FolderContext"
+import { mergeDiscovery, type ScanDiscovery } from "./live-scan"
+import { NodeContextMenu, type ContextMenuItem } from "./NodeContextMenu"
+import {
+  Copy,
+  CornerDownRight,
+  Eye,
+  FolderSearch,
+  Lock,
+  Minus,
+  Plus,
+  Trash2,
+} from "lucide-react"
+import { useScanBaseline } from "./use-scan-baseline"
+import { developerInventoryCoverage } from "./developer-inventory-coverage"
+import {
+  ChangesButton,
+  FreeSpaceRow,
+  ScanIssuesNotice,
+  ViewSwitch,
+  WorkspaceSwitch,
+} from "./ExplorerChrome"
+import { aggregateTone, createSpectrum, toneCss } from "./spectrum"
 /**
  * DiskLizard — standalone storage explorer.
  *
@@ -32,7 +52,6 @@ import { ChartPie, LayoutGrid, Layers } from "lucide-react"
  */
 
 import { DiskUtilitySearchTools } from "./DiskUtilitySearchTools"
-import { DiskUtilityWorkspaceMenu } from "./DiskUtilityWorkspaceMenu"
 import { DiskUtilityHoverContents } from "./DiskUtilityHoverContents"
 import { useHoverPreview } from "./use-hover-preview"
 import { Button } from "@/components/dl/button"
@@ -51,6 +70,7 @@ import {
 import type {
   DragEvent as ReactDragEvent,
   KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react"
 import {
@@ -75,8 +95,8 @@ import type {
 import {
   Sunburst,
   primaryHueForIndex,
-  primarySegmentColor,
   sunburstEntryDuration,
+  sunburstSegmentPadding,
   type SunburstEntryIntent,
 } from "./sunburst"
 import { Treemap } from "./TreemapPanel"
@@ -101,10 +121,8 @@ import {
   ARTIFACT_ECOSYSTEMS,
   containsSharedPhysicalStorage,
   developerArtifactCleanupReadiness,
-  developerArtifactContext,
   isSmartCleanupEligible,
   matchesArtifactEcosystem,
-  artifactEcosystemLabel,
   type ArtifactEcosystem,
   type ArtifactEcosystemFilter,
   type DeveloperCategory,
@@ -117,10 +135,10 @@ import {
   isDeveloperInventoryNode,
 } from "./developer-inventory"
 import {
+  byteUnitBaseForOs,
+  setByteUnitBase,
   formatBytes,
-  formatLastChanged,
   shortBytes,
-  formatCount,
   truncatePath,
 } from "./format"
 import {
@@ -128,15 +146,12 @@ import {
   resolveDeveloperCleanupAge,
   type DeveloperCleanupAgePreset,
 } from "./developer-cleanup"
-import { SAFETY_ACCENT } from "./ui-tokens"
 import {
   CenterOverlay,
   IndexEmpty,
   Placeholder,
 } from "./DiskUtilityEmptyStates"
-import { SegmentedButton } from "./DiskUtilityControls"
-import { DeveloperCleanupPolicy } from "./DeveloperCleanupPolicy"
-import { ReclaimBanner, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
+import type { VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { DriveOverview } from "./DiskUtilityDriveOverview"
 import { IciclePanel } from "./IciclePanel"
 import { DetailBar } from "./DiskUtilityDetailBar"
@@ -144,11 +159,9 @@ import {
   CleanupProtectionsResetDialog,
   CollectionDialog,
   DeleteConfirmDialog,
-  ReclaimDrawer,
   type DeletionProgress,
 } from "./DiskUtilityDialogs"
 import { VirtualIndex } from "./DiskUtilityVirtualList"
-import { DiskScanHistory } from "./DiskScanHistory"
 import {
   createScanHistory,
   filterScanHistoryEntries,
@@ -166,13 +179,16 @@ import {
   type ScanTab,
 } from "./scan-tabs"
 import { recentChangeNodes } from "./recent-changes"
+import {
+  findRetainedLocation,
+  type RetainedLocationCandidate,
+} from "./retained-location"
 import { DISK_UTILITY_STYLES } from "./styles"
 import {
   chooseFolderAndScan,
   DISK_CHOOSE_FOLDER_COMMAND,
 } from "./choose-folder"
 import {
-  diskEntrySearchText,
   groupSmallEntryTail,
   type DiskEntrySortDirection,
   type DiskEntrySortKey,
@@ -189,8 +205,7 @@ import {
 } from "./browse-history"
 import { createDiskBrowseHistoryController } from "./browse-history-controller"
 import { diskNodeDisplayName } from "./node-display"
-import { distinguishingPathLabels, itemIdentity } from "./item-identity"
-import { SearchHighlight } from "./SearchHighlight"
+import { itemIdentity } from "./item-identity"
 import {
   assertCleanupProtectionsReady,
   executeAuthorizedDeletionBatch,
@@ -229,6 +244,7 @@ import { cn } from "@/lib/utils"
 import {
   buildCrumbs,
   describeStorageNode,
+  findRetainedNode,
   nativeRevealLabel,
   nativeTrashName,
   scanAccessGuidance,
@@ -237,7 +253,7 @@ import {
 } from "./navigation"
 
 type ViewMode = "drives" | "scan"
-type ScanMode = "map" | "list" | "grid" | "icicle"
+type ScanMode = "map" | "grid" | "icicle"
 type IndexLens = ScanInvestigationLens
 type DeveloperCategoryFilter = DeveloperCategory | "all"
 type Entry = ScanInvestigationEntry
@@ -370,15 +386,6 @@ const DEVELOPER_SIGNATURE_NAMES = [
   "daemon",
 ] as const
 
-const DEVELOPER_CATEGORY_LABEL = {
-  dependencies: "disk.developer.category.dependencies",
-  "build-output": "disk.developer.category.buildOutput",
-  "toolchain-cache": "disk.developer.category.toolchainCache",
-  "agent-data": "disk.developer.category.agentData",
-  worktree: "disk.developer.category.worktree",
-  "version-control": "disk.developer.category.versionControl",
-} as const satisfies Record<DeveloperCategory, DiskLanguageKey>
-
 function withTimeout<T>(
   promise: Promise<T>,
   ms: number,
@@ -412,6 +419,10 @@ function withTimeout<T>(
 
 export default function DiskUtilityPage() {
   const platform = usePlatform()
+  setByteUnitBase(byteUnitBaseForOs(platform.os))
+  useEffect(() => {
+    document.documentElement.dataset.dlOs = platform.os
+  }, [platform.os])
   const language = useLanguage()
   const settings = useSettings()
   const isDesktop = platform.platform === "desktop"
@@ -419,7 +430,6 @@ export default function DiskUtilityPage() {
 
   const [view, setView] = useState<ViewMode>("drives")
   const [scanMode, setScanMode] = useState<ScanMode>("map")
-  const [cleanupMapCollapsed, setCleanupMapCollapsed] = useState(true)
   const [drives, setDrives] = useState<DiskDriveInfo[]>([])
   const [drivesLoading, setDrivesLoading] = useState(false)
   const [drivesError, setDrivesError] = useState<string | undefined>()
@@ -431,6 +441,9 @@ export default function DiskUtilityPage() {
 
   const [treeRoot, setTreeRoot] = useState<DiskScanNode | null>(null)
   const [viewNode, setViewNode] = useState<DiskScanNode | null>(null)
+  const [expandedSmallItemsForPath, setExpandedSmallItemsForPath] = useState<
+    string | null
+  >(null)
   const [scanSourcePath, setScanSourcePath] = useState("")
   const [scanLabel, setScanLabel] = useState("")
   const [scanning, setScanning] = useState(false)
@@ -439,6 +452,9 @@ export default function DiskUtilityPage() {
   const [scanPct, setScanPct] = useState(0)
   const [scanBytes, setScanBytes] = useState(0)
   const [scanTail, setScanTail] = useState("")
+  const [scanDiscoveries, setScanDiscoveries] = useState<
+    readonly ScanDiscovery[]
+  >([])
   const [scanCompletionSource, setScanCompletionSource] = useState<
     DiskScanProgress["source"] | undefined
   >()
@@ -470,7 +486,6 @@ export default function DiskUtilityPage() {
     sortKey: "size",
     sortDirection: "descending",
   })
-  const reviewSurface = useSurfacePresence()
   const collectionSurface = useSurfacePresence()
   const deleteSurface = useSurfacePresence()
   const cleanupResetSurface = useSurfacePresence()
@@ -491,6 +506,11 @@ export default function DiskUtilityPage() {
   const [cleanupResultsOpen, setCleanupResultsOpen] = useState(false)
   const [cleanupPlanNeedsRecheck, setCleanupPlanNeedsRecheck] = useState(false)
   const [dropActive, setDropActive] = useState(false)
+  const [contextMenu, setContextMenu] = useState<{
+    node: DiskScanNode
+    x: number
+    y: number
+  } | null>(null)
   const [collectionDragNode, setCollectionDragNode] =
     useState<DiskScanNode | null>(null)
   const [collectionDropActive, setCollectionDropActive] = useState(false)
@@ -516,9 +536,18 @@ export default function DiskUtilityPage() {
   const [gridVisible, setGridVisible] = useState(false)
   const [morphing, setMorphing] = useState(false)
   const morphRef = useRef<ViewMorph | null>(null)
+  const gridOverlayRef = useRef<HTMLDivElement | null>(null)
+  const layerOverlayRef = useRef<HTMLDivElement | null>(null)
   const volumeScanUnsubsRef = useRef(new Map<string, () => void>())
   const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null)
   const sunburstRef = useRef<Sunburst | undefined>(undefined)
+  const tileCameraPrepareRef = useRef<((path: string) => void) | null>(null)
+  const registerTileCamera = useCallback(
+    (prepare: ((path: string) => void) | null) => {
+      tileCameraPrepareRef.current = prepare
+    },
+    []
+  )
 
   const scanUnsubRef = useRef<(() => void) | undefined>(undefined)
 
@@ -556,17 +585,7 @@ export default function DiskUtilityPage() {
   >(undefined)
   const collectionDragPreviewRef = useRef<HTMLDivElement | null>(null)
   const collectionDropElementRef = useRef<HTMLElement | undefined>(undefined)
-  const mapDragRef = useRef<
-    | {
-        node: DiskScanNode
-        pointerId: number
-        startX: number
-        startY: number
-        threshold: number
-        dragging: boolean
-      }
-    | undefined
-  >(undefined)
+  const cancelCollectionDragRef = useRef<(() => void) | undefined>(undefined)
   const scrollIndexIntoViewRef = useRef<((index: number) => void) | undefined>(
     undefined
   )
@@ -634,21 +653,7 @@ export default function DiskUtilityPage() {
     [treeRoot, viewNode, groupNavigation]
   )
   const parentView = crumbs.at(-2)?.node
-  const branchIdentity = useMemo(
-    () => createBranchIdentity(treeRoot),
-    [treeRoot]
-  )
-  const branchColor = (node: DiskScanNode) => {
-    const identity =
-      branchIdentity(node.path) ??
-      (node.isOther ? branchIdentity(node.children[0]?.path ?? "") : undefined)
-    return identity
-      ? node.isOther
-        ? storageSummaryColor(identity.index, identity.depth, "map")
-        : storageMapColor(identity.index, identity.depth, node.isDir)
-      : undefined
-  }
-  const tileColor = useMemo(() => createTileIdentity(treeRoot), [treeRoot])
+  const rootSpectrum = useMemo(() => createSpectrum(treeRoot), [treeRoot])
   /** A fallback or incomplete map must never turn unknown shared storage into a reclaim promise. */
   const physicalCloneAccountingUncertain = useMemo(
     () =>
@@ -722,30 +727,6 @@ export default function DiskUtilityPage() {
     )
     return filterDeveloperItemsByAge(categorized, developerAge)
   }, [indexFilter, investigation, developerAge])
-  const developerCategoryTotals = useMemo(() => {
-    if (indexFilter.lens !== "developer") return []
-    const ageFiltered = filterDeveloperItemsByAge(
-      developer().items.filter(({ recognition }) =>
-        matchesArtifactEcosystem(recognition, indexFilter.developerEcosystem)
-      ),
-      developerAge
-    )
-    const needle = query.trim().toLocaleLowerCase()
-    const filtered = needle
-      ? ageFiltered.filter(({ node, recognition }) =>
-          diskEntrySearchText(
-            node,
-            recognition.tag ? language.t(recognition.tag) : ""
-          ).includes(needle)
-        )
-      : ageFiltered
-    return developer().buckets.map((bucket) => ({
-      category: bucket.category,
-      bytes: filtered
-        .filter((item) => item.recognition.developer === bucket.category)
-        .reduce((sum, item) => sum + item.bytes, 0),
-    }))
-  }, [indexFilter, investigation, developerAge, query, language])
   const developerEcosystems = useMemo<ArtifactEcosystem[]>(
     () =>
       indexFilter.lens === "developer"
@@ -779,6 +760,24 @@ export default function DiskUtilityPage() {
     [currentHistoryEntries]
   )
   const recentChanges = useMemo(() => recentChangeNodes(treeRoot), [treeRoot])
+  const baselineStorage = useMemo(
+    () => platform.storage?.("disklizard-baselines.dat"),
+    [platform.storage]
+  )
+  /** Git-style comparison with the previous session's scan of this root. */
+  const sinceLastScan = useScanBaseline(
+    baselineStorage,
+    treeRoot,
+    scanSession.activeID,
+    scanning
+  )
+  const sinceLastChanges = useMemo(
+    () =>
+      new Map(
+        (sinceLastScan?.changes ?? []).map((change) => [change.path, change])
+      ),
+    [sinceLastScan]
+  )
   /**
    * The Recent lens is a page-level overlay on the "all" view: the typed
    * investigation lenses stay closed, so no scan-wide summary is rebuilt.
@@ -856,6 +855,7 @@ export default function DiskUtilityPage() {
     const raw = deriveEntries()
     return viewNode &&
       !viewNode.isOther &&
+      expandedSmallItemsForPath !== viewNode.path &&
       indexFilter.lens === "all" &&
       !query.trim() &&
       !recentLens &&
@@ -866,6 +866,7 @@ export default function DiskUtilityPage() {
   }, [
     investigation,
     viewNode,
+    expandedSmallItemsForPath,
     query,
     indexFilter,
     recentLens,
@@ -886,65 +887,13 @@ export default function DiskUtilityPage() {
   }, [entries])
   const entryRowHeight = useCallback(
     (entry: { node: DiskScanNode }) =>
-      indexFilter.lens === "developer"
-        ? query.trim()
-          ? 88
-          : 62
-        : indexFilter.lens !== "all" ||
-            query.trim() ||
-            duplicateEntryNames.has(
-              diskNodeDisplayName(entry.node).toLocaleLowerCase()
-            )
-          ? 44
-          : 30,
-    [indexFilter.lens, query, investigation, duplicateEntryNames]
-  )
-  const developerLocationLabels = useMemo(
-    () => distinguishingPathLabels(entries.map(({ node }) => node.path)),
-    [entries]
-  )
-  const developerGroupLabels = useMemo(() => {
-    const labels = new Map<string, string>()
-    if (groupDeveloper === "none" || indexFilter.lens !== "developer")
-      return labels
-    const projectLabels = distinguishingPathLabels(
-      entries.map(({ node }) =>
-        node.path.replaceAll("\\", "/").split("/").slice(0, -1).join("/")
+      query.trim() ||
+      duplicateEntryNames.has(
+        diskNodeDisplayName(entry.node).toLocaleLowerCase()
       )
-    )
-    const groupFor = (node: DiskScanNode) =>
-      groupDeveloper === "category"
-        ? investigation.recognitionFor(node).developer
-        : node.path.replaceAll("\\", "/").split("/").slice(0, -1).join("/")
-    const groupCounts = new Map<string, number>()
-    for (const entry of entries) {
-      const group = groupFor(entry.node)
-      if (group) groupCounts.set(group, (groupCounts.get(group) ?? 0) + 1)
-    }
-    let previous: string | undefined
-    for (const entry of entries) {
-      const category = investigation.recognitionFor(entry.node).developer
-      const project = entry.node.path
-        .replaceAll("\\", "/")
-        .split("/")
-        .slice(0, -1)
-        .join("/")
-      const group = groupFor(entry.node)
-      if (group && group !== previous && (groupCounts.get(group) ?? 0) > 1)
-        labels.set(
-          entry.node.path,
-          groupDeveloper === "category" && category
-            ? language.t(DEVELOPER_CATEGORY_LABEL[category])
-            : (projectLabels.get(project) ?? project)
-        )
-      previous = group
-    }
-    return labels
-  }, [entries, groupDeveloper, indexFilter.lens, investigation, language])
-  const developerGroupLabel = useCallback(
-    (entry: { node: DiskScanNode }) =>
-      developerGroupLabels.get(entry.node.path),
-    [developerGroupLabels]
+        ? 46
+        : 34,
+    [query, duplicateEntryNames]
   )
   const selectedNode = useMemo(() => {
     const path = selectedPath
@@ -1028,10 +977,10 @@ export default function DiskUtilityPage() {
   )
   const projectedPaths = useMemo(() => {
     const paths = new Set(queuedPaths)
-    if (collectionDropActive && collectionDragNode)
+    if (collectionDragNode && canModifyNode(collectionDragNode))
       paths.add(collectionDragNode.path)
     return paths
-  }, [queuedPaths, collectionDropActive, collectionDragNode?.path])
+  }, [queuedPaths, collectionDragNode?.path])
   useEffect(
     () => sunburstRef.current?.setExcludedPaths(projectedPaths),
     [projectedPaths]
@@ -1039,6 +988,14 @@ export default function DiskUtilityPage() {
   const visibleMapNode = useMemo(
     () => (viewNode ? withoutCollected(viewNode, projectedPaths) : null),
     [viewNode, projectedPaths]
+  )
+  // Keep a branch's hue anchored to the scanned tree while navigating or
+  // previewing a drag. Re-rooting the spectrum at each view recolors the same
+  // directory during a camera move and makes nested items look unrelated.
+  const spectrum = rootSpectrum
+  const tileColor = useCallback(
+    (path: string) => spectrum.color({ path, isDir: true }),
+    [spectrum]
   )
   /**
    * Bulk selection is narrower than the Developer lens: only known
@@ -1067,15 +1024,25 @@ export default function DiskUtilityPage() {
     () => uniqueDeletionRoots(smartCleanupEligibleEntries, platform.os),
     [smartCleanupEligibleEntries]
   )
-  const smartCleanupCandidateBytes = useMemo(
-    () => smartCleanupCandidates.reduce((total, node) => total + node.size, 0),
-    [smartCleanupCandidates]
-  )
-  const smartCleanupReviewCount = Math.max(
-    0,
-    (indexFilter.lens === "developer" ? entries.length : 0) -
-      smartCleanupEligibleEntries.length
-  )
+  /** Toolbar hint: developer artifacts plus non-overlapping suggestions. */
+  const cleanupPotentialBytes = useMemo(() => {
+    if (!treeRoot || physicalCloneAccountingUncertain) return 0
+    const developerSummary = investigation.developer()
+    const roots = developerSummary.items.map(({ node }) => node.path)
+    const extra = reclaim.buckets
+      .flatMap((bucket) => bucket.items)
+      .filter(
+        ({ node }) =>
+          !roots.some(
+            (root) =>
+              node.path === root ||
+              node.path.startsWith(root + "/") ||
+              root.startsWith(node.path + "/")
+          )
+      )
+      .reduce((sum, { node }) => sum + node.size, 0)
+    return developerSummary.totalBytes + extra
+  }, [investigation, reclaim, treeRoot, physicalCloneAccountingUncertain])
   const currentScanPinned =
     !!scanSourcePath &&
     isPinnedScanLocation(pinnedLocations, scanSourcePath, platform.os)
@@ -1105,16 +1072,13 @@ export default function DiskUtilityPage() {
     root: DiskScanNode,
     targetPath: string
   ): DiskScanNode | undefined {
-    if (diskPathEquals(root.path, targetPath, platform.os)) return root
-    for (const child of root.children) {
-      const match = findScanNode(child, targetPath)
-      if (match) return match
-    }
-    return undefined
+    return findRetainedNode(root, targetPath)
   }
 
   function showBrowseNode(node: DiskScanNode, instant = false) {
     const preserveInvestigation = indexFilter.lens !== "all" || !!query.trim()
+    if (!instant && scanMode === "grid" && gridInteractive)
+      tileCameraPrepareRef.current?.(node.path)
     clearSelectionAnnouncement()
     sunburstRef.current?.navigateTo(node, instant)
     setViewNode(node)
@@ -1242,14 +1206,50 @@ export default function DiskUtilityPage() {
     if (!api) return
     await chooseFolderAndScan({
       chooseFolder: () => api.chooseFolder(),
-      startScan: (path, label, drive) =>
-        live.current.startScan(path, label, drive),
+      startScan: async (path, label, drive) => {
+        if (live.current.openRetainedLocation(path)) return
+        await live.current.startScan(path, label, drive)
+      },
       drives,
       os: platform.os,
     })
   }
 
-  function scanStorageLocation(location: DiskStorageLocation) {
+  function retainedLocation(path: string) {
+    const candidates: RetainedLocationCandidate<"active" | "tab" | "volume">[] =
+      []
+    if (view === "scan" && treeRoot)
+      candidates.push({ kind: "active", id: "active", tree: treeRoot })
+    for (const tab of tabs.toReversed())
+      candidates.push({ kind: "tab", id: tab.id, tree: tab.tree })
+    for (const job of volumeJobs) {
+      if (job.status === "complete" && job.tree)
+        candidates.push({ kind: "volume", id: job.id, tree: job.tree })
+    }
+    return findRetainedLocation(path, candidates, platform.os)
+  }
+
+  function openRetainedLocation(path: string) {
+    if (scanning) return false
+    const retained = retainedLocation(path)
+    if (!retained) return false
+    const { candidate, node } = retained
+    if (candidate.kind === "active") {
+      if (viewNode?.path === node.path) return true
+      browseHistory.visit(node.path)
+      showBrowseNode(node)
+    } else if (candidate.kind === "tab") {
+      switchToTab(candidate.id, node)
+    } else {
+      const job = volumeScanJobs[candidate.id]
+      if (!job?.tree) return false
+      openVolumeScan(job, node)
+    }
+    return true
+  }
+
+  function activateStorageLocation(location: DiskStorageLocation) {
+    if (openRetainedLocation(location.path)) return
     void startScan(
       location.path,
       location.name,
@@ -1328,6 +1328,7 @@ export default function DiskUtilityPage() {
             bytes,
             pct: progress.percent ?? job.pct ?? 0,
             currentPath: progress.currentPath,
+            discoveries: mergeDiscovery(job.discoveries, progress.discovery),
             ...(progress.source ? { source: progress.source } : {}),
           },
         }
@@ -1415,7 +1416,7 @@ export default function DiskUtilityPage() {
     void disk?.stopWatching(id)
   }
 
-  function openVolumeScan(job: VolumeScanJob) {
+  function openVolumeScan(job: VolumeScanJob, target?: DiskScanNode) {
     if (!job.tree) return
     // A completed tree is immutable renderer data; React state never wraps it
     // in reactive proxies, so traversing a large scan stays allocation-free.
@@ -1427,8 +1428,8 @@ export default function DiskUtilityPage() {
     setScanning(false)
     setFocusedScan(null)
     setTreeRoot(tree)
-    setViewNode(tree)
-    browseHistory.reset(tree.path)
+    setViewNode(target ?? tree)
+    browseHistory.reset(target?.path ?? tree.path)
     setScanSourcePath(job.sourcePath)
     setScanLabel(job.label)
     setScanDrive(job.drive)
@@ -1479,7 +1480,7 @@ export default function DiskUtilityPage() {
   }
 
   /** Restore a background tab into the live state, saving the current one first. */
-  function switchToTab(id: string) {
+  function switchToTab(id: string, target?: DiskScanNode) {
     if (scanning) return
     const current = currentScanTabState()
     const timestamp = Date.now()
@@ -1499,8 +1500,9 @@ export default function DiskUtilityPage() {
     if (!tab) return
     setView("scan")
     setTreeRoot(tab.tree)
-    setViewNode(tab.view)
-    browseHistory.replace(tab.browseHistory)
+    setViewNode(target ?? tab.view)
+    if (target) browseHistory.reset(target.path)
+    else browseHistory.replace(tab.browseHistory)
     setScanSourcePath(tab.sourcePath)
     setScanLabel(tab.label)
     setScanDrive(tab.drive)
@@ -1608,6 +1610,7 @@ export default function DiskUtilityPage() {
     setScanBytes(0)
     scanMaxBytesRef.current = 0
     setScanTail("")
+    setScanDiscoveries([])
     setScanCompletionSource(undefined)
     setTreeRoot(null)
     setViewNode(null)
@@ -1623,6 +1626,8 @@ export default function DiskUtilityPage() {
     scanUnsubRef.current = api.onScanProgress((p) => {
       if (token !== scanTokenRef.current || p.scanId !== sessionID) return
       if (p.done && p.source) setScanCompletionSource(p.source)
+      if (p.discovery)
+        setScanDiscoveries((list) => mergeDiscovery(list, p.discovery) ?? list)
       setScanFiles(p.filesScanned)
       setScanTail(p.currentPath)
       if (p.size > scanMaxBytesRef.current) {
@@ -1641,6 +1646,7 @@ export default function DiskUtilityPage() {
             bytes: scanMaxBytesRef.current,
             pct: p.percent ?? 0,
             currentPath: p.currentPath,
+            discoveries: mergeDiscovery(job.discoveries, p.discovery),
             ...(p.source ? { source: p.source } : {}),
           },
         }
@@ -1726,9 +1732,14 @@ export default function DiskUtilityPage() {
     setScanBytes(0)
     scanMaxBytesRef.current = 0
     setScanTail("")
+    setScanDiscoveries([])
     const unsubscribe = api.onScanProgress((progress) => {
       if (token !== scanTokenRef.current || progress.scanId !== sessionID)
         return
+      if (progress.discovery)
+        setScanDiscoveries(
+          (list) => mergeDiscovery(list, progress.discovery) ?? list
+        )
       setScanFiles(progress.filesScanned)
       setScanTail(progress.currentPath)
       if (progress.size <= scanMaxBytesRef.current) return
@@ -1793,6 +1804,13 @@ export default function DiskUtilityPage() {
       retainTrustedSubtree = true
       clearSelectionAnnouncement()
       setScanPct(100)
+      // The old map stays mounted during a focused rescan. Carry its painted
+      // folder into the newly scanned tree before React updates the panels.
+      sunburstRef.current?.reconcileAndNavigate(
+        nextRoot,
+        nextView,
+        createSpectrum(nextRoot).tone
+      )
       setTreeRoot(nextRoot)
       setViewNode(nextView)
       browseHistory.visit(nextView.path)
@@ -1855,6 +1873,38 @@ export default function DiskUtilityPage() {
       return
     }
     if (!treeRoot || !viewNode) return
+    const containing = containingFolderForVisualGroup(treeRoot, node)
+    if (containing) {
+      setExpandedSmallItemsForPath(containing.path)
+      if (viewNode.path !== containing.path) {
+        browseHistory.visit(containing.path)
+        showBrowseNode(containing)
+      }
+      const members = new Set(node.children.map((child) => child.path))
+      const firstIndex = containing.children
+        .toSorted((left, right) => right.size - left.size)
+        .findIndex((child) => members.has(child.path))
+      if (firstIndex >= 0)
+        requestAnimationFrame(() =>
+          scrollIndexIntoViewRef.current?.(firstIndex)
+        )
+      if (restoreListFocus) restoreKeyboardViewFocus("contents")
+      return
+    }
+    // An aggregate already describes a remainder. Keep its members in the
+    // current folder's contents panel instead of opening another visual group.
+    if (viewNode.isOther) {
+      const firstMember = node.children[0]
+      const index = firstMember
+        ? entries.findIndex((entry) => entry.node.path === firstMember.path)
+        : -1
+      if (index >= 0) {
+        setFocusIdx(index)
+        scrollIndexIntoViewRef.current?.(index)
+        focusListEntry(index)
+      }
+      return
+    }
     const incomplete =
       node.children.reduce((sum, child) => sum + child.size, 0) < node.size ||
       (node.otherCount ?? node.children.length) > node.children.length
@@ -1881,7 +1931,7 @@ export default function DiskUtilityPage() {
     if (!group) return
     browseHistory.visit(group.path)
     showBrowseNode(group)
-    if (restoreListFocus) restoreKeyboardViewFocus("list")
+    if (restoreListFocus) restoreKeyboardViewFocus("contents")
   }
 
   async function rescanCurrent(forceFresh = false) {
@@ -2077,8 +2127,6 @@ export default function DiskUtilityPage() {
       !sb ||
       !canvas ||
       !landscape ||
-      mode === "list" ||
-      scanMode === "list" ||
       intent === "keyboard" ||
       sb.reducedMotion
     ) {
@@ -2132,13 +2180,49 @@ export default function DiskUtilityPage() {
     }
     setMorphing(true)
     setScanMode(mode)
-    setGridVisible(mode === "grid")
+    setGridVisible(mode === "grid" || previous === "grid")
     setGridInteractive(false)
     setHoveredPath(null)
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
         if (version !== viewTransitionVersionRef.current) return
         const target = readRects()
+        const overlay = gridOverlayRef.current
+        const layerOverlay = layerOverlayRef.current
+        if (overlay) overlay.style.opacity = mode === "grid" ? "0" : "1"
+        if (layerOverlay && mode === "icicle") layerOverlay.style.opacity = "0"
+        const closestRect = (path: string, rects: typeof target) => {
+          let ancestor = path
+          while (ancestor) {
+            const match = rects.get(ancestor)
+            if (match) return match
+            const end = Math.max(
+              ancestor.lastIndexOf("/"),
+              ancestor.lastIndexOf("\\")
+            )
+            if (end < 0) break
+            const parent = ancestor.slice(0, end)
+            const next = parent
+              ? parent.endsWith(":")
+                ? `${parent}\\`
+                : parent
+              : ancestor[0]
+            if (next === ancestor) break
+            ancestor = next
+          }
+          return null
+        }
+        const centerOf = (rect: {
+          x: number
+          y: number
+          w: number
+          h: number
+        }) => ({
+          x: rect.x + rect.w / 2,
+          y: rect.y + rect.h / 2,
+          w: 0,
+          h: 0,
+        })
         const tiles: MorphTile[] = []
         for (const seg of segments) {
           const fromRect = source.get(seg.path)
@@ -2146,10 +2230,20 @@ export default function DiskUtilityPage() {
           // Preserve disappearing rings and entering details throughout the flight.
           const absentSource = previous !== "map" && !fromRect
           const absentTarget = mode !== "map" && !toRect
-          const rect = toRect ?? fromRect ?? { x: 0, y: 0, w: 0, h: 0 }
+          const fallback = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            w: 0,
+            h: 0,
+          }
+          const sourceRect =
+            fromRect ?? centerOf(closestRect(seg.path, source) ?? fallback)
+          const targetRect =
+            toRect ?? centerOf(closestRect(seg.path, target) ?? fallback)
+          const pad = sunburstSegmentPadding(seg, sb.options.padAngle)
           const wedge = {
-            start: seg.start + sb.options.padAngle,
-            end: seg.end - sb.options.padAngle,
+            start: seg.start + pad,
+            end: seg.end - pad,
             inner: seg.inner,
             outer: seg.outer,
           }
@@ -2157,10 +2251,9 @@ export default function DiskUtilityPage() {
             Array.from({ length: 10 }, (_, i) => i).find(
               (i) => primaryHueForIndex(i) === seg.hue
             ) ?? 0
-          const mapColor = seg.node.isOther
-            ? storageSummaryColor(colorIndex, seg.depth, "map")
-            : (branchColor(seg.node) ??
-              primarySegmentColor(colorIndex, 1, seg.node.isDir))
+          const mapColor = seg.tone
+            ? toneCss(seg.tone)
+            : (spectrum.color(seg.node) ?? toneCss(aggregateTone(seg.depth)))
           tiles.push({
             path: seg.path,
             node: seg.node,
@@ -2173,12 +2266,12 @@ export default function DiskUtilityPage() {
             from: {
               shape: previous === "map" ? "arc" : "rect",
               wedge,
-              rect: fromRect ?? rect,
+              rect: sourceRect,
             },
             to: {
               shape: mode === "map" ? "arc" : "rect",
               wedge,
-              rect: toRect ?? rect,
+              rect: targetRect,
             },
           })
         }
@@ -2240,11 +2333,25 @@ export default function DiskUtilityPage() {
               setGridVisible(mode === "grid")
               setGridInteractive(mode === "grid")
             })
+            if (overlay) overlay.style.opacity = ""
+            if (layerOverlay) layerOverlay.style.opacity = ""
             sb.setMorphing(false)
             const queued = queuedModeRef.current
             queuedModeRef.current = null
             if (queued && queued !== mode)
               requestAnimationFrame(() => live.current.chooseScanMode(queued))
+          },
+          (fraction) => {
+            const reveal = Math.max(0, Math.min(1, (fraction - 0.72) / 0.28))
+            if (overlay) {
+              overlay.style.opacity = String(
+                mode === "grid" ? reveal : 1 - Math.min(1, fraction / 0.28)
+              )
+              if (mode === "grid" && fraction >= 0.9)
+                overlay.dataset.labelsVisible = "true"
+            }
+            if (layerOverlay && mode === "icicle")
+              layerOverlay.style.opacity = String(reveal)
           }
         )
       })
@@ -2285,7 +2392,7 @@ export default function DiskUtilityPage() {
   }
 
   /** A keyboard view switch must land on a real control in the newly mounted view. */
-  function restoreKeyboardViewFocus(mode: ScanMode) {
+  function restoreKeyboardViewFocus(mode: ScanMode | "contents") {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (mode === "map") {
@@ -2297,7 +2404,7 @@ export default function DiskUtilityPage() {
           focusPersistentDiskAction()
           return
         }
-        if (mode === "list") {
+        if (mode === "contents") {
           focusListEntry(
             clampedListIndex(live.current.focusIdx, live.current.entries.length)
           )
@@ -2962,20 +3069,15 @@ export default function DiskUtilityPage() {
     if (!removed.length) return
     setCollection((items) => withoutDeletedNodes(items, removed, platform.os))
     const deepInventoryNeedsRefresh = requiresDeepInventoryRefresh(removed)
-    // Shared physical ownership is not a per-path reclaim estimate. Do not
-    // subtract any hard-link or clone path optimistically; close affected
-    // background maps and force the active map through a real traversal. Deep
-    // inventory entries likewise are not children of this map, so a local tree
-    // patch would leave their parent aggregates and coverage status stale.
-    if (
-      deepInventoryNeedsRefresh ||
-      physicalCloneAccountingUncertain ||
-      removed.some(containsSharedPhysicalStorage)
-    ) {
-      // This branch invalidates every retained map. Whether the cause is deep
-      // inventory, clone accounting, or shared storage, basket metadata from
-      // the old maps is no longer a safe delete candidate. Require a fresh
-      // selection after rebuilding instead of carrying it across tabs.
+    // Deep inventory is root-wide, but the navigable tree can still be patched
+    // from the confirmed deletion. Drop stale inventory candidates while the
+    // watcher reconciles the affected subtree; no root traversal is needed.
+    if (deepInventoryNeedsRefresh) setCollection([])
+    // A known clone or hard-link owner can transfer physical bytes to a peer
+    // outside the removed subtree. That case still needs whole-root accounting.
+    if (removed.some(containsSharedPhysicalStorage)) {
+      // Known shared ownership invalidates every retained physical map.
+      // Basket metadata from those maps is no longer a safe delete candidate.
       setCollection([])
       setCollectionDragNode(null)
       setCollectionDropActive(false)
@@ -3096,11 +3198,7 @@ export default function DiskUtilityPage() {
           ? { precondition: deepDeletePrecondition }
           : {}),
       })
-      setCleanupPlanNeedsRecheck(
-        requiresDeepInventoryRefresh([node]) ||
-          physicalCloneAccountingUncertain ||
-          containsSharedPhysicalStorage(node)
-      )
+      setCleanupPlanNeedsRecheck(containsSharedPhysicalStorage(node))
       live.current.applyDeletedNodes([node])
       setCleanupResults([{ node, status: "moved" }])
       setCleanupResultsOpen(true)
@@ -3188,6 +3286,148 @@ export default function DiskUtilityPage() {
     )
   }
 
+  /** Right-click anywhere in the explorer: rows, wedges, tiles, or layers. */
+  const closeContextMenu = useCallback(() => setContextMenu(null), [])
+  useEffect(
+    () => setContextMenu(null),
+    [view, viewNode, scanning, indexFilter.lens]
+  )
+
+  function openContextMenu(event: ReactMouseEvent<HTMLElement>) {
+    const target = event.target as HTMLElement
+    const row = target.closest<HTMLElement>("[data-disk-index]")
+    const node = row
+      ? entries[Number(row.dataset.diskIndex)]?.node
+      : target instanceof HTMLCanvasElement
+        ? sunburstRef.current?.nodeAtPoint(event.clientX, event.clientY)
+        : (hoveredNode ?? undefined)
+    if (!node || node.isHidden) return
+    event.preventDefault()
+    setContextMenu({ node, x: event.clientX, y: event.clientY })
+  }
+
+  function contextMenuItems(node: DiskScanNode): ContextMenuItem[] {
+    const collected = isCollected(node.path)
+    const locked = isPathCleanupLocked(node.path, cleanupLocks, platform.os)
+    const items: ContextMenuItem[] = []
+    if (node.isDir && !isDeveloperInventoryNode(node))
+      items.push({
+        label: language.t(
+          node.isOther ? "disk.common.showMore" : "disk.common.open"
+        ),
+        icon: <CornerDownRight />,
+        shortcut: "↩",
+        onSelect: () => drill(node),
+      })
+    if (!node.isOther) {
+      items.push(
+        {
+          label: preview.supportsSystemPreview()
+            ? language.t("disk.common.quickLook")
+            : language.t("disk.common.preview"),
+          icon: <Eye />,
+          shortcut: "Space",
+          onSelect: () =>
+            preview.supportsSystemPreview()
+              ? void preview.openSystemPreview(node)
+              : void preview.show(node),
+        },
+        {
+          label: nativeRevealLabel(platform.os),
+          icon: <FolderSearch />,
+          onSelect: () => void reveal(node.path),
+        },
+        {
+          label: language.t("disk.ui.copyPath"),
+          icon: <Copy />,
+          onSelect: () =>
+            void navigator.clipboard
+              ?.writeText(node.path)
+              .then(() =>
+                showToast({ title: language.t("disk.ui.pathCopied") })
+              ),
+        }
+      )
+    }
+    if (canModifyNode(node) || collected) {
+      items.push({ kind: "separator" })
+      items.push({
+        label: collected
+          ? language.t("disk.ui.uncollect")
+          : language.t("disk.common.collect"),
+        icon: collected ? <Minus /> : <Plus />,
+        shortcut: "C",
+        onSelect: () => toggleCollect(node),
+      })
+    }
+    if (!node.isOther && !deleting) {
+      items.push({
+        label: locked
+          ? language.t("disk.detail.allowCleanup")
+          : language.t("disk.detail.protectCleanup"),
+        icon: <Lock />,
+        shortcut: "L",
+        onSelect: () => void toggleProtectedTree(node.path, node.name),
+      })
+    }
+    if (canModifyNode(node)) {
+      items.push({ kind: "separator" })
+      items.push({
+        label: language.t("disk.ui.moveToTrashEllipsis", {
+          trash: nativeTrashName(platform.os),
+        }),
+        icon: <Trash2 />,
+        shortcut: platform.os === "macos" ? "⌘⌫" : "Del",
+        danger: true,
+        onSelect: () => requestDelete(node),
+      })
+    }
+    return items
+  }
+
+  /** Jump the explorer to a path from a comparison or change list. */
+  function showPathInMap(path: string) {
+    const root = treeRoot
+    if (!root) return
+    if (indexFilter.lens !== "all") chooseLens("all")
+    const node = groupNavigation.resolve(root, path) ?? findScanNode(root, path)
+    if (!node) return
+    const parent = findScanNode(
+      root,
+      path.replace(/[\\/][^\\/]+$/, "") || root.path
+    )
+    if (parent && parent.path !== viewNode?.path) drill(parent)
+    setTimeout(() => live.current.selectPath(node.path), 0)
+  }
+
+  function uncollectNodes(nodes: readonly DiskScanNode[]) {
+    const next = collection.filter(
+      (item) =>
+        !nodes.some((node) => diskPathEquals(item.path, node.path, platform.os))
+    )
+    setCollection(next)
+  }
+
+  function isCleanupItemSafe(
+    node: DiskScanNode,
+    recognition: ReturnType<typeof investigation.recognitionFor>
+  ) {
+    return isSmartCleanupEligible(node, recognition) && canModifyNode(node)
+  }
+
+  /** Where a row lives, shown only when the name alone is ambiguous. */
+  function entryLocation(node: DiskScanNode) {
+    if (
+      !query.trim() &&
+      !duplicateEntryNames.has(diskNodeDisplayName(node).toLocaleLowerCase())
+    )
+      return undefined
+    const parent = node.path
+      .replace(/[\\/][^\\/]+$/, "")
+      .replace(/^\/Users\/[^/]+/, "~")
+    return truncatePath(parent || "/", 80)
+  }
+
   function selectEligibleDeveloperResults() {
     const candidates = smartCleanupCandidates
     if (!candidates.length) return
@@ -3205,7 +3445,7 @@ export default function DiskUtilityPage() {
   }
 
   function canDragNode(node: DiskScanNode) {
-    return !node.isHidden && !node.isOther
+    return !node.isHidden
   }
 
   function cleanupRestriction(node: DiskScanNode): DiskLanguageKey | null {
@@ -3304,184 +3544,86 @@ export default function DiskUtilityPage() {
       scanMode === "grid"
         ? tileColor(node.path)
         : segment?.tone
-          ? `oklch(${segment.tone.L} ${segment.tone.C} ${segment.hue})`
+          ? toneCss(segment.tone)
           : undefined
     showCollectionDragPreview(
       collectionDragPreviewRef.current!,
-      node.name,
+      diskNodeDisplayName(node),
       shortBytes(node.size),
-      color ?? tileColor(node.path) ?? primarySegmentColor(0, 1, true)
+      color ?? tileColor(node.path) ?? toneCss(aggregateTone(0))
     )
     moveCollectionDragPreview(collectionDragPreviewRef.current!, x, y)
   }
-  useEffect(() => {
-    const move = (event: DragEvent) => {
-      if (
-        collectionDragPreviewRef.current?.children.length &&
-        (event.clientX || event.clientY)
-      )
-        moveCollectionDragPreview(
-          collectionDragPreviewRef.current,
-          event.clientX,
-          event.clientY
-        )
-    }
-    document.addEventListener("dragover", move)
-    return () => document.removeEventListener("dragover", move)
-  }, [])
-
-  function beginCollectionDrag(event: DragEvent, node: DiskScanNode | null) {
-    if (!node || !canDragNode(node) || !event.dataTransfer) {
-      event.preventDefault()
-      return
-    }
-    setCollectionDragNode(node)
-    setCollectionDropActive(false)
-    event.dataTransfer.effectAllowed = "copy"
-    event.dataTransfer.setData("application/x-disklizard-path", node.path)
-    event.dataTransfer.setData("text/plain", node.path)
-    showDragToken(node, event.clientX, event.clientY)
-    // The browser snapshot cannot animate. Hide it and move our shared token
-    // with document dragover, just as the map's pointer drag does.
-    const blank = document.createElement("canvas")
-    blank.width = blank.height = 1
-    collectionDragPreviewRef.current!.append(blank)
-    event.dataTransfer.setDragImage(blank, 0, 0)
-  }
-
   function endCollectionDrag() {
+    cancelCollectionDragRef.current = undefined
     if (collectionDragPreviewRef.current)
       hideCollectionDragPreview(collectionDragPreviewRef.current)
-    const mapDrag = mapDragRef.current
-    if (mapDrag && canvasEl?.hasPointerCapture(mapDrag.pointerId))
-      canvasEl.releasePointerCapture(mapDrag.pointerId)
-    if (canvasEl) canvasEl.style.cursor = ""
-    mapDragRef.current = undefined
     setCollectionDragNode(null)
     setCollectionDropActive(false)
   }
   useEffect(() => {
-    // Navigation can unmount the drag source before its pointerup/dragend fires.
-    // The preview lives above the workspace, so clear it on every surface change.
-    if (collectionDragPreviewRef.current?.children.length || mapDragRef.current)
-      endCollectionDrag()
+    // Navigation can unmount the drag source mid-drag. Window listeners keep
+    // tracking it, so cancel explicitly when the surface changes or unmounts.
+    cancelCollectionDragRef.current?.()
+    return () => cancelCollectionDragRef.current?.()
   }, [view, scanMode, indexFilter.lens, canvasEl])
 
-  function beginMapDrag(event: CanvasPointerEvent) {
-    if (event.button !== 0 || morphing) return
-    const node = sunburstRef.current?.nodeAtPoint(event.clientX, event.clientY)
-    if (!node || !canDragNode(node)) {
-      mapDragRef.current = undefined
-      return
-    }
-    mapDragRef.current = {
-      node,
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      threshold: event.pointerType === "touch" ? 18 : 7,
-      dragging: false,
-    }
-    event.currentTarget.setPointerCapture(event.pointerId)
+  /** One pointer-driven drag for map wedges, tiles, rows, and previews. */
+  function beginCollectionDrag(
+    event: PointerDragSource,
+    node: DiskScanNode | null,
+    onStart?: () => void
+  ) {
+    if (event.button !== 0 || !node || !canDragNode(node) || morphing) return
+    cancelCollectionDragRef.current?.()
+    cancelCollectionDragRef.current = trackPointerDrag(event, {
+      threshold: event.pointerType === "touch" ? 18 : 6,
+      onStart: (x, y) => {
+        onStart?.()
+        setCollectionDragNode(node)
+        setCollectionDropActive(false)
+        showDragToken(node, x, y)
+      },
+      onMove: (x, y) => {
+        if (collectionDragPreviewRef.current)
+          moveCollectionDragPreview(collectionDragPreviewRef.current, x, y)
+        setCollectionDropActive(
+          live.current.canModifyNode(node) &&
+            live.current.pointerInsideCollectionTarget(x, y)
+        )
+      },
+      onEnd: (x, y, cancelled) => {
+        if (
+          !cancelled &&
+          live.current.canModifyNode(node) &&
+          live.current.pointerInsideCollectionTarget(x, y)
+        )
+          live.current.collectNodes([node])
+        endCollectionDrag()
+      },
+    })
   }
 
-  function moveMapDrag(event: CanvasPointerEvent) {
-    const drag = mapDragRef.current
-    if (!drag || drag.pointerId !== event.pointerId) return
-    if (
-      !drag.dragging &&
-      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) <
-        drag.threshold
-    )
-      return
-    if (!drag.dragging) {
-      drag.dragging = true
+  function beginMapDrag(event: CanvasPointerEvent) {
+    if (morphing) return
+    const node = sunburstRef.current?.nodeAtPoint(event.clientX, event.clientY)
+    beginCollectionDrag(event, node ?? null, () =>
       sunburstRef.current?.suppressNextClick()
-      event.currentTarget.style.cursor = "grabbing"
-      setCollectionDragNode(drag.node)
-      showDragToken(drag.node, event.clientX, event.clientY)
-    }
-    moveCollectionDragPreview(
-      collectionDragPreviewRef.current!,
-      event.clientX,
-      event.clientY
     )
-    setCollectionDropActive(
-      canModifyNode(drag.node) &&
-        pointerInsideCollectionTarget(event.clientX, event.clientY)
-    )
-    event.preventDefault()
   }
 
   function pointerInsideCollectionTarget(x: number, y: number) {
     const rect = collectionDropElementRef.current?.getBoundingClientRect()
+    const slop = 16
     return (
       !!rect &&
-      x >= rect.left &&
-      x <= rect.right &&
-      y >= rect.top &&
-      y <= rect.bottom
+      x >= rect.left - slop &&
+      x <= rect.right + slop &&
+      y >= rect.top - slop &&
+      y <= rect.bottom + slop
     )
   }
 
-  function finishMapDrag(event: CanvasPointerEvent, cancelled = false) {
-    const drag = mapDragRef.current
-    if (!drag || drag.pointerId !== event.pointerId) return
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId)
-    }
-    if (drag.dragging) {
-      if (
-        !cancelled &&
-        canModifyNode(drag.node) &&
-        pointerInsideCollectionTarget(event.clientX, event.clientY)
-      )
-        collectNodes([drag.node])
-      endCollectionDrag()
-      event.preventDefault()
-    }
-    mapDragRef.current = undefined
-  }
-
-  function collectionDragEnter(event: DragEvent) {
-    if (!collectionDragNode || !canModifyNode(collectionDragNode)) return
-    event.preventDefault()
-    event.stopPropagation()
-    setCollectionDropActive(true)
-  }
-
-  function collectionDragOver(event: DragEvent) {
-    if (!collectionDragNode || !canModifyNode(collectionDragNode)) return
-    event.preventDefault()
-    event.stopPropagation()
-    if (event.dataTransfer) event.dataTransfer.dropEffect = "copy"
-    setCollectionDropActive(true)
-  }
-
-  function collectionDragLeave(event: DragEvent) {
-    if (!collectionDragNode) return
-    event.stopPropagation()
-    const next = event.relatedTarget
-    // The native event's currentTarget is the delegated React root, so the
-    // v1 "still inside the drop target" test resolves against the element
-    // the page registered via CollectionDropTarget's setElement instead.
-    const dropTarget = collectionDropElementRef.current
-    if (
-      next instanceof Node &&
-      dropTarget instanceof HTMLElement &&
-      dropTarget.contains(next)
-    )
-      return
-    setCollectionDropActive(false)
-  }
-
-  function collectDroppedNode(event: DragEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-    const node = collectionDragNode
-    if (node) collectNodes([node])
-    endCollectionDrag()
-  }
   async function deleteCollected() {
     const api = disk
     const items = effectiveCollection
@@ -3531,10 +3673,7 @@ export default function DiskUtilityPage() {
       const deepInventoryNeedsRefresh =
         removed.length > 0 && live.current.requiresDeepInventoryRefresh(removed)
       const knownSharedStorage = removed.some(containsSharedPhysicalStorage)
-      const invalidatesAllMaps =
-        deepInventoryNeedsRefresh ||
-        knownSharedStorage ||
-        (removed.length > 0 && live.current.physicalCloneAccountingUncertain)
+      const invalidatesAllMaps = deepInventoryNeedsRefresh || knownSharedStorage
       if (removed.length) {
         live.current.applyDeletedNodes(removed)
       }
@@ -3544,13 +3683,12 @@ export default function DiskUtilityPage() {
           (!inventoryDeletionNeedsRescan(node) &&
             !isDeveloperArtifactPreconditionRejection(error))
       )
-      // A global map rebuild invalidates every retained tree. Do not put failed
-      // rows from that old map back into the basket; the rebuilt map is the
-      // next safe source of truth.
+      // Stale deep-inventory rows and a known shared-storage rebuild cannot
+      // safely seed the next review basket.
       setCollection(
         invalidatesAllMaps ? [] : retryableFailures.map(({ node }) => node)
       )
-      setCleanupPlanNeedsRecheck(invalidatesAllMaps)
+      setCleanupPlanNeedsRecheck(knownSharedStorage)
       collectionSurface.close()
       setCleanupResults([
         ...removed.map((node): CleanupOutcome => ({ node, status: "moved" })),
@@ -3755,6 +3893,14 @@ export default function DiskUtilityPage() {
 
   // Keyboard navigation
   function handleGlobalKeyDown(e: KeyboardEvent) {
+    if (contextMenu) {
+      // The open context menu owns the keyboard until it closes.
+      if (e.key === "Escape") {
+        e.preventDefault()
+        setContextMenu(null)
+      }
+      return
+    }
     if (activeDialog) {
       if (e.defaultPrevented || e.key !== "Escape") return
       e.preventDefault()
@@ -3763,7 +3909,6 @@ export default function DiskUtilityPage() {
       else if (deleteSurface.mounted)
         deleteSurface.closeThen(() => setPendingDelete(null))
       else if (collectionSurface.mounted) collectionSurface.close()
-      else if (reviewSurface.mounted) reviewSurface.close()
       else preview.close()
       return
     }
@@ -3780,6 +3925,26 @@ export default function DiskUtilityPage() {
     }
     if (!shouldHandleDiskShortcut(e.target, e.defaultPrevented)) return
     if (view !== "scan") return
+    if (
+      !scanning &&
+      (indexFilter.lens === "developer" ||
+        indexFilter.lens === "recommendations")
+    ) {
+      // Clean Up is a page of its own: Escape returns to the map, Cmd+R
+      // rescans, and map navigation keys stay inert.
+      if (e.key === "Escape" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault()
+        chooseLens("all")
+      } else if (
+        e.key.toLowerCase() === "r" &&
+        (e.metaKey || e.ctrlKey) &&
+        !e.altKey
+      ) {
+        e.preventDefault()
+        void rescanCurrent()
+      }
+      return
+    }
     const supportsRangeNavigation = !e.metaKey && !e.ctrlKey && !e.altKey
     const isPlainShortcut = supportsRangeNavigation && !e.shiftKey
     if (scanning) {
@@ -3907,6 +4072,7 @@ export default function DiskUtilityPage() {
     if (isPlainShortcut && e.key === "3") {
       e.preventDefault()
       chooseScanMode("icicle", "keyboard")
+      return
     }
   }
 
@@ -3928,12 +4094,13 @@ export default function DiskUtilityPage() {
     }
     if (sunburstRef.current) return () => undefined
     const sb = new Sunburst(el, {
-      rings: 8,
-      maxSegments: 720,
-      padAngle: 0.001,
-      ringGap: 0.0025,
+      rings: 7,
+      maxSegments: 900,
+      padAngle: 0.0018,
+      ringGap: 0.006,
       enterAnimMs: sunburstEntryDuration(orbitEntryIntentRef.current),
       canDrag: (node) => live.current.canDragNode(node),
+      toneForNode: (node) => live.current.rootSpectrum.tone(node),
       onHover: (seg) => {
         live.current.handleMapHover(seg?.node ?? null)
       },
@@ -4073,11 +4240,9 @@ export default function DiskUtilityPage() {
         ? "delete"
         : collectionSurface.mounted
           ? "collection"
-          : reviewSurface.mounted
-            ? "reclaim"
-            : previewView.mounted
-              ? "preview"
-              : null
+          : previewView.mounted
+            ? "preview"
+            : null
 
   useEffect(() => {
     if (!activeDialog) return undefined
@@ -4163,8 +4328,10 @@ export default function DiskUtilityPage() {
     collection,
     effectiveCollection,
     projectedPaths,
+    rootSpectrum,
     chooseAndScan,
-    scanStorageLocation,
+    openRetainedLocation,
+    activateStorageLocation,
     openDiskAccessSettings,
     startVolumeScan,
     runVolumeScan,
@@ -4227,15 +4394,7 @@ export default function DiskUtilityPage() {
     canDragNode,
     isCollected,
     clearCollection,
-    beginCollectionDrag,
-    endCollectionDrag,
-    beginMapDrag,
-    moveMapDrag,
-    finishMapDrag,
-    collectionDragEnter,
-    collectionDragOver,
-    collectionDragLeave,
-    collectDroppedNode,
+    pointerInsideCollectionTarget,
     deleteCollected,
     onDragEnter,
     onDragOver,
@@ -4296,12 +4455,8 @@ export default function DiskUtilityPage() {
   // Named once so JSX conditionals never rely on control-flow narrowing of
   // `scanMode` / `platform.os` inside a branch that already constrained them.
   const showNativeAppMenu = platform.os !== "macos"
-  const mapModeActive = scanMode === "map"
-  const gridModeActive = scanMode === "grid"
   const cleanupWorkspace =
     indexFilter.lens === "developer" || indexFilter.lens === "recommendations"
-  const showLandscape =
-    scanMode !== "list" && (!cleanupWorkspace || !cleanupMapCollapsed)
   const workspaceTab =
     recentLens || indexFilter.lens === "changes"
       ? "changes"
@@ -4321,12 +4476,9 @@ export default function DiskUtilityPage() {
     scanMode === "map" &&
     !query.trim() &&
     !!hoverPreviewNode?.children?.length
-  const changeWorkspaceTab = (value: "all" | "cleanup" | "changes") =>
-    chooseLens(value === "cleanup" ? "developer" : value)
-
   return (
     <div
-      className="dl-shell relative isolate flex size-full min-h-0 flex-col overflow-hidden bg-background-base font-(family-name:--font-family-text) text-text-base tabular-nums antialiased"
+      className="dl-shell relative isolate flex size-full min-h-0 flex-col overflow-hidden bg-background-base text-text-base tabular-nums antialiased"
       data-os={platform.os}
       data-scan-source={scanCompletionSource}
       data-fullscreen={platform.windowFullscreen ? "true" : undefined}
@@ -4366,7 +4518,7 @@ export default function DiskUtilityPage() {
       ) : null}
 
       <header
-        className="dl-topbar relative z-20 flex h-12 shrink-0 items-center gap-2 px-4"
+        className="dl-topbar relative z-20 flex h-[52px] shrink-0 items-center gap-2 px-3"
         data-tauri-drag-region
         inert={activeDialog ? true : undefined}
         aria-hidden={activeDialog ? "true" : undefined}
@@ -4493,15 +4645,57 @@ export default function DiskUtilityPage() {
             onBack={() => browseHistory.move("back")}
             onForward={() => browseHistory.move("forward")}
             onHome={() => backToDrives(true)}
-            onLocation={(index) => goToCrumb(crumbs[index])}
+            onLocation={(index) => {
+              if (cleanupWorkspace) chooseLens("all")
+              goToCrumb(crumbs[index])
+            }}
           />
         )}
-        {view === "scan" && !scanning ? (
-          <DiskUtilityWorkspaceMenu
-            value={workspaceTab}
-            onChange={changeWorkspaceTab}
-            className="shrink-0"
-          />
+        {view === "drives" ? <div className="flex-1" /> : null}
+        {view === "scan" && (!scanning || !!focusedScan) ? (
+          <div
+            className="flex shrink-0 items-center gap-2 pl-2"
+            inert={scanning ? true : undefined}
+          >
+            {!cleanupWorkspace ? (
+              <ViewSwitch
+                value={scanMode}
+                onChange={(value, keyboard) =>
+                  chooseScanMode(
+                    value,
+                    keyboard ? "keyboard" : "pointer",
+                    false
+                  )
+                }
+              />
+            ) : null}
+            <ChangesButton count={historyChangeCount} sinceLast={sinceLastScan}>
+              {(close) => (
+                <ChangesPanel
+                  entries={currentHistoryEntries}
+                  recent={recentChanges}
+                  sinceLast={sinceLastScan}
+                  onClear={clearCurrentHistory}
+                  onReveal={(path) => void reveal(path)}
+                  onShow={(path) => {
+                    close()
+                    showPathInMap(path)
+                  }}
+                />
+              )}
+            </ChangesButton>
+            <span
+              className="mx-0.5 h-5 w-px bg-[var(--dl-separator)]"
+              aria-hidden
+            />
+            <WorkspaceSwitch
+              value={cleanupWorkspace ? "cleanup" : "explore"}
+              reclaimableBytes={cleanupPotentialBytes}
+              onChange={(value) =>
+                chooseLens(value === "cleanup" ? "developer" : "all")
+              }
+            />
+          </div>
         ) : null}
       </header>
 
@@ -4586,20 +4780,22 @@ export default function DiskUtilityPage() {
                   onScanDrive={startVolumeScan}
                   onCancelDrive={cancelVolumeScan}
                   onOpenDrive={openVolumeScan}
-                  onScanStorageLocation={scanStorageLocation}
+                  canViewLocation={(path) => !!retainedLocation(path)}
+                  onActivateStorageLocation={activateStorageLocation}
                   onOpenAccessSettings={() => void openDiskAccessSettings()}
                   onRetryDiagnostics={() => void loadStorageDiagnostics()}
                   onOpenMap={(map) => {
                     switchToTab(map.id)
                   }}
                   onCloseMap={(map) => closeTab(map.id)}
-                  onScanPinnedLocation={(location) =>
+                  onActivatePinnedLocation={(location) => {
+                    if (openRetainedLocation(location.path)) return
                     void startScan(
                       location.path,
                       location.label,
                       driveForPath(location.path, drives, platform.os)
                     )
-                  }
+                  }}
                   onRemovePinnedLocation={(location) =>
                     void togglePinnedLocation(location.path, location.label)
                   }
@@ -4611,7 +4807,7 @@ export default function DiskUtilityPage() {
               ) : null}
 
               {view === "scan" ? (
-                !scanning ? (
+                !scanning || !!focusedScan ? (
                   <div className="flex h-full min-h-0 flex-col">
                     <span
                       className="sr-only"
@@ -4623,34 +4819,26 @@ export default function DiskUtilityPage() {
                     </span>
                     {tabs.length > 0 ? (
                       <div
-                        className="flex shrink-0 [scrollbar-width:none] items-center gap-1 overflow-x-auto px-4 pt-2 [&::-webkit-scrollbar]:hidden"
+                        className="flex shrink-0 [scrollbar-width:none] items-center gap-1 overflow-x-auto border-b border-[var(--dl-separator)] px-3 py-1.5 [&::-webkit-scrollbar]:hidden"
                         role="group"
                         aria-label={language.t("disk.drive.openMaps")}
                       >
-                        <div className="flex max-w-[220px] min-w-0 shrink-0 items-center rounded-lg bg-surface-raised-base shadow-[inset_0_0_0_1px_rgb(127_127_127/0.22)]">
-                          <span
-                            className="flex min-h-10 min-w-0 items-center gap-2 rounded-lg px-3 py-2"
-                            aria-current="page"
-                            title={scanSourcePath}
-                          >
-                            <span
-                              className="size-1.5 shrink-0 rounded-full bg-[var(--dl-accent)]"
-                              aria-hidden="true"
-                            />
-                            <span className="text-12-semibold truncate text-text-strong">
-                              {scanLabel}
-                            </span>
-                          </span>
-                        </div>
+                        <span
+                          className="flex h-7 max-w-[220px] min-w-0 shrink-0 items-center gap-2 rounded-md bg-[var(--dl-well-strong)] px-2.5 text-[12px] font-medium text-text-strong"
+                          aria-current="page"
+                          title={scanSourcePath}
+                        >
+                          <span className="truncate">{scanLabel}</span>
+                        </span>
                         {tabs.map((tab) => (
-                          <div
+                          <span
                             key={tab.id}
-                            className="flex max-w-[220px] min-w-0 shrink-0 items-center rounded-lg bg-surface-raised-base/55 shadow-[0_0_0_1px_rgb(127_127_127/0.12)] hover:bg-surface-raised-base hover:text-text-strong"
+                            className="group flex h-7 max-w-[220px] min-w-0 shrink-0 items-center rounded-md text-text-weak hover:bg-[var(--dl-well)] hover:text-text-strong"
                           >
                             <button
                               type="button"
                               data-disk-tab={tab.id}
-                              className="flex min-h-11 min-w-11 flex-1 items-center gap-2 rounded-lg py-2 pr-1 pl-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-text-weak focus-visible:ring-inset"
+                              className="h-full min-w-0 flex-1 truncate rounded-md pr-1 pl-2.5 text-left text-[12px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
                               title={tab.sourcePath}
                               onClick={() => switchToTab(tab.id)}
                               onAuxClick={(event) => {
@@ -4660,13 +4848,11 @@ export default function DiskUtilityPage() {
                                 }
                               }}
                             >
-                              <span className="text-12-semibold truncate text-text-strong">
-                                {tab.label}
-                              </span>
+                              {tab.label}
                             </button>
                             <button
                               type="button"
-                              className="mr-1 grid size-8 min-h-11 min-w-11 shrink-0 place-items-center rounded-full text-text-weaker opacity-55 transition-[color,opacity,background-color] duration-150 outline-none hover:bg-[color-mix(in_oklch,var(--background-base)_70%,transparent)] hover:text-text-strong hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak active:bg-background-base"
+                              className="mr-1 grid size-5 shrink-0 place-items-center rounded text-text-weaker opacity-0 outline-none group-hover:opacity-100 hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:opacity-100"
                               aria-label={language.t("disk.pinned.remove", {
                                 name: tab.label,
                               })}
@@ -4674,83 +4860,81 @@ export default function DiskUtilityPage() {
                             >
                               <Icon name="close-small" className="size-3" />
                             </button>
-                          </div>
+                          </span>
                         ))}
                       </div>
                     ) : null}
-                    <div
-                      className={cn(
-                        "relative flex min-h-0 w-full flex-1 overflow-hidden bg-background-base max-[840px]:grid",
-                        !showLandscape
-                          ? "max-[840px]:grid-rows-[minmax(0,1fr)]"
-                          : "max-[840px]:grid-rows-[minmax(220px,40%)_minmax(0,1fr)] max-[760px]:grid-rows-[240px_minmax(0,1fr)]"
-                      )}
-                    >
-                      {effectiveCollection.length > 0 ||
-                      collectionDragNode ||
-                      cleanupResults.length > 0 ? (
-                        <div className="absolute bottom-3 left-3 z-20 flex flex-col items-start gap-2 max-[840px]:top-3 max-[840px]:right-3 max-[840px]:bottom-auto max-[840px]:left-auto">
-                          {effectiveCollection.length > 0 ||
-                          collectionDragNode ? (
-                            <CollectionDropTarget
-                              setElement={(element) => {
-                                collectionDropElementRef.current =
-                                  element ?? undefined
-                              }}
-                              node={collectionDragNode}
-                              acceptsNode={
-                                !collectionDragNode ||
-                                canModifyNode(collectionDragNode)
-                              }
-                              active={collectionDropActive}
-                              count={effectiveCollection.length}
-                              bytes={collectionSize}
-                              hasSharedPhysicalStorage={
-                                collectionHasSharedPhysicalStorage ||
-                                (collectionDragNode
-                                  ? containsSharedPhysicalStorage(
-                                      collectionDragNode
-                                    )
-                                  : false)
-                              }
-                              hasUnverifiedPhysicalStorage={
-                                physicalCloneAccountingUncertain
-                              }
-                              requiresDeepInventoryRefresh={
-                                collectionNeedsDeepInventoryRefresh ||
-                                (collectionDragNode
-                                  ? requiresDeepInventoryRefresh([
-                                      collectionDragNode,
-                                    ])
-                                  : false)
-                              }
-                              trashName={nativeTrashName(platform.os)}
-                              onReview={() => collectionSurface.open()}
-                              onDragEnter={collectionDragEnter}
-                              onDragOver={collectionDragOver}
-                              onDragLeave={collectionDragLeave}
-                              onDrop={collectDroppedNode}
-                            />
-                          ) : null}
-                          {cleanupResults.length > 0 ? (
-                            <Button
-                              size="small"
-                              variant="secondary"
-                              className="min-h-9"
-                              onClick={() => setCleanupResultsOpen(true)}
-                            >
-                              {language.t("disk.results.reopen")}
-                            </Button>
-                          ) : null}
-                        </div>
-                      ) : null}
-                      {showLandscape ? (
+                    {cleanupWorkspace ? (
+                      <CleanupView
+                        developerItems={developerItems}
+                        suggestions={reclaim.buckets}
+                        isSafe={isCleanupItemSafe}
+                        isCollected={isCollected}
+                        coveredBy={(path) => {
+                          const cover = coveringCollectedNode(path)
+                          return cover
+                            ? itemIdentity(cover).reviewTitle
+                            : undefined
+                        }}
+                        canModify={canModifyNode}
+                        restriction={(node) => {
+                          const key = cleanupRestriction(node)
+                          return key ? language.t(key) : undefined
+                        }}
+                        collectionCount={effectiveCollection.length}
+                        collectionBytes={collectionSize}
+                        trashName={nativeTrashName(platform.os)}
+                        agePreset={indexFilter.developerAge}
+                        ecosystems={developerEcosystems}
+                        ecosystem={indexFilter.developerEcosystem}
+                        inventoryNote={
+                          treeRoot?.developerArtifactInventory?.status.state ===
+                          "partial"
+                            ? developerInventoryCoverage(
+                                treeRoot.developerArtifactInventory
+                              )
+                            : undefined
+                        }
+                        onAgePreset={chooseDeveloperCleanupAge}
+                        onEcosystem={chooseDeveloperEcosystem}
+                        onToggle={toggleCollect}
+                        onCollect={collectNodes}
+                        onUncollect={uncollectNodes}
+                        onReview={() => collectionSurface.open()}
+                        onReveal={(node) => void reveal(node.path)}
+                        onPreview={
+                          preview.supportsSystemPreview()
+                            ? (node) => void preview.openSystemPreview(node)
+                            : undefined
+                        }
+                        changeFor={(path) => sinceLastChanges.get(path)}
+                      />
+                    ) : (
+                      <div
+                        onContextMenu={openContextMenu}
+                        className="relative flex min-h-0 w-full flex-1 overflow-hidden max-[840px]:grid max-[840px]:grid-rows-[minmax(260px,45%)_minmax(0,1fr)]"
+                      >
                         <section
                           ref={(el: HTMLElement | null) => {
                             landscapeElRef.current = el
                           }}
-                          className="[container-type:size] relative grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden bg-background-base pb-16 [view-transition-name:disk-landscape] max-[840px]:min-h-0"
+                          className="[container-type:size] relative min-h-0 min-w-0 flex-1 overflow-hidden [view-transition-name:disk-landscape]"
                         >
+                          {scanning && focusedScan ? (
+                            <div
+                              role="status"
+                              className="pointer-events-none absolute top-4 right-4 z-20 rounded-lg bg-[var(--dl-popover)] px-3 py-2 text-[12px] text-text-strong shadow-lg"
+                            >
+                              {language.t("disk.scan.label", {
+                                label: focusedScan.label,
+                              })}
+                              <span className="ml-2 text-text-weak tabular-nums">
+                                {language.t("disk.scan.fileCount", {
+                                  count: scanFiles.toLocaleString(),
+                                })}
+                              </span>
+                            </div>
+                          ) : null}
                           <p className="sr-only">
                             {language.t("disk.map.colorMeaning")}
                           </p>
@@ -4758,10 +4942,8 @@ export default function DiskUtilityPage() {
                               wedges into tile poses on one surface; CenterOverlay yields
                               while a morph owns the view. */}
                           <div
-                            className="@container [container-type:inline-size] absolute inset-0 bottom-16"
+                            className="@container [container-type:inline-size] absolute inset-x-0 top-0 bottom-[72px]"
                             style={{
-                              // Yield to the DOM tiles once grid has fully landed;
-                              // stay visible while a morph is flying.
                               visibility:
                                 scanMode !== "map" && !morphing
                                   ? "hidden"
@@ -4772,7 +4954,7 @@ export default function DiskUtilityPage() {
                               ref={(el: HTMLCanvasElement | null) => {
                                 setCanvasEl(el)
                               }}
-                              className="absolute inset-0 size-full [touch-action:none] outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
+                              className="absolute inset-0 size-full [touch-action:none] outline-none"
                               tabIndex={0}
                               role="region"
                               data-map-size={visibleMapNode?.size ?? 0}
@@ -4784,11 +4966,6 @@ export default function DiskUtilityPage() {
                               })}
                               aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home End PageUp PageDown Enter Space C L Delete Backspace Escape 1 2 3"
                               onPointerDown={beginMapDrag}
-                              onPointerMove={moveMapDrag}
-                              onPointerUp={(event) => finishMapDrag(event)}
-                              onPointerCancel={(event) =>
-                                finishMapDrag(event, true)
-                              }
                             />
                             <span
                               id="disklizard-orbit-help"
@@ -4796,16 +4973,30 @@ export default function DiskUtilityPage() {
                             >
                               {language.t("disk.map.instructions")}
                             </span>
-                            {!morphing ? (
-                              <CenterOverlay node={visibleMapNode} />
+                            {scanMode === "map" || morphing ? (
+                              <div
+                                className={cn(
+                                  "pointer-events-none absolute inset-0 transition-opacity duration-150",
+                                  morphing ? "opacity-0" : "opacity-100"
+                                )}
+                              >
+                                <CenterOverlay node={visibleMapNode} />
+                              </div>
                             ) : null}
                             {scanMode === "map" &&
                             hoveredNode &&
-                            hoveredPath === hoveredNode.path &&
-                            (!hoveredNode.isDir ||
-                              !hoveredNode.children?.length) ? (
-                              <div className="text-13-medium pointer-events-none absolute top-4 left-4 flex max-w-[min(22rem,50%)] items-center gap-2 rounded-lg border border-border-weaker-base/70 bg-background-base/85 px-3 py-2 text-text-strong shadow-[0_6px_20px_rgb(0_0_0/0.12)] backdrop-blur-sm">
-                                <span className="min-w-0 truncate">
+                            hoveredPath === hoveredNode.path ? (
+                              <div className="pointer-events-none absolute top-4 left-4 flex max-w-[min(24rem,60%)] items-center gap-2.5 rounded-full bg-[color-mix(in_oklch,var(--dl-popover)_88%,transparent)] py-1.5 pr-3.5 pl-3 text-[13px] shadow-[0_0_0_0.5px_rgb(255_255_255/0.06),0_6px_20px_rgb(0_0_0/0.25)] backdrop-blur-md">
+                                <span
+                                  className="size-2.5 shrink-0 rounded-full"
+                                  style={{
+                                    background:
+                                      spectrum.color(hoveredNode) ??
+                                      "var(--text-weaker)",
+                                  }}
+                                  aria-hidden
+                                />
+                                <span className="min-w-0 truncate font-medium text-text-strong">
                                   {diskNodeDisplayName(hoveredNode)}
                                 </span>
                                 <span className="shrink-0 text-text-weak tabular-nums">
@@ -4814,35 +5005,38 @@ export default function DiskUtilityPage() {
                               </div>
                             ) : null}
                           </div>
-                          {/* Treemap overlay: mounted in both map and grid, but only
-                              visible/interactive once the morph has landed (or motion is
-                              reduced and the swap was instant). */}
                           {gridVisible ? (
                             <div
+                              ref={gridOverlayRef}
+                              data-labels-visible={gridInteractive}
+                              style={
+                                gridInteractive
+                                  ? undefined
+                                  : { opacity: scanMode === "grid" ? 0 : 1 }
+                              }
                               className={cn(
-                                "dl-treemap-overlay absolute inset-0 px-8 pt-8 pb-24 lg:px-12 lg:pt-12 lg:pb-24",
-                                !gridInteractive &&
-                                  "pointer-events-none opacity-0"
+                                "dl-treemap-overlay absolute inset-x-0 top-0 bottom-[72px] px-6 pt-6 pb-2",
+                                !gridInteractive && "pointer-events-none"
                               )}
                               inert={!gridInteractive ? true : undefined}
                               aria-hidden={
                                 !gridInteractive ? "true" : undefined
                               }
                             >
-                              {parentView && (
-                                <ParentFrame
-                                  name={
-                                    parentView._label ||
-                                    diskNodeDisplayName(parentView)
-                                  }
-                                  onUp={goUpFromMapCenter}
-                                  color={tileColor(viewNode?.path ?? "")}
-                                  showLabel
-                                />
-                              )}
                               <Treemap
                                 rootPath={viewNode?.path ?? ""}
+                                onPrepareNavigation={registerTileCamera}
+                                parent={
+                                  parentView
+                                    ? {
+                                        node: parentView,
+                                        onUp: goUpFromMapCenter,
+                                      }
+                                    : undefined
+                                }
+                                rootIsAggregate={viewNode?.isOther}
                                 colorForPath={tileColor}
+                                colorForNode={(node) => spectrum.color(node)}
                                 children={
                                   visibleMapNode?.children ?? sortedChildren
                                 }
@@ -4869,13 +5063,13 @@ export default function DiskUtilityPage() {
                                 onShowAll={(node) => expandOtherNode(node)}
                                 canCollect={canDragNode}
                                 onCollectDragStart={beginCollectionDrag}
-                                onCollectDragEnd={endCollectionDrag}
                               />
                             </div>
                           ) : null}
                           {scanMode === "icicle" && viewNode ? (
                             <div
-                              className="absolute inset-0 px-6 pt-6 pb-20"
+                              ref={layerOverlayRef}
+                              className="absolute inset-x-0 top-0 bottom-[72px] px-6 pt-6 pb-2"
                               style={{
                                 opacity: morphing ? 0 : 1,
                                 pointerEvents: morphing ? "none" : undefined,
@@ -4893,7 +5087,7 @@ export default function DiskUtilityPage() {
                               <IciclePanel
                                 root={visibleMapNode ?? viewNode}
                                 draggingNode={collectionDragNode}
-                                colorForNode={branchColor}
+                                colorForNode={(node) => spectrum.color(node)}
                                 parentName={
                                   parentView
                                     ? parentView._label ||
@@ -4919,608 +5113,314 @@ export default function DiskUtilityPage() {
                                 onDrill={(node) => drill(node)}
                                 canCollect={canDragNode}
                                 onDragStart={beginCollectionDrag}
-                                onDragEnd={endCollectionDrag}
                               />
                             </div>
                           ) : null}
-                          <div className="absolute right-3 bottom-3 flex items-center gap-0.5 rounded-lg border-0 bg-transparent p-1 shadow-none max-[760px]:bottom-2.5">
-                            <Tabs
-                              value={scanMode}
-                              onValueChange={(value, details) =>
-                                chooseScanMode(
-                                  value as ScanMode,
-                                  details.event.type.startsWith("key")
-                                    ? "keyboard"
-                                    : "pointer",
-                                  false
-                                )
-                              }
-                            >
-                              <TabsList
-                                className="h-10 border border-border-weaker-base/60 bg-surface-raised-base/90"
-                                aria-label={language.t("disk.explore.choose")}
-                              >
-                                <TabsTrigger value="map" aria-keyshortcuts="1">
-                                  <ChartPie className="size-4" />
-                                  {language.t("disk.common.map")}
-                                </TabsTrigger>
-                                <TabsTrigger value="grid" aria-keyshortcuts="2">
-                                  <LayoutGrid className="size-4" />
-                                  {language.t("disk.common.tiles")}
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="icicle"
-                                  aria-keyshortcuts="3"
-                                >
-                                  <Layers className="size-4" />
-                                  {language.t("disk.common.icicle")}
-                                </TabsTrigger>
-                              </TabsList>
-                            </Tabs>
-                            {physicalCloneAccountingWarning ||
-                            treeRoot?.scanIssues ? (
-                              <DeveloperDisclosure
-                                compact
-                                iconOnly
-                                warning
-                                label={
-                                  treeRoot?.scanIssues
-                                    ? language.t("disk.explore.unreadable", {
-                                        count: formatCount(
-                                          treeRoot.scanIssues.unreadableCount
-                                        ),
-                                        locations: language.plural(
-                                          "disk.count.locationNoun",
-                                          treeRoot.scanIssues.unreadableCount
-                                        ),
-                                      })
-                                    : language.t("disk.explore.physicalPaused")
-                                }
-                              >
-                                {indexFilter.lens !== "all" &&
-                                physicalCloneAccountingWarning ? (
-                                  <details
-                                    className="group mt-1.5 rounded-none border-0 bg-transparent"
-                                    aria-label={language.t(
-                                      "disk.explore.physicalLabel"
-                                    )}
-                                  >
-                                    <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-2 rounded-lg px-0 py-2 font-normal outline-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
-                                      <Icon
-                                        name="shield"
-                                        className="size-3.5 shrink-0 text-icon-warning-base"
-                                      />
-                                      <span className="text-12-regular min-w-0 flex-1 text-text-weak">
-                                        {language.t(
-                                          "disk.explore.physicalPaused"
-                                        )}
-                                      </span>
-                                      <Icon
-                                        name="chevron-down"
-                                        className="text-icon-weak size-3 shrink-0 group-open:rotate-180"
-                                      />
-                                    </summary>
-                                    <p className="text-12-regular px-3 pb-3 leading-relaxed text-text-weak">
-                                      {physicalCloneAccountingWarning}
-                                    </p>
-                                  </details>
-                                ) : null}
-                                {treeRoot?.scanIssues ? (
-                                  <details className="group mt-2 border-t border-border-weaker-base">
-                                    <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-2 rounded-lg px-0 py-2 outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-icon-warning-base [&::-webkit-details-marker]:hidden">
-                                      <Icon
-                                        name="warning"
-                                        className="size-3.5 shrink-0 text-icon-warning-base"
-                                      />
-                                      <span className="text-12-regular min-w-0 flex-1 text-text-weak">
-                                        {language.t("disk.explore.unreadable", {
-                                          count: formatCount(
-                                            treeRoot.scanIssues.unreadableCount
-                                          ),
-                                          locations: language.plural(
-                                            "disk.count.locationNoun",
-                                            treeRoot.scanIssues.unreadableCount
-                                          ),
-                                        })}
-                                      </span>
-                                      <span className="sr-only">
-                                        {language.t("disk.explore.totalsLow")}
-                                      </span>
-                                      <Icon
-                                        name="chevron-down"
-                                        className="text-icon-weak size-3 shrink-0 transition-transform duration-150 group-open:rotate-180"
-                                      />
-                                    </summary>
-                                    <div className="border-t border-amber-500/15 px-3 pt-2.5 pb-3">
-                                      <p className="text-12-regular leading-relaxed text-text-weak">
-                                        {language.t(
-                                          scanAccessGuidance(platform.os)
-                                        )}{" "}
-                                        {language.t(
-                                          "disk.accessGuidance.rescan"
-                                        )}
-                                      </p>
-                                      {storageDiagnostics?.access.status ===
-                                      "limited" ? (
-                                        <Button
-                                          className="mt-2 min-h-11 min-w-11"
-                                          size="small"
-                                          variant="secondary"
-                                          icon="square-arrow-top-right"
-                                          onClick={() =>
-                                            void openDiskAccessSettings()
-                                          }
-                                        >
-                                          {language.t(
-                                            "disk.explore.openPrivacy"
-                                          )}
-                                        </Button>
-                                      ) : null}
-                                      <ul
-                                        className="mt-2 space-y-1"
-                                        aria-label={language.t(
-                                          "disk.explore.unreadableList"
-                                        )}
-                                      >
-                                        {treeRoot.scanIssues.samplePaths
-                                          .slice(0, 5)
-                                          .map((path) => (
-                                            <li
-                                              key={path}
-                                              className="text-12-regular truncate font-mono text-text-weaker"
-                                              title={path}
-                                            >
-                                              {path}
-                                            </li>
-                                          ))}
-                                      </ul>
-                                      {treeRoot.scanIssues.samplePaths.length >
-                                        5 ||
-                                      treeRoot.scanIssues.unreadableCount >
-                                        5 ? (
-                                        <p className="text-12-regular mt-1.5 text-text-weaker">
-                                          {language.t(
-                                            "disk.explore.showingUnreadable",
-                                            {
-                                              count: formatCount(
-                                                treeRoot.scanIssues
-                                                  .unreadableCount
-                                              ),
-                                            }
-                                          )}
-                                        </p>
-                                      ) : null}
-                                    </div>
-                                  </details>
-                                ) : null}
-                              </DeveloperDisclosure>
-                            ) : null}
-                            <details
-                              ref={shortcutsDetailsRef}
-                              className="relative"
-                              open={shortcutsOpen}
-                              onToggle={(event) =>
-                                setShortcutsOpen(event.currentTarget.open)
-                              }
-                            >
-                              <summary
-                                className="text-12-semibold grid size-11 min-h-11 min-w-11 cursor-pointer list-none place-items-center rounded-full text-text-weak transition-colors outline-none focus-visible:ring-2 focus-visible:ring-text-weak [&::-webkit-details-marker]:hidden"
-                                aria-label={language.t("disk.shortcuts.show")}
-                              >
-                                ?
-                              </summary>
-                              <div className="text-12-regular absolute right-0 bottom-[calc(100%+10px)] z-20 w-64 rounded-xl bg-background-base p-3 leading-relaxed text-text-weak shadow-[0_0_0_1px_rgb(127_127_127/0.14),0_12px_30px_rgb(0_0_0/0.16)]">
-                                <p className="text-12-semibold text-text-strong">
-                                  {language.t("disk.shortcuts.heading")}
-                                </p>
-                                <p className="mt-2">
-                                  {language.t("disk.shortcuts.navigation")}
-                                </p>
-                                <p className="mt-2">
-                                  {language.t("disk.shortcuts.history")}
-                                </p>
-                                <p className="mt-1">
-                                  {platform.os === "macos"
-                                    ? language.t("disk.shortcuts.openMac")
-                                    : language.t("disk.shortcuts.open")}
-                                </p>
-                                <p className="mt-1">
-                                  {language.t("disk.shortcuts.views")}
-                                </p>
-                              </div>
-                            </details>
-                          </div>
-                        </section>
-                      ) : null}
 
-                      <aside
-                        className={cn(
-                          "[container-type:inline-size] relative flex min-h-0 w-full flex-col overflow-hidden border-0 bg-background-base max-[840px]:w-full max-[840px]:border-t max-[840px]:border-border-weaker-base",
-                          showLandscape &&
-                            !cleanupWorkspace &&
-                            "w-[clamp(380px,34vw,480px)] shrink-0 border-l border-border-weaker-base max-[840px]:border-l-0",
-                          (!showLandscape || cleanupWorkspace) &&
-                            "min-w-0 flex-1 pb-16"
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "flex min-h-0 w-full flex-1 flex-col",
-                            cleanupWorkspace && "mx-auto max-w-[1080px]"
-                          )}
-                          inert={hoverPreviewVisible}
-                          aria-hidden={hoverPreviewVisible}
-                        >
-                          <div className="max-h-[max(100px,calc(100%-224px))] shrink-0 [scrollbar-width:thin] overflow-x-hidden overflow-y-auto overscroll-contain px-4 pt-3 pb-2 max-[760px]:px-4 max-[760px]:pt-3 max-[760px]:pb-2">
-                            <div className="flex items-start justify-between gap-4 max-[760px]:flex-wrap">
-                              <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                                <p className="sr-only">
-                                  {query.trim()
-                                    ? language.t(
-                                        indexFilter.lens === "changes"
-                                          ? "disk.history.results"
-                                          : "disk.search.results"
+                          {/* Map footer: the collector on the left, the current selection on the right. */}
+                          <div className="absolute inset-x-0 bottom-0 z-20 flex h-[72px] items-center gap-3 px-4 max-[760px]:px-2.5">
+                            <div className="min-w-0 shrink">
+                              <CollectionDropTarget
+                                setElement={(element) => {
+                                  collectionDropElementRef.current =
+                                    element ?? undefined
+                                }}
+                                node={collectionDragNode}
+                                acceptsNode={
+                                  !collectionDragNode ||
+                                  canModifyNode(collectionDragNode)
+                                }
+                                active={collectionDropActive}
+                                count={effectiveCollection.length}
+                                bytes={collectionSize}
+                                hasSharedPhysicalStorage={
+                                  collectionHasSharedPhysicalStorage ||
+                                  (collectionDragNode
+                                    ? containsSharedPhysicalStorage(
+                                        collectionDragNode
                                       )
-                                    : indexFilter.lens === "developer"
-                                      ? indexFilter.developerCategory === "all"
-                                        ? language.t(
-                                            "disk.explore.developerFiles"
-                                          )
-                                        : language.t(
-                                            DEVELOPER_CATEGORY_LABEL[
-                                              indexFilter.developerCategory
-                                            ]
-                                          )
-                                      : indexFilter.lens === "recommendations"
-                                        ? language.t(
-                                            "disk.explore.recommendationsScan"
-                                          )
-                                        : indexFilter.lens === "changes"
-                                          ? language.t("disk.history.heading")
-                                          : recentLens
-                                            ? language.t("disk.changed.today")
-                                            : language.t(
-                                                "disk.explore.folderContents"
-                                              )}
-                                </p>
-                                <div className="dl-inspector-heading flex min-w-0 flex-1 items-baseline justify-between gap-3">
-                                  <h2
-                                    className="text-18-medium min-w-0 truncate text-text-strong"
-                                    title={viewNode?.path}
-                                  >
-                                    {indexFilter.lens === "developer"
-                                      ? language.t(
-                                          "disk.explore.developerFiles"
-                                        )
-                                      : indexFilter.lens === "recommendations"
-                                        ? language.t(
-                                            "disk.explore.recommendationsScan"
-                                          )
-                                        : indexFilter.lens === "changes"
-                                          ? language.t("disk.history.heading")
-                                          : query.trim()
-                                            ? language.t("disk.search.results")
-                                            : viewNode?._label ||
-                                              (viewNode
-                                                ? diskNodeDisplayName(viewNode)
-                                                : language.t(
-                                                    "disk.common.contents"
-                                                  ))}
-                                  </h2>
-                                  <p className="text-12-regular shrink-0 truncate text-text-weak tabular-nums">
-                                    {indexFilter.lens !== "changes"
-                                      ? `${formatBytes(indexSize)} · `
-                                      : ""}
-                                    {language.plural(
-                                      "disk.count.item",
-                                      indexCount
-                                    )}
-                                  </p>
-                                </div>
-                                {workspaceTab === "all" ? (
-                                  <button
-                                    ref={searchTriggerRef}
-                                    type="button"
-                                    className={cn(
-                                      "grid size-11 shrink-0 place-items-center rounded-lg text-text-weak transition-colors duration-150 outline-none hover:bg-surface-raised-base hover:text-text-strong focus-visible:ring-2 focus-visible:ring-text-weak",
-                                      searchVisible &&
-                                        "bg-surface-raised-base text-text-strong"
-                                    )}
-                                    aria-label={language.t("disk.search.label")}
-                                    aria-expanded={searchVisible}
-                                    title={language.t("disk.search.label")}
-                                    onClick={() =>
-                                      searchVisible
-                                        ? closeSearch()
-                                        : openSearch()
-                                    }
-                                  >
-                                    <Icon
-                                      name="magnifying-glass"
-                                      className="size-4"
-                                    />
-                                  </button>
-                                ) : null}
-                              </div>
-                              {cleanupWorkspace &&
-                              effectiveCollection.length > 0 ? (
-                                <Button
-                                  size="small"
-                                  variant="primary"
-                                  className="min-h-11 shrink-0 max-[760px]:order-3 max-[760px]:w-full"
-                                  onClick={() => collectionSurface.open()}
-                                >
-                                  {language.t("disk.collection.reviewSelected")}
-                                  <span className="ml-2 tabular-nums">
-                                    {effectiveCollection.length}
-                                  </span>
-                                </Button>
-                              ) : null}
-                              {cleanupWorkspace && scanMode !== "list" ? (
-                                <Button
-                                  size="small"
-                                  variant="ghost"
-                                  className="min-h-9 shrink-0 text-text-weak"
-                                  onClick={() =>
-                                    setCleanupMapCollapsed((value) => !value)
-                                  }
-                                >
-                                  {language.t(
-                                    cleanupMapCollapsed
-                                      ? "disk.cleanup.showMap"
-                                      : "disk.cleanup.hideMap"
-                                  )}
-                                </Button>
-                              ) : null}
-                              {scanMode === "list" ? (
-                                <div className="flex items-center gap-0.5 rounded-full bg-background-base/70 p-1 shadow-[0_0_0_1px_rgb(127_127_127/0.12)]">
-                                  <SegmentedButton
-                                    active={mapModeActive}
-                                    onClick={() => chooseScanMode("map")}
-                                    icon="dot-grid"
-                                    label={language.t("disk.common.map")}
-                                  />
-                                  <SegmentedButton
-                                    active={gridModeActive}
-                                    onClick={() => chooseScanMode("grid")}
-                                    icon="file-tree"
-                                    label={language.t("disk.common.tiles")}
-                                  />
-                                  <SegmentedButton
-                                    active
-                                    icon="bullet-list"
-                                    label={language.t("disk.common.list")}
-                                  />
-                                </div>
-                              ) : null}
+                                    : false)
+                                }
+                                hasUnverifiedPhysicalStorage={
+                                  physicalCloneAccountingUncertain
+                                }
+                                requiresDeepInventoryRefresh={
+                                  collectionNeedsDeepInventoryRefresh ||
+                                  (collectionDragNode
+                                    ? requiresDeepInventoryRefresh([
+                                        collectionDragNode,
+                                      ])
+                                    : false)
+                                }
+                                trashName={nativeTrashName(platform.os)}
+                                onReview={() => collectionSurface.open()}
+                                onClear={() => setCollection([])}
+                              />
                             </div>
-                            {showVolumeCapacity && scanDrive && treeRoot ? (
-                              <VolumeCapacitySummary
-                                drive={scanDrive}
-                                root={treeRoot}
-                              />
-                            ) : null}
-                            {treeRoot?.scanIssues ? (
-                              <ScanCoverageDisclosure
-                                issues={treeRoot.scanIssues}
-                                os={platform.os}
-                                onRescan={() => void rescanCurrent(true)}
-                              />
-                            ) : null}
-                            <div className="border-0 pb-0 max-[840px]:mt-2 max-[760px]:pb-1">
-                              <p className="sr-only">
-                                {language.t("disk.explore.heading")}
-                              </p>
-                              {cleanupWorkspace &&
-                              !physicalCloneAccountingUncertain ? (
-                                <Tabs
-                                  value={indexFilter.lens}
-                                  onValueChange={(value) =>
-                                    chooseLens(
-                                      value as "developer" | "recommendations"
-                                    )
-                                  }
-                                >
-                                  <TabsList
-                                    variant="line"
-                                    className="mt-2 h-10 w-fit gap-2"
-                                    aria-label={language.t(
-                                      "disk.cleanup.category"
-                                    )}
+                            <div className="flex min-w-0 flex-1 justify-end">
+                              <AnimatePresence mode="popLayout" initial={false}>
+                                {selectedNode ? (
+                                  <motion.div
+                                    key="selection"
+                                    className="max-w-[560px] min-w-0"
+                                    initial={{
+                                      opacity: 0,
+                                      y: 8,
+                                      scale: 0.98,
+                                    }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                    transition={{
+                                      duration: 0.18,
+                                      ease: [0.22, 1, 0.36, 1],
+                                    }}
                                   >
-                                    <TabsTrigger
-                                      className="text-13-medium px-3"
-                                      value="developer"
-                                    >
-                                      {language.t(
-                                        "disk.cleanup.developerArtifacts"
-                                      )}
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                      className="text-13-medium px-3"
-                                      value="recommendations"
-                                      disabled={
-                                        physicalCloneAccountingUncertain
+                                    <DetailBar
+                                      node={selectedNode}
+                                      color={
+                                        spectrum.color(selectedNode) ??
+                                        rootSpectrum.color(selectedNode)
                                       }
-                                      title={
-                                        physicalCloneAccountingUncertain
+                                      recognition={investigation.recognitionFor(
+                                        selectedNode
+                                      )}
+                                      parentSize={indexSize}
+                                      deletable={canModifyNode(selectedNode)}
+                                      collected={isCollected(selectedNode.path)}
+                                      includedBy={
+                                        coveringCollectedNode(selectedNode.path)
+                                          ? itemIdentity(
+                                              coveringCollectedNode(
+                                                selectedNode.path
+                                              )!
+                                            ).reviewTitle
+                                          : undefined
+                                      }
+                                      locked={isPathCleanupLocked(
+                                        selectedNode.path,
+                                        cleanupLocks,
+                                        platform.os
+                                      )}
+                                      lockLabel={
+                                        cleanupLockForPath(
+                                          selectedNode.path,
+                                          cleanupLocks,
+                                          platform.os
+                                        )?.label
+                                      }
+                                      restriction={
+                                        cleanupRestriction(selectedNode)
                                           ? language.t(
-                                              "disk.explore.reclaimWait"
+                                              cleanupRestriction(selectedNode)!
                                             )
                                           : undefined
                                       }
-                                    >
-                                      {language.t(
-                                        "disk.cleanup.otherSuggestions"
+                                      accessState={
+                                        selectedAccess?.path ===
+                                        selectedNode.path
+                                          ? selectedAccess.state
+                                          : "not-checked"
+                                      }
+                                      onCheckAccess={() =>
+                                        setAccessCheckVersion(
+                                          (value) => value + 1
+                                        )
+                                      }
+                                      trashName={nativeTrashName(platform.os)}
+                                      revealLabel={nativeRevealLabel(
+                                        platform.os
                                       )}
-                                    </TabsTrigger>
-                                  </TabsList>
-                                </Tabs>
-                              ) : null}
-                              {(indexFilter.lens === "changes" || recentLens) &&
-                              recentChanges.length > 0 ? (
-                                <Tabs
-                                  value={recentLens ? "recent" : "changes"}
-                                  onValueChange={(value) =>
-                                    chooseLens(value as "recent" | "changes")
-                                  }
-                                >
-                                  <TabsList
-                                    className="mt-3 h-8 w-full bg-background-base"
-                                    aria-label={language.t("disk.history.lens")}
-                                  >
-                                    <TabsTrigger
-                                      className="text-xs"
-                                      value="changes"
-                                    >
-                                      {language.t("disk.history.live")}
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                      className="text-xs"
-                                      value="recent"
-                                      disabled={recentChanges.length === 0}
-                                    >
-                                      {language.t("disk.history.modifiedToday")}
-                                    </TabsTrigger>
-                                  </TabsList>
-                                </Tabs>
-                              ) : null}
+                                      onPreview={
+                                        selectedNode.isOther ||
+                                        selectedNode.isHidden
+                                          ? undefined
+                                          : () =>
+                                              void preview.show(selectedNode)
+                                      }
+                                      onQuickLook={
+                                        preview.supportsSystemPreview() &&
+                                        !selectedNode.isOther &&
+                                        !selectedNode.isHidden
+                                          ? () =>
+                                              void preview.openSystemPreview(
+                                                selectedNode
+                                              )
+                                          : undefined
+                                      }
+                                      onReveal={() =>
+                                        void reveal(selectedNode.path)
+                                      }
+                                      onOpen={
+                                        isDeveloperInventoryNode(selectedNode)
+                                          ? () => void reveal(selectedNode.path)
+                                          : () => drill(selectedNode)
+                                      }
+                                      openLabel={
+                                        isDeveloperInventoryNode(selectedNode)
+                                          ? nativeRevealLabel(platform.os)
+                                          : undefined
+                                      }
+                                      onCollect={() =>
+                                        coveringCollectedNode(selectedNode.path)
+                                          ? collectionSurface.open()
+                                          : toggleCollect(selectedNode)
+                                      }
+                                      onTrash={() =>
+                                        requestDelete(selectedNode)
+                                      }
+                                      onToggleLock={
+                                        deleting ||
+                                        selectedNode.isOther ||
+                                        selectedNode.isHidden
+                                          ? undefined
+                                          : () =>
+                                              void toggleProtectedTree(
+                                                selectedNode.path,
+                                                selectedNode.name
+                                              )
+                                      }
+                                    />
+                                  </motion.div>
+                                ) : null}
+                              </AnimatePresence>
                             </div>
-                            {indexFilter.lens === "recommendations" &&
-                            reclaim.totalBytes > 0 ? (
-                              <ReclaimBanner
-                                bytes={reclaim.totalBytes}
-                                count={reclaim.totalCount}
-                                reviewReady={effectiveCollection.length > 0}
-                                onReview={() => reviewSurface.open()}
-                              />
-                            ) : null}
-                            {indexFilter.lens === "developer" &&
-                            (developer().buckets.length > 0 ||
-                              !!treeRoot?.developerArtifactInventory) ? (
-                              <>
-                                <div className="mt-3">
-                                  <DeveloperCleanupPolicy
-                                    expanded
-                                    categoryControl={
-                                      developer().buckets.length > 0 ? (
-                                        <DeveloperCategories
-                                          compact
-                                          allLabel={language.t(
-                                            "disk.explore.allDeveloper"
-                                          )}
-                                          label={language.t(
-                                            "disk.explore.developerCategories"
-                                          )}
-                                          value={indexFilter.developerCategory}
-                                          categories={developerCategoryTotals.map(
-                                            (bucket) => ({
-                                              value: bucket.category,
-                                              label: language.t(
-                                                DEVELOPER_CATEGORY_LABEL[
-                                                  bucket.category
-                                                ]
-                                              ),
-                                              bytes: bucket.bytes,
-                                            })
-                                          )}
-                                          onChange={(value) =>
-                                            chooseDeveloperCategory(
-                                              developer().buckets.find(
-                                                (bucket) =>
-                                                  bucket.category === value
-                                              )?.category ?? "all"
-                                            )
-                                          }
-                                        />
-                                      ) : undefined
-                                    }
-                                    preset={indexFilter.developerAge}
-                                    customDays={
-                                      indexFilter.customDeveloperAgeDays
-                                    }
-                                    age={developerAge}
-                                    eligibleCount={
-                                      smartCleanupCandidates.length
-                                    }
-                                    eligibleBytes={smartCleanupCandidateBytes}
-                                    excludedCount={smartCleanupReviewCount}
-                                    ecosystems={developerEcosystems}
-                                    ecosystem={indexFilter.developerEcosystem}
-                                    inventory={
-                                      treeRoot?.developerArtifactInventory
-                                    }
-                                    unavailable={false}
-                                    reviewReady={effectiveCollection.length > 0}
-                                    filtersActive={
-                                      indexFilter.developerCategory !== "all" ||
-                                      indexFilter.developerEcosystem !==
-                                        "all" ||
-                                      indexFilter.developerAge !== "all" ||
-                                      !!query.trim()
-                                    }
-                                    onPresetChange={chooseDeveloperCleanupAge}
-                                    onCustomDaysChange={
-                                      setCustomDeveloperCleanupAgeDays
-                                    }
-                                    onEcosystemChange={chooseDeveloperEcosystem}
-                                    onSelectEligible={
-                                      selectEligibleDeveloperResults
-                                    }
-                                    onClearFilters={() => {
-                                      replaceIndexFilter({
-                                        developerCategory: "all",
-                                        developerEcosystem: "all",
-                                        developerAge: "all",
-                                        customDeveloperAgeDays: "30",
-                                      })
-                                      setQuery("")
-                                    }}
-                                  />
-                                </div>
-                              </>
-                            ) : null}
                           </div>
-                          {searchVisible ? (
-                            <DiskUtilitySearchTools
-                              compact={workspaceTab === "all"}
-                              developer={indexFilter.lens === "developer"}
-                              grouped={groupDeveloper}
-                              onGroup={setGroupDeveloper}
-                              query={query}
-                              label={language.t(
-                                indexFilter.lens === "changes"
-                                  ? "disk.history.search"
-                                  : "disk.search.label"
-                              )}
-                              placeholder={language.t(
-                                indexFilter.lens === "changes"
-                                  ? "disk.history.search"
-                                  : "disk.search.placeholder"
-                              )}
-                              sortKey={indexFilter.sortKey}
-                              sortDirection={indexFilter.sortDirection}
-                              showSort={indexFilter.lens !== "changes"}
-                              onQuery={updateQuery}
-                              onSort={updateSort}
-                              onDismiss={
-                                workspaceTab === "all" ? closeSearch : undefined
-                              }
+                        </section>
+
+                        <aside className="[container-type:inline-size] relative flex min-h-0 w-[clamp(300px,26vw,360px)] shrink-0 flex-col overflow-hidden border-l border-[var(--dl-separator)] bg-[var(--dl-sidebar)] max-[840px]:w-full max-[840px]:border-t max-[840px]:border-l-0">
+                          {hoverPreviewVisible && hoverPreviewNode ? (
+                            <DiskUtilityHoverContents
+                              node={hoverPreviewNode}
+                              colorForNode={(node) => spectrum.color(node)}
+                              onLeave={() => hoverEntry(null)}
+                              onHover={(node) => hoverEntry(node.path, node)}
+                              onDismiss={() => {
+                                setMapHoverCandidate(null)
+                                hoverPreview.dismiss()
+                                hoverEntry(null)
+                              }}
+                              onOpen={(node) => {
+                                hoverPreview.dismiss()
+                                if (node.isDir) drill(node)
+                                else selectPath(node.path)
+                              }}
                             />
                           ) : null}
+                          <div
+                            className="flex min-h-0 w-full flex-1 flex-col"
+                            onMouseEnter={() => {
+                              if (!hoverPreviewVisible) return
+                              setMapHoverCandidate(null)
+                              hoverPreview.dismiss()
+                              hoverEntry(null)
+                            }}
+                          >
+                            <div className="shrink-0 px-5 pt-5 pb-3">
+                              <div className="flex items-start gap-3">
+                                <div className="min-w-0 flex-1">
+                                  <h2
+                                    className="line-clamp-2 [overflow-wrap:anywhere] text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong"
+                                    title={viewNode?.path}
+                                  >
+                                    {query.trim()
+                                      ? language.t("disk.search.results")
+                                      : viewNode?._label ||
+                                        (viewNode
+                                          ? diskNodeDisplayName(viewNode)
+                                          : language.t("disk.common.contents"))}
+                                  </h2>
+                                  <div className="mt-0.5 flex items-center gap-2">
+                                    <p className="text-[12.5px] text-text-weak tabular-nums">
+                                      {language.plural(
+                                        "disk.count.item",
+                                        indexCount
+                                      )}
+                                    </p>
+                                    {expandedSmallItemsForPath ===
+                                    viewNode?.path ? (
+                                      <button
+                                        type="button"
+                                        className="rounded text-[12.5px] text-text-weak underline-offset-2 hover:text-text-strong hover:underline focus-visible:outline-2 focus-visible:outline-[var(--dl-focus)]"
+                                        onClick={() => {
+                                          setExpandedSmallItemsForPath(null)
+                                          scrollIndexIntoViewRef.current?.(0)
+                                        }}
+                                      >
+                                        {language.t("disk.smaller.regroup")}
+                                      </button>
+                                    ) : null}
+                                  </div>
+                                </div>
+                                <p className="shrink-0 pt-0.5 text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong tabular-nums">
+                                  {formatBytes(indexSize)}
+                                </p>
+                              </div>
+                              <div className="mt-3">
+                                {searchVisible ? (
+                                  <DiskUtilitySearchTools
+                                    compact
+                                    developer={false}
+                                    grouped={groupDeveloper}
+                                    onGroup={setGroupDeveloper}
+                                    query={query}
+                                    label={language.t("disk.search.label")}
+                                    placeholder={language.t(
+                                      "disk.search.placeholder"
+                                    )}
+                                    sortKey={indexFilter.sortKey}
+                                    sortDirection={indexFilter.sortDirection}
+                                    showSort
+                                    onQuery={updateQuery}
+                                    onSort={updateSort}
+                                    onDismiss={closeSearch}
+                                  />
+                                ) : (
+                                  <button
+                                    ref={searchTriggerRef}
+                                    type="button"
+                                    className="flex h-8 w-full items-center gap-2 rounded-lg bg-[var(--dl-well)] px-2.5 text-left text-[13px] text-text-weaker transition-colors outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-weak focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+                                    aria-label={language.t("disk.search.label")}
+                                    aria-expanded={false}
+                                    onClick={() => openSearch()}
+                                  >
+                                    <Icon
+                                      name="magnifying-glass"
+                                      className="size-3.5"
+                                    />
+                                    <span className="min-w-0 flex-1 truncate">
+                                      {language.t("disk.search.placeholder")}
+                                    </span>
+                                    <kbd className="font-sans text-[11px] text-text-weaker">
+                                      {platform.os === "macos"
+                                        ? "⌘F"
+                                        : "Ctrl F"}
+                                    </kbd>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
 
-                          {indexFilter.lens === "changes" ||
-                          entries.length > 0 ? (
-                            indexFilter.lens === "changes" ? (
-                              <DiskScanHistory
-                                entries={currentHistoryEntries}
-                                filtered={!!query.trim()}
-                                onClear={clearCurrentHistory}
-                                onReveal={(path) => void reveal(path)}
-                              />
-                            ) : (
+                            {entries.length > 0 ? (
                               <VirtualIndex
-                                groupLabel={developerGroupLabel}
+                                footer={
+                                  viewNode && treeRoot && !query.trim() ? (
+                                    <FolderContext
+                                      node={viewNode}
+                                      root={treeRoot}
+                                      color={
+                                        spectrum.color(viewNode) ??
+                                        rootSpectrum.color(viewNode) ??
+                                        "var(--dl-accent)"
+                                      }
+                                      revealLabel={nativeRevealLabel(
+                                        platform.os
+                                      )}
+                                      onReveal={() =>
+                                        void reveal(viewNode.path)
+                                      }
+                                    />
+                                  ) : undefined
+                                }
                                 rowHeight={entryRowHeight}
                                 entries={entries}
                                 bindScrollToIndex={(fn) => {
@@ -5533,608 +5433,133 @@ export default function DiskUtilityPage() {
                                 onMoveFocus={moveFocus}
                                 onPageFocus={moveFocusByPage}
                                 onMoveFocusToBoundary={moveFocusToBoundary}
-                                render={(entry, i) => {
-                                  const rec = () =>
-                                    investigation.recognitionFor(entry.node)
-                                  const developerContext = () =>
-                                    developerArtifactContext(entry.node, rec())
-                                  const isActive = () =>
-                                    selectedPath === entry.node.path
-                                  return (
-                                    <div
-                                      className={cn(
-                                        "dl-index-row group relative flex h-full items-center rounded-md pr-11 transition-colors duration-150 hover:bg-[color-mix(in_oklch,var(--surface-raised-base)_55%,transparent)] has-[[aria-current=true]]:bg-surface-raised-strong",
-                                        isActive() &&
-                                          "bg-surface-raised-base/70 shadow-[inset_3px_0_0_var(--dl-accent)]",
-                                        hoveredPath === entry.node.path &&
-                                          !isActive() &&
-                                          "bg-surface-raised-base/80 shadow-[inset_2px_0_0_var(--dl-accent)]",
-                                        !!entry.node.isOther &&
-                                          "mt-1 border-t border-border-weaker-base/60"
-                                      )}
-                                      onMouseEnter={() =>
-                                        hoverEntry(entry.node.path, entry.node)
-                                      }
-                                      onMouseLeave={() =>
-                                        hoverEntry(selectedPath ?? null)
-                                      }
-                                    >
-                                      <button
-                                        type="button"
-                                        data-disk-index={i()}
-                                        aria-current={
-                                          isActive() ? "true" : undefined
-                                        }
-                                        draggable={canDragNode(entry.node)}
-                                        className="flex h-full min-h-0 min-w-0 flex-1 items-center gap-2.5 py-1 pr-2 pl-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklch,var(--dl-accent)_60%,transparent)] focus-visible:ring-inset"
-                                        onClick={(event) => {
-                                          if (
-                                            entry.node.isDir &&
-                                            indexFilter.lens !== "developer" &&
-                                            !event.shiftKey
-                                          )
-                                            drill(entry.node)
-                                          else
-                                            selectEntry(
-                                              entry.node,
-                                              i(),
-                                              event.shiftKey
-                                            )
-                                        }}
-                                        onFocus={() => {
-                                          setFocusIdx(i())
-                                          selectPath(entry.node.path)
-                                        }}
-                                        onKeyDown={(event) =>
-                                          handleEntryKeyDown(
-                                            event,
-                                            entry.node,
-                                            i()
-                                          )
-                                        }
-                                        onDragStart={(event) =>
-                                          beginCollectionDrag(
-                                            event.nativeEvent,
-                                            entry.node
-                                          )
-                                        }
-                                        onDragEnd={endCollectionDrag}
-                                      >
-                                        {indexFilter.lens === "developer" ? (
-                                          <DeveloperEntryContent
-                                            node={entry.node}
-                                            query={query}
-                                            bytes={entry.node.size}
-                                            contributionBytes={
-                                              entry.displaySize
-                                            }
-                                            scope={developerContext().scope}
-                                            artifactType={
-                                              rec().tag
-                                                ? language.t(rec().tag!)
-                                                : undefined
-                                            }
-                                            disposition={
-                                              developerContext().disposition
-                                            }
-                                            location={
-                                              developerLocationLabels.get(
-                                                entry.node.path
-                                              ) ?? entry.node.path
-                                            }
-                                            restriction={
-                                              cleanupRestriction(entry.node)
-                                                ? language.t(
-                                                    cleanupRestriction(
-                                                      entry.node
-                                                    )!
-                                                  )
-                                                : undefined
-                                            }
-                                            metadataMatch={(() => {
-                                              const needle = query
-                                                .trim()
-                                                .toLocaleLowerCase()
-                                              const tag = rec().tag
-                                              if (
-                                                !needle ||
-                                                !tag ||
-                                                diskEntrySearchText(
-                                                  entry.node
-                                                ).includes(needle)
-                                              )
-                                                return undefined
-                                              const label = language.t(tag)
-                                              return label
-                                                .toLocaleLowerCase()
-                                                .includes(needle)
-                                                ? label
-                                                : undefined
-                                            })()}
-                                            color={
-                                              (scanMode === "grid"
-                                                ? tileColor(entry.node.path)
-                                                : branchColor(entry.node)) ??
-                                              primarySegmentColor(
-                                                entry.colorIndex,
-                                                1,
-                                                entry.node.isDir
-                                              )
-                                            }
-                                          />
-                                        ) : (
-                                          <>
-                                            <span className="min-w-0 flex-1">
-                                              <span className="flex min-w-0 items-center gap-2.5">
-                                                <span
-                                                  className="size-2 shrink-0 rounded-full"
-                                                  style={{
-                                                    background: entry.node
-                                                      .isOther
-                                                      ? storageSummaryColor(
-                                                          entry.colorIndex,
-                                                          0,
-                                                          scanMode === "grid"
-                                                            ? "tile"
-                                                            : "map"
-                                                        )
-                                                      : ((scanMode === "grid" &&
-                                                        entry.node.isDir
-                                                          ? tileColor(
-                                                              entry.node.path
-                                                            )
-                                                          : branchColor(
-                                                              entry.node
-                                                            )) ??
-                                                        primarySegmentColor(
-                                                          entry.colorIndex,
-                                                          1,
-                                                          entry.node.isDir
-                                                        )),
-                                                  }}
-                                                  aria-hidden="true"
-                                                />
-                                                <span className="text-13-medium truncate text-text-strong">
-                                                  <SearchHighlight
-                                                    text={diskNodeDisplayName(
-                                                      entry.node
-                                                    )}
-                                                    query={query}
-                                                  />
-                                                </span>
-                                                {indexFilter.lens !== "all" &&
-                                                rec().tag ? (
-                                                  <span
-                                                    className={`text-12-semibold hidden shrink-0 rounded-md px-1.5 py-0.5 ring-1 ring-inset @min-[600px]:inline ${SAFETY_ACCENT[rec().safety].pill}`}
-                                                  >
-                                                    <SearchHighlight
-                                                      text={language.t(
-                                                        rec().tag!
-                                                      )}
-                                                      query={query}
-                                                    />
-                                                  </span>
-                                                ) : null}
-                                                {indexFilter.lens ===
-                                                  "recommendations" &&
-                                                cleanupRestriction(
-                                                  entry.node
-                                                ) ? (
-                                                  <span
-                                                    className="max-w-[12rem] shrink-0 truncate text-[11px] text-icon-warning-base"
-                                                    title={language.t(
-                                                      cleanupRestriction(
-                                                        entry.node
-                                                      )!
-                                                    )}
-                                                  >
-                                                    {language.t(
-                                                      cleanupRestriction(
-                                                        entry.node
-                                                      )!
-                                                    )}
-                                                  </span>
-                                                ) : null}
-                                              </span>
-                                              {indexFilter.lens !== "all" ||
-                                              !!query.trim() ||
-                                              duplicateEntryNames.has(
-                                                diskNodeDisplayName(
-                                                  entry.node
-                                                ).toLocaleLowerCase()
-                                              ) ? (
-                                                <span className="mt-1 ml-[18px] flex min-w-0 items-center gap-2">
-                                                  <span
-                                                    className="text-12-regular flex min-w-0 flex-1 items-center gap-1.5 text-text-weak"
-                                                    title={entry.node.path}
-                                                  >
-                                                    <span
-                                                      className={cn(
-                                                        "hidden min-w-0 truncate @min-[600px]:inline",
-                                                        "inline"
-                                                      )}
-                                                    >
-                                                      {query.trim() ? (
-                                                        <SearchHighlight
-                                                          text={entry.node.path}
-                                                          query={query}
-                                                        />
-                                                      ) : (
-                                                        truncatePath(
-                                                          treeRoot &&
-                                                            pathBelongsToScanRoot(
-                                                              entry.node.path,
-                                                              treeRoot.path
-                                                            )
-                                                            ? entry.node.path
-                                                                .slice(
-                                                                  treeRoot.path
-                                                                    .length
-                                                                )
-                                                                .replace(
-                                                                  /^[\\/]+/,
-                                                                  ""
-                                                                )
-                                                                .replace(
-                                                                  /(^|[\\/])[^\\/]+$/,
-                                                                  ""
-                                                                ) ||
-                                                                treeRoot.name
-                                                            : entry.node.path.replace(
-                                                                /[\\/][^\\/]+$/,
-                                                                ""
-                                                              ),
-                                                          92
-                                                        )
-                                                      )}
-                                                      {entry.displaySize !==
-                                                      entry.node.size
-                                                        ? language.t(
-                                                            "disk.explore.nestedCategories",
-                                                            {
-                                                              size: shortBytes(
-                                                                entry.node.size
-                                                              ),
-                                                            }
-                                                          )
-                                                        : null}
-                                                    </span>
-                                                  </span>
-                                                  {indexFilter.lens ===
-                                                    "changes" &&
-                                                  entry.node.modifiedAt ? (
-                                                    <span
-                                                      className={cn(
-                                                        "text-12-regular hidden shrink-0 text-text-weak tabular-nums @min-[600px]:inline"
-                                                      )}
-                                                      title={language.t(
-                                                        "disk.explore.lastChanged",
-                                                        {
-                                                          date: new Date(
-                                                            entry.node
-                                                              .modifiedAt
-                                                          ).toLocaleString(),
-                                                        }
-                                                      )}
-                                                    >
-                                                      {formatLastChanged(
-                                                        entry.node.modifiedAt
-                                                      )}
-                                                    </span>
-                                                  ) : null}
-                                                </span>
-                                              ) : null}
-                                            </span>
-                                            <span className="text-12-medium w-[4.75rem] shrink-0 text-right text-text-strong tabular-nums">
-                                              {shortBytes(entry.displaySize)}
-                                            </span>
-                                          </>
-                                        )}
-                                      </button>
-                                      {coveringCollectedNode(
-                                        entry.node.path
-                                      ) ? (
-                                        <span
-                                          className="absolute right-2 bottom-1 max-w-[45%] truncate text-[11px] text-text-weak"
-                                          title={
+                                render={(entry, i) => (
+                                  <StorageRow
+                                    node={entry.node}
+                                    index={i()}
+                                    size={entry.displaySize}
+                                    color={
+                                      isCollected(entry.node.path) ||
+                                      coveringCollectedNode(entry.node.path)
+                                        ? "var(--text-weaker)"
+                                        : (spectrum.color(entry.node) ??
+                                          rootSpectrum.color(entry.node) ??
+                                          "var(--text-weaker)")
+                                    }
+                                    query={query}
+                                    location={entryLocation(entry.node)}
+                                    active={selectedPath === entry.node.path}
+                                    hovered={hoveredPath === entry.node.path}
+                                    collected={isCollected(entry.node.path)}
+                                    includedBy={
+                                      coveringCollectedNode(entry.node.path)
+                                        ? itemIdentity(
                                             coveringCollectedNode(
                                               entry.node.path
-                                            )?.path
-                                          }
-                                        >
-                                          {language.t(
-                                            "disk.review.includedWith",
-                                            {
-                                              name: itemIdentity(
-                                                coveringCollectedNode(
-                                                  entry.node.path
-                                                )!
-                                              ).reviewTitle,
-                                            }
-                                          )}
-                                        </span>
-                                      ) : canModifyNode(entry.node) ? (
-                                        <button
-                                          type="button"
-                                          className={cn(
-                                            "absolute top-1/2 right-0 grid size-11 shrink-0 -translate-y-1/2 place-items-center rounded-lg text-text-weak transition-[color,opacity,background-color,transform] duration-150 outline-none group-hover:opacity-100 hover:bg-surface-raised-base hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-text-weak active:scale-[0.96] aria-pressed:opacity-100 [@media(hover:none)]:opacity-100",
-                                            cleanupWorkspace
-                                              ? "opacity-100"
-                                              : "opacity-0",
-                                            isCollected(entry.node.path)
-                                              ? "text-[color-mix(in_oklch,var(--dl-accent-strong)_54%,var(--text-strong))] opacity-100"
-                                              : "hover:text-text-strong"
-                                          )}
-                                          onClick={() =>
-                                            toggleCollect(entry.node)
-                                          }
-                                          aria-pressed={isCollected(
-                                            entry.node.path
-                                          )}
-                                          aria-label={
-                                            isCollected(entry.node.path)
-                                              ? language.t(
-                                                  "disk.explore.removeReview",
-                                                  { name: entry.node.name }
-                                                )
-                                              : language.t(
-                                                  "disk.explore.selectReview",
-                                                  { name: entry.node.name }
-                                                )
-                                          }
-                                        >
-                                          <Icon
-                                            name={
-                                              isCollected(entry.node.path)
-                                                ? "circle-check"
-                                                : "plus-small"
-                                            }
-                                            className="size-3.5"
-                                          />
-                                        </button>
-                                      ) : null}
-                                    </div>
-                                  )
-                                }}
-                              />
-                            )
-                          ) : (
-                            <ScrollView className="min-h-0 flex-1">
-                              <IndexEmpty
-                                title={
-                                  query.trim()
-                                    ? language.t("disk.empty.queryTitle", {
-                                        query: query.trim(),
-                                      })
-                                    : indexFilter.lens === "developer" &&
-                                        developerAge.valid &&
-                                        developerAge.days !== undefined
-                                      ? language.t("disk.empty.ageTitle", {
-                                          days: developerAge.days,
-                                        })
-                                      : indexFilter.lens === "developer" &&
-                                          indexFilter.developerEcosystem !==
-                                            "all"
-                                        ? language.t(
-                                            "disk.empty.ecosystemTitle",
-                                            {
-                                              ecosystem: artifactEcosystemLabel(
-                                                indexFilter.developerEcosystem
-                                              ),
-                                            }
+                                            )!
+                                          ).reviewTitle
+                                        : undefined
+                                    }
+                                    canCollect={canModifyNode(entry.node)}
+                                    draggable={canDragNode(entry.node)}
+                                    onActivate={(event) => {
+                                      if (entry.node.isDir && !event.shiftKey)
+                                        drill(entry.node)
+                                      else
+                                        selectEntry(
+                                          entry.node,
+                                          i(),
+                                          event.shiftKey
+                                        )
+                                    }}
+                                    onFocus={() => {
+                                      setFocusIdx(i())
+                                      selectPath(entry.node.path)
+                                    }}
+                                    onKeyDown={(event) =>
+                                      handleEntryKeyDown(event, entry.node, i())
+                                    }
+                                    onHover={(hovered) =>
+                                      hovered
+                                        ? hoverEntry(
+                                            entry.node.path,
+                                            entry.node
                                           )
-                                        : indexFilter.lens === "developer" &&
-                                            indexFilter.developerCategory !==
-                                              "all"
-                                          ? language.t(
-                                              "disk.empty.categoryTitle",
-                                              {
-                                                category: language.t(
-                                                  DEVELOPER_CATEGORY_LABEL[
-                                                    indexFilter
-                                                      .developerCategory
-                                                  ]
-                                                ),
-                                              }
-                                            )
-                                          : treeRoot?.scanIssues
-                                            ? language.t(
-                                                "disk.empty.partialTitle"
-                                              )
-                                            : undefined
-                                }
-                                body={
-                                  query.trim()
-                                    ? language.t("disk.empty.search.body")
-                                    : indexFilter.lens === "developer" &&
-                                        developerAge.valid &&
-                                        developerAge.days !== undefined
-                                      ? language.t("disk.empty.ageBody")
+                                        : hoverEntry(selectedPath ?? null)
+                                    }
+                                    onToggleCollect={() =>
+                                      toggleCollect(entry.node)
+                                    }
+                                    onDragStart={(event) =>
+                                      beginCollectionDrag(event, entry.node)
+                                    }
+                                  />
+                                )}
+                              />
+                            ) : (
+                              <ScrollView className="min-h-0 flex-1">
+                                <IndexEmpty
+                                  title={
+                                    query.trim()
+                                      ? language.t("disk.empty.queryTitle", {
+                                          query: query.trim(),
+                                        })
+                                      : treeRoot?.scanIssues
+                                        ? language.t("disk.empty.partialTitle")
+                                        : undefined
+                                  }
+                                  body={
+                                    query.trim()
+                                      ? language.t("disk.empty.search.body")
                                       : treeRoot?.scanIssues
                                         ? language.t("disk.empty.partialBody")
                                         : undefined
-                                }
-                                actionLabel={
-                                  query.trim()
-                                    ? language.t("disk.search.clear")
-                                    : indexFilter.lens === "developer" &&
-                                        developerAge.valid &&
-                                        developerAge.days !== undefined
-                                      ? language.t("disk.empty.clearAge")
-                                      : indexFilter.lens === "developer" &&
-                                          (indexFilter.developerEcosystem !==
-                                            "all" ||
-                                            indexFilter.developerCategory !==
-                                              "all")
-                                        ? language.t(
-                                            "disk.cleanup.clearFilters"
-                                          )
-                                        : undefined
-                                }
-                                kind={
-                                  query.trim()
-                                    ? "search"
-                                    : recentLens
-                                      ? "recent"
-                                      : indexFilter.lens === "developer"
-                                        ? "developer"
-                                        : indexFilter.lens === "recommendations"
-                                          ? "recommendations"
-                                          : "folder"
-                                }
-                                onReset={() => {
-                                  if (query.trim()) setQuery("")
-                                  else if (
-                                    indexFilter.lens === "developer" &&
-                                    indexFilter.developerAge !== "all"
-                                  )
-                                    chooseDeveloperCleanupAge("all")
-                                  else if (
-                                    indexFilter.lens === "developer" &&
-                                    indexFilter.developerEcosystem !== "all"
-                                  )
-                                    chooseDeveloperEcosystem("all")
-                                  else if (
-                                    indexFilter.lens === "developer" &&
-                                    indexFilter.developerCategory !== "all"
-                                  )
-                                    chooseDeveloperCategory("all")
-                                  else chooseLens("all")
-                                }}
-                              />
-                            </ScrollView>
-                          )}
-                        </div>
-                        {hoverPreviewVisible && hoverPreviewNode ? (
-                          <DiskUtilityHoverContents
-                            node={hoverPreviewNode}
-                            colorForNode={branchColor}
-                            onLeave={() => hoverEntry(null)}
-                            onHover={(node) => hoverEntry(node.path, node)}
-                            onDismiss={() => {
-                              setMapHoverCandidate(null)
-                              hoverPreview.dismiss()
-                              hoverEntry(null)
-                            }}
-                            onOpen={(node) => {
-                              hoverPreview.dismiss()
-                              if (node.isDir) drill(node)
-                              else selectPath(node.path)
-                            }}
-                          />
-                        ) : null}
-                      </aside>
-                    </div>
+                                  }
+                                  actionLabel={
+                                    query.trim()
+                                      ? language.t("disk.search.clear")
+                                      : undefined
+                                  }
+                                  kind={query.trim() ? "search" : "folder"}
+                                  onReset={() => setQuery("")}
+                                />
+                              </ScrollView>
+                            )}
 
-                    <div
-                      className={cn(
-                        "relative flex h-16 shrink-0 items-center border-t border-border-weaker-base bg-background-base px-4 shadow-none",
-                        !selectedNode && "dl-command-dock-idle"
-                      )}
-                    >
-                      <div className="dl-command-dock-inner mx-auto flex w-full max-w-[1480px] items-center gap-3">
-                        <div className="min-w-0 flex-1">
-                          {selectedNode ? (
-                            <DetailBar
-                              node={selectedNode}
-                              recognition={investigation.recognitionFor(
-                                selectedNode
-                              )}
-                              parentSize={indexSize}
-                              deletable={canModifyNode(selectedNode)}
-                              collected={isCollected(selectedNode.path)}
-                              includedBy={
-                                coveringCollectedNode(selectedNode.path)
-                                  ? itemIdentity(
-                                      coveringCollectedNode(selectedNode.path)!
-                                    ).reviewTitle
-                                  : undefined
-                              }
-                              locked={isPathCleanupLocked(
-                                selectedNode.path,
-                                cleanupLocks,
-                                platform.os
-                              )}
-                              lockLabel={
-                                cleanupLockForPath(
-                                  selectedNode.path,
-                                  cleanupLocks,
-                                  platform.os
-                                )?.label
-                              }
-                              restriction={
-                                cleanupRestriction(selectedNode)
-                                  ? language.t(
-                                      cleanupRestriction(selectedNode)!
-                                    )
-                                  : undefined
-                              }
-                              accessState={
-                                selectedAccess?.path === selectedNode.path
-                                  ? selectedAccess.state
-                                  : "not-checked"
-                              }
-                              onCheckAccess={() =>
-                                setAccessCheckVersion((value) => value + 1)
-                              }
-                              trashName={nativeTrashName(platform.os)}
-                              revealLabel={nativeRevealLabel(platform.os)}
-                              onPreview={
-                                selectedNode.isOther || selectedNode.isHidden
-                                  ? undefined
-                                  : () => void preview.show(selectedNode)
-                              }
-                              onQuickLook={
-                                preview.supportsSystemPreview() &&
-                                !selectedNode.isOther &&
-                                !selectedNode.isHidden
-                                  ? () =>
-                                      void preview.openSystemPreview(
-                                        selectedNode
-                                      )
-                                  : undefined
-                              }
-                              onReveal={() => void reveal(selectedNode.path)}
-                              onOpen={
-                                isDeveloperInventoryNode(selectedNode)
-                                  ? () => void reveal(selectedNode.path)
-                                  : () => drill(selectedNode)
-                              }
-                              openLabel={
-                                isDeveloperInventoryNode(selectedNode)
-                                  ? nativeRevealLabel(platform.os)
-                                  : undefined
-                              }
-                              onCollect={() =>
-                                coveringCollectedNode(selectedNode.path)
-                                  ? collectionSurface.open()
-                                  : toggleCollect(selectedNode)
-                              }
-                              onTrash={() => requestDelete(selectedNode)}
-                              onToggleLock={
-                                deleting ||
-                                selectedNode.isOther ||
-                                selectedNode.isHidden
-                                  ? undefined
-                                  : () =>
-                                      void toggleProtectedTree(
-                                        selectedNode.path,
-                                        selectedNode.name
-                                      )
-                              }
-                            />
-                          ) : (
-                            <div className="flex min-h-11 items-center gap-3 px-2">
-                              <div className="min-w-0">
-                                <p className="text-12-semibold text-text-strong">
-                                  {language.t("disk.explore.selectTitle")}
-                                </p>
+                            {showVolumeCapacity ||
+                            treeRoot?.scanIssues ||
+                            physicalCloneAccountingWarning ? (
+                              <div className="shrink-0 border-t border-[var(--dl-separator)] px-2 py-2">
+                                {showVolumeCapacity && scanDrive ? (
+                                  <FreeSpaceRow drive={scanDrive} />
+                                ) : null}
+                                <ScanIssuesNotice
+                                  unreadableCount={
+                                    treeRoot?.scanIssues?.unreadableCount
+                                  }
+                                  samplePaths={
+                                    treeRoot?.scanIssues?.samplePaths
+                                  }
+                                  guidance={language.t(
+                                    scanAccessGuidance(platform.os)
+                                  )}
+                                  accountingWarning={
+                                    physicalCloneAccountingWarning
+                                  }
+                                  onRescan={() => void rescanCurrent(true)}
+                                  onOpenPrivacy={
+                                    storageDiagnostics?.access.status ===
+                                    "limited"
+                                      ? () => void openDiskAccessSettings()
+                                      : undefined
+                                  }
+                                />
                               </div>
-                            </div>
-                          )}
-                        </div>
+                            ) : null}
+                          </div>
+                        </aside>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : (
                   <div
@@ -6146,11 +5571,22 @@ export default function DiskUtilityPage() {
                     role="region"
                     data-scan-files={scanFiles}
                     aria-label={language.t("disk.scan.label", {
-                      label: focusedScan?.label ?? scanLabel,
+                      label: scanLabel,
                     })}
                   >
                     <ScanFormation
-                      label={focusedScan?.label ?? scanLabel}
+                      discoveries={scanDiscoveries}
+                      totalBytes={
+                        scanDrive &&
+                        diskPathEquals(
+                          scanSourcePath,
+                          scanDrive.path,
+                          platform.os
+                        )
+                          ? scanDrive.used
+                          : 0
+                      }
+                      label={scanLabel}
                       files={scanFiles}
                       bytes={scanBytes}
                       currentPath={scanTail}
@@ -6201,6 +5637,13 @@ export default function DiskUtilityPage() {
         )}
       </main>
 
+      <NodeContextMenu
+        at={contextMenu}
+        title={contextMenu ? diskNodeDisplayName(contextMenu.node) : undefined}
+        items={contextMenu ? contextMenuItems(contextMenu.node) : []}
+        onClose={closeContextMenu}
+      />
+
       {previewView.mounted && previewView.target ? (
         <PreviewDialog
           open={previewView.phase === "open" || previewView.phase === "opening"}
@@ -6236,31 +5679,6 @@ export default function DiskUtilityPage() {
             }
             void preview.openInDefaultApp(node)
           }}
-        />
-      ) : null}
-
-      {/* ── Reclaim review drawer ── */}
-      {reviewSurface.mounted ? (
-        <ReclaimDrawer
-          open={
-            reviewSurface.phase === "open" || reviewSurface.phase === "opening"
-          }
-          reclaim={() => reclaim}
-          onClose={() => reviewSurface.close()}
-          onCollectAll={() => {
-            collectNodes(
-              reclaim.buckets.flatMap((bucket) =>
-                bucket.items.map(({ node }) => node)
-              )
-            )
-            reviewSurface.closeThen(() => collectionSurface.open())
-          }}
-          onToggle={toggleCollect}
-          isSelected={(node) => isCollected(node.path)}
-          onInspect={(node) =>
-            reviewSurface.closeThen(() => void preview.show(node))
-          }
-          deleting={deleting}
         />
       ) : null}
 

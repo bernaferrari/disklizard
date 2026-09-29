@@ -67,7 +67,7 @@ export function ApfsSnapshotEvidenceList(props: {
   const evidence = (
     <div
       className={
-        props.embedded ? "mt-2" : "mt-2 border-t border-border-weaker-base pt-2"
+        props.embedded ? "mt-2" : "mt-2 border-t border-[var(--dl-separator)] pt-2"
       }
     >
       <p className="text-13-regular max-w-[62ch] leading-relaxed text-text-weaker">

@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { Button } from "@/components/dl/button"
-import { Icon } from "@/components/dl/icon"
+import { motion } from "framer-motion"
+import { Check, TriangleAlert } from "lucide-react"
+import { formatBytes } from "./format"
+import { primaryButton } from "./ExplorerChrome"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import type { DiskScanNode } from "./types"
 import { itemIdentity } from "./item-identity"
@@ -41,21 +43,49 @@ export function CleanupResultsDialog(props: {
   const selected = props.outcomes.find(
     (item) => item.node.path === selectedPath
   )
+  const freed = props.outcomes
+    .filter((item) => item.status === "moved")
+    .reduce((sum, item) => sum + item.node.size, 0)
   return (
     <Dialog open={props.open} onOpenChange={(open) => !open && props.onClose()}>
       <DialogContent
         aria-labelledby="cleanup-results-title"
         showCloseButton={false}
-        className="flex max-h-[min(720px,calc(100dvh-32px))] w-full max-w-[720px] flex-col gap-0 overflow-hidden rounded-2xl bg-surface-raised-strong p-0 sm:max-w-[720px]"
+        className="flex max-h-[min(640px,calc(100dvh-48px))] w-full max-w-[520px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[520px]"
       >
-        <div className="border-b border-border-weaker-base p-5">
+        <div className="flex flex-col items-center px-6 pt-8 pb-5 text-center">
+          <motion.span
+            className={
+              failed === 0
+                ? "grid size-14 place-items-center rounded-full bg-[var(--dl-positive-soft)] text-[var(--dl-positive)]"
+                : "grid size-14 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-warning)_16%,transparent)] text-[var(--dl-warning)]"
+            }
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 420, damping: 22 }}
+          >
+            {failed === 0 ? (
+              <Check className="size-7" strokeWidth={2.5} aria-hidden />
+            ) : (
+              <TriangleAlert className="size-6" strokeWidth={2} aria-hidden />
+            )}
+          </motion.span>
+          {freed > 0 ? (
+            <p className="mt-4 text-[32px] leading-none font-semibold tracking-[-0.035em] text-text-strong tabular-nums">
+              {formatBytes(freed)}
+            </p>
+          ) : null}
           <h2
             id="cleanup-results-title"
-            className="text-20-medium text-text-strong"
+            className={
+              freed > 0
+                ? "mt-2 text-[14px] font-medium text-text-weak"
+                : "mt-4 text-[18px] font-semibold text-text-strong"
+            }
           >
             {language.t("disk.results.heading")}
           </h2>
-          <p className="text-13-regular mt-1 text-text-weak">
+          <p className="mt-1 max-w-[40ch] text-[12.5px] text-text-weak">
             {language.t("disk.results.summary", {
               moved,
               failed,
@@ -64,113 +94,107 @@ export function CleanupResultsDialog(props: {
           </p>
           {props.needsRecheck ? (
             <p
-              className="text-12-regular mt-3 rounded-md border border-icon-warning-base/35 bg-surface-warning-base/45 px-3 py-2 text-text-strong"
+              className="mt-3 rounded-lg bg-[color-mix(in_oklch,var(--dl-warning)_10%,transparent)] px-3 py-2 text-[12px] text-text-base"
               role="status"
             >
               {language.t("disk.results.needsRecheck")}
             </p>
           ) : null}
         </div>
-        <VirtualRows
-          items={props.outcomes}
-          ariaLabel={language.t("disk.results.heading")}
-          estimateSize={() => 84}
-          itemKey={(item) => item.node.path}
-          render={(item) => {
-            const identity = itemIdentity(item.node)
-            const reason = cleanupFailureReason(item.error ?? "")
-            return (
-              <div className="mx-4 flex h-full min-w-0 items-center gap-3 border-b border-border-weaker-base py-2">
-                <Icon
-                  name={item.status === "moved" ? "circle-check" : "warning"}
-                  className={
-                    item.status === "moved"
-                      ? "size-4 shrink-0 text-icon-success-base"
-                      : "size-4 shrink-0 text-icon-warning-base"
-                  }
-                />
-                <button
-                  type="button"
-                  className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-text-weak"
-                  onClick={() => setSelectedPath(item.node.path)}
-                >
-                  <span className="text-13-medium block truncate text-text-strong">
-                    {identity.reviewTitle}
-                  </span>
-                  <span
-                    className="text-12-regular block truncate font-mono text-text-weak"
+        <div
+          className="flex min-h-[64px] shrink flex-col border-y border-[var(--dl-separator)]"
+          style={{ height: Math.min(props.outcomes.length * 52 + 16, 300) }}
+        >
+          <VirtualRows
+            items={props.outcomes}
+            ariaLabel={language.t("disk.results.heading")}
+            estimateSize={() => 52}
+            itemKey={(item) => item.node.path}
+            render={(item) => {
+              const identity = itemIdentity(item.node)
+              const reason = cleanupFailureReason(item.error ?? "")
+              return (
+                <div className="mx-3 flex h-full min-w-0 items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]">
+                  {item.status === "moved" ? (
+                    <Check className="size-4 shrink-0 text-[var(--dl-positive)]" strokeWidth={2.5} aria-hidden />
+                  ) : (
+                    <TriangleAlert className="size-4 shrink-0 text-[var(--dl-warning)]" aria-hidden />
+                  )}
+                  <button
+                    type="button"
+                    className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
                     title={item.node.path}
+                    onClick={() => setSelectedPath(item.node.path)}
                   >
-                    {item.node.path}
-                  </span>
-                  <span className="text-12-regular block text-text-weak">
-                    {item.status === "moved"
-                      ? language.t("disk.results.moved", {
-                          trash: props.trashName,
-                        })
-                      : language.t(reason)}
-                  </span>
-                </button>
-                {item.status === "failed" ? (
-                  <Button
-                    size="small"
-                    variant="ghost"
-                    className="min-h-11 min-w-11 shrink-0"
-                    onClick={
-                      reason === "disk.results.changed"
-                        ? props.onRescan
-                        : () => props.onReveal(item.node)
-                    }
-                  >
-                    {language.t(
-                      reason === "disk.results.changed"
-                        ? "disk.common.rescan"
-                        : "disk.common.reveal"
-                    )}
-                  </Button>
-                ) : null}
-              </div>
-            )
-          }}
-        />
-        {selected ? (
-          <div className="border-t border-border-weaker-base bg-background-base/45 px-5 py-3">
-            <p className="text-12-regular font-mono break-all text-text-weak">
+                    <span className="block truncate text-[13px] font-medium text-text-strong">
+                      {identity.reviewTitle}
+                    </span>
+                    <span className="block truncate text-[11.5px] text-text-weak">
+                      {item.status === "moved"
+                        ? language.t("disk.results.moved", {
+                            trash: props.trashName,
+                          })
+                        : language.t(reason)}
+                    </span>
+                  </button>
+                  {item.status === "failed" ? (
+                    <button
+                      type="button"
+                      className="h-7 shrink-0 rounded-md bg-[var(--dl-well)] px-2.5 text-[12px] font-medium text-text-strong hover:bg-[var(--dl-well-strong)]"
+                      onClick={
+                        reason === "disk.results.changed"
+                          ? props.onRescan
+                          : () => props.onReveal(item.node)
+                      }
+                    >
+                      {language.t(
+                        reason === "disk.results.changed"
+                          ? "disk.common.rescan"
+                          : "disk.common.reveal"
+                      )}
+                    </button>
+                  ) : (
+                    <span className="shrink-0 text-[12.5px] text-text-weak tabular-nums">
+                      {formatBytes(item.node.size)}
+                    </span>
+                  )}
+                </div>
+              )
+            }}
+          />
+        </div>
+        {selected?.error ? (
+          <div className="border-b border-[var(--dl-separator)] px-6 py-3">
+            <p className="font-mono text-[11px] break-all text-text-weak">
               {selected.node.path}
             </p>
-            {selected.error ? (
-              <details className="text-12-regular mt-2 text-text-weak">
-                <summary className="cursor-pointer">
-                  {language.t("disk.results.technicalDetails")}
-                </summary>
-                <p className="mt-1 font-mono break-all">{selected.error}</p>
-              </details>
-            ) : null}
+            <details className="mt-2 text-[12px] text-text-weak">
+              <summary className="cursor-pointer">
+                {language.t("disk.results.technicalDetails")}
+              </summary>
+              <p className="mt-1 font-mono break-all">{selected.error}</p>
+            </details>
           </div>
         ) : null}
-        <div className="flex flex-wrap justify-end gap-2 border-t border-border-weaker-base p-4">
+        <div className="flex flex-wrap items-center justify-end gap-2 px-6 py-4">
           {moved > 0 ? (
-            <Button size="small" variant="ghost" onClick={props.onOpenTrash}>
+            <button type="button" className="mr-auto h-9 rounded-lg px-3 text-[13px] font-medium text-text-weak hover:bg-[var(--dl-well)] hover:text-text-strong" onClick={props.onOpenTrash}>
               {language.t("disk.toast.showTrash", { trash: props.trashName })}
-            </Button>
-          ) : null}
-          {failed > 0 ? (
-            <Button size="small" variant="secondary" onClick={props.onRescan}>
-              {language.t("disk.common.rescan")}
-            </Button>
+            </button>
           ) : null}
           {failed > 0 && props.onReviewFailures ? (
-            <Button
-              size="small"
-              variant="secondary"
-              onClick={props.onReviewFailures}
-            >
+            <button type="button" className="h-9 rounded-lg bg-[var(--dl-well)] px-3.5 text-[13px] font-medium text-text-strong hover:bg-[var(--dl-well-strong)]" onClick={props.onReviewFailures}>
               {language.t("disk.results.reviewFailures")}
-            </Button>
+            </button>
           ) : null}
-          <Button size="small" variant="primary" onClick={props.onClose}>
+          {failed > 0 ? (
+            <button type="button" className="h-9 rounded-lg bg-[var(--dl-well)] px-3.5 text-[13px] font-medium text-text-strong hover:bg-[var(--dl-well-strong)]" onClick={props.onRescan}>
+              {language.t("disk.common.rescan")}
+            </button>
+          ) : null}
+          <button type="button" className={primaryButton + " h-9 px-5"} onClick={props.onClose}>
             {language.t("disk.common.complete")}
-          </Button>
+          </button>
         </div>
       </DialogContent>
     </Dialog>

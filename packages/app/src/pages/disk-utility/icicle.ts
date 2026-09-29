@@ -4,6 +4,7 @@ import { collapseTreemapChildren } from "./treemap"
 
 export type IcicleCell = {
   node: DiskScanNode
+  parent: DiskScanNode
   x: number
   width: number
   depth: number
@@ -50,7 +51,14 @@ export function layoutIcicle(
       const span = (width * node.size) / total
       const color = depth === 0 ? i : colorIndex
       if (span > 0 && cells.length < 800)
-        cells.push({ node, x: offset, width: span, depth, colorIndex: color })
+        cells.push({
+          node,
+          parent,
+          x: offset,
+          width: span,
+          depth,
+          colorIndex: color,
+        })
       if (!node.isOther && node.children?.length && span * viewportWidth >= 64)
         queue.push({
           parent: node,

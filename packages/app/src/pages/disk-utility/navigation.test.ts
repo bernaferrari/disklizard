@@ -4,6 +4,7 @@ import { dict } from "@/i18n/en"
 import {
   buildCrumbs,
   describeStorageNode,
+  findRetainedNode,
   nativeRevealLabel,
   nativeTrashName,
   scanAccessGuidance,
@@ -19,6 +20,29 @@ function dir(
 }
 
 describe("buildCrumbs", () => {
+  it("skips unrelated branches while returning from a deep folder", () => {
+    const unrelated = dir("node_modules", "/work/node_modules")
+    Object.defineProperty(unrelated, "children", {
+      get() {
+        throw new Error("unrelated branch was traversed")
+      },
+    })
+    const desktop = dir("desktop", "/work/packages/desktop")
+    const packages = dir("packages", "/work/packages", [desktop])
+    const root = dir("work", "/work", [unrelated, packages])
+
+    expect(buildCrumbs(root, desktop).map((crumb) => crumb.path)).toEqual([
+      "/work",
+      "/work/packages",
+      "/work/packages/desktop",
+    ])
+    expect(buildCrumbs(root, packages).map((crumb) => crumb.path)).toEqual([
+      "/work",
+      "/work/packages",
+    ])
+    expect(findRetainedNode(root, packages.path)).toBe(packages)
+  })
+
   it("follows native Windows paths without mixing separators", () => {
     const target = dir("project", "C:\\Users\\alex\\project")
     const users = dir("Users", "C:\\Users", [

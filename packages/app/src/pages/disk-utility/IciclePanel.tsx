@@ -1,3 +1,4 @@
+import type { PointerDragSource } from "./pointer-drag"
 import { ArrowUp } from "lucide-react"
 import { useDirectoryMotion } from "./use-directory-motion"
 import { useLayoutEffect, useMemo, useRef, useState } from "react"
@@ -23,8 +24,7 @@ export function IciclePanel(props: {
   onPreview: (node: DiskScanNode) => void
   onDrill: (node: DiskScanNode) => void
   canCollect: (node: DiskScanNode) => boolean
-  onDragStart: (event: DragEvent, node: DiskScanNode) => void
-  onDragEnd: () => void
+  onDragStart: (event: PointerDragSource, node: DiskScanNode) => void
 }) {
   const language = useLanguage()
   const [width, setWidth] = useState(0)
@@ -71,7 +71,9 @@ export function IciclePanel(props: {
           {props.parentName && (
             <button
               type="button"
-              onClick={props.onUp}
+              onClick={() => {
+                props.onUp()
+              }}
               className="mb-1 flex min-h-9 max-w-full items-center gap-2 rounded-md px-2 text-xs text-text-weak hover:bg-surface-raised-strong focus-visible:outline"
               aria-label={language.t("disk.navigation.parent", {
                 name: props.parentName,
@@ -105,7 +107,7 @@ export function IciclePanel(props: {
                 opacity: retained === cell ? 0 : 1,
                 pointerEvents: retained === cell ? "none" : undefined,
                 backgroundColor: cell.node.isOther
-                  ? storageSummaryColor(cell.colorIndex, cell.depth, "tile")
+                  ? `color-mix(in oklch, ${props.colorForNode(cell.parent) ?? props.colorForNode(cell.node.children[0]) ?? storageSummaryColor(cell.colorIndex, cell.depth, "tile")} 74%, oklch(0.90 0.008 255))`
                   : (props.colorForNode(cell.node) ??
                     primarySegmentColor(
                       cell.colorIndex,
@@ -156,11 +158,9 @@ export function IciclePanel(props: {
               onBlur={() => props.onHover(null)}
               onMouseEnter={() => props.onHover(cell.node)}
               onMouseLeave={() => props.onHover(null)}
-              draggable={props.canCollect(cell.node)}
-              onDragStart={(event) =>
-                props.onDragStart(event.nativeEvent, cell.node)
-              }
-              onDragEnd={props.onDragEnd}
+              onPointerDown={(event) => {
+                if (props.canCollect(cell.node)) props.onDragStart(event, cell.node)
+              }}
             >
               <span className="text-13-semibold block truncate px-3 @max-[45px]:hidden">
                 {diskNodeDisplayName(cell.node)}

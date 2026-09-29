@@ -26,6 +26,7 @@ it("aligns children under parents without changing their weights or colors", () 
   ).toBe(1)
   const parent = cells.find((cell) => cell.node.name === "large")!
   const child = cells.find((cell) => cell.node.name === "nested")!
+  expect(child.parent).toBe(parent.node)
   expect(child.x).toBe(parent.x)
   expect(child.width).toBe(0.4)
   expect(child.colorIndex).toBe(parent.colorIndex)
@@ -44,6 +45,7 @@ it("groups narrow siblings while preserving every byte and the grouped children"
   expect(cells.find((cell) => cell.node.isOther)?.node.children).toHaveLength(
     100
   )
+  expect(cells.find((cell) => cell.node.isOther)?.parent.path).toBe("root")
 })
 
 it("keeps substantial folders visible and recalculates small items after zoom", () => {

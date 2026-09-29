@@ -77,6 +77,8 @@ describe("ViewMorph lifecycle", () => {
   let drawsThisFrame = 0
   let clearRectCount = 0
   let drawnPoints: number[][] = []
+  let roundedCorners = 0
+  let outlinedShapes = 0
 
   function countingCtx(): CanvasRenderingContext2D {
     return new Proxy({} as CanvasRenderingContext2D, {
@@ -89,6 +91,10 @@ describe("ViewMorph lifecycle", () => {
         }
         if (property === "moveTo" || property === "lineTo")
           return (x: number, y: number) => drawnPoints.push([x, y])
+        if (property === "arcTo")
+          return () => { roundedCorners++ }
+        if (property === "stroke")
+          return () => { outlinedShapes++ }
         const value = Reflect.get(target, property, receiver)
         // The morph only calls ctx methods; stub every read as a no-op
         // function so property sets and calls both succeed.
@@ -104,8 +110,7 @@ describe("ViewMorph lifecycle", () => {
     const previousRaf = globalThis.requestAnimationFrame
     const previousCancel = globalThis.cancelAnimationFrame
     const previousComputedStyle = globalThis.getComputedStyle
-    // play() stamps performance.now(); route it through the synthetic clock
-    // so flight progress is driven entirely by tick().
+    // The first animation frame starts the flight clock.
     const previousNow = performance.now.bind(performance)
     performance.now = () => clock.now
     // Bun has no DOM; the morph reads devicePixelRatio through `window`.
@@ -192,6 +197,76 @@ describe("ViewMorph lifecycle", () => {
     }
   })
 
+  it("keeps the source frame until the first animation frame after preparation", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      const tile = tiles()[0]
+      tile.from = {
+        ...tile.from,
+        shape: "rect",
+        rect: { x: 2, y: 3, w: 12, h: 8 },
+      }
+      tile.to = {
+        ...tile.to,
+        shape: "rect",
+        rect: { x: 20, y: 25, w: 30, h: 15 },
+      }
+      const clearsBefore = clearRectCount
+      morph.play([tile], "toGrid", () => {})
+      expect(clearRectCount).toBe(clearsBefore)
+
+      // A busy React commit can delay the first rAF well beyond one frame.
+      drawnPoints = []
+      clock.tick(120)
+      expect(drawnPoints[0][0]).toBeCloseTo(2)
+      expect(drawnPoints[0][1]).toBeCloseTo(3)
+      expect(morph.active).toBe(true)
+    } finally {
+      restore()
+    }
+  })
+
+  it("reverses tile corners and outlines before reaching the map pose", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      const tile = tiles()[0]
+      tile.from = { ...tile.from, shape: "rect" }
+      tile.to = { ...tile.to, shape: "arc" }
+      roundedCorners = 0
+      outlinedShapes = 0
+      morph.play([tile], "toMap", () => {})
+      clock.tick(0)
+      expect(roundedCorners).toBeGreaterThan(0)
+      expect(outlinedShapes).toBeGreaterThan(0)
+      const cornersAtStart = roundedCorners
+      const outlinesAtStart = outlinedShapes
+      clock.tick(240)
+      expect(roundedCorners).toBe(cornersAtStart)
+      expect(outlinedShapes).toBe(outlinesAtStart)
+    } finally {
+      restore()
+    }
+  })
+
+  it("reports the final pose before handing the surface to the destination view", () => {
+    const { morph, clock, restore } = harness()
+    try {
+      const events: string[] = []
+      morph.play(
+        tiles(),
+        "toGrid",
+        () => events.push("handoff"),
+        (fraction) => events.push(`progress:${fraction}`)
+      )
+      clock.tick(0)
+      expect(events).toEqual(["progress:0"])
+      clock.tick(240)
+      expect(events).toEqual(["progress:0", "progress:1", "handoff"])
+    } finally {
+      restore()
+    }
+  })
+
   it("restarts keep exactly one frame chain and fire each continuation once", () => {
     const { morph, clock, restore } = harness()
     try {
@@ -215,7 +290,7 @@ describe("ViewMorph lifecycle", () => {
       clock.tick(100)
       expect(clock.tick(100)).toBe(1)
       expect(clock.tick(100)).toBe(1)
-      expect(clock.tick(200)).toBe(0)
+      expect(clock.tick(200)).toBe(1)
       expect(completions).toEqual(["a", "b", "c"])
       expect(clock.pending).toBe(0)
       expect(morph.active).toBe(false)
@@ -263,6 +338,7 @@ describe("ViewMorph lifecycle", () => {
       morph.play(tiles(), "toGrid", () => {
         completed = true
       })
+      clock.tick(0)
       const before = clearRectCount
       clock.tick(300)
       expect(completed).toBe(true)

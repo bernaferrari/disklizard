@@ -1192,7 +1192,7 @@ describe("disk scan snapshots", () => {
     expect(updated.changedPaths).toEqual([root.path])
   })
 
-  test("rescans the whole root when a nested refresh reports partial shared-storage evidence", async () => {
+  test("keeps a partial nested refresh local and downgrades root evidence", async () => {
     const collapsed: DiskNode = {
       name: "node_modules",
       path: "/root/project/node_modules",
@@ -1223,11 +1223,6 @@ describe("disk scan snapshots", () => {
       children: [project],
     }
     const partialProject: DiskNode = { ...project, sharedStorageEvidence: "partial" }
-    const rescannedRoot: DiskNode = {
-      ...root,
-      sharedStorageEvidence: "partial",
-      children: [project],
-    }
     const scanned: string[] = []
 
     const updated = await applyDiskDelta(
@@ -1235,18 +1230,18 @@ describe("disk scan snapshots", () => {
       [{ path: project.path, type: "update" }],
       async (target) => {
         scanned.push(target)
-        return target === root.path ? rescannedRoot : partialProject
+        return partialProject
       },
       { sizeMode: "physical" },
     )
 
-    expect(scanned).toEqual([project.path, root.path])
-    expect(updated.changedPaths).toEqual([root.path])
+    expect(scanned).toEqual([project.path])
+    expect(updated.changedPaths).toEqual([project.path])
     expect(updated.root.sharedStorageEvidence).toBe("partial")
     expect(updated.root.children[0]?.sharedStorageEvidence).toBeUndefined()
   })
 
-  test("does not graft partial parent evidence after a changed file disappears", async () => {
+  test("keeps a partial parent refresh local after a changed file disappears", async () => {
     const file: DiskNode = {
       name: "shared.bin",
       path: "/root/project/shared.bin",
@@ -1273,11 +1268,6 @@ describe("disk scan snapshots", () => {
       children: [project],
     }
     const partialProject: DiskNode = { ...project, sharedStorageEvidence: "partial" }
-    const rescannedRoot: DiskNode = {
-      ...root,
-      sharedStorageEvidence: "partial",
-      children: [project],
-    }
     const scanned: string[] = []
 
     const updated = await applyDiskDelta(
@@ -1286,14 +1276,15 @@ describe("disk scan snapshots", () => {
       async (target) => {
         scanned.push(target)
         if (target === file.path) throw new Error("file disappeared")
-        return target === root.path ? rescannedRoot : partialProject
+        return partialProject
       },
       { sizeMode: "physical" },
     )
 
-    expect(scanned).toEqual([file.path, project.path, root.path])
-    expect(updated.changedPaths).toEqual([root.path])
+    expect(scanned).toEqual([file.path, project.path])
+    expect(updated.changedPaths).toEqual([file.path])
     expect(updated.root.sharedStorageEvidence).toBe("partial")
+    expect(updated.root.children[0]?.sharedStorageEvidence).toBeUndefined()
   })
 
   test("recalculates apparent size after a localized refresh", async () => {
@@ -1349,4 +1340,33 @@ test("traversal completion does not report whole-scan completion", async () => {
   await manager.scan("progress-test", root, { onProgress: (p) => progress.push(p) }, () => {}, true)
   expect(progress.some((p) => p.percent !== undefined && p.percent > 0 && p.percent < 30)).toBe(true)
   await manager.stop("progress-test")
+})
+
+test("reconciling changed files does not reset the displayed scan file count", async () => {
+  const root = await temp()
+  const changedFile = path.join(root, "changed.bin")
+  await writeFile(changedFile, new Uint8Array(8))
+  const watcher = fakeWatcher()
+  const progress: Array<{ filesScanned: number; phase?: string; percent?: number }> = []
+  const manager = new DiskSnapshotManager({
+    cacheDir: await temp(),
+    watcher: watcher.api,
+    platform: "darwin",
+    scan: async (target, options) => {
+      if (target === root) {
+        options.onProgress?.({ filesScanned: 100, dirsScanned: 1, currentPath: target, size: 8, percent: 100 })
+        watcher.emit([{ path: changedFile, type: "update" }])
+      } else {
+        options.onProgress?.({ filesScanned: 0, dirsScanned: 0, currentPath: target, size: 0, percent: 0 })
+        options.onProgress?.({ filesScanned: 1, dirsScanned: 0, currentPath: target, size: 8, percent: 100 })
+      }
+      return scanFixture(target)
+    },
+  })
+
+  await manager.scan("reconcile-progress", root, { onProgress: (next) => progress.push(next) }, () => {})
+  const reconciliation = progress.filter((next) => next.phase === "reconcile")
+  expect(reconciliation.length).toBeGreaterThan(1)
+  expect(reconciliation.every((next) => next.filesScanned >= 100)).toBe(true)
+  await manager.stopAll()
 })
