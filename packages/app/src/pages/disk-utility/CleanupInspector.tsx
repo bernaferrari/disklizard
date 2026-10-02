@@ -1,5 +1,5 @@
 import { Fragment, useLayoutEffect, useRef } from "react"
-import { Check, FolderOpen, Eye } from "lucide-react"
+import { Check, FolderSearch, Eye } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage, usePlatform } from "./runtime"
 import { type CleanupItem, cleanupItemExplanation } from "./cleanup-summary"
@@ -101,7 +101,7 @@ export function CleanupInspector(props: {
               className={quietButton}
               onClick={() => props.onReveal(item.node)}
             >
-              <FolderOpen className="size-3.5" aria-hidden />
+              <FolderSearch className="size-3.5" aria-hidden />
               {nativeRevealLabel(platform.os)}
             </button>
             {props.onPreview ? (
@@ -111,7 +111,11 @@ export function CleanupInspector(props: {
                 onClick={() => props.onPreview?.(item.node)}
               >
                 <Eye className="size-3.5" aria-hidden />
-                {language.t("disk.common.quickLook")}
+                {language.t(
+                  platform.os === "macos"
+                    ? "disk.common.quickLook"
+                    : "disk.common.preview"
+                )}
               </button>
             ) : null}
           </div>

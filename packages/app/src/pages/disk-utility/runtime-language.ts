@@ -109,8 +109,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.developer.categoryContribution": "{size} in this category",
   "disk.developer.operationSizeNote":
     "Row size is the whole folder that would move to Trash; category totals avoid counting nested folders twice.",
-  "disk.dialog.collection.deepWarningSummary":
-    "File sizes shown · DiskLizard will rescan afterward",
+  "disk.dialog.collection.deepWarningSummary": "Space freed may differ",
   "disk.developer.observedChange":
     "Observed modification time: {date}. Age filters use this timestamp.",
   "disk.developer.changeUnknown":
@@ -210,9 +209,9 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.explore.physicalPaused": "Space freed can’t be estimated",
   "disk.explore.totalsLow": "Totals may be low",
   "disk.review.partialWarning":
-    "This selection may contain files the scan could not inspect. Its displayed size is a lower bound, and moving the folder to Trash will also move those unseen files.",
+    "Some contents weren’t inspected. The size shown is a lower bound.",
   "disk.review.partialAcknowledge":
-    "I understand that uninspected files may also move to Trash.",
+    "I understand that moving this selection may also move uninspected files to {trash}.",
   "disk.review.includedWith": "Included with {name}",
   "disk.review.queued": "Queued for review; scan measurements are unchanged",
   "disk.review.parentReplaces":
@@ -236,6 +235,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.results.trashUnavailable":
     "The system bin is unavailable for this location.",
   "disk.results.failed": "Could not move this item.",
+  "disk.results.originalLocation": "Original location",
   "disk.results.technicalDetails": "Technical details",
   "disk.results.reviewFailures": "Review remaining items",
   "disk.results.reopen": "Cleanup results",

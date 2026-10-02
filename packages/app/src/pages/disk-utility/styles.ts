@@ -17,8 +17,13 @@ import {
 export const DISK_UTILITY_STYLES = `
 :root {
   --dl-accent: oklch(0.6 0.19 256);
+  /* Filled actions have their own contrast-safe ramp in both themes. */
+  --dl-action: oklch(0.54 0.17 256);
+  --dl-action-hover: oklch(0.51 0.17 256);
+  --dl-danger-action: oklch(0.55 0.2 27);
+  --dl-danger-action-hover: oklch(0.52 0.2 27);
   --dl-accent-strong: oklch(0.55 0.2 256);
-  --dl-focus: oklch(0.66 0.16 256 / 0.75);
+  --dl-focus: var(--text-strong);
   --dl-well: rgb(120 120 128 / 0.12);
   --dl-well-strong: rgb(120 120 128 / 0.2);
   --dl-raised: #ffffff;
@@ -30,7 +35,7 @@ export const DISK_UTILITY_STYLES = `
   --dl-scan-pending: oklch(0.62 0.045 230);
   --dl-scan-tint: oklch(0.57 0.02 230);
   --dl-warning: oklch(0.7 0.16 70);
-  --dl-danger: oklch(0.6 0.2 27);
+  --dl-danger: oklch(0.58 0.2 27);
   --dl-sidebar: var(--background-base);
   --dl-tile-shell-mix: 24%;
   --dl-tile-fill-mix: 58%;
@@ -51,6 +56,8 @@ export const DISK_UTILITY_STYLES = `
   --dl-tile-summary-mix: 30%;
   --dl-tile-hover: oklch(1 0 0 / 0.04);
   --dl-accent: oklch(0.64 0.17 256);
+  --dl-danger: oklch(0.72 0.16 27);
+  --text-weaker: color-mix(in oklch, var(--text-strong) 62%, var(--background-base));
   --dl-raised: oklch(0.41 0.009 270);
   --dl-popover: oklch(0.3 0.009 270);
   --dl-separator: rgb(255 255 255 / 0.07);

@@ -56,10 +56,16 @@ export function NodeContextMenu(props: {
         Math.min(props.at.y, window.innerHeight - rect.height - 8)
       ),
     })
+  }, [props.at])
+
+  // A browser cannot focus descendants of visibility:hidden. Position first,
+  // then transfer focus after the positioned menu is rendered visibly.
+  useLayoutEffect(() => {
+    if (!props.at || !position || !menuRef.current) return
     menuRef.current
       .querySelector<HTMLElement>("[role=menuitem]:not([aria-disabled=true])")
       ?.focus({ preventScroll: true })
-  }, [props.at])
+  }, [props.at, position])
 
   useEffect(() => {
     if (!props.at) return undefined
@@ -120,11 +126,13 @@ export function NodeContextMenu(props: {
           const next =
             (index + (event.key === "ArrowDown" ? 1 : -1) + items.length) %
             items.length
-          items[next]?.focus()
+          items[next]?.focus({ preventScroll: true })
         } else if (event.key === "Home" || event.key === "End") {
           event.preventDefault()
           event.stopPropagation()
-          items[event.key === "Home" ? 0 : items.length - 1]?.focus()
+          items[event.key === "Home" ? 0 : items.length - 1]?.focus({
+            preventScroll: true,
+          })
         } else if (event.key === "Tab") {
           closeToTrigger()
         }
@@ -148,15 +156,16 @@ export function NodeContextMenu(props: {
             tabIndex={-1}
             aria-disabled={item.disabled || undefined}
             className={cn(
-              "flex h-8 cursor-default items-center gap-2.5 rounded-md px-2.5 outline-none select-none",
+              "group/menu-item flex h-8 cursor-default items-center gap-2.5 rounded-md px-2.5 outline-none select-none",
               item.disabled
                 ? "opacity-40"
                 : item.danger
-                  ? "text-[var(--dl-danger)] hover:bg-[var(--dl-danger)] hover:text-white focus:bg-[var(--dl-danger)] focus:text-white"
-                  : "hover:bg-[var(--dl-accent)] hover:text-white focus:bg-[var(--dl-accent)] focus:text-white"
+                  ? "text-[var(--dl-danger)] hover:bg-[var(--dl-danger-action)] hover:text-white focus:bg-[var(--dl-danger-action)] focus:text-white"
+                  : "hover:bg-[var(--dl-action)] hover:text-white focus:bg-[var(--dl-action)] focus:text-white"
             )}
             onMouseEnter={(event) => {
-              if (!item.disabled) event.currentTarget.focus()
+              if (!item.disabled)
+                event.currentTarget.focus({ preventScroll: true })
             }}
             onClick={() => {
               if (item.disabled) return
@@ -180,7 +189,7 @@ export function NodeContextMenu(props: {
             </span>
             <span className="min-w-0 flex-1 truncate">{item.label}</span>
             {item.shortcut ? (
-              <span className="shrink-0 text-[11.5px] opacity-55">
+              <span className="shrink-0 text-[11.5px] text-text-weak group-hover/menu-item:text-inherit group-focus/menu-item:text-inherit">
                 {item.shortcut}
               </span>
             ) : null}

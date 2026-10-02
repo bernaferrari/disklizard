@@ -30,7 +30,8 @@ function relativeWhen(at: number) {
     ["minute", 60],
   ]
   for (const [unit, size] of units)
-    if (Math.abs(seconds) >= size) return format.format(Math.round(seconds / size), unit)
+    if (Math.abs(seconds) >= size)
+      return format.format(Math.round(seconds / size), unit)
   return format.format(0, "minute")
 }
 
@@ -66,7 +67,10 @@ export function ChangesPanel(props: {
   onShow: (path: string) => void
 }) {
   const language = useLanguage()
-  const rows = useMemo(() => consolidateHistoryChanges(props.entries), [props.entries])
+  const rows = useMemo(
+    () => consolidateHistoryChanges(props.entries),
+    [props.entries]
+  )
   const [tab, setTab] = useState<Tab>(
     props.sinceLast?.changes.length
       ? "since"
@@ -127,7 +131,7 @@ export function ChangesPanel(props: {
           </p>
         ) : null}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto border-t border-[var(--dl-separator)] px-1.5 py-1.5 [scrollbar-width:thin]">
+      <div className="min-h-0 flex-1 [scrollbar-width:thin] overflow-y-auto border-t border-[var(--dl-separator)] px-1.5 py-1.5">
         {tab === "since" ? (
           props.sinceLast?.changes.length ? (
             <ul>
@@ -156,20 +160,30 @@ export function ChangesPanel(props: {
           rows.length ? (
             <ul>
               {rows.slice(0, 200).map((row) => {
-                const Glyph = row.aggregate ? HardDrive : row.isDir ? Folder : File
+                const Glyph = row.aggregate
+                  ? HardDrive
+                  : row.isDir
+                    ? Folder
+                    : File
                 return (
                   <li key={row.path}>
                     <button
                       type="button"
                       disabled={row.kind === "removed" || row.aggregate}
-                      className="flex h-11 w-full items-center gap-3 rounded-lg px-2.5 text-left outline-none enabled:hover:bg-[var(--dl-row-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+                      className="flex h-11 w-full items-center gap-3 rounded-lg px-2.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] enabled:hover:bg-[var(--dl-row-hover)]"
                       title={row.path}
                       onClick={() => props.onReveal(row.path)}
                     >
-                      <Glyph className="size-4 shrink-0 text-text-weak" strokeWidth={1.75} aria-hidden />
+                      <Glyph
+                        className="size-4 shrink-0 text-text-weak"
+                        strokeWidth={1.75}
+                        aria-hidden
+                      />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[13px] text-text-strong">
-                          {row.aggregate ? language.t("disk.history.volume") : row.name}
+                          {row.aggregate
+                            ? language.t("disk.history.volume")
+                            : row.name}
                         </span>
                         <span className="block truncate text-[11.5px] text-text-weak">
                           {language.t(`disk.history.kind.${row.kind}`)} ·{" "}
@@ -199,9 +213,17 @@ export function ChangesPanel(props: {
                   onClick={() => props.onShow(node.path)}
                 >
                   {node.isDir ? (
-                    <Folder className="size-4 shrink-0 text-text-weak" strokeWidth={1.75} aria-hidden />
+                    <Folder
+                      className="size-4 shrink-0 text-text-weak"
+                      strokeWidth={1.75}
+                      aria-hidden
+                    />
                   ) : (
-                    <File className="size-4 shrink-0 text-text-weak" strokeWidth={1.75} aria-hidden />
+                    <File
+                      className="size-4 shrink-0 text-text-weak"
+                      strokeWidth={1.75}
+                      aria-hidden
+                    />
                   )}
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] text-text-strong">
@@ -226,7 +248,7 @@ export function ChangesPanel(props: {
         <div className="flex justify-end border-t border-[var(--dl-separator)] px-3 py-2">
           <button
             type="button"
-            className="rounded-md px-2 py-1 text-[12px] text-text-weak hover:bg-[var(--dl-well)] hover:text-text-strong"
+            className="h-8 rounded-md px-2 text-[12px] text-text-weak outline-none hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
             onClick={props.onClear}
           >
             {language.t("disk.history.clear")}
@@ -247,7 +269,7 @@ function SinceRow(props: { change: BaselineChange; onShow: () => void }) {
       <button
         type="button"
         disabled={change.kind === "removed"}
-        className="group flex h-12 w-full items-center gap-3 rounded-lg px-2.5 text-left outline-none enabled:hover:bg-[var(--dl-row-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+        className="group flex h-12 w-full items-center gap-3 rounded-lg px-2.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] enabled:hover:bg-[var(--dl-row-hover)]"
         title={change.path}
         onClick={props.onShow}
       >

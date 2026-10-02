@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import type { DiskScanNode } from "./types"
 import { motion } from "framer-motion"
 import { formatBytes, shortBytes } from "./format"
@@ -39,7 +40,7 @@ export function DiskUtilityHoverContents(props: {
       <div className="flex shrink-0 items-start gap-3 px-5 pt-5 pb-3">
         <div className="min-w-0 flex-1">
           <h2
-            className="truncate text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong"
+            className="truncate text-[18px] leading-6 font-medium tracking-[-0.02em] text-text-strong"
             title={props.node.path}
           >
             {diskNodeDisplayName(props.node)}
@@ -48,7 +49,7 @@ export function DiskUtilityHoverContents(props: {
             {language.plural("disk.count.item", props.node.children.length)}
           </p>
         </div>
-        <p className="shrink-0 pt-0.5 text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong tabular-nums">
+        <p className="shrink-0 pt-1 text-[13px] leading-5 text-text-weak tabular-nums">
           {formatBytes(props.node.size)}
         </p>
       </div>
@@ -80,7 +81,10 @@ export function DiskUtilityHoverContents(props: {
             <span className="shrink-0 text-[13px] text-text-base tabular-nums">
               {shortBytes(child.size)}
             </span>
-            <span className="w-[38px] shrink-0" aria-hidden />
+            <ChevronRight
+              className="size-3.5 shrink-0 text-text-weak"
+              aria-hidden
+            />
           </button>
         ))}
       </div>

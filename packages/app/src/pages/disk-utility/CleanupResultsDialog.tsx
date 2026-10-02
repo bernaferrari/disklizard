@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Check, TriangleAlert } from "lucide-react"
+import { useEffect, useId, useState } from "react"
+import { Check, ChevronRight, TriangleAlert } from "lucide-react"
 import { formatBytes } from "./format"
 import { primaryButton, quietButton } from "./ExplorerChrome"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -37,6 +37,8 @@ export function CleanupResultsDialog(props: {
 }) {
   const language = useLanguage()
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
+  const detailsId = useId()
+  useEffect(() => setSelectedPath(null), [props.open, props.outcomes])
   const moved = props.outcomes.filter((item) => item.status === "moved").length
   const failed = props.outcomes.length - moved
   const selected = props.outcomes.find(
@@ -52,50 +54,48 @@ export function CleanupResultsDialog(props: {
         showCloseButton={false}
         className="flex max-h-[min(640px,calc(100dvh-48px))] w-full max-w-[520px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[520px]"
       >
-        <div className="flex flex-col items-center px-6 pt-8 pb-5 text-center">
-          <span
-            className={
-              failed === 0
-                ? "grid size-14 place-items-center rounded-full bg-[var(--dl-positive-soft)] text-[var(--dl-positive)]"
-                : "grid size-14 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-warning)_16%,transparent)] text-[var(--dl-warning)]"
-            }
-          >
-            {failed === 0 ? (
-              <Check className="size-7" strokeWidth={2.5} aria-hidden />
-            ) : (
-              <TriangleAlert className="size-6" strokeWidth={2} aria-hidden />
-            )}
-          </span>
-          {movedBytes > 0 ? (
-            <div className="mt-4">
-              <p className="text-[32px] leading-none font-semibold tracking-[-0.035em] text-text-strong tabular-nums">
-                {formatBytes(movedBytes)}
-              </p>
-              <p className="mt-1.5 text-[12px] text-text-weak">
-                {language.t("disk.results.movedSize")}
+        <div className="px-6 pt-6 pb-5">
+          <div className="flex items-start gap-3">
+            <span
+              className={
+                failed === 0
+                  ? "grid size-10 shrink-0 place-items-center rounded-full bg-[var(--dl-positive-soft)] text-[var(--dl-positive)]"
+                  : "grid size-10 shrink-0 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-warning)_16%,transparent)] text-[var(--dl-warning)]"
+              }
+            >
+              {failed === 0 ? (
+                <Check className="size-5" strokeWidth={2.5} aria-hidden />
+              ) : (
+                <TriangleAlert className="size-5" strokeWidth={2} aria-hidden />
+              )}
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2
+                id="cleanup-results-title"
+                className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
+              >
+                {language.t("disk.results.heading")}
+              </h2>
+              <p className="mt-1 text-[13px] leading-5 text-text-weak">
+                {language.t(
+                  failed === 0
+                    ? "disk.results.allMoved"
+                    : "disk.results.summary",
+                  { moved, failed, trash: props.trashName }
+                )}
               </p>
             </div>
+          </div>
+          {movedBytes > 0 ? (
+            <dl className="mt-5 flex items-baseline justify-between gap-3">
+              <dt className="text-[12px] text-text-weak">
+                {language.t("disk.results.movedSize")}
+              </dt>
+              <dd className="text-[28px] leading-8 font-medium tracking-[-0.035em] text-text-strong tabular-nums">
+                {formatBytes(movedBytes)}
+              </dd>
+            </dl>
           ) : null}
-          <h2
-            id="cleanup-results-title"
-            className={
-              movedBytes > 0
-                ? "mt-2 text-[14px] font-medium text-text-weak"
-                : "mt-4 text-[18px] font-semibold text-text-strong"
-            }
-          >
-            {language.t("disk.results.heading")}
-          </h2>
-          <p className="mt-1 max-w-[40ch] text-[12.5px] text-text-weak">
-            {language.t(
-              failed === 0 ? "disk.results.allMoved" : "disk.results.summary",
-              {
-                moved,
-                failed,
-                trash: props.trashName,
-              }
-            )}
-          </p>
           {props.needsRecheck ? (
             <p
               className="mt-3 rounded-lg bg-[color-mix(in_oklch,var(--dl-warning)_10%,transparent)] px-3 py-2 text-[12px] text-text-base"
@@ -118,7 +118,14 @@ export function CleanupResultsDialog(props: {
               const identity = itemIdentity(item.node)
               const reason = cleanupFailureReason(item.error ?? "")
               return (
-                <div className="mx-3 flex h-full min-w-0 items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]">
+                <div
+                  className={
+                    "mx-3 flex h-full min-w-0 items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]" +
+                    (selectedPath === item.node.path
+                      ? " bg-[var(--dl-well)]"
+                      : "")
+                  }
+                >
                   {item.status === "moved" ? (
                     <Check
                       className="size-4 shrink-0 text-[var(--dl-positive)]"
@@ -135,10 +142,25 @@ export function CleanupResultsDialog(props: {
                     type="button"
                     className="h-full min-w-0 flex-1 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-inset"
                     title={item.node.path}
-                    onClick={() => setSelectedPath(item.node.path)}
+                    aria-expanded={selectedPath === item.node.path}
+                    aria-controls={
+                      selectedPath === item.node.path ? detailsId : undefined
+                    }
+                    onClick={() =>
+                      setSelectedPath((current) =>
+                        current === item.node.path ? null : item.node.path
+                      )
+                    }
                   >
-                    <span className="block truncate text-[13px] font-medium text-text-strong">
-                      {identity.reviewTitle}
+                    <span className="flex items-center gap-1.5 text-[13px] font-medium text-text-strong">
+                      <span className="truncate">{identity.reviewTitle}</span>
+                      <ChevronRight
+                        className={
+                          "size-3 shrink-0 text-text-weak " +
+                          (selectedPath === item.node.path ? "rotate-90" : "")
+                        }
+                        aria-hidden
+                      />
                     </span>
                     <span className="block truncate text-[11.5px] text-text-weak">
                       {item.status === "moved"
@@ -174,17 +196,27 @@ export function CleanupResultsDialog(props: {
             }}
           />
         </div>
-        {selected?.error ? (
-          <div className="border-b border-[var(--dl-separator)] px-6 py-3">
-            <p className="font-mono text-[11px] break-all text-text-weak">
+        {selected ? (
+          <div
+            id={detailsId}
+            className="max-h-36 shrink-0 overflow-y-auto border-b border-[var(--dl-separator)] px-6 py-3"
+          >
+            <p className="text-[12px] font-medium text-text-strong">
+              {language.t("disk.results.originalLocation")}
+            </p>
+            <p className="mt-1 font-mono text-[11px] break-all text-text-weak select-text">
               {selected.node.path}
             </p>
-            <details className="mt-2 text-[12px] text-text-weak">
-              <summary className="cursor-pointer">
-                {language.t("disk.results.technicalDetails")}
-              </summary>
-              <p className="mt-1 font-mono break-all">{selected.error}</p>
-            </details>
+            {selected.error ? (
+              <details className="mt-2 text-[12px] text-text-weak">
+                <summary className="cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]">
+                  {language.t("disk.results.technicalDetails")}
+                </summary>
+                <p className="mt-1 font-mono break-all select-text">
+                  {selected.error}
+                </p>
+              </details>
+            ) : null}
           </div>
         ) : null}
         <div className="flex flex-wrap items-center justify-end gap-2 px-6 py-4">

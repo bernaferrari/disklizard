@@ -4621,11 +4621,13 @@ export default function DiskUtilityPage() {
                         onClear={clearCollection}
                         onReview={() => collectionSurface.open()}
                         onReveal={(node) => void reveal(node.path)}
-                        onPreview={
-                          preview.supportsSystemPreview()
-                            ? (node) => void preview.openSystemPreview(node)
-                            : undefined
-                        }
+                        onPreview={(node) => {
+                          if (preview.supportsSystemPreview()) {
+                            void preview.openSystemPreview(node)
+                          } else {
+                            void preview.show(node)
+                          }
+                        }}
                         changeFor={(path) => sinceLastChanges.get(path)}
                       />
                     ) : (

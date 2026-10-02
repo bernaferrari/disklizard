@@ -7,6 +7,7 @@ import {
   FolderSearch,
   RotateCcw,
   Trash2,
+  TriangleAlert,
   X,
 } from "lucide-react"
 import { Button } from "@/components/dl/button"
@@ -232,6 +233,17 @@ export function CollectionDialog(props: {
   const [acknowledgedPartialScan, setAcknowledgedPartialScan] = useState(false)
   const [copiedPath, setCopiedPath] = useState<string | null>(null)
   const [copyFailedPath, setCopyFailedPath] = useState<string | null>(null)
+  useEffect(() => {
+    if (!copiedPath) return undefined
+    const timeout = setTimeout(() => setCopiedPath(null), 1500)
+    return () => clearTimeout(timeout)
+  }, [copiedPath])
+  useEffect(() => {
+    if (!props.open) {
+      setCopiedPath(null)
+      setCopyFailedPath(null)
+    }
+  }, [props.open])
   const coverageKey = props.items.map((item) => item.path).join("\u0000")
   useEffect(() => setAcknowledgedPartialScan(false), [props.open, coverageKey])
   const sortedItems = useMemo(
@@ -269,6 +281,13 @@ export function CollectionDialog(props: {
         initialFocus={() => panelRef.current}
         className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[600px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[600px]"
       >
+        <span className="sr-only" role="status">
+          {copyFailedPath
+            ? language.t("disk.dialog.collection.copyFailed")
+            : copiedPath
+              ? language.t("disk.dialog.collection.copied")
+              : ""}
+        </span>
         <div className="flex items-start gap-4 px-6 pt-6 pb-4">
           <div className="min-w-0 flex-1">
             <h2
@@ -303,7 +322,14 @@ export function CollectionDialog(props: {
         props.hasSharedPhysicalStorage ||
         props.hasUnverifiedPhysicalStorage ||
         props.hasUnobservedContents ? (
-          <div className="mx-6 mb-4 shrink-0 overflow-hidden rounded-xl bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] text-[12px] leading-relaxed text-text-weak shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]">
+          <div
+            className={cn(
+              "mx-6 mb-4 shrink-0 overflow-hidden rounded-xl text-[12px] leading-relaxed text-text-weak",
+              props.hasUnobservedContents
+                ? "bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]"
+                : "bg-[var(--dl-well)]"
+            )}
+          >
             {props.requiresDeepInventoryRefresh ||
             props.hasSharedPhysicalStorage ||
             props.hasUnverifiedPhysicalStorage ? (
@@ -353,9 +379,13 @@ export function CollectionDialog(props: {
                   }
                 />
                 <span>
-                  {language.t("disk.review.partialWarning")}{" "}
-                  <span className="font-medium text-text-strong">
-                    {language.t("disk.review.partialAcknowledge")}
+                  <span className="block">
+                    {language.t("disk.review.partialWarning")}
+                  </span>
+                  <span className="mt-1 block font-medium text-text-strong">
+                    {language.t("disk.review.partialAcknowledge", {
+                      trash: props.trashName,
+                    })}
                   </span>
                 </span>
               </label>
@@ -403,7 +433,7 @@ export function CollectionDialog(props: {
                     <span className="block truncate text-[13.5px] font-medium text-text-strong">
                       {identity.reviewTitle}
                     </span>
-                    <span className="block truncate font-mono text-[11px] text-text-weaker">
+                    <span className="block truncate font-mono text-[11px] text-text-weak">
                       <span className="hidden sm:inline">{item.path}</span>
                       <span className="sm:hidden">
                         {locations.get(item.path) ?? item.path}
@@ -423,6 +453,16 @@ export function CollectionDialog(props: {
                           className={iconAction}
                           disabled={props.deleting}
                           aria-label={language.t(
+                            props.onQuickLook
+                              ? "disk.dialog.collection.quickLook"
+                              : "disk.dialog.collection.preview",
+                            {
+                              name:
+                                locations.get(item.path) ??
+                                identity.reviewTitle,
+                            }
+                          )}
+                          title={language.t(
                             props.onQuickLook
                               ? "disk.dialog.collection.quickLook"
                               : "disk.dialog.collection.preview",
@@ -452,6 +492,10 @@ export function CollectionDialog(props: {
                                 identity.reviewTitle,
                             }
                           )}
+                          title={language.t("disk.dialog.collection.reveal", {
+                            name:
+                              locations.get(item.path) ?? identity.reviewTitle,
+                          })}
                           onClick={() => props.onReveal(item)}
                         >
                           <FolderSearch className="size-3.5" aria-hidden />
@@ -493,7 +537,12 @@ export function CollectionDialog(props: {
                         )
                       }}
                     >
-                      {copiedPath === item.path ? (
+                      {copyFailedPath === item.path ? (
+                        <TriangleAlert
+                          className="size-3.5 text-[var(--dl-warning)]"
+                          aria-hidden
+                        />
+                      ) : copiedPath === item.path ? (
                         <Check className="size-3.5" aria-hidden />
                       ) : (
                         <Copy className="size-3.5" aria-hidden />
@@ -567,7 +616,7 @@ export function CollectionDialog(props: {
             </button>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[filter,transform] outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger-action)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-danger-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
               disabled={blocked}
               onClick={props.onConfirm}
             >
@@ -702,7 +751,7 @@ export function ReclaimDrawer(props: {
                     {row.item.node.name}
                   </p>
                   <p
-                    className="mt-0.5 truncate font-mono text-[11px] text-text-weaker"
+                    className="mt-0.5 truncate font-mono text-[11px] text-text-weak"
                     title={
                       row.item.recognition.hint
                         ? language.t(row.item.recognition.hint)
@@ -846,17 +895,14 @@ export function DeleteConfirmDialog(props: {
               <Trash2 className="size-[18px]" aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-[12px] font-medium text-text-weak">
-                {language.t("disk.dialog.delete.heading")}
-              </p>
-              <h3
+              <h2
                 id="delete-title"
-                className="text-[16px] font-semibold tracking-[-0.01em] text-text-strong"
+                className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
               >
                 {language.t("disk.dialog.delete.prompt", {
                   trash: props.trashName,
                 })}
-              </h3>
+              </h2>
             </div>
           </div>
           <div
@@ -875,7 +921,7 @@ export function DeleteConfirmDialog(props: {
                 {itemIdentity(props.node).reviewTitle}
               </p>
               <p
-                className="truncate font-mono text-[11px] text-text-weaker"
+                className="mt-0.5 font-mono text-[11px] leading-4 [overflow-wrap:anywhere] text-text-weak select-text"
                 title={props.node.path}
               >
                 {props.node.path}
@@ -909,9 +955,13 @@ export function DeleteConfirmDialog(props: {
                     }
                   />
                   <span>
-                    {language.t("disk.review.partialWarning")}{" "}
-                    <span className="font-medium text-text-strong">
-                      {language.t("disk.review.partialAcknowledge")}
+                    <span className="block">
+                      {language.t("disk.review.partialWarning")}
+                    </span>
+                    <span className="mt-1 block font-medium text-text-strong">
+                      {language.t("disk.review.partialAcknowledge", {
+                        trash: props.trashName,
+                      })}
                     </span>
                   </span>
                 </label>
@@ -946,7 +996,7 @@ export function DeleteConfirmDialog(props: {
           </button>
           <button
             type="button"
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[filter,transform] outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger-action)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-danger-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
             disabled={
               props.deleting ||
               (props.hasUnobservedContents && !acknowledgedPartialScan)

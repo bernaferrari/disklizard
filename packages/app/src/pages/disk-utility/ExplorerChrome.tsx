@@ -136,7 +136,7 @@ export function ChangesButton(props: {
           />
         ) : null}
         {props.count > 0 ? (
-          <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--dl-accent)] px-1 text-[10px] leading-none font-semibold text-white tabular-nums">
+          <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--dl-action)] px-1 text-[10px] leading-none font-semibold text-white tabular-nums">
             {props.count > 99 ? "99+" : props.count}
           </span>
         ) : null}
@@ -270,7 +270,7 @@ export const quietButton =
   "inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[12px] font-medium text-text-strong outline-none transition-colors hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
 
 export const primaryButton =
-  "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[var(--dl-accent)] px-3.5 text-[13px] font-semibold text-white outline-none transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background-base)] disabled:pointer-events-none disabled:opacity-40"
+  "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[var(--dl-action)] px-3.5 text-[13px] font-semibold text-white outline-none transition-[background-color,transform] duration-150 hover:bg-[var(--dl-action-hover)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background-base)] disabled:pointer-events-none disabled:opacity-40"
 
 /** Free space closes the list the way a ledger closes with its balance. */
 export function FreeSpaceRow(props: { drive: DiskDriveInfo }) {

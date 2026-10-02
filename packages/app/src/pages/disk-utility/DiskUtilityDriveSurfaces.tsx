@@ -206,12 +206,12 @@ export function VolumeRow(props: {
         ? volumeCompletionLabel(props.job.source, completedPerformance)
         : canView && !props.job
           ? language.t("disk.drive.mapReady")
-        : props.job?.status === "scanning"
-          ? language.t("disk.drive.scanningSummary", {
-              files: formatCount(props.job.files),
-              bytes: shortBytes(props.job.bytes),
-            })
-          : volumeSubtitle({ ...props.drive, sharedFree: undefined })
+          : props.job?.status === "scanning"
+            ? language.t("disk.drive.scanningSummary", {
+                files: formatCount(props.job.files),
+                bytes: shortBytes(props.job.bytes),
+              })
+            : volumeSubtitle({ ...props.drive, sharedFree: undefined })
 
   if (ejected) return null
   const pressure = volumePressure(displayUsed, props.drive.total)
@@ -317,9 +317,7 @@ export function VolumeRow(props: {
           aria-label={scanning ? props.drive.name : undefined}
           aria-valuemin={scanning ? 0 : undefined}
           aria-valuemax={scanning ? 100 : undefined}
-          aria-valuenow={
-            scanning ? Math.floor(props.job?.pct ?? 0) : undefined
-          }
+          aria-valuenow={scanning ? Math.floor(props.job?.pct ?? 0) : undefined}
         >
           <div
             className="dl-volume-bar-fill h-full rounded-[inherit] transition-[width] duration-300 ease-out"
@@ -361,7 +359,7 @@ export function VolumeRow(props: {
           data-disk-primary-action={props.primary ? "" : undefined}
           className={
             (props.primary && !scanning) || canView
-              ? "inline-flex h-9 min-w-[88px] items-center justify-center rounded-full bg-[var(--dl-accent)] px-5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.25)] transition-[filter,transform] outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.97] disabled:opacity-40"
+              ? "inline-flex h-9 min-w-[88px] items-center justify-center rounded-full bg-[var(--dl-action)] px-5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.25)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.97] disabled:opacity-40"
               : "inline-flex h-9 min-w-[88px] items-center justify-center rounded-full bg-[var(--dl-well-strong)] px-5 text-[13px] font-semibold text-text-strong transition-[filter,transform] outline-none hover:brightness-125 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.97] disabled:opacity-40"
           }
           disabled={disabled}

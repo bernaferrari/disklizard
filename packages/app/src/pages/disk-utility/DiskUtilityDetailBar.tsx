@@ -181,7 +181,7 @@ export function DetailBar(props: {
           props.onCheckAccess ? (
             <button
               type="button"
-              className="mt-2 text-[12px] font-medium text-[var(--dl-accent)] hover:underline"
+              className="mt-2 rounded-sm text-[12px] font-medium text-text-strong underline decoration-text-weaker underline-offset-4 outline-none hover:decoration-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
               onClick={props.onCheckAccess}
             >
               {language.t("disk.cleanup.checkAgain")}
@@ -299,7 +299,7 @@ export function DetailBar(props: {
             "ml-1 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-[filter,background-color] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
             props.collected || props.includedBy || props.reviewHasItems
               ? "bg-[var(--dl-well-strong)] text-text-strong hover:brightness-110"
-              : "bg-[var(--dl-accent)] text-white hover:brightness-110"
+              : "bg-[var(--dl-action)] text-white hover:bg-[var(--dl-action-hover)]"
           )}
           aria-pressed={props.collected}
           aria-keyshortcuts="C"

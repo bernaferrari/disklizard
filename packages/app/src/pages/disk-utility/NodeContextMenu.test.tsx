@@ -6,9 +6,20 @@ import { NodeContextMenu } from "./NodeContextMenu"
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
-test("context menu skips disabled items, supports boundaries, and returns focus without trapping Tab", async () => {
+test("context menu takes focus once visible, skips disabled items, and returns focus without trapping Tab", async () => {
   const host = document.createElement("div")
   document.body.append(host)
+  const originalFocus = HTMLElement.prototype.focus
+  // Happy DOM permits hidden descendants to focus; browsers reject that.
+  // Keep the browser constraint so focusing before positioning regresses.
+  HTMLElement.prototype.focus = function (options?: FocusOptions) {
+    if (
+      (this.closest('[role="menu"]') as HTMLElement | null)?.style
+        .visibility === "hidden"
+    )
+      return
+    originalFocus.call(this, options)
+  }
   const root = createRoot(host)
   function Harness() {
     const [open, setOpen] = useState(false)
@@ -66,6 +77,7 @@ test("context menu skips disabled items, supports boundaries, and returns focus 
     expect(document.activeElement).toBe(trigger)
   } finally {
     await act(async () => root.unmount())
+    HTMLElement.prototype.focus = originalFocus
     host.remove()
   }
 })

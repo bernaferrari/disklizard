@@ -90,7 +90,14 @@ export function StorageRow(props: {
             <SearchHighlight text={name} query={props.query} />
           </span>
           {props.location ? (
-            <span className="block truncate text-[11.5px] leading-4 text-text-weaker">
+            <span
+              className={cn(
+                "block truncate text-[11.5px] leading-4 group-focus-within:text-text-weak group-hover:text-text-weak",
+                props.active || props.hovered
+                  ? "text-text-weak"
+                  : "text-text-weaker"
+              )}
+            >
               <SearchHighlight text={props.location} query={props.query} />
             </span>
           ) : null}
@@ -105,7 +112,7 @@ export function StorageRow(props: {
             {shortBytes(props.size)}
           </span>
           {props.includedBy ? (
-            <span className="max-w-32 truncate text-[11px] leading-4 text-text-weaker">
+            <span className="max-w-32 truncate text-[11px] leading-4 text-text-weak">
               {language.t("disk.review.includedWith", {
                 name: props.includedBy,
               })}
