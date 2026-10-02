@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -26,7 +32,10 @@ export function NodeContextMenu(props: {
   onClose: () => void
 }) {
   const menuRef = useRef<HTMLDivElement | null>(null)
-  const [position, setPosition] = useState<{ x: number; y: number } | null>(null)
+  const returnFocusRef = useRef<HTMLElement | null>(null)
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(
+    null
+  )
 
   useLayoutEffect(() => {
     if (!props.at || !menuRef.current) {
@@ -34,9 +43,18 @@ export function NodeContextMenu(props: {
       return
     }
     const rect = menuRef.current.getBoundingClientRect()
+    if (!menuRef.current.contains(document.activeElement)) {
+      returnFocusRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null
+    }
     setPosition({
       x: Math.max(8, Math.min(props.at.x, window.innerWidth - rect.width - 8)),
-      y: Math.max(8, Math.min(props.at.y, window.innerHeight - rect.height - 8)),
+      y: Math.max(
+        8,
+        Math.min(props.at.y, window.innerHeight - rect.height - 8)
+      ),
     })
     menuRef.current
       .querySelector<HTMLElement>("[role=menuitem]:not([aria-disabled=true])")
@@ -62,8 +80,17 @@ export function NodeContextMenu(props: {
   }, [props.at, props.onClose])
 
   if (!props.at) return null
-  const focusable = () =>
-    [...(menuRef.current?.querySelectorAll<HTMLElement>("[role=menuitem]:not([aria-disabled=true])") ?? [])]
+  const closeToTrigger = () => {
+    if (returnFocusRef.current?.isConnected) {
+      returnFocusRef.current.focus({ preventScroll: true })
+    }
+    props.onClose()
+  }
+  const focusable = () => [
+    ...(menuRef.current?.querySelectorAll<HTMLElement>(
+      "[role=menuitem]:not([aria-disabled=true])"
+    ) ?? []),
+  ]
 
   return (
     <motion.div
@@ -86,15 +113,20 @@ export function NodeContextMenu(props: {
         if (event.key === "Escape") {
           event.preventDefault()
           event.stopPropagation()
-          props.onClose()
+          closeToTrigger()
         } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
           event.preventDefault()
           event.stopPropagation()
           const next =
-            (index + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length
+            (index + (event.key === "ArrowDown" ? 1 : -1) + items.length) %
+            items.length
           items[next]?.focus()
-        } else if (event.key === "Tab") {
+        } else if (event.key === "Home" || event.key === "End") {
           event.preventDefault()
+          event.stopPropagation()
+          items[event.key === "Home" ? 0 : items.length - 1]?.focus()
+        } else if (event.key === "Tab") {
+          closeToTrigger()
         }
       }}
     >
@@ -105,7 +137,10 @@ export function NodeContextMenu(props: {
       ) : null}
       {props.items.map((item, index) =>
         item.kind === "separator" ? (
-          <div key={`separator-${index}`} className="mx-2 my-1 h-px bg-[var(--dl-separator)]" />
+          <div
+            key={`separator-${index}`}
+            className="mx-2 my-1 h-px bg-[var(--dl-separator)]"
+          />
         ) : (
           <div
             key={item.label}
@@ -117,22 +152,25 @@ export function NodeContextMenu(props: {
               item.disabled
                 ? "opacity-40"
                 : item.danger
-                  ? "text-[var(--dl-danger)] focus:bg-[var(--dl-danger)] focus:text-white hover:bg-[var(--dl-danger)] hover:text-white"
-                  : "focus:bg-[var(--dl-accent)] focus:text-white hover:bg-[var(--dl-accent)] hover:text-white"
+                  ? "text-[var(--dl-danger)] hover:bg-[var(--dl-danger)] hover:text-white focus:bg-[var(--dl-danger)] focus:text-white"
+                  : "hover:bg-[var(--dl-accent)] hover:text-white focus:bg-[var(--dl-accent)] focus:text-white"
             )}
             onMouseEnter={(event) => {
               if (!item.disabled) event.currentTarget.focus()
             }}
             onClick={() => {
               if (item.disabled) return
-              props.onClose()
+              closeToTrigger()
               item.onSelect()
             }}
             onKeyDown={(event) => {
-              if ((event.key === "Enter" || event.key === " ") && !item.disabled) {
+              if (
+                (event.key === "Enter" || event.key === " ") &&
+                !item.disabled
+              ) {
                 event.preventDefault()
                 event.stopPropagation()
-                props.onClose()
+                closeToTrigger()
                 item.onSelect()
               }
             }}
@@ -142,7 +180,9 @@ export function NodeContextMenu(props: {
             </span>
             <span className="min-w-0 flex-1 truncate">{item.label}</span>
             {item.shortcut ? (
-              <span className="shrink-0 text-[11.5px] opacity-55">{item.shortcut}</span>
+              <span className="shrink-0 text-[11.5px] opacity-55">
+                {item.shortcut}
+              </span>
             ) : null}
           </div>
         )

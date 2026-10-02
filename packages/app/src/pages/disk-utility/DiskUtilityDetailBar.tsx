@@ -41,6 +41,7 @@ export function DetailBar(props: {
   parentSize: number
   deletable: boolean
   collected: boolean
+  reviewHasItems?: boolean
   includedBy?: string
   locked?: boolean
   lockLabel?: string
@@ -110,7 +111,9 @@ export function DetailBar(props: {
         </p>
         <p className="truncate text-[12px] text-text-weak tabular-nums">
           {formatBytes(props.node.size)}
-          {share !== undefined && share < 100 ? ` · ${share}%` : ""}
+          {share !== undefined && share < 100
+            ? ` · ${share === 0 && props.node.size > 0 ? "<0.1" : share}%`
+            : ""}
           {kind ? ` · ${kind}` : ""}
           {status ? (
             <span
@@ -235,7 +238,9 @@ export function DetailBar(props: {
           <CornerDownRight className="size-4" strokeWidth={1.75} aria-hidden />
         </button>
       ) : null}
-      {props.onToggleLock || props.deletable || (props.onQuickLook && props.onPreview) ? (
+      {props.onToggleLock ||
+      props.deletable ||
+      (props.onQuickLook && props.onPreview) ? (
         <DropdownMenu placement="top-end" gutter={8}>
           <DropdownMenu.Trigger
             as="button"
@@ -291,8 +296,8 @@ export function DetailBar(props: {
         <button
           type="button"
           className={cn(
-            "ml-1 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold outline-none transition-[filter,background-color] duration-150 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
-            props.collected || props.includedBy
+            "ml-1 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-[filter,background-color] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
+            props.collected || props.includedBy || props.reviewHasItems
               ? "bg-[var(--dl-well-strong)] text-text-strong hover:brightness-110"
               : "bg-[var(--dl-accent)] text-white hover:brightness-110"
           )}
@@ -308,8 +313,8 @@ export function DetailBar(props: {
           {props.includedBy
             ? language.t("disk.common.review")
             : props.collected
-              ? language.t("disk.detail.selected")
-              : language.t("disk.common.collect")}
+              ? language.t("disk.ui.cleanup.remove")
+              : language.t("disk.ui.cleanup.add")}
         </button>
       ) : null}
     </div>

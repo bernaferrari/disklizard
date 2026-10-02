@@ -169,7 +169,7 @@ export function CleanupProtectionsResetDialog(props: {
         <div className="mt-5 flex justify-end gap-2">
           <Button
             data-autofocus
-            className="min-h-11 min-w-11"
+            className="min-h-8 min-w-8"
             size="small"
             variant="ghost"
             disabled={resetting}
@@ -180,7 +180,7 @@ export function CleanupProtectionsResetDialog(props: {
           {step === "confirm" ? (
             <Button
               data-reset-confirm
-              className="min-h-11 min-w-11 text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))]"
+              className="min-h-8 min-w-8 text-[color-mix(in_oklch,oklch(0.62_0.2_25)_50%,var(--text-strong))]"
               size="small"
               variant="primary"
               icon="reset"
@@ -193,7 +193,7 @@ export function CleanupProtectionsResetDialog(props: {
             </Button>
           ) : (
             <Button
-              className="min-h-11 min-w-11"
+              className="min-h-8 min-w-8"
               size="small"
               variant="secondary"
               onClick={() => setStep("confirm")}
@@ -254,7 +254,7 @@ export function CollectionDialog(props: {
   const blocked =
     props.deleting || (props.hasUnobservedContents && !acknowledgedPartialScan)
   const iconAction =
-    "grid size-7 place-items-center rounded-md text-text-weak outline-none transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+    "grid size-8 place-items-center rounded-md text-text-weak outline-none transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
   return (
     <Dialog
       open={open}
@@ -271,14 +271,11 @@ export function CollectionDialog(props: {
       >
         <div className="flex items-start gap-4 px-6 pt-6 pb-4">
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-medium text-text-weak">
-              {language.t("disk.dialog.collection.heading")}
-            </p>
             <h2
               id="collection-title"
-              className="mt-1 text-[28px] leading-none font-semibold tracking-[-0.03em] text-text-strong tabular-nums"
+              className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
             >
-              {formatBytes(props.bytes)}
+              {language.t("disk.dialog.collection.heading")}
             </h2>
             <p className="mt-2 text-[13px] text-text-weak">
               {cautious || props.hasUnobservedContents
@@ -368,7 +365,7 @@ export function CollectionDialog(props: {
 
         <div
           className="flex min-h-[112px] shrink flex-col border-y border-[var(--dl-separator)]"
-          style={{ height: Math.min(props.items.length * 56 + 16, 460) }}
+          style={{ height: Math.min(props.items.length * 56 + 18, 460) }}
         >
           <VirtualRows
             items={sortedItems}
@@ -386,12 +383,23 @@ export function CollectionDialog(props: {
                 <div className="group mx-3 flex h-full items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]">
                   <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--dl-well)] text-text-weak">
                     {item.isDir ? (
-                      <Folder className="size-4" strokeWidth={1.75} aria-hidden />
+                      <Folder
+                        className="size-4"
+                        strokeWidth={1.75}
+                        aria-hidden
+                      />
                     ) : (
-                      <FileIcon className="size-4" strokeWidth={1.75} aria-hidden />
+                      <FileIcon
+                        className="size-4"
+                        strokeWidth={1.75}
+                        aria-hidden
+                      />
                     )}
                   </span>
-                  <span className="min-w-0 flex-1" title={hint ? `${item.path}\n${hint}` : item.path}>
+                  <span
+                    className="min-w-0 flex-1"
+                    title={hint ? `${item.path}\n${hint}` : item.path}
+                  >
                     <span className="block truncate text-[13.5px] font-medium text-text-strong">
                       {identity.reviewTitle}
                     </span>
@@ -402,10 +410,12 @@ export function CollectionDialog(props: {
                       </span>
                     </span>
                     {recognition.tag ? (
-                      <span className="sr-only">{language.t(recognition.tag)}</span>
+                      <span className="sr-only">
+                        {language.t(recognition.tag)}
+                      </span>
                     ) : null}
                   </span>
-                  <span className="flex shrink-0 items-center opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                  <span className="flex shrink-0 items-center opacity-0 transition-opacity group-focus-within/review-row:opacity-100 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                     {!item.isOther && !item.isHidden ? (
                       <>
                         <button
@@ -416,7 +426,11 @@ export function CollectionDialog(props: {
                             props.onQuickLook
                               ? "disk.dialog.collection.quickLook"
                               : "disk.dialog.collection.preview",
-                            { name: item.name }
+                            {
+                              name:
+                                locations.get(item.path) ??
+                                identity.reviewTitle,
+                            }
                           )}
                           onClick={() =>
                             props.onQuickLook
@@ -432,7 +446,11 @@ export function CollectionDialog(props: {
                           disabled={props.deleting}
                           aria-label={language.t(
                             "disk.dialog.collection.reveal",
-                            { name: item.name }
+                            {
+                              name:
+                                locations.get(item.path) ??
+                                identity.reviewTitle,
+                            }
                           )}
                           onClick={() => props.onReveal(item)}
                         >
@@ -458,7 +476,12 @@ export function CollectionDialog(props: {
                             : "disk.dialog.collection.copyPath"
                       )}
                       onClick={() => {
-                        void navigator.clipboard?.writeText(item.path).then(
+                        if (!navigator.clipboard) {
+                          setCopyFailedPath(item.path)
+                          setCopiedPath(null)
+                          return
+                        }
+                        void navigator.clipboard.writeText(item.path).then(
                           () => {
                             setCopiedPath(item.path)
                             setCopyFailedPath(null)
@@ -485,10 +508,10 @@ export function CollectionDialog(props: {
                     className={iconAction}
                     disabled={props.deleting}
                     aria-label={language.t("disk.dialog.collection.remove", {
-                      name: item.name,
+                      name: locations.get(item.path) ?? identity.reviewTitle,
                     })}
                     title={language.t("disk.dialog.collection.remove", {
-                      name: item.name,
+                      name: locations.get(item.path) ?? identity.reviewTitle,
                     })}
                     onClick={() => props.onRemove(item)}
                   >
@@ -502,7 +525,7 @@ export function CollectionDialog(props: {
 
         <div className="flex shrink-0 flex-wrap items-center gap-3 px-6 py-4">
           {props.progress ? (
-            <p
+            <div
               className="flex min-w-0 flex-1 items-center gap-2 text-[12.5px] text-text-weak tabular-nums"
               role="status"
               aria-live="polite"
@@ -514,7 +537,7 @@ export function CollectionDialog(props: {
                 total: props.progress.total,
               })}
               …
-            </p>
+            </div>
           ) : (
             <p className="flex min-w-0 flex-1 items-center gap-2 text-[12px] leading-snug text-text-weak">
               <RotateCcw className="size-3.5 shrink-0" aria-hidden />
@@ -544,7 +567,7 @@ export function CollectionDialog(props: {
             </button>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] outline-none transition-[filter,transform] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:pointer-events-none disabled:opacity-40"
+              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[filter,transform] outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
               disabled={blocked}
               onClick={props.onConfirm}
             >
@@ -628,7 +651,7 @@ export function ReclaimDrawer(props: {
               </p>
             </div>
             <Button
-              className="min-h-11 min-w-11"
+              className="min-h-8 min-w-8"
               size="small"
               variant="ghost"
               icon="close"
@@ -695,7 +718,7 @@ export function ReclaimDrawer(props: {
                   {shortBytes(row.item.node.size)}
                 </span>
                 <Button
-                  className="min-h-11 min-w-11"
+                  className="min-h-8 min-w-8"
                   size="small"
                   variant="ghost"
                   icon="eye"
@@ -710,7 +733,7 @@ export function ReclaimDrawer(props: {
                   onClick={() => props.onInspect(row.item.node)}
                 />
                 <Button
-                  className="min-h-11 min-w-11"
+                  className="min-h-8 min-w-8"
                   size="small"
                   variant="ghost"
                   icon={
@@ -750,7 +773,7 @@ export function ReclaimDrawer(props: {
             </p>
           </div>
           <Button
-            className="ml-auto min-h-11 min-w-11 shrink-0"
+            className="ml-auto min-h-8 min-w-8 shrink-0"
             size="small"
             variant="secondary"
             icon="checklist"
@@ -851,7 +874,10 @@ export function DeleteConfirmDialog(props: {
               <p className="truncate text-[13.5px] font-medium text-text-strong">
                 {itemIdentity(props.node).reviewTitle}
               </p>
-              <p className="truncate font-mono text-[11px] text-text-weaker" title={props.node.path}>
+              <p
+                className="truncate font-mono text-[11px] text-text-weaker"
+                title={props.node.path}
+              >
                 {props.node.path}
               </p>
             </div>
@@ -920,7 +946,7 @@ export function DeleteConfirmDialog(props: {
           </button>
           <button
             type="button"
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] outline-none transition-[filter,transform] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:pointer-events-none disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[filter,transform] outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
             disabled={
               props.deleting ||
               (props.hasUnobservedContents && !acknowledgedPartialScan)

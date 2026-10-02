@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { SearchHighlight } from "./SearchHighlight"
 import { shortBytes } from "./format"
 import { diskNodeDisplayName } from "./node-display"
+import { itemIdentity } from "./item-identity"
 import { useLanguage } from "./runtime"
 import type { DiskScanNode } from "./types"
 
@@ -36,6 +37,7 @@ export function StorageRow(props: {
   const language = useLanguage()
   const name = diskNodeDisplayName(props.node)
   const aggregate = !!props.node.isOther
+  const reviewName = itemIdentity(props.node).reviewTitle
   return (
     <div
       className={cn(
@@ -123,23 +125,23 @@ export function StorageRow(props: {
         <button
           type="button"
           className={cn(
-            "absolute top-1/2 right-[34px] grid size-6 -translate-y-1/2 place-items-center rounded-full transition-[opacity,background-color,color] duration-150 outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
+            "absolute top-1/2 right-[34px] grid size-6 -translate-y-1/2 place-items-center rounded-full transition-[opacity,background-color,color] duration-150 outline-none before:absolute before:-inset-1 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
             props.collected
               ? "bg-[var(--dl-accent)] text-white opacity-100"
-              : "bg-[var(--dl-raised)] text-text-strong opacity-0 shadow-[0_1px_3px_rgb(0_0_0/0.3)] group-hover:opacity-100 hover:brightness-110 [@media(hover:none)]:opacity-100"
+              : "bg-[var(--dl-raised)] text-text-strong opacity-0 shadow-[0_1px_3px_rgb(0_0_0/0.3)] group-focus-within:opacity-100 group-hover:opacity-100 hover:brightness-110 [@media(hover:none)]:opacity-100"
           )}
           aria-pressed={props.collected}
           aria-label={language.t(
             props.collected
               ? "disk.explore.removeReview"
               : "disk.explore.selectReview",
-            { name }
+            { name: reviewName }
           )}
           title={language.t(
             props.collected
               ? "disk.explore.removeReview"
               : "disk.explore.selectReview",
-            { name }
+            { name: reviewName }
           )}
           onClick={props.onToggleCollect}
         >

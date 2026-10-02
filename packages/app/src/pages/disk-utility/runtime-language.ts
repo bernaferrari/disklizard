@@ -54,7 +54,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.smaller.regroup": "Group smaller items",
   "disk.common.back": "Back",
   "disk.common.net": "Net",
-  "disk.common.complete": "Complete",
+  "disk.common.complete": "Done",
   "disk.common.partial": "Partial",
   "disk.common.volumes": "Volumes",
   "disk.common.saved": "Saved",
@@ -86,8 +86,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.shortcut.keyC": "C",
   "disk.search.label": "Search this scan",
   "disk.search.placeholder": "Search names and paths",
-  "disk.search.clear": "Clear filter",
-  "disk.search.results": "Search results across this scan",
+  "disk.search.clear": "Clear search",
+  "disk.search.results": "Search results",
   "disk.sort.group": "Sort storage entries",
   "disk.sort.label": "Sort",
   "disk.sort.key.label": "Sort by",
@@ -110,7 +110,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.developer.operationSizeNote":
     "Row size is the whole folder that would move to Trash; category totals avoid counting nested folders twice.",
   "disk.dialog.collection.deepWarningSummary":
-    "Sizes are not reclaim estimates · map refreshes afterward",
+    "File sizes shown · DiskLizard will rescan afterward",
   "disk.developer.observedChange":
     "Observed modification time: {date}. Age filters use this timestamp.",
   "disk.developer.changeUnknown":
@@ -223,6 +223,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.results.heading": "Cleanup results",
   "disk.results.summary":
     "{moved} moved to {trash} · {failed} could not be moved",
+  "disk.results.allMoved": "{moved} moved to {trash}",
+  "disk.results.movedSize": "File sizes moved",
   "disk.results.needsRecheck":
     "This cleanup plan needs rechecking. The scan changed after these operations; rescan before selecting anything else. These results remain available for reference.",
   "disk.results.moved": "Moved to {trash}",
@@ -429,7 +431,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.collection.body":
     "Check every item before anything leaves its original location.",
   "disk.dialog.collection.deepWarning":
-    "A selected path changes data represented by the deep artifact inventory. It can move to {trash}, but its displayed size is not a reclaim estimate. DiskLizard will rebuild the full map afterward.",
+    "DiskLizard will rescan after moving these items to {trash}. Their file sizes may differ from the space you free.",
   "disk.dialog.collection.sharedWarning":
     "Some selected paths share physical storage through APFS clones or hard links. They can move to {trash}, but their displayed allocation is not a promise of freed disk space. DiskLizard will recompute the map afterward.",
   "disk.dialog.collection.unverifiedWarning":
@@ -441,10 +443,8 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.collection.remove": "Remove {name} from review",
   "disk.dialog.collection.moving": "Moving {current} of {total}",
   "disk.dialog.collection.movingCompact": "Moving {current}/{total}…",
-  "disk.dialog.restore.rebuild":
-    "Items can be restored from {trash}. DiskLizard will rebuild the full map after the move.",
-  "disk.dialog.restore.recompute":
-    "Items can be restored from {trash}. Storage allocation will be recomputed after the move.",
+  "disk.dialog.restore.rebuild": "Items can be restored from {trash}.",
+  "disk.dialog.restore.recompute": "Items can be restored from {trash}.",
   "disk.dialog.restore.space":
     "Items can be restored from {trash}. Space is freed after you empty it.",
   "disk.dialog.reclaim.summary": "{count} worth reviewing",
@@ -468,7 +468,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.dialog.delete.restoreSpace":
     "You can restore it from {trash}. Space is freed after you empty it.",
   "disk.dialog.delete.deepWarning":
-    "This path changes data represented by the deep artifact inventory. Moving it does not make its displayed size a reclaim promise; DiskLizard will rebuild the full map afterward.",
+    "DiskLizard will rescan after this item moves. Its file size may differ from the space you free.",
   "disk.dialog.delete.sharedWarning":
     "This path shares physical storage through an APFS clone or hard link. Moving it does not guarantee that its displayed bytes become free; DiskLizard will recompute shared storage afterward.",
   "disk.dialog.delete.unverifiedWarning":
@@ -788,7 +788,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.pathCopied": "Path copied",
   "disk.ui.uncollect": "Remove from Collector",
   "disk.ui.moveToTrashEllipsis": "Move to {trash}…",
-  "disk.ui.cleanUp": "Clean Up",
+  "disk.ui.cleanUp": "Clean up",
   "disk.ui.viewAs": "View as",
   "disk.ui.viewShortcut": "{view} ({key})",
   "disk.ui.changes": "Changes",
@@ -812,17 +812,75 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.issuesTotals": "Totals may be a little low.",
   "disk.ui.issuesMore": "And {count} more",
   "disk.ui.accountingTitle": "Shared storage not verified",
-  "disk.ui.collectorEmpty": "Drag items here to collect them",
-  "disk.ui.collectorDrop": "Drop to collect",
+  "disk.ui.collectorEmpty": "Select items to review",
+  "disk.ui.collectorDrop": "Drop to select",
   "disk.ui.collectorClear": "Clear",
   "disk.ui.selectionHint":
     "Click a folder to open it · drag anything to the collector",
+  "disk.ui.cleanup.sizeNote":
+    "File sizes shown; space freed may differ. Protected items are excluded.",
+  "disk.map.navigationHint":
+    "Click a folder to open it. Click the center to go up.",
   "disk.ui.cleanup.eyebrow": "Ready to clean",
-  "disk.ui.cleanup.headline": "{size} to reclaim",
-  "disk.ui.cleanup.safeNow": "{size} safe to remove now",
-  "disk.ui.cleanup.headlineNone": "Nothing safe to remove",
-  "disk.ui.cleanup.selectSafe": "Select all safe items",
-  "disk.ui.cleanup.allSelected": "All safe items selected",
+  "disk.ui.cleanup.filters": "Filters",
+  "disk.ui.cleanup.fileSize": "File size",
+  "disk.ui.cleanup.selectedElsewhere": "Includes items outside this list",
+  "disk.ui.cleanup.moreItems": "Show {count} more",
+  "disk.ui.cleanup.category.caches": "Caches",
+  "disk.ui.cleanup.category.logs": "Logs",
+  "disk.ui.cleanup.category.tools": "Tool data",
+  "disk.ui.cleanup.category.other": "Other folders",
+  "disk.ui.cleanup.other": "Other items",
+  "disk.ui.cleanup.inspect": "Inspect {name}",
+  "disk.ui.cleanup.inspecting": "Inspecting {name}",
+  "disk.ui.cleanup.list": "Cleanup candidates",
+  "disk.ui.cleanup.listKeys":
+    "Use Up and Down to browse, Right to expand a category, Left to return or collapse, and Home or End to jump through the list. Check an item to add it to your selection.",
+  "disk.ui.cleanup.beforeRemoving": "Before removing",
+  "disk.ui.cleanup.restore": "How to restore it",
+  "disk.ui.cleanup.add": "Add to selection",
+  "disk.ui.cleanup.remove": "Remove from selection",
+  "disk.ui.cleanup.selected": "In your selection",
+  "disk.ui.cleanup.location": "Location",
+  "disk.ui.cleanup.protected": "Protected items",
+  "disk.ui.cleanup.selectReady": "Select these",
+  "disk.ui.cleanup.noMatches": "No matching files",
+
+  "disk.ui.cleanup.title": "Clean up",
+  "disk.ui.cleanup.intro": "Nothing moves until you review your selection.",
+  "disk.ui.cleanup.summary": "{size} across {count}",
+  "disk.ui.cleanup.ready": "Can be recreated",
+  "disk.ui.cleanup.individual": "Review individually",
+  "disk.ui.cleanup.individualDescription":
+    "Open an item to see why it’s listed before selecting it.",
+  "disk.ui.cleanup.selectAll": "Select all",
+  "disk.ui.cleanup.selectedAll": "All selected",
+  "disk.ui.cleanup.dependencies": "Dependencies",
+  "disk.ui.cleanup.buildOutput": "Build files",
+  "disk.ui.cleanup.buildFolders": "Build folders",
+  "disk.ui.cleanup.targetFolders": "target folders",
+  "disk.ui.cleanup.details": "Details for {name}",
+  "disk.ui.cleanup.groupCount": "{count} · {selected} selected",
+  "disk.ui.cleanup.reason.incomplete":
+    "This scan has unreadable folders, so this folder’s full contents aren’t verified. Inspect it before removing anything.",
+  "disk.ui.cleanup.reason.nameOnly":
+    "The folder name suggests generated files, but it can also belong to your own work. Inspect its contents before removing it.",
+  "disk.ui.cleanup.reason.dependencies":
+    "Confirm your package manager can restore these dependencies, and keep the project’s lockfile.",
+  "disk.ui.cleanup.reason.build":
+    "Confirm these are generated files that your project can rebuild, rather than source files or releases you want to keep.",
+  "disk.ui.cleanup.reason.logs":
+    "Logs may help diagnose problems. Keep any you still need for troubleshooting.",
+  "disk.ui.cleanup.reason.cache":
+    "Apps may still use these files. Inspect the folder and close the related app before removing caches.",
+  "disk.ui.cleanup.reason.other":
+    "Inspect these files and decide whether you still need them.",
+  "disk.ui.collectorSelected": "{size} selected · {count}",
+  "disk.ui.cleanup.headline": "{size} to review",
+  "disk.ui.cleanup.safeNow": "{size} in known rebuildable items",
+  "disk.ui.cleanup.headlineNone": "No cleanup candidates found",
+  "disk.ui.cleanup.selectSafe": "Select rebuildable items · {size}",
+  "disk.ui.cleanup.allSelected": "Rebuildable items selected",
   "disk.ui.cleanup.unchangedFor": "Unchanged for",
   "disk.ui.cleanup.ecosystem": "Ecosystem",
   "disk.ui.cleanup.developer": "Developer files",
@@ -831,18 +889,17 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.cleanup.showFewer": "Show fewer",
   "disk.ui.cleanup.selectGroup": "Select everything in {name}",
   "disk.ui.cleanup.safe": "Safe",
-  "disk.ui.cleanup.check": "Check first",
   "disk.ui.cleanup.footerIdle":
-    "Select items to free space. Nothing moves to {trash} until you review it.",
+    "Select items to review. Nothing moves to {trash} until you approve it.",
   "disk.ui.cleanup.footerSelected": "{size} selected",
   "disk.ui.cleanup.review": "Review…",
-  "disk.ui.cleanup.emptyTitle": "Your disk is already tidy",
+  "disk.ui.cleanup.emptyTitle": "No cleanup candidates found",
   "disk.ui.cleanup.emptyBody":
     "No rebuildable developer files, caches, or logs were found in this scan.",
   "disk.ui.cleanup.filteredTitle": "Nothing matches these filters",
   "disk.ui.cleanup.coverage": "About this list",
   "disk.ui.cleanup.explain":
-    "Everything here can be rebuilt, reinstalled, or redownloaded. Items marked “Check first” may hold work you care about. Selected items go to {trash}, so you can restore them.",
+    "These are file sizes, not estimates of space you will free. Protected items are excluded. Nothing moves to {trash} until you review and approve your selection.",
   "disk.ui.home.title": "Where’s your space going?",
   "disk.ui.home.subtitle":
     "Scan a disk or folder to see what’s taking up room.",
@@ -860,8 +917,8 @@ export const DISK_LANGUAGE_PLURALS = {
     other: "{count} folders couldn’t be read",
   },
   "disk.ui.cleanup.itemsSafe": {
-    one: "{count} item you can rebuild or redownload",
-    other: "{count} items you can rebuild or redownload",
+    one: "{count} item worth reviewing",
+    other: "{count} items worth reviewing",
   },
   "disk.ui.cleanup.moreGroups": {
     one: "Show {count} smaller group",

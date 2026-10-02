@@ -10,7 +10,10 @@ import { containsSharedPhysicalStorage, type ReclaimSummary } from "./recognize"
 import { diskLanguageText } from "./runtime"
 import { PINNED_LOCATION_LIMIT } from "./saved-paths"
 
-function normalizedDiskPath(path: string, os?: "macos" | "windows" | "linux") {
+export function normalizedDiskPath(
+  path: string,
+  os?: "macos" | "windows" | "linux"
+) {
   // Exact casing is significant on APFS and on NTFS directories with the
   // per-directory case-sensitive flag. Scanner-produced paths already carry
   // the spelling needed for stable identity.
@@ -49,6 +52,40 @@ export function diskPathIsWithin(
     candidate === root ||
     candidate.startsWith(root.endsWith("/") ? root : `${root}/`)
   )
+}
+
+/** Indexed scanner-path coverage for scan-wide lists. Ancestry checks cost
+ * path depth instead of comparing every candidate with every selected root. */
+export function createDiskPathCoverage(os?: "macos" | "windows" | "linux") {
+  const roots = new Set<string>()
+  const ancestors = new Set<string>()
+  function keys(path: string) {
+    const candidate = normalizedDiskPath(path, os)
+    const result = [candidate]
+    let separator = candidate.lastIndexOf("/")
+    while (separator >= 0) {
+      const key = normalizedDiskPath(
+        separator === 0 ? "/" : candidate.slice(0, separator),
+        os
+      )
+      if (result.at(-1) !== key) result.push(key)
+      if (separator === 0) break
+      separator = candidate.lastIndexOf("/", separator - 1)
+    }
+    return result
+  }
+  return {
+    depth: (path: string) => keys(path).length,
+    add(path: string) {
+      const chain = keys(path)
+      roots.add(chain[0])
+      for (const key of chain) ancestors.add(key)
+    },
+    covers: (path: string) => keys(path).some((key) => roots.has(key)),
+    overlaps: (path: string) =>
+      ancestors.has(normalizedDiskPath(path, os)) ||
+      keys(path).some((key) => roots.has(key)),
+  }
 }
 
 /**
@@ -299,9 +336,13 @@ export function removeScanSubtrees(
   os?: "macos" | "windows" | "linux"
 ): DiskScanNode | null {
   const deletionRoots = uniqueDeletionRoots(removed, os)
-  if (deletionRoots.some((target) => diskPathIsWithin(root.path, target.path, os)))
+  if (
+    deletionRoots.some((target) => diskPathIsWithin(root.path, target.path, os))
+  )
     return null
-  const targets = new Set(deletionRoots.map((node) => normalizedDiskPath(node.path, os)))
+  const targets = new Set(
+    deletionRoots.map((node) => normalizedDiskPath(node.path, os))
+  )
   const affectedAncestors = new Set<string>()
   for (const target of targets) {
     let ancestor = target
@@ -338,9 +379,12 @@ export function removeScanSubtrees(
   // Deep inventory rows can be inside a scanner-collapsed directory without
   // appearing in `children`. Debit only that directory's unmaterialized bytes;
   // an Other aggregate cannot be assigned to a particular pathname safely.
-  function debitCollapsed(node: DiskScanNode, target: DiskScanNode): DiskScanNode {
-    const childIndex = node.children.findIndex((child) =>
-      !child.isOther && diskPathIsWithin(target.path, child.path, os)
+  function debitCollapsed(
+    node: DiskScanNode,
+    target: DiskScanNode
+  ): DiskScanNode {
+    const childIndex = node.children.findIndex(
+      (child) => !child.isOther && diskPathIsWithin(target.path, child.path, os)
     )
     if (childIndex >= 0) {
       const child = node.children[childIndex]
@@ -350,20 +394,29 @@ export function removeScanSubtrees(
       children[childIndex] = updated
       return withReconciledChildren(node, children)
     }
-    const materializedBytes = node.children.reduce((sum, child) => sum + child.size, 0)
+    const materializedBytes = node.children.reduce(
+      (sum, child) => sum + child.size,
+      0
+    )
     const materializedLogicalBytes = node.children.reduce(
-      (sum, child) => sum + apparentBytes(child), 0
+      (sum, child) => sum + apparentBytes(child),
+      0
     )
     const targetLogicalBytes = apparentBytes(target)
     if (
       !node.isDir ||
       node.size - materializedBytes < target.size ||
       apparentBytes(node) - materializedLogicalBytes < targetLogicalBytes
-    ) return node
+    )
+      return node
     const size = node.size - target.size
     const logicalSize = apparentBytes(node) - targetLogicalBytes
     const { logicalSize: _previousLogicalSize, ...unchanged } = node
-    return { ...unchanged, size, ...(logicalSize === size ? {} : { logicalSize }) }
+    return {
+      ...unchanged,
+      size,
+      ...(logicalSize === size ? {} : { logicalSize }),
+    }
   }
 
   let next = visit(root)
@@ -371,10 +424,12 @@ export function removeScanSubtrees(
   for (const target of deletionRoots) {
     if (
       root.developerArtifactInventory &&
-      "inventoryOnly" in target && target.inventoryOnly === true &&
+      "inventoryOnly" in target &&
+      target.inventoryOnly === true &&
       !materializedTargets.has(normalizedDiskPath(target.path, os)) &&
       diskPathIsWithin(target.path, next.path, os)
-    ) next = debitCollapsed(next, target)
+    )
+      next = debitCollapsed(next, target)
   }
   // The deep index contains aggregate sizes and a bounded result cap. Even a
   // visible deletion can change unseen entries, so discard that evidence for

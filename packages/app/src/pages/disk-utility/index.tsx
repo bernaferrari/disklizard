@@ -14,6 +14,14 @@ import {
 } from "./group-navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { CleanupView } from "./CleanupView"
+import { DiskAppMenu } from "./DiskAppMenu"
+import { useDiskActions } from "./use-disk-actions"
+import {
+  inventoryDeletionNeedsRescan,
+  useCleanupPolicy,
+} from "./use-cleanup-policy"
+import { useReviewCollection } from "./use-review-collection"
+import { buildCleanupSummary } from "./cleanup-summary"
 import { ChangesPanel } from "./ChangesPanel"
 import { StorageRow } from "./StorageRow"
 import { FolderContext } from "./FolderContext"
@@ -45,7 +53,7 @@ import { aggregateTone, createSpectrum, toneCss } from "./spectrum"
  * A DaisyDisk-inspired sunburst map (rendered in OKLCH) paired with a ranked list.
  * The signature trick: a "Reclaim" engine that recognizes well-known space hogs
  * (node_modules, caches, build output, Trash…) and surfaces a live,
- * non-double-counted total of space you can get back — with one-tap review.
+ * non-double-counted file sizes — with an explicit review before removal.
  *
  * Motion stays out of the reactive render path; the canvas and small numeric
  * transitions run directly on requestAnimationFrame.
@@ -55,7 +63,6 @@ import { DiskUtilitySearchTools } from "./DiskUtilitySearchTools"
 import { DiskUtilityHoverContents } from "./DiskUtilityHoverContents"
 import { useHoverPreview } from "./use-hover-preview"
 import { Button } from "@/components/dl/button"
-import { DropdownMenu } from "@/components/dl/dropdown-menu"
 import { Icon } from "@/components/dl/icon"
 import { ScrollView } from "@/components/dl/scroll-view"
 import { showToast } from "@/components/dl/toast"
@@ -79,7 +86,6 @@ import {
   useLanguage,
   usePlatform,
   useSettings,
-  type DiskLanguageKey,
 } from "./runtime"
 import type {
   DiskDriveInfo,
@@ -90,7 +96,6 @@ import type {
   DiskStorageDiagnostics,
   DiskStorageLocation,
   DiskUtilityAPI,
-  DiskPathAccess,
 } from "./types"
 import {
   Sunburst,
@@ -120,7 +125,6 @@ import {
 import {
   ARTIFACT_ECOSYSTEMS,
   containsSharedPhysicalStorage,
-  developerArtifactCleanupReadiness,
   isSmartCleanupEligible,
   matchesArtifactEcosystem,
   type ArtifactEcosystem,
@@ -143,6 +147,7 @@ import {
 } from "./format"
 import {
   filterDeveloperItemsByAge,
+  matchesDeveloperCleanupAge,
   resolveDeveloperCleanupAge,
   type DeveloperCleanupAgePreset,
 } from "./developer-cleanup"
@@ -226,7 +231,6 @@ import {
 import {
   actionableReclaimSummary,
   asBrowseableRoot,
-  canActOnNode,
   diskPathEquals,
   diskPathIsWithin,
   driveForPath,
@@ -425,6 +429,8 @@ export default function DiskUtilityPage() {
   }, [platform.os])
   const language = useLanguage()
   const settings = useSettings()
+  const { reveal, openTrash, handleUpdaterMenuAction, exportDiagnostics } =
+    useDiskActions()
   const isDesktop = platform.platform === "desktop"
   const disk = isDesktop ? platform.diskUtility : undefined
 
@@ -501,7 +507,34 @@ export default function DiskUtilityPage() {
     activeID?: string
     foregroundID?: string
   }>({})
-  const [collection, setCollection] = useState<DiskScanNode[]>([])
+  const review = useReviewCollection({
+    os: platform.os,
+    canCollect: canModifyNode,
+    needsRescan: inventoryDeletionNeedsRescan,
+    onNeedsRescan: showDeveloperArtifactRescanGuidance,
+    onParentReplaced: (node, count) =>
+      showToast({
+        variant: "default",
+        title: language.t("disk.review.parentReplaces", {
+          name: itemIdentity(node).reviewTitle,
+          count,
+        }),
+      }),
+    onEmpty: collectionSurface.close,
+  })
+  const {
+    items: collection,
+    setItems: setCollection,
+    effectiveItems: effectiveCollection,
+    paths: queuedPaths,
+    bytes: collectionSize,
+    shared: collectionHasSharedPhysicalStorage,
+    toggle: toggleCollect,
+    add: collectNodes,
+    remove: removeCollected,
+    isCollected,
+    coveringNode: coveringCollectedNode,
+  } = review
   const [cleanupResults, setCleanupResults] = useState<CleanupOutcome[]>([])
   const [cleanupResultsOpen, setCleanupResultsOpen] = useState(false)
   const [cleanupPlanNeedsRecheck, setCleanupPlanNeedsRecheck] = useState(false)
@@ -717,7 +750,6 @@ export default function DiskUtilityPage() {
     [indexFilter]
   )
   const developerItems = useMemo(() => {
-    if (indexFilter.lens !== "developer") return []
     const category = indexFilter.developerCategory
     const ecosystem = indexFilter.developerEcosystem
     const categorized = developer().items.filter(
@@ -892,7 +924,7 @@ export default function DiskUtilityPage() {
         diskNodeDisplayName(entry.node).toLocaleLowerCase()
       )
         ? 46
-        : 34,
+        : 36,
     [query, duplicateEntryNames]
   )
   const selectedNode = useMemo(() => {
@@ -910,32 +942,15 @@ export default function DiskUtilityPage() {
       null
     )
   }, [entries, selectedPath, treeRoot, groupNavigation, platform.os])
-  const [selectedAccess, setSelectedAccess] = useState<{
-    path: string
-    state: DiskPathAccess["state"] | "checking"
-  }>()
-  const [accessCheckVersion, setAccessCheckVersion] = useState(0)
-  useEffect(() => {
-    const node = selectedNode
-    if (
-      !node ||
-      !disk?.checkDeleteAccess ||
-      !canActOnNode(node, platform.os, cleanupLocks)
-    ) {
-      setSelectedAccess(undefined)
-      return undefined
-    }
-    let current = true
-    setSelectedAccess({ path: node.path, state: "checking" })
-    void disk.checkDeleteAccess(node.path).then(
-      (result) =>
-        current && setSelectedAccess({ path: node.path, state: result.state }),
-      () => current && setSelectedAccess({ path: node.path, state: "unknown" })
-    )
-    return () => {
-      current = false
-    }
-  }, [selectedNode?.path, disk, cleanupLocks, platform.os, accessCheckVersion])
+  const cleanupPolicy = useCleanupPolicy({
+    selectedNode,
+    disk,
+    os: platform.os,
+    locks: cleanupLocks,
+    protectionsReady: cleanupProtectionsReady(),
+    recognitionFor: investigation.recognitionFor,
+  })
+  const selectedAccess = cleanupPolicy.access
   const indexSize = recentLens
     ? entries.reduce((total, entry) => total + entry.displaySize, 0)
     : indexFilter.lens === "developer"
@@ -956,21 +971,6 @@ export default function DiskUtilityPage() {
           : indexFilter.lens === "recommendations"
             ? reclaim.totalCount
             : parentCount
-  // A watcher can rebase a selected deep result against a newer inventory.
-  // Never let an identity-less replacement remain actionable while that
-  // reconciliation is in flight (or if an older renderer left one behind).
-  const effectiveCollection = useMemo(
-    () =>
-      uniqueDeletionRoots(
-        collection.filter((node) => !inventoryDeletionNeedsRescan(node)),
-        platform.os
-      ),
-    [collection]
-  )
-  const queuedPaths = useMemo(
-    () => effectiveCollection.map((node) => node.path),
-    [effectiveCollection]
-  )
   useEffect(
     () => sunburstRef.current?.setQueuedPaths(queuedPaths),
     [queuedPaths]
@@ -1024,34 +1024,37 @@ export default function DiskUtilityPage() {
     () => uniqueDeletionRoots(smartCleanupEligibleEntries, platform.os),
     [smartCleanupEligibleEntries]
   )
-  /** Toolbar hint: developer artifacts plus non-overlapping suggestions. */
-  const cleanupPotentialBytes = useMemo(() => {
-    if (!treeRoot || physicalCloneAccountingUncertain) return 0
-    const developerSummary = investigation.developer()
-    const roots = developerSummary.items.map(({ node }) => node.path)
-    const extra = reclaim.buckets
-      .flatMap((bucket) => bucket.items)
-      .filter(
-        ({ node }) =>
-          !roots.some(
-            (root) =>
-              node.path === root ||
-              node.path.startsWith(root + "/") ||
-              root.startsWith(node.path + "/")
-          )
-      )
-      .reduce((sum, { node }) => sum + node.size, 0)
-    return developerSummary.totalBytes + extra
-  }, [investigation, reclaim, treeRoot, physicalCloneAccountingUncertain])
+  const cleanupSummary = useMemo(
+    () =>
+      buildCleanupSummary({
+        developerItems,
+        suggestions: reclaim.buckets,
+        os: platform.os,
+        canModify: canModifyNode,
+        isEligible: isSmartCleanupEligible,
+        hasUnobservedContents: (node) =>
+          mayContainUnobservedContents(treeRoot, node, platform.os),
+        matchesFilter: (node, recognition) =>
+          matchesDeveloperCleanupAge(node.modifiedAt, developerAge) &&
+          matchesArtifactEcosystem(recognition, indexFilter.developerEcosystem),
+      }),
+    [
+      developerItems,
+      reclaim,
+      treeRoot,
+      platform.os,
+      cleanupLocks,
+      cleanupLocksStatus,
+      selectedAccess,
+      developerAge,
+      indexFilter.developerEcosystem,
+    ]
+  )
   const currentScanPinned =
     !!scanSourcePath &&
     isPinnedScanLocation(pinnedLocations, scanSourcePath, platform.os)
   const currentScanLocked =
     !!scanSourcePath && isCleanupLock(scanSourcePath, cleanupLocks, platform.os)
-  const collectionSize = effectiveCollection.reduce((s, n) => s + n.size, 0)
-  const collectionHasSharedPhysicalStorage = effectiveCollection.some(
-    containsSharedPhysicalStorage
-  )
   const collectionNeedsDeepInventoryRefresh = useMemo(
     () => requiresDeepInventoryRefresh(effectiveCollection),
     [effectiveCollection, treeRoot, tabs, volumeJobs]
@@ -2952,93 +2955,6 @@ export default function DiskUtilityPage() {
     }
   }
 
-  async function reveal(path: string) {
-    const api = disk
-    if (!api) return
-    try {
-      await api.revealPath(path)
-    } catch (err) {
-      showToast({
-        variant: "error",
-        title: language.t("disk.toast.revealFailed"),
-        description: err instanceof Error ? err.message : String(err),
-      })
-    }
-  }
-
-  async function openTrash() {
-    const api = disk
-    if (!api) return
-    try {
-      await api.openTrash()
-    } catch (error) {
-      showToast({
-        variant: "error",
-        title: language.t("disk.toast.trashOpenFailed", {
-          trash: nativeTrashName(platform.os),
-        }),
-        description: error instanceof Error ? error.message : String(error),
-      })
-    }
-  }
-
-  async function handleUpdaterMenuAction() {
-    const updater = platform.updater
-    if (!updater) return
-    try {
-      const current = updater.state
-      if (current.status === "ready") {
-        await updater.install()
-        return
-      }
-      const next = await updater.check()
-      if (next.status === "ready") {
-        showToast({
-          variant: "success",
-          title: language.t("disk.app.updateReady"),
-          description: language.t("disk.app.updateReadyBody", {
-            version: next.version,
-          }),
-        })
-      } else if (next.status === "up-to-date") {
-        showToast({
-          variant: "success",
-          title: language.t("disk.app.upToDate"),
-        })
-      } else if (next.status === "error") {
-        showToast({
-          variant: "error",
-          title: language.t("disk.app.updateFailed"),
-          description: next.message,
-        })
-      }
-    } catch (error) {
-      showToast({
-        variant: "error",
-        title: language.t("disk.app.updateFailed"),
-        description: error instanceof Error ? error.message : String(error),
-      })
-    }
-  }
-
-  async function exportDiagnostics() {
-    if (!platform.exportDiagnostics) return
-    try {
-      const path = await platform.exportDiagnostics()
-      showToast({
-        variant: "success",
-        title: language.t("disk.app.diagnosticsSaved"),
-        description: language.t("disk.app.diagnosticsSavedBody", { path }),
-      })
-    } catch (error) {
-      showToast({
-        variant: "error",
-        title: language.t("disk.app.diagnosticsFailed"),
-        description: error instanceof Error ? error.message : String(error),
-      })
-    }
-  }
-
   function viewAfterDeletion(
     previousRoot: DiskScanNode,
     nextRoot: DiskScanNode,
@@ -3247,45 +3163,6 @@ export default function DiskUtilityPage() {
     deleteSurface.open()
   }
 
-  function toggleCollect(node: DiskScanNode) {
-    if (inventoryDeletionNeedsRescan(node)) {
-      showDeveloperArtifactRescanGuidance(node)
-      return
-    }
-    if (!canModifyNode(node)) return
-    const replacedChildren = collection.filter(
-      (item) =>
-        !diskPathEquals(item.path, node.path, platform.os) &&
-        diskPathIsWithin(item.path, node.path, platform.os)
-    )
-    if (replacedChildren.length)
-      showToast({
-        variant: "default",
-        title: language.t("disk.review.parentReplaces", {
-          name: itemIdentity(node).reviewTitle,
-          count: replacedChildren.length,
-        }),
-      })
-    setCollection((prev) => {
-      const exists = prev.some((item) =>
-        diskPathEquals(item.path, node.path, platform.os)
-      )
-      return exists
-        ? prev.filter(
-            (item) => !diskPathEquals(item.path, node.path, platform.os)
-          )
-        : uniqueDeletionRoots([...prev, node], platform.os)
-    })
-  }
-
-  function collectNodes(nodes: readonly DiskScanNode[]) {
-    const actionable = nodes.filter(canModifyNode)
-    if (!actionable.length) return
-    setCollection((prev) =>
-      uniqueDeletionRoots([...prev, ...actionable], platform.os)
-    )
-  }
-
   /** Right-click anywhere in the explorer: rows, wedges, tiles, or layers. */
   const closeContextMenu = useCallback(() => setContextMenu(null), [])
   useEffect(
@@ -3400,21 +3277,6 @@ export default function DiskUtilityPage() {
     setTimeout(() => live.current.selectPath(node.path), 0)
   }
 
-  function uncollectNodes(nodes: readonly DiskScanNode[]) {
-    const next = collection.filter(
-      (item) =>
-        !nodes.some((node) => diskPathEquals(item.path, node.path, platform.os))
-    )
-    setCollection(next)
-  }
-
-  function isCleanupItemSafe(
-    node: DiskScanNode,
-    recognition: ReturnType<typeof investigation.recognitionFor>
-  ) {
-    return isSmartCleanupEligible(node, recognition) && canModifyNode(node)
-  }
-
   /** Where a row lives, shown only when the name alone is ambiguous. */
   function entryLocation(node: DiskScanNode) {
     if (
@@ -3435,57 +3297,16 @@ export default function DiskUtilityPage() {
     collectionSurface.open()
   }
 
-  function removeCollected(node: DiskScanNode) {
-    const next = collection.filter(
-      (item) => !diskPathEquals(item.path, node.path, platform.os)
-    )
-    setCollection(next)
-    if (!uniqueDeletionRoots(next, platform.os).length)
-      collectionSurface.close()
-  }
-
   function canDragNode(node: DiskScanNode) {
     return !node.isHidden
   }
 
-  function cleanupRestriction(node: DiskScanNode): DiskLanguageKey | null {
-    if (!cleanupProtectionsReady()) return "disk.cleanup.protectionsUnavailable"
-    if (node.isOther || node.isHidden) return "disk.cleanup.summaryRestricted"
-    if (isPathCleanupLocked(node.path, cleanupLocks, platform.os))
-      return "disk.detail.protectedByYou"
-    if (!canActOnNode(node, platform.os, []))
-      return "disk.cleanup.locationRestricted"
-    if (inventoryDeletionNeedsRescan(node)) return "disk.cleanup.needsFreshScan"
-    if (selectedAccess?.path === node.path && selectedAccess.state === "denied")
-      return "disk.cleanup.accessDenied"
-    if (
-      selectedAccess?.path === node.path &&
-      selectedAccess.state === "read-only"
-    )
-      return "disk.cleanup.readOnly"
-    const recognition = investigation.recognitionFor(node)
-    // Ambiguous build/target/dist records may be individually moved through
-    // the confirmation + Trash flow, but are never Smart Cleanup defaults.
-    if (
-      recognition.developer &&
-      developerArtifactCleanupReadiness(recognition) === "review"
-    )
-      return null
-    if (recognition.safety === "system") return "disk.cleanup.systemRestricted"
-    if (recognition.safety === "version-control")
-      return "disk.cleanup.managedRestricted"
-    return null
+  function cleanupRestriction(node: DiskScanNode) {
+    return cleanupPolicy.restriction(node)
   }
 
   function canModifyNode(node: DiskScanNode) {
-    return cleanupRestriction(node) === null
-  }
-
-  function inventoryDeletionNeedsRescan(node: DiskScanNode) {
-    return (
-      isDeveloperInventoryNode(node) &&
-      !developerInventoryDeletePrecondition(node)
-    )
+    return cleanupPolicy.canModify(node)
   }
 
   function isDeveloperArtifactPreconditionRejection(error: unknown) {
@@ -3523,16 +3344,8 @@ export default function DiskUtilityPage() {
       ],
     })
   }
-  const isCollected = (path: string) =>
-    collection.some((node) => diskPathEquals(node.path, path, platform.os))
-  const coveringCollectedNode = (path: string) =>
-    collection.find(
-      (node) =>
-        !diskPathEquals(node.path, path, platform.os) &&
-        diskPathIsWithin(path, node.path, platform.os)
-    )
   function clearCollection() {
-    setCollection([])
+    review.clear()
     setRangeAnchorIndex(undefined)
   }
 
@@ -4523,116 +4336,25 @@ export default function DiskUtilityPage() {
         inert={activeDialog ? true : undefined}
         aria-hidden={activeDialog ? "true" : undefined}
       >
-        {showNativeAppMenu ? (
-          <DropdownMenu placement="bottom-start" gutter={6}>
-            <DropdownMenu.Trigger
-              as={Button}
-              className="min-h-11 min-w-11"
-              variant="ghost"
-              size="small"
-              icon="dot-grid"
-              aria-label={language.t("disk.app.menu")}
-            />
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content>
-                <DropdownMenu.Item disabled>
-                  <DropdownMenu.ItemLabel>
-                    {language.t("disk.app.about", {
-                      version: platform.version ?? "",
-                    })}
-                  </DropdownMenu.ItemLabel>
-                </DropdownMenu.Item>
-                {view === "scan" && !scanning ? (
-                  <>
-                    <DropdownMenu.Separator />
-                    <DropdownMenu.Item
-                      disabled={pinMutationPending}
-                      onSelect={() =>
-                        void togglePinnedLocation(scanSourcePath, scanLabel)
-                      }
-                    >
-                      <DropdownMenu.ItemLabel>
-                        {currentScanPinned
-                          ? language.t("disk.top.unsave")
-                          : language.t("disk.common.saveLocation")}
-                      </DropdownMenu.ItemLabel>
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      disabled={
-                        deleting ||
-                        !cleanupProtectionsReady() ||
-                        cleanupLockMutationPending
-                      }
-                      onSelect={() =>
-                        void toggleProtectedTree(scanSourcePath, scanLabel)
-                      }
-                    >
-                      <DropdownMenu.ItemLabel>
-                        {currentScanLocked
-                          ? language.t("disk.top.unprotect")
-                          : language.t("disk.top.protect")}
-                      </DropdownMenu.ItemLabel>
-                    </DropdownMenu.Item>
-                  </>
-                ) : null}
-                {platform.updater &&
-                platform.updater.state.status !== "disabled" ? (
-                  <>
-                    <DropdownMenu.Separator />
-                    <DropdownMenu.Item
-                      disabled={
-                        platform.updater?.state.status === "checking" ||
-                        platform.updater?.state.status === "downloading" ||
-                        platform.updater?.state.status === "installing"
-                      }
-                      onSelect={() => void handleUpdaterMenuAction()}
-                    >
-                      <DropdownMenu.ItemLabel>
-                        {(() => {
-                          const state = platform.updater?.state
-                          if (state?.status === "ready")
-                            return language.t("disk.app.installUpdate", {
-                              version: state.version,
-                            })
-                          if (state?.status === "checking")
-                            return language.t("disk.app.updateChecking")
-                          if (state?.status === "downloading")
-                            return language.t("disk.app.updateDownloading", {
-                              version: state.version,
-                            })
-                          if (state?.status === "installing")
-                            return language.t("disk.app.installUpdate", {
-                              version: state.version,
-                            })
-                          return language.t("disk.app.checkUpdates")
-                        })()}
-                      </DropdownMenu.ItemLabel>
-                    </DropdownMenu.Item>
-                  </>
-                ) : null}
-                {showNativeAppMenu && platform.exportDiagnostics ? (
-                  <DropdownMenu.Item onSelect={() => void exportDiagnostics()}>
-                    <DropdownMenu.ItemLabel>
-                      {language.t("disk.app.exportDiagnostics")}
-                    </DropdownMenu.ItemLabel>
-                  </DropdownMenu.Item>
-                ) : null}
-                {showNativeAppMenu && platform.restart ? (
-                  <>
-                    <DropdownMenu.Separator />
-                    <DropdownMenu.Item
-                      onSelect={() => void platform.restart?.()}
-                    >
-                      <DropdownMenu.ItemLabel>
-                        {language.t("disk.app.restart")}
-                      </DropdownMenu.ItemLabel>
-                    </DropdownMenu.Item>
-                  </>
-                ) : null}
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu>
-        ) : null}
+        <DiskAppMenu
+          scan={
+            view === "scan" && !scanning
+              ? {
+                  pinned: currentScanPinned,
+                  protected: currentScanLocked,
+                  pinPending: pinMutationPending,
+                  canProtect:
+                    !deleting &&
+                    cleanupProtectionsReady() &&
+                    !cleanupLockMutationPending,
+                  onPin: () =>
+                    void togglePinnedLocation(scanSourcePath, scanLabel),
+                  onProtect: () =>
+                    void toggleProtectedTree(scanSourcePath, scanLabel),
+                }
+              : undefined
+          }
+        />
 
         {view === "scan" && crumbs.length > 0 && (
           <LocationNavigation
@@ -4690,7 +4412,6 @@ export default function DiskUtilityPage() {
             />
             <WorkspaceSwitch
               value={cleanupWorkspace ? "cleanup" : "explore"}
-              reclaimableBytes={cleanupPotentialBytes}
               onChange={(value) =>
                 chooseLens(value === "cleanup" ? "developer" : "all")
               }
@@ -4734,7 +4455,7 @@ export default function DiskUtilityPage() {
           {cleanupLocksStatus === "error" ? (
             <div className="flex shrink-0 items-center gap-2">
               <Button
-                className="min-h-11 min-w-11"
+                className="min-h-8 min-w-8"
                 variant="secondary"
                 size="small"
                 onClick={() =>
@@ -4744,7 +4465,7 @@ export default function DiskUtilityPage() {
                 {language.t("disk.cleanup.retryProtections")}
               </Button>
               <Button
-                className="min-h-11 min-w-11"
+                className="min-h-8 min-w-8"
                 variant="ghost"
                 size="small"
                 onClick={() => cleanupResetSurface.open()}
@@ -4866,9 +4587,7 @@ export default function DiskUtilityPage() {
                     ) : null}
                     {cleanupWorkspace ? (
                       <CleanupView
-                        developerItems={developerItems}
-                        suggestions={reclaim.buckets}
-                        isSafe={isCleanupItemSafe}
+                        summary={cleanupSummary}
                         isCollected={isCollected}
                         coveredBy={(path) => {
                           const cover = coveringCollectedNode(path)
@@ -4899,7 +4618,7 @@ export default function DiskUtilityPage() {
                         onEcosystem={chooseDeveloperEcosystem}
                         onToggle={toggleCollect}
                         onCollect={collectNodes}
-                        onUncollect={uncollectNodes}
+                        onClear={clearCollection}
                         onReview={() => collectionSurface.open()}
                         onReveal={(node) => void reveal(node.path)}
                         onPreview={
@@ -4918,7 +4637,13 @@ export default function DiskUtilityPage() {
                           ref={(el: HTMLElement | null) => {
                             landscapeElRef.current = el
                           }}
-                          className="[container-type:size] relative min-h-0 min-w-0 flex-1 overflow-hidden [view-transition-name:disk-landscape]"
+                          className={cn(
+                            "[container-type:size] relative min-h-0 min-w-0 flex-1 overflow-hidden [--dl-footer-height:72px] [view-transition-name:disk-landscape]",
+                            selectedNode &&
+                              (effectiveCollection.length > 0 ||
+                                collectionDragNode) &&
+                              "max-[1100px]:[--dl-footer-height:116px]"
+                          )}
                         >
                           {scanning && focusedScan ? (
                             <div
@@ -4942,7 +4667,7 @@ export default function DiskUtilityPage() {
                               wedges into tile poses on one surface; CenterOverlay yields
                               while a morph owns the view. */}
                           <div
-                            className="@container [container-type:inline-size] absolute inset-x-0 top-0 bottom-[72px]"
+                            className="@container [container-type:inline-size] absolute inset-x-0 top-0 bottom-[var(--dl-footer-height)]"
                             style={{
                               visibility:
                                 scanMode !== "map" && !morphing
@@ -5015,7 +4740,7 @@ export default function DiskUtilityPage() {
                                   : { opacity: scanMode === "grid" ? 0 : 1 }
                               }
                               className={cn(
-                                "dl-treemap-overlay absolute inset-x-0 top-0 bottom-[72px] px-6 pt-6 pb-2",
+                                "dl-treemap-overlay absolute inset-x-0 top-0 bottom-[var(--dl-footer-height)] px-6 pt-6 pb-2",
                                 !gridInteractive && "pointer-events-none"
                               )}
                               inert={!gridInteractive ? true : undefined}
@@ -5069,7 +4794,7 @@ export default function DiskUtilityPage() {
                           {scanMode === "icicle" && viewNode ? (
                             <div
                               ref={layerOverlayRef}
-                              className="absolute inset-x-0 top-0 bottom-[72px] px-6 pt-6 pb-2"
+                              className="absolute inset-x-0 top-0 bottom-[var(--dl-footer-height)] px-6 pt-6 pb-2"
                               style={{
                                 opacity: morphing ? 0 : 1,
                                 pointerEvents: morphing ? "none" : undefined,
@@ -5118,8 +4843,24 @@ export default function DiskUtilityPage() {
                           ) : null}
 
                           {/* Map footer: the collector on the left, the current selection on the right. */}
-                          <div className="absolute inset-x-0 bottom-0 z-20 flex h-[72px] items-center gap-3 px-4 max-[760px]:px-2.5">
-                            <div className="min-w-0 shrink">
+                          <div
+                            className={cn(
+                              "absolute inset-x-0 bottom-0 z-20 flex h-[var(--dl-footer-height)] items-center gap-3 px-4 max-[760px]:px-2.5",
+                              selectedNode &&
+                                (effectiveCollection.length > 0 ||
+                                  collectionDragNode) &&
+                                "max-[1100px]:flex-col max-[1100px]:items-stretch max-[1100px]:justify-center max-[1100px]:gap-1"
+                            )}
+                          >
+                            <div
+                              className={cn(
+                                "min-w-0 shrink",
+                                selectedNode &&
+                                  effectiveCollection.length === 0 &&
+                                  !collectionDragNode &&
+                                  "max-[1100px]:hidden"
+                              )}
+                            >
                               <CollectionDropTarget
                                 setElement={(element) => {
                                   collectionDropElementRef.current =
@@ -5154,15 +4895,23 @@ export default function DiskUtilityPage() {
                                 }
                                 trashName={nativeTrashName(platform.os)}
                                 onReview={() => collectionSurface.open()}
-                                onClear={() => setCollection([])}
+                                onClear={clearCollection}
                               />
                             </div>
-                            <div className="flex min-w-0 flex-1 justify-end">
+                            <div className="flex min-w-0 flex-1 items-center justify-end max-[1100px]:w-full">
+                              {!selectedNode &&
+                              scanMode === "map" &&
+                              !query.trim() &&
+                              !collectionDragNode ? (
+                                <p className="max-w-[280px] text-right text-[12px] leading-5 text-text-weak">
+                                  {language.t("disk.map.navigationHint")}
+                                </p>
+                              ) : null}
                               <AnimatePresence mode="popLayout" initial={false}>
                                 {selectedNode ? (
                                   <motion.div
                                     key="selection"
-                                    className="max-w-[560px] min-w-0"
+                                    className="w-full max-w-[560px] min-w-0"
                                     initial={{
                                       opacity: 0,
                                       y: 8,
@@ -5187,6 +4936,9 @@ export default function DiskUtilityPage() {
                                       parentSize={indexSize}
                                       deletable={canModifyNode(selectedNode)}
                                       collected={isCollected(selectedNode.path)}
+                                      reviewHasItems={
+                                        effectiveCollection.length > 0
+                                      }
                                       includedBy={
                                         coveringCollectedNode(selectedNode.path)
                                           ? itemIdentity(
@@ -5222,9 +4974,7 @@ export default function DiskUtilityPage() {
                                           : "not-checked"
                                       }
                                       onCheckAccess={() =>
-                                        setAccessCheckVersion(
-                                          (value) => value + 1
-                                        )
+                                        cleanupPolicy.retry()
                                       }
                                       trashName={nativeTrashName(platform.os)}
                                       revealLabel={nativeRevealLabel(
@@ -5319,7 +5069,7 @@ export default function DiskUtilityPage() {
                               <div className="flex items-start gap-3">
                                 <div className="min-w-0 flex-1">
                                   <h2
-                                    className="line-clamp-2 [overflow-wrap:anywhere] text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong"
+                                    className="line-clamp-2 text-[18px] leading-6 font-medium tracking-[-0.02em] [overflow-wrap:anywhere] text-text-strong"
                                     title={viewNode?.path}
                                   >
                                     {query.trim()
@@ -5351,9 +5101,11 @@ export default function DiskUtilityPage() {
                                     ) : null}
                                   </div>
                                 </div>
-                                <p className="shrink-0 pt-0.5 text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong tabular-nums">
-                                  {formatBytes(indexSize)}
-                                </p>
+                                {!query.trim() ? (
+                                  <p className="shrink-0 pt-0.5 text-[13px] leading-6 text-text-weak tabular-nums">
+                                    {formatBytes(indexSize)}
+                                  </p>
+                                ) : null}
                               </div>
                               <div className="mt-3">
                                 {searchVisible ? (
@@ -5378,7 +5130,7 @@ export default function DiskUtilityPage() {
                                   <button
                                     ref={searchTriggerRef}
                                     type="button"
-                                    className="flex h-8 w-full items-center gap-2 rounded-lg bg-[var(--dl-well)] px-2.5 text-left text-[13px] text-text-weaker transition-colors outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-weak focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+                                    className="flex h-8 w-full items-center gap-2 rounded-md px-2.5 text-left text-[13px] text-text-weaker transition-colors outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-weak focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
                                     aria-label={language.t("disk.search.label")}
                                     aria-expanded={false}
                                     onClick={() => openSearch()}
@@ -5403,7 +5155,14 @@ export default function DiskUtilityPage() {
                             {entries.length > 0 ? (
                               <VirtualIndex
                                 footer={
-                                  viewNode && treeRoot && !query.trim() ? (
+                                  viewNode &&
+                                  treeRoot &&
+                                  !diskPathEquals(
+                                    viewNode.path,
+                                    treeRoot.path,
+                                    platform.os
+                                  ) &&
+                                  !query.trim() ? (
                                     <FolderContext
                                       node={viewNode}
                                       root={treeRoot}
@@ -5606,7 +5365,7 @@ export default function DiskUtilityPage() {
                 <>
                   {showNativeAppMenu && platform.restart ? (
                     <Button
-                      className="min-h-11 min-w-11"
+                      className="min-h-8 min-w-8"
                       size="small"
                       variant="primary"
                       onClick={() => void platform.restart?.()}
@@ -5616,7 +5375,7 @@ export default function DiskUtilityPage() {
                   ) : null}
                   {showNativeAppMenu && platform.exportDiagnostics ? (
                     <Button
-                      className="min-h-11 min-w-11"
+                      className="min-h-8 min-w-8"
                       size="small"
                       variant="secondary"
                       onClick={() => void exportDiagnostics()}

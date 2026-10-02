@@ -2,11 +2,20 @@ import { Button } from "@/components/dl/button"
 import { Icon } from "@/components/dl/icon"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useRef } from "react"
+import {
+  File,
+  Folder,
+  FolderOpen,
+  FolderSearch,
+  Image,
+  ExternalLink,
+} from "lucide-react"
 import type { DiskFilePreview, DiskScanNode } from "./types"
 import { formatBytes, formatLastChanged } from "./format"
 import { FadeSettle, Spin } from "./motion-ui"
 import { StorageAccountingFacts } from "./StorageAccounting"
 import { diskLanguageText, useLanguage } from "./runtime"
+import { itemIdentity } from "./item-identity"
 
 function unsupportedCopy(
   preview: Extract<DiskFilePreview, { kind: "unsupported" }>
@@ -50,6 +59,11 @@ export function PreviewDialog(props: {
   const language = useLanguage()
   const panelRef = useRef<HTMLDivElement | null>(null)
   const open = props.open ?? false
+  const HeaderIcon = props.node.isDir
+    ? Folder
+    : props.preview?.kind === "image"
+      ? Image
+      : File
   const largest = [...props.node.children]
     .filter((child) => !child.isOther)
     .toSorted((a, b) => b.size - a.size)
@@ -155,20 +169,11 @@ export function PreviewDialog(props: {
             props.onNext()
           }
         }}
-        className="flex h-[min(760px,calc(100dvh-24px))] w-full max-w-5xl flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:h-[min(760px,calc(100dvh-48px))] sm:max-w-5xl"
+        className="flex h-[min(760px,calc(100dvh-24px))] w-[calc(100%-24px)] max-w-5xl flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:h-[min(760px,calc(100dvh-48px))] sm:w-[calc(100%-48px)] sm:max-w-5xl"
       >
         <header className="flex shrink-0 items-start gap-3 border-b border-[var(--dl-separator)] px-4 py-3.5 sm:px-5">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--dl-well)] text-text-weak">
-            <Icon
-              name={
-                props.node.isDir
-                  ? "folder"
-                  : props.preview?.kind === "image"
-                    ? "photo"
-                    : "open-file"
-              }
-              className="size-4"
-            />
+            <HeaderIcon className="size-4" strokeWidth={1.75} aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[12px] font-medium text-text-weak">
@@ -178,17 +183,18 @@ export function PreviewDialog(props: {
               id="preview-title"
               className="mt-0.5 truncate text-[16px] font-semibold tracking-[-0.015em] text-text-strong"
             >
-              {props.node.name}
+              {itemIdentity(props.node).reviewTitle}
             </h2>
             <p
               id="preview-description"
-              className="mt-0.5 truncate font-mono text-[11px] text-text-weaker"
+              className="mt-0.5 truncate text-[12px] text-text-weak"
+              title={props.node.path}
             >
               {props.node.path}
             </p>
           </div>
           <Button
-            className="min-h-11 min-w-11"
+            className="min-h-9 min-w-9"
             size="small"
             variant="ghost"
             icon="close"
@@ -235,10 +241,7 @@ export function PreviewDialog(props: {
           {!props.loading && !props.error && props.node.isDir ? (
             <div className="flex size-full min-h-0 flex-col overflow-auto p-5 sm:p-8">
               <div className="mx-auto w-full max-w-2xl">
-                <div className="flex items-start gap-4 rounded-2xl bg-[var(--dl-well)] p-5">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--dl-well-strong)] text-text-weak">
-                    <Icon name="folder" className="size-5" />
-                  </span>
+                <div className="flex items-start">
                   <div className="min-w-0">
                     <h3 className="text-14-semibold text-text-strong">
                       {language.t("disk.preview.folderSummary")}
@@ -267,7 +270,7 @@ export function PreviewDialog(props: {
                     <div className="flex items-center justify-between gap-4">
                       <h3
                         id="preview-largest-items"
-                        className="text-13-semibold tracking-[0.13em] text-text-weaker uppercase"
+                        className="text-[13px] font-medium text-text-weak"
                       >
                         {language.t("disk.preview.largest")}
                       </h3>
@@ -277,20 +280,32 @@ export function PreviewDialog(props: {
                         })}
                       </span>
                     </div>
-                    <ul className="mt-2 divide-y divide-border-weaker-base rounded-xl bg-surface-raised-base/45 px-4 shadow-[inset_0_0_0_1px_rgb(127_127_127/0.1)]">
+                    <ul className="mt-2 divide-y divide-border-weaker-base border-y border-[var(--dl-separator)]">
                       {largest.map((child) => (
                         <li
                           key={child.path}
                           className="flex min-w-0 items-center gap-3 py-3"
                         >
-                          <Icon
-                            name={child.isDir ? "folder" : "open-file"}
-                            className="text-icon-weak size-3.5 shrink-0"
-                          />
-                          <span className="text-13-semibold min-w-0 flex-1 truncate text-text-strong">
+                          {child.isDir ? (
+                            <Folder
+                              className="size-4 shrink-0 text-text-weak"
+                              strokeWidth={1.75}
+                              aria-hidden
+                            />
+                          ) : (
+                            <File
+                              className="size-4 shrink-0 text-text-weak"
+                              strokeWidth={1.75}
+                              aria-hidden
+                            />
+                          )}
+                          <span
+                            className="min-w-0 flex-1 truncate text-[13px] text-text-strong"
+                            title={child.name}
+                          >
                             {child.name}
                           </span>
-                          <span className="text-13-semibold shrink-0 text-text-weak tabular-nums">
+                          <span className="shrink-0 text-[13px] text-text-weak tabular-nums">
                             {formatBytes(child.size)}
                           </span>
                         </li>
@@ -306,38 +321,40 @@ export function PreviewDialog(props: {
         </main>
 
         <footer className="flex shrink-0 flex-wrap items-center gap-3 border-t border-[var(--dl-separator)] bg-surface-raised-strong px-4 py-3 sm:px-5">
-          <div
-            className="flex shrink-0 items-center gap-1"
-            role="group"
-            aria-label={language.t("disk.preview.navigation")}
-          >
-            <Button
-              className="min-h-11 min-w-11"
-              size="small"
-              variant="ghost"
-              icon="chevron-left"
-              disabled={!props.onPrevious}
-              onClick={props.onPrevious}
-              aria-label={language.t("disk.preview.previous")}
-            />
-            <span className="text-13-regular min-w-12 text-center text-text-weaker tabular-nums">
-              {!props.node.isDir
-                ? language.t("disk.preview.position", {
-                    current: props.position,
-                    total: props.total,
-                  })
-                : language.t("disk.preview.folder")}
-            </span>
-            <Button
-              className="min-h-11 min-w-11"
-              size="small"
-              variant="ghost"
-              icon="chevron-right"
-              disabled={!props.onNext}
-              onClick={props.onNext}
-              aria-label={language.t("disk.preview.next")}
-            />
-          </div>
+          {!props.node.isDir ? (
+            <div
+              className="flex shrink-0 items-center gap-1"
+              role="group"
+              aria-label={language.t("disk.preview.navigation")}
+            >
+              <Button
+                className="min-h-9 min-w-9"
+                size="small"
+                variant="ghost"
+                icon="chevron-left"
+                disabled={!props.onPrevious}
+                onClick={props.onPrevious}
+                aria-label={language.t("disk.preview.previous")}
+                title={language.t("disk.preview.previous")}
+              />
+              <span className="text-13-regular min-w-12 text-center text-text-weaker tabular-nums">
+                {language.t("disk.preview.position", {
+                  current: props.position,
+                  total: props.total,
+                })}
+              </span>
+              <Button
+                className="min-h-9 min-w-9"
+                size="small"
+                variant="ghost"
+                icon="chevron-right"
+                disabled={!props.onNext}
+                onClick={props.onNext}
+                aria-label={language.t("disk.preview.next")}
+                title={language.t("disk.preview.next")}
+              />
+            </div>
+          ) : null}
           <div className="min-w-0 flex-1">
             <p className="text-13-semibold text-text-strong tabular-nums">
               {formatBytes(props.node.size)}
@@ -352,19 +369,19 @@ export function PreviewDialog(props: {
             <StorageAccountingFacts node={props.node} className="mt-1" />
           </div>
           <Button
-            className="min-h-11 min-w-11"
+            className="min-h-9 min-w-9"
             size="small"
-            variant="secondary"
-            icon="square-arrow-top-right"
+            variant="ghost"
             onClick={props.onReveal}
           >
+            <FolderSearch className="size-3.5" strokeWidth={1.75} aria-hidden />
             {props.revealLabel}
           </Button>
           {props.onSystemPreview && props.systemPreviewLabel ? (
             <Button
-              className="min-h-11 min-w-11"
+              className="min-h-9 min-w-9"
               size="small"
-              variant="secondary"
+              variant="ghost"
               icon="eye"
               onClick={props.onSystemPreview}
             >
@@ -372,15 +389,23 @@ export function PreviewDialog(props: {
             </Button>
           ) : null}
           <Button
-            className="min-h-11 min-w-11"
+            className="min-h-9 min-w-9"
             size="small"
             variant="primary"
-            icon="open-file"
             onClick={props.onOpen}
           >
+            {props.node.isDir ? (
+              <FolderOpen className="size-3.5" strokeWidth={1.75} aria-hidden />
+            ) : (
+              <ExternalLink
+                className="size-3.5"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+            )}
             {language.t(
               props.node.isDir
-                ? "disk.preview.openMap"
+                ? "disk.common.exploreFolder"
                 : "disk.preview.openDefault"
             )}
           </Button>

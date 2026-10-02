@@ -1,5 +1,5 @@
-import { X } from "lucide-react"
-import { AnimatePresence, motion } from "framer-motion"
+import { Plus, Layers, X } from "lucide-react"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
@@ -38,7 +38,10 @@ export function CollectionDropTarget(props: {
     : dragging
       ? language.t("disk.ui.collectorDrop")
       : hasItems
-        ? language.plural("disk.ui.collectorCount", props.count)
+        ? language.t("disk.ui.collectorSelected", {
+            size: formatBytes(props.bytes),
+            count: language.plural("disk.count.item", props.count),
+          })
         : language.t("disk.ui.collectorEmpty")
   const detail = hasItems
     ? allocationMayRemain
@@ -55,12 +58,12 @@ export function CollectionDropTarget(props: {
     <motion.div
       layout
       transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-      style={{ borderRadius: 9999 }}
+      style={{ borderRadius: 12 }}
       ref={(element: HTMLDivElement | null) => {
         props.setElement?.(element)
       }}
       className={cn(
-        "flex h-12 max-w-full min-w-0 items-center gap-3 rounded-full py-1.5 pr-1.5 pl-1.5 transition-[background-color,box-shadow] duration-200",
+        "flex h-11 max-w-full min-w-0 items-center gap-2 rounded-xl p-1.5 transition-[background-color,box-shadow] duration-200",
         (dragging || hasItems) &&
           "bg-[var(--dl-popover)] shadow-[0_0_0_0.5px_rgb(255_255_255/0.06),0_8px_28px_rgb(0_0_0/0.28)]",
         props.active &&
@@ -69,75 +72,19 @@ export function CollectionDropTarget(props: {
       )}
       title={detail}
     >
-      <button
-        type="button"
-        className={cn(
-          "relative grid size-9 shrink-0 place-items-center rounded-full transition-transform duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
-          props.active && !refused && "scale-110"
-        )}
-        aria-label={
-          hasItems
-            ? `${language.t("disk.collection.reviewSelected")} · ${title}`
-            : language.t("disk.collection.instructions")
-        }
-        onClick={() => {
-          if (hasItems) props.onReview()
-        }}
+      <span
+        className="grid size-8 shrink-0 place-items-center text-text-weaker"
+        aria-hidden
       >
-        <span
-          className={cn(
-            "absolute inset-0 rounded-full border-2 border-dashed transition-colors",
-            refused
-              ? "border-[var(--dl-danger)]"
-              : props.active || hasItems
-                ? "border-[var(--dl-accent)]"
-                : "border-text-weaker/60"
-          )}
-          aria-hidden
-        />
-        <span
-          className={cn(
-            "size-4 rounded-full transition-[background-color,transform] duration-200",
-            hasItems || props.active
-              ? "scale-100 bg-[var(--dl-accent)]"
-              : "scale-75 bg-text-weaker/50"
-          )}
-          aria-hidden
-        />
-        {hasItems ? (
-          <span className="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-text-strong px-1 text-[10px] leading-none font-bold text-background-base tabular-nums">
-            {props.count}
-          </span>
-        ) : null}
-      </button>
-      <span className="relative min-w-0 flex-1 leading-tight">
-        <AnimatePresence initial={false} mode="popLayout">
-          <motion.span
-            key={dragging ? "drag" : hasItems ? "items" : "empty"}
-            layout="position"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.18 }}
-            className="block"
-          >
-            <span
-              className={cn(
-                "block truncate text-[13px]",
-                hasItems || dragging
-                  ? "font-medium text-text-strong"
-                  : "text-text-weak"
-              )}
-            >
-              {title}
-            </span>
-            {hasItems && !dragging ? (
-              <span className="block truncate text-[12px] text-text-weak tabular-nums">
-                {formatBytes(props.bytes)}
-              </span>
-            ) : null}
-          </motion.span>
-        </AnimatePresence>
+        {hasItems ? <Layers className="size-4" /> : <Plus className="size-4" />}
+      </span>
+      <span
+        className={cn(
+          "min-w-0 flex-1 truncate text-[13px] tabular-nums",
+          hasItems || dragging ? "text-text-strong" : "text-text-weak"
+        )}
+      >
+        {title}
       </span>
       {hasItems && !dragging ? (
         <span className="flex shrink-0 items-center gap-1">
@@ -154,7 +101,7 @@ export function CollectionDropTarget(props: {
           ) : null}
           <button
             type="button"
-            className={cn(primaryButton, "h-9 rounded-full px-4")}
+            className={cn(primaryButton, "h-8 rounded-lg px-3")}
             onClick={props.onReview}
           >
             {language.t("disk.ui.cleanup.review")}

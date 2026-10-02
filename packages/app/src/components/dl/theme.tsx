@@ -22,7 +22,7 @@ function systemScheme(): "light" | "dark" {
 
 /**
  * Bridges one color-scheme decision onto both token systems: the DiskLizard
- * tokens use `light-dark()` + `color-scheme`, the shadcn/ui layer uses the
+ * tokens use `data-color-scheme`, the shadcn/ui layer uses the
  * `.dark` class. Follows the system preference unless overridden.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -44,7 +44,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const resolved = scheme === "system" ? system : scheme
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const root = document.documentElement
     root.style.colorScheme = resolved
     root.setAttribute("data-color-scheme", resolved)

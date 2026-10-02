@@ -23,14 +23,12 @@ import type { BaselineComparison } from "./scan-baseline"
  * shell only arranges them; nothing here knows about scan state.
  */
 
-export const segmentedTrack =
-  "inline-flex h-8 shrink-0 items-center gap-0.5 rounded-lg bg-[var(--dl-well)] p-0.5"
+export const segmentedTrack = "inline-flex h-8 shrink-0 items-center gap-0.5"
 export const segmentedItem =
-  "inline-flex h-7 min-w-7 items-center justify-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-text-weak outline-none transition-[background-color,color,box-shadow] duration-150 hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] aria-pressed:bg-[var(--dl-raised)] aria-pressed:text-text-strong aria-pressed:shadow-[0_1px_2px_rgb(0_0_0/0.18),inset_0_0_0_0.5px_rgb(255_255_255/0.06)]"
+  "inline-flex h-8 min-w-8 items-center justify-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium text-text-weak outline-none transition-[background-color,color] duration-150 hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] aria-pressed:bg-[var(--dl-well-strong)] aria-pressed:text-text-strong"
 
 export function WorkspaceSwitch(props: {
   value: "explore" | "cleanup"
-  reclaimableBytes: number
   onChange: (value: "explore" | "cleanup") => void
 }) {
   const language = useLanguage()
@@ -55,11 +53,6 @@ export function WorkspaceSwitch(props: {
         onClick={() => props.onChange("cleanup")}
       >
         {language.t("disk.ui.cleanUp")}
-        {props.reclaimableBytes > 0 ? (
-          <span className="rounded-[5px] bg-[var(--dl-positive-soft)] px-1.5 py-px text-[11px] font-semibold text-[var(--dl-positive)] tabular-nums">
-            {shortBytes(props.reclaimableBytes)}
-          </span>
-        ) : null}
       </button>
     </div>
   )
@@ -101,6 +94,7 @@ export function ViewSwitch(props: {
             onClick={(event) => props.onChange(view.value, event.detail === 0)}
           >
             <Glyph className="size-4" strokeWidth={1.75} aria-hidden />
+            <span className="max-[1100px]:sr-only">{label}</span>
           </button>
         )
       })}
@@ -273,10 +267,10 @@ export function ScanIssuesNotice(props: {
 }
 
 export const quietButton =
-  "inline-flex h-7 items-center gap-1.5 rounded-md bg-[var(--dl-well)] px-2.5 text-[12px] font-medium text-text-strong outline-none transition-colors hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+  "inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[12px] font-medium text-text-strong outline-none transition-colors hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
 
 export const primaryButton =
-  "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[var(--dl-accent)] px-3.5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.25)] outline-none transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background-base)] disabled:pointer-events-none disabled:opacity-40"
+  "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[var(--dl-accent)] px-3.5 text-[13px] font-semibold text-white outline-none transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background-base)] disabled:pointer-events-none disabled:opacity-40"
 
 /** Free space closes the list the way a ledger closes with its balance. */
 export function FreeSpaceRow(props: { drive: DiskDriveInfo }) {

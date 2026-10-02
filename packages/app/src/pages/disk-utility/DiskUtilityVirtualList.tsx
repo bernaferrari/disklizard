@@ -284,7 +284,7 @@ export function VirtualRows<T>(props: {
           return (
             <li
               key={row.key}
-              className="absolute top-0 left-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-text-weak focus-visible:ring-inset"
+              className="group/review-row absolute top-0 left-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-text-weak focus-visible:ring-inset"
               style={{
                 height: `${row.size}px`,
                 transform: `translateY(${row.start + padding}px)`,

@@ -22,12 +22,13 @@ export function LocationNavigation(props: {
     "grid size-8 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong hover:text-text-strong disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-text-strong"
   return (
     <>
-      <div className="dl-history-controls flex shrink-0 items-center gap-0.5 rounded-lg border border-border-weaker-base/60 bg-surface-raised-base/60 p-0.5">
+      <div className="dl-history-controls flex shrink-0 items-center gap-0.5">
         <button
           type="button"
           data-disk-history-back
           className={historyButton}
           aria-label={language.t("disk.top.previousLocation")}
+          title={language.t("disk.top.previousLocation")}
           disabled={!props.canBack}
           onClick={props.onBack}
         >
@@ -38,6 +39,7 @@ export function LocationNavigation(props: {
           data-disk-history-forward
           className={historyButton}
           aria-label={language.t("disk.top.nextLocation")}
+          title={language.t("disk.top.nextLocation")}
           disabled={!props.canForward}
           onClick={props.onForward}
         >
@@ -48,7 +50,7 @@ export function LocationNavigation(props: {
         type="button"
         data-disk-navigation-home
         onClick={props.onHome}
-        className="ml-1 h-8 shrink-0 rounded-md border border-[var(--dl-separator)] bg-[var(--dl-well)] px-2.5 text-xs text-text-weaker transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
+        className="ml-1 h-8 shrink-0 rounded-md px-2.5 text-xs text-text-weaker transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
       >
         {language.t("disk.common.volumes")}
       </button>
@@ -73,7 +75,7 @@ export function LocationNavigation(props: {
               aria-current={
                 index === props.locations.length - 1 ? "page" : undefined
               }
-              className={`h-8 max-w-[160px] truncate rounded-md px-2.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-text-strong aria-[current=page]:font-medium aria-[current=page]:text-text-strong ${index === 0 ? "bg-[color-mix(in_oklch,var(--dl-accent)_13%,transparent)] font-medium text-text-strong hover:bg-[color-mix(in_oklch,var(--dl-accent)_21%,transparent)] aria-[current=page]:bg-[color-mix(in_oklch,var(--dl-accent)_21%,transparent)]" : "text-text-weak hover:bg-surface-raised-base hover:text-text-strong aria-[current=page]:bg-surface-raised-strong"}`}
+              className="h-8 max-w-[160px] min-w-8 truncate rounded-md px-2.5 text-xs text-text-weak transition-colors hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong aria-[current=page]:font-medium aria-[current=page]:text-text-strong"
             >
               {location.name}
             </button>
