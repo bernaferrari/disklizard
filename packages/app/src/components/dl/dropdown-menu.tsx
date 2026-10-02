@@ -4,6 +4,8 @@ import { cn } from "cn"
 import {
   DropdownMenu as ShadcnMenu,
   DropdownMenuContent,
+  DropdownMenuItem as ShadcnMenuItem,
+  menuItemClassName,
   DropdownMenuGroup,
   DropdownMenuPortal,
   DropdownMenuSeparator,
@@ -118,14 +120,8 @@ export const DropdownMenu = Object.assign(DropdownMenuRoot, {
   Item: function Item({
     onSelect,
     ...rest
-  }: React.ComponentProps<typeof Menu.Item> & { onSelect?: () => void }) {
-    return (
-      <Menu.Item
-        className="relative flex h-8 cursor-default items-center gap-2 rounded-md px-2.5 text-[13px] outline-hidden select-none focus:bg-[var(--dl-accent,var(--accent))] focus:text-white data-disabled:pointer-events-none data-disabled:opacity-40"
-        onClick={onSelect}
-        {...rest}
-      />
-    )
+  }: React.ComponentProps<typeof ShadcnMenuItem> & { onSelect?: () => void }) {
+    return <ShadcnMenuItem onClick={onSelect} {...rest} />
   },
   ItemLabel: function ItemLabel({
     className,
@@ -163,13 +159,7 @@ export const DropdownMenu = Object.assign(DropdownMenuRoot, {
     ...rest
   }: React.ComponentProps<typeof Menu.RadioItem>) {
     return (
-      <Menu.RadioItem
-        className={cn(
-          "dl-menu-item relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-2 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-          className
-        )}
-        {...rest}
-      />
+      <Menu.RadioItem className={cn(menuItemClassName, className)} {...rest} />
     )
   },
 })

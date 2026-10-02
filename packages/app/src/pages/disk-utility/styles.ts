@@ -16,6 +16,18 @@ import {
  */
 export const DISK_UTILITY_STYLES = `
 :root {
+  /* shadcn semantic roles inherit the desktop surface palette. */
+  --background: var(--background-base);
+  --foreground: var(--text-strong);
+  --popover: var(--dl-popover);
+  --popover-foreground: var(--text-strong);
+  --secondary: var(--dl-well);
+  --secondary-foreground: var(--text-strong);
+  --accent: var(--dl-well-strong);
+  --accent-foreground: var(--text-strong);
+  --border: var(--dl-separator);
+  --destructive: var(--dl-danger-action);
+
   --dl-accent: oklch(0.6 0.19 256);
   /* Filled actions have their own contrast-safe ramp in both themes. */
   --dl-action: oklch(0.54 0.17 256);
@@ -51,6 +63,17 @@ export const DISK_UTILITY_STYLES = `
 
 /* Neutral desktop surfaces shared by the inspector, controls, and review dock. */
 :root[data-color-scheme="dark"] {
+  --background: var(--background-base);
+  --foreground: var(--text-strong);
+  --popover: var(--dl-popover);
+  --popover-foreground: var(--text-strong);
+  --secondary: var(--dl-well);
+  --secondary-foreground: var(--text-strong);
+  --accent: var(--dl-well-strong);
+  --accent-foreground: var(--text-strong);
+  --border: var(--dl-separator);
+  --destructive: var(--dl-danger);
+
   --dl-tile-shell-mix: 20%;
   --dl-tile-fill-mix: 34%;
   --dl-tile-summary-mix: 30%;

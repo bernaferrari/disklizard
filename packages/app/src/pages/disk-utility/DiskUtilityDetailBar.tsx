@@ -1,3 +1,4 @@
+import { Button as ShadcnButton } from "@/components/ui/button"
 import { useMemo } from "react"
 import {
   Check,
@@ -272,7 +273,10 @@ export function DetailBar(props: {
               {props.deletable ? (
                 <>
                   <DropdownMenu.Separator />
-                  <DropdownMenu.Item onSelect={props.onTrash}>
+                  <DropdownMenu.Item
+                    variant="destructive"
+                    onSelect={props.onTrash}
+                  >
                     <DropdownMenu.ItemLabel>
                       {language.t("disk.detail.moveTo", {
                         trash: props.trashName,
@@ -293,14 +297,15 @@ export function DetailBar(props: {
           <Lock className="size-4" aria-hidden />
         </span>
       ) : props.deletable ? (
-        <button
+        <ShadcnButton
           type="button"
-          className={cn(
-            "ml-1 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-[filter,background-color] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
+          variant={
             props.collected || props.includedBy || props.reviewHasItems
-              ? "bg-[var(--dl-well-strong)] text-text-strong hover:brightness-110"
-              : "bg-[var(--dl-action)] text-white hover:bg-[var(--dl-action-hover)]"
-          )}
+              ? "secondary"
+              : "default"
+          }
+          size="lg"
+          className="ml-1 shrink-0"
           aria-pressed={props.collected}
           aria-keyshortcuts="C"
           onClick={props.onCollect}
@@ -315,7 +320,7 @@ export function DetailBar(props: {
             : props.collected
               ? language.t("disk.ui.cleanup.remove")
               : language.t("disk.ui.cleanup.add")}
-        </button>
+        </ShadcnButton>
       ) : null}
     </div>
   )

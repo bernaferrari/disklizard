@@ -169,7 +169,7 @@ export function PreviewDialog(props: {
             props.onNext()
           }
         }}
-        className="flex h-[min(760px,calc(100dvh-24px))] w-[calc(100%-24px)] max-w-5xl flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:h-[min(760px,calc(100dvh-48px))] sm:w-[calc(100%-48px)] sm:max-w-5xl"
+        className="flex h-[min(760px,calc(100dvh-24px))] w-[calc(100%-24px)] max-w-5xl flex-col gap-0 overflow-hidden p-0 sm:h-[min(760px,calc(100dvh-48px))] sm:w-[calc(100%-48px)] sm:max-w-5xl"
       >
         <header className="flex shrink-0 items-start gap-3 border-b border-[var(--dl-separator)] px-4 py-3.5 sm:px-5">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--dl-well)] text-text-weak">

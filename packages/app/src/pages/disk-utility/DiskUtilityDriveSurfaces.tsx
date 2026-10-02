@@ -1,3 +1,4 @@
+import { Button as ShadcnButton } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -354,14 +355,14 @@ export function VolumeRow(props: {
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-1 max-sm:ml-auto">
-        <button
+        <ShadcnButton
           type="button"
           data-disk-primary-action={props.primary ? "" : undefined}
-          className={
-            (props.primary && !scanning) || canView
-              ? "inline-flex h-9 min-w-[88px] items-center justify-center rounded-full bg-[var(--dl-action)] px-5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.25)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.97] disabled:opacity-40"
-              : "inline-flex h-9 min-w-[88px] items-center justify-center rounded-full bg-[var(--dl-well-strong)] px-5 text-[13px] font-semibold text-text-strong transition-[filter,transform] outline-none hover:brightness-125 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.97] disabled:opacity-40"
+          variant={
+            (props.primary && !scanning) || canView ? "default" : "secondary"
           }
+          size="lg"
+          className="min-w-[88px] px-5"
           disabled={disabled}
           title={disabled ? language.t("disk.drive.scanLimit") : undefined}
           aria-label={
@@ -381,7 +382,7 @@ export function VolumeRow(props: {
           onClick={activate}
         >
           {volumeActionLabel(props.job?.status, props.hasRetainedMap)}
-        </button>
+        </ShadcnButton>
         {(api?.revealVolume || canView || volumeInfo?.canEject) && (
           <DropdownMenu>
             <DropdownMenuTrigger

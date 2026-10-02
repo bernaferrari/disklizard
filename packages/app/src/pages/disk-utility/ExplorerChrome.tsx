@@ -7,6 +7,7 @@ import {
   ShieldAlert,
   TriangleAlert,
 } from "lucide-react"
+import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   Popover,
@@ -266,11 +267,9 @@ export function ScanIssuesNotice(props: {
   )
 }
 
-export const quietButton =
-  "inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[12px] font-medium text-text-strong outline-none transition-colors hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
-
-export const primaryButton =
-  "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[var(--dl-action)] px-3.5 text-[13px] font-semibold text-white outline-none transition-[background-color,transform] duration-150 hover:bg-[var(--dl-action-hover)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background-base)] disabled:pointer-events-none disabled:opacity-40"
+// Native controls and composed triggers use the same variants as <Button>.
+export const quietButton = buttonVariants({ variant: "ghost" })
+export const primaryButton = buttonVariants({ variant: "default" })
 
 /** Free space closes the list the way a ledger closes with its balance. */
 export function FreeSpaceRow(props: { drive: DiskDriveInfo }) {

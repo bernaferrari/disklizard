@@ -3,20 +3,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[color,background-color,box-shadow,transform,filter] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus,var(--ring))] active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-[13px] font-medium whitespace-nowrap transition-[color,background-color,box-shadow,transform,filter] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus,var(--ring))] active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default:
-          "bg-[var(--dl-action,var(--primary))] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.25)] hover:bg-[var(--dl-action-hover,var(--primary))]",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
-          "bg-[var(--dl-well-strong,var(--secondary))] text-[var(--text-strong,var(--secondary-foreground))] hover:brightness-125 aria-expanded:brightness-125",
+          "bg-secondary text-secondary-foreground hover:bg-accent aria-expanded:bg-accent",
         ghost:
-          "text-[var(--text-strong,inherit)] hover:bg-[var(--dl-well,var(--muted))] aria-expanded:bg-[var(--dl-well,var(--muted))]",
+          "text-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent",
         destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+          "bg-[var(--dl-danger-action,var(--destructive))] text-white hover:bg-[var(--dl-danger-action-hover,var(--destructive))]",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

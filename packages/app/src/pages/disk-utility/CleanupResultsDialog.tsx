@@ -1,8 +1,13 @@
+import { Button } from "@/components/ui/button"
 import { useEffect, useId, useState } from "react"
 import { Check, ChevronRight, TriangleAlert } from "lucide-react"
 import { formatBytes } from "./format"
-import { primaryButton, quietButton } from "./ExplorerChrome"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import type { DiskScanNode } from "./types"
 import { itemIdentity } from "./item-identity"
 import { VirtualRows } from "./DiskUtilityVirtualList"
@@ -52,7 +57,7 @@ export function CleanupResultsDialog(props: {
       <DialogContent
         aria-labelledby="cleanup-results-title"
         showCloseButton={false}
-        className="flex max-h-[min(640px,calc(100dvh-48px))] w-full max-w-[520px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[520px]"
+        className="flex max-h-[min(640px,calc(100dvh-48px))] w-full max-w-[520px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[520px]"
       >
         <div className="px-6 pt-6 pb-5">
           <div className="flex items-start gap-3">
@@ -70,12 +75,9 @@ export function CleanupResultsDialog(props: {
               )}
             </span>
             <div className="min-w-0 flex-1">
-              <h2
-                id="cleanup-results-title"
-                className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
-              >
+              <DialogTitle id="cleanup-results-title">
                 {language.t("disk.results.heading")}
-              </h2>
+              </DialogTitle>
               <p className="mt-1 text-[13px] leading-5 text-text-weak">
                 {language.t(
                   failed === 0
@@ -219,42 +221,47 @@ export function CleanupResultsDialog(props: {
             ) : null}
           </div>
         ) : null}
-        <div className="flex flex-wrap items-center justify-end gap-2 px-6 py-4">
+        <DialogFooter className="flex-row flex-wrap items-center px-6 py-4">
           {moved > 0 ? (
-            <button
+            <Button
               type="button"
-              className={quietButton + " mr-auto h-9"}
+              variant="ghost"
+              size="lg"
+              className="mr-auto"
               onClick={props.onOpenTrash}
             >
               {language.t("disk.toast.showTrash", { trash: props.trashName })}
-            </button>
+            </Button>
           ) : null}
           {failed > 0 && props.onReviewFailures ? (
-            <button
+            <Button
               type="button"
-              className={quietButton + " h-9"}
+              variant="ghost"
+              size="lg"
               onClick={props.onReviewFailures}
             >
               {language.t("disk.results.reviewFailures")}
-            </button>
+            </Button>
           ) : null}
           {failed > 0 ? (
-            <button
+            <Button
               type="button"
-              className={quietButton + " h-9"}
+              variant="ghost"
+              size="lg"
               onClick={props.onRescan}
             >
               {language.t("disk.common.rescan")}
-            </button>
+            </Button>
           ) : null}
-          <button
+          <Button
             type="button"
-            className={primaryButton + " h-9 px-5"}
+            size="lg"
+            className="px-5"
             onClick={props.onClose}
           >
             {language.t("disk.common.complete")}
-          </button>
-        </div>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

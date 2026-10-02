@@ -1,6 +1,6 @@
+import { Button } from "@/components/ui/button"
 import { Fragment, useLayoutEffect, useRef } from "react"
 import { Check, FolderSearch, Eye } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { useLanguage, usePlatform } from "./runtime"
 import { type CleanupItem, cleanupItemExplanation } from "./cleanup-summary"
 import { formatBytes, formatLastChanged } from "./format"
@@ -8,7 +8,6 @@ import { nativeRevealLabel } from "./navigation"
 import { itemIdentity } from "./item-identity"
 import type { DiskScanNode } from "./types"
 import type { BaselineChange } from "./scan-baseline"
-import { primaryButton, quietButton } from "./ExplorerChrome"
 
 /** Inspection never stages or removes files. Its explicit action shares the list's policy. */
 export function CleanupInspector(props: {
@@ -96,18 +95,18 @@ export function CleanupInspector(props: {
             ))}
           </p>
           <div className="mt-3 -ml-2.5 flex flex-wrap gap-1">
-            <button
+            <Button
               type="button"
-              className={quietButton}
+              variant="ghost"
               onClick={() => props.onReveal(item.node)}
             >
               <FolderSearch className="size-3.5" aria-hidden />
               {nativeRevealLabel(platform.os)}
-            </button>
+            </Button>
             {props.onPreview ? (
-              <button
+              <Button
                 type="button"
-                className={quietButton}
+                variant="ghost"
                 onClick={() => props.onPreview?.(item.node)}
               >
                 <Eye className="size-3.5" aria-hidden />
@@ -116,7 +115,7 @@ export function CleanupInspector(props: {
                     ? "disk.common.quickLook"
                     : "disk.common.preview"
                 )}
-              </button>
+              </Button>
             ) : null}
           </div>
         </div>
@@ -130,20 +129,19 @@ export function CleanupInspector(props: {
               })}
           </p>
         ) : null}
-        <button
+        <Button
           type="button"
           disabled={disabled}
           onClick={() => props.onToggle(item.node)}
-          className={cn(
-            props.selectionCount > 0 ? quietButton : primaryButton,
-            "h-9 w-full justify-center"
-          )}
+          variant={props.selectionCount > 0 ? "ghost" : "default"}
+          size="lg"
+          className="w-full"
         >
           {props.collected ? <Check className="size-3.5" aria-hidden /> : null}
           {language.t(
             props.collected ? "disk.ui.cleanup.remove" : "disk.ui.cleanup.add"
           )}
-        </button>
+        </Button>
       </div>
     </aside>
   )

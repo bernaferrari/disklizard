@@ -7,6 +7,10 @@ import {
 } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import {
+  menuItemClassName,
+  menuSurfaceClassName,
+} from "@/components/ui/dropdown-menu"
 
 export type ContextMenuItem =
   | {
@@ -103,7 +107,7 @@ export function NodeContextMenu(props: {
       ref={menuRef}
       role="menu"
       aria-label={props.title}
-      className="fixed z-[90] min-w-[220px] rounded-xl bg-[var(--dl-popover)] p-1 text-[13px] text-text-strong shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_0_0_1px_rgb(0_0_0/0.25),0_14px_40px_rgb(0_0_0/0.35)] outline-none"
+      className={cn(menuSurfaceClassName, "fixed z-[90] min-w-[220px]")}
       style={{
         left: position?.x ?? props.at.x,
         top: position?.y ?? props.at.y,
@@ -147,7 +151,7 @@ export function NodeContextMenu(props: {
         item.kind === "separator" ? (
           <div
             key={`separator-${index}`}
-            className="mx-2 my-1 h-px bg-[var(--dl-separator)]"
+            className="mx-2 my-1 h-px bg-border"
           />
         ) : (
           <div
@@ -155,14 +159,8 @@ export function NodeContextMenu(props: {
             role="menuitem"
             tabIndex={-1}
             aria-disabled={item.disabled || undefined}
-            className={cn(
-              "group/menu-item flex h-8 cursor-default items-center gap-2.5 rounded-md px-2.5 outline-none select-none",
-              item.disabled
-                ? "opacity-40"
-                : item.danger
-                  ? "text-[var(--dl-danger)] hover:bg-[var(--dl-danger-action)] hover:text-white focus:bg-[var(--dl-danger-action)] focus:text-white"
-                  : "hover:bg-[var(--dl-action)] hover:text-white focus:bg-[var(--dl-action)] focus:text-white"
-            )}
+            data-variant={item.danger ? "destructive" : "default"}
+            className={menuItemClassName}
             onMouseEnter={(event) => {
               if (!item.disabled)
                 event.currentTarget.focus({ preventScroll: true })
@@ -189,7 +187,7 @@ export function NodeContextMenu(props: {
             </span>
             <span className="min-w-0 flex-1 truncate">{item.label}</span>
             {item.shortcut ? (
-              <span className="shrink-0 text-[11.5px] text-text-weak group-hover/menu-item:text-inherit group-focus/menu-item:text-inherit">
+              <span className="shrink-0 text-[11.5px] text-text-weak group-hover/dropdown-menu-item:text-inherit group-focus/dropdown-menu-item:text-inherit">
                 {item.shortcut}
               </span>
             ) : null}

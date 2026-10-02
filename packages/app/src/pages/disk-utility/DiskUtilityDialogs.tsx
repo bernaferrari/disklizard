@@ -11,8 +11,14 @@ import {
   X,
 } from "lucide-react"
 import { Button } from "@/components/dl/button"
+import { Button as ShadcnButton } from "@/components/ui/button"
 import { Icon } from "@/components/dl/icon"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
@@ -116,7 +122,7 @@ export function CleanupProtectionsResetDialog(props: {
           panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
           panelRef.current
         }
-        className="block w-full max-w-md gap-0 rounded-2xl border-0 bg-[var(--dl-popover)] p-5 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-md"
+        className="block w-full max-w-md gap-0 p-5 sm:max-w-md"
       >
         <div className="flex items-start gap-3">
           <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[color-mix(in_oklch,var(--dl-danger)_14%,transparent)] text-[var(--dl-danger)]">
@@ -265,8 +271,6 @@ export function CollectionDialog(props: {
     props.hasUnverifiedPhysicalStorage
   const blocked =
     props.deleting || (props.hasUnobservedContents && !acknowledgedPartialScan)
-  const iconAction =
-    "grid size-8 place-items-center rounded-md text-text-weak outline-none transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
   return (
     <Dialog
       open={open}
@@ -279,7 +283,7 @@ export function CollectionDialog(props: {
         showCloseButton={false}
         ref={panelRef}
         initialFocus={() => panelRef.current}
-        className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[600px] flex-col gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[600px]"
+        className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[600px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[600px]"
       >
         <span className="sr-only" role="status">
           {copyFailedPath
@@ -290,12 +294,9 @@ export function CollectionDialog(props: {
         </span>
         <div className="flex items-start gap-4 px-6 pt-6 pb-4">
           <div className="min-w-0 flex-1">
-            <h2
-              id="collection-title"
-              className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
-            >
+            <DialogTitle id="collection-title">
               {language.t("disk.dialog.collection.heading")}
-            </h2>
+            </DialogTitle>
             <p className="mt-2 text-[13px] text-text-weak">
               {cautious || props.hasUnobservedContents
                 ? language.t("disk.dialog.collection.selectedSizes", {
@@ -307,15 +308,16 @@ export function CollectionDialog(props: {
               {language.t("disk.dialog.collection.body")}
             </p>
           </div>
-          <button
+          <ShadcnButton
             type="button"
-            className="grid size-8 place-items-center rounded-full text-text-weak outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+            variant="ghost"
+            size="icon"
             disabled={props.deleting}
             onClick={props.onClose}
             aria-label={language.t("disk.dialog.collection.close")}
           >
             <X className="size-4" aria-hidden />
-          </button>
+          </ShadcnButton>
         </div>
 
         {props.requiresDeepInventoryRefresh ||
@@ -448,9 +450,10 @@ export function CollectionDialog(props: {
                   <span className="flex shrink-0 items-center opacity-0 transition-opacity group-focus-within/review-row:opacity-100 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100">
                     {!item.isOther && !item.isHidden ? (
                       <>
-                        <button
+                        <ShadcnButton
                           type="button"
-                          className={iconAction}
+                          variant="ghost"
+                          size="icon"
                           disabled={props.deleting}
                           aria-label={language.t(
                             props.onQuickLook
@@ -479,10 +482,11 @@ export function CollectionDialog(props: {
                           }
                         >
                           <Eye className="size-3.5" aria-hidden />
-                        </button>
-                        <button
+                        </ShadcnButton>
+                        <ShadcnButton
                           type="button"
-                          className={iconAction}
+                          variant="ghost"
+                          size="icon"
                           disabled={props.deleting}
                           aria-label={language.t(
                             "disk.dialog.collection.reveal",
@@ -499,12 +503,13 @@ export function CollectionDialog(props: {
                           onClick={() => props.onReveal(item)}
                         >
                           <FolderSearch className="size-3.5" aria-hidden />
-                        </button>
+                        </ShadcnButton>
                       </>
                     ) : null}
-                    <button
+                    <ShadcnButton
                       type="button"
-                      className={iconAction}
+                      variant="ghost"
+                      size="icon"
                       aria-label={language.t(
                         copyFailedPath === item.path
                           ? "disk.dialog.collection.copyFailed"
@@ -547,14 +552,15 @@ export function CollectionDialog(props: {
                       ) : (
                         <Copy className="size-3.5" aria-hidden />
                       )}
-                    </button>
+                    </ShadcnButton>
                   </span>
                   <span className="w-16 shrink-0 text-right text-[13px] text-text-base tabular-nums">
                     {shortBytes(item.size)}
                   </span>
-                  <button
+                  <ShadcnButton
                     type="button"
-                    className={iconAction}
+                    variant="ghost"
+                    size="icon"
                     disabled={props.deleting}
                     aria-label={language.t("disk.dialog.collection.remove", {
                       name: locations.get(item.path) ?? identity.reviewTitle,
@@ -565,14 +571,14 @@ export function CollectionDialog(props: {
                     onClick={() => props.onRemove(item)}
                   >
                     <X className="size-3.5" aria-hidden />
-                  </button>
+                  </ShadcnButton>
                 </div>
               )
             }}
           />
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-3 px-6 py-4">
+        <DialogFooter className="shrink-0 flex-row flex-wrap items-center gap-3 px-6 py-4">
           {props.progress ? (
             <div
               className="flex min-w-0 flex-1 items-center gap-2 text-[12.5px] text-text-weak tabular-nums"
@@ -606,17 +612,19 @@ export function CollectionDialog(props: {
             </p>
           )}
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <button
+            <ShadcnButton
               type="button"
-              className="inline-flex h-9 items-center rounded-lg px-3.5 text-[13px] font-medium text-text-strong outline-none hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+              variant="ghost"
+              size="lg"
               disabled={props.deleting}
               onClick={props.onClose}
             >
               {language.t("disk.common.back")}
-            </button>
-            <button
+            </ShadcnButton>
+            <ShadcnButton
               type="button"
-              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger-action)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-danger-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+              variant="destructive"
+              size="lg"
               disabled={blocked}
               onClick={props.onConfirm}
             >
@@ -627,9 +635,9 @@ export function CollectionDialog(props: {
                     total: props.progress.total,
                   })
                 : language.t("disk.detail.moveTo", { trash: props.trashName })}
-            </button>
+            </ShadcnButton>
           </div>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
@@ -887,7 +895,7 @@ export function DeleteConfirmDialog(props: {
           panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
           panelRef.current
         }
-        className="block w-full max-w-[440px] gap-0 overflow-hidden rounded-2xl border-0 bg-[var(--dl-popover)] p-0 shadow-[0_0_0_0.5px_rgb(255_255_255/0.1),0_30px_90px_rgb(0_0_0/0.5)] ring-0 sm:max-w-[440px]"
+        className="block w-full max-w-[440px] gap-0 overflow-hidden p-0 sm:max-w-[440px]"
       >
         <div className="px-6 pt-6 pb-5">
           <div className="flex items-center gap-3">
@@ -895,14 +903,11 @@ export function DeleteConfirmDialog(props: {
               <Trash2 className="size-[18px]" aria-hidden />
             </span>
             <div className="min-w-0">
-              <h2
-                id="delete-title"
-                className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-text-strong"
-              >
+              <DialogTitle id="delete-title">
                 {language.t("disk.dialog.delete.prompt", {
                   trash: props.trashName,
                 })}
-              </h2>
+              </DialogTitle>
             </div>
           </div>
           <div
@@ -984,19 +989,21 @@ export function DeleteConfirmDialog(props: {
                   })}
           </p>
         </div>
-        <div className="flex justify-end gap-2 border-t border-[var(--dl-separator)] px-6 py-4">
-          <button
+        <DialogFooter className="border-t border-border px-6 py-4">
+          <ShadcnButton
             type="button"
             data-autofocus
-            className="inline-flex h-9 items-center rounded-lg px-3.5 text-[13px] font-medium text-text-strong outline-none hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-40"
+            variant="ghost"
+            size="lg"
             disabled={props.deleting}
             onClick={props.onClose}
           >
             {language.t("disk.dialog.delete.keep")}
-          </button>
-          <button
+          </ShadcnButton>
+          <ShadcnButton
             type="button"
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--dl-danger-action)] px-4 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.3)] transition-[background-color,transform] outline-none hover:bg-[var(--dl-danger-action-hover)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+            variant="destructive"
+            size="lg"
             disabled={
               props.deleting ||
               (props.hasUnobservedContents && !acknowledgedPartialScan)
@@ -1007,8 +1014,8 @@ export function DeleteConfirmDialog(props: {
             {props.deleting
               ? language.t("disk.dialog.delete.moving")
               : language.t("disk.detail.moveTo", { trash: props.trashName })}
-          </button>
-        </div>
+          </ShadcnButton>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

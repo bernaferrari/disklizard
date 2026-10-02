@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { useId, useMemo, useState, type KeyboardEvent } from "react"
 import {
   Check,
@@ -24,7 +25,6 @@ import type { ArtifactEcosystem, ArtifactEcosystemFilter } from "./recognize"
 import { itemIdentity } from "./item-identity"
 import type { DeveloperCleanupAgePreset } from "./developer-cleanup"
 import type { BaselineChange } from "./scan-baseline"
-import { primaryButton, quietButton } from "./ExplorerChrome"
 import {
   partitionCleanupGroups,
   type CleanupSummary,
@@ -170,16 +170,17 @@ export function CleanupView(props: {
                 )}
               </p>
               {filtered ? (
-                <button
+                <Button
                   type="button"
-                  className={cn(quietButton, "mx-auto mt-3")}
+                  variant="ghost"
+                  className="mx-auto mt-3"
                   onClick={() => {
                     props.onAgePreset("all")
                     props.onEcosystem("all")
                   }}
                 >
                   {language.t("disk.cleanup.clearFilters")}
-                </button>
+                </Button>
               ) : (
                 <p className="mt-2 max-w-sm text-[13px] leading-5 text-text-weak">
                   {language.t("disk.ui.cleanup.emptyBody")}
@@ -191,9 +192,9 @@ export function CleanupView(props: {
             <Section
               title={language.t("disk.ui.cleanup.ready")}
               action={
-                <button
+                <Button
                   type="button"
-                  className={quietButton}
+                  variant="ghost"
                   disabled={allSafeSelected}
                   onClick={() =>
                     props.onCollect(props.summary.safe.map((item) => item.node))
@@ -204,7 +205,7 @@ export function CleanupView(props: {
                       ? "disk.ui.cleanup.selectedAll"
                       : "disk.ui.cleanup.selectReady"
                   )}
-                </button>
+                </Button>
               }
             >
               {ready.map((group) => (
@@ -280,16 +281,16 @@ export function CleanupView(props: {
               </span>
             ) : null}
           </p>
-          <button type="button" className={quietButton} onClick={props.onClear}>
+          <Button type="button" variant="ghost" onClick={props.onClear}>
             {language.t("disk.ui.collectorClear")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={primaryButton}
+
             onClick={props.onReview}
           >
             {language.t("disk.ui.cleanup.review")}
-          </button>
+          </Button>
         </div>
       ) : null}
     </div>
@@ -418,24 +419,24 @@ function GroupRow(props: RowProps & { group: CleanupGroup }) {
             </ul>
             <div className="mt-1 ml-8 flex items-center gap-1">
               {group.items.length > limit ? (
-                <button
+                <Button
                   type="button"
-                  className={quietButton}
+                  variant="ghost"
                   onClick={() => setLimit((value) => value + 24)}
                 >
                   {language.t("disk.ui.cleanup.moreItems", {
                     count: Math.min(24, group.items.length - limit),
                   })}
-                </button>
+                </Button>
               ) : null}
               {Math.min(limit, group.items.length) > PREVIEW_ROWS ? (
-                <button
+                <Button
                   type="button"
-                  className={quietButton}
+                  variant="ghost"
                   onClick={() => setLimit(PREVIEW_ROWS)}
                 >
                   {language.t("disk.ui.cleanup.showFewer")}
-                </button>
+                </Button>
               ) : null}
             </div>
           </>
