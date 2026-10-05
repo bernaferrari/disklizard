@@ -460,9 +460,7 @@ async function scanFixture(page: Page, fixturePath: string, source: "scan" | "sn
   const fixtureLabel = path.basename(fixturePath)
   // Native menu typography and localized renderer copy may expose either the
   // single ellipsis character or three dots to the accessibility tree.
-  const scanFolder = page
-    .locator("footer.dl-volume-footer")
-    .getByRole("button", { name: /^Scan Folder(?:…|\.\.\.)$/ })
+  const scanFolder = page.getByRole("button", { name: /^Scan a folder(?:…|\.\.\.)/ })
   await expect(scanFolder).toBeEnabled({ timeout: 30_000 })
   await scanFolder.click()
   const map = page.getByRole("region", {
@@ -474,10 +472,9 @@ async function scanFixture(page: Page, fixturePath: string, source: "scan" | "sn
 }
 
 async function verifyPreview(page: Page, fixture: Awaited<ReturnType<typeof createFixture>>) {
-  await page.getByRole("button", { name: /^List(?:\s+\d+)?$/ }).click()
   const row = page.locator("[data-disk-index]").filter({ hasText: fixture.previewName })
   await expect(row).toHaveCount(1)
-  await row.dblclick()
+  await row.press("Enter")
   const dialog = page.getByRole("dialog", { name: fixture.previewName, exact: true })
   await expect(dialog).toBeVisible()
   await expect(dialog.getByLabel(`Text preview of ${fixture.previewName}`, { exact: true })).toHaveText(
@@ -488,7 +485,7 @@ async function verifyPreview(page: Page, fixture: Awaited<ReturnType<typeof crea
 
   const pdfRow = page.locator("[data-disk-index]").filter({ hasText: fixture.pdfName })
   await expect(pdfRow).toHaveCount(1)
-  await pdfRow.dblclick()
+  await pdfRow.press("Enter")
   const pdfDialog = page.getByRole("dialog", { name: fixture.pdfName, exact: true })
   await expect(pdfDialog).toBeVisible()
   await expect(pdfDialog.locator('iframe[src^="data:application/pdf;base64,"]')).toBeVisible()
@@ -502,7 +499,8 @@ async function moveFixtureToTrash(
   mapBytesBeforeDelete: number,
 ) {
   await page.getByRole("button", { name: `Select ${fixture.deleteName} for review`, exact: true }).click()
-  await page.getByRole("button", { name: "Review selected", exact: true }).click()
+  await expect(page.locator("[data-map-size]")).toHaveAttribute("data-map-size", String(mapBytesBeforeDelete))
+  await page.getByRole("button", { name: /^Move to (?:Trash|Recycle Bin)(?:…|\.\.\.)$/ }).click()
   const review = page.getByRole("dialog").filter({ hasText: fixture.deleteName })
   await expect(review).toBeVisible()
   await review.getByRole("button", { name: /^Move to (?:Trash|Recycle Bin)$/ }).click()
@@ -516,7 +514,7 @@ async function moveFixtureToTrash(
       ),
     )
     .toBe(true)
-  const mapButton = page.getByRole("tab", { name: /^Map(?:\s+1)?$/ })
+  const mapButton = page.getByRole("button", { name: "Map", exact: true })
   await expect(mapButton).toBeEnabled({ timeout: 90_000 })
   await mapButton.click()
   const map = page.getByRole("region", {

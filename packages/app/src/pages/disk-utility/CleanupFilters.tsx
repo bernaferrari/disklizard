@@ -13,6 +13,8 @@ import {
 } from "./recognize"
 import {
   DEVELOPER_CLEANUP_AGE_PRESETS,
+  resolveDeveloperCleanupAge,
+  developerCleanupAgeLabel,
   type DeveloperCleanupAgePreset,
 } from "./developer-cleanup"
 
@@ -31,12 +33,26 @@ export function CleanupFilters(props: {
   age: DeveloperCleanupAgePreset
   ecosystem: ArtifactEcosystemFilter
   ecosystems: readonly ArtifactEcosystem[]
+  customDays?: string
+  onCustomDays?: (days: string) => void
   onAge: (age: DeveloperCleanupAgePreset) => void
   onEcosystem: (ecosystem: ArtifactEcosystemFilter) => void
 }) {
   const language = useLanguage()
   const id = useId()
   const active = Number(props.age !== "all") + Number(props.ecosystem !== "all")
+  const filterValues = [
+    props.ecosystem !== "all"
+      ? artifactEcosystemLabel(props.ecosystem)
+      : undefined,
+    props.age !== "all"
+      ? developerCleanupAgeLabel(
+          resolveDeveloperCleanupAge(props.age, props.customDays ?? "30")
+        )
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join(" · ")
   const selectStyle =
     "h-8 w-full rounded-md bg-[var(--dl-well)] px-2 text-[13px] text-text-strong outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
   return (
@@ -45,9 +61,7 @@ export function CleanupFilters(props: {
         <SlidersHorizontal className="size-3.5" aria-hidden />
         {language.t("disk.ui.cleanup.filters")}
         {active > 0 ? (
-          <span className="grid size-4 place-items-center rounded bg-[var(--dl-well-strong)] text-[11px] text-text-strong tabular-nums">
-            {active}
-          </span>
+          <span className="text-text-base">{filterValues}</span>
         ) : null}
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={6} className="gap-4 p-4">
@@ -86,15 +100,47 @@ export function CleanupFilters(props: {
               if (age) props.onAge(age)
             }}
           >
-            {DEVELOPER_CLEANUP_AGE_PRESETS.filter(
-              (age) => age !== "custom" || props.age === "custom"
-            ).map((age) => (
-              <option key={age} value={age} disabled={age === "custom"}>
+            {DEVELOPER_CLEANUP_AGE_PRESETS.map((age) => (
+              <option
+                key={age}
+                value={age}
+                disabled={age === "custom" && !props.onCustomDays}
+              >
                 {language.t(AGE_LABEL[age])}
               </option>
             ))}
           </select>
         </div>
+        {props.age === "custom" && props.onCustomDays ? (
+          <div className="space-y-1.5">
+            <label
+              htmlFor={`${id}-days`}
+              className="block text-[12px] text-text-weak"
+            >
+              {language.t("disk.developer.policy.customLabel")}
+            </label>
+            <input
+              id={`${id}-days`}
+              type="number"
+              min={1}
+              max={3650}
+              step={1}
+              value={props.customDays ?? "30"}
+              onChange={(event) => props.onCustomDays?.(event.target.value)}
+              className={selectStyle}
+              aria-invalid={
+                !resolveDeveloperCleanupAge("custom", props.customDays ?? "30")
+                  .valid
+              }
+            />
+            {!resolveDeveloperCleanupAge("custom", props.customDays ?? "30")
+              .valid ? (
+              <p role="alert" className="text-[12px] text-text-weak">
+                {language.t("disk.developer.policy.invalidAge")}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
         {props.ecosystems.length > 1 || props.ecosystem !== "all" ? (
           <div className="space-y-1.5">
             <label

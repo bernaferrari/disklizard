@@ -53,6 +53,7 @@ export const DISK_LANGUAGE_TEXT = {
     "These smaller items are grouped in the scan summary. Open their containing directory to explore further.",
   "disk.smaller.regroup": "Group smaller items",
   "disk.common.back": "Back",
+  "disk.common.cancel": "Cancel",
   "disk.common.net": "Net",
   "disk.common.complete": "Done",
   "disk.common.partial": "Partial",
@@ -835,13 +836,27 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.cleanup.inspecting": "Inspecting {name}",
   "disk.ui.cleanup.list": "Cleanup candidates",
   "disk.ui.cleanup.listKeys":
-    "Use Up and Down to browse, Right to expand a category, Left to return or collapse, and Home or End to jump through the list. Check an item to add it to your selection.",
+    "Use Up and Down to browse, Right to expand a category, Left to return or collapse, and Home or End to jump through the list. Press Space to select or deselect an item.",
   "disk.ui.cleanup.beforeRemoving": "Before removing",
   "disk.ui.cleanup.restore": "How to restore it",
   "disk.ui.cleanup.add": "Add to selection",
   "disk.ui.cleanup.remove": "Remove from selection",
   "disk.ui.cleanup.selected": "In your selection",
   "disk.ui.cleanup.location": "Location",
+  "disk.ui.cleanup.unavailable": "Unavailable for cleanup",
+  "disk.ui.cleanup.search": "Search projects or paths",
+  "disk.ui.cleanup.groupBy": "Group by",
+  "disk.ui.cleanup.groupArtifact": "Artifact type",
+  "disk.ui.cleanup.groupProject": "Project / location",
+  "disk.ui.cleanup.sortBy": "Sort by",
+  "disk.ui.cleanup.sortLargest": "Largest first",
+  "disk.ui.cleanup.sortOldest": "Oldest unchanged first",
+  "disk.ui.cleanup.wholeFolder":
+    "Whole folder · includes nested cleanup candidates",
+  "disk.ui.cleanup.overlap":
+    "Nested choices overlap. Totals count each location once; selecting a whole folder includes its descendants.",
+  "disk.ui.cleanup.unprotect": "Remove protection from {name}",
+  "disk.cleanup.accessNotChecked": "Filesystem access not checked",
   "disk.ui.cleanup.protected": "Protected items",
   "disk.ui.cleanup.selectReady": "Select these",
   "disk.ui.cleanup.noMatches": "No matching files",
@@ -850,7 +865,10 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.cleanup.intro": "Nothing moves until you review your selection.",
   "disk.ui.cleanup.summary": "{size} across {count}",
   "disk.ui.cleanup.ready": "Can be recreated",
-  "disk.ui.cleanup.individual": "Review individually",
+  "disk.ui.cleanup.individual": "Check before removing",
+  "disk.ui.cleanup.partialScan":
+    "Some folders couldn’t be read, so these sizes may be incomplete. Check items before removing them.",
+  "disk.ui.cleanup.partlyRead": "Partly read",
   "disk.ui.cleanup.individualDescription":
     "Open an item to see why it’s listed before selecting it.",
   "disk.ui.cleanup.selectAll": "Select all",
@@ -912,6 +930,10 @@ export const DISK_LANGUAGE_TEXT = {
 } as const
 
 export const DISK_LANGUAGE_PLURALS = {
+  "disk.dialog.collection.title": {
+    one: "Move {count} item to {trash}?",
+    other: "Move {count} items to {trash}?",
+  },
   "disk.ui.unreadable": {
     one: "{count} folder couldn’t be read",
     other: "{count} folders couldn’t be read",

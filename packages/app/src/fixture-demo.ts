@@ -221,7 +221,9 @@ const tree = dir("Macintosh HD", [
     bulk("Developer", 7 * GB, 10, "", "CommandLineTools-", 90),
     bulk("Fonts", 1.1 * GB, 80, ".ttf", "Font ", 400),
   ]),
-  dir("opt", [dir("homebrew", [bulk("Cellar", 14 * GB, 90, "", "formula-", 20)])]),
+  dir("opt", [
+    dir("homebrew", [bulk("Cellar", 14 * GB, 90, "", "formula-", 20)]),
+  ]),
   dir("usr", [bulk("local", 1.2 * GB, 20, "", "lib-", 90)]),
 ])
 
@@ -308,6 +310,37 @@ function withOther(node: DiskScanNode, limit = 24): DiskScanNode {
 export const DEMO_ROOT_PATH = "/"
 export const DEMO_DRIVE_TOTAL = 2 * 1024 * GB
 
+/** Where macOS privacy and root-only permissions block a user-level scan. One
+ * cache sits under a cleanup candidate, so the partial-scan caveat stays
+ * specific instead of applying to every folder. */
+function demoUnreadablePaths() {
+  const system = [
+    "/private/etc/cups/certs",
+    "/private/var/networkd/Library",
+    "/private/var/networkd/db",
+    "/private/var/install",
+    "/private/var/spool/mqueue",
+  ]
+  const home = "/Users/alex/Library"
+  const blocked = [
+    `${home}/Caches/com.apple.Safari`,
+    `${home}/Mail`,
+    `${home}/Messages`,
+    `${home}/Safari`,
+    `${home}/Cookies`,
+    `${home}/Suggestions`,
+    `${home}/Application Support/com.apple.TCC`,
+    `${home}/Application Support/AddressBook`,
+    `${home}/Application Support/CallHistoryDB`,
+  ]
+  const containers = Array.from(
+    { length: 291 - system.length - blocked.length },
+    (_, index) =>
+      `${home}/Containers/com.apple.container-${String(index + 1).padStart(3, "0")}/Data`
+  )
+  return [...system, ...blocked, ...containers]
+}
+
 export function demoScanTree(): DiskScanNode {
   seed = 7
   const root = withOther(build(tree, ""))
@@ -316,16 +349,7 @@ export function demoScanTree(): DiskScanNode {
     ...root,
     cloneMetadata: { state: "available" },
     sharedStorageEvidence: "complete",
-    scanIssues: {
-      unreadableCount: 291,
-      samplePaths: [
-        "/private/etc/cups/certs",
-        "/private/var/networkd/Library",
-        "/private/var/networkd/db",
-        "/private/var/install",
-        "/private/var/spool/mqueue",
-      ],
-    },
+    scanIssues: { unreadableCount: 291, samplePaths: demoUnreadablePaths() },
     developerArtifactInventory: {
       items,
       status: {

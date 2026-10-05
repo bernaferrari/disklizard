@@ -94,7 +94,7 @@ test("cleanup opens specific explanations without selecting and only bulk-select
       )!
     expect(host.textContent).not.toContain("Check first")
     expect(host.querySelector('[aria-label^="Select everything"]')).toBeNull()
-    await act(async () => button("Select these").click())
+    await act(async () => button("Select all").click())
     expect(collected).toEqual([ready.path])
     const group = [...host.querySelectorAll("button")].find((button) =>
       button.textContent?.includes("Other folders")
@@ -236,7 +236,7 @@ test("filtering replaces a vanished inspection without losing the global review 
     expect(host.querySelector("aside")).toBeNull()
     expect(
       [...host.querySelectorAll("button")].some(
-        (button) => button.textContent === "Review…"
+        (button) => button.textContent === "Move to Trash…"
       )
     ).toBe(true)
   } finally {
@@ -271,6 +271,99 @@ test("large cleanup categories reveal a bounded batch rather than mounting the e
     )!
     await act(async () => fewer.click())
     expect(host.querySelectorAll("[data-cleanup-item]").length).toBe(4)
+  } finally {
+    await act(async () => root.unmount())
+    host.remove()
+  }
+})
+
+test("category checkboxes select and release recreatable items, and Space toggles the focused row", async () => {
+  const nodes = [node("/work/a/node_modules"), node("/work/b/node_modules")]
+  const selected = new Set<string>()
+  const host = document.createElement("div")
+  document.body.append(host)
+  const root = createRoot(host)
+  const view = () => (
+    <DiskLizardRuntime platform={platform}>
+      <CleanupView
+        {...defaults}
+        summary={dependencies(nodes)}
+        isCollected={(path) => selected.has(path)}
+        onToggle={(n) => {
+          if (!selected.delete(n.path)) selected.add(n.path)
+        }}
+        onCollect={(list) => list.forEach((n) => selected.add(n.path))}
+        onRelease={(list) => list.forEach((n) => selected.delete(n.path))}
+      />
+    </DiskLizardRuntime>
+  )
+  try {
+    await act(async () => root.render(view()))
+    const group = () =>
+      host.querySelector<HTMLButtonElement>(
+        '[aria-label="Select everything in Dependencies"]'
+      )!
+    expect(group().getAttribute("aria-checked")).toBe("false")
+    await act(async () => group().click())
+    await act(async () => root.render(view()))
+    expect([...selected].sort()).toEqual(nodes.map((n) => n.path))
+    expect(group().getAttribute("aria-checked")).toBe("true")
+    await act(async () => group().click())
+    await act(async () => root.render(view()))
+    expect(selected.size).toBe(0)
+
+    // The category holding the inspected item starts expanded.
+    const row = host.querySelector<HTMLButtonElement>(
+      '[aria-label="Inspect a / node_modules"]'
+    )!
+    await act(async () =>
+      row.dispatchEvent(
+        new KeyboardEvent("keydown", { key: " ", bubbles: true })
+      )
+    )
+    await act(async () => root.render(view()))
+    expect([...selected]).toEqual([nodes[0].path])
+    expect(group().getAttribute("aria-checked")).toBe("mixed")
+  } finally {
+    await act(async () => root.unmount())
+    host.remove()
+  }
+})
+
+test("a scan that cannot attribute unreadable folders explains it once, not per item", async () => {
+  const summary = buildCleanupSummary({
+    developerItems: [
+      node("/work/a/node_modules"),
+      node("/work/b/node_modules"),
+    ].map((n) => ({
+      node: n,
+      bytes: n.size,
+      recognition: {
+        safety: "regenerable" as const,
+        developer: "dependencies" as const,
+      },
+    })),
+    suggestions: [],
+    canModify: () => true,
+    isEligible: () => true,
+    hasUnobservedContents: () => true,
+  })
+  const host = document.createElement("div")
+  document.body.append(host)
+  const root = createRoot(host)
+  try {
+    await act(async () =>
+      root.render(
+        <DiskLizardRuntime platform={platform}>
+          <CleanupView {...defaults} summary={summary} />
+        </DiskLizardRuntime>
+      )
+    )
+    expect(host.textContent).toContain("Some folders couldn’t be read")
+    expect(host.textContent).not.toContain("Partly read")
+    expect(host.querySelector("aside")?.textContent).not.toContain(
+      "This scan has unreadable folders"
+    )
   } finally {
     await act(async () => root.unmount())
     host.remove()

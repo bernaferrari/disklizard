@@ -108,7 +108,8 @@ import { Treemap } from "./TreemapPanel"
 import { ViewMorph, type MorphTile } from "./ViewMorph"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
-import { withoutCollected } from "./collection-map"
+import { abbreviateHomePath } from "./item-identity"
+import { useResolvedColorScheme } from "@/components/dl/theme"
 import { PreviewDialog } from "./PreviewDialog"
 import {
   CleanupResultsDialog,
@@ -428,6 +429,8 @@ export default function DiskUtilityPage() {
     document.documentElement.dataset.dlOs = platform.os
   }, [platform.os])
   const language = useLanguage()
+  const colorScheme = useResolvedColorScheme()
+  const [homePath, setHomePath] = useState<string>()
   const settings = useSettings()
   const { reveal, openTrash, handleUpdaterMenuAction, exportDiagnostics } =
     useDiskActions()
@@ -532,6 +535,7 @@ export default function DiskUtilityPage() {
     toggle: toggleCollect,
     add: collectNodes,
     remove: removeCollected,
+    uncollect: uncollectNodes,
     isCollected,
     coveringNode: coveringCollectedNode,
   } = review
@@ -686,7 +690,10 @@ export default function DiskUtilityPage() {
     [treeRoot, viewNode, groupNavigation]
   )
   const parentView = crumbs.at(-2)?.node
-  const rootSpectrum = useMemo(() => createSpectrum(treeRoot), [treeRoot])
+  const rootSpectrum = useMemo(
+    () => createSpectrum(treeRoot, colorScheme),
+    [treeRoot, colorScheme]
+  )
   /** A fallback or incomplete map must never turn unknown shared storage into a reclaim promise. */
   const physicalCloneAccountingUncertain = useMemo(
     () =>
@@ -944,6 +951,7 @@ export default function DiskUtilityPage() {
   }, [entries, selectedPath, treeRoot, groupNavigation, platform.os])
   const cleanupPolicy = useCleanupPolicy({
     selectedNode,
+    scanIdentity: scanSession.activeID,
     disk,
     os: platform.os,
     locks: cleanupLocks,
@@ -975,20 +983,10 @@ export default function DiskUtilityPage() {
     () => sunburstRef.current?.setQueuedPaths(queuedPaths),
     [queuedPaths]
   )
-  const projectedPaths = useMemo(() => {
-    const paths = new Set(queuedPaths)
-    if (collectionDragNode && canModifyNode(collectionDragNode))
-      paths.add(collectionDragNode.path)
-    return paths
-  }, [queuedPaths, collectionDragNode?.path])
-  useEffect(
-    () => sunburstRef.current?.setExcludedPaths(projectedPaths),
-    [projectedPaths]
-  )
-  const visibleMapNode = useMemo(
-    () => (viewNode ? withoutCollected(viewNode, projectedPaths) : null),
-    [viewNode, projectedPaths]
-  )
+  // Review is a plan, not a new measurement. Queued treatment is drawn
+  // independently; dragging and queuing never subtract from the measured map.
+  const projectedPaths = useMemo(() => new Set<string>(), [])
+  const visibleMapNode = viewNode
   // Keep a branch's hue anchored to the scanned tree while navigating or
   // previewing a drag. Re-rooting the spectrum at each view recolors the same
   // directory during a camera move and makes nested items look unrelated.
@@ -1019,6 +1017,7 @@ export default function DiskUtilityPage() {
     investigation,
     cleanupLocks,
     cleanupLocksStatus,
+    cleanupPolicy.revision,
   ])
   const smartCleanupCandidates = useMemo(
     () => uniqueDeletionRoots(smartCleanupEligibleEntries, platform.os),
@@ -1028,7 +1027,9 @@ export default function DiskUtilityPage() {
     () =>
       buildCleanupSummary({
         developerItems,
-        suggestions: reclaim.buckets,
+        suggestions: physicalCloneAccountingUncertain
+          ? []
+          : investigation.recommendations().buckets,
         os: platform.os,
         canModify: canModifyNode,
         isEligible: isSmartCleanupEligible,
@@ -1040,12 +1041,13 @@ export default function DiskUtilityPage() {
       }),
     [
       developerItems,
-      reclaim,
+      investigation,
+      physicalCloneAccountingUncertain,
       treeRoot,
       platform.os,
       cleanupLocks,
       cleanupLocksStatus,
-      selectedAccess,
+      cleanupPolicy.revision,
       developerAge,
       indexFilter.developerEcosystem,
     ]
@@ -1626,9 +1628,22 @@ export default function DiskUtilityPage() {
     setRangeAnchorIndex(undefined)
     setScanDrive(drive)
     setScanSourcePath(path)
-    scanUnsubRef.current = api.onScanProgress((p) => {
+    let treeReturned = false
+    let completionObserved = false
+    let unsubscribe = () => {}
+    unsubscribe = api.onScanProgress((p) => {
       if (token !== scanTokenRef.current || p.scanId !== sessionID) return
-      if (p.done && p.source) setScanCompletionSource(p.source)
+      if (p.done && p.source) {
+        completionObserved = true
+        setScanCompletionSource(p.source)
+        // IPC's invoke result and progress events can arrive in either order.
+        // Retain the listener until the authoritative completion is observed.
+        if (treeReturned) {
+          unsubscribe()
+          if (scanUnsubRef.current === unsubscribe)
+            scanUnsubRef.current = undefined
+        }
+      }
       if (p.discovery)
         setScanDiscoveries((list) => mergeDiscovery(list, p.discovery) ?? list)
       setScanFiles(p.filesScanned)
@@ -1655,6 +1670,7 @@ export default function DiskUtilityPage() {
         }
       })
     })
+    scanUnsubRef.current = unsubscribe
     try {
       const scannedTree = await api.scanPath(
         path,
@@ -1664,6 +1680,7 @@ export default function DiskUtilityPage() {
         },
         sessionID
       )
+      treeReturned = !!scannedTree
       if (token !== scanTokenRef.current || !scannedTree) return // superseded or cancelled
       if (live.current.scanSession.foregroundID !== sessionID) return // viewport moved to another scan
       scanHistory.seed(sessionID, scannedTree)
@@ -1705,8 +1722,11 @@ export default function DiskUtilityPage() {
     } finally {
       if (token === scanTokenRef.current) {
         setScanning(false)
-        scanUnsubRef.current?.()
-        scanUnsubRef.current = undefined
+        if (!treeReturned || completionObserved) {
+          unsubscribe()
+          if (scanUnsubRef.current === unsubscribe)
+            scanUnsubRef.current = undefined
+        }
         setScanSession((current) => ({ ...current, foregroundID: undefined }))
       }
     }
@@ -3078,6 +3098,38 @@ export default function DiskUtilityPage() {
     restoreFocusAfterDeletion()
   }
 
+  /** A clean success is a toast; failures or a stale plan keep the results sheet. */
+  function reportCleanupOutcomes(
+    outcomes: CleanupOutcome[],
+    needsRecheck: boolean
+  ) {
+    setCleanupResults(outcomes)
+    if (needsRecheck || outcomes.some((item) => item.status === "failed")) {
+      setCleanupResultsOpen(true)
+      return
+    }
+    const trash = nativeTrashName(platform.os)
+    showToast({
+      variant: "success",
+      title: language.t("disk.toast.movedBytes", {
+        bytes: formatBytes(
+          outcomes.reduce((sum, item) => sum + item.node.size, 0)
+        ),
+        trash,
+      }),
+      description:
+        outcomes.length === 1
+          ? itemIdentity(outcomes[0].node).reviewTitle
+          : language.plural("disk.count.item", outcomes.length),
+      actions: [
+        {
+          label: language.t("disk.toast.showTrash", { trash }),
+          onClick: () => void openTrash(),
+        },
+      ],
+    })
+  }
+
   async function trashNode(node: DiskScanNode) {
     const api = disk
     if (!api) return
@@ -3116,8 +3168,10 @@ export default function DiskUtilityPage() {
       })
       setCleanupPlanNeedsRecheck(containsSharedPhysicalStorage(node))
       live.current.applyDeletedNodes([node])
-      setCleanupResults([{ node, status: "moved" }])
-      setCleanupResultsOpen(true)
+      reportCleanupOutcomes(
+        [{ node, status: "moved" }],
+        containsSharedPhysicalStorage(node)
+      )
     } catch (err) {
       setCleanupPlanNeedsRecheck(false)
       setCleanupResults([
@@ -3284,10 +3338,9 @@ export default function DiskUtilityPage() {
       !duplicateEntryNames.has(diskNodeDisplayName(node).toLocaleLowerCase())
     )
       return undefined
-    const parent = node.path
-      .replace(/[\\/][^\\/]+$/, "")
-      .replace(/^\/Users\/[^/]+/, "~")
-    return truncatePath(parent || "/", 80)
+    const parent = node.path.replace(/[\\/][^\\/]+$/, "")
+
+    return truncatePath(abbreviateHomePath(parent || "/", homePath), 80)
   }
 
   function selectEligibleDeveloperResults() {
@@ -3503,15 +3556,17 @@ export default function DiskUtilityPage() {
       )
       setCleanupPlanNeedsRecheck(knownSharedStorage)
       collectionSurface.close()
-      setCleanupResults([
-        ...removed.map((node): CleanupOutcome => ({ node, status: "moved" })),
-        ...failed.map(({ node, error }): CleanupOutcome => ({
-          node,
-          status: "failed",
-          error: error instanceof Error ? error.message : String(error),
-        })),
-      ])
-      setCleanupResultsOpen(true)
+      reportCleanupOutcomes(
+        [
+          ...removed.map((node): CleanupOutcome => ({ node, status: "moved" })),
+          ...failed.map(({ node, error }): CleanupOutcome => ({
+            node,
+            status: "failed",
+            error: error instanceof Error ? error.message : String(error),
+          })),
+        ],
+        knownSharedStorage
+      )
     } catch (error) {
       setCleanupPlanNeedsRecheck(false)
       setCleanupResults(
@@ -4081,6 +4136,10 @@ export default function DiskUtilityPage() {
       unbindRescan?.()
     }
     if (!api) return cleanupMenus
+    void api
+      .getHomePath?.()
+      .then(setHomePath)
+      .catch(() => undefined)
     driveFactsUnsubRef.current = api.onDriveFacts((update) =>
       live.current.applyDriveFacts(update)
     )
@@ -4394,6 +4453,7 @@ export default function DiskUtilityPage() {
             <ChangesButton count={historyChangeCount} sinceLast={sinceLastScan}>
               {(close) => (
                 <ChangesPanel
+                  homePath={homePath}
                   entries={currentHistoryEntries}
                   recent={recentChanges}
                   sinceLast={sinceLastScan}
@@ -4588,6 +4648,24 @@ export default function DiskUtilityPage() {
                     {cleanupWorkspace ? (
                       <CleanupView
                         summary={cleanupSummary}
+                        homePath={homePath}
+                        onInspect={cleanupPolicy.request}
+                        onObserve={cleanupPolicy.request}
+                        accessFor={cleanupPolicy.accessFor}
+                        onCheckAccess={cleanupPolicy.retry}
+                        onRescan={() => void rescanCurrent()}
+                        protectionFor={(node) =>
+                          cleanupLockForPath(
+                            node.path,
+                            cleanupLocks,
+                            platform.os
+                          )
+                        }
+                        onUnprotect={(lock) =>
+                          void toggleProtectedTree(lock.path, lock.label)
+                        }
+                        customAgeDays={indexFilter.customDeveloperAgeDays}
+                        onCustomAgeDays={setCustomDeveloperCleanupAgeDays}
                         isCollected={isCollected}
                         coveredBy={(path) => {
                           const cover = coveringCollectedNode(path)
@@ -4618,6 +4696,7 @@ export default function DiskUtilityPage() {
                         onEcosystem={chooseDeveloperEcosystem}
                         onToggle={toggleCollect}
                         onCollect={collectNodes}
+                        onRelease={uncollectNodes}
                         onClear={clearCollection}
                         onReview={() => collectionSurface.open()}
                         onReveal={(node) => void reveal(node.path)}
@@ -5200,12 +5279,9 @@ export default function DiskUtilityPage() {
                                     index={i()}
                                     size={entry.displaySize}
                                     color={
-                                      isCollected(entry.node.path) ||
-                                      coveringCollectedNode(entry.node.path)
-                                        ? "var(--text-weaker)"
-                                        : (spectrum.color(entry.node) ??
-                                          rootSpectrum.color(entry.node) ??
-                                          "var(--text-weaker)")
+                                      spectrum.color(entry.node) ??
+                                      rootSpectrum.color(entry.node) ??
+                                      "var(--text-weaker)"
                                     }
                                     query={query}
                                     location={entryLocation(entry.node)}
@@ -5450,6 +5526,14 @@ export default function DiskUtilityPage() {
             collectionSurface.phase === "opening"
           }
           items={effectiveCollection}
+          homePath={homePath}
+          restrictionFor={(node) => {
+            const key = cleanupRestriction(node)
+            return key ? language.t(key) : undefined
+          }}
+          accessFor={cleanupPolicy.accessFor}
+          onObserve={cleanupPolicy.request}
+          onCheckAccess={cleanupPolicy.retry}
           recognitionFor={investigation.recognitionFor}
           bytes={collectionSize}
           hasSharedPhysicalStorage={collectionHasSharedPhysicalStorage}
@@ -5501,6 +5585,7 @@ export default function DiskUtilityPage() {
       {/* ── Delete confirm ── */}
       {deleteSurface.mounted && pendingDelete ? (
         <DeleteConfirmDialog
+          homePath={homePath}
           open={
             deleteSurface.phase === "open" || deleteSurface.phase === "opening"
           }

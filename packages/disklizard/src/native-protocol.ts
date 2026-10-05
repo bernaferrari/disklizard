@@ -8,6 +8,7 @@ export const MAX_MATERIALIZED_DISK_TREE_NODES = 500_000
 const ARTIFACT_IDENTITY_HYDRATION_CONCURRENCY = 12
 const MAX_ARTIFACT_IDENTITY_STATUS_SAMPLES = 12
 const MAX_NATIVE_INVENTORY_SAMPLE_PATHS = 12
+const MAX_NATIVE_UNREADABLE_SAMPLE_PATHS = 4096
 // These are protocol safety bounds, not scan limits. Native requests still
 // decide visual depth/child retention, while malformed sidecar output cannot
 // consume unbounded parser stack or work in the desktop process. The node
@@ -203,9 +204,14 @@ function normalizeScopedNativePath(value: unknown, scope: NativePathScope): stri
   }
 }
 
-function normalizeScopedNativePaths(value: unknown, count: unknown, scope: NativePathScope): string[] | undefined {
+function normalizeScopedNativePaths(
+  value: unknown,
+  count: unknown,
+  scope: NativePathScope,
+  limit = MAX_NATIVE_INVENTORY_SAMPLE_PATHS,
+): string[] | undefined {
   if (!isStringArray(value) || !isNonNegativeSafeInteger(count)) return undefined
-  const expectedLength = Math.min(count, MAX_NATIVE_INVENTORY_SAMPLE_PATHS)
+  const expectedLength = Math.min(count, limit)
   if (value.length !== expectedLength || new Set(value).size !== value.length) return undefined
   const normalized = value.map((entry) => normalizeScopedNativePath(entry, scope))
   if (!normalized.every((entry): entry is string => entry !== undefined)) return undefined
@@ -524,7 +530,7 @@ function isScanIssueSummary(value: unknown): value is NonNullable<DiskNode["scan
     isRecord(value) &&
     isNonNegativeSafeInteger(value.unreadableCount) &&
     isStringArray(value.samplePaths) &&
-    value.samplePaths.length === Math.min(value.unreadableCount, MAX_NATIVE_INVENTORY_SAMPLE_PATHS) &&
+    value.samplePaths.length === Math.min(value.unreadableCount, MAX_NATIVE_UNREADABLE_SAMPLE_PATHS) &&
     new Set(value.samplePaths).size === value.samplePaths.length
   )
 }
@@ -626,7 +632,12 @@ function hasScopedCompactTreePaths(scope: NativePathScope, compact: CompactNode)
     if (!isCompactNodeShape(current.node, current.isRoot)) return false
     if (
       current.node.q !== undefined &&
-      normalizeScopedNativePaths(current.node.q.samplePaths, current.node.q.unreadableCount, scope) === undefined
+      normalizeScopedNativePaths(
+        current.node.q.samplePaths,
+        current.node.q.unreadableCount,
+        scope,
+        MAX_NATIVE_UNREADABLE_SAMPLE_PATHS,
+      ) === undefined
     ) {
       return false
     }

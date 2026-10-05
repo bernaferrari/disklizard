@@ -310,6 +310,8 @@ export function registerIpcHandlers(deps: Deps) {
     })
   })
 
+  handle("disklizard:get-home-path", () => app.getPath("home"))
+
   handle("disklizard:get-drives", async (event: IpcMainInvokeEvent) => {
     const drives = await getDrives()
     // `getDrives` has a short first-paint budget on macOS. Publish optional

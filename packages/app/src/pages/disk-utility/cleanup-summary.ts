@@ -6,7 +6,11 @@ import type {
   Recognition,
   Safety,
 } from "./recognize"
-import { createDiskPathCoverage } from "./storage"
+import {
+  createDiskPathCoverage,
+  normalizedDiskPath,
+  uniqueDeletionRoots,
+} from "./storage"
 
 const SAFETY_LABEL = {
   regenerable: "disk.safety.regenerable",
@@ -21,7 +25,11 @@ const SAFETY_LABEL = {
 
 export type CleanupItem = {
   node: DiskScanNode
+  /** Complete filesystem scope used by every selection surface. */
   bytes: number
+  operationBytes: number
+  /** Contribution to developer accounting, which may exclude descendants. */
+  accountingContributionBytes: number
   recognition: Recognition
   safe: boolean
   /** The scan cannot verify this folder’s complete contents. */
@@ -31,12 +39,14 @@ export type CleanupItem = {
 export type CleanupGroup = {
   key: string
   labelKey: DiskLanguageKey
+  label?: string
   bytes: number
   items: CleanupItem[]
 }
 
 /** The toolbar and cleanup workspace share this file-size ledger. It never
- * represents reclaimed bytes, and protected or overlapping roots are excluded. */
+ * represents reclaimed bytes. Discovery keeps nested alternatives; totals count
+ * overlapping filesystem scopes once and review deduplicates operations. */
 export function buildCleanupSummary(input: {
   developerItems: readonly DeveloperItem[]
   suggestions: readonly ReclaimBucket[]
@@ -49,8 +59,8 @@ export function buildCleanupSummary(input: {
   const byTag = new Map<DiskLanguageKey, CleanupItem[]>()
   const locked: CleanupItem[] = []
   const roots = createDiskPathCoverage(input.os)
-  // A parent owns its descendants' bytes. Sort by ancestry before grouping so
-  // duplicate inventory entries cannot inflate either the page or its badge.
+  const seen = new Set<string>()
+  // Resolve duplicate identities in ancestry order, but retain nested choices.
   const candidates = [...input.developerItems].sort(
     (a, b) => roots.depth(a.node.path) - roots.depth(b.node.path)
   )
@@ -60,9 +70,15 @@ export function buildCleanupSummary(input: {
       !input.matchesFilter(item.node, item.recognition)
     )
       continue
+    const path = normalizedDiskPath(item.node.path, input.os)
+    if (seen.has(path)) continue
+    seen.add(path)
     const unobserved = input.hasUnobservedContents?.(item.node) ?? false
     const value = {
       ...item,
+      bytes: item.node.size,
+      operationBytes: item.node.size,
+      accountingContributionBytes: item.bytes,
       unobserved,
       safe: !unobserved && input.isEligible(item.node, item.recognition),
     }
@@ -70,8 +86,6 @@ export function buildCleanupSummary(input: {
       locked.push({ ...value, safe: false })
       continue
     }
-    if (roots.covers(item.node.path)) continue
-    roots.add(item.node.path)
     const key = item.recognition.tag ?? SAFETY_LABEL[item.recognition.safety]
     const items = byTag.get(key) ?? []
     items.push(value)
@@ -84,13 +98,15 @@ export function buildCleanupSummary(input: {
   ): CleanupGroup => ({
     key,
     labelKey,
-    bytes: items.reduce((sum, item) => sum + item.bytes, 0),
+    bytes: uniqueDeletionRoots(
+      items.map((item) => item.node),
+      input.os
+    ).reduce((sum, node) => sum + node.size, 0),
     items: items.toSorted((a, b) => b.bytes - a.bytes),
   })
   const developer = [...byTag]
     .map(([key, items]) => group(`dev:${key}`, key, items))
     .toSorted((a, b) => b.bytes - a.bytes)
-  const suggestionRoots = createDiskPathCoverage(input.os)
   const bySafety = new Map<Safety, CleanupItem[]>()
   // Sort across buckets too: a parent in a later category must still own its
   // descendants instead of adding their file sizes twice.
@@ -100,17 +116,28 @@ export function buildCleanupSummary(input: {
     )
     .toSorted((a, b) => roots.depth(a.node.path) - roots.depth(b.node.path))
   for (const { node, recognition, safety } of suggestionCandidates) {
-    if (
-      !input.canModify(node) ||
-      (input.matchesFilter && !input.matchesFilter(node, recognition))
-    )
+    if (input.matchesFilter && !input.matchesFilter(node, recognition)) continue
+    const path = normalizedDiskPath(node.path, input.os)
+    if (seen.has(path)) continue
+    seen.add(path)
+    if (!input.canModify(node)) {
+      locked.push({
+        node,
+        bytes: node.size,
+        operationBytes: node.size,
+        accountingContributionBytes: node.size,
+        recognition,
+        safe: false,
+        unobserved: input.hasUnobservedContents?.(node) ?? false,
+      })
       continue
-    if (roots.overlaps(node.path) || suggestionRoots.covers(node.path)) continue
-    suggestionRoots.add(node.path)
+    }
     const items = bySafety.get(safety) ?? []
     items.push({
       node,
       bytes: node.size,
+      operationBytes: node.size,
+      accountingContributionBytes: node.size,
       recognition,
       safe: false,
       unobserved: input.hasUnobservedContents?.(node) ?? false,
@@ -130,7 +157,11 @@ export function buildCleanupSummary(input: {
     developer,
     suggestions,
     groups,
-    bytes: items.reduce((sum, item) => sum + item.bytes, 0),
+    os: input.os,
+    bytes: uniqueDeletionRoots(
+      items.map((item) => item.node),
+      input.os
+    ).reduce((sum, node) => sum + node.size, 0),
     count: items.length,
     safe: items.filter((item) => item.safe),
     locked: locked.toSorted((a, b) => b.bytes - a.bytes),
@@ -184,6 +215,10 @@ export function partitionCleanupGroups(summary: CleanupSummary) {
     [...groups.values()]
       .map((group) => ({
         ...group,
+        bytes: uniqueDeletionRoots(
+          group.items.map((item) => item.node),
+          summary.os
+        ).reduce((sum, node) => sum + node.size, 0),
         items: group.items.toSorted((a, b) => b.bytes - a.bytes),
       }))
       .toSorted((a, b) => b.bytes - a.bytes)
@@ -191,7 +226,9 @@ export function partitionCleanupGroups(summary: CleanupSummary) {
 }
 
 /** Explain evidence, rather than attaching the same warning to every artifact. */
-export function cleanupItemExplanation(item: CleanupItem): DiskLanguageKey {
+export function cleanupItemExplanation(
+  item: Pick<CleanupItem, "safe" | "recognition" | "unobserved">
+): DiskLanguageKey {
   if (item.unobserved) return "disk.ui.cleanup.reason.incomplete"
   if (item.safe && item.recognition.hint) return item.recognition.hint
   if (item.recognition.confidence === "ambiguous")
@@ -203,4 +240,69 @@ export function cleanupItemExplanation(item: CleanupItem): DiskLanguageKey {
   if (item.recognition.safety === "logs") return "disk.ui.cleanup.reason.logs"
   if (item.recognition.safety === "cache") return "disk.ui.cleanup.reason.cache"
   return item.recognition.hint ?? "disk.ui.cleanup.reason.other"
+}
+
+export type CleanupGrouping = "artifact" | "project"
+export type CleanupSort = "largest" | "oldest"
+
+/** Navigation operates on discovery, never on the global review selection. */
+export function organizeCleanupGroups(
+  summary: CleanupSummary,
+  options: {
+    query: string
+    grouping: CleanupGrouping
+    sort: CleanupSort
+  }
+) {
+  const query = options.query.trim().toLocaleLowerCase()
+  const groups = partitionCleanupGroups(summary)
+  const compare = (a: CleanupItem, b: CleanupItem) =>
+    options.sort === "oldest"
+      ? (a.node.modifiedAt ?? Infinity) - (b.node.modifiedAt ?? Infinity) ||
+        b.bytes - a.bytes ||
+        a.node.path.localeCompare(b.node.path)
+      : b.bytes - a.bytes || a.node.path.localeCompare(b.node.path)
+  const organize = (sources: CleanupGroup[]): CleanupGroup[] => {
+    const byLocation = new Map<string, CleanupGroup>()
+    for (const source of sources) {
+      const matches = source.items.filter(
+        (item) =>
+          item.node.path.toLocaleLowerCase().includes(query) ||
+          item.node.name.toLocaleLowerCase().includes(query)
+      )
+      if (options.grouping === "artifact") {
+        if (matches.length)
+          byLocation.set(source.key, { ...source, items: matches })
+        continue
+      }
+      for (const item of matches) {
+        const location = item.node.path.replace(/[\\/][^\\/]+$/, "") || "/"
+        const key = `${item.safe ? "ready" : "review"}:${location}`
+        const group = byLocation.get(key) ?? {
+          key,
+          labelKey: source.labelKey,
+          label: location,
+          bytes: 0,
+          items: [],
+        }
+        group.items.push(item)
+        byLocation.set(key, group)
+      }
+    }
+    return [...byLocation.values()]
+      .map((group) => ({
+        ...group,
+        items: group.items.toSorted(compare),
+        bytes: uniqueDeletionRoots(
+          group.items.map((item) => item.node),
+          summary.os
+        ).reduce((sum, node) => sum + node.size, 0),
+      }))
+      .toSorted((a, b) =>
+        options.sort === "oldest"
+          ? compare(a.items[0], b.items[0])
+          : b.bytes - a.bytes || a.key.localeCompare(b.key)
+      )
+  }
+  return { ready: organize(groups.ready), review: organize(groups.review) }
 }

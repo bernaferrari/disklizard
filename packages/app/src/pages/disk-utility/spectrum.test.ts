@@ -53,3 +53,10 @@ describe("shared folder spectrum", () => {
     )
   })
 })
+
+it("keeps branch identity when a neighbor grows past it", () => {
+  const a = folder("/A", 60)
+  const before = createSpectrum(folder("/", 100, [a, folder("/B", 40)]))
+  const after = createSpectrum(folder("/", 150, [folder("/B", 90), a]))
+  expect(after.tone(a)?.h).toBe(before.tone(a)?.h)
+})

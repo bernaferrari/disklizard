@@ -15,6 +15,7 @@ const api: ElectronAPI = {
     getVolumeInfo: (path) => ipcRenderer.invoke("disklizard:volume-info", path),
     revealVolume: (path) => ipcRenderer.invoke("disklizard:reveal-volume", path),
     ejectVolume: (path) => ipcRenderer.invoke("disklizard:eject-volume", path),
+    getHomePath: () => ipcRenderer.invoke("disklizard:get-home-path"),
     getDrives: () => ipcRenderer.invoke("disklizard:get-drives"),
     onDriveFacts: (cb) => {
       const handler = (_: unknown, update: Parameters<typeof cb>[0]) => cb(update)

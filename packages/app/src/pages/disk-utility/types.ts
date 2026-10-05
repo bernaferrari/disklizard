@@ -200,6 +200,7 @@ export type DiskUtilityAPI = {
   ): Promise<{ icon?: string; canEject: boolean } | null>
   revealVolume?(path: string): Promise<boolean>
   ejectVolume?(path: string): Promise<boolean>
+  getHomePath?(): Promise<string>
   getDrives(): Promise<DiskDriveInfo[]>
   onDriveFacts(cb: (update: DiskDriveFactsUpdate) => void): () => void
   getStorageDiagnostics(): Promise<DiskStorageDiagnostics>

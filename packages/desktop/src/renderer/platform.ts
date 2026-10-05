@@ -39,6 +39,7 @@ export function createDiskLizardPlatform(updaterState: () => DiskLizardUpdaterSt
       getVolumeInfo: window.api.disklizard.getVolumeInfo ? (path) => window.api.disklizard.getVolumeInfo!(path) : undefined,
       revealVolume: window.api.disklizard.revealVolume ? (path) => window.api.disklizard.revealVolume!(path) : undefined,
       ejectVolume: window.api.disklizard.ejectVolume ? (path) => window.api.disklizard.ejectVolume!(path) : undefined,
+      getHomePath: () => window.api.disklizard.getHomePath(),
       getDrives: () => window.api.disklizard.getDrives(),
       onDriveFacts: (cb) => window.api.disklizard.onDriveFacts(cb),
       getStorageDiagnostics: () => window.api.disklizard.getStorageDiagnostics(),

@@ -3,7 +3,7 @@ import { Check, ChevronRight, Plus } from "lucide-react"
 import type { PointerDragSource } from "./pointer-drag"
 import { cn } from "@/lib/utils"
 import { SearchHighlight } from "./SearchHighlight"
-import { shortBytes } from "./format"
+import { formatBytes } from "./format"
 import { diskNodeDisplayName } from "./node-display"
 import { itemIdentity } from "./item-identity"
 import { useLanguage } from "./runtime"
@@ -109,7 +109,7 @@ export function StorageRow(props: {
               aggregate ? "text-text-weak" : "text-text-base"
             )}
           >
-            {shortBytes(props.size)}
+            {formatBytes(props.size)}
           </span>
           {props.includedBy ? (
             <span className="max-w-32 truncate text-[11px] leading-4 text-text-weak">

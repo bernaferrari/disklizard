@@ -5,7 +5,7 @@ import {
   File as FileIcon,
   Folder,
   FolderSearch,
-  RotateCcw,
+  Info,
   Trash2,
   TriangleAlert,
   X,
@@ -34,7 +34,11 @@ import {
 import { SAFETY_ACCENT } from "./ui-tokens"
 import { VirtualRows } from "./DiskUtilityVirtualList"
 import { useLanguage, type DiskLanguageKey } from "./runtime"
-import { distinguishingPathLabels, itemIdentity } from "./item-identity"
+import {
+  itemIdentity,
+  cleanupLocationLabels,
+  abbreviateHomePath,
+} from "./item-identity"
 
 const SAFETY_LABEL = {
   regenerable: "disk.safety.regenerable",
@@ -214,9 +218,35 @@ export function CleanupProtectionsResetDialog(props: {
   )
 }
 
+/** Informational caveats. Moving to the Trash is reversible, so none of these gate the action. */
+function CleanupNotes(props: { notes: (string | undefined)[] }) {
+  const notes = props.notes.filter((note): note is string => !!note)
+  if (!notes.length) return null
+  return (
+    <ul className="mx-6 mb-5 space-y-2 rounded-lg bg-[var(--dl-well)] px-3.5 py-3 text-[12.5px] leading-[1.55] text-text-weak">
+      {notes.map((note) => (
+        <li key={note} className="flex gap-2.5">
+          <Info
+            className="mt-[3px] size-3.5 shrink-0 text-text-weaker"
+            aria-hidden
+          />
+          <span>{note}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+import { ACCESS_LABEL, type AccessAssessment } from "./access-assessments"
+
 export function CollectionDialog(props: {
   open: boolean
   items: DiskScanNode[]
+  homePath?: string
+  restrictionFor?: (node: DiskScanNode) => string | undefined
+  accessFor?: (node: DiskScanNode) => AccessAssessment
+  onObserve?: (node: DiskScanNode) => void
+  onCheckAccess?: (node: DiskScanNode) => void
   recognitionFor?: (node: DiskScanNode) => Recognition
   bytes: number
   hasSharedPhysicalStorage: boolean
@@ -235,8 +265,10 @@ export function CollectionDialog(props: {
   onConfirm: () => void
 }) {
   const language = useLanguage()
-  const panelRef = useRef<HTMLDivElement | null>(null)
-  const [acknowledgedPartialScan, setAcknowledgedPartialScan] = useState(false)
+  const confirmRef = useRef<HTMLButtonElement | null>(null)
+  useEffect(() => {
+    if (props.open) for (const node of props.items) props.onObserve?.(node)
+  }, [props.open, props.items, props.onObserve])
   const [copiedPath, setCopiedPath] = useState<string | null>(null)
   const [copyFailedPath, setCopyFailedPath] = useState<string | null>(null)
   useEffect(() => {
@@ -250,40 +282,36 @@ export function CollectionDialog(props: {
       setCopyFailedPath(null)
     }
   }, [props.open])
-  const coverageKey = props.items.map((item) => item.path).join("\u0000")
-  useEffect(() => setAcknowledgedPartialScan(false), [props.open, coverageKey])
   const sortedItems = useMemo(
     () => props.items.toSorted((a, b) => b.size - a.size),
     [props.items]
   )
   const locations = useMemo(
-    () => distinguishingPathLabels(props.items.map((item) => item.path)),
-    [props.items]
+    () =>
+      cleanupLocationLabels(
+        props.items.map((item) => item.path),
+        props.homePath
+      ),
+    [props.items, props.homePath]
   )
-  const summary = language.t("disk.dialog.collection.summary", {
-    count: language.plural("disk.count.item", props.items.length),
-    size: formatBytes(props.bytes),
-  })
-  const open = props.open
   const cautious =
     props.requiresDeepInventoryRefresh ||
     props.hasSharedPhysicalStorage ||
     props.hasUnverifiedPhysicalStorage
-  const blocked =
-    props.deleting || (props.hasUnobservedContents && !acknowledgedPartialScan)
+  const trash = { trash: props.trashName }
   return (
     <Dialog
-      open={open}
+      open={props.open}
       onOpenChange={(next) => {
         if (!next) props.onClose()
       }}
     >
       <DialogContent
         aria-labelledby="collection-title"
+        aria-describedby="collection-description"
         showCloseButton={false}
-        ref={panelRef}
-        initialFocus={() => panelRef.current}
-        className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[600px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[600px]"
+        initialFocus={confirmRef}
+        className="flex max-h-[min(720px,calc(100dvh-48px))] w-full max-w-[560px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[560px]"
       >
         <span className="sr-only" role="status">
           {copyFailedPath
@@ -292,127 +320,94 @@ export function CollectionDialog(props: {
               ? language.t("disk.dialog.collection.copied")
               : ""}
         </span>
-        <div className="flex items-start gap-4 px-6 pt-6 pb-4">
+        <div className="flex items-start gap-6 px-6 pt-6 pb-5">
           <div className="min-w-0 flex-1">
             <DialogTitle id="collection-title">
-              {language.t("disk.dialog.collection.heading")}
+              {language.plural(
+                "disk.dialog.collection.title",
+                props.items.length,
+                trash
+              )}
             </DialogTitle>
-            <p className="mt-2 text-[13px] text-text-weak">
-              {cautious || props.hasUnobservedContents
-                ? language.t("disk.dialog.collection.selectedSizes", {
-                    summary,
-                  })
-                : summary}
-            </p>
-            <p className="sr-only">
-              {language.t("disk.dialog.collection.body")}
+            <p
+              id="collection-description"
+              className="mt-1.5 text-[13px] leading-5 text-text-weak"
+            >
+              {props.requiresDeepInventoryRefresh
+                ? language.t("disk.dialog.restore.rebuild", trash)
+                : cautious
+                  ? language.t("disk.dialog.restore.recompute", trash)
+                  : language.t("disk.dialog.restore.space", trash)}
             </p>
           </div>
-          <ShadcnButton
-            type="button"
-            variant="ghost"
-            size="icon"
-            disabled={props.deleting}
-            onClick={props.onClose}
-            aria-label={language.t("disk.dialog.collection.close")}
-          >
-            <X className="size-4" aria-hidden />
-          </ShadcnButton>
+          <p className="shrink-0 pt-px text-[22px] leading-6 font-semibold tracking-[-0.03em] text-text-strong tabular-nums">
+            {formatBytes(props.bytes)}
+          </p>
         </div>
 
-        {props.requiresDeepInventoryRefresh ||
-        props.hasSharedPhysicalStorage ||
-        props.hasUnverifiedPhysicalStorage ||
-        props.hasUnobservedContents ? (
-          <div
-            className={cn(
-              "mx-6 mb-4 shrink-0 overflow-hidden rounded-xl text-[12px] leading-relaxed text-text-weak",
-              props.hasUnobservedContents
-                ? "bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]"
-                : "bg-[var(--dl-well)]"
-            )}
-          >
-            {props.requiresDeepInventoryRefresh ||
-            props.hasSharedPhysicalStorage ||
-            props.hasUnverifiedPhysicalStorage ? (
-              <div className="px-3.5 py-2.5">
-                {props.requiresDeepInventoryRefresh ? (
-                  <>
-                    <p className="text-[12.5px] font-medium text-text-strong">
-                      {language.t("disk.dialog.collection.deepWarningSummary")}
-                    </p>
-                    <p className="mt-0.5">
-                      {language.t("disk.dialog.collection.deepWarning", {
-                        trash: props.trashName,
-                      })}
-                    </p>
-                  </>
-                ) : props.hasSharedPhysicalStorage ? (
-                  <p>
-                    {language.t("disk.dialog.collection.sharedWarning", {
-                      trash: props.trashName,
-                    })}
-                  </p>
-                ) : (
-                  <p>
-                    {language.t("disk.dialog.collection.unverifiedWarning", {
-                      trash: props.trashName,
-                    })}
-                  </p>
-                )}
-              </div>
-            ) : null}
-            {props.hasUnobservedContents ? (
-              <label
-                className={
-                  "flex cursor-pointer items-start gap-2.5 px-3.5 py-2.5 " +
-                  (cautious
-                    ? "border-t border-[color-mix(in_oklch,var(--dl-warning)_25%,transparent)]"
-                    : "")
-                }
-              >
-                <input
-                  type="checkbox"
-                  className="mt-0.5 size-4 shrink-0 accent-[var(--dl-accent)]"
-                  checked={acknowledgedPartialScan}
-                  disabled={props.deleting}
-                  onChange={(event) =>
-                    setAcknowledgedPartialScan(event.currentTarget.checked)
-                  }
-                />
-                <span>
-                  <span className="block">
-                    {language.t("disk.review.partialWarning")}
-                  </span>
-                  <span className="mt-1 block font-medium text-text-strong">
-                    {language.t("disk.review.partialAcknowledge", {
-                      trash: props.trashName,
-                    })}
-                  </span>
-                </span>
-              </label>
-            ) : null}
-          </div>
-        ) : null}
+        <CleanupNotes
+          notes={[
+            props.requiresDeepInventoryRefresh
+              ? language.t("disk.dialog.collection.deepWarning", trash)
+              : props.hasSharedPhysicalStorage
+                ? language.t("disk.dialog.collection.sharedWarning", trash)
+                : props.hasUnverifiedPhysicalStorage
+                  ? language.t(
+                      "disk.dialog.collection.unverifiedWarning",
+                      trash
+                    )
+                  : undefined,
+            props.hasUnobservedContents
+              ? language.t("disk.review.partialWarning")
+              : undefined,
+            ...new Set(
+              props.items
+                .map((node) => props.restrictionFor?.(node))
+                .filter(Boolean)
+            ),
+          ]}
+        />
 
         <div
-          className="flex min-h-[112px] shrink flex-col border-y border-[var(--dl-separator)]"
-          style={{ height: Math.min(props.items.length * 56 + 18, 460) }}
+          className="flex min-h-[64px] shrink flex-col border-y border-[var(--dl-separator)]"
+          style={{ height: Math.min(props.items.length * 72 + 18, 420) }}
         >
           <VirtualRows
             items={sortedItems}
             ariaLabel={language.t("disk.dialog.collection.itemsLabel")}
-            estimateSize={() => 56}
+            estimateSize={() => 72}
             itemKey={(item) => item.path}
             render={(item) => {
               const recognition =
                 props.recognitionFor?.(item) ?? recognize(item)
               const identity = itemIdentity(item)
+              const access = props.accessFor?.(item)
+              const restriction = props.restrictionFor?.(item)
               const hint = recognition.hint
                 ? language.t(recognition.hint)
                 : undefined
+              const name = locations.get(item.path) ?? identity.reviewTitle
+              const copyLabel = language.t(
+                copyFailedPath === item.path
+                  ? "disk.dialog.collection.copyFailed"
+                  : copiedPath === item.path
+                    ? "disk.dialog.collection.copied"
+                    : "disk.dialog.collection.copyPath"
+              )
+              const previewLabel = language.t(
+                props.onQuickLook
+                  ? "disk.dialog.collection.quickLook"
+                  : "disk.dialog.collection.preview",
+                { name }
+              )
+              const revealLabel = language.t("disk.dialog.collection.reveal", {
+                name,
+              })
+              const removeLabel = language.t("disk.dialog.collection.remove", {
+                name,
+              })
               return (
-                <div className="group mx-3 flex h-full items-center gap-3 rounded-lg px-3 hover:bg-[var(--dl-row-hover)]">
+                <div className="group mx-2 flex h-full items-center gap-3 rounded-lg pr-1 pl-3 hover:bg-[var(--dl-row-hover)]">
                   <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--dl-well)] text-text-weak">
                     {item.isDir ? (
                       <Folder
@@ -432,49 +427,47 @@ export function CollectionDialog(props: {
                     className="min-w-0 flex-1"
                     title={hint ? `${item.path}\n${hint}` : item.path}
                   >
-                    <span className="block truncate text-[13.5px] font-medium text-text-strong">
+                    <span className="block truncate text-[13.5px] leading-5 font-medium text-text-strong">
                       {identity.reviewTitle}
                     </span>
-                    <span className="block truncate font-mono text-[11px] text-text-weak">
-                      <span className="hidden sm:inline">{item.path}</span>
-                      <span className="sm:hidden">
-                        {locations.get(item.path) ?? item.path}
-                      </span>
+                    <span className="block truncate text-[12px] leading-4 text-text-weak">
+                      {locations.get(item.path) ??
+                        abbreviateHomePath(item.path, props.homePath)}
                     </span>
+                    {restriction || access ? (
+                      <span className="block truncate text-[11px] text-text-weaker">
+                        {restriction ?? language.t(ACCESS_LABEL[access!.state])}
+                      </span>
+                    ) : null}
                     {recognition.tag ? (
                       <span className="sr-only">
                         {language.t(recognition.tag)}
                       </span>
                     ) : null}
                   </span>
-                  <span className="flex shrink-0 items-center opacity-0 transition-opacity group-focus-within/review-row:opacity-100 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+                  <span className="flex shrink-0 items-center">
+                    {access &&
+                    ["denied", "read-only", "unknown"].includes(access.state) &&
+                    props.onCheckAccess ? (
+                      <ShadcnButton
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => props.onCheckAccess?.(item)}
+                      >
+                        {language.t("disk.cleanup.checkAgain")}
+                      </ShadcnButton>
+                    ) : null}
                     {!item.isOther && !item.isHidden ? (
                       <>
                         <ShadcnButton
                           type="button"
                           variant="ghost"
-                          size="icon"
+                          size="icon-sm"
+                          className="text-text-weaker hover:text-text-strong"
                           disabled={props.deleting}
-                          aria-label={language.t(
-                            props.onQuickLook
-                              ? "disk.dialog.collection.quickLook"
-                              : "disk.dialog.collection.preview",
-                            {
-                              name:
-                                locations.get(item.path) ??
-                                identity.reviewTitle,
-                            }
-                          )}
-                          title={language.t(
-                            props.onQuickLook
-                              ? "disk.dialog.collection.quickLook"
-                              : "disk.dialog.collection.preview",
-                            {
-                              name:
-                                locations.get(item.path) ??
-                                identity.reviewTitle,
-                            }
-                          )}
+                          aria-label={previewLabel}
+                          title={previewLabel}
                           onClick={() =>
                             props.onQuickLook
                               ? props.onQuickLook(item)
@@ -486,20 +479,11 @@ export function CollectionDialog(props: {
                         <ShadcnButton
                           type="button"
                           variant="ghost"
-                          size="icon"
+                          size="icon-sm"
+                          className="text-text-weaker hover:text-text-strong"
                           disabled={props.deleting}
-                          aria-label={language.t(
-                            "disk.dialog.collection.reveal",
-                            {
-                              name:
-                                locations.get(item.path) ??
-                                identity.reviewTitle,
-                            }
-                          )}
-                          title={language.t("disk.dialog.collection.reveal", {
-                            name:
-                              locations.get(item.path) ?? identity.reviewTitle,
-                          })}
+                          aria-label={revealLabel}
+                          title={revealLabel}
                           onClick={() => props.onReveal(item)}
                         >
                           <FolderSearch className="size-3.5" aria-hidden />
@@ -509,21 +493,10 @@ export function CollectionDialog(props: {
                     <ShadcnButton
                       type="button"
                       variant="ghost"
-                      size="icon"
-                      aria-label={language.t(
-                        copyFailedPath === item.path
-                          ? "disk.dialog.collection.copyFailed"
-                          : copiedPath === item.path
-                            ? "disk.dialog.collection.copied"
-                            : "disk.dialog.collection.copyPath"
-                      )}
-                      title={language.t(
-                        copyFailedPath === item.path
-                          ? "disk.dialog.collection.copyFailed"
-                          : copiedPath === item.path
-                            ? "disk.dialog.collection.copied"
-                            : "disk.dialog.collection.copyPath"
-                      )}
+                      size="icon-sm"
+                      className="text-text-weaker hover:text-text-strong"
+                      aria-label={copyLabel}
+                      title={copyLabel}
                       onClick={() => {
                         if (!navigator.clipboard) {
                           setCopyFailedPath(item.path)
@@ -554,20 +527,17 @@ export function CollectionDialog(props: {
                       )}
                     </ShadcnButton>
                   </span>
-                  <span className="w-16 shrink-0 text-right text-[13px] text-text-base tabular-nums">
-                    {shortBytes(item.size)}
+                  <span className="w-[72px] shrink-0 text-right text-[13px] text-text-base tabular-nums">
+                    {formatBytes(item.size)}
                   </span>
                   <ShadcnButton
                     type="button"
                     variant="ghost"
-                    size="icon"
+                    size="icon-sm"
+                    className="text-text-weaker hover:text-text-strong"
                     disabled={props.deleting}
-                    aria-label={language.t("disk.dialog.collection.remove", {
-                      name: locations.get(item.path) ?? identity.reviewTitle,
-                    })}
-                    title={language.t("disk.dialog.collection.remove", {
-                      name: locations.get(item.path) ?? identity.reviewTitle,
-                    })}
+                    aria-label={removeLabel}
+                    title={removeLabel}
                     onClick={() => props.onRemove(item)}
                   >
                     <X className="size-3.5" aria-hidden />
@@ -578,10 +548,10 @@ export function CollectionDialog(props: {
           />
         </div>
 
-        <DialogFooter className="shrink-0 flex-row flex-wrap items-center gap-3 px-6 py-4">
+        <DialogFooter className="shrink-0 flex-row items-center gap-2 px-6 py-4">
           {props.progress ? (
             <div
-              className="flex min-w-0 flex-1 items-center gap-2 text-[12.5px] text-text-weak tabular-nums"
+              className="mr-auto flex min-w-0 items-center gap-2 text-[12.5px] text-text-weak tabular-nums"
               role="status"
               aria-live="polite"
               aria-atomic="true"
@@ -593,50 +563,38 @@ export function CollectionDialog(props: {
               })}
               …
             </div>
-          ) : (
-            <p className="flex min-w-0 flex-1 items-center gap-2 text-[12px] leading-snug text-text-weak">
-              <RotateCcw className="size-3.5 shrink-0" aria-hidden />
-              <span className="min-w-0">
-                {props.requiresDeepInventoryRefresh
-                  ? language.t("disk.dialog.restore.rebuild", {
-                      trash: props.trashName,
-                    })
-                  : cautious
-                    ? language.t("disk.dialog.restore.recompute", {
-                        trash: props.trashName,
-                      })
-                    : language.t("disk.dialog.restore.space", {
-                        trash: props.trashName,
-                      })}
-              </span>
-            </p>
-          )}
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <ShadcnButton
-              type="button"
-              variant="ghost"
-              size="lg"
-              disabled={props.deleting}
-              onClick={props.onClose}
-            >
-              {language.t("disk.common.back")}
-            </ShadcnButton>
-            <ShadcnButton
-              type="button"
-              variant="destructive"
-              size="lg"
-              disabled={blocked}
-              onClick={props.onConfirm}
-            >
-              <Trash2 className="size-4" aria-hidden />
-              {props.progress
-                ? language.t("disk.dialog.collection.movingCompact", {
-                    current: props.progress.completed,
-                    total: props.progress.total,
-                  })
-                : language.t("disk.detail.moveTo", { trash: props.trashName })}
-            </ShadcnButton>
-          </div>
+          ) : null}
+          <ShadcnButton
+            type="button"
+            variant="ghost"
+            size="lg"
+            className="px-3.5"
+            disabled={props.deleting}
+            onClick={props.onClose}
+          >
+            {language.t("disk.common.cancel")}
+          </ShadcnButton>
+          <ShadcnButton
+            ref={confirmRef}
+            type="button"
+            variant="destructive"
+            size="lg"
+            className="px-3.5"
+            disabled={
+              props.deleting ||
+              props.items.length === 0 ||
+              props.items.some((node) => !!props.restrictionFor?.(node))
+            }
+            onClick={props.onConfirm}
+          >
+            <Trash2 className="size-4" aria-hidden />
+            {props.progress
+              ? language.t("disk.dialog.collection.movingCompact", {
+                  current: props.progress.completed,
+                  total: props.progress.total,
+                })
+              : language.t("disk.detail.moveTo", trash)}
+          </ShadcnButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -846,6 +804,7 @@ export function ReclaimDrawer(props: {
 }
 
 export function DeleteConfirmDialog(props: {
+  homePath?: string
   open: boolean
   node: DiskScanNode
   hasSharedPhysicalStorage: boolean
@@ -859,28 +818,11 @@ export function DeleteConfirmDialog(props: {
   onConfirm: () => void
 }) {
   const language = useLanguage()
-  const panelRef = useRef<HTMLDivElement | null>(null)
-  const [acknowledgedPartialScan, setAcknowledgedPartialScan] = useState(false)
-  useEffect(
-    () => setAcknowledgedPartialScan(false),
-    [props.open, props.node.path]
-  )
-  const open = props.open
-  const cautious =
-    props.requiresDeepInventoryRefresh ||
-    props.hasSharedPhysicalStorage ||
-    props.hasUnverifiedPhysicalStorage ||
-    props.hasUnobservedContents
-  const warning = props.requiresDeepInventoryRefresh
-    ? language.t("disk.dialog.delete.deepWarning")
-    : props.hasSharedPhysicalStorage
-      ? language.t("disk.dialog.delete.sharedWarning")
-      : props.hasUnverifiedPhysicalStorage
-        ? language.t("disk.dialog.delete.unverifiedWarning")
-        : undefined
+  const confirmRef = useRef<HTMLButtonElement | null>(null)
+  const trash = { trash: props.trashName }
   return (
     <Dialog
-      open={open}
+      open={props.open}
       onOpenChange={(next) => {
         if (!next) props.onClose()
       }}
@@ -890,130 +832,86 @@ export function DeleteConfirmDialog(props: {
         aria-labelledby="delete-title"
         aria-describedby="delete-description"
         showCloseButton={false}
-        ref={panelRef}
-        initialFocus={() =>
-          panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
-          panelRef.current
-        }
-        className="block w-full max-w-[440px] gap-0 overflow-hidden p-0 sm:max-w-[440px]"
+        initialFocus={confirmRef}
+        className="block w-full max-w-[460px] gap-0 overflow-hidden p-0 sm:max-w-[460px]"
       >
         <div className="px-6 pt-6 pb-5">
-          <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[color-mix(in_oklch,var(--dl-danger)_16%,transparent)] text-[var(--dl-danger)]">
-              <Trash2 className="size-[18px]" aria-hidden />
-            </span>
-            <div className="min-w-0">
-              <DialogTitle id="delete-title">
-                {language.t("disk.dialog.delete.prompt", {
-                  trash: props.trashName,
-                })}
-              </DialogTitle>
-            </div>
-          </div>
-          <div
+          <DialogTitle id="delete-title">
+            {language.t("disk.dialog.delete.prompt", trash)}
+          </DialogTitle>
+          <p
             id="delete-description"
-            className="mt-5 flex items-center gap-3 rounded-xl bg-[var(--dl-well)] px-4 py-3"
+            className="mt-1.5 text-[13px] leading-5 text-text-weak"
           >
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--dl-well-strong)] text-text-weak">
-              {props.node.isDir ? (
-                <Folder className="size-4" strokeWidth={1.75} aria-hidden />
-              ) : (
-                <FileIcon className="size-4" strokeWidth={1.75} aria-hidden />
-              )}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13.5px] font-medium text-text-strong">
-                {itemIdentity(props.node).reviewTitle}
-              </p>
-              <p
-                className="mt-0.5 font-mono text-[11px] leading-4 [overflow-wrap:anywhere] text-text-weak select-text"
-                title={props.node.path}
-              >
-                {props.node.path}
-              </p>
-            </div>
-            <p
-              className="shrink-0 text-[15px] font-semibold text-text-strong tabular-nums"
-              title={
-                cautious
-                  ? language.t("disk.dialog.delete.selectedSize", {
-                      size: formatBytes(props.node.size),
-                    })
-                  : undefined
-              }
-            >
-              {formatBytes(props.node.size)}
-            </p>
-          </div>
-          {warning || props.hasUnobservedContents ? (
-            <div className="mt-3 space-y-2 rounded-xl bg-[color-mix(in_oklch,var(--dl-warning)_9%,transparent)] px-3.5 py-3 text-[12.5px] leading-relaxed text-text-base shadow-[inset_0_0_0_0.5px_color-mix(in_oklch,var(--dl-warning)_35%,transparent)]">
-              {warning ? <p>{warning}</p> : null}
-              {props.hasUnobservedContents ? (
-                <label className="flex cursor-pointer items-start gap-2.5">
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 size-4 shrink-0 accent-[var(--dl-accent)]"
-                    checked={acknowledgedPartialScan}
-                    disabled={props.deleting}
-                    onChange={(event) =>
-                      setAcknowledgedPartialScan(event.currentTarget.checked)
-                    }
-                  />
-                  <span>
-                    <span className="block">
-                      {language.t("disk.review.partialWarning")}
-                    </span>
-                    <span className="mt-1 block font-medium text-text-strong">
-                      {language.t("disk.review.partialAcknowledge", {
-                        trash: props.trashName,
-                      })}
-                    </span>
-                  </span>
-                </label>
-              ) : null}
-            </div>
-          ) : null}
-          <p className="mt-3 flex items-center gap-2 text-[12px] text-text-weak">
-            <RotateCcw className="size-3.5 shrink-0" aria-hidden />
             {props.requiresDeepInventoryRefresh
-              ? language.t("disk.dialog.delete.restoreRebuild", {
-                  trash: props.trashName,
-                })
+              ? language.t("disk.dialog.delete.restoreRebuild", trash)
               : props.hasSharedPhysicalStorage ||
                   props.hasUnverifiedPhysicalStorage
-                ? language.t("disk.dialog.delete.restoreRecompute", {
-                    trash: props.trashName,
-                  })
-                : language.t("disk.dialog.delete.restoreSpace", {
-                    trash: props.trashName,
-                  })}
+                ? language.t("disk.dialog.delete.restoreRecompute", trash)
+                : language.t("disk.dialog.delete.restoreSpace", trash)}
           </p>
         </div>
-        <DialogFooter className="border-t border-border px-6 py-4">
+        <div className="mx-6 mb-5 flex items-center gap-3 rounded-xl bg-[var(--dl-well)] px-3.5 py-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[var(--dl-well-strong)] text-text-weak">
+            {props.node.isDir ? (
+              <Folder className="size-4" strokeWidth={1.75} aria-hidden />
+            ) : (
+              <FileIcon className="size-4" strokeWidth={1.75} aria-hidden />
+            )}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[13.5px] leading-5 font-medium text-text-strong">
+              {itemIdentity(props.node).reviewTitle}
+            </p>
+            <p
+              className="truncate text-[12px] leading-4 text-text-weak select-text"
+              title={props.node.path}
+            >
+              {abbreviateHomePath(props.node.path, props.homePath)}
+            </p>
+          </div>
+          <p className="shrink-0 text-[15px] font-semibold text-text-strong tabular-nums">
+            {formatBytes(props.node.size)}
+          </p>
+        </div>
+        <CleanupNotes
+          notes={[
+            props.requiresDeepInventoryRefresh
+              ? language.t("disk.dialog.delete.deepWarning")
+              : props.hasSharedPhysicalStorage
+                ? language.t("disk.dialog.delete.sharedWarning")
+                : props.hasUnverifiedPhysicalStorage
+                  ? language.t("disk.dialog.delete.unverifiedWarning")
+                  : undefined,
+            props.hasUnobservedContents
+              ? language.t("disk.review.partialWarning")
+              : undefined,
+          ]}
+        />
+        <DialogFooter className="flex-row justify-end gap-2 border-t border-[var(--dl-separator)] px-6 py-4">
           <ShadcnButton
             type="button"
-            data-autofocus
             variant="ghost"
             size="lg"
+            className="px-3.5"
             disabled={props.deleting}
             onClick={props.onClose}
           >
-            {language.t("disk.dialog.delete.keep")}
+            {language.t("disk.common.cancel")}
           </ShadcnButton>
           <ShadcnButton
+            ref={confirmRef}
             type="button"
             variant="destructive"
             size="lg"
-            disabled={
-              props.deleting ||
-              (props.hasUnobservedContents && !acknowledgedPartialScan)
-            }
+            className="px-3.5"
+            disabled={props.deleting}
             onClick={props.onConfirm}
           >
             <Trash2 className="size-4" aria-hidden />
             {props.deleting
               ? language.t("disk.dialog.delete.moving")
-              : language.t("disk.detail.moveTo", { trash: props.trashName })}
+              : language.t("disk.detail.moveTo", trash)}
           </ShadcnButton>
         </DialogFooter>
       </DialogContent>

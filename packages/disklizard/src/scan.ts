@@ -225,9 +225,12 @@ function isExcluded(st: WalkState, targetPath: string) {
   return st.excludedPaths.has(comparablePath(targetPath))
 }
 
+/** Kept well past display needs so the renderer can attribute partial coverage per folder. */
+const MAX_UNREADABLE_SAMPLES = 4096
+
 function recordUnreadable(st: WalkState, targetPath: string) {
   st.unreadableCount++
-  if (st.issueSamples.length < 12) st.issueSamples.push(targetPath)
+  if (st.issueSamples.length < MAX_UNREADABLE_SAMPLES) st.issueSamples.push(targetPath)
 }
 
 function recordSkippedSymlink(st: WalkState, targetPath: string) {
@@ -500,7 +503,7 @@ function attachDeveloperArtifactInventory(root: DiskNode, st: WalkState) {
       matchedDirectories: inventory.matchedDirectories,
       truncated: inventory.truncated,
       unreadableCount: st.unreadableCount,
-      unreadableSamplePaths: [...st.issueSamples],
+      unreadableSamplePaths: st.issueSamples.slice(0, 12),
       skippedSymlinkCount: st.skippedSymlinkCount,
       skippedSymlinkSamplePaths: [...st.skippedSymlinkSamples],
       skippedDirectoryCount: st.skippedDirectoryCount,

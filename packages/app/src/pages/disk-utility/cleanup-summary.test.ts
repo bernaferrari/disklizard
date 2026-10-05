@@ -3,6 +3,7 @@ import {
   buildCleanupSummary,
   partitionCleanupGroups,
   cleanupItemExplanation,
+  organizeCleanupGroups,
 } from "./cleanup-summary"
 import { recognize } from "./recognize"
 import type { DiskScanNode } from "./types"
@@ -28,7 +29,7 @@ const options = {
   isEligible: () => true,
 }
 
-test("cleanup totals count parent roots once and exclude protected items", () => {
+test("cleanup totals count scopes once while keeping nested alternatives and excluding protected items", () => {
   const parent = node("/work/node_modules", 100)
   const child = node("/work/node_modules/.cache", 40)
   const protectedItem = node("/work/locked/node_modules", 60)
@@ -44,14 +45,20 @@ test("cleanup totals count parent roots once and exclude protected items", () =>
     canModify: (candidate) => candidate.path !== protectedItem.path,
   })
   expect(summary.bytes).toBe(100)
-  expect(summary.count).toBe(1)
-  expect(summary.safe.map(({ node }) => node.path)).toEqual([parent.path])
+  expect(summary.count).toBe(2)
+  expect(summary.safe.map(({ node }) => node.path)).toEqual([
+    parent.path,
+    child.path,
+  ])
   expect(summary.locked.map(({ node }) => node.path)).toEqual([
     protectedItem.path,
   ])
-  expect(summary.groups.reduce((sum, group) => sum + group.bytes, 0)).toBe(
-    summary.bytes
-  )
+  expect(
+    summary.groups
+      .flatMap((group) => group.items)
+      .map((item) => item.bytes)
+      .sort((a, b) => b - a)
+  ).toEqual([100, 40])
 })
 
 test("suggestion parents own their bytes even when listed in a later bucket", () => {
@@ -66,7 +73,7 @@ test("suggestion parents own their bytes even when listed in a later bucket", ()
     ],
   })
   expect(summary.bytes).toBe(100)
-  expect(summary.count).toBe(1)
+  expect(summary.count).toBe(2)
   expect(summary.suggestions[0]?.items[0]?.node.path).toBe(parent.path)
   expect(summary.safe).toEqual([])
 })
@@ -112,7 +119,7 @@ test("filters and per-item eligibility apply to the same summary", () => {
   expect(summary.safe).toEqual([])
 })
 
-test("developer and suggestion overlap is excluded without confusing sibling prefixes", () => {
+test("developer and suggestion alternatives retain siblings and count overlaps once", () => {
   const dependency = node("/work/node_modules", 100)
   const suggestions = [
     node("/work", 200),
@@ -126,14 +133,16 @@ test("developer and suggestion overlap is excluded without confusing sibling pre
       { safety: "cache", bytes: 270, count: 3, items: suggestions.map(item) },
     ],
   })
-  expect(summary.bytes).toBe(130)
-  expect(summary.count).toBe(2)
-  expect(summary.suggestions[0]?.items[0]?.node.path).toBe(
-    "/work/node_modules-old"
-  )
+  expect(summary.bytes).toBe(200)
+  expect(summary.count).toBe(4)
+  expect(
+    summary.suggestions
+      .flatMap((group) => group.items)
+      .some((item) => item.node.path === "/work/node_modules-old")
+  ).toBe(true)
 })
 
-test("large inventories preserve every independent root and deduplicate their children", () => {
+test("large inventories retain nested discovery without duplicating measured totals", () => {
   const roots = Array.from({ length: 3000 }, (_, index) =>
     node(`/work/${index}/node_modules`, 100)
   )
@@ -146,7 +155,7 @@ test("large inventories preserve every independent root and deduplicate their ch
     suggestions: [],
   })
   expect(summary.bytes).toBe(300_000)
-  expect(summary.count).toBe(3000)
+  expect(summary.count).toBe(6000)
 })
 
 test("uninspected contents cannot enter the recreatable section even with verified recognition", () => {
@@ -255,4 +264,60 @@ test("presentation merges technical artifact tags into familiar categories witho
   expect(groups.review[0].items.length).toBe(2)
   expect(groups.review.reduce((sum, group) => sum + group.bytes, 0)).toBe(190)
   expect(groups.ready).toEqual([])
+})
+
+test("an ambiguous accounting remainder retains its full operation and precise child", () => {
+  const parent = node("/work/build", 10_000)
+  const child = node("/work/build/node_modules", 8_000)
+  const summary = buildCleanupSummary({
+    ...options,
+    developerItems: [{ ...item(parent), bytes: 2_000 }, item(child)],
+    suggestions: [],
+    isEligible: (candidate) => candidate === child,
+  })
+  expect(
+    summary.groups
+      .flatMap((group) => group.items)
+      .map((item) => item.node.path)
+      .sort()
+  ).toEqual([parent.path, child.path].sort())
+  expect(
+    summary.groups
+      .flatMap((group) => group.items)
+      .find((item) => item.node === parent)?.bytes
+  ).toBe(parent.size)
+  expect(summary.bytes).toBe(parent.size)
+  expect(summary.safe.map((item) => item.node.path)).toEqual([child.path])
+})
+
+test("cleanup search, project grouping and age sorting retain independent choices", () => {
+  const old = { ...node("/work/payments/node_modules", 40), modifiedAt: 10 }
+  const recent = { ...node("/work/payments/.next", 100), modifiedAt: 20 }
+  const other = { ...node("/backup/payments/node_modules", 80), modifiedAt: 30 }
+  const summary = buildCleanupSummary({
+    ...options,
+    developerItems: [old, recent, other].map(item),
+    suggestions: [],
+  })
+  const groups = organizeCleanupGroups(summary, {
+    query: "PAYMENTS",
+    grouping: "project",
+    sort: "oldest",
+  })
+  expect(groups.ready.map((group) => group.label)).toEqual([
+    "/work/payments",
+    "/backup/payments",
+  ])
+  expect(groups.ready[0].items.map((item) => item.node.path)).toEqual([
+    old.path,
+    recent.path,
+  ])
+  const searched = organizeCleanupGroups(summary, {
+    query: "/backup",
+    grouping: "artifact",
+    sort: "largest",
+  })
+  expect(
+    searched.ready.flatMap((group) => group.items).map((item) => item.node.path)
+  ).toEqual([other.path])
 })

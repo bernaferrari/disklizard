@@ -11,12 +11,15 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 function FiltersHarness() {
   const [age, setAge] = useState<DeveloperCleanupAgePreset>("all")
+  const [customDays, setCustomDays] = useState("30")
   const [ecosystem, setEcosystem] = useState<ArtifactEcosystemFilter>("all")
   return (
     <CleanupFilters
       age={age}
       ecosystem={ecosystem}
       ecosystems={["node", "rust"]}
+      customDays={customDays}
+      onCustomDays={setCustomDays}
       onAge={setAge}
       onEcosystem={setEcosystem}
     />
@@ -56,7 +59,26 @@ test("cleanup filters preserve both choices while open and reset both together",
     })
     expect(age.value).toBe("90")
     expect(ecosystem.value).toBe("rust")
-    expect(host.textContent).toBe("Filters2")
+    expect(host.textContent).toBe(
+      "FiltersRust · Unchanged for at least 90 days"
+    )
+    await act(async () => {
+      age.value = "custom"
+      age.dispatchEvent(new Event("change", { bubbles: true }))
+    })
+    const custom = document.querySelector<HTMLInputElement>(
+      'input[type="number"]'
+    )!
+    expect(custom).not.toBeNull()
+    expect(custom.disabled).toBe(false)
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        "value"
+      )!.set!.call(custom, "120")
+      custom.dispatchEvent(new Event("input", { bubbles: true }))
+    })
+    expect(host.textContent).toContain("Unchanged for at least 120 days")
     const reset = [...document.querySelectorAll("button")].find(
       (button) => button.textContent === "Clear filters"
     )

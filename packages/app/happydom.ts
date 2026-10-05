@@ -20,6 +20,8 @@ HTMLCanvasElement.prototype.getContext = function (
       globalCompositeOperation: "source-over",
       imageSmoothingEnabled: true,
       lineWidth: 1,
+      setLineDash: () => {},
+      getLineDash: () => [],
       lineCap: "butt",
       lineJoin: "miter",
       miterLimit: 10,

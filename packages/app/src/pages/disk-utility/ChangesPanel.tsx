@@ -8,6 +8,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react"
+import { abbreviateHomePath } from "./item-identity"
 import { cn } from "@/lib/utils"
 import { formatBytes } from "./format"
 import { consolidateHistoryChanges } from "./history-presentation"
@@ -35,14 +36,8 @@ function relativeWhen(at: number) {
   return format.format(0, "minute")
 }
 
-function prettyParent(path: string) {
-  return (
-    path
-      .replace(/[\\/][^\\/]+$/, "")
-      .replace(/^\/Users\/[^/]+/, "~")
-      .replace(/^\/home\/[^/]+/, "~")
-      .replace(/^[A-Za-z]:\\Users\\[^\\]+/, "~") || "/"
-  )
+function prettyParent(path: string, homePath?: string) {
+  return abbreviateHomePath(path.replace(/[\\/][^\\/]+$/, "") || "/", homePath)
 }
 
 const KIND_ICON = {
@@ -59,6 +54,7 @@ type Tab = "since" | "live" | "today"
  * while the map is open, and files touched today.
  */
 export function ChangesPanel(props: {
+  homePath?: string
   entries: readonly ScanHistoryEntry[]
   recent: readonly DiskScanNode[]
   sinceLast?: BaselineComparison | null
@@ -138,6 +134,7 @@ export function ChangesPanel(props: {
               {props.sinceLast.changes.map((change) => (
                 <SinceRow
                   key={change.path}
+                  homePath={props.homePath}
                   change={change}
                   onShow={() =>
                     change.kind === "removed"
@@ -230,7 +227,7 @@ export function ChangesPanel(props: {
                       {diskNodeDisplayName(node)}
                     </span>
                     <span className="block truncate text-[11.5px] text-text-weak">
-                      {prettyParent(node.path)}
+                      {prettyParent(node.path, props.homePath)}
                     </span>
                   </span>
                   <span className="shrink-0 text-[12.5px] text-text-base tabular-nums">
@@ -259,7 +256,11 @@ export function ChangesPanel(props: {
   )
 }
 
-function SinceRow(props: { change: BaselineChange; onShow: () => void }) {
+function SinceRow(props: {
+  homePath?: string
+  change: BaselineChange
+  onShow: () => void
+}) {
   const language = useLanguage()
   const { change } = props
   const Glyph = KIND_ICON[change.kind]
@@ -293,7 +294,7 @@ function SinceRow(props: { change: BaselineChange; onShow: () => void }) {
             </span>
           </span>
           <span className="block truncate text-[11.5px] text-text-weak">
-            {prettyParent(change.path)}
+            {prettyParent(change.path, props.homePath)}
             {change.kind === "grew" || change.kind === "shrank"
               ? ` · ${language.t("disk.ui.fromTo", {
                   before: formatBytes(change.beforeBytes),

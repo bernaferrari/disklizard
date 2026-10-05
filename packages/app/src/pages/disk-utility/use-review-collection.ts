@@ -41,6 +41,16 @@ export function useReviewCollection(options: {
   const shared = effectiveItems.some(containsSharedPhysicalStorage)
 
   function toggle(node: DiskScanNode) {
+    if (
+      items.some((item) => diskPathEquals(item.path, node.path, options.os))
+    ) {
+      setItems((current) =>
+        current.filter(
+          (item) => !diskPathEquals(item.path, node.path, options.os)
+        )
+      )
+      return
+    }
     if (options.needsRescan(node)) {
       options.onNeedsRescan(node)
       return

@@ -44,6 +44,10 @@ use retention::ChildRetention;
 const MAX_DISCOVERIES: usize = 96;
 const MAX_FILE_DISCOVERIES: usize = 24;
 const MAX_ISSUE_SAMPLES: usize = 12;
+/// Unreadable paths are retained far beyond display samples so the renderer can
+/// tell exactly which folders a partial scan affects. Past this bound it must
+/// assume every folder may be incomplete.
+const MAX_UNREADABLE_SAMPLES: usize = 4096;
 pub use config::{
     DeveloperArtifactInventoryOptions, DeveloperArtifactInventoryRequest, Request, SizeMode,
 };
@@ -843,7 +847,7 @@ impl State {
                 matched_directories: inventory.matched_directories,
                 truncated: inventory.truncated,
                 unreadable_count: issues.count,
-                unreadable_sample_paths: issues.samples.clone(),
+                unreadable_sample_paths: issues.samples.iter().take(MAX_ISSUE_SAMPLES).cloned().collect(),
                 skipped_symlink_count: inventory.skipped_symlink_count,
                 skipped_symlink_sample_paths: inventory.skipped_symlink_samples.clone(),
                 skipped_directory_count: inventory.skipped_directory_count,
@@ -1501,7 +1505,7 @@ impl State {
         self.mark_shared_storage_evidence_partial();
         let mut issues = self.issues.lock().expect("issues lock poisoned");
         issues.count += 1;
-        if issues.samples.len() < MAX_ISSUE_SAMPLES {
+        if issues.samples.len() < MAX_UNREADABLE_SAMPLES {
             issues.samples.push(path.to_string_lossy().into_owned());
         }
     }

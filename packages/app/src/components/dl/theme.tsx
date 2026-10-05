@@ -72,3 +72,8 @@ export function useTheme() {
   if (!context) throw new Error("useTheme must be used within ThemeProvider")
   return context
 }
+
+/** Renderers embedded without a theme provider use the light token baseline. */
+export function useResolvedColorScheme() {
+  return React.useContext(ThemeContext)?.resolved ?? "light"
+}

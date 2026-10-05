@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react"
 import type { DiskScanNode } from "./types"
 import { motion } from "framer-motion"
-import { formatBytes, shortBytes } from "./format"
+import { formatBytes } from "./format"
 import { diskNodeDisplayName } from "./node-display"
 import { useLanguage } from "./runtime"
 import { collapseTreemapChildren } from "./treemap"
@@ -79,7 +79,7 @@ export function DiskUtilityHoverContents(props: {
               {diskNodeDisplayName(child)}
             </span>
             <span className="shrink-0 text-[13px] text-text-base tabular-nums">
-              {shortBytes(child.size)}
+              {formatBytes(child.size)}
             </span>
             <ChevronRight
               className="size-3.5 shrink-0 text-text-weak"

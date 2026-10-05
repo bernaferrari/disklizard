@@ -140,6 +140,7 @@ export type DiskLizardAPI = {
   getVolumeInfo?: (path: string) => Promise<{ icon?: string; canEject: boolean } | null>
   revealVolume?: (path: string) => Promise<boolean>
   ejectVolume?: (path: string) => Promise<boolean>
+  getHomePath: () => Promise<string>
   getDrives: () => Promise<DiskLizardDrive[]>
   onDriveFacts: (cb: (update: DiskLizardDriveFactsUpdate) => void) => () => void
   getStorageDiagnostics: () => Promise<DiskStorageDiagnostics>

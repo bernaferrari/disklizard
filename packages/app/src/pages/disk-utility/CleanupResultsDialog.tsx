@@ -93,14 +93,14 @@ export function CleanupResultsDialog(props: {
               <dt className="text-[12px] text-text-weak">
                 {language.t("disk.results.movedSize")}
               </dt>
-              <dd className="text-[28px] leading-8 font-medium tracking-[-0.035em] text-text-strong tabular-nums">
+              <dd className="text-[28px] leading-8 font-semibold tracking-[-0.035em] text-text-strong tabular-nums">
                 {formatBytes(movedBytes)}
               </dd>
             </dl>
           ) : null}
           {props.needsRecheck ? (
             <p
-              className="mt-3 rounded-lg bg-[color-mix(in_oklch,var(--dl-warning)_10%,transparent)] px-3 py-2 text-[12px] text-text-base"
+              className="mt-4 rounded-lg bg-[var(--dl-well)] px-3.5 py-2.5 text-[12.5px] leading-[1.55] text-text-weak"
               role="status"
             >
               {language.t("disk.results.needsRecheck")}
@@ -173,9 +173,10 @@ export function CleanupResultsDialog(props: {
                     </span>
                   </button>
                   {item.status === "failed" ? (
-                    <button
+                    <Button
                       type="button"
-                      className="h-8 shrink-0 rounded-md bg-[var(--dl-well)] px-2.5 text-[12px] font-medium text-text-strong outline-none hover:bg-[var(--dl-well-strong)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+                      variant="secondary"
+                      size="sm"
                       onClick={
                         reason === "disk.results.changed"
                           ? props.onRescan
@@ -187,7 +188,7 @@ export function CleanupResultsDialog(props: {
                           ? "disk.common.rescan"
                           : "disk.common.reveal"
                       )}
-                    </button>
+                    </Button>
                   ) : (
                     <span className="shrink-0 text-[12.5px] text-text-weak tabular-nums">
                       {formatBytes(item.node.size)}
@@ -221,7 +222,7 @@ export function CleanupResultsDialog(props: {
             ) : null}
           </div>
         ) : null}
-        <DialogFooter className="flex-row flex-wrap items-center px-6 py-4">
+        <DialogFooter className="flex-row flex-wrap items-center gap-2 px-6 py-4">
           {moved > 0 ? (
             <Button
               type="button"

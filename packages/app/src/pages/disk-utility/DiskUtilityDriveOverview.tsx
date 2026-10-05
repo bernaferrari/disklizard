@@ -55,7 +55,9 @@ export function DriveOverview(props: {
     : undefined
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <ScrollView className="min-h-0 flex-1">
+      {/* Reserve the scrollbar on both edges so centered content stays
+          centered when the home screen overflows (native macOS scrollbars). */}
+      <ScrollView className="min-h-0 flex-1 [scrollbar-gutter:stable_both-edges]">
         {!props.loading && props.drives.length > 0 ? (
           <div className="mx-auto w-full max-w-[760px] px-6 pt-12 pb-10">
             <header className="slide-in-from-bottom-1.5 mb-8 animate-in duration-[260ms] fade-in">
@@ -79,7 +81,9 @@ export function DriveOverview(props: {
                     <div
                       key={drive.path}
                       className="animate-in duration-[240ms] fill-mode-both fade-in slide-in-from-bottom-2"
-                      style={{ animationDelay: `${Math.min(90, index * 30)}ms` }}
+                      style={{
+                        animationDelay: `${Math.min(90, index * 30)}ms`,
+                      }}
                     >
                       <VolumeRow
                         drive={drive}
@@ -145,7 +149,10 @@ export function DriveOverview(props: {
               </div>
             ) : null}
             {accessGuidance && !accessGuidance.attention ? (
-              <div role="note" className="mt-5 flex items-start gap-3 rounded-xl bg-[var(--dl-well)] px-4 py-3.5 text-text-weak">
+              <div
+                role="note"
+                className="mt-5 flex items-start gap-3 rounded-xl bg-[var(--dl-well)] px-4 py-3.5 text-text-weak"
+              >
                 <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
                 <div className="min-w-0">
                   <p className="text-[13px] font-medium text-text-strong">

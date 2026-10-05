@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useLayoutEffect, useRef } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
+import { cn } from "@/lib/utils"
 import { useLanguage } from "./runtime"
 
 type Location = { name: string; key: string }
@@ -15,8 +16,20 @@ export function LocationNavigation(props: {
   const language = useLanguage()
   const trail = useRef<HTMLElement>(null)
   const current = props.locations.at(-1)?.key
+  // Earlier crumbs fade out when the trail overflows. The current location
+  // stays in view, also when the window narrows.
+  const [clipped, setClipped] = useState(false)
   useLayoutEffect(() => {
-    if (trail.current) trail.current.scrollLeft = trail.current.scrollWidth
+    const element = trail.current
+    if (!element) return undefined
+    const pin = () => {
+      element.scrollLeft = element.scrollWidth
+      setClipped(element.scrollWidth > element.clientWidth + 1)
+    }
+    pin()
+    const observer = new ResizeObserver(pin)
+    observer.observe(element)
+    return () => observer.disconnect()
   }, [current])
   const historyButton =
     "grid size-8 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong hover:text-text-strong disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-text-strong"
@@ -58,7 +71,12 @@ export function LocationNavigation(props: {
       <nav
         ref={trail}
         aria-label={language.t("disk.top.currentLocation")}
-        className="dl-breadcrumbs flex min-w-0 flex-1 [scrollbar-width:none] items-center overflow-x-auto [&::-webkit-scrollbar]:hidden"
+        onScroll={(event) => setClipped(event.currentTarget.scrollLeft > 0)}
+        className={cn(
+          "dl-breadcrumbs flex min-w-0 flex-1 [scrollbar-width:none] items-center overflow-x-auto [&::-webkit-scrollbar]:hidden",
+          clipped &&
+            "[mask-image:linear-gradient(to_right,transparent,black_28px)]"
+        )}
       >
         {props.locations.map((location, index) => (
           <div key={location.key} className="flex shrink-0 items-center">

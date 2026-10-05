@@ -1,7 +1,9 @@
+import { ACCESS_LABEL } from "./access-assessments"
 import { Button as ShadcnButton } from "@/components/ui/button"
 import { useMemo } from "react"
 import {
   Check,
+  Minus,
   CornerDownRight,
   Eye,
   FolderSearch,
@@ -165,15 +167,9 @@ export function DetailBar(props: {
                 })
               : language.t("disk.developer.changeUnknown")}
           </p>
-          {props.accessState && props.accessState !== "not-checked" ? (
+          {props.accessState ? (
             <p className="mt-1 text-[12px] text-text-weak">
-              {language.t(
-                props.accessState === "checking"
-                  ? "disk.cleanup.accessChecking"
-                  : props.accessState === "likely"
-                    ? "disk.cleanup.accessLikely"
-                    : "disk.cleanup.accessUnknown"
-              )}
+              {language.t(ACCESS_LABEL[props.accessState])}
             </p>
           ) : null}
           {(props.accessState === "denied" ||
@@ -310,16 +306,33 @@ export function DetailBar(props: {
           aria-keyshortcuts="C"
           onClick={props.onCollect}
         >
-          {props.collected || props.includedBy ? (
-            <Check className="size-4" strokeWidth={2.5} aria-hidden />
+          {props.includedBy ? (
+            <>
+              <Check className="size-4" strokeWidth={2.5} aria-hidden />
+              {language.t("disk.common.review")}
+            </>
+          ) : props.collected ? (
+            // State at rest, the removal action on hover or focus.
+            <span className="grid">
+              <span className="col-start-1 row-start-1 inline-flex items-center justify-center gap-1.5 group-hover/button:invisible group-focus-visible/button:invisible">
+                <Check
+                  className="size-4 text-[var(--dl-accent)]"
+                  strokeWidth={2.5}
+                  aria-hidden
+                />
+                {language.t("disk.ui.cleanup.selected")}
+              </span>
+              <span className="invisible col-start-1 row-start-1 inline-flex items-center justify-center gap-1.5 group-hover/button:visible group-focus-visible/button:visible">
+                <Minus className="size-4" strokeWidth={2.5} aria-hidden />
+                {language.t("disk.ui.cleanup.remove")}
+              </span>
+            </span>
           ) : (
-            <Plus className="size-4" strokeWidth={2.5} aria-hidden />
+            <>
+              <Plus className="size-4" strokeWidth={2.5} aria-hidden />
+              {language.t("disk.ui.cleanup.add")}
+            </>
           )}
-          {props.includedBy
-            ? language.t("disk.common.review")
-            : props.collected
-              ? language.t("disk.ui.cleanup.remove")
-              : language.t("disk.ui.cleanup.add")}
         </ShadcnButton>
       ) : null}
     </div>

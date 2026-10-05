@@ -1,15 +1,7 @@
 import type { DiskScanNode } from "./types"
 
-/**
- * Positional color: a node's hue is the midpoint of its angular share of the
- * visible root, swept once around the wheel (green → cyan → blue → violet →
- * pink → red → orange → yellow). Children inherit a slice of their parent's
- * range, so a branch reads as one family while the whole map stays vivid no
- * matter how lopsided the tree is. Color is identity, never a safety verdict.
- *
- * The map, tiles, and list all resolve through the same function so a dot in
- * the list always matches its wedge or tile.
- */
+/** Path identity determines branch color; size determines only geometry.
+ * Descendants vary within a bounded family shared by map, tiles, and list. */
 
 const HUE_START = 150
 const HUE_SWEEP = 300
@@ -57,7 +49,8 @@ function maxChroma(L: number, hue: number) {
 export function spectrumTone(
   hue: number,
   depth = 0,
-  directory = true
+  directory = true,
+  theme: "light" | "dark" = "light"
 ): SpectrumTone {
   const warmth = Math.max(0, Math.cos(((hue - 105) * Math.PI) / 180))
   const cyan = Math.max(0, Math.cos(((hue - 195) * Math.PI) / 150))
@@ -69,7 +62,13 @@ export function spectrumTone(
     0.63 + warmth * 0.24 + cyan * 0.12 + level * 0.016 - (directory ? 0 : 0.03)
   )
   const fraction = Math.max(0.78, (directory ? 1 : 0.8) - level * 0.03)
-  return { L, C: maxChroma(L, hue) * fraction, h: hue }
+  const lightness = theme === "dark" ? Math.min(0.86, L + 0.025) : L
+  const ceiling = theme === "dark" ? 0.13 : 0.17
+  return {
+    L: lightness,
+    C: Math.min(ceiling, maxChroma(lightness, hue) * fraction),
+    h: hue,
+  }
 }
 
 export function toneCss({ L, C, h }: SpectrumTone, alpha = 1) {
@@ -82,8 +81,12 @@ export function toneCss({ L, C, h }: SpectrumTone, alpha = 1) {
 /**
  * Aggregates keep their branch hue while receding slightly from named items.
  */
-export function aggregateTone(depth = 0, hue = 260): SpectrumTone {
-  const branch = spectrumTone(hue, depth, true)
+export function aggregateTone(
+  depth = 0,
+  hue = 260,
+  theme: "light" | "dark" = "light"
+): SpectrumTone {
+  const branch = spectrumTone(hue, depth, true, theme)
   return { L: Math.min(0.9, branch.L + 0.035), C: branch.C * 0.7, h: hue }
 }
 
@@ -112,28 +115,25 @@ export type SpectrumPosition = {
   depth: number
   branchStart: number
   branchEnd: number
+  branchPath: string
 }
 
-function positionHue(position: SpectrumPosition) {
-  const midpoint = (position.start + position.end) / 2
-  if (position.depth === 0) return spectrumHue(midpoint)
-  const branchMidpoint = (position.branchStart + position.branchEnd) / 2
-  const halfSpan = Math.max(
-    (position.branchEnd - position.branchStart) / 2,
-    0.000001
-  )
-  const offset = Math.max(
-    -1,
-    Math.min(1, (midpoint - branchMidpoint) / halfSpan)
-  )
-  return (spectrumHue(branchMidpoint) + offset * 20 + 360) % 360
+/** Deterministic across refreshed observations, additions, and size sorting. */
+function pathHue(path: string) {
+  let hash = 2166136261
+  for (const char of path.replaceAll("\\", "/"))
+    hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
+  return (hash >>> 0) % 360
 }
 
 /**
  * Resolve a path's angular range inside `root` without walking the whole
  * tree: descend only through the ancestors of the target.
  */
-export function createSpectrum(root: DiskScanNode | null | undefined) {
+export function createSpectrum(
+  root: DiskScanNode | null | undefined,
+  theme: "light" | "dark" = "light"
+) {
   const memo = new Map<string, SpectrumPosition | null>()
   const locate = (path: string): SpectrumPosition | undefined => {
     if (!root) return undefined
@@ -145,6 +145,7 @@ export function createSpectrum(root: DiskScanNode | null | undefined) {
     let depth = -1
     let branchStart = 0
     let branchEnd = 1
+    let branchPath = ""
     while (node.path !== path) {
       const children = bySize(node)
       const total = children.reduce((sum, child) => sum + child.size, 0)
@@ -165,13 +166,14 @@ export function createSpectrum(root: DiskScanNode | null | undefined) {
       node = next
       depth += 1
       if (depth === 0) {
+        branchPath = node.path
         branchStart = start
         branchEnd = end
       }
     }
     const found = node.path === path && depth >= 0
     const position = found
-      ? { start, end, depth, branchStart, branchEnd }
+      ? { start, end, depth, branchStart, branchEnd, branchPath }
       : null
     memo.set(path, position)
     return position ?? undefined
@@ -180,9 +182,13 @@ export function createSpectrum(root: DiskScanNode | null | undefined) {
   const tone = (node: Pick<DiskScanNode, "path" | "isDir" | "isOther">) => {
     const position = locate(node.path)
     if (!position) return undefined
-    if (node.isOther)
-      return aggregateTone(position.depth, positionHue(position))
-    return spectrumTone(positionHue(position), position.depth, node.isDir)
+    const hue =
+      (pathHue(position.branchPath) +
+        (position.depth === 0 ? 0 : (pathHue(node.path) / 360) * 40 - 20) +
+        360) %
+      360
+    if (node.isOther) return aggregateTone(position.depth, hue, theme)
+    return spectrumTone(hue, position.depth, node.isDir, theme)
   }
 
   return {

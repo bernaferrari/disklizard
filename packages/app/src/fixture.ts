@@ -383,6 +383,7 @@ const fixture: FixtureState = {
 window.diskLizardFixture = fixture
 
 export const diskUtilityFixture: DiskUtilityAPI = {
+  getHomePath: async () => "/Users/alex",
   async getDrives() {
     if (demoScenario) {
       const used = demoScanTree().size

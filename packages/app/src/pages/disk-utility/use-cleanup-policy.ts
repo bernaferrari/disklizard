@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react"
-import type {
-  DiskCleanupLock,
-  DiskPathAccess,
-  DiskScanNode,
-  DiskUtilityAPI,
-} from "./types"
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react"
+import {
+  createAccessAssessments,
+  type AccessAssessment,
+} from "./access-assessments"
+import type { DiskCleanupLock, DiskScanNode, DiskUtilityAPI } from "./types"
 import type { DiskLanguageKey, DiskLizardOS } from "./runtime"
 import { canActOnNode } from "./storage"
 import { isPathCleanupLocked } from "./cleanup-lock"
@@ -24,10 +23,7 @@ export function inventoryDeletionNeedsRescan(node: DiskScanNode) {
   )
 }
 
-type SelectedAccess = {
-  path: string
-  state: DiskPathAccess["state"] | "checking"
-}
+type SelectedAccess = AccessAssessment
 type CleanupPolicyInput = {
   os?: DiskLizardOS
   locks: readonly DiskCleanupLock[]
@@ -48,9 +44,13 @@ export function cleanupRestrictionFor(
   if (!canActOnNode(node, input.os, []))
     return "disk.cleanup.locationRestricted"
   if (inventoryDeletionNeedsRescan(node)) return "disk.cleanup.needsFreshScan"
-  if (input.access?.path === node.path && input.access.state === "denied")
+  const accessState =
+    input.access?.state === "checking"
+      ? input.access.previousState
+      : input.access?.state
+  if (input.access?.path === node.path && accessState === "denied")
     return "disk.cleanup.accessDenied"
-  if (input.access?.path === node.path && input.access.state === "read-only")
+  if (input.access?.path === node.path && accessState === "read-only")
     return "disk.cleanup.readOnly"
   const recognition = input.recognitionFor(node)
   // Ambiguous build/target/dist records may be individually moved through
@@ -66,48 +66,69 @@ export function cleanupRestrictionFor(
   return null
 }
 
-/** Owns the selected item's asynchronous permission check and its retry. */
+/** Explorer selection and cleanup inspection share scan-local assessments. */
 export function useCleanupPolicy(
   input: Omit<CleanupPolicyInput, "access"> & {
     selectedNode: DiskScanNode | null
+    scanIdentity?: string
     disk: DiskUtilityAPI | undefined
   }
 ) {
-  const [access, setAccess] = useState<SelectedAccess>()
-  const [checkVersion, setCheckVersion] = useState(0)
-  useEffect(() => {
-    const node = input.selectedNode
-    if (
-      !node ||
-      !input.disk?.checkDeleteAccess ||
-      !canActOnNode(node, input.os, input.locks)
-    ) {
-      setAccess(undefined)
-      return undefined
-    }
-    let current = true
-    setAccess({ path: node.path, state: "checking" })
-    void input.disk.checkDeleteAccess(node.path).then(
-      (result) =>
-        current && setAccess({ path: node.path, state: result.state }),
-      () => current && setAccess({ path: node.path, state: "unknown" })
+  const stores = useMemo(
+    () => new Map<string, ReturnType<typeof createAccessAssessments>>(),
+    [input.disk, input.os]
+  )
+  const store = useMemo(() => {
+    const key = input.scanIdentity ?? "no-scan"
+    const existing = stores.get(key)
+    if (existing) return existing
+    const assessments = createAccessAssessments(
+      input.disk?.checkDeleteAccess
+        ? (path) => input.disk!.checkDeleteAccess!(path)
+        : undefined
     )
-    return () => {
-      current = false
+    // Keep recently visited scan tabs without retaining every historical scan.
+    if (stores.size >= 16) {
+      const oldest = stores.keys().next().value!
+      stores.get(oldest)?.dispose()
+      stores.delete(oldest)
     }
-  }, [
-    input.selectedNode?.path,
-    input.disk,
-    input.locks,
-    input.os,
-    checkVersion,
-  ])
+    stores.set(key, assessments)
+    return assessments
+  }, [stores, input.scanIdentity])
+  const revision = useSyncExternalStore(
+    store.subscribe,
+    store.snapshot,
+    store.snapshot
+  )
+  const request = useCallback(
+    (node: DiskScanNode) => {
+      if (canActOnNode(node, input.os, [])) store.request(node)
+    },
+    [store, input.os]
+  )
+  useEffect(() => {
+    if (input.selectedNode) request(input.selectedNode)
+  }, [input.selectedNode, request])
+  useEffect(() => {
+    const refresh = () => store.refresh()
+    window.addEventListener("focus", refresh)
+    return () => {
+      window.removeEventListener("focus", refresh)
+      store.cancelQueued()
+    }
+  }, [store])
   const restriction = (node: DiskScanNode) =>
-    cleanupRestrictionFor(node, { ...input, access })
+    cleanupRestrictionFor(node, { ...input, access: store.get(node) })
   return {
-    access,
+    revision,
+    access: input.selectedNode ? store.get(input.selectedNode) : undefined,
+    accessFor: store.get,
+    request,
     restriction,
     canModify: (node: DiskScanNode) => restriction(node) === null,
-    retry: () => setCheckVersion((version) => version + 1),
+    retry: (node = input.selectedNode) => {
+      if (node) store.request(node, true)
+    },
   }
 }
