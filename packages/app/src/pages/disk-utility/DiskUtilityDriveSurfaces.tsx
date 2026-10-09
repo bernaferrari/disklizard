@@ -174,11 +174,11 @@ export function VolumeRow(props: {
   const complete = props.job?.status === "complete"
   const failed = props.job?.status === "failed"
   const canView = complete || (!scanning && !!props.hasRetainedMap)
-  const fill = canView
-    ? 1
-    : scanning
-      ? Math.max(0, Math.min(1, (props.job?.pct ?? 0) / 100))
-      : used
+  // Once a map exists the card goes back to answering "how full is this
+  // disk?"; scan timing stays in the tooltip rather than replacing usage.
+  const fill = scanning
+    ? Math.max(0, Math.min(1, (props.job?.pct ?? 0) / 100))
+    : used
   const completedPerformance = (() => {
     const job = props.job
     if (!job?.completedAt || job.source !== "scan") return undefined
@@ -220,15 +220,13 @@ export function VolumeRow(props: {
     ? "var(--dl-danger)"
     : scanning
       ? undefined
-      : canView
-        ? "linear-gradient(90deg, oklch(0.8 0.17 150), oklch(0.74 0.14 200), oklch(0.66 0.18 256))"
-        : pressure === "critical"
-          ? "linear-gradient(90deg, oklch(0.78 0.16 60), oklch(0.64 0.21 27))"
-          : pressure === "tight"
-            ? "linear-gradient(90deg, oklch(0.78 0.15 150), oklch(0.8 0.15 85))"
-            : "linear-gradient(90deg, oklch(0.8 0.17 150), oklch(0.74 0.14 200), oklch(0.66 0.18 256))"
+      : pressure === "critical"
+        ? "linear-gradient(90deg, oklch(0.78 0.16 60), oklch(0.64 0.21 27))"
+        : pressure === "tight"
+          ? "linear-gradient(90deg, oklch(0.78 0.15 150), oklch(0.8 0.15 85))"
+          : "linear-gradient(90deg, oklch(0.8 0.17 150), oklch(0.74 0.14 200), oklch(0.66 0.18 256))"
   const left =
-    scanning || canView || failed
+    scanning || failed || (canView && !hasTotal)
       ? subtitle
       : hasTotal
         ? language.t("disk.ui.home.used", {
@@ -238,9 +236,13 @@ export function VolumeRow(props: {
         : volumeSubtitle({ ...props.drive, sharedFree: undefined })
   const right = scanning
     ? `${Math.floor(props.job?.pct ?? 0)}%`
-    : hasTotal && !canView && !failed
-      ? language.t("disk.ui.home.free", { free: formatBytes(available) })
-      : undefined
+    : canView && hasTotal
+      ? complete && props.job
+        ? volumeCompletionLabel(props.job.source)
+        : language.t("disk.drive.mapReady")
+      : hasTotal && !failed
+        ? language.t("disk.ui.home.free", { free: formatBytes(available) })
+        : undefined
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}

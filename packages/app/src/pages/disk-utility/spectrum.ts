@@ -1,7 +1,10 @@
 import type { DiskScanNode } from "./types"
 
-/** Path identity determines branch color; size determines only geometry.
- * Descendants vary within a bounded family shared by map, tiles, and list. */
+/** Path identity determines each top-level branch's color, so a neighbour
+ * growing never repaints it. Inside a branch, hue fans out across a band sized
+ * to the branch's share of the disk: a folder holding most of the disk reads
+ * as a full spectrum instead of one flat color, while small branches stay a
+ * tight family. Shared by map, tiles, and list. */
 
 const HUE_START = 150
 const HUE_SWEEP = 300
@@ -119,11 +122,40 @@ export type SpectrumPosition = {
 }
 
 /** Deterministic across refreshed observations, additions, and size sorting. */
-function pathHue(path: string) {
+function pathHash(path: string) {
   let hash = 2166136261
   for (const char of path.replaceAll("\\", "/"))
     hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
-  return (hash >>> 0) % 360
+  return hash >>> 0
+}
+
+/**
+ * Top-level branch hues: evenly spaced around the wheel and visited in an
+ * order where consecutive slots are far apart, so when two paths hash to the
+ * same slot the second still lands on a clearly different color.
+ */
+const BRANCH_HUES = [255, 25, 150, 320, 85, 200, 345, 120, 285, 55]
+
+/** Assign each sibling a distinct slot. Siblings are visited in path order,
+ * never size order, so growth elsewhere can't reshuffle anyone's color. */
+function assignBranchHues(children: readonly DiskScanNode[]) {
+  const hues = new Map<string, number>()
+  const used = new Set<number>()
+  for (const child of children.toSorted((a, b) =>
+    a.path < b.path ? -1 : a.path > b.path ? 1 : 0
+  )) {
+    if (used.size === BRANCH_HUES.length) used.clear()
+    let slot = pathHash(child.path) % BRANCH_HUES.length
+    while (used.has(slot)) slot = (slot + 1) % BRANCH_HUES.length
+    used.add(slot)
+    hues.set(child.path, BRANCH_HUES[slot])
+  }
+  return hues
+}
+
+/** Degrees of hue a branch may span, proportional to its share of the root. */
+function branchBand(share: number) {
+  return Math.max(64, Math.min(300, share * 330))
 }
 
 /**
@@ -179,14 +211,27 @@ export function createSpectrum(
     return position ?? undefined
   }
 
+  let branchHues: Map<string, number> | undefined
+  const branchHue = (path: string) => {
+    branchHues ??= assignBranchHues(root ? bySize(root) : [])
+    return (
+      branchHues.get(path) ?? BRANCH_HUES[pathHash(path) % BRANCH_HUES.length]
+    )
+  }
+
   const tone = (node: Pick<DiskScanNode, "path" | "isDir" | "isOther">) => {
     const position = locate(node.path)
     if (!position) return undefined
-    const hue =
-      (pathHue(position.branchPath) +
-        (position.depth === 0 ? 0 : (pathHue(node.path) / 360) * 40 - 20) +
-        360) %
-      360
+    const anchor = branchHue(position.branchPath)
+    const branchSpan = position.branchEnd - position.branchStart
+    // Where this node sits inside its branch, from -0.5 to 0.5.
+    const offset =
+      position.depth === 0 || branchSpan <= 0
+        ? 0
+        : ((position.start + position.end) / 2 - position.branchStart) /
+            branchSpan -
+          0.5
+    const hue = (anchor + offset * branchBand(branchSpan) + 360) % 360
     if (node.isOther) return aggregateTone(position.depth, hue, theme)
     return spectrumTone(hue, position.depth, node.isDir, theme)
   }

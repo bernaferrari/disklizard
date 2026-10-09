@@ -257,8 +257,11 @@ export function Treemap(props: {
       <div data-disk-tile-scene className="absolute inset-0">
         <div data-disk-tile-content className="absolute inset-0">
           {rendered.map((r) => {
+            // Summaries take the same tone the list and map give them, so
+            // "N smaller items" reads as one thing across every view.
             const tileColor = r.node.isOther
-              ? (props.colorForPath(r.parent?.path ?? props.rootPath) ??
+              ? (props.colorForNode(r.node) ??
+                props.colorForPath(r.parent?.path ?? props.rootPath) ??
                 parentColor ??
                 rootColor ??
                 props.colorForNode(r.node.children[0]) ??
@@ -283,6 +286,14 @@ export function Treemap(props: {
               ? r.w >= 260
               : r.h >= 64 &&
                 r.w >= sizeLabel.length * 7.5 + (r.w < 100 ? 12 : 20)
+            // Label a tile only when a meaningful part of its name fits;
+            // stubs like "Libr…" add noise without telling anyone anything.
+            const tileName = r.displayName ?? diskNodeDisplayName(r.node)
+            const nameFits =
+              r.expanded ||
+              (r.h >= 30 &&
+                r.w - (r.w < 100 ? 12 : 20) >=
+                  Math.min(tileName.length, 9) * 8.2)
             const queued = props.queuedPaths?.some(
               (path) =>
                 r.node.path === path ||
@@ -326,7 +337,7 @@ export function Treemap(props: {
                   </span>
                 </span>
               ) : null
-            ) : r.w >= 56 && r.h >= 26 ? (
+            ) : nameFits ? (
               <span
                 className={
                   r.expanded

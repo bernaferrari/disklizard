@@ -16,6 +16,8 @@ export function DiskUtilityHoverContents(props: {
   onDismiss: () => void
 }) {
   const language = useLanguage()
+  // Floats over the list rather than pushing it down, so hovering the map
+  // never makes the sidebar jump under the reader's eye.
   // This is a contextual glimpse from the parent map. Opening the folder
   // gives its children the full sidebar and map instead of repeating a long
   // scrollable list here.
@@ -23,7 +25,7 @@ export function DiskUtilityHoverContents(props: {
 
   return (
     <motion.div
-      className="relative z-10 flex shrink-0 flex-col border-b border-[var(--dl-separator)] bg-[var(--dl-sidebar)]"
+      className="absolute inset-x-0 top-0 z-20 flex flex-col border-b border-[var(--dl-separator)] bg-[var(--dl-sidebar)] shadow-[0_16px_32px_-16px_rgb(0_0_0/0.28)]"
       data-hover-contents={props.node.path}
       role="region"
       aria-label={diskNodeDisplayName(props.node)}
@@ -69,7 +71,11 @@ export function DiskUtilityHoverContents(props: {
             <span
               className={`size-2.5 shrink-0 ${child.isDir ? "rounded-full" : "rounded-[3px]"}`}
               style={{
-                background: props.colorForNode(child) ?? "var(--text-weaker)",
+                background:
+                  props.colorForNode(child) ??
+                  (child.isOther && props.colorForNode(props.node)
+                    ? `color-mix(in oklch, ${props.colorForNode(props.node)} 45%, var(--text-weaker))`
+                    : "var(--text-weaker)"),
               }}
               aria-hidden="true"
             />

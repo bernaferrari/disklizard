@@ -35,7 +35,8 @@ export const DISK_UTILITY_STYLES = `
   --dl-danger-action: oklch(0.55 0.2 27);
   --dl-danger-action-hover: oklch(0.52 0.2 27);
   --dl-accent-strong: oklch(0.55 0.2 256);
-  --dl-focus: var(--text-strong);
+  /* System-style focus: the accent blue, never a hard black/white outline. */
+  --dl-focus: color-mix(in oklab, var(--dl-accent) 80%, transparent);
   --dl-well: rgb(120 120 128 / 0.12);
   --dl-well-strong: rgb(120 120 128 / 0.2);
   --dl-raised: #ffffff;
@@ -53,6 +54,8 @@ export const DISK_UTILITY_STYLES = `
   --dl-tile-fill-mix: 58%;
   --dl-tile-summary-mix: 50%;
   --dl-tile-hover: oklch(1 0 0 / 0.10);
+  /* Summary cells fade toward this neutral so they read as "the rest". */
+  --dl-aggregate-neutral: oklch(0.9 0.008 255);
   --dl-scrim: rgb(0 0 0 / 0.58);
   --dl-hairline: 1px;
   --text-weak: color-mix(in oklch, var(--text-strong) 72%, var(--background-base));
@@ -78,6 +81,7 @@ export const DISK_UTILITY_STYLES = `
   --dl-tile-fill-mix: 34%;
   --dl-tile-summary-mix: 30%;
   --dl-tile-hover: oklch(1 0 0 / 0.04);
+  --dl-aggregate-neutral: oklch(0.42 0.008 270);
   --dl-accent: oklch(0.64 0.17 256);
   --dl-danger: oklch(0.72 0.16 27);
   --text-weaker: color-mix(in oklch, var(--text-strong) 62%, var(--background-base));
@@ -197,7 +201,14 @@ export const DISK_UTILITY_STYLES = `
   from { filter: brightness(1.35); }
   to { filter: brightness(1); }
 }
-.dl-volume-bar-fill[data-scanning] { background: var(--dl-positive); }
+/* Scanning: the accent with a slow sheen, so progress reads as alive even
+   when the percentage is holding still on a large folder. */
+.dl-volume-bar-fill[data-scanning] {
+  background: linear-gradient(90deg, var(--dl-accent) 0%, color-mix(in oklab, var(--dl-accent) 55%, white) 50%, var(--dl-accent) 100%);
+  background-size: 200% 100%;
+  animation: dl-scan-sheen 1.6s linear infinite;
+}
+@keyframes dl-scan-sheen { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 @media (prefers-reduced-motion: reduce) {
   .dl-volume-bar-fill { animation: none !important; transition: none !important; }
 }

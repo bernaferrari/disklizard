@@ -4786,28 +4786,21 @@ export default function DiskUtilityPage() {
                                   morphing ? "opacity-0" : "opacity-100"
                                 )}
                               >
-                                <CenterOverlay node={visibleMapNode} />
-                              </div>
-                            ) : null}
-                            {scanMode === "map" &&
-                            hoveredNode &&
-                            hoveredPath === hoveredNode.path ? (
-                              <div className="pointer-events-none absolute top-4 left-4 flex max-w-[min(24rem,60%)] items-center gap-2.5 rounded-full bg-[color-mix(in_oklch,var(--dl-popover)_88%,transparent)] py-1.5 pr-3.5 pl-3 text-[13px] shadow-[0_0_0_0.5px_rgb(255_255_255/0.06),0_6px_20px_rgb(0_0_0/0.25)] backdrop-blur-md">
-                                <span
-                                  className="size-2.5 shrink-0 rounded-full"
-                                  style={{
-                                    background:
-                                      spectrum.color(hoveredNode) ??
-                                      "var(--text-weaker)",
-                                  }}
-                                  aria-hidden
+                                <CenterOverlay
+                                  node={visibleMapNode}
+                                  hovered={
+                                    hoveredNode &&
+                                    hoveredPath === hoveredNode.path &&
+                                    hoveredNode.path !== visibleMapNode?.path
+                                      ? hoveredNode
+                                      : null
+                                  }
+                                  hoveredColor={
+                                    hoveredNode
+                                      ? spectrum.color(hoveredNode)
+                                      : undefined
+                                  }
                                 />
-                                <span className="min-w-0 truncate font-medium text-text-strong">
-                                  {diskNodeDisplayName(hoveredNode)}
-                                </span>
-                                <span className="shrink-0 text-text-weak tabular-nums">
-                                  {formatBytes(hoveredNode.size)}
-                                </span>
                               </div>
                             ) : null}
                           </div>
@@ -4975,19 +4968,12 @@ export default function DiskUtilityPage() {
                                     : false)
                                 }
                                 trashName={nativeTrashName(platform.os)}
+                                compact={!!selectedNode}
                                 onReview={() => collectionSurface.open()}
                                 onClear={clearCollection}
                               />
                             </div>
                             <div className="flex min-w-0 flex-1 items-center justify-end max-[1100px]:w-full">
-                              {!selectedNode &&
-                              scanMode === "map" &&
-                              !query.trim() &&
-                              !collectionDragNode ? (
-                                <p className="max-w-[280px] text-right text-[12px] leading-5 text-text-weak">
-                                  {language.t("disk.map.navigationHint")}
-                                </p>
-                              ) : null}
                               <AnimatePresence mode="popLayout" initial={false}>
                                 {selectedNode ? (
                                   <motion.div
@@ -5171,7 +5157,7 @@ export default function DiskUtilityPage() {
                                     viewNode?.path ? (
                                       <button
                                         type="button"
-                                        className="rounded text-[12.5px] text-text-weak underline-offset-2 hover:text-text-strong hover:underline focus-visible:outline-2 focus-visible:outline-[var(--dl-focus)]"
+                                        className="rounded text-[12.5px] text-text-weak underline-offset-2 outline-none hover:text-text-strong hover:underline focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
                                         onClick={() => {
                                           setExpandedSmallItemsForPath(null)
                                           scrollIndexIntoViewRef.current?.(0)

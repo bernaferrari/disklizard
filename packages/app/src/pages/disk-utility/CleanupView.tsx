@@ -3,6 +3,7 @@ import { useId, useMemo, useState, useEffect, type KeyboardEvent } from "react"
 import {
   Box,
   Check,
+  ChevronDown,
   ChevronRight,
   Database,
   Folder,
@@ -12,6 +13,7 @@ import {
   Minus,
   Package,
   ScrollText,
+  Search,
   Sparkles,
   Trash2,
   Wrench,
@@ -23,7 +25,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CleanupFilters } from "./CleanupFilters"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { CleanupFilters, cleanupToolbarControl } from "./CleanupFilters"
 import { CleanupInspector } from "./CleanupInspector"
 import { formatBytes } from "./format"
 import { useLanguage, type DiskLanguageKey } from "./runtime"
@@ -198,7 +207,7 @@ export function CleanupView(props: {
     onInspect: (item: CleanupItem) => setInspectedPath(item.node.path),
   }
   return (
-    <div className="mx-auto flex min-h-0 w-full max-w-[1180px] flex-1 flex-col px-6 pt-6 max-[760px]:px-4 max-[760px]:pt-4">
+    <div className="mx-auto flex min-h-0 w-full max-w-[1180px] flex-1 flex-col px-6 pt-6 pb-6 max-[760px]:px-4 max-[760px]:pt-4 max-[760px]:pb-4">
       <header className="flex shrink-0 items-end justify-between gap-4 pb-4">
         <div className="min-w-0">
           <h1 className="text-[24px] leading-8 font-semibold tracking-[-0.03em] text-text-strong">
@@ -234,6 +243,52 @@ export function CleanupView(props: {
             </Popover>
           </div>
         </div>
+      </header>
+      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-2">
+        <label className="relative flex h-9 min-w-48 flex-1 items-center">
+          <Search
+            className="pointer-events-none absolute left-3 size-3.5 text-text-weaker"
+            aria-hidden
+          />
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            aria-label={language.t("disk.ui.cleanup.search")}
+            placeholder={language.t("disk.ui.cleanup.search")}
+            className="h-full w-full rounded-lg border border-[var(--dl-separator)] bg-transparent pr-3 pl-8.5 text-[13px] text-text-strong transition-[border-color,box-shadow] outline-none placeholder:text-text-weaker hover:border-[var(--dl-well-strong)] focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+          />
+        </label>
+        <ToolbarSelect
+          label={language.t("disk.ui.cleanup.groupBy")}
+          value={grouping}
+          onValueChange={setGrouping}
+          options={[
+            {
+              value: "artifact",
+              label: language.t("disk.ui.cleanup.groupArtifact"),
+            },
+            {
+              value: "project",
+              label: language.t("disk.ui.cleanup.groupProject"),
+            },
+          ]}
+        />
+        <ToolbarSelect
+          label={language.t("disk.ui.cleanup.sortBy")}
+          value={sort}
+          onValueChange={setSort}
+          options={[
+            {
+              value: "largest",
+              label: language.t("disk.ui.cleanup.sortLargest"),
+            },
+            {
+              value: "oldest",
+              label: language.t("disk.ui.cleanup.sortOldest"),
+            },
+          ]}
+        />
         {!empty || filtered ? (
           <CleanupFilters
             age={props.agePreset}
@@ -245,44 +300,6 @@ export function CleanupView(props: {
             onEcosystem={props.onEcosystem}
           />
         ) : null}
-      </header>
-      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-2">
-        <input
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          aria-label={language.t("disk.ui.cleanup.search")}
-          placeholder={language.t("disk.ui.cleanup.search")}
-          className="h-9 min-w-48 flex-1 rounded-md border border-[var(--dl-separator)] bg-[var(--dl-well)] px-3 text-[13px] text-text-strong outline-none placeholder:text-text-weak focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
-        />
-        <select
-          value={grouping}
-          onChange={(event) =>
-            setGrouping(event.target.value as CleanupGrouping)
-          }
-          aria-label={language.t("disk.ui.cleanup.groupBy")}
-          className="h-9 rounded-md bg-[var(--dl-well)] px-2 text-[13px] text-text-strong outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
-        >
-          <option value="artifact">
-            {language.t("disk.ui.cleanup.groupArtifact")}
-          </option>
-          <option value="project">
-            {language.t("disk.ui.cleanup.groupProject")}
-          </option>
-        </select>
-        <select
-          value={sort}
-          onChange={(event) => setSort(event.target.value as CleanupSort)}
-          aria-label={language.t("disk.ui.cleanup.sortBy")}
-          className="h-9 rounded-md bg-[var(--dl-well)] px-2 text-[13px] text-text-strong outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
-        >
-          <option value="largest">
-            {language.t("disk.ui.cleanup.sortLargest")}
-          </option>
-          <option value="oldest">
-            {language.t("disk.ui.cleanup.sortOldest")}
-          </option>
-        </select>
       </div>
       {props.summary.groups
         .flatMap((group) => group.items)
@@ -499,6 +516,43 @@ export function CleanupView(props: {
         </div>
       ) : null}
     </div>
+  )
+}
+
+/** A labeled toolbar choice. The label stays visible so "Artifact type" never
+ * reads as a filter value when it is really how the list is grouped. */
+function ToolbarSelect<T extends string>(props: {
+  label: string
+  value: T
+  options: readonly { value: T; label: string }[]
+  onValueChange: (value: T) => void
+}) {
+  const current = props.options.find((option) => option.value === props.value)
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className={cleanupToolbarControl}>
+        <span className="text-text-weak">{props.label}</span>
+        <span className="font-medium text-text-strong">{current?.label}</span>
+        <ChevronDown className="size-3.5 text-text-weaker" aria-hidden />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={6} className="w-auto">
+        <DropdownMenuRadioGroup
+          value={props.value}
+          onValueChange={(value) => {
+            const option = props.options.find(
+              (candidate) => candidate.value === value
+            )
+            if (option) props.onValueChange(option.value)
+          }}
+        >
+          {props.options.map((option) => (
+            <DropdownMenuRadioItem key={option.value} value={option.value}>
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -800,15 +854,19 @@ function ItemRow(
   const location = props.locations.get(item.node.path) ?? item.node.path
   const restriction = props.restriction(item.node)
   const access = props.accessFor?.(item.node)
+  const accessProblem =
+    access?.state === "denied" ||
+    access?.state === "read-only" ||
+    access?.state === "unknown"
   useEffect(() => {
     props.onObserve?.(item.node)
   }, [item.node, props.onObserve])
   return (
     <li
       className={cn(
-        "flex min-h-[60px] items-center gap-3 rounded-lg py-1",
+        "flex min-h-[52px] items-center gap-3 rounded-lg py-1",
         props.nested ? "pl-4" : "pl-3",
-        active ? "bg-[var(--dl-well-strong)]" : "hover:bg-[var(--dl-row-hover)]"
+        active ? "bg-[var(--dl-well)]" : "hover:bg-[var(--dl-row-hover)]"
       )}
     >
       <CheckBox
@@ -864,13 +922,15 @@ function ItemRow(
                 ? `${props.category} · ${location}`
                 : location}
           </span>
-          <span className="block truncate text-[11px] leading-4 text-text-weak">
-            {restriction ??
-              (access ? language.t(ACCESS_LABEL[access.state]) : "")}
-            <span className="min-[1000px]:hidden">
-              {restriction || access ? " · " : ""}
-              {formatLastChanged(item.node.modifiedAt)}
+          {/* Only problems earn a line; "not checked yet" on every row is
+              noise. The inspector still shows the full access state. */}
+          {restriction || accessProblem ? (
+            <span className="block truncate text-[11px] leading-4 text-[var(--dl-warning)]">
+              {restriction ?? language.t(ACCESS_LABEL[access!.state])}
             </span>
+          ) : null}
+          <span className="block truncate text-[11px] leading-4 text-text-weak min-[1000px]:hidden">
+            {formatLastChanged(item.node.modifiedAt)}
           </span>
         </span>
         <span className="hidden w-28 shrink-0 truncate text-right text-[11px] text-text-weak min-[1000px]:block">

@@ -31,14 +31,14 @@ describe("shared folder spectrum", () => {
     expect(summary.L).toBeGreaterThan(branch.L)
   })
 
-  it("keeps deep descendants in their top-level folder's color family", () => {
-    const deep = folder("/Applications/Utilities/Tool", 20)
-    const utilities = folder("/Applications/Utilities", 20, [deep])
-    const applications = folder("/Applications", 40, [
+  it("keeps a small branch's descendants in its color family", () => {
+    const deep = folder("/Applications/Utilities/Tool", 4)
+    const utilities = folder("/Applications/Utilities", 4, [deep])
+    const applications = folder("/Applications", 8, [
       utilities,
-      folder("/Applications/Other", 20),
+      folder("/Applications/Other", 4),
     ])
-    const documents = folder("/Documents", 60)
+    const documents = folder("/Documents", 92)
     const spectrum = createSpectrum(folder("/", 100, [documents, applications]))
     const branchHue = spectrum.tone(applications)!.h
 
@@ -51,6 +51,29 @@ describe("shared folder spectrum", () => {
     expect(hueDistance(spectrum.tone(documents)!.h, branchHue)).toBeGreaterThan(
       20
     )
+  })
+
+  it("fans a dominant branch's children across a wide band", () => {
+    const children = Array.from({ length: 6 }, (_, index) =>
+      folder(`/Users/${index}`, 60 - index * 5)
+    )
+    const users = folder("/Users", 285, children)
+    const spectrum = createSpectrum(
+      folder("/", 300, [users, folder("/System", 15)])
+    )
+    const hues = children.map((child) => spectrum.tone(child)!.h)
+    const spread = Math.max(
+      ...hues.map((a) => Math.max(...hues.map((b) => hueDistance(a, b))))
+    )
+    expect(spread).toBeGreaterThan(120)
+  })
+
+  it("never gives two top-level siblings the same hue", () => {
+    const names = ["Users", "System", "private", "Applications", "Library"]
+    const children = names.map((name, index) => folder(`/${name}`, 50 - index))
+    const spectrum = createSpectrum(folder("/", 240, children))
+    const hues = children.map((child) => spectrum.tone(child)!.h)
+    expect(new Set(hues).size).toBe(names.length)
   })
 })
 

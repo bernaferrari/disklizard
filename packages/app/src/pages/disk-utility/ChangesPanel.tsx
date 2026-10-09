@@ -87,12 +87,22 @@ export function ChangesPanel(props: {
   return (
     <div className="flex max-h-[inherit] min-h-0 flex-col">
       <div className="px-4 pt-3.5 pb-3">
-        <div className={cn(segmentedTrack, "flex w-full")}>
+        {/* Inside a popover the choice needs a visible track, like a native
+            segmented control, or the three labels read as loose text. */}
+        <div
+          className={cn(
+            segmentedTrack,
+            "flex h-8 w-full rounded-lg bg-[var(--dl-well)] p-0.5"
+          )}
+        >
           {tabs.map(([value, label]) => (
             <button
               key={value}
               type="button"
-              className={cn(segmentedItem, "flex-1 px-2 text-[12px]")}
+              className={cn(
+                segmentedItem,
+                "h-7 flex-1 px-2 text-[12px] aria-pressed:bg-[var(--dl-raised)] aria-pressed:shadow-[0_0_0_0.5px_var(--dl-separator),0_1px_2px_rgb(0_0_0/0.12)]"
+              )}
               aria-pressed={tab === value}
               onClick={() => setTab(value)}
             >

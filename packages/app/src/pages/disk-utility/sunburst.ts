@@ -60,10 +60,17 @@ export function sunburstSegmentPadding(
   segment: Pick<Segment, "start" | "end" | "depth">,
   padAngle: number
 ): number {
+  // A wedge that is the whole ring has no neighbour to separate from; padding
+  // it would cut a visible seam into an otherwise closed annulus.
+  if (isFullCircle(segment)) return 0
   return Math.min(
     padAngle * (segment.depth === 0 ? 5 : segment.depth === 1 ? 2.5 : 1),
     (segment.end - segment.start) * 0.22
   )
+}
+
+function isFullCircle(segment: Pick<Segment, "start" | "end">) {
+  return segment.end - segment.start >= Math.PI * 2 - 1e-6
 }
 
 export type SunburstOptions = {
@@ -185,10 +192,22 @@ function projectAngle(
 /** Smaller arcs become hard to distinguish and target in a normal-size window. */
 export const MIN_VISIBLE_SEGMENT_ANGLE = 0.01
 
+/** Outer rings have more circumference, so the same angle is a wider sliver
+ * there and many of them stack into "barcode" noise at the map's edge. Ask
+ * outer rings for a bigger arc before drawing an item on its own. */
+function minVisibleAngle(depth: number) {
+  return depth <= 0
+    ? MIN_VISIBLE_SEGMENT_ANGLE
+    : depth === 1
+      ? MIN_VISIBLE_SEGMENT_ANGLE * 1.8
+      : MIN_VISIBLE_SEGMENT_ANGLE * 2.8
+}
+
 function collapseVisualChildren(
   node: SunNode,
   maxChildren: number,
-  parentSpan: number
+  parentSpan: number,
+  depth = 0
 ): SunNode[] {
   const children = (node.children ?? []).filter((child) => child.size > 0)
   if (maxChildren < 2) {
@@ -210,7 +229,7 @@ function collapseVisualChildren(
   const kept = sorted
     .slice(0, maxChildren - 1)
     .filter(
-      (child) => parentSpan * (child.size / total) >= MIN_VISIBLE_SEGMENT_ANGLE
+      (child) => parentSpan * (child.size / total) >= minVisibleAngle(depth)
     )
   const keptPaths = new Set(kept.map((child) => child.path))
   const remainder = sorted.filter((child) => !keptPaths.has(child.path))
@@ -272,11 +291,12 @@ function layoutTree(
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
       const perBranchLimit =
-        parent.depth === 0 ? 24 : parent.depth === 1 ? 12 : 8
+        parent.depth === 0 ? 24 : parent.depth === 1 ? 10 : 6
       const children = collapseVisualChildren(
         parent.node,
         Math.min(perBranchLimit, remainingBudget),
-        parent.end - parent.start
+        parent.end - parent.start,
+        parent.depth
       )
       if (!children?.length) continue
       const total = children.reduce(
@@ -1121,10 +1141,19 @@ export class Sunburst {
     ctx.save()
     ctx.globalAlpha = s.opacity
 
+    const full = isFullCircle(s)
     ctx.beginPath()
-    ctx.arc(this.cx, this.cy, outer, start, end)
-    ctx.arc(this.cx, this.cy, inner, end, start, true)
-    ctx.closePath()
+    if (full) {
+      // Two closed circles, no radial edge, so neither the fill nor the
+      // queued outline draws a seam across the ring.
+      ctx.arc(this.cx, this.cy, outer, 0, FULL_CIRCLE)
+      ctx.moveTo(this.cx + inner, this.cy)
+      ctx.arc(this.cx, this.cy, inner, FULL_CIRCLE, 0, true)
+    } else {
+      ctx.arc(this.cx, this.cy, outer, start, end)
+      ctx.arc(this.cx, this.cy, inner, end, start, true)
+      ctx.closePath()
+    }
     ctx.fillStyle = oklchCss(base.L, base.C, s.tone?.h ?? s.hue)
     ctx.fill()
     if (s.hover > 0.001 && !isSel) {
@@ -1162,8 +1191,8 @@ export class Sunburst {
         this.cx,
         this.cy,
         safeCanvasRadius(outer + 2.5 * this.dpr),
-        start,
-        end
+        full ? 0 : start,
+        full ? FULL_CIRCLE : end
       )
       ctx.shadowColor = this.theme.ring
       ctx.shadowBlur = 6 * this.dpr

@@ -47,25 +47,28 @@ test("cleanup filters preserve both choices while open and reset both together",
     await act(async () =>
       host.querySelector<HTMLButtonElement>("button")!.click()
     )
-    const [age, ecosystem] = [...document.querySelectorAll("select")]
-    expect(document.querySelector(`label[for="${age.id}"]`)?.textContent).toBe(
-      "Unchanged for"
-    )
+    const [age, ecosystem] = [
+      ...document.querySelectorAll<HTMLElement>('[role="radiogroup"]'),
+    ]
+    const checked = (group: HTMLElement) =>
+      group.querySelector<HTMLElement>('[role="radio"][aria-checked="true"]')
+        ?.dataset.value
+    const choose = (group: HTMLElement, value: string) =>
+      group.querySelector<HTMLButtonElement>(`[data-value="${value}"]`)!.click()
+    expect(
+      document.getElementById(age.getAttribute("aria-labelledby") ?? "")
+        ?.textContent
+    ).toBe("Unchanged for")
     await act(async () => {
-      age.value = "90"
-      age.dispatchEvent(new Event("change", { bubbles: true }))
-      ecosystem.value = "rust"
-      ecosystem.dispatchEvent(new Event("change", { bubbles: true }))
+      choose(age, "90")
+      choose(ecosystem, "rust")
     })
-    expect(age.value).toBe("90")
-    expect(ecosystem.value).toBe("rust")
+    expect(checked(age)).toBe("90")
+    expect(checked(ecosystem)).toBe("rust")
     expect(host.textContent).toBe(
       "FiltersRust · Unchanged for at least 90 days"
     )
-    await act(async () => {
-      age.value = "custom"
-      age.dispatchEvent(new Event("change", { bubbles: true }))
-    })
+    await act(async () => choose(age, "custom"))
     const custom = document.querySelector<HTMLInputElement>(
       'input[type="number"]'
     )!
@@ -84,8 +87,8 @@ test("cleanup filters preserve both choices while open and reset both together",
     )
     expect(reset).toBeDefined()
     await act(async () => reset!.click())
-    expect(age.value).toBe("all")
-    expect(ecosystem.value).toBe("all")
+    expect(checked(age)).toBe("all")
+    expect(checked(ecosystem)).toBe("all")
     expect(host.textContent).toBe("Filters")
   } finally {
     await act(async () => root.unmount())

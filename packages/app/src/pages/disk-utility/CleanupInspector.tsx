@@ -135,46 +135,50 @@ export function CleanupInspector(props: {
           </p>
         ) : null}
 
-        {props.access ? (
-          <p className="mt-2 text-[12px] leading-5 text-text-weak">
-            {language.t(ACCESS_LABEL[props.access.state])}
+        {/* Status and its follow-up share one line; secondary actions sit
+            flush with the text edge instead of floating on ghost padding. */}
+        {props.access && props.access.state !== "not-checked" ? (
+          <p className="mt-2 flex flex-wrap items-baseline gap-x-2 text-[12px] leading-5 text-text-weak">
+            <span>{language.t(ACCESS_LABEL[props.access.state])}</span>
+            {props.onCheckAccess ? (
+              <button
+                type="button"
+                className="rounded-sm font-medium text-text-strong underline decoration-text-weaker underline-offset-4 outline-none hover:decoration-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] disabled:opacity-50"
+                disabled={props.access.state === "checking"}
+                onClick={() => props.onCheckAccess?.(item.node)}
+              >
+                {language.t("disk.cleanup.checkAgain")}
+              </button>
+            ) : null}
           </p>
         ) : null}
-        <div className="mt-2 flex flex-wrap gap-1">
-          {props.protection && props.onUnprotect ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => props.onUnprotect?.(props.protection!)}
-            >
-              {language.t("disk.ui.cleanup.unprotect", {
-                name: props.protection.label,
-              })}
-            </Button>
-          ) : null}
-          {props.onCheckAccess ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={props.access?.state === "checking"}
-              onClick={() => props.onCheckAccess?.(item.node)}
-            >
-              {language.t("disk.cleanup.checkAgain")}
-            </Button>
-          ) : null}
-          {props.restriction && props.onRescan ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={props.onRescan}
-            >
-              {language.t("disk.common.rescan")}
-            </Button>
-          ) : null}
-        </div>
+        {(props.protection && props.onUnprotect) ||
+        (props.restriction && props.onRescan) ? (
+          <div className="mt-1 -ml-2 flex flex-wrap gap-1">
+            {props.protection && props.onUnprotect ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => props.onUnprotect?.(props.protection!)}
+              >
+                {language.t("disk.ui.cleanup.unprotect", {
+                  name: props.protection.label,
+                })}
+              </Button>
+            ) : null}
+            {props.restriction && props.onRescan ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={props.onRescan}
+              >
+                {language.t("disk.common.rescan")}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="mt-6 border-t border-[var(--dl-separator)] pt-5">
           <h3 className="text-[13px] font-medium text-text-strong">

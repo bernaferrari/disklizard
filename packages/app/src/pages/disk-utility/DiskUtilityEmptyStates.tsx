@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { ReactNode } from "react"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
+import { diskNodeDisplayName } from "./node-display"
 import { diskLanguageText, useLanguage } from "./runtime"
 
 export function DriveFallback(props: {
@@ -187,32 +188,53 @@ export function centerOverlayBehavior(
   }
 }
 
-/** The open directory stays anchored while hover previews appear in the inspector. */
-export function CenterOverlay(props: { node: DiskScanNode | null }) {
+/**
+ * The ring's hole is the readout: it names what the number measures, and
+ * follows the pointer so the answer appears where the eye already is.
+ */
+export function CenterOverlay(props: {
+  node: DiskScanNode | null
+  hovered?: DiskScanNode | null
+  hoveredColor?: string
+}) {
   const reducedMotion = useReducedMotion()
-  const [amount, unit] = props.node
-    ? formatBytes(props.node.size).split(" ")
-    : []
+  const shown = props.hovered ?? props.node
+  const [amount, unit] = shown ? formatBytes(shown.size).split(" ") : []
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
-      <div className="max-w-[29%] text-center @max-[399px]:max-w-[46%]">
-        <AnimatePresence initial={false} mode="wait">
-          {props.node ? (
-            <motion.p
-              key={`${props.node.path}:${props.node.size}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.14 }}
-              className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums"
-            >
-              {amount}
-              <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
-                {unit}
-              </span>
-            </motion.p>
-          ) : null}
-        </AnimatePresence>
+      <div className="max-w-[min(13cqw,170px)] text-center @max-[399px]:max-w-[30cqw]">
+        {shown ? (
+          <motion.div
+            key={shown.path}
+            initial={{ opacity: reducedMotion ? 1 : 0.35 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reducedMotion ? 0 : 0.12 }}
+          >
+            {/* The breadcrumb and sidebar already name the open folder, so
+                the hole names only what the pointer is on. Positioned above the
+                number so the figure never shifts when it appears. */}
+            <div className="relative">
+              {props.hovered ? (
+                <p className="absolute inset-x-0 bottom-full mb-2 flex items-center justify-center gap-1.5 text-[12.5px] leading-4 font-medium text-text-weak">
+                  {props.hoveredColor ? (
+                    <span
+                      className={`size-2 shrink-0 ${props.hovered.isDir ? "rounded-full" : "rounded-[2px]"}`}
+                      style={{ background: props.hoveredColor }}
+                      aria-hidden
+                    />
+                  ) : null}
+                  <span className="truncate">{diskNodeDisplayName(shown)}</span>
+                </p>
+              ) : null}
+              <p className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums">
+                {amount}
+                <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
+                  {unit}
+                </span>
+              </p>
+            </div>
+          </motion.div>
+        ) : null}
       </div>
     </div>
   )

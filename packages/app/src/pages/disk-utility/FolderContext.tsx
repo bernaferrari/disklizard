@@ -1,3 +1,4 @@
+import { FolderSearch } from "lucide-react"
 import type { DiskScanNode } from "./types"
 import { diskNodeDisplayName } from "./node-display"
 import { formatBytes, formatLastChanged } from "./format"
@@ -27,34 +28,16 @@ export function FolderContext(props: {
       count + (child.isOther ? (child.otherCount ?? child.children.length) : 0),
     0
   )
+  const row = "flex items-baseline justify-between gap-3"
   return (
     <section
       className="mx-5 mt-5 mb-5 border-t border-[var(--dl-separator)] pt-4"
       aria-label={language.t("disk.detail.info")}
     >
-      {!props.node.isOther && !props.node.isHidden ? (
-        <>
-          <p className="text-[12px] font-medium text-text-weak">
-            {language.t("disk.inspector.location")}
-          </p>
-          <p
-            className="mt-1.5 text-[13px] leading-5 [overflow-wrap:anywhere] text-text-strong"
-            title={props.node.path}
-          >
-            {props.node.path}
-          </p>
-          <button
-            type="button"
-            onClick={props.onReveal}
-            className="mt-3 rounded-md bg-[var(--dl-well)] px-3 py-1.5 text-[13px] font-medium text-text-strong transition-colors hover:bg-[var(--dl-well-strong)] focus-visible:outline-2 focus-visible:outline-[var(--dl-focus)]"
-          >
-            {props.revealLabel}
-          </button>
-        </>
-      ) : null}
-      <dl className="mt-4 space-y-3 text-[13px]">
+      {/* One rhythm for every fact: label left, value right. */}
+      <dl className="space-y-2.5 text-[13px]">
         <div>
-          <div className="flex items-baseline justify-between gap-3">
+          <div className={row}>
             <dt className="min-w-0 truncate text-text-weak">
               {language.t("disk.inspector.share", {
                 name: diskNodeDisplayName(props.root),
@@ -78,11 +61,11 @@ export function FolderContext(props: {
           </div>
         </div>
         {folders + files + grouped > 0 ? (
-          <div>
-            <dt className="text-text-weak">
+          <div className={row}>
+            <dt className="shrink-0 text-text-weak">
               {language.t("disk.inspector.contents")}
             </dt>
-            <dd className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-text-strong tabular-nums">
+            <dd className="flex min-w-0 flex-wrap justify-end gap-x-2 text-right text-text-strong tabular-nums">
               {folders > 0 ? (
                 <span>{language.plural("disk.count.folder", folders)}</span>
               ) : null}
@@ -97,7 +80,7 @@ export function FolderContext(props: {
         ) : null}
         {props.node.logicalSize !== undefined &&
         props.node.logicalSize !== props.node.size ? (
-          <div className="flex justify-between gap-3">
+          <div className={row}>
             <dt className="text-text-weak">
               {language.t("disk.inspector.fileSize")}
             </dt>
@@ -107,7 +90,7 @@ export function FolderContext(props: {
           </div>
         ) : null}
         {props.node.modifiedAt ? (
-          <div className="flex justify-between gap-3">
+          <div className={row}>
             <dt className="text-text-weak">
               {language.t("disk.sort.key.modified")}
             </dt>
@@ -117,6 +100,29 @@ export function FolderContext(props: {
           </div>
         ) : null}
       </dl>
+      {!props.node.isOther && !props.node.isHidden ? (
+        <div className="mt-4 border-t border-[var(--dl-separator)] pt-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[13px] text-text-weak">
+              {language.t("disk.inspector.location")}
+            </p>
+            <button
+              type="button"
+              onClick={props.onReveal}
+              className="-mr-2 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-[12.5px] font-medium text-text-base transition-colors outline-none hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+            >
+              <FolderSearch className="size-3.5" aria-hidden />
+              {props.revealLabel}
+            </button>
+          </div>
+          <p
+            className="mt-1 font-mono text-[11.5px] leading-[1.6] [overflow-wrap:anywhere] text-text-weak"
+            title={props.node.path}
+          >
+            {props.node.path}
+          </p>
+        </div>
+      ) : null}
     </section>
   )
 }

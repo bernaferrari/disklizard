@@ -26,7 +26,7 @@ export function ParentFrame(props: {
           onClick={props.onUp}
           aria-label={label}
           style={props.color ? { color: "oklch(0.2 0.02 250)" } : undefined}
-          className="absolute top-2 left-5 z-10 flex h-8 max-w-[calc(100%-40px)] items-center gap-2 rounded-md px-2.5 text-xs font-medium text-text-weak hover:bg-surface-raised-strong hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
+          className="absolute top-2 left-5 z-10 flex h-8 max-w-[calc(100%-40px)] items-center gap-2 rounded-md px-2.5 text-xs font-medium text-text-weak outline-none hover:bg-surface-raised-strong hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
         >
           <ArrowLeft aria-hidden className="size-3.5 shrink-0" />
           <span className="truncate">{label}</span>

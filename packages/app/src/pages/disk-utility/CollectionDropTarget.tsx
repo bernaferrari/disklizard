@@ -21,6 +21,9 @@ export function CollectionDropTarget(props: {
   hasUnverifiedPhysicalStorage: boolean
   requiresDeepInventoryRefresh: boolean
   trashName: string
+  /** Idle and sharing the footer with a selection card: keep only the drop
+   * well so the card has room for the item's name. */
+  compact?: boolean
   setElement?: (element: HTMLElement | null) => void
   onReview: () => void
   onClear?: () => void
@@ -29,6 +32,7 @@ export function CollectionDropTarget(props: {
   const hasItems = props.count > 0
   const dragging = !!props.node
   const refused = dragging && !props.acceptsNode
+  const compact = !!props.compact && !hasItems && !dragging
   const allocationMayRemain =
     props.requiresDeepInventoryRefresh ||
     props.hasSharedPhysicalStorage ||
@@ -65,9 +69,10 @@ export function CollectionDropTarget(props: {
       className={cn(
         "flex h-11 max-w-full min-w-0 items-center gap-2 rounded-xl p-1.5 transition-[background-color,box-shadow] duration-200",
         // Idle, it is a drop well with a hint, not a button.
+        !dragging && !hasItems && !compact && "pr-3.5",
         !dragging &&
           !hasItems &&
-          "pr-3.5 outline-1 -outline-offset-1 outline-[var(--dl-well-strong)] outline-dashed",
+          "outline-1 -outline-offset-1 outline-[var(--dl-well-strong)] outline-dashed",
         (dragging || hasItems) &&
           "bg-[var(--dl-popover)] shadow-[0_0_0_0.5px_rgb(255_255_255/0.06),0_8px_28px_rgb(0_0_0/0.28)]",
         props.active &&
@@ -82,7 +87,12 @@ export function CollectionDropTarget(props: {
       >
         {hasItems ? <Layers className="size-4" /> : <Plus className="size-4" />}
       </span>
-      <span className="min-w-0 flex-1 truncate text-[13px] tabular-nums">
+      <span
+        className={cn(
+          "min-w-0 flex-1 truncate text-[13px] tabular-nums",
+          compact && "sr-only"
+        )}
+      >
         <span
           className={
             hasItems || dragging ? "text-text-strong" : "text-text-weak"
@@ -90,12 +100,6 @@ export function CollectionDropTarget(props: {
         >
           {title}
         </span>
-        {!hasItems && !dragging ? (
-          <span className="text-text-weaker max-[1279px]:hidden">
-            {" · "}
-            {language.t("disk.collection.instructions")}
-          </span>
-        ) : null}
       </span>
       {hasItems && !dragging ? (
         <span className="flex shrink-0 items-center gap-1">

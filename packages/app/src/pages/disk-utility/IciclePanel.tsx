@@ -98,7 +98,7 @@ export function IciclePanel(props: {
               type="button"
               key={cell.node.path}
               data-disk-layer-path={cell.node.path}
-              className="@container absolute overflow-hidden rounded-lg text-left shadow-[inset_0_1px_0_rgb(255_255_255/0.12)] transition-[filter] duration-100 outline-none hover:z-10 hover:brightness-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-text-strong"
+              className="@container absolute overflow-hidden rounded-lg text-left shadow-[inset_0_1px_0_rgb(255_255_255/0.12)] transition-[filter] duration-100 outline-none hover:z-10 hover:brightness-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
               style={{
                 left: `${cell.x * 100}%`,
                 width: `max(1px, calc(${cell.width * 100}% - 4px))`,
@@ -107,7 +107,7 @@ export function IciclePanel(props: {
                 opacity: retained === cell ? 0 : 1,
                 pointerEvents: retained === cell ? "none" : undefined,
                 backgroundColor: cell.node.isOther
-                  ? `color-mix(in oklch, ${props.colorForNode(cell.parent) ?? props.colorForNode(cell.node.children[0]) ?? storageSummaryColor(cell.colorIndex, cell.depth, "tile")} 74%, oklch(0.90 0.008 255))`
+                  ? `color-mix(in oklch, ${props.colorForNode(cell.node) ?? props.colorForNode(cell.parent) ?? props.colorForNode(cell.node.children[0]) ?? storageSummaryColor(cell.colorIndex, cell.depth, "tile")} 74%, var(--dl-aggregate-neutral))`
                   : (props.colorForNode(cell.node) ??
                     primarySegmentColor(
                       cell.colorIndex,
@@ -159,7 +159,8 @@ export function IciclePanel(props: {
               onMouseEnter={() => props.onHover(cell.node)}
               onMouseLeave={() => props.onHover(null)}
               onPointerDown={(event) => {
-                if (props.canCollect(cell.node)) props.onDragStart(event, cell.node)
+                if (props.canCollect(cell.node))
+                  props.onDragStart(event, cell.node)
               }}
             >
               <span className="text-13-semibold block truncate px-3 @max-[45px]:hidden">

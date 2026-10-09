@@ -63,8 +63,10 @@ export function layoutNestedTreemap(
       depth < 8 &&
       node.isDir &&
       !node.isOther &&
-      w >= 128 &&
-      h >= 100 &&
+      // Below this a nested header plus children is mostly chrome; a plain
+      // tile with name and size says more with less.
+      w >= 168 &&
+      h >= 128 &&
       source.children.some((child) => child.size > 0) &&
       result.length < 640
     result.push({

@@ -32,7 +32,7 @@ export function LocationNavigation(props: {
     return () => observer.disconnect()
   }, [current])
   const historyButton =
-    "grid size-8 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong hover:text-text-strong disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-text-strong"
+    "grid size-8 place-items-center rounded-md text-text-weak hover:bg-surface-raised-strong hover:text-text-strong disabled:opacity-30 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
   return (
     <>
       <div className="dl-history-controls flex shrink-0 items-center gap-0.5">
@@ -63,11 +63,16 @@ export function LocationNavigation(props: {
         type="button"
         data-disk-navigation-home
         onClick={props.onHome}
-        className="ml-1 h-8 shrink-0 rounded-md px-2.5 text-xs text-text-weaker transition-colors hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong"
+        className="ml-1 h-8 shrink-0 rounded-md px-2.5 text-xs text-text-weak transition-colors outline-none hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
       >
         {language.t("disk.common.volumes")}
       </button>
-      <span aria-hidden className="h-4 w-px shrink-0 bg-border-weaker-base" />
+      {/* Volumes is the root of the trail, so it gets the same chevron as
+          every other step rather than a divider that reads as a new group. */}
+      <ChevronRight
+        aria-hidden
+        className="mx-0.5 size-3 shrink-0 text-text-weaker"
+      />
       <nav
         ref={trail}
         aria-label={language.t("disk.top.currentLocation")}
@@ -93,7 +98,7 @@ export function LocationNavigation(props: {
               aria-current={
                 index === props.locations.length - 1 ? "page" : undefined
               }
-              className="h-8 max-w-[160px] min-w-8 truncate rounded-md px-2.5 text-xs text-text-weak transition-colors hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:outline-2 focus-visible:outline-text-strong aria-[current=page]:font-medium aria-[current=page]:text-text-strong"
+              className="h-8 max-w-[160px] min-w-8 truncate rounded-md px-2.5 text-xs text-text-weak transition-colors outline-none hover:bg-[var(--dl-well)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] aria-[current=page]:font-medium aria-[current=page]:text-text-strong"
             >
               {location.name}
             </button>
