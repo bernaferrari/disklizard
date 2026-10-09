@@ -20,6 +20,20 @@ const INNER_HOLE_RATIO = 0.25
 /** Node shape the engine consumes — identical to DiskScanNode, aliased for seamless interop. */
 export type SunNode = DiskScanNode
 
+/**
+ * keep: present before and after. reveal: new detail opening into view.
+ * exit: leaving in place. bridge: the folder being opened (or returned
+ * from), travelling between its ring and the center. arrive: a parent-level
+ * sibling fading back in. collapse: detail sliding off the rim on the way out.
+ */
+export type SegmentRole =
+  | "keep"
+  | "reveal"
+  | "exit"
+  | "bridge"
+  | "arrive"
+  | "collapse"
+
 export type Segment = {
   id: string
   node: SunNode
@@ -36,9 +50,8 @@ export type Segment = {
   opacity: number
   hover: number
   targetHover: number
-  /** The selected folder stays visible while its children take over the wheel. */
-  isDrillBridge?: boolean
-  isDrillReveal?: boolean
+  /** What this arc is doing in the current navigation; drives its timing. */
+  role?: SegmentRole
   tone?: { L: number; C: number; h: number }
   fromTone?: { L: number; C: number; h: number }
   toTone?: { L: number; C: number; h: number }
@@ -138,12 +151,14 @@ export function sunburstTransitionDuration(
   instant = false
 ) {
   if (reducedMotion || instant) return 1
+  // Navigation is two readable steps (approach, then open; or the reverse),
+  // so it needs more time than a single in-place update.
   return mode === "enter"
     ? enterMs
-    : mode === "up"
-      ? navigationMs * 1.5
-      : mode === "drill"
-        ? navigationMs * 1.5
+    : mode === "drill"
+      ? navigationMs * 2.35
+      : mode === "up"
+        ? navigationMs * 2.25
         : navigationMs
 }
 
@@ -166,6 +181,65 @@ function easeOutCubic(t: number) {
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 }
+export type NavigationKind = "open" | "close" | "crossfade" | "none"
+
+/** How far the surrounding level drifts outward when you move in. */
+const CAMERA_DRIFT = 1.14
+
+function phase(t: number, from: number, to: number) {
+  return Math.max(0, Math.min(1, (t - from) / (to - from)))
+}
+
+/**
+ * The two clocks behind navigation. Opening: radius first (the wedge comes
+ * closer), then angle (the circle closes). Closing: the mirror image. The
+ * phases overlap slightly so there is no dead stop at the handoff.
+ */
+export function navigationProgress(
+  kind: NavigationKind,
+  t: number,
+  /** Rings the folder travels; a deep wedge earns a longer approach. */
+  travel = 1
+) {
+  const depth = Math.max(0, Math.min(3, travel - 1))
+  if (kind === "open")
+    return {
+      radius: easeInOutCubic(phase(t, 0, 0.32 + depth * 0.06)),
+      angle: easeInOutCubic(phase(t, 0.16 + depth * 0.06, 1)),
+    }
+  if (kind === "close")
+    return {
+      angle: easeInOutCubic(phase(t, 0, 0.46 + depth * 0.04)),
+      radius: easeInOutCubic(phase(t, 0.3 + depth * 0.04, 1)),
+    }
+  return undefined
+}
+
+function segmentOpacity(
+  s: Pick<Segment, "role" | "fromOpacity" | "toOpacity">,
+  kind: NavigationKind,
+  t: number,
+  e: number
+) {
+  const from = s.fromOpacity
+  const to = s.toOpacity
+  if (kind === "open") {
+    if (s.role === "exit") return from * (1 - easeOutCubic(phase(t, 0, 0.42)))
+    if (s.role === "bridge") return from * (1 - phase(t, 0.55, 0.9))
+    if (s.role === "reveal") return to * easeOutCubic(phase(t, 0.28, 0.75))
+  } else if (kind === "close") {
+    if (s.role === "bridge") return to * easeOutCubic(phase(t, 0, 0.3))
+    if (s.role === "arrive") return to * easeOutCubic(phase(t, 0.44, 0.94))
+    if (s.role === "collapse")
+      return from * (1 - easeInOutCubic(phase(t, 0.4, 0.85)))
+    if (s.role === "exit") return from * (1 - easeOutCubic(phase(t, 0, 0.4)))
+  } else if (kind === "crossfade") {
+    if (s.role === "exit") return from * (1 - easeOutCubic(phase(t, 0, 0.5)))
+    if (s.role === "reveal") return to * easeOutCubic(phase(t, 0.25, 1))
+  }
+  return lerp(from, to, e)
+}
+
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
 }
@@ -176,19 +250,6 @@ export function safeCanvasRadius(value: number) {
 // makes wide wedges shrink through zero and then snap to a full circle.
 const START_ANGLE = -Math.PI / 2
 const FULL_CIRCLE = Math.PI * 2
-function projectAngle(
-  angle: number,
-  start: number,
-  end: number,
-  origin = START_ANGLE
-) {
-  return (
-    origin +
-    Math.max(0, Math.min(1, (angle - start) / Math.max(0.0001, end - start))) *
-      FULL_CIRCLE
-  )
-}
-
 /** Smaller arcs become hard to distinguish and target in a normal-size window. */
 export const MIN_VISIBLE_SEGMENT_ANGLE = 0.01
 
@@ -196,6 +257,9 @@ export const MIN_VISIBLE_SEGMENT_ANGLE = 0.01
  * there and many of them stack into "barcode" noise at the map's edge. Ask
  * outer rings for a bigger arc before drawing an item on its own. */
 function minVisibleAngle(depth: number) {
+  // An opened "smaller items" group exists to show its members; only true
+  // sub-pixel slivers may merge, or the group would contain another group.
+  if (depth < 0) return MIN_VISIBLE_SEGMENT_ANGLE * 0.3
   return depth <= 0
     ? MIN_VISIBLE_SEGMENT_ANGLE
     : depth === 1
@@ -290,13 +354,19 @@ function layoutTree(
       // A storage map should reveal hierarchy, not reproduce every inode as a
       // hairline. Keep the largest branches legible and roll the long tail into
       // one truthful aggregate that remains available in the list.
-      const perBranchLimit =
-        parent.depth === 0 ? 24 : parent.depth === 1 ? 10 : 6
+      const openedGroup = parent.depth === 0 && !!parent.node.isOther
+      const perBranchLimit = openedGroup
+        ? remainingBudget
+        : parent.depth === 0
+          ? 24
+          : parent.depth === 1
+            ? 10
+            : 6
       const children = collapseVisualChildren(
         parent.node,
         Math.min(perBranchLimit, remainingBudget),
         parent.end - parent.start,
-        parent.depth
+        openedGroup ? -1 : parent.depth
       )
       if (!children?.length) continue
       const total = children.reduce(
@@ -434,9 +504,9 @@ export class Sunburst {
   hoverPulseT = 1
   /** True while a full-reveal (mode "enter") transition is in flight. */
   private enterMode = false
-  /** A distant wedge needs a visible approach before it fills the center. */
-  private deepDrill = false
-  private returning = false
+  /** Which two-step choreography the current transition is playing. */
+  navigation: NavigationKind = "none"
+  navigationTravel = 1
   lastFrame = 0
 
   dpr = 1
@@ -695,9 +765,22 @@ export class Sunburst {
     this.suppressClickUntil = performance.now() + 350
   }
 
+  /** Radii of the arc a folder occupies once it has become the center. */
+  private _holeRadii() {
+    return { inner: 0, outer: this.innerHole * 0.9 }
+  }
+
   /**
-   * Preserve the visible pose by path, opening the clicked angular domain.
-   * Unmatched detail enters at the rim; siblings close toward the domain edges.
+   * Navigation is choreographed as two readable steps, like zooming a camera:
+   *
+   * Opening a folder — first its wedge comes closer (siblings fade where they
+   * are, the wedge sinks into the center, its contents step inward one ring
+   * at a time while keeping their narrow angles), then the circle closes
+   * (the wedge opens symmetrically around its own midpoint until it wraps).
+   *
+   * Going back is the exact reverse — the circle narrows into the wedge it
+   * came from, then that wedge travels outward to its ring while the
+   * siblings fade back in around it.
    */
   _transitionTo(
     node: SunNode,
@@ -723,17 +806,17 @@ export class Sunburst {
           this.viewOrigins.set(segment.path, segment.start)
       }
     }
-    // Keep the clicked edge fixed in screen space. Children expand from their
-    // existing angular positions instead of rotating back to twelve o'clock.
+    // The opened wedge keeps its midpoint: its two edges travel away from it
+    // and meet on the far side, so the circle visibly closes around it.
     if (mode === "drill")
-      this.viewOrigins.set(node.path, focus?.start ?? START_ANGLE)
+      this.viewOrigins.set(
+        node.path,
+        focus ? (focus.start + focus.end) / 2 - Math.PI : START_ANGLE
+      )
     const layoutStart = this.viewOrigins.get(node.path) ?? START_ANGLE
     const previousOrigin = previousPath
       ? (this.viewOrigins.get(previousPath) ?? START_ANGLE)
       : START_ANGLE
-    const previousInnerRing = this.segments.find(
-      (segment) => segment.depth === 0 && segment.opacity > 0.01
-    )
     const layout = layoutSunburstSegments(
       withoutCollected(node, this.excludedPaths ?? new Set()),
       this.options.rings,
@@ -754,9 +837,29 @@ export class Sunburst {
 
     const destination =
       mode === "up" ? layout.find((s) => s.path === previousPath) : undefined
-    const destinationRadii = destination
-      ? this._radiiForDepth(destination.depth)
-      : undefined
+    // Without an on-screen anchor (a breadcrumb jump, a search reveal) there
+    // is nothing to approach; crossfade in place instead of inventing motion.
+    const choreography: NavigationKind =
+      mode === "drill" && focus
+        ? "open"
+        : mode === "up" && destination
+          ? "close"
+          : mode === "drill" || mode === "up"
+            ? "crossfade"
+            : "none"
+    const hole = this._holeRadii()
+    const intoFocus = (angle: number) =>
+      focus
+        ? focus.start +
+          ((angle - layoutStart) / FULL_CIRCLE) * (focus.end - focus.start)
+        : angle
+    const intoDestination = (angle: number) =>
+      destination
+        ? destination.start +
+          Math.max(0, Math.min(1, (angle - previousOrigin) / FULL_CIRCLE)) *
+            (destination.end - destination.start)
+        : angle
+
     // Include still-visible exits when interrupted; keep their actual painted pose.
     const prevById = new Map(
       this.segments
@@ -771,11 +874,12 @@ export class Sunburst {
       const isPrimary = L.depth === 0
       const targetOp = isPrimary ? 1 : Math.max(0.9, 0.98 - L.depth * 0.016)
 
-      let fromStart: number
-      let fromEnd: number
-      let fromInner: number
-      let fromOuter: number
-      let fromOp: number
+      let role: SegmentRole = prev ? "keep" : "reveal"
+      let fromStart = L.start
+      let fromEnd = L.end
+      let fromInner = r.inner
+      let fromOuter = r.outer
+      let fromOp = 0
 
       if (prev && mode !== "enter") {
         fromStart = prev.start
@@ -784,49 +888,32 @@ export class Sunburst {
         fromOuter = prev.outer
         fromOp = prev.opacity
         prevById.delete(L.id)
-      } else if (mode === "drill" && focus) {
-        // Newly revealed detail emerges from the clicked folder's painted ring.
-        const span = focus.end - focus.start
-        fromStart = focus.start + ((L.start - layoutStart) / FULL_CIRCLE) * span
-        fromEnd = focus.start + ((L.end - layoutStart) / FULL_CIRCLE) * span
-        fromInner = focus.inner
-        fromOuter = focus.outer
-        fromOp = 0
-      } else if (mode === "up" && L.path === previousPath) {
-        // The folder being closed exists visually as the whole current wheel.
-        // Its parent wedge contracts from that wheel while the visible children
-        // move back into their old angular shares. Paint it behind the children.
+      } else if (choreography === "open") {
+        // New detail waits at its own ring, folded into the focus wedge, and
+        // opens with everything else when the circle closes.
+        fromStart = intoFocus(L.start)
+        fromEnd = intoFocus(L.end)
+      } else if (choreography === "close" && L.path === previousPath) {
+        // The folder we are leaving starts as the center and moves back out.
+        role = "bridge"
         fromStart = previousOrigin
         fromEnd = previousOrigin + FULL_CIRCLE
-        fromInner = previousInnerRing?.inner ?? this.innerHole
-        fromOuter = previousInnerRing?.outer ?? this.maxR
-        fromOp = 1
-      } else if (mode === "up" && destination && destinationRadii) {
-        // Grow siblings from the moving edges of the closing wheel. Starting
-        // at the destination wedge instead makes them paint over the wheel
-        // until its outer edge finally reaches that wedge.
-        const edge =
-          L.end <= destination.start
-            ? previousOrigin
-            : previousOrigin + FULL_CIRCLE
-        fromStart = edge
-        fromEnd = edge
-        fromInner = destinationRadii.inner
-        fromOuter = destinationRadii.outer
-        fromOp = isPrimary ? targetOp : 0
-      } else if (mode === "up") {
-        fromStart = L.start
-        fromEnd = L.end
-        fromInner = this.maxR * 0.92
-        fromOuter = this.maxR
-        fromOp = 0
+        fromInner = hole.inner
+        fromOuter = hole.outer
+      } else if (choreography === "close") {
+        // The mirror of opening: the parent level drifts in from outside.
+        role = "arrive"
+        fromInner = r.inner * CAMERA_DRIFT
+        fromOuter = r.outer * CAMERA_DRIFT
+      } else if (choreography === "crossfade" || mode === "update") {
+        role = "reveal"
       } else {
+        // First reveal after a scan: grow out of each arc's midpoint.
         const mid = (L.start + L.end) / 2
         fromStart = mid
         fromEnd = mid
         fromInner = 0
         fromOuter = 0
-        fromOp = 0
       }
 
       const toTone = sunburstNodeTone(
@@ -845,7 +932,7 @@ export class Sunburst {
         depth: L.depth,
         hue: L.hue,
         path: L.path,
-        isDrillReveal: mode === "drill" && !prev,
+        role,
         // Angular enter stagger: the reveal sweeps around the compass like a clock.
         delay: mode === "enter" ? (L.start / (Math.PI * 2)) * 220 : 0,
         fromStart,
@@ -868,31 +955,50 @@ export class Sunburst {
       })
     }
 
-    // Close outgoing siblings around the focus, keeping their radial structure.
+    // Everything that was on screen but is not in the new view.
     const exits = [...prevById.values()]
       .sort((a, b) => b.opacity - a.opacity)
       .slice(0, this.options.maxSegments)
     for (const prev of exits) {
-      if (prev.depth > 0 && prev.toOpacity < 0.3) continue
-      const mid = (prev.start + prev.end) / 2
-      const focusedParent = focus?.path === prev.path
-      const toStart = focus
-        ? projectAngle(prev.start, focus.start, focus.end, layoutStart)
-        : destination
-          ? destination.start +
-            ((prev.start - previousOrigin) / FULL_CIRCLE) *
-              (destination.end - destination.start)
-          : mid
-      const toEnd = focus
-        ? projectAngle(prev.end, focus.start, focus.end, layoutStart)
-        : destination
-          ? destination.start +
-            ((prev.end - previousOrigin) / FULL_CIRCLE) *
-              (destination.end - destination.start)
-          : mid
+      if (prev.depth > 0 && prev.toOpacity < 0.3 && prev.opacity < 0.05)
+        continue
+      let role: SegmentRole = "exit"
+      let toStart = prev.start
+      let toEnd = prev.end
+      let toInner = prev.inner
+      let toOuter = prev.outer
+      if (choreography === "open" && prev.path !== focus?.path) {
+        // Like a camera moving in: what we leave behind drifts outward as
+        // it fades, while the opened folder travels toward the center.
+        toInner = prev.inner * CAMERA_DRIFT
+        toOuter = prev.outer * CAMERA_DRIFT
+      }
+      if (choreography === "open" && prev.path === focus?.path) {
+        // The opened folder sinks into the center, then wraps into a disc
+        // that dissolves under the folder's name.
+        role = "bridge"
+        toStart = layoutStart
+        toEnd = layoutStart + FULL_CIRCLE
+        toInner = hole.inner
+        toOuter = hole.outer
+      } else if (choreography === "close") {
+        // Detail deeper than the parent can show folds into the wedge it
+        // belongs to and slides off the rim instead of piling up there.
+        role = "collapse"
+        toStart = intoDestination(prev.start)
+        toEnd = intoDestination(prev.end)
+        const width = prev.outer - prev.inner
+        toInner = Math.max(prev.outer, this.maxR)
+        toOuter = toInner + width * 0.6
+      } else if (mode === "update") {
+        // Removed in place (collected, deleted): shrink to the midpoint so
+        // the neighbours visibly close the gap.
+        toStart = (prev.start + prev.end) / 2
+        toEnd = toStart
+      }
       next.push({
         ...prev,
-        isDrillBridge: focusedParent,
+        role,
         fromTone: prev.tone ? { ...prev.tone } : undefined,
         toTone: prev.tone ? { ...prev.tone } : undefined,
         fromStart: prev.start,
@@ -903,12 +1009,8 @@ export class Sunburst {
         delay: 0,
         toStart,
         toEnd,
-        toInner: focusedParent
-          ? this._radiiForDepth(0).inner
-          : (destinationRadii?.inner ?? prev.inner),
-        toOuter: focusedParent
-          ? this._radiiForDepth(0).outer
-          : (destinationRadii?.outer ?? prev.outer),
+        toInner,
+        toOuter,
         toOpacity: 0,
         start: prev.start,
         end: prev.end,
@@ -920,15 +1022,10 @@ export class Sunburst {
       })
     }
 
+    // The travelling folder paints over the rings it crosses.
     this.segments = next.sort((a, b) => {
-      if (mode === "drill") {
-        if (a.isDrillBridge) return 1
-        if (b.isDrillBridge) return -1
-      }
-      if (mode === "up" && previousPath) {
-        if (a.path === previousPath && a.toOpacity > 0) return -1
-        if (b.path === previousPath && b.toOpacity > 0) return 1
-      }
+      if (a.role === "bridge") return 1
+      if (b.role === "bridge") return -1
       return b.depth - a.depth
     })
     this.animStart = performance.now()
@@ -943,8 +1040,13 @@ export class Sunburst {
     this.animating = true
     this.animationPendingFirstFrame = true
     this.enterMode = mode === "enter"
-    this.deepDrill = mode === "drill" && (focus?.depth ?? 0) >= 2
-    this.returning = mode === "up"
+    this.navigation = choreography
+    this.navigationTravel =
+      choreography === "open"
+        ? (focus?.depth ?? 0) + 1
+        : choreography === "close"
+          ? (destination?.depth ?? 0) + 1
+          : 1
     this.entering = shouldPulseSunburstEntry(mode, this.reducedMotion, instant)
     this.pulseT = 0
     this.requestFrame()
@@ -957,6 +1059,11 @@ export class Sunburst {
     this.lastFrame = now
     if (this.animating) {
       this.animT = Math.min(1, (now - this.animStart) / this.activeAnimMs)
+      const nav = navigationProgress(
+        this.navigation,
+        this.animT,
+        this.navigationTravel
+      )
       // Enter sweeps in around the compass; every other mode shares one clock.
       const staggered = this.enterMode && !this.reducedMotion
       for (const s of this.segments) {
@@ -967,39 +1074,14 @@ export class Sunburst {
             )
           : this.animT
         if (t <= 0) continue
-        const e = this.enterMode
-          ? easeOutExpo(t)
-          : this.deepDrill
-            ? easeInOutCubic(t)
-            : easeOutCubic(t)
-        // A distant branch travels toward the inner ring before its angular
-        // domain opens. Overlap the phases so there is no stop at the handoff.
-        const approaching =
-          this.deepDrill && (s.toOpacity > 0 || s.isDrillBridge)
-        const closingDetail = this.returning && s.toOpacity === 0
-        const angleProgress = approaching
-          ? easeInOutCubic(Math.max(0, Math.min(1, (t - 0.36) / 0.64)))
-          : e
-        const radiusProgress = approaching
-          ? easeOutCubic(Math.min(1, t / 0.5))
-          : closingDetail
-            ? easeOutCubic(Math.max(0, Math.min(1, (t - 0.58) / 0.42)))
-            : e
-        s.start = lerp(s.fromStart, s.toStart, angleProgress)
-        s.end = lerp(s.fromEnd, s.toEnd, angleProgress)
-        s.inner = lerp(s.fromInner, s.toInner, radiusProgress)
-        s.outer = lerp(s.fromOuter, s.toOuter, radiusProgress)
-        s.opacity = closingDetail
-          ? s.fromOpacity * (1 - easeInOutCubic(Math.min(1, t / 0.58)))
-          : s.isDrillBridge
-            ? s.fromOpacity * (1 - Math.max(0, Math.min(1, (t - 0.5) / 0.4)))
-            : s.isDrillReveal
-              ? lerp(
-                  s.fromOpacity,
-                  s.toOpacity,
-                  easeOutCubic(Math.max(0, Math.min(1, (t - 0.2) / 0.7)))
-                )
-              : lerp(s.fromOpacity, s.toOpacity, e)
+        const e = this.enterMode ? easeOutExpo(t) : easeOutCubic(t)
+        const angleP = nav ? nav.angle : e
+        const radiusP = nav ? nav.radius : e
+        s.start = lerp(s.fromStart, s.toStart, angleP)
+        s.end = lerp(s.fromEnd, s.toEnd, angleP)
+        s.inner = lerp(s.fromInner, s.toInner, radiusP)
+        s.outer = lerp(s.fromOuter, s.toOuter, radiusP)
+        s.opacity = segmentOpacity(s, this.navigation, t, e)
         if (s.tone && s.fromTone && s.toTone) {
           s.tone.L = lerp(s.fromTone.L, s.toTone.L, e)
           s.tone.C = lerp(s.fromTone.C, s.toTone.C, e)
@@ -1010,9 +1092,11 @@ export class Sunburst {
       if (this.animT >= 1) {
         this.animating = false
         this.enterMode = false
+        this.navigation = "none"
         this.segments = this.segments.filter((s) => s.toOpacity > 0.01)
         for (const s of this.segments) {
           if (s.toTone) s.tone = { ...s.toTone }
+          s.role = undefined
           s.start = s.toStart
           s.end = s.toEnd
           s.inner = s.toInner
@@ -1089,7 +1173,9 @@ export class Sunburst {
     const w = this.canvas.width
     const h = this.canvas.height
     ctx.clearRect(0, 0, w, h)
-    if (this.centerHovered) {
+    // The "go up" affordance belongs to a settled map; mid-flight it reads as
+    // a stray disc sitting under the moving folder.
+    if (this.centerHovered && !this.animating && this._canGoUp()) {
       ctx.beginPath()
       ctx.arc(
         this.cx,

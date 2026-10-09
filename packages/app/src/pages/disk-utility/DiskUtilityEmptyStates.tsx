@@ -1,10 +1,9 @@
 import { Button } from "@/components/dl/button"
 import { Icon, type IconName } from "@/components/dl/icon"
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import type { ReactNode } from "react"
+import { motion, useReducedMotion } from "framer-motion"
+import { useEffect, useRef, type ReactNode } from "react"
 import type { DiskScanNode } from "./types"
 import { formatBytes } from "./format"
-import { diskNodeDisplayName } from "./node-display"
 import { diskLanguageText, useLanguage } from "./runtime"
 
 export function DriveFallback(props: {
@@ -195,10 +194,16 @@ export function centerOverlayBehavior(
 export function CenterOverlay(props: {
   node: DiskScanNode | null
   hovered?: DiskScanNode | null
-  hoveredColor?: string
 }) {
   const reducedMotion = useReducedMotion()
   const shown = props.hovered ?? props.node
+  // A new folder's total waits until the map has carried it into the
+  // center; hover readouts stay instant.
+  const lastNodePath = useRef(props.node?.path)
+  const arriving = !props.hovered && lastNodePath.current !== props.node?.path
+  useEffect(() => {
+    lastNodePath.current = props.node?.path
+  })
   const [amount, unit] = shown ? formatBytes(shown.size).split(" ") : []
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -206,33 +211,22 @@ export function CenterOverlay(props: {
         {shown ? (
           <motion.div
             key={shown.path}
-            initial={{ opacity: reducedMotion ? 1 : 0.35 }}
+            initial={{ opacity: reducedMotion ? 1 : arriving ? 0 : 0.35 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: reducedMotion ? 0 : 0.12 }}
+            transition={
+              reducedMotion
+                ? { duration: 0 }
+                : arriving
+                  ? { delay: 0.32, duration: 0.22 }
+                  : { duration: 0.12 }
+            }
           >
-            {/* The breadcrumb and sidebar already name the open folder, so
-                the hole names only what the pointer is on. Positioned above the
-                number so the figure never shifts when it appears. */}
-            <div className="relative">
-              {props.hovered ? (
-                <p className="absolute inset-x-0 bottom-full mb-2 flex items-center justify-center gap-1.5 text-[12.5px] leading-4 font-medium text-text-weak">
-                  {props.hoveredColor ? (
-                    <span
-                      className={`size-2 shrink-0 ${props.hovered.isDir ? "rounded-full" : "rounded-[2px]"}`}
-                      style={{ background: props.hoveredColor }}
-                      aria-hidden
-                    />
-                  ) : null}
-                  <span className="truncate">{diskNodeDisplayName(shown)}</span>
-                </p>
-              ) : null}
-              <p className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums">
-                {amount}
-                <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
-                  {unit}
-                </span>
-              </p>
-            </div>
+            <p className="text-[clamp(24px,4.6cqw,38px)] leading-none font-medium tracking-[-0.04em] whitespace-nowrap text-text-strong tabular-nums">
+              {amount}
+              <span className="mt-1.5 block text-[15px] tracking-normal text-text-weak">
+                {unit}
+              </span>
+            </p>
           </motion.div>
         ) : null}
       </div>

@@ -2,24 +2,6 @@ import type { DiskScanNode } from "./types"
 import { buildCrumbs } from "./navigation"
 import { diskNodeDisplayName } from "./node-display"
 
-/** Visual remainders reveal their real siblings; they are not folders. */
-export function containingFolderForVisualGroup(
-  root: DiskScanNode,
-  group: DiskScanNode
-): DiskScanNode | undefined {
-  if (!group.isOther || !group.path.startsWith("disklizard:")) return undefined
-  const first = group.children[0]
-  if (!first) return undefined
-  const trail = buildCrumbs(root, first)
-  if (trail.at(-1)?.path !== first.path) return undefined
-  const parent = trail.at(-2)?.node
-  if (!parent || parent.isOther) return undefined
-  const directChildren = new Set(parent.children.map((child) => child.path))
-  return group.children.every((child) => directChildren.has(child.path))
-    ? parent
-    : undefined
-}
-
 /** Visual aggregates are browse destinations, never filesystem scan targets. */
 export function createGroupNavigation() {
   const groups = new Map<

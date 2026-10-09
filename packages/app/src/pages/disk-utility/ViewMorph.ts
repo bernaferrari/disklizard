@@ -1,5 +1,5 @@
 /**
- * ViewMorph — the map, tiles, and layers transition.
+ * ViewMorph — the map and tiles transition.
  *
  * One persistent canvas carries both views: every primary sunburst wedge owns
  * a treemap tile twin, and switching modes flies each boundary point to (or
@@ -47,12 +47,23 @@ export type MorphTile = {
   toOpacity?: number
   from: MorphPose
   to: MorphPose
+  /** Part of the flight (0–1) during which this shape travels. */
+  move?: readonly [number, number]
+  /** Part of the flight during which its opacity changes. */
+  fade?: readonly [number, number]
+}
+
+function windowed(raw: number, range: readonly [number, number] | undefined) {
+  if (!range) return raw
+  return Math.max(0, Math.min(1, (raw - range[0]) / (range[1] - range[0])))
 }
 
 export type MorphDirection = "toGrid" | "toMap"
 
-const TO_GRID_MS = 240
-const TO_MAP_MS = 240
+// Two readable steps (detail steps aside, then the shared shapes travel),
+// so the flight needs a little more time than a single crossfade.
+const TO_GRID_MS = 460
+const TO_MAP_MS = 460
 /** Tessellation stays within this many backing-store pixels of the true arc. */
 const MAX_SAGITTA = 0.5
 
@@ -302,6 +313,8 @@ export class ViewMorph {
       const destination = this.destinations[i]
       const pts = this.points[i]
       const tile = this.tiles[i]
+      const localRaw = windowed(raw, tile.move)
+      const local = tile.move ? easeInOutCubic(localRaw) : t
       const fromArc =
         tile.from.shape === "arc" ||
         (tile.from.shape === undefined && this.dir === "toGrid")
@@ -314,8 +327,8 @@ export class ViewMorph {
             ? 0
             : 4 * dpr
           : fromArc
-            ? Math.min(1, Math.max(0, (raw - 0.55) / 0.45)) * 4 * dpr
-            : Math.min(1, Math.max(0, (0.45 - raw) / 0.45)) * 4 * dpr
+            ? Math.min(1, Math.max(0, (localRaw - 0.55) / 0.45)) * 4 * dpr
+            : Math.min(1, Math.max(0, (0.45 - localRaw) / 0.45)) * 4 * dpr
       if (fromArc !== toArc) {
         unwrapSector(
           pts,
@@ -323,24 +336,25 @@ export class ViewMorph {
           fromArc ? tile.to.rect : tile.from.rect,
           cx,
           cy,
-          fromArc ? t : 1 - t
+          fromArc ? local : 1 - local
         )
       } else {
         for (let j = 0; j < pts.length; j++) {
-          pts[j][0] = source[j][0] + (destination[j][0] - source[j][0]) * t
-          pts[j][1] = source[j][1] + (destination[j][1] - source[j][1]) * t
+          pts[j][0] = source[j][0] + (destination[j][0] - source[j][0]) * local
+          pts[j][1] = source[j][1] + (destination[j][1] - source[j][1]) * local
         }
       }
       tracePolygon(ctx, pts, this.plans[i].anchors, roundRadius)
+      const fade = tile.fade ? easeInOutCubic(windowed(raw, tile.fade)) : t
       ctx.globalAlpha =
         (tile.fromOpacity ?? 1) +
-        ((tile.toOpacity ?? 1) - (tile.fromOpacity ?? 1)) * t
+        ((tile.toOpacity ?? 1) - (tile.fromOpacity ?? 1)) * fade
       const fromColor = tile.fromColor ?? this.colors[i]
       const toColor = tile.toColor ?? this.colors[i]
       ctx.fillStyle =
         fromColor === toColor
           ? fromColor
-          : `color-mix(in oklab, ${fromColor} ${(1 - t) * 100}%, ${toColor})`
+          : `color-mix(in oklab, ${fromColor} ${(1 - local) * 100}%, ${toColor})`
       ctx.fill()
       // The map has gaps, but no outline. The separator belongs to the tile
       // pose and must fade in or out according to the direction of travel.

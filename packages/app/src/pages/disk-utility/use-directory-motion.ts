@@ -17,13 +17,11 @@ export function useDirectoryMotion(path: string, layout: unknown) {
     animations.current.forEach((animation) => animation.cancel())
     animations.current = []
     const elements = [
-      ...root.querySelectorAll<HTMLElement>(
-        "[data-disk-tile-path], [data-disk-layer-path]"
-      ),
+      ...root.querySelectorAll<HTMLElement>("[data-disk-tile-path]"),
     ]
     const boxes = new Map(
       elements.map((element) => [
-        element.dataset.diskTilePath ?? element.dataset.diskLayerPath!,
+        element.dataset.diskTilePath!,
         element.getBoundingClientRect(),
       ])
     )
@@ -37,7 +35,7 @@ export function useDirectoryMotion(path: string, layout: unknown) {
       return
     let count = 0
     for (const element of elements) {
-      const key = element.dataset.diskTilePath ?? element.dataset.diskLayerPath!
+      const key = element.dataset.diskTilePath!
       const to = boxes.get(key)!
       const parent = old.boxes.get(path)
       // Newly revealed descendants originate inside the directory that was

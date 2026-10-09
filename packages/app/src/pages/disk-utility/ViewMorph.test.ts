@@ -92,9 +92,13 @@ describe("ViewMorph lifecycle", () => {
         if (property === "moveTo" || property === "lineTo")
           return (x: number, y: number) => drawnPoints.push([x, y])
         if (property === "arcTo")
-          return () => { roundedCorners++ }
+          return () => {
+            roundedCorners++
+          }
         if (property === "stroke")
-          return () => { outlinedShapes++ }
+          return () => {
+            outlinedShapes++
+          }
         const value = Reflect.get(target, property, receiver)
         // The morph only calls ctx methods; stub every read as a no-op
         // function so property sets and calls both succeed.
@@ -189,7 +193,7 @@ describe("ViewMorph lifecycle", () => {
       expect(
         drawnPoints.every(([x, y]) => x >= 2 && x <= 14 && y >= 3 && y <= 11)
       ).toBe(true)
-      clock.tick(240)
+      clock.tick(460)
       expect(morph.active).toBe(false)
       expect(clock.pending).toBe(0)
     } finally {
@@ -240,7 +244,7 @@ describe("ViewMorph lifecycle", () => {
       expect(outlinedShapes).toBeGreaterThan(0)
       const cornersAtStart = roundedCorners
       const outlinesAtStart = outlinedShapes
-      clock.tick(240)
+      clock.tick(460)
       expect(roundedCorners).toBe(cornersAtStart)
       expect(outlinedShapes).toBe(outlinesAtStart)
     } finally {
@@ -260,7 +264,7 @@ describe("ViewMorph lifecycle", () => {
       )
       clock.tick(0)
       expect(events).toEqual(["progress:0"])
-      clock.tick(240)
+      clock.tick(460)
       expect(events).toEqual(["progress:0", "progress:1", "handoff"])
     } finally {
       restore()
@@ -290,7 +294,7 @@ describe("ViewMorph lifecycle", () => {
       clock.tick(100)
       expect(clock.tick(100)).toBe(1)
       expect(clock.tick(100)).toBe(1)
-      expect(clock.tick(200)).toBe(1)
+      expect(clock.tick(400)).toBe(1)
       expect(completions).toEqual(["a", "b", "c"])
       expect(clock.pending).toBe(0)
       expect(morph.active).toBe(false)
@@ -323,7 +327,7 @@ describe("ViewMorph lifecycle", () => {
 
       clock.tick(200)
       clock.tick(200)
-      clock.tick(100)
+      clock.tick(300)
       expect(completions).toEqual(["a", "b"])
       expect(clock.pending).toBe(0)
     } finally {
@@ -340,7 +344,7 @@ describe("ViewMorph lifecycle", () => {
       })
       clock.tick(0)
       const before = clearRectCount
-      clock.tick(300)
+      clock.tick(500)
       expect(completed).toBe(true)
       // One clear to draw the last pose; no second clear on handoff.
       expect(clearRectCount - before).toBe(1)

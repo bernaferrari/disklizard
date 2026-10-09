@@ -136,20 +136,28 @@ function pathHash(path: string) {
  */
 const BRANCH_HUES = [255, 25, 150, 320, 85, 200, 345, 120, 285, 55]
 
-/** Assign each sibling a distinct slot. Siblings are visited in path order,
- * never size order, so growth elsewhere can't reshuffle anyone's color. */
-function assignBranchHues(children: readonly DiskScanNode[]) {
+/**
+ * The ten largest siblings get distinct slots keyed by path, visited in path
+ * order, so growth elsewhere never repaints a big folder. Smaller siblings
+ * beyond those follow their size rank through the same far-apart sequence,
+ * half a step off, so neighbours on the ring never share a color.
+ */
+function assignBranchHues(childrenBySize: readonly DiskScanNode[]) {
   const hues = new Map<string, number>()
   const used = new Set<number>()
-  for (const child of children.toSorted((a, b) =>
+  const leading = childrenBySize.slice(0, BRANCH_HUES.length)
+  for (const child of leading.toSorted((a, b) =>
     a.path < b.path ? -1 : a.path > b.path ? 1 : 0
   )) {
-    if (used.size === BRANCH_HUES.length) used.clear()
     let slot = pathHash(child.path) % BRANCH_HUES.length
     while (used.has(slot)) slot = (slot + 1) % BRANCH_HUES.length
     used.add(slot)
     hues.set(child.path, BRANCH_HUES[slot])
   }
+  childrenBySize.slice(BRANCH_HUES.length).forEach((child, index) => {
+    const hue = BRANCH_HUES[index % BRANCH_HUES.length] + 18
+    hues.set(child.path, hue % 360)
+  })
   return hues
 }
 

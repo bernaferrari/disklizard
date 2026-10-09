@@ -15,7 +15,6 @@ import {
   ScrollText,
   Search,
   Sparkles,
-  Trash2,
   Wrench,
   type LucideIcon,
 } from "lucide-react"
@@ -34,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { CleanupFilters, cleanupToolbarControl } from "./CleanupFilters"
 import { CleanupInspector } from "./CleanupInspector"
+import { CollectionDropTarget } from "./CollectionDropTarget"
 import { formatBytes } from "./format"
 import { useLanguage, type DiskLanguageKey } from "./runtime"
 import type { DiskScanNode, DiskCleanupLock } from "./types"
@@ -173,14 +173,6 @@ export function CleanupView(props: {
     ready.flatMap((group) => group.items.map((item) => item.node)),
     props.summary.os
   ).reduce((sum, node) => sum + node.size, 0)
-  const selectedElsewhere =
-    props.collectionCount >
-    groups.reduce(
-      (sum, group) =>
-        sum +
-        group.items.filter((item) => props.isCollected(item.node.path)).length,
-      0
-    )
   // Past the scanner's attribution bound every folder is flagged. Say so once
   // instead of repeating the same caveat on each item.
   const allItems = groups.flatMap((group) => group.items)
@@ -206,10 +198,24 @@ export function CleanupView(props: {
     listKeysId,
     onInspect: (item: CleanupItem) => setInspectedPath(item.node.path),
   }
+  const selectedElsewhere =
+    props.collectionCount >
+    groups.reduce(
+      (sum, group) =>
+        sum +
+        group.items.filter((item) => props.isCollected(item.node.path)).length,
+      0
+    )
+  const overlapping = props.summary.groups
+    .flatMap((group) => group.items)
+    .some((item) => item.accountingContributionBytes !== item.operationBytes)
+  // Same anatomy as Explore: the list owns the main pane edge to edge, the
+  // inspector is the right sidebar, and the selection lives in the same
+  // floating collector pill.
   return (
-    <div className="mx-auto flex min-h-0 w-full max-w-[1180px] flex-1 flex-col px-6 pt-6 pb-6 max-[760px]:px-4 max-[760px]:pt-4 max-[760px]:pb-4">
-      <header className="flex shrink-0 items-end justify-between gap-4 pb-4">
-        <div className="min-w-0">
+    <div className="flex min-h-0 w-full flex-1 max-[760px]:flex-col">
+      <section className="relative flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="shrink-0 px-8 pt-7 pb-4 max-[760px]:px-4 max-[760px]:pt-4">
           <h1 className="text-[24px] leading-8 font-semibold tracking-[-0.03em] text-text-strong">
             {language.t("disk.ui.cleanup.title")}
           </h1>
@@ -234,6 +240,13 @@ export function CleanupView(props: {
                     trash: props.trashName,
                   })}
                 </p>
+                {/* Caveats live with the explanation instead of floating
+                    between the toolbar and the list. */}
+                {overlapping ? (
+                  <p className="text-[12px] leading-5 text-text-weak">
+                    {language.t("disk.ui.cleanup.overlap")}
+                  </p>
+                ) : null}
                 {props.inventoryNote ? (
                   <p className="text-[12px] leading-5 text-text-weak">
                     {props.inventoryNote}
@@ -242,89 +255,80 @@ export function CleanupView(props: {
               </PopoverContent>
             </Popover>
           </div>
-        </div>
-      </header>
-      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-2">
-        <label className="relative flex h-9 min-w-48 flex-1 items-center">
-          <Search
-            className="pointer-events-none absolute left-3 size-3.5 text-text-weaker"
-            aria-hidden
-          />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            aria-label={language.t("disk.ui.cleanup.search")}
-            placeholder={language.t("disk.ui.cleanup.search")}
-            className="h-full w-full rounded-lg border border-[var(--dl-separator)] bg-transparent pr-3 pl-8.5 text-[13px] text-text-strong transition-[border-color,box-shadow] outline-none placeholder:text-text-weaker hover:border-[var(--dl-well-strong)] focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
-          />
-        </label>
-        <ToolbarSelect
-          label={language.t("disk.ui.cleanup.groupBy")}
-          value={grouping}
-          onValueChange={setGrouping}
-          options={[
-            {
-              value: "artifact",
-              label: language.t("disk.ui.cleanup.groupArtifact"),
-            },
-            {
-              value: "project",
-              label: language.t("disk.ui.cleanup.groupProject"),
-            },
-          ]}
-        />
-        <ToolbarSelect
-          label={language.t("disk.ui.cleanup.sortBy")}
-          value={sort}
-          onValueChange={setSort}
-          options={[
-            {
-              value: "largest",
-              label: language.t("disk.ui.cleanup.sortLargest"),
-            },
-            {
-              value: "oldest",
-              label: language.t("disk.ui.cleanup.sortOldest"),
-            },
-          ]}
-        />
-        {!empty || filtered ? (
-          <CleanupFilters
-            age={props.agePreset}
-            ecosystem={props.ecosystem}
-            ecosystems={props.ecosystems}
-            customDays={props.customAgeDays}
-            onCustomDays={props.onCustomAgeDays}
-            onAge={props.onAgePreset}
-            onEcosystem={props.onEcosystem}
-          />
-        ) : null}
-      </div>
-      {props.summary.groups
-        .flatMap((group) => group.items)
-        .some(
-          (item) => item.accountingContributionBytes !== item.operationBytes
-        ) ? (
-        <p className="mb-3 text-[12px] text-text-weak">
-          {language.t("disk.ui.cleanup.overlap")}
-        </p>
-      ) : null}
-      {blanketIncomplete ? (
-        <p className="mb-3 flex shrink-0 items-start gap-2 rounded-lg bg-[var(--dl-well)] px-3.5 py-2.5 text-[12.5px] leading-[1.55] text-text-weak">
-          <Info
-            className="mt-[3px] size-3.5 shrink-0 text-text-weaker"
-            aria-hidden
-          />
-          {language.t("disk.ui.cleanup.partialScan")}
-        </p>
-      ) : null}
-      <div className="flex min-h-0 flex-1 overflow-hidden rounded-t-xl border border-b-0 border-[var(--dl-separator)] max-[760px]:flex-col">
+          {/* Unverified sizes change how far the list can be trusted, so this
+              caveat stays visible — once, quietly, not on every row. */}
+          {blanketIncomplete ? (
+            <p className="mt-2 flex max-w-[640px] items-start gap-1.5 text-[12.5px] leading-5 text-text-weak">
+              <Info
+                className="mt-[3px] size-3.5 shrink-0 text-[var(--dl-warning)]"
+                aria-hidden
+              />
+              {language.t("disk.ui.cleanup.partialScan")}
+            </p>
+          ) : null}
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <label className="relative flex h-9 min-w-48 flex-1 items-center">
+              <Search
+                className="pointer-events-none absolute left-3 size-3.5 text-text-weaker"
+                aria-hidden
+              />
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                aria-label={language.t("disk.ui.cleanup.search")}
+                placeholder={language.t("disk.ui.cleanup.search")}
+                className="h-full w-full rounded-lg border border-[var(--dl-separator)] bg-transparent pr-3 pl-8.5 text-[13px] text-text-strong transition-[border-color,box-shadow] outline-none placeholder:text-text-weaker hover:border-[var(--dl-well-strong)] focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+              />
+            </label>
+            <ToolbarSelect
+              label={language.t("disk.ui.cleanup.groupBy")}
+              value={grouping}
+              onValueChange={setGrouping}
+              options={[
+                {
+                  value: "artifact",
+                  label: language.t("disk.ui.cleanup.groupArtifact"),
+                },
+                {
+                  value: "project",
+                  label: language.t("disk.ui.cleanup.groupProject"),
+                },
+              ]}
+            />
+            <ToolbarSelect
+              label={language.t("disk.ui.cleanup.sortBy")}
+              value={sort}
+              onValueChange={setSort}
+              options={[
+                {
+                  value: "largest",
+                  label: language.t("disk.ui.cleanup.sortLargest"),
+                },
+                {
+                  value: "oldest",
+                  label: language.t("disk.ui.cleanup.sortOldest"),
+                },
+              ]}
+            />
+            {!empty || filtered ? (
+              <CleanupFilters
+                age={props.agePreset}
+                ecosystem={props.ecosystem}
+                ecosystems={props.ecosystems}
+                customDays={props.customAgeDays}
+                onCustomDays={props.onCustomAgeDays}
+                onAge={props.onAgePreset}
+                onEcosystem={props.onEcosystem}
+              />
+            ) : null}
+          </div>
+        </header>
         <div
           data-cleanup-list
           role="region"
           aria-label={language.t("disk.ui.cleanup.list")}
-          className="min-h-0 min-w-0 flex-1 [scrollbar-width:thin] overflow-y-auto px-2 pt-2 pb-6"
+          className="min-h-0 min-w-0 flex-1 [scrollbar-width:thin] overflow-y-auto px-5 pt-1 pb-24 max-[760px]:px-2"
         >
           <p id={listKeysId} className="sr-only">
             {language.t("disk.ui.cleanup.listKeys")}
@@ -421,37 +425,63 @@ export function CleanupView(props: {
             <ProtectedItems items={locked} {...rows} />
           ) : null}
         </div>
-        {active ? (
-          <CleanupInspector
-            id={inspectorId}
-            item={active}
-            category={
-              activeGroup?.label
-                ? abbreviateHomePath(activeGroup.label, props.homePath)
-                : language.t(
-                    activeGroup?.labelKey ?? "disk.ui.cleanup.unavailable"
-                  )
-            }
-            collected={props.isCollected(active.node.path)}
-            coveredBy={props.coveredBy(active.node.path)}
-            restriction={
-              props.canModify(active.node)
-                ? undefined
-                : props.restriction(active.node)
-            }
-            change={props.changeFor?.(active.node.path)}
-            flagIncomplete={!blanketIncomplete}
-            access={props.accessFor?.(active.node)}
-            onCheckAccess={props.onCheckAccess}
-            onRescan={props.onRescan}
-            protection={props.protectionFor?.(active.node)}
-            onUnprotect={props.onUnprotect}
-            onToggle={props.onToggle}
-            onReveal={props.onReveal}
-            onPreview={props.onPreview}
-          />
+        {!empty || props.collectionCount > 0 ? (
+          // The list scrolls under the collector; a short fade keeps rows
+          // from colliding with it.
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[88px] items-end bg-[linear-gradient(to_top,var(--background-base)_45%,transparent)] px-4 pb-3.5">
+            <div className="pointer-events-auto max-w-full min-w-0">
+              <CollectionDropTarget
+                node={null}
+                active={false}
+                acceptsNode
+                count={props.collectionCount}
+                bytes={props.collectionBytes}
+                hasSharedPhysicalStorage={false}
+                hasUnverifiedPhysicalStorage={false}
+                requiresDeepInventoryRefresh={false}
+                trashName={props.trashName}
+                onReview={props.onReview}
+                onClear={props.onClear}
+              />
+            </div>
+            {selectedElsewhere ? (
+              <p className="ml-3 truncate text-[12px] text-text-weak">
+                {language.t("disk.ui.cleanup.selectedElsewhere")}
+              </p>
+            ) : null}
+          </div>
         ) : null}
-      </div>
+      </section>
+      {active ? (
+        <CleanupInspector
+          id={inspectorId}
+          item={active}
+          category={
+            activeGroup?.label
+              ? abbreviateHomePath(activeGroup.label, props.homePath)
+              : language.t(
+                  activeGroup?.labelKey ?? "disk.ui.cleanup.unavailable"
+                )
+          }
+          collected={props.isCollected(active.node.path)}
+          coveredBy={props.coveredBy(active.node.path)}
+          restriction={
+            props.canModify(active.node)
+              ? undefined
+              : props.restriction(active.node)
+          }
+          change={props.changeFor?.(active.node.path)}
+          flagIncomplete={!blanketIncomplete}
+          access={props.accessFor?.(active.node)}
+          onCheckAccess={props.onCheckAccess}
+          onRescan={props.onRescan}
+          protection={props.protectionFor?.(active.node)}
+          onUnprotect={props.onUnprotect}
+          onToggle={props.onToggle}
+          onReveal={props.onReveal}
+          onPreview={props.onPreview}
+        />
+      ) : null}
       <span
         className="sr-only"
         role="status"
@@ -464,57 +494,6 @@ export function CleanupView(props: {
             })
           : ""}
       </span>
-      {!empty || props.collectionCount > 0 ? (
-        <div className="flex h-16 shrink-0 items-center gap-3 rounded-b-xl border border-[var(--dl-separator)] bg-[var(--dl-chrome)] px-4">
-          <div
-            className="min-w-0 flex-1 text-[13px] leading-5 tabular-nums"
-            role="status"
-            aria-live="polite"
-          >
-            {props.collectionCount > 0 ? (
-              <>
-                <p className="truncate">
-                  <span className="font-medium text-text-strong">
-                    {language.t("disk.ui.cleanup.footerSelected", {
-                      size: formatBytes(props.collectionBytes),
-                    })}
-                  </span>
-                  <span className="text-text-weak">
-                    {" · "}
-                    {language.plural("disk.count.item", props.collectionCount)}
-                  </span>
-                </p>
-                {selectedElsewhere ? (
-                  <p className="truncate text-[12px] text-text-weak">
-                    {language.t("disk.ui.cleanup.selectedElsewhere")}
-                  </p>
-                ) : null}
-              </>
-            ) : (
-              <p className="truncate text-text-weak">
-                {language.t("disk.ui.cleanup.footerIdle", {
-                  trash: props.trashName,
-                })}
-              </p>
-            )}
-          </div>
-          {props.collectionCount > 0 ? (
-            <Button type="button" variant="ghost" onClick={props.onClear}>
-              {language.t("disk.ui.collectorClear")}
-            </Button>
-          ) : null}
-          <Button
-            type="button"
-            disabled={props.collectionCount === 0}
-            onClick={props.onReview}
-          >
-            <Trash2 className="size-3.5" aria-hidden />
-            {language.t("disk.ui.moveToTrashEllipsis", {
-              trash: props.trashName,
-            })}
-          </Button>
-        </div>
-      ) : null}
     </div>
   )
 }
@@ -567,10 +546,10 @@ function Section(props: {
     <section aria-label={props.title} className="mt-2 mb-4">
       <div className="flex min-h-9 items-center gap-3 px-3 pt-1 pb-1.5">
         <div className="min-w-0 flex-1">
-          <h2 className="flex items-baseline gap-2 text-[11px] font-semibold tracking-[0.06em] text-text-weak uppercase">
+          <h2 className="flex items-baseline gap-2 text-[13px] font-semibold text-text-strong">
             {props.title}
             {props.meta ? (
-              <span className="font-medium tracking-normal text-text-weaker normal-case tabular-nums">
+              <span className="font-normal text-text-weak tabular-nums">
                 {props.meta}
               </span>
             ) : null}
@@ -761,7 +740,7 @@ function GroupRow(props: RowProps & { group: CleanupGroup; bulk?: boolean }) {
       <div id={id} hidden={!open}>
         {open ? (
           <>
-            <ul className="relative ml-5 pl-1 before:absolute before:inset-y-1.5 before:left-0 before:w-px before:bg-[var(--dl-well-strong)]">
+            <ul className="ml-6">
               {group.items.slice(0, limit).map((item) => (
                 <ItemRow key={item.node.path} item={item} nested {...props} />
               ))}
@@ -921,6 +900,14 @@ function ItemRow(
               : props.category && props.category !== identity.title
                 ? `${props.category} · ${location}`
                 : location}
+            {/* Age reads as part of the item's description, not a column of
+                its own competing with the size. */}
+            {!included && item.node.modifiedAt ? (
+              <span className="text-text-weaker">
+                {" · "}
+                {formatLastChanged(item.node.modifiedAt)}
+              </span>
+            ) : null}
           </span>
           {/* Only problems earn a line; "not checked yet" on every row is
               noise. The inspector still shows the full access state. */}
@@ -929,12 +916,6 @@ function ItemRow(
               {restriction ?? language.t(ACCESS_LABEL[access!.state])}
             </span>
           ) : null}
-          <span className="block truncate text-[11px] leading-4 text-text-weak min-[1000px]:hidden">
-            {formatLastChanged(item.node.modifiedAt)}
-          </span>
-        </span>
-        <span className="hidden w-28 shrink-0 truncate text-right text-[11px] text-text-weak min-[1000px]:block">
-          {formatLastChanged(item.node.modifiedAt)}
         </span>
         {props.flagIncomplete && item.unobserved ? (
           <span

@@ -282,8 +282,10 @@ export function Treemap(props: {
                 : formatBytes(r.node.size)
             // Budget one line of 12px tabular text plus the tile padding.
             // Narrow, tall tiles can still explain their size without crowding the name.
+            // Nested headers name their folder only; the tiles inside already
+            // carry sizes, so repeating one per level is just more chrome.
             const sizeFits = r.expanded
-              ? r.w >= 260
+              ? r.depth === 0 && r.w >= 260
               : r.h >= 64 &&
                 r.w >= sizeLabel.length * 7.5 + (r.w < 100 ? 12 : 20)
             // Label a tile only when a meaningful part of its name fits;
@@ -322,9 +324,7 @@ export function Treemap(props: {
                   ? `inset 0 0 0 2px ${surfaceRing()}`
                   : queued
                     ? `inset 0 0 0 2px ${surfaceRing()}`
-                    : r.expanded || r.depth === 0
-                      ? `inset 0 ${r.depth === 0 ? 2 : 1}px 0 ${tileColor}`
-                      : undefined,
+                    : undefined,
             }
             const content = hasPreview ? (
               !previewFillsRoot ? (

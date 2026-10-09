@@ -127,31 +127,21 @@ export function layoutNestedTreemap(
       )
     }
   }
-  // An opened "smaller items" group already is the tail. Grouping its tail
-  // again creates recursive summary boxes and hundreds of unreadable dots.
-  let rootChildren: DiskScanNode[]
-  if (rootIsAggregate) {
-    if (children.length <= 24) {
-      rootChildren = children.filter((child) => child.size > 0)
-    } else {
-      const aggregateChildren = collapseTreemapChildren(children, 8)
-      const aggregateTail = aggregateChildren.at(-1)
-      rootChildren =
-        aggregateTail?.isOther && aggregateTail.size > rootSize * 0.9
-          ? collapseTreemapChildren(children, 1)
-          : aggregateChildren
-    }
-  } else {
-    rootChildren = groupSmallChildren(
-      collapseTreemapChildren(
-        children,
-        Math.max(12, Math.min(320, Math.floor((width * height) / 1_600)))
-      ),
-      rootPath,
-      rootSize,
-      (rootSize * 1_600) / Math.max(1, width * height)
-    )
-  }
+  // Every level spends the same pixel budget: a tile per ~40×40px, then
+  // one remainder. An opened "smaller items" group is already the tail, so
+  // it never re-groups by size — only when its members truly can't fit.
+  const rootBudget = Math.max(
+    12,
+    Math.min(640, Math.floor((width * height) / 1_600))
+  )
+  const rootChildren = rootIsAggregate
+    ? collapseTreemapChildren(children, rootBudget)
+    : groupSmallChildren(
+        collapseTreemapChildren(children, Math.min(320, rootBudget)),
+        rootPath,
+        rootSize,
+        (rootSize * 1_600) / Math.max(1, width * height)
+      )
   for (const rect of layoutTreemap(rootChildren, undefined, true)) {
     visit(
       rect.node,

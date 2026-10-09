@@ -213,7 +213,12 @@ export const DISK_UTILITY_STYLES = `
   .dl-volume-bar-fill { animation: none !important; transition: none !important; }
 }
 
-/* View transitions (morph between map/tiles/layers snapshots). */
+/* Tile camera: labels never ride a zoom (they would balloon or squash);
+   they step aside while the camera moves and settle back once it lands. */
+.dl-treemap .dl-treemap-text { transition: opacity 180ms ease-out; }
+.dl-treemap[data-tile-camera-moving] .dl-treemap-text { opacity: 0; transition: opacity 80ms ease-out; }
+
+/* View transitions (morph between map and tiles snapshots). */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(disk-landscape) { animation-duration: 220ms; }
 ::view-transition-old(disk-landscape) { animation: dl-view-out 160ms ease-out both; }

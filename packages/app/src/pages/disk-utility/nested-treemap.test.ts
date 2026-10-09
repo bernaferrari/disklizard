@@ -124,7 +124,7 @@ it("groups tiny root items only when their rectangles are too small", () => {
   ).toBe(false)
 })
 
-it("shows one quiet remainder instead of recursively grouping a dense smaller-items view", () => {
+it("opens a dense smaller-items group into as many members as the view fits", () => {
   const children = Array.from({ length: 2_526 }, (_, index) =>
     node(`/root/item-${index}`, 1_000 + index)
   )
@@ -136,10 +136,11 @@ it("shows one quiet remainder instead of recursively grouping a dense smaller-it
     children.reduce((sum, child) => sum + child.size, 0),
     true
   )
-  expect(cells).toHaveLength(1)
+  // Roughly one 40×40 tile per member, then a single remainder.
+  expect(cells.length).toBe(Math.floor((900 * 800) / 1_600))
   const summaries = cells.filter((cell) => cell.node.isOther)
   expect(summaries).toHaveLength(1)
-  expect(summaries[0].node.otherCount).toBe(2_526)
+  expect(summaries[0].node.otherCount).toBe(2_526 - (cells.length - 1))
   expect(cells.reduce((sum, cell) => sum + cell.node.size, 0)).toBe(
     children.reduce((sum, child) => sum + child.size, 0)
   )

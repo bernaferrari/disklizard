@@ -9,7 +9,11 @@ import type {
 } from "./types"
 import type { DiskCleanupLock, DiskPinnedLocation } from "./types"
 import { DriveFallback } from "./DiskUtilityEmptyStates"
-import { VolumeRow, type VolumeScanJob } from "./DiskUtilityDriveSurfaces"
+import {
+  FolderJobRow,
+  VolumeRow,
+  type VolumeScanJob,
+} from "./DiskUtilityDriveSurfaces"
 import { PinnedLocationCard } from "./PinnedLocationCard"
 import { StorageDiagnostics, storageAccessGuidance } from "./StorageDiagnostics"
 import { useLanguage, usePlatform } from "./runtime"
@@ -37,6 +41,9 @@ export function DriveOverview(props: {
   onScanDrive: (drive: DiskDriveInfo) => void
   onCancelDrive: (id: string) => void
   onOpenDrive: (job: VolumeScanJob) => void
+  /** Folder scans running or finished in the background. */
+  folderJobs: readonly VolumeScanJob[]
+  onCloseJob: (id: string) => void
   canViewLocation: (path: string) => boolean
   onActivateStorageLocation: (location: DiskStorageLocation) => void
   onOpenAccessSettings: () => void
@@ -60,7 +67,9 @@ export function DriveOverview(props: {
       <ScrollView className="min-h-0 flex-1 [scrollbar-gutter:stable_both-edges]">
         {!props.loading && props.drives.length > 0 ? (
           <div className="mx-auto w-full max-w-[760px] px-6 pt-12 pb-10">
-            <header className="slide-in-from-bottom-1.5 mb-8 animate-in duration-[260ms] fade-in">
+            {/* The page's hero sits on the window's axis; the lists below keep
+                a shared left edge for scanning. */}
+            <header className="slide-in-from-bottom-1.5 mb-10 animate-in text-center duration-[260ms] fade-in">
               <h1 className="text-[30px] leading-tight font-semibold tracking-[-0.03em] text-text-strong">
                 {language.t("disk.ui.home.title")}
               </h1>
@@ -69,7 +78,7 @@ export function DriveOverview(props: {
               </p>
             </header>
             <section aria-label={language.t("disk.drive.volumes")}>
-              <h3 className="mb-3 px-1 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
+              <h3 className="mb-3 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
                 {language.t("disk.ui.home.disks")}
               </h3>
               <div className="flex flex-col gap-3">
@@ -123,6 +132,19 @@ export function DriveOverview(props: {
                     </span>
                   </span>
                 </button>
+                {props.folderJobs.map((job) => (
+                  <div
+                    key={job.id}
+                    className="animate-in duration-[240ms] fade-in slide-in-from-bottom-2"
+                  >
+                    <FolderJobRow
+                      job={job}
+                      onCancel={props.onCancelDrive}
+                      onOpen={props.onOpenDrive}
+                      onClose={props.onCloseJob}
+                    />
+                  </div>
+                ))}
               </div>
             </section>
             {accessGuidance?.attention ? (
@@ -169,7 +191,7 @@ export function DriveOverview(props: {
                 className="mt-8"
                 aria-label={language.t("disk.storage.connected")}
               >
-                <h3 className="mb-3 px-1 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
+                <h3 className="mb-3 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
                   {language.t("disk.storage.connected")}
                 </h3>
                 <StorageDiagnostics

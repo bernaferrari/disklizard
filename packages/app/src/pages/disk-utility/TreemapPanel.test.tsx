@@ -7,7 +7,7 @@ import type { DiskScanNode } from "./types"
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
-test("explore offers map, tiles, and layers without a list mode", async () => {
+test("explore offers only map and tiles", async () => {
   const host = document.createElement("div")
   document.body.append(host)
   const root = createRoot(host)
@@ -15,8 +15,11 @@ test("explore offers map, tiles, and layers without a list mode", async () => {
     await act(async () =>
       root.render(<ViewSwitch value="grid" onChange={() => {}} />)
     )
-    expect(host.querySelectorAll("button[aria-keyshortcuts]")).toHaveLength(3)
-    expect(host.querySelector('[aria-keyshortcuts="4"]')).toBeNull()
+    expect(
+      [...host.querySelectorAll("button[aria-keyshortcuts]")].map((button) =>
+        button.getAttribute("aria-keyshortcuts")
+      )
+    ).toEqual(["1", "2"])
   } finally {
     await act(async () => root.unmount())
     host.remove()
@@ -300,7 +303,7 @@ test("an opened tile keeps neighboring folders directly reachable", async () => 
   }
 })
 
-test("tile navigation fits the opened tile exactly and returns through one shrinking scene", async () => {
+test("tile navigation is one camera: zoom into the tile, pull back out of it", async () => {
   const previousBounds = HTMLElement.prototype.getBoundingClientRect
   const previousAnimate = HTMLElement.prototype.animate
   const animations: { element: HTMLElement; keyframes: Keyframe[] }[] = []
@@ -382,94 +385,71 @@ test("tile navigation fits the opened tile exactly and returns through one shrin
       .getBoundingClientRect()
     prepare(folder.path)
     await act(async () => renderAt(folder.path))
-    expect(host.querySelector("[data-disk-tile-ghost-surface]")).toBeNull()
     expect(
-      host.querySelector(
-        `[data-disk-tile-scene] [data-disk-tile-path="${first.path}"]`
-      )
-    ).not.toBeNull()
-    expect(
-      animations.some(
-        ({ element }) => element.dataset.diskTilePath === first.path
-      )
-    ).toBe(false)
+      host
+        .querySelector("[data-tile-scene-flight]")
+        ?.getAttribute("data-tile-scene-flight")
+    ).toBe("opening")
+    const scale = (transform: unknown) =>
+      String(transform)
+        .match(/scale\(([-\d.]+), ([-\d.]+)\)/)
+        ?.slice(1)
+        .map(Number)
+    // Zooming in: the new level starts registered inside the opened tile...
     const openingScene = animations.find(
       ({ element, keyframes }) =>
         element.hasAttribute("data-disk-tile-scene") &&
         keyframes[0]?.transform !== undefined
+    )!
+    const [sx, sy] = scale(openingScene.keyframes[0]?.transform)!
+    expect(sx).toBeCloseTo(openingTile.width / 800)
+    expect(sy).toBeCloseTo(openingTile.height / 600)
+    expect(openingScene.keyframes.at(-1)?.transform).toBe("none")
+    // ...while the old world flies outward until that tile fills the view.
+    const departing = animations.find(
+      ({ element, keyframes }) =>
+        element.hasAttribute("data-disk-tile-ghost") &&
+        keyframes.at(-1)?.transform !== undefined
+    )!
+    const [gx, gy] = scale(departing.keyframes.at(-1)?.transform)!
+    expect(gx).toBeCloseTo(800 / openingTile.width)
+    expect(gy).toBeCloseTo(600 / openingTile.height)
+    // Individual tiles never animate on their own during a camera move.
+    expect(animations.some(({ element }) => element.dataset.diskTilePath)).toBe(
+      false
     )
-    const incomingScale = String(openingScene?.keyframes[0]?.transform).match(
-      /scale\(([-\d.]+), ([-\d.]+)\)/
-    )
-    expect(Number(incomingScale?.[1])).toBeCloseTo(openingTile.width / 800)
-    expect(Number(incomingScale?.[2])).toBeCloseTo(openingTile.height / 600)
-    expect(
-      animations.some(
-        ({ element, keyframes }) =>
-          element.hasAttribute("data-disk-tile-scene") &&
-          keyframes.some((frame) => frame.opacity !== undefined)
-      )
-    ).toBe(false)
-    expect(
-      animations.find(({ element }) =>
-        element.hasAttribute("data-disk-tile-content")
-      )?.keyframes[1]
-    ).toMatchObject({ opacity: 0, offset: 0.72 })
-    expect(
-      animations.find(({ element }) =>
-        element.hasAttribute("data-disk-tile-shared")
-      )?.keyframes[2]
-    ).toMatchObject({ opacity: 0, offset: 1 })
-    expect(openingScene?.keyframes[1]).toMatchObject({
-      transform: "none",
-      offset: 0.72,
-    })
+
     animations.length = 0
     prepare("/root")
     await act(async () => renderAt("/root"))
-    const returnShell = host.querySelector<HTMLElement>(
-      `[data-disk-tile-scene] [data-disk-tile-path="${folder.path}"]`
-    )!
-    expect(host.querySelector("[data-tile-scene-flight]")).not.toBeNull()
-    const returningGhost = animations.find(
-      ({ element, keyframes }) =>
-        element.hasAttribute("data-disk-tile-ghost") &&
-        keyframes[1]?.transform !== undefined
-    )
-    const returnScale = String(returningGhost?.keyframes[1]?.transform).match(
-      /scale\(([-\d.]+), ([-\d.]+)\)/
-    )
-    const returnBox = returnShell.getBoundingClientRect()
-    expect(Number(returnScale?.[1])).toBeCloseTo(returnBox.width / 800)
-    expect(Number(returnScale?.[2])).toBeCloseTo(returnBox.height / 600)
+    const returnBox = host
+      .querySelector<HTMLElement>(
+        `[data-disk-tile-scene] [data-disk-tile-path="${folder.path}"]`
+      )!
+      .getBoundingClientRect()
+    expect(
+      host
+        .querySelector("[data-tile-scene-flight]")
+        ?.getAttribute("data-tile-scene-flight")
+    ).toBe("returning")
+    // Zooming out mirrors it: the parent starts zoomed into the folder we
+    // left and pulls back, while that view shrinks into its tile.
     const returningScene = animations.find(
       ({ element, keyframes }) =>
         element.hasAttribute("data-disk-tile-scene") &&
         keyframes[0]?.transform !== undefined
-    )
-    expect(returningScene).toBeUndefined()
-    expect(
-      animations.find(
-        ({ element, keyframes }) =>
-          element.hasAttribute("data-disk-tile-ghost") &&
-          keyframes.some((frame) => frame.opacity !== undefined)
-      )?.keyframes[1]
-    ).toMatchObject({ opacity: 1, offset: 0.82 })
-    expect(
-      animations.find(
-        ({ element, keyframes }) =>
-          element.dataset.diskTilePath === folder.path &&
-          keyframes.some((frame) => frame.opacity !== undefined)
-      )?.keyframes[1]
-    ).toMatchObject({ opacity: 0, offset: 0.82 })
-    for (const child of [first, second])
-      expect(
-        animations.find(
-          ({ element }) =>
-            element.dataset.diskTilePath === child.path &&
-            element.closest("[data-disk-tile-scene]")
-        )?.keyframes[1]
-      ).toMatchObject({ opacity: 0, offset: 0.82 })
+    )!
+    const [rx, ry] = scale(returningScene.keyframes[0]?.transform)!
+    expect(rx).toBeCloseTo(800 / returnBox.width)
+    expect(ry).toBeCloseTo(600 / returnBox.height)
+    const shrinking = animations.find(
+      ({ element, keyframes }) =>
+        element.hasAttribute("data-disk-tile-ghost") &&
+        keyframes.at(-1)?.transform !== undefined
+    )!
+    const [kx, ky] = scale(shrinking.keyframes.at(-1)?.transform)!
+    expect(kx).toBeCloseTo(returnBox.width / 800)
+    expect(ky).toBeCloseTo(returnBox.height / 600)
   } finally {
     await act(async () => root.unmount())
     host.remove()

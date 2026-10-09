@@ -68,6 +68,16 @@ describe("shared folder spectrum", () => {
     expect(spread).toBeGreaterThan(120)
   })
 
+  it("keeps neighbours on the ring distinct even with many siblings", () => {
+    const children = Array.from({ length: 40 }, (_, index) =>
+      folder(`/item-${String(index).padStart(2, "0")}`, 1_000 - index)
+    )
+    const spectrum = createSpectrum(folder("/", 40_000, children))
+    const hues = children.map((child) => spectrum.tone(child)!.h)
+    for (let index = 1; index < hues.length; index++)
+      expect(hueDistance(hues[index], hues[index - 1])).toBeGreaterThan(30)
+  })
+
   it("never gives two top-level siblings the same hue", () => {
     const names = ["Users", "System", "private", "Applications", "Library"]
     const children = names.map((name, index) => folder(`/${name}`, 50 - index))

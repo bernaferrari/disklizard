@@ -306,10 +306,10 @@ describe("safeCanvasRadius", () => {
 })
 
 describe("sunburstTransitionDuration", () => {
-  it("keeps repeated navigation faster than the one-time reveal", () => {
+  it("gives two-step navigation room to read while updates stay quick", () => {
     expect(sunburstTransitionDuration("enter", false)).toBe(560)
-    expect(sunburstTransitionDuration("drill", false)).toBe(360)
-    expect(sunburstTransitionDuration("up", false)).toBe(360)
+    expect(sunburstTransitionDuration("drill", false)).toBe(564)
+    expect(sunburstTransitionDuration("up", false)).toBe(540)
     expect(sunburstTransitionDuration("update", false)).toBe(240)
   })
 
@@ -322,7 +322,7 @@ describe("sunburstTransitionDuration", () => {
     expect(sunburstTransitionDuration("drill", false, 240, 560, true)).toBe(1)
     expect(sunburstTransitionDuration("up", false, 240, 560, true)).toBe(1)
     expect(sunburstTransitionDuration("drill", false, 240, 560, false)).toBe(
-      360
+      564
     )
   })
 })
@@ -557,9 +557,12 @@ describe("sunburst navigation continuity", () => {
     map._tick(map.animStart + 2)
     return map
   }
-  it("lets a distant clicked wedge approach before it opens across the wheel", () => {
+  it("opens in two steps: the wedge comes closer, then the circle closes", () => {
     const deep = {
-      ...node("deep", 60, [node("leaf", 60)]),
+      ...node("deep", 60, [
+        { ...node("leaf", 30), path: "/root/a/b/deep/leaf" },
+        { ...node("other-leaf", 30), path: "/root/a/b/deep/other-leaf" },
+      ]),
       path: "/root/a/b/deep",
     }
     const branch = { ...node("b", 60, [deep]), path: "/root/a/b" }
@@ -574,21 +577,30 @@ describe("sunburst navigation continuity", () => {
     const initialSpan = clicked.end - clicked.start
 
     map.navigateTo(deep)
+    const D = map.activeAnimMs
     const bridge = map.segments.find((segment) => segment.path === deep.path)!
-    map._tick(map.animStart + 80)
-    const radialProgress =
-      (bridge.inner - bridge.fromInner) / (bridge.toInner - bridge.fromInner)
-    expect(radialProgress).toBeGreaterThan(0.4)
+    const leaf = map.segments.find(
+      (segment) => segment.path === "/root/a/b/deep/leaf"
+    )!
+    const leafSpan = leaf.end - leaf.start
+    const radial = (s: typeof bridge) =>
+      (s.inner - s.fromInner) / (s.toInner - s.fromInner)
+
+    // Step one: everything travels inward; nothing has started to open.
+    map._tick(map.animStart + D * 0.3)
+    expect(radial(bridge)).toBeGreaterThan(0.4)
+    expect(radial(leaf)).toBeGreaterThan(0.4)
     expect(bridge.end - bridge.start).toBeCloseTo(initialSpan)
-    map._tick(map.animStart + 120)
-    expect(
-      (bridge.inner - bridge.fromInner) / (bridge.toInner - bridge.fromInner)
-    ).toBeGreaterThan(0.9)
-    expect(bridge.end - bridge.start).toBeCloseTo(initialSpan)
-    map._tick(map.animStart + 180)
-    expect(bridge.end - bridge.start).toBeGreaterThan(initialSpan)
-    map._tick(map.animStart + map.activeAnimMs)
-    expect(bridge.end - bridge.start).toBeCloseTo(bridge.toEnd - bridge.toStart)
+    expect(leaf.end - leaf.start).toBeCloseTo(leafSpan)
+    map._tick(map.animStart + D * 0.5)
+    expect(radial(leaf)).toBeCloseTo(1)
+    // Step two: the circle closes around the folder.
+    map._tick(map.animStart + D * 0.75)
+    expect(leaf.end - leaf.start - leafSpan).toBeGreaterThan(
+      (Math.PI - leafSpan) * 0.4
+    )
+    map._tick(map.animStart + D)
+    expect(leaf.end - leaf.start).toBeCloseTo(Math.PI)
   })
   it("closes the gap around a collected wedge and restores it on undo", () => {
     const root = node("root", 100, [node("first", 40), node("second", 60)])
@@ -639,10 +651,10 @@ describe("sunburst navigation continuity", () => {
   })
   const branch = () =>
     node("branch", 10, [node("inside", 10, [node("deep", 10)])])
-  it("anchors a drilled folder's first edge and restores the parent orientation", () => {
+  it("opens around the clicked wedge's midpoint and restores the parent orientation", () => {
     const selected = node("branch", 40, [
-      { ...node("first", 30), path: "/branch/first" },
-      { ...node("second", 10), path: "/branch/second" },
+      { ...node("first", 20), path: "/branch/first" },
+      { ...node("second", 20), path: "/branch/second" },
     ])
     const root = node("root", 100, [node("large", 60), selected])
     const map = engine(root)
@@ -650,32 +662,34 @@ describe("sunburst navigation continuity", () => {
       (segment) => segment.path === selected.path
     )!
     const originalStart = focus.start
-    const childStart = map.segments.find(
-      (segment) => segment.path === "/branch/first"
-    )!.start
+    const mid = (focus.start + focus.end) / 2
 
     map.navigateTo(selected)
-    const first = map.segments.find(
-      (segment) => segment.path === "/branch/first"
+    expect(map.viewOrigins.get(selected.path)).toBeCloseTo(mid - Math.PI)
+    const second = map.segments.find(
+      (segment) => segment.path === "/branch/second"
     )!
-    expect(first.fromStart).toBeCloseTo(childStart)
-    expect(first.toStart).toBeCloseTo(originalStart)
-    expect(map.viewOrigins.get(selected.path)).toBeCloseTo(originalStart)
+    // The seam between the two halves stays exactly where it was.
+    expect(second.fromStart).toBeCloseTo(mid)
+    expect(second.toStart).toBeCloseTo(mid)
 
-    map._tick(map.animStart + 361)
+    map._tick(map.animStart + map.activeAnimMs + 1)
     map.navigateTo(root)
     const closing = map.segments.find(
       (segment) => segment.path === selected.path
     )!
+    expect(closing.role).toBe("bridge")
     expect(closing.fromEnd - closing.fromStart).toBeCloseTo(Math.PI * 2)
-    expect(closing.fromOpacity).toBe(1)
     expect(closing.toStart).toBeCloseTo(originalStart)
-    expect(map.segments[0]).toBe(closing)
-    map._tick(map.animStart + 150)
+    // Going back mirrors opening: the circle narrows first, then moves out.
+    map._tick(map.animStart + map.activeAnimMs * 0.3)
     expect(closing.end - closing.start).toBeLessThan(Math.PI * 2)
-    expect(closing.end - closing.start).toBeGreaterThan(
+    expect(closing.inner).toBeCloseTo(closing.fromInner)
+    map._tick(map.animStart + map.activeAnimMs * 0.8)
+    expect(closing.end - closing.start).toBeCloseTo(
       closing.toEnd - closing.toStart
     )
+    expect(closing.inner).toBeGreaterThan(closing.fromInner)
   })
   it("starts the navigation clock on the first paint after a busy view update", () => {
     const selected = branch()
@@ -693,7 +707,7 @@ describe("sunburst navigation continuity", () => {
     expect(source.opacity).toBe(initialOpacity)
     expect(map.animating).toBe(true)
   })
-  it("keeps the clicked folder visible as it expands into the new center ring", () => {
+  it("sinks the clicked folder into the center, then dissolves it under the name", () => {
     const selected = branch()
     const map = engine(node("root", 100, [node("large", 90), selected]))
     const oldWedge = map.segments.find(
@@ -705,17 +719,18 @@ describe("sunburst navigation continuity", () => {
     const bridge = map.segments.find(
       (segment) => segment.path === selected.path
     )!
-    expect(bridge.isDrillBridge).toBe(true)
+    expect(bridge.role).toBe("bridge")
     expect(bridge.toEnd - bridge.toStart).toBeCloseTo(Math.PI * 2)
-    expect(bridge.toInner).toBeCloseTo(map._radiiForDepth(0).inner)
-    expect(bridge.toOuter).toBeCloseTo(map._radiiForDepth(0).outer)
+    expect(bridge.toOuter).toBeLessThan(map.innerHole)
     expect(map.segments.at(-1)).toBe(bridge)
 
-    map._tick(map.animStart + 120)
-    expect(bridge.end - bridge.start).toBeGreaterThan(oldSpan)
+    map._tick(map.animStart + map.activeAnimMs * 0.14)
+    expect(bridge.end - bridge.start).toBeCloseTo(oldSpan, 1)
     expect(bridge.opacity).toBe(1)
-    map._tick(map.animStart + 361)
-    expect(map.segments.some((segment) => segment.isDrillBridge)).toBe(false)
+    map._tick(map.animStart + map.activeAnimMs + 1)
+    expect(map.segments.some((segment) => segment.path === selected.path)).toBe(
+      false
+    )
   })
   it("navigates from an old collapsed wedge when focused scanning replaces the tree", () => {
     const selected = node("branch", 10)
@@ -729,28 +744,27 @@ describe("sunburst navigation continuity", () => {
     expect(map.root).toBe(nextRoot)
     expect(map.viewNode).toBe(expanded)
     expect(
-      map.segments.find((segment) => segment.path === selected.path)
-        ?.isDrillBridge
-    ).toBe(true)
+      map.segments.find((segment) => segment.path === selected.path)?.role
+    ).toBe("bridge")
   })
-  it("folds outgoing deep arcs into the closing folder instead of the outer rim", () => {
+  it("folds outgoing deep arcs into the closing folder and slides them off the rim", () => {
     const selected = branch()
     const root = node("root", 100, [node("large", 90), selected])
     const map = engine(root)
     map.options.rings = 2
     map.navigateTo(selected)
-    map._tick(map.animStart + 361)
+    map._tick(map.animStart + map.activeAnimMs + 1)
 
     map.navigateTo(root)
     const closing = map.segments.find(
       (segment) => segment.path === selected.path && segment.toOpacity > 0
     )!
     const outgoing = map.segments.find((segment) => segment.path === "/deep")!
+    expect(outgoing.role).toBe("collapse")
     expect(outgoing.toOpacity).toBe(0)
-    expect(outgoing.toInner).toBeCloseTo(closing.toInner)
-    expect(outgoing.toOuter).toBeCloseTo(closing.toOuter)
-    expect(outgoing.toStart).toBeGreaterThanOrEqual(closing.toStart)
-    expect(outgoing.toEnd).toBeLessThanOrEqual(closing.toEnd)
+    expect(outgoing.toInner).toBeGreaterThanOrEqual(outgoing.fromOuter)
+    expect(outgoing.toStart).toBeGreaterThanOrEqual(closing.toStart - 1e-8)
+    expect(outgoing.toEnd).toBeLessThanOrEqual(closing.toEnd + 1e-8)
   })
   it("keeps fading detail outside the parent ring while returning", () => {
     const selected = branch()
@@ -771,7 +785,7 @@ describe("sunburst navigation continuity", () => {
       }
     }
   })
-  it("opens parent siblings from the moving edges of the closing wheel", () => {
+  it("brings parent siblings back only after the circle has narrowed", () => {
     const selected = node("branch", 40, [
       { ...node("inside", 40), path: "/branch/inside" },
     ])
@@ -782,23 +796,22 @@ describe("sunburst navigation continuity", () => {
     ])
     const map = engine(root)
     map.navigateTo(selected)
-    map._tick(map.animStart + 361)
+    map._tick(map.animStart + map.activeAnimMs + 1)
 
     map.navigateTo(root)
-    const closing = map.segments.find(
-      (segment) => segment.path === selected.path && segment.toOpacity > 0
-    )!
     const before = map.segments.find((segment) => segment.path === "/before")!
     const after = map.segments.find((segment) => segment.path === "/after")!
-    expect(before.fromStart).toBeCloseTo(closing.fromStart)
-    expect(before.fromEnd).toBeCloseTo(closing.fromStart)
-    expect(after.fromStart).toBeCloseTo(closing.fromEnd)
-    expect(after.fromEnd).toBeCloseTo(closing.fromEnd)
-    map._tick(map.animStart + 150)
-    expect(before.end - before.start).toBeGreaterThan(0)
-    expect(after.end - after.start).toBeGreaterThan(0)
+    expect(before.role).toBe("arrive")
+    // They drift in at their own angles rather than sliding over the wheel.
+    expect(before.fromStart).toBeCloseTo(before.toStart)
+    expect(before.fromInner).toBeGreaterThan(before.toInner)
+    expect(after.fromEnd).toBeCloseTo(after.toEnd)
+    map._tick(map.animStart + map.activeAnimMs * 0.3)
+    expect(before.opacity).toBe(0)
+    map._tick(map.animStart + map.activeAnimMs)
+    expect(before.opacity).toBeCloseTo(before.toOpacity)
   })
-  it("keeps returning siblings outside the closing wedge throughout back navigation", () => {
+  it("keeps returning siblings hidden while the closing wheel still covers them", () => {
     const selected = node("branch", 40, [
       { ...node("inside", 40), path: "/branch/inside" },
     ])
@@ -815,12 +828,16 @@ describe("sunburst navigation continuity", () => {
     const closing = map.segments.find(
       (segment) => segment.path === selected.path
     )!
-    const before = map.segments.find((segment) => segment.path === "/before")!
-    const after = map.segments.find((segment) => segment.path === "/after")!
-    for (const ms of [60, 120, 180, 240, 300]) {
+    const siblings = ["/before", "/after"].map((path) =>
+      map.segments.find((segment) => segment.path === path)!
+    )
+    for (let ms = 0; ms <= map.activeAnimMs; ms += 30) {
       map._tick(map.animStart + ms)
-      expect(before.end).toBeLessThanOrEqual(closing.start + 1e-8)
-      expect(after.start).toBeGreaterThanOrEqual(closing.end - 1e-8)
+      const stillWide =
+        closing.end - closing.start > closing.toEnd - closing.toStart + 0.05
+      if (stillWide)
+        for (const sibling of siblings)
+          expect(sibling.opacity).toBeLessThan(0.02)
     }
   })
   it("remembers skipped parent angles when drilling directly into a deep ring", () => {
@@ -850,11 +867,9 @@ describe("sunburst navigation continuity", () => {
     const map = engine(node("root", 100, [node("large", 90), selected]))
     map.navigateTo(selected)
     const start = map.animStart
-    const initialSpan = map.segments.find((s) => s.path === "/inside")!
-    const before = initialSpan.end - initialSpan.start
-    map._tick(start + 120)
-    expect(initialSpan.end - initialSpan.start).toBeGreaterThan(before)
-    for (let ms = 1; ms <= 240; ms += 8) {
+    const inside = map.segments.find((s) => s.path === "/inside")!
+    const before = inside.end - inside.start
+    for (let ms = 1; ms <= map.activeAnimMs; ms += 8) {
       map._tick(start + ms)
       for (const segment of map.segments) {
         expect(segment.end).toBeGreaterThanOrEqual(segment.start)
@@ -863,15 +878,19 @@ describe("sunburst navigation continuity", () => {
         )
       }
     }
+    expect(inside.end - inside.start).toBeGreaterThan(before)
   })
-  it("moves surrounding wedges to the focus boundaries instead of the center", () => {
+  it("fades surrounding wedges outward, in place, while the focus approaches", () => {
     const selected = branch()
     const map = engine(node("root", 100, [node("large", 90), selected]))
     map.navigateTo(selected)
     const exiting = map.segments.find((s) => s.path === "/large")!
-    expect(exiting.toInner).toBe(exiting.fromInner)
-    expect(exiting.toOuter).toBe(exiting.fromOuter)
-    expect(exiting.toStart).toBe(exiting.toEnd)
+    expect(exiting.role).toBe("exit")
+    expect(exiting.toInner).toBeGreaterThan(exiting.fromInner)
+    expect(exiting.toStart).toBe(exiting.fromStart)
+    expect(exiting.toEnd).toBe(exiting.fromEnd)
+    map._tick(map.animStart + map.activeAnimMs * 0.44)
+    expect(exiting.opacity).toBeLessThan(0.01)
   })
   it("retargets from the visible pose when another folder is opened mid-flight", () => {
     const selected = branch()

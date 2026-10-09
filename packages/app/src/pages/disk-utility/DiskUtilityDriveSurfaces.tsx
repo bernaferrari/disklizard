@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, Eject, FolderOpen, Info, RotateCw } from "lucide-react"
+import { ChevronDown, Eject, FolderOpen, Info, RotateCw, X } from "lucide-react"
 import { Popover } from "@/components/dl/popover"
 import { Network } from "lucide-react"
 import { useEffect, useId, useState } from "react"
@@ -24,6 +24,8 @@ import type { ScanDiscovery } from "./live-scan"
 
 export type VolumeScanJob = {
   id: string
+  /** Folder jobs run in the background alongside volume scans. */
+  kind?: "volume" | "folder"
   status: "scanning" | "complete" | "failed"
   label: string
   sourcePath: string
@@ -520,3 +522,104 @@ export function volumeCompletionLabel(
 }
 
 /** Recommendations live with the inspector controls instead of obscuring the map. */
+
+/**
+ * A folder scan running (or finished) in the background. It mirrors the
+ * volume card's anatomy — identity, live progress, one primary action — so
+ * several scans read as one family on the Volumes screen.
+ */
+export function FolderJobRow(props: {
+  job: VolumeScanJob
+  onCancel: (id: string) => void
+  onOpen: (job: VolumeScanJob) => void
+  onClose: (id: string) => void
+}) {
+  const language = useLanguage()
+  const { job } = props
+  const scanning = job.status === "scanning"
+  const failed = job.status === "failed"
+  const summary = failed
+    ? job.error || language.t("disk.drive.stopped")
+    : language.t("disk.drive.scanningSummary", {
+        files: formatCount(job.files),
+        bytes: shortBytes(job.bytes),
+      })
+  return (
+    <div className="flex items-center gap-4 rounded-2xl bg-[var(--dl-well)] px-5 py-4 shadow-[inset_0_0_0_0.5px_var(--dl-separator)]">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--dl-well-strong)] text-text-weak">
+        <FolderOpen className="size-5" strokeWidth={1.75} aria-hidden />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 items-baseline gap-2">
+          <p className="truncate text-[14px] font-medium text-text-strong">
+            {job.label}
+          </p>
+          <span
+            className="min-w-0 truncate text-[12px] text-text-weaker"
+            title={job.sourcePath}
+          >
+            {job.sourcePath}
+          </span>
+        </div>
+        <div
+          className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--dl-well-strong)]"
+          role={scanning ? "progressbar" : undefined}
+          aria-label={scanning ? job.label : undefined}
+          aria-valuemin={scanning ? 0 : undefined}
+          aria-valuemax={scanning ? 100 : undefined}
+          aria-valuenow={scanning ? Math.floor(job.pct) : undefined}
+        >
+          <div
+            className="dl-volume-bar-fill h-full rounded-[inherit] transition-[width] duration-300 ease-out"
+            data-scanning={scanning ? "" : undefined}
+            style={{
+              // Folders have no known total; a running scan shows a live
+              // sheen across the bar instead of a fake percentage.
+              width: scanning ? `${Math.max(12, job.pct)}%` : "100%",
+              background: failed
+                ? "var(--dl-danger)"
+                : scanning
+                  ? undefined
+                  : "var(--dl-positive)",
+            }}
+          />
+        </div>
+        <p
+          className={`mt-1.5 truncate text-[12px] tabular-nums ${failed ? "text-[var(--dl-danger)]" : "text-text-weak"}`}
+        >
+          {summary}
+        </p>
+      </div>
+      <div className="flex shrink-0 items-center gap-1">
+        {!failed ? (
+          <ShadcnButton
+            type="button"
+            variant={scanning ? "secondary" : "default"}
+            className="min-w-[80px]"
+            aria-label={
+              scanning
+                ? language.t("disk.drive.cancelLabel", { name: job.label })
+                : language.t("disk.drive.viewLabel", { name: job.label })
+            }
+            onClick={() =>
+              scanning ? props.onCancel(job.id) : props.onOpen(job)
+            }
+          >
+            {volumeActionLabel(job.status)}
+          </ShadcnButton>
+        ) : null}
+        {!scanning ? (
+          <button
+            type="button"
+            className="grid size-8 place-items-center rounded-full text-text-weak outline-none hover:bg-[var(--dl-well-strong)] hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+            aria-label={language.t("disk.drive.closeMap", { name: job.label })}
+            title={language.t("disk.drive.closeMap", { name: job.label })}
+            onClick={() => props.onClose(job.id)}
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        ) : null}
+      </div>
+    </div>
+  )
+}

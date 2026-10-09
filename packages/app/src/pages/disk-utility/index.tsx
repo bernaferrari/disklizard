@@ -6,12 +6,8 @@ import {
 import { trackPointerDrag, type PointerDragSource } from "./pointer-drag"
 import { LocationNavigation } from "./LocationNavigation"
 import { flushSync } from "react-dom"
-import { ParentFrame } from "./ParentFrame"
 import { planOtherExpansion } from "./other-expansion"
-import {
-  containingFolderForVisualGroup,
-  createGroupNavigation,
-} from "./group-navigation"
+import { createGroupNavigation } from "./group-navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { CleanupView } from "./CleanupView"
 import { DiskAppMenu } from "./DiskAppMenu"
@@ -67,6 +63,7 @@ import { Icon } from "@/components/dl/icon"
 import { ScrollView } from "@/components/dl/scroll-view"
 import { showToast } from "@/components/dl/toast"
 import {
+  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -108,6 +105,7 @@ import { Treemap } from "./TreemapPanel"
 import { ViewMorph, type MorphTile } from "./ViewMorph"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
+import { usePinchNavigation } from "./pinch-navigation"
 import { abbreviateHomePath } from "./item-identity"
 import { useResolvedColorScheme } from "@/components/dl/theme"
 import { PreviewDialog } from "./PreviewDialog"
@@ -159,7 +157,6 @@ import {
 } from "./DiskUtilityEmptyStates"
 import type { VolumeScanJob } from "./DiskUtilityDriveSurfaces"
 import { DriveOverview } from "./DiskUtilityDriveOverview"
-import { IciclePanel } from "./IciclePanel"
 import { DetailBar } from "./DiskUtilityDetailBar"
 import {
   CleanupProtectionsResetDialog,
@@ -258,7 +255,7 @@ import {
 } from "./navigation"
 
 type ViewMode = "drives" | "scan"
-type ScanMode = "map" | "grid" | "icicle"
+type ScanMode = "map" | "grid"
 type IndexLens = ScanInvestigationLens
 type DeveloperCategoryFilter = DeveloperCategory | "all"
 type Entry = ScanInvestigationEntry
@@ -450,9 +447,6 @@ export default function DiskUtilityPage() {
 
   const [treeRoot, setTreeRoot] = useState<DiskScanNode | null>(null)
   const [viewNode, setViewNode] = useState<DiskScanNode | null>(null)
-  const [expandedSmallItemsForPath, setExpandedSmallItemsForPath] = useState<
-    string | null
-  >(null)
   const [scanSourcePath, setScanSourcePath] = useState("")
   const [scanLabel, setScanLabel] = useState("")
   const [scanning, setScanning] = useState(false)
@@ -560,6 +554,7 @@ export default function DiskUtilityPage() {
   const scanProgressRegionRef = useRef<HTMLDivElement | undefined>(undefined)
   const shortcutsDetailsRef = useRef<HTMLDetailsElement | null>(null)
   const landscapeElRef = useRef<HTMLElement | null>(null)
+  const [landscapeEl, setLandscapeEl] = useState<HTMLElement | null>(null)
   const volumeJobs = useMemo(
     () =>
       Object.values(volumeScanJobs).filter(
@@ -574,7 +569,6 @@ export default function DiskUtilityPage() {
   const [morphing, setMorphing] = useState(false)
   const morphRef = useRef<ViewMorph | null>(null)
   const gridOverlayRef = useRef<HTMLDivElement | null>(null)
-  const layerOverlayRef = useRef<HTMLDivElement | null>(null)
   const volumeScanUnsubsRef = useRef(new Map<string, () => void>())
   const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null)
   const sunburstRef = useRef<Sunburst | undefined>(undefined)
@@ -645,17 +639,26 @@ export default function DiskUtilityPage() {
   }
 
   /** Merge a patch into an existing volume-scan job; a missing job is left alone (v1 store semantics). */
+  // React state lags a just-started job; a scan that resolves at once (a
+  // cached snapshot, a tiny folder) must still find it. This mirror is
+  // updated synchronously with every put/patch/drop.
+  const startedJobsRef = useRef<Record<string, VolumeScanJob | undefined>>({})
+
   function patchVolumeJob(id: string, patch: Partial<VolumeScanJob>) {
+    const started = startedJobsRef.current[id]
+    if (started) startedJobsRef.current[id] = { ...started, ...patch }
     setVolumeScanJobs((jobs) =>
       jobs[id] ? { ...jobs, [id]: { ...jobs[id], ...patch } } : jobs
     )
   }
 
   function putVolumeJob(job: VolumeScanJob) {
+    startedJobsRef.current[job.id] = job
     setVolumeScanJobs((jobs) => ({ ...jobs, [job.id]: job }))
   }
 
   function dropVolumeJob(id: string) {
+    startedJobsRef.current[id] = undefined
     setVolumeScanJobs((jobs) => {
       if (!(id in jobs)) return jobs
       return { ...jobs, [id]: undefined }
@@ -894,7 +897,6 @@ export default function DiskUtilityPage() {
     const raw = deriveEntries()
     return viewNode &&
       !viewNode.isOther &&
-      expandedSmallItemsForPath !== viewNode.path &&
       indexFilter.lens === "all" &&
       !query.trim() &&
       !recentLens &&
@@ -905,7 +907,6 @@ export default function DiskUtilityPage() {
   }, [
     investigation,
     viewNode,
-    expandedSmallItemsForPath,
     query,
     indexFilter,
     recentLens,
@@ -1080,13 +1081,22 @@ export default function DiskUtilityPage() {
     return findRetainedNode(root, targetPath)
   }
 
-  function showBrowseNode(node: DiskScanNode, instant = false) {
+  function showBrowseNode(
+    node: DiskScanNode,
+    instant = false,
+    /** Commit synchronously when the caller reads the new view right away. */
+    urgent = false
+  ) {
     const preserveInvestigation = indexFilter.lens !== "all" || !!query.trim()
     if (!instant && scanMode === "grid" && gridInteractive)
       tileCameraPrepareRef.current?.(node.path)
     clearSelectionAnnouncement()
     sunburstRef.current?.navigateTo(node, instant)
-    setViewNode(node)
+    // The map animates on its own canvas clock. Rendering the new folder's
+    // sidebar, crumbs and details for a huge scan can take a long frame, so
+    // let React do it as a non-urgent update instead of stalling the motion.
+    if (instant || urgent) setViewNode(node)
+    else startTransition(() => setViewNode(node))
     if (!preserveInvestigation) {
       setSelectedPath(undefined)
       setFocusIdx(0)
@@ -1212,8 +1222,7 @@ export default function DiskUtilityPage() {
     await chooseFolderAndScan({
       chooseFolder: () => api.chooseFolder(),
       startScan: async (path, label, drive) => {
-        if (live.current.openRetainedLocation(path)) return
-        await live.current.startScan(path, label, drive)
+        live.current.startFolderScan(path, label, drive)
       },
       drives,
       os: platform.os,
@@ -1286,9 +1295,50 @@ export default function DiskUtilityPage() {
   }
 
   function startVolumeScan(drive: DiskDriveInfo) {
+    startBackgroundScan({
+      kind: "volume",
+      path: drive.path,
+      label: drive.name,
+      drive,
+    })
+  }
+
+  /**
+   * Folder scans run like volume scans: in the background, several at once
+   * (within the shared limit), each with its own progress card on Volumes.
+   */
+  function startFolderScan(path: string, label: string, drive?: DiskDriveInfo) {
+    if (openRetainedLocation(path)) return
+    startBackgroundScan({
+      kind: "folder",
+      path,
+      label,
+      // A neutral stand-in never equals the folder's path, so the scanner
+      // never treats a folder as a whole-volume scan.
+      drive: drive ?? {
+        path: "",
+        name: label,
+        label,
+        total: 0,
+        free: 0,
+        used: 0,
+        type: "local",
+      },
+    })
+  }
+
+  function startBackgroundScan(target: {
+    kind: "volume" | "folder"
+    path: string
+    label: string
+    drive: DiskDriveInfo
+  }) {
     const api = disk
     if (!api) return
-    const existing = volumeJobForDrive(drive)
+    const { drive } = target
+    const existing = volumeJobs.find((job) =>
+      diskPathEquals(job.sourcePath, target.path, platform.os)
+    )
     if (existing?.status === "scanning") return
     if (runningVolumeScans >= MAX_PARALLEL_VOLUME_SCANS) {
       showToast({
@@ -1305,12 +1355,13 @@ export default function DiskUtilityPage() {
       dropVolumeJob(existing.id)
     }
 
-    const id = newScanID("volume")
+    const id = newScanID(target.kind)
     putVolumeJob({
       id,
+      kind: target.kind,
       status: "scanning",
-      label: drive.name,
-      sourcePath: drive.path,
+      label: target.label,
+      sourcePath: target.path,
       drive,
       files: 0,
       bytes: 0,
@@ -1319,8 +1370,24 @@ export default function DiskUtilityPage() {
       startedAt: Date.now(),
       source: undefined,
     })
+    let completionObserved = false
     const unsubscribe = api.onScanProgress((progress) => {
       if (progress.scanId !== id) return
+      if (progress.done && progress.source) {
+        // IPC can deliver the tree and this final event in either order;
+        // provenance must survive both.
+        completionObserved = true
+        const started = startedJobsRef.current[id]
+        if (started)
+          startedJobsRef.current[id] = { ...started, source: progress.source }
+        patchVolumeJob(id, { source: progress.source })
+        if (live.current.scanSession.activeID === id)
+          setScanCompletionSource(progress.source)
+        if (!startedJobsRef.current[id] || started?.status !== "scanning") {
+          volumeScanUnsubsRef.current.get(id)?.()
+          volumeScanUnsubsRef.current.delete(id)
+        }
+      }
       setVolumeScanJobs((jobs) => {
         const job = jobs[id]
         if (!job || job.status !== "scanning") return jobs
@@ -1340,24 +1407,40 @@ export default function DiskUtilityPage() {
       })
     })
     volumeScanUnsubsRef.current.set(id, unsubscribe)
-    void runVolumeScan(id, drive)
+    void runVolumeScan(
+      id,
+      drive,
+      target.path,
+      target.label,
+      () => completionObserved
+    )
   }
 
-  async function runVolumeScan(id: string, drive: DiskDriveInfo) {
+  async function runVolumeScan(
+    id: string,
+    drive: DiskDriveInfo,
+    path = drive.path,
+    label = drive.name,
+    completionObserved = () => true
+  ) {
     const api = disk
     if (!api) return
     try {
       const scannedTree = await api.scanPath(
-        drive.path,
-        scannerOptions(drive, true, drive.path),
+        path,
+        scannerOptions(drive, true, path),
         id
       )
       if (!scannedTree) return
-      const current = live.current.volumeScanJobs[id]
+      const started = startedJobsRef.current[id]
+      const current = started && {
+        ...started,
+        ...live.current.volumeScanJobs[id],
+      }
       if (current?.status !== "scanning") return
       scanHistory.seed(id, scannedTree)
       const tree = includeHiddenSpace(asBrowseableRoot(scannedTree), drive)
-      tree._label = drive.name
+      tree._label = label
       const completed: VolumeScanJob = {
         ...current,
         status: "complete",
@@ -1377,7 +1460,7 @@ export default function DiskUtilityPage() {
         // View action is the only path into the map, so keep it.
         showToast({
           variant: "default",
-          title: language.t("disk.toast.driveReady", { name: drive.name }),
+          title: language.t("disk.toast.driveReady", { name: label }),
           description: language.t("disk.toast.driveReadyBody"),
           actions: [
             {
@@ -1397,8 +1480,12 @@ export default function DiskUtilityPage() {
         error: error instanceof Error ? error.message : String(error),
       })
     } finally {
-      volumeScanUnsubsRef.current.get(id)?.()
-      volumeScanUnsubsRef.current.delete(id)
+      // Keep listening until the final progress event has carried the
+      // scan's provenance; it may arrive after the tree.
+      if (completionObserved() || !startedJobsRef.current[id]) {
+        volumeScanUnsubsRef.current.get(id)?.()
+        volumeScanUnsubsRef.current.delete(id)
+      }
     }
   }
 
@@ -1436,11 +1523,12 @@ export default function DiskUtilityPage() {
     setViewNode(target ?? tree)
     browseHistory.reset(target?.path ?? tree.path)
     setScanSourcePath(job.sourcePath)
+    setScanCompletionSource(job.source)
     setScanLabel(job.label)
     setScanDrive(job.drive)
     setScanFiles(job.files)
     setScanBytes(job.bytes)
-    setScanTotal(job.drive.used)
+    setScanTotal(job.kind === "folder" ? 0 : job.drive.used)
     setScanPct(100)
     setSelectedPath(undefined)
     setHoveredPath(null)
@@ -1896,24 +1984,9 @@ export default function DiskUtilityPage() {
       return
     }
     if (!treeRoot || !viewNode) return
-    const containing = containingFolderForVisualGroup(treeRoot, node)
-    if (containing) {
-      setExpandedSmallItemsForPath(containing.path)
-      if (viewNode.path !== containing.path) {
-        browseHistory.visit(containing.path)
-        showBrowseNode(containing)
-      }
-      const members = new Set(node.children.map((child) => child.path))
-      const firstIndex = containing.children
-        .toSorted((left, right) => right.size - left.size)
-        .findIndex((child) => members.has(child.path))
-      if (firstIndex >= 0)
-        requestAnimationFrame(() =>
-          scrollIndexIntoViewRef.current?.(firstIndex)
-        )
-      if (restoreListFocus) restoreKeyboardViewFocus("contents")
-      return
-    }
+    // Every "N smaller items" — a wedge, a tile, or a list row — opens the
+    // same way: as a place the camera moves into, showing all its members.
+    // (Scanner-level groups first fetch the members they don't have yet.)
     // An aggregate already describes a remainder. Keep its members in the
     // current folder's contents panel instead of opening another visual group.
     if (viewNode.isOther) {
@@ -2020,6 +2093,32 @@ export default function DiskUtilityPage() {
     focusPersistentDiskAction()
     if (!focused) backToDrives()
   }
+
+  // Pinch (or ⌘/Ctrl+scroll) moves the camera one level: into the
+  // top-level folder under the pointer, or back out to the parent.
+  usePinchNavigation(view === "scan" ? landscapeEl : null, {
+    onZoomIn: (x, y) => {
+      if (scanning || morphing || !viewNode) return
+      const pointed =
+        scanMode === "map"
+          ? sunburstRef.current?.nodeAtPoint(x, y)?.path
+          : document
+              .elementFromPoint(x, y)
+              ?.closest<HTMLElement>("[data-disk-tile-path]")?.dataset
+              .diskTilePath
+      if (!pointed) return
+      const target = viewNode.children.find(
+        (child) =>
+          child.path === pointed ||
+          diskPathIsWithin(pointed, child.path, platform.os)
+      )
+      if (target && (target.isDir || target.isOther)) drill(target)
+    },
+    onZoomOut: () => {
+      if (scanning || morphing) return
+      goUp()
+    },
+  })
 
   function drill(
     node: DiskScanNode,
@@ -2164,13 +2263,11 @@ export default function DiskUtilityPage() {
       const sy = canvas.height / Math.max(1, bounds.height)
       return new Map(
         [
-          ...landscape.querySelectorAll<HTMLElement>(
-            "[data-disk-tile-path], [data-disk-layer-path]"
-          ),
+          ...landscape.querySelectorAll<HTMLElement>("[data-disk-tile-path]"),
         ].map((el) => {
           const r = el.getBoundingClientRect()
           return [
-            el.dataset.diskTilePath ?? el.dataset.diskLayerPath!,
+            el.dataset.diskTilePath!,
             {
               x: (r.left - bounds.left) * sx,
               y: (r.top - bounds.top) * sy,
@@ -2190,11 +2287,9 @@ export default function DiskUtilityPage() {
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         for (const element of landscape.querySelectorAll<HTMLElement>(
-          "[data-disk-tile-path], [data-disk-layer-path]"
+          "[data-disk-tile-path]"
         )) {
-          const rect = source.get(
-            element.dataset.diskTilePath ?? element.dataset.diskLayerPath!
-          )
+          const rect = source.get(element.dataset.diskTilePath!)
           if (!rect) continue
           ctx.fillStyle = getComputedStyle(element).backgroundColor
           ctx.fillRect(rect.x, rect.y, rect.w, rect.h)
@@ -2211,58 +2306,18 @@ export default function DiskUtilityPage() {
         if (version !== viewTransitionVersionRef.current) return
         const target = readRects()
         const overlay = gridOverlayRef.current
-        const layerOverlay = layerOverlayRef.current
         if (overlay) overlay.style.opacity = mode === "grid" ? "0" : "1"
-        if (layerOverlay && mode === "icicle") layerOverlay.style.opacity = "0"
-        const closestRect = (path: string, rects: typeof target) => {
-          let ancestor = path
-          while (ancestor) {
-            const match = rects.get(ancestor)
-            if (match) return match
-            const end = Math.max(
-              ancestor.lastIndexOf("/"),
-              ancestor.lastIndexOf("\\")
-            )
-            if (end < 0) break
-            const parent = ancestor.slice(0, end)
-            const next = parent
-              ? parent.endsWith(":")
-                ? `${parent}\\`
-                : parent
-              : ancestor[0]
-            if (next === ancestor) break
-            ancestor = next
-          }
-          return null
-        }
-        const centerOf = (rect: {
-          x: number
-          y: number
-          w: number
-          h: number
-        }) => ({
-          x: rect.x + rect.w / 2,
-          y: rect.y + rect.h / 2,
-          w: 0,
-          h: 0,
-        })
+        // A shared transition in two steps. Only top-level folders travel —
+        // they are the same thing in both views. Detail steps aside first
+        // (deeper rings or nested tiles fade where they are), the shared
+        // shapes then unroll or roll up, and the destination's detail
+        // settles in last.
+        const toGrid = mode !== "map"
         const tiles: MorphTile[] = []
+        const travelling = new Set<string>()
         for (const seg of segments) {
           const fromRect = source.get(seg.path)
           const toRect = target.get(seg.path)
-          // Preserve disappearing rings and entering details throughout the flight.
-          const absentSource = previous !== "map" && !fromRect
-          const absentTarget = mode !== "map" && !toRect
-          const fallback = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            w: 0,
-            h: 0,
-          }
-          const sourceRect =
-            fromRect ?? centerOf(closestRect(seg.path, source) ?? fallback)
-          const targetRect =
-            toRect ?? centerOf(closestRect(seg.path, target) ?? fallback)
           const pad = sunburstSegmentPadding(seg, sb.options.padAngle)
           const wedge = {
             start: seg.start + pad,
@@ -2277,71 +2332,60 @@ export default function DiskUtilityPage() {
           const mapColor = seg.tone
             ? toneCss(seg.tone)
             : (spectrum.color(seg.node) ?? toneCss(aggregateTone(seg.depth)))
+          const tileRect = toGrid ? toRect : fromRect
+          if (seg.depth === 0 && tileRect) {
+            travelling.add(seg.path)
+            const arc = { shape: "arc" as const, wedge, rect: tileRect }
+            const rect = { shape: "rect" as const, wedge, rect: tileRect }
+            tiles.push({
+              path: seg.path,
+              node: seg.node,
+              depth: seg.depth,
+              colorIndex,
+              fromColor: toGrid ? mapColor : tileRect.color,
+              toColor: toGrid ? tileRect.color : mapColor,
+              from: toGrid ? arc : rect,
+              to: toGrid ? rect : arc,
+              move: toGrid ? [0.22, 1] : [0, 0.78],
+            })
+            continue
+          }
+          const still = {
+            shape: "arc" as const,
+            wedge,
+            rect: { x: 0, y: 0, w: 0, h: 0 },
+          }
           tiles.push({
             path: seg.path,
             node: seg.node,
             depth: seg.depth,
             colorIndex,
-            fromColor: previous === "map" ? mapColor : fromRect?.color,
-            toColor: mode === "map" ? mapColor : toRect?.color,
-            fromOpacity: absentSource ? 0 : 1,
-            toOpacity: absentTarget ? 0 : 1,
-            from: {
-              shape: previous === "map" ? "arc" : "rect",
-              wedge,
-              rect: sourceRect,
-            },
-            to: {
-              shape: mode === "map" ? "arc" : "rect",
-              wedge,
-              rect: targetRect,
-            },
+            fromColor: mapColor,
+            toColor: mapColor,
+            fromOpacity: toGrid ? 1 : 0,
+            toOpacity: toGrid ? 0 : 1,
+            from: still,
+            to: still,
+            fade: toGrid ? [0, 0.34] : [0.66, 1],
           })
         }
-        const known = new Set(tiles.map((tile) => tile.path))
-        for (const [path, rect] of target) {
-          if (mode === "map" || known.has(path) || !viewNode) continue
-          const from = source.get(path)
-          const wedge = {
-            start: -Math.PI / 2,
-            end: -Math.PI / 2 + 0.01,
-            inner: 0,
-            outer: 1,
-          }
-          tiles.push({
-            path,
-            node: viewNode,
-            colorIndex: 0,
-            fromColor: from?.color ?? rect.color,
-            toColor: rect.color,
-            fromOpacity: from ? 1 : 0,
-            from: {
-              shape: "rect",
-              wedge,
-              rect: from ?? {
-                ...rect,
-                x: rect.x + rect.w / 2,
-                y: rect.y + rect.h / 2,
-                w: 0,
-                h: 0,
-              },
-            },
-            to: { shape: "rect", wedge, rect },
-          })
-        }
-        const included = new Set(tiles.map((tile) => tile.path))
-        for (const [path, rect] of source) {
-          if (previous === "map" || included.has(path) || !viewNode) continue
+        // Nested tiles: arriving ones settle in last, departing ones leave first.
+        const otherRects = toGrid ? target : source
+        for (const [path, rect] of otherRects) {
+          if (travelling.has(path) || !viewNode) continue
           const wedge = { start: 0, end: 0.01, inner: 0, outer: 1 }
+          const pose = { shape: "rect" as const, wedge, rect }
           tiles.push({
             path,
             node: viewNode,
             colorIndex: 0,
             fromColor: rect.color,
             toColor: rect.color,
-            toOpacity: 0,
-            from: { shape: "rect", wedge, rect },
-            to: { shape: "rect", wedge, rect },
+            fromOpacity: toGrid ? 0 : 1,
+            toOpacity: toGrid ? 1 : 0,
+            from: pose,
+            to: pose,
+            fade: toGrid ? [0.64, 1] : [0, 0.32],
           })
         }
         ensureMorph(canvas).play(
@@ -2357,7 +2401,6 @@ export default function DiskUtilityPage() {
               setGridInteractive(mode === "grid")
             })
             if (overlay) overlay.style.opacity = ""
-            if (layerOverlay) layerOverlay.style.opacity = ""
             sb.setMorphing(false)
             const queued = queuedModeRef.current
             queuedModeRef.current = null
@@ -2373,8 +2416,6 @@ export default function DiskUtilityPage() {
               if (mode === "grid" && fraction >= 0.9)
                 overlay.dataset.labelsVisible = "true"
             }
-            if (layerOverlay && mode === "icicle")
-              layerOverlay.style.opacity = String(reveal)
           }
         )
       })
@@ -2431,12 +2472,6 @@ export default function DiskUtilityPage() {
           focusListEntry(
             clampedListIndex(live.current.focusIdx, live.current.entries.length)
           )
-          return
-        }
-        if (mode === "icicle") {
-          document
-            .querySelector<HTMLElement>("[data-disk-layer-path]")
-            ?.focus({ preventScroll: true })
           return
         }
         const desiredPath =
@@ -2604,7 +2639,7 @@ export default function DiskUtilityPage() {
     const parent = list[list.length - 2]
     if (parent?.node) {
       browseHistory.visit(parent.node.path)
-      showBrowseNode(parent.node, instant)
+      showBrowseNode(parent.node, instant, restoreListFocus)
       if (restoreListFocus && current) {
         const index = deriveEntries({
           viewNode: parent.node,
@@ -2961,17 +2996,14 @@ export default function DiskUtilityPage() {
       chooseScanMode("grid", "keyboard")
       return
     }
-    if (isPlainShortcut && event.key === "3") {
-      event.preventDefault()
-      chooseScanMode("icicle", "keyboard")
-      return
-    }
     if (
       isPlainShortcut &&
       (event.key === "Escape" || event.key === "Backspace")
     ) {
       event.preventDefault()
-      goUp(true, true)
+      // Going up is one deliberate step, not rapid browsing: let it zoom out
+      // like the pointer does (reduced motion still settles instantly).
+      goUp(false, true)
     }
   }
 
@@ -3617,18 +3649,17 @@ export default function DiskUtilityPage() {
       })
       return
     }
-    if ((event.dataTransfer?.files.length ?? 0) > 1) {
-      showToast({
-        variant: "default",
-        title: language.t("disk.toast.scanningFirstDrop"),
-        description: file.name,
-      })
+    // Scans run in parallel now, so every dropped folder gets its own job
+    // (the shared limit explains itself if there are too many).
+    for (const dropped of Array.from(event.dataTransfer?.files ?? [])) {
+      const droppedPath = platform.getPathForFile?.(dropped)
+      if (!droppedPath) continue
+      startFolderScan(
+        droppedPath,
+        dropped.name || droppedPath.split(/[/\\]/).pop() || droppedPath,
+        driveForPath(droppedPath, drives, platform.os)
+      )
     }
-    await startScan(
-      path,
-      file.name || path.split(/[/\\]/).pop() || path,
-      driveForPath(path, drives, platform.os)
-    )
   }
 
   // Shortcuts popover: Escape and any outside pointer press dismiss it.
@@ -3937,11 +3968,6 @@ export default function DiskUtilityPage() {
       chooseScanMode("grid", "keyboard")
       return
     }
-    if (isPlainShortcut && e.key === "3") {
-      e.preventDefault()
-      chooseScanMode("icicle", "keyboard")
-      return
-    }
   }
 
   useEffect(() => {
@@ -4214,6 +4240,7 @@ export default function DiskUtilityPage() {
     switchToTab,
     closeTab,
     startScan,
+    startFolderScan,
     expandFocusedNode,
     expandOtherNode,
     rescanCurrent,
@@ -4561,6 +4588,8 @@ export default function DiskUtilityPage() {
                   onScanDrive={startVolumeScan}
                   onCancelDrive={cancelVolumeScan}
                   onOpenDrive={openVolumeScan}
+                  folderJobs={volumeJobs.filter((job) => job.kind === "folder")}
+                  onCloseJob={closeVolumeScan}
                   canViewLocation={(path) => !!retainedLocation(path)}
                   onActivateStorageLocation={activateStorageLocation}
                   onOpenAccessSettings={() => void openDiskAccessSettings()}
@@ -4717,6 +4746,7 @@ export default function DiskUtilityPage() {
                         <section
                           ref={(el: HTMLElement | null) => {
                             landscapeElRef.current = el
+                            setLandscapeEl(el)
                           }}
                           className={cn(
                             "[container-type:size] relative min-h-0 min-w-0 flex-1 overflow-hidden [--dl-footer-height:72px] [view-transition-name:disk-landscape]",
@@ -4770,7 +4800,7 @@ export default function DiskUtilityPage() {
                               aria-label={language.t("disk.map.label", {
                                 label: scanLabel,
                               })}
-                              aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home End PageUp PageDown Enter Space C L Delete Backspace Escape 1 2 3"
+                              aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home End PageUp PageDown Enter Space C L Delete Backspace Escape 1 2"
                               onPointerDown={beginMapDrag}
                             />
                             <span
@@ -4794,11 +4824,6 @@ export default function DiskUtilityPage() {
                                     hoveredNode.path !== visibleMapNode?.path
                                       ? hoveredNode
                                       : null
-                                  }
-                                  hoveredColor={
-                                    hoveredNode
-                                      ? spectrum.color(hoveredNode)
-                                      : undefined
                                   }
                                 />
                               </div>
@@ -4862,56 +4887,6 @@ export default function DiskUtilityPage() {
                                 onShowAll={(node) => expandOtherNode(node)}
                                 canCollect={canDragNode}
                                 onCollectDragStart={beginCollectionDrag}
-                              />
-                            </div>
-                          ) : null}
-                          {scanMode === "icicle" && viewNode ? (
-                            <div
-                              ref={layerOverlayRef}
-                              className="absolute inset-x-0 top-0 bottom-[var(--dl-footer-height)] px-6 pt-6 pb-2"
-                              style={{
-                                opacity: morphing ? 0 : 1,
-                                pointerEvents: morphing ? "none" : undefined,
-                              }}
-                            >
-                              {parentView && (
-                                <ParentFrame
-                                  name={
-                                    parentView._label ||
-                                    diskNodeDisplayName(parentView)
-                                  }
-                                  onUp={goUpFromMapCenter}
-                                />
-                              )}
-                              <IciclePanel
-                                root={visibleMapNode ?? viewNode}
-                                draggingNode={collectionDragNode}
-                                colorForNode={(node) => spectrum.color(node)}
-                                parentName={
-                                  parentView
-                                    ? parentView._label ||
-                                      diskNodeDisplayName(parentView)
-                                    : undefined
-                                }
-                                onUp={goUpFromMapCenter}
-                                selectedPath={selectedPath}
-                                queuedPaths={queuedPaths}
-                                onSelect={selectPath}
-                                onHover={(node) => {
-                                  hoverEntry(
-                                    node?.path ?? selectedPath ?? null,
-                                    node
-                                  )
-                                }}
-                                onReveal={(node) => void reveal(node.path)}
-                                onPreview={(node) => {
-                                  if (preview.supportsSystemPreview())
-                                    void preview.openSystemPreview(node)
-                                  else void preview.show(node)
-                                }}
-                                onDrill={(node) => drill(node)}
-                                canCollect={canDragNode}
-                                onDragStart={beginCollectionDrag}
                               />
                             </div>
                           ) : null}
@@ -5153,19 +5128,6 @@ export default function DiskUtilityPage() {
                                         indexCount
                                       )}
                                     </p>
-                                    {expandedSmallItemsForPath ===
-                                    viewNode?.path ? (
-                                      <button
-                                        type="button"
-                                        className="rounded text-[12.5px] text-text-weak underline-offset-2 outline-none hover:text-text-strong hover:underline focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
-                                        onClick={() => {
-                                          setExpandedSmallItemsForPath(null)
-                                          scrollIndexIntoViewRef.current?.(0)
-                                        }}
-                                      >
-                                        {language.t("disk.smaller.regroup")}
-                                      </button>
-                                    ) : null}
                                   </div>
                                 </div>
                                 {!query.trim() ? (

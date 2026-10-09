@@ -57,21 +57,21 @@ export function CleanupInspector(props: {
     <aside
       id={props.id}
       aria-labelledby={`${props.id}-title`}
-      className="flex min-h-0 w-[340px] shrink-0 flex-col border-l border-[var(--dl-separator)] bg-[var(--dl-chrome)] max-[760px]:max-h-[32dvh] max-[760px]:w-full max-[760px]:border-t max-[760px]:border-l-0"
+      className="flex min-h-0 w-[clamp(300px,26vw,360px)] shrink-0 flex-col border-l border-[var(--dl-separator)] bg-[var(--dl-sidebar)] max-[760px]:max-h-[36dvh] max-[760px]:w-full max-[760px]:border-t max-[760px]:border-l-0"
     >
       <div
         ref={scrollArea}
-        className="min-h-0 flex-1 [scrollbar-width:thin] overflow-y-auto px-6 pt-6 pb-6"
+        className="min-h-0 flex-1 [scrollbar-width:thin] overflow-y-auto px-5 pt-5 pb-6"
       >
         <p
-          className="truncate text-[11px] font-semibold tracking-[0.06em] text-text-weak uppercase"
+          className="truncate text-[12.5px] text-text-weak"
           title={item.node.path}
         >
           {props.category}
         </p>
         <h2
           id={`${props.id}-title`}
-          className="mt-1.5 text-[18px] leading-6 font-semibold tracking-[-0.02em] break-words text-text-strong"
+          className="mt-0.5 text-[18px] leading-6 font-medium tracking-[-0.02em] break-words text-text-strong"
         >
           {identity.reviewTitle}
         </h2>
@@ -180,7 +180,7 @@ export function CleanupInspector(props: {
           </div>
         ) : null}
 
-        <div className="mt-6 border-t border-[var(--dl-separator)] pt-5">
+        <div className="mt-7">
           <h3 className="text-[13px] font-medium text-text-strong">
             {language.t(
               item.safe
@@ -199,7 +199,7 @@ export function CleanupInspector(props: {
           ) : null}
         </div>
 
-        <div className="mt-6 border-t border-[var(--dl-separator)] pt-5">
+        <div className="mt-7">
           <h3 className="text-[13px] font-medium text-text-strong">
             {language.t("disk.ui.cleanup.location")}
           </h3>

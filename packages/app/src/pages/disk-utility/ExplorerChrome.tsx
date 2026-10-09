@@ -2,7 +2,6 @@ import { useState, type ReactNode } from "react"
 import {
   History,
   ChartPie,
-  Layers,
   LayoutGrid,
   ShieldAlert,
   TriangleAlert,
@@ -59,7 +58,7 @@ export function WorkspaceSwitch(props: {
   )
 }
 
-export type ExplorerViewMode = "map" | "grid" | "icicle"
+export type ExplorerViewMode = "map" | "grid"
 
 export function ViewSwitch(props: {
   value: string
@@ -69,7 +68,6 @@ export function ViewSwitch(props: {
   const views = [
     { value: "map", key: "1", icon: ChartPie, label: "disk.common.map" },
     { value: "grid", key: "2", icon: LayoutGrid, label: "disk.common.tiles" },
-    { value: "icicle", key: "3", icon: Layers, label: "disk.common.icicle" },
   ] as const
   return (
     <div

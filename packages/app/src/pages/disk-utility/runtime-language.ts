@@ -51,7 +51,6 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.review": "Review",
   "disk.smaller.summary":
     "These smaller items are grouped in the scan summary. Open their containing directory to explore further.",
-  "disk.smaller.regroup": "Group smaller items",
   "disk.common.back": "Back",
   "disk.common.cancel": "Cancel",
   "disk.common.net": "Net",
@@ -62,16 +61,12 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.common.saveLocation": "Save location",
   "disk.common.map": "Map",
   "disk.common.tiles": "Tiles",
-  "disk.common.icicle": "Layers",
   "disk.common.flame": "Flame",
   "disk.flame.label": "Directory depth by size",
   "disk.flame.hint":
     "Width shows storage size. Each row goes one level deeper.",
   "disk.flame.zoom": "Zoom",
 
-  "disk.icicle.label": "Folder layers by size",
-  "disk.icicle.hint":
-    "Each row is one level deeper. Open a folder to explore further.",
   "disk.common.list": "List",
   "disk.common.all": "All",
   "disk.common.contents": "Contents",
@@ -197,7 +192,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.shortcuts.openMac":
     "← / Escape goes up · → / Enter opens · Space previews with Quick Look · C selects for review · L protects from cleanup",
   "disk.shortcuts.views":
-    "1 Map · 2 Tiles · 3 Layers · Use Show in Finder or Explorer to reveal",
+    "1 Map · 2 Tiles · Use Show in Finder or Explorer to reveal",
   "disk.explore.heading": "Explore this scan",
   "disk.explore.choose": "Choose what to show",
   "disk.explore.developerCategories": "Developer categories",
@@ -688,7 +683,6 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.toast.artifactChanged": "Artifact changed — rescan required",
   "disk.toast.rescanRemoval": "Rescan required before removal",
   "disk.toast.readDroppedFailed": "Could not read dropped item",
-  "disk.toast.scanningFirstDrop": "Scanning the first dropped item",
   "disk.toast.persistenceFailed": "Could not save DiskLizard settings",
   "disk.toast.listingDrives": "Listing drives",
   "disk.toast.checkingStorage": "Checking connected storage",

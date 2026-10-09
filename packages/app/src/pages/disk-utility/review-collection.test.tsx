@@ -83,7 +83,7 @@ test("Clear in Cleanup empties the review basket even when none of its items are
     expect(host.querySelector("[data-count]")?.textContent).toBe("1")
     expect(host.textContent).toContain("Includes items outside this list")
     const clear = [...host.querySelectorAll("button")].find(
-      (button) => button.textContent === "Clear"
+      (button) => button.getAttribute("aria-label") === "Clear review"
     )
     expect(clear).toBeDefined()
     await act(async () => clear?.click())

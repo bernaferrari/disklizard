@@ -69,46 +69,46 @@ export function ScanFormation(props: ScanFormationProps) {
           </LiveScanRing>
         ) : (
           <>
-        <div className="absolute inset-0 rounded-full bg-[var(--dl-well)]" />
-        {progress === null ? (
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: RING,
-              mask: "conic-gradient(from 0deg, transparent 0 8%, black 70%, transparent 100%)",
-              WebkitMask:
-                "conic-gradient(from 0deg, transparent 0 8%, black 70%, transparent 100%)",
-            }}
-            animate={{ rotate: reducedMotion ? 0 : 360 }}
-            transition={
-              reducedMotion
-                ? { duration: 0 }
-                : { duration: 1.8, ease: "linear", repeat: Infinity }
-            }
-          />
-        ) : (
-          <div
-            className="absolute inset-0 rounded-full transition-[mask] duration-300"
-            style={{
-              background: RING,
-              mask: `conic-gradient(black ${progress}%, transparent 0)`,
-              WebkitMask: `conic-gradient(black ${progress}%, transparent 0)`,
-            }}
-          />
-        )}
-        <div className="absolute inset-[26px] grid place-items-center rounded-full bg-background-base">
-          <div>
-            <p className="text-[40px] leading-none font-semibold tracking-[-0.04em] text-text-strong tabular-nums">
-              {amount}
-            </p>
-            <p className="mt-1.5 text-[15px] text-text-weak">{unit}</p>
-          </div>
-        </div>
+            <div className="absolute inset-0 rounded-full bg-[var(--dl-well)]" />
+            {progress === null ? (
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: RING,
+                  mask: "conic-gradient(from 0deg, transparent 0 8%, black 70%, transparent 100%)",
+                  WebkitMask:
+                    "conic-gradient(from 0deg, transparent 0 8%, black 70%, transparent 100%)",
+                }}
+                animate={{ rotate: reducedMotion ? 0 : 360 }}
+                transition={
+                  reducedMotion
+                    ? { duration: 0 }
+                    : { duration: 1.8, ease: "linear", repeat: Infinity }
+                }
+              />
+            ) : (
+              <div
+                className="absolute inset-0 rounded-full transition-[mask] duration-300"
+                style={{
+                  background: RING,
+                  mask: `conic-gradient(black ${progress}%, transparent 0)`,
+                  WebkitMask: `conic-gradient(black ${progress}%, transparent 0)`,
+                }}
+              />
+            )}
+            <div className="absolute inset-[26px] grid place-items-center rounded-full bg-background-base">
+              <div>
+                <p className="text-[40px] leading-none font-semibold tracking-[-0.04em] text-text-strong tabular-nums">
+                  {amount}
+                </p>
+                <p className="mt-1.5 text-[15px] text-text-weak">{unit}</p>
+              </div>
+            </div>
           </>
         )}
       </div>
       <h2
-        className="max-w-full truncate text-[20px] font-semibold tracking-[-0.02em] text-text-strong"
+        className="max-w-full truncate pb-0.5 text-[20px] leading-7 font-semibold tracking-[-0.02em] text-text-strong"
         title={props.label}
       >
         {language.t("disk.scan.label", { label: props.label })}
@@ -140,7 +140,7 @@ export function ScanFormation(props: ScanFormationProps) {
       ) : null}
       <button
         type="button"
-        className="mt-7 inline-flex h-8 items-center rounded-full bg-[var(--dl-well-strong)] px-4 text-[13px] font-medium text-text-strong outline-none transition-[filter] hover:brightness-125 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+        className="mt-7 inline-flex h-8 items-center rounded-full bg-[var(--dl-well-strong)] px-4 text-[13px] font-medium text-text-strong transition-[filter] outline-none hover:brightness-125 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
         onClick={props.onCancel}
       >
         {language.t("disk.common.cancelScan")}

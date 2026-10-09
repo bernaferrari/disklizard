@@ -80,6 +80,75 @@ export function tileCameraZoomTransform(
   return `translate(${fromX - toX * scale}px, ${fromY - toY * scale}px) scale(${scale})`
 }
 
+export const TILE_CAMERA_DURATION = 520
+export const TILE_CAMERA_EASING = "cubic-bezier(0.65, 0, 0.35, 1)"
+
+export type TileCameraFlight = {
+  kind: "opening" | "returning" | "lateral"
+  /** Transform of the arriving level, from and to. */
+  scene: [string, string]
+  /** Final transform of the departing level (it starts where it was). */
+  ghost: string
+  /** When the arriving level fades in, as offsets of the flight. */
+  reveal: [number, number]
+  /** When the departing level fades out. */
+  fade: [number, number]
+}
+
+/**
+ * Plan one camera move over a static world.
+ *
+ * Opening: the camera flies into the opened tile — the old world scales
+ * until that tile fills the view, siblings sweep out past the edges, and the
+ * new level resolves inside it. Returning is the mirror: the parent world
+ * starts zoomed into the tile we came from and pulls back, while the view we
+ * leave shrinks into that tile. Switching to a sibling slides sideways.
+ */
+export function tileCameraFlight(
+  fromPath: string,
+  toPath: string,
+  opening: CameraBox | undefined,
+  returning: CameraBox | undefined,
+  bounds: CameraBox
+): TileCameraFlight | undefined {
+  const deeper = containsPath(fromPath, toPath)
+  const shallower = containsPath(toPath, fromPath)
+  if (deeper && opening)
+    return {
+      kind: "opening",
+      scene: [cameraTransform(opening, bounds, bounds), "none"],
+      ghost: cameraTransform(bounds, opening, bounds),
+      reveal: [0.34, 0.78],
+      fade: [0.5, 0.86],
+    }
+  if (shallower && returning)
+    return {
+      kind: "returning",
+      scene: [cameraTransform(bounds, returning, bounds), "none"],
+      ghost: cameraTransform(returning, bounds, bounds),
+      // The parent is the world we are pulling back into: show it at once,
+      // under the view that is shrinking away into its tile.
+      reveal: [0, 0.3],
+      fade: [0.3, 0.72],
+    }
+  if (!deeper && !shallower && (opening || returning)) {
+    // A sibling: same depth, so the camera pans rather than zooms. The
+    // direction follows where the sibling sits relative to the current one.
+    const target = opening ?? returning!
+    const direction =
+      target.x + target.width / 2 < bounds.x + bounds.width / 2 ? -1 : 1
+    const shift = Math.round(bounds.width * 0.08) * direction
+    return {
+      kind: "lateral",
+      scene: [`translate(${shift}px, 0px)`, "none"],
+      ghost: `translate(${-shift}px, 0px)`,
+      reveal: [0.15, 0.7],
+      fade: [0, 0.5],
+    }
+  }
+  return undefined
+}
+
 /** Navigate as one camera move; reflow only the largest changed tiles. */
 export function useTileCamera(
   path: string,
@@ -268,219 +337,95 @@ export function useTileCamera(
           },
         ])
       )
-      const opening = tileCameraAnchor(path, oldPoses)
-      const returning = tileCameraAnchor(old.path, tiles)
-      if (!opening && !returning) {
-        capture?.element.remove()
+      const ghost = capture?.element
+      const flight = tileCameraFlight(
+        old.path,
+        path,
+        tileCameraAnchor(path, oldPoses),
+        tileCameraAnchor(old.path, tiles),
+        bounds
+      )
+      if (!flight) {
+        ghost?.remove()
         return
       }
-      const from = opening ?? capture?.bounds ?? presentedRoot ?? old.bounds
-      const to = opening ? bounds : returning!
-      if (capture) {
-        const ghost = capture.element
+      root.dataset.tileCameraMoving = "true"
+      root.dataset.tileSceneFlight = flight.kind
+      root.style.setProperty(
+        "--dl-tile-flight-duration",
+        `${TILE_CAMERA_DURATION}ms`
+      )
+      const motion = {
+        duration: TILE_CAMERA_DURATION,
+        easing: TILE_CAMERA_EASING,
+      }
+      const animations: Animation[] = []
+      // Without a snapshot of the departing level there is nothing to fade
+      // from, so the arriving level must show from the first frame.
+      const reveal = ghost ? flight.reveal : ([0, 0.22] as const)
+      // Both worlds ride the same camera, so they stay registered while
+      // they crossfade: the old level's nested tiles land exactly where the
+      // new level draws them.
+      animations.push(
+        movingScene.animate(
+          [
+            { transform: flight.scene[0], transformOrigin: "0 0" },
+            { transform: flight.scene[1], transformOrigin: "0 0" },
+          ],
+          motion
+        ),
+        movingScene.animate(
+          [
+            { opacity: 0, offset: 0 },
+            { opacity: 0, offset: reveal[0] },
+            { opacity: 1, offset: reveal[1] },
+            { opacity: 1, offset: 1 },
+          ],
+          { duration: TILE_CAMERA_DURATION }
+        )
+      )
+      if (ghost) {
         outgoing.current = ghost
-        const duration = opening && returning ? 560 : 520
-        const easing = "cubic-bezier(0.42, 0, 0.18, 1)"
-        const motion = { duration, easing }
+        const startTransform =
+          ghost.style.transform && ghost.style.transform !== "none"
+            ? ghost.style.transform
+            : "none"
         const capturedOpacity = Number.parseFloat(ghost.style.opacity)
         const ghostOpacity = Number.isFinite(capturedOpacity)
           ? capturedOpacity
           : 1
-        root.dataset.tileCameraMoving = "true"
-        root.dataset.tileSceneFlight =
-          returning && !opening ? "returning" : "opening"
-        root.style.setProperty("--dl-tile-flight-duration", `${duration}ms`)
-
-        if (returning && !opening) {
-          const returnKey = [...tiles].find(
-            ([, pose]) => pose.box === returning
-          )?.[0]
-          const shell = returnKey ? tiles.get(returnKey) : undefined
-          if (shell && movingScene.contains(shell.element)) {
-            // The old view shrinks into its exact parent tile. The parent
-            // layout is already at its final position; its matching tile stays
-            // hidden until the old view reaches that same rectangle.
-            ghost.style.backgroundColor = getComputedStyle(
-              shell.element
-            ).backgroundColor
-            const animations = [
-              ghost.animate(
-                [
-                  { transform: ghost.style.transform || "none", offset: 0 },
-                  {
-                    transform: cameraTransform(shell.box, bounds, bounds),
-                    offset: 0.82,
-                  },
-                  {
-                    transform: cameraTransform(shell.box, bounds, bounds),
-                    offset: 1,
-                  },
-                ],
-                motion
-              ),
-              ghost.animate(
-                [
-                  { opacity: ghostOpacity, offset: 0 },
-                  { opacity: ghostOpacity, offset: 0.82 },
-                  { opacity: 0, offset: 1 },
-                ],
-                { duration }
-              ),
-              ...[...tiles.values()]
-                .filter(
-                  (tile) =>
-                    movingScene.contains(tile.element) &&
-                    tile.box.x >= shell.box.x &&
-                    tile.box.y >= shell.box.y &&
-                    tile.box.x + tile.box.width <=
-                      shell.box.x + shell.box.width + 0.5 &&
-                    tile.box.y + tile.box.height <=
-                      shell.box.y + shell.box.height + 0.5
-                )
-                .map((tile) =>
-                  tile.element.animate(
-                    [
-                      { opacity: 0, offset: 0 },
-                      { opacity: 0, offset: 0.82 },
-                      { opacity: 1, offset: 1 },
-                    ],
-                    { duration }
-                  )
-                ),
-            ]
-            active.current = animations
-            void Promise.allSettled(
-              animations.map((animation) => animation.finished)
-            ).then(() => {
-              if (active.current === animations) stop()
-            })
-            return
-          }
-        }
-
-        // The new scene starts exactly inside the old selected tile and
-        // expands as a single opaque surface. The old view remains behind it,
-        // preserving the context around the growing rectangle.
-        const openingKey = [...oldPoses].find(
-          ([, pose]) => pose.box === opening
-        )?.[0]
-        const sourceTile =
-          opening && containsPath(old.path, path)
-            ? [
-                ...ghost.querySelectorAll<HTMLElement>("[data-disk-tile-path]"),
-              ].find((tile) => tile.dataset.diskTilePath === openingKey)
-            : undefined
-        const sourceBackground = sourceTile
-          ? getComputedStyle(sourceTile).backgroundColor ||
-            "var(--background-base)"
-          : undefined
-        if (sourceBackground)
-          movingScene.style.backgroundColor = sourceBackground
-        movingScene.style.zIndex = "4"
-        const animations = [
-          movingScene.animate(
+        // Zooming in, the new level fades in over the old one; zooming out,
+        // the old level shrinks into its tile above the arriving parent.
+        if (flight.kind === "returning") {
+          root
+            .querySelector<HTMLElement>("[data-disk-tile-ghost-host]")
+            ?.style.setProperty("z-index", "5")
+        } else movingScene.style.zIndex = "4"
+        animations.push(
+          ghost.animate(
             [
-              {
-                transform: cameraTransform(from, bounds, bounds),
-                transformOrigin: "0 0",
-              },
-              { transform: "none", transformOrigin: "0 0", offset: 0.72 },
-              { transform: "none", transformOrigin: "0 0", offset: 1 },
+              { transform: startTransform, transformOrigin: "0 0" },
+              { transform: flight.ghost, transformOrigin: "0 0" },
             ],
             motion
           ),
-        ]
-        // An opaque shared surface must cover the old branch during zoom.
-        // Fading the whole scene exposed two incompatible layouts at once.
-        // Resolve new contents only once the shared surface has landed.
-        const content = movingScene.querySelector<HTMLElement>(
-          "[data-disk-tile-content]"
+          ghost.animate(
+            [
+              { opacity: ghostOpacity, offset: 0 },
+              { opacity: ghostOpacity, offset: flight.fade[0] },
+              { opacity: 0, offset: flight.fade[1] },
+              { opacity: 0, offset: 1 },
+            ],
+            { duration: TILE_CAMERA_DURATION }
+          )
         )
-        if (sourceBackground && content) {
-          // Carry the actual old branch inside the growing surface. Its
-          // projection cancels the camera's initial scale, so the first frame
-          // is the selected tile at its original size, with its own contents.
-          const shared = document.createElement("div")
-          shared.dataset.diskTileShared = ""
-          shared.setAttribute("aria-hidden", "true")
-          shared.setAttribute("inert", "")
-          shared.style.cssText =
-            "position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2"
-          const branch = ghost.cloneNode(true) as HTMLElement
-          branch.removeAttribute("data-disk-tile-ghost")
-          branch.style.transformOrigin = "0 0"
-          const capturedTransform = branch.style.transform
-          branch.style.transform = `${cameraTransform(bounds, from, bounds)} ${capturedTransform && capturedTransform !== "none" ? capturedTransform : ""}`
-          shared.append(branch)
-          movingScene.append(shared)
-          animations.push(
-            shared.animate(
-              [
-                { opacity: 1, offset: 0 },
-                { opacity: 1, offset: 0.72 },
-                { opacity: 0, offset: 1 },
-              ],
-              { duration }
-            )
-          )
-          animations.push(
-            content.animate(
-              [
-                { opacity: 0, offset: 0 },
-                { opacity: 0, offset: 0.72 },
-                { opacity: 1, offset: 1 },
-              ],
-              { duration }
-            )
-          )
-        } else
-          animations.push(
-            movingScene.animate(
-              [
-                { opacity: 0, offset: 0 },
-                { opacity: 1, offset: 0.18 },
-                { opacity: 1, offset: 1 },
-              ],
-              { duration }
-            )
-          )
-        if (sourceBackground)
-          animations.push(
-            movingScene.animate(
-              [
-                { backgroundColor: sourceBackground, offset: 0 },
-                { backgroundColor: "var(--background-base)", offset: 0.72 },
-                { backgroundColor: "var(--background-base)", offset: 1 },
-              ],
-              { duration }
-            )
-          )
-        active.current = animations
-        void Promise.allSettled(
-          animations.map((animation) => animation.finished)
-        ).then(() => {
-          if (active.current === animations) stop()
-        })
-        return
       }
-      const animation = movingScene.animate(
-        [
-          {
-            transform: tileCameraZoomTransform(from, to, bounds),
-            transformOrigin: "0 0",
-          },
-          { transform: "none", transformOrigin: "0 0" },
-        ],
-        { duration: 260, easing: "cubic-bezier(0.32, 0.72, 0, 1)" }
-      )
-      root.dataset.tileCameraMoving = "true"
-      active.current = [animation]
-      const revealLabels = () => {
-        if (active.current[0] !== animation) return
-        active.current = []
-        root.removeAttribute("data-tile-camera-moving")
-      }
-      void animation.finished.then(revealLabels, revealLabels)
+      active.current = animations
+      void Promise.allSettled(
+        animations.map((animation) => animation.finished)
+      ).then(() => {
+        if (active.current === animations) stop()
+      })
       return
     }
 
