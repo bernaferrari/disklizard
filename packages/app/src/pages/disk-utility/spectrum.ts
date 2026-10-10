@@ -65,8 +65,15 @@ export function spectrumTone(
     0.63 + warmth * 0.24 + cyan * 0.12 + level * 0.016 - (directory ? 0 : 0.03)
   )
   const fraction = Math.max(0.78, (directory ? 1 : 0.8) - level * 0.03)
-  const lightness = theme === "dark" ? Math.min(0.86, L + 0.025) : L
-  const ceiling = theme === "dark" ? 0.13 : 0.17
+  // Greens can hold far more chroma than other hues at this lightness and
+  // read as neon next to them. Damp a smooth band around 140° (zero by
+  // yellow and teal) so they sit at the same visual weight as the rest.
+  const greenOffset = Math.abs(((hue - 140 + 540) % 360) - 180)
+  const green =
+    greenOffset < 50 ? Math.cos((greenOffset / 50) * (Math.PI / 2)) : 0
+  const lightness =
+    (theme === "dark" ? Math.min(0.86, L + 0.025) : L) - green * 0.05
+  const ceiling = (theme === "dark" ? 0.13 : 0.17) * (1 - green * 0.32)
   return {
     L: lightness,
     C: Math.min(ceiling, maxChroma(lightness, hue) * fraction),

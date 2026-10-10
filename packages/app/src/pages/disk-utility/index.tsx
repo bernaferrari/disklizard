@@ -56,8 +56,6 @@ import { aggregateTone, createSpectrum, toneCss } from "./spectrum"
  */
 
 import { DiskUtilitySearchTools } from "./DiskUtilitySearchTools"
-import { DiskUtilityHoverContents } from "./DiskUtilityHoverContents"
-import { useHoverPreview } from "./use-hover-preview"
 import { Button } from "@/components/dl/button"
 import { Icon } from "@/components/dl/icon"
 import { ScrollView } from "@/components/dl/scroll-view"
@@ -105,6 +103,7 @@ import { Treemap } from "./TreemapPanel"
 import { ViewMorph, type MorphTile } from "./ViewMorph"
 import { ScanFormation } from "./ScanFormation"
 import { CollectionDropTarget } from "./CollectionDropTarget"
+import { withoutCollected } from "./collection-map"
 import { usePinchNavigation } from "./pinch-navigation"
 import { abbreviateHomePath } from "./item-identity"
 import { useResolvedColorScheme } from "@/components/dl/theme"
@@ -464,10 +463,6 @@ export default function DiskUtilityPage() {
   const [selectedPath, setSelectedPath] = useState<string | undefined>()
   const [hoveredPath, setHoveredPath] = useState<string | null>(null)
   const [hoveredNode, setHoveredNode] = useState<DiskScanNode | null>(null)
-  const [mapHoverCandidate, setMapHoverCandidate] =
-    useState<DiskScanNode | null>(null)
-  const hoverPreview = useHoverPreview(mapHoverCandidate, viewNode?.path)
-  const hoverPreviewNode = hoverPreview.node
   const [focusIdx, setFocusIdx] = useState(0)
   const [_rangeAnchorIndex, setRangeAnchorIndex] = useState<
     number | undefined
@@ -984,9 +979,28 @@ export default function DiskUtilityPage() {
     () => sunburstRef.current?.setQueuedPaths(queuedPaths),
     [queuedPaths]
   )
-  // Review is a plan, not a new measurement. Queued treatment is drawn
-  // independently; dragging and queuing never subtract from the measured map.
-  const projectedPaths = useMemo(() => new Set<string>(), [])
+  // Like DaisyDisk: the map shows the disk as it would be without what you
+  // are removing. The moment a drag starts the item leaves the map (and comes
+  // back if the drag is cancelled); items in the collector stay out of it.
+  // This is a reversible projection — the scan itself is never modified.
+  const projectedPaths = useMemo(() => {
+    const paths = new Set(queuedPaths)
+    if (collectionDragNode && canModifyNode(collectionDragNode))
+      paths.add(collectionDragNode.path)
+    return paths
+    // canModifyNode reads policy that only changes with the scan.
+  }, [queuedPaths, collectionDragNode])
+  useEffect(
+    () => sunburstRef.current?.setExcludedPaths(projectedPaths),
+    [projectedPaths]
+  )
+  const projectedViewNode = useMemo(
+    () =>
+      viewNode && projectedPaths.size
+        ? withoutCollected(viewNode, projectedPaths)
+        : viewNode,
+    [viewNode, projectedPaths]
+  )
   const visibleMapNode = viewNode
   // Keep a branch's hue anchored to the scanned tree while navigating or
   // previewing a drag. Re-rooting the spectrum at each view recolors the same
@@ -2774,13 +2788,10 @@ export default function DiskUtilityPage() {
   }
 
   function handleMapHover(node: DiskScanNode | null) {
+    // Hover answers in place — the wedge lifts, its row highlights, and the
+    // ring's center shows its size — rather than in a second floating list.
     hoverEntry(node?.path ?? null, node)
-    setMapHoverCandidate(node?.isDir && node.children?.length ? node : null)
   }
-
-  useEffect(() => {
-    setMapHoverCandidate(null)
-  }, [viewNode?.path])
 
   function focusEntryAt(
     index: number,
@@ -4370,11 +4381,6 @@ export default function DiskUtilityPage() {
     diskPathEquals(viewNode.path, scanDrive.path, platform.os) &&
     indexFilter.lens === "all" &&
     !query.trim()
-  const hoverPreviewVisible =
-    workspaceTab === "all" &&
-    scanMode === "map" &&
-    !query.trim() &&
-    !!hoverPreviewNode?.children?.length
   return (
     <div
       className="dl-shell relative isolate flex size-full min-h-0 flex-col overflow-hidden bg-background-base text-text-base tabular-nums antialiased"
@@ -4819,6 +4825,7 @@ export default function DiskUtilityPage() {
                                 <CenterOverlay
                                   node={visibleMapNode}
                                   hovered={
+                                    !collectionDragNode &&
                                     hoveredNode &&
                                     hoveredPath === hoveredNode.path &&
                                     hoveredNode.path !== visibleMapNode?.path
@@ -4862,7 +4869,7 @@ export default function DiskUtilityPage() {
                                 colorForPath={tileColor}
                                 colorForNode={(node) => spectrum.color(node)}
                                 children={
-                                  visibleMapNode?.children ?? sortedChildren
+                                  projectedViewNode?.children ?? sortedChildren
                                 }
                                 draggingNode={collectionDragNode}
                                 hoveredPath={hoveredPath}
@@ -5080,33 +5087,7 @@ export default function DiskUtilityPage() {
                         </section>
 
                         <aside className="[container-type:inline-size] relative flex min-h-0 w-[clamp(300px,26vw,360px)] shrink-0 flex-col overflow-hidden border-l border-[var(--dl-separator)] bg-[var(--dl-sidebar)] max-[840px]:w-full max-[840px]:border-t max-[840px]:border-l-0">
-                          {hoverPreviewVisible && hoverPreviewNode ? (
-                            <DiskUtilityHoverContents
-                              node={hoverPreviewNode}
-                              colorForNode={(node) => spectrum.color(node)}
-                              onLeave={() => hoverEntry(null)}
-                              onHover={(node) => hoverEntry(node.path, node)}
-                              onDismiss={() => {
-                                setMapHoverCandidate(null)
-                                hoverPreview.dismiss()
-                                hoverEntry(null)
-                              }}
-                              onOpen={(node) => {
-                                hoverPreview.dismiss()
-                                if (node.isDir) drill(node)
-                                else selectPath(node.path)
-                              }}
-                            />
-                          ) : null}
-                          <div
-                            className="flex min-h-0 w-full flex-1 flex-col"
-                            onMouseEnter={() => {
-                              if (!hoverPreviewVisible) return
-                              setMapHoverCandidate(null)
-                              hoverPreview.dismiss()
-                              hoverEntry(null)
-                            }}
-                          >
+                          <div className="flex min-h-0 w-full flex-1 flex-col">
                             <div className="shrink-0 px-5 pt-5 pb-3">
                               <div className="flex items-start gap-3">
                                 <div className="min-w-0 flex-1">

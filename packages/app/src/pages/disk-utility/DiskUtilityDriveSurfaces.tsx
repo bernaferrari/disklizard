@@ -6,8 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, Eject, FolderOpen, Info, RotateCw, X } from "lucide-react"
-import { Popover } from "@/components/dl/popover"
+import { ChevronDown, Eject, FolderOpen, RotateCw, X } from "lucide-react"
 import { Network } from "lucide-react"
 import { useEffect, useId, useState } from "react"
 import type { DiskDriveInfo, DiskScanNode } from "./types"
@@ -19,7 +18,6 @@ import {
   type ScanPerformance,
 } from "./scan-metrics"
 import { diskLanguageText, useLanguage, usePlatform } from "./runtime"
-import { ApfsSnapshotEvidenceList } from "./ApfsSnapshotEvidence"
 import type { ScanDiscovery } from "./live-scan"
 
 export type VolumeScanJob = {
@@ -270,51 +268,6 @@ export function VolumeRow(props: {
           <span className="shrink-0 truncate text-[12.5px] text-text-weaker">
             {volumeSubtitle({ ...props.drive, sharedFree: undefined })}
           </span>
-          {(props.drive.snapshotCount ?? 0) > 0 ||
-          props.drive.sharedFree !== undefined ||
-          props.drive.available !== undefined ? (
-            <Popover
-              placement="bottom-start"
-              portal={false}
-              title={language.t("disk.drive.details")}
-              className="w-[320px] max-w-[calc(100vw-32px)]"
-              style={{ backgroundColor: "var(--dl-popover)" }}
-              triggerAs="button"
-              triggerProps={{
-                type: "button",
-                "aria-label": language.t("disk.drive.details"),
-                className:
-                  "grid size-6 shrink-0 place-items-center rounded-md text-text-weaker outline-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]",
-              }}
-              trigger={<Info className="size-3.5" aria-hidden />}
-            >
-              {props.drive.available !== undefined && (
-                <p className="mt-2 text-[12px] text-text-weak">
-                  {language.t("disk.drive.availableDetails", {
-                    free: formatBytes(props.drive.free),
-                    reclaimable: formatBytes(
-                      Math.max(0, available - props.drive.free)
-                    ),
-                  })}
-                </p>
-              )}
-              {props.drive.sharedFree !== undefined ? (
-                <p className="mt-2 text-[12px] text-text-weak">
-                  {language.t("disk.drive.sharedContainerFree", {
-                    size: formatBytes(props.drive.sharedFree ?? 0),
-                  })}
-                </p>
-              ) : null}
-              <ApfsSnapshotEvidenceList
-                embedded
-                className="mt-2 border-t border-[var(--dl-separator)] pt-3"
-                snapshotCount={props.drive.snapshotCount}
-                purgeableSnapshotCount={props.drive.purgeableSnapshotCount}
-                timeMachineSnapshotCount={props.drive.timeMachineSnapshotCount}
-                snapshots={props.drive.apfsSnapshots}
-              />
-            </Popover>
-          ) : null}
         </div>
         <div
           className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--dl-well-strong)]"

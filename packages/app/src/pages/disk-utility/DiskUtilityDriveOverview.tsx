@@ -1,5 +1,5 @@
 import { Button } from "@/components/dl/button"
-import { FolderPlus, Info, ShieldAlert } from "lucide-react"
+import { ChevronRight, FolderPlus, ShieldAlert } from "lucide-react"
 import { Icon } from "@/components/dl/icon"
 import { ScrollView } from "@/components/dl/scroll-view"
 import type {
@@ -78,9 +78,6 @@ export function DriveOverview(props: {
               </p>
             </header>
             <section aria-label={language.t("disk.drive.volumes")}>
-              <h3 className="mb-3 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
-                {language.t("disk.ui.home.disks")}
-              </h3>
               <div className="flex flex-col gap-3">
                 {props.drives.map((drive, index) => {
                   const retainedMap = props.openMaps.find((map) =>
@@ -110,26 +107,23 @@ export function DriveOverview(props: {
                     </div>
                   )
                 })}
+                {/* Secondary to the disks: one slim line, not a second card. */}
                 <button
                   type="button"
-                  className="group flex items-center gap-4 rounded-2xl border-[1.5px] border-dashed border-[var(--dl-well-strong)] px-5 py-4 text-left transition-colors outline-none hover:border-[var(--dl-accent)] hover:bg-[var(--dl-well)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
+                  className="group flex h-11 items-center gap-2.5 rounded-xl border border-dashed border-[var(--dl-well-strong)] px-3.5 text-left transition-colors outline-none hover:border-[var(--dl-accent)] hover:bg-[var(--dl-well)] focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)]"
                   title={language.t("disk.drop.restingHint")}
                   onClick={props.onChooseFolder}
                 >
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--dl-well)] text-text-weak transition-colors group-hover:text-[var(--dl-accent)]">
-                    <FolderPlus
-                      className="size-5"
-                      strokeWidth={1.75}
-                      aria-hidden
-                    />
+                  <FolderPlus
+                    className="size-4 shrink-0 text-text-weak transition-colors group-hover:text-[var(--dl-accent)]"
+                    strokeWidth={1.75}
+                    aria-hidden
+                  />
+                  <span className="shrink-0 text-[13px] font-medium text-text-strong">
+                    {language.t("disk.ui.home.folder")}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[14px] font-medium text-text-strong">
-                      {language.t("disk.ui.home.folder")}
-                    </span>
-                    <span className="block text-[12.5px] text-text-weak">
-                      {language.t("disk.ui.home.dropHint")}
-                    </span>
+                  <span className="min-w-0 truncate text-[12.5px] text-text-weaker max-sm:hidden">
+                    {language.t("disk.ui.home.dropHint")}
                   </span>
                 </button>
                 {props.folderJobs.map((job) => (
@@ -170,36 +164,25 @@ export function DriveOverview(props: {
                 </button>
               </div>
             ) : null}
-            {accessGuidance && !accessGuidance.attention ? (
-              <div
-                role="note"
-                className="mt-5 flex items-start gap-3 rounded-xl bg-[var(--dl-well)] px-4 py-3.5 text-text-weak"
-              >
-                <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-text-strong">
-                    {accessGuidance.title}
-                  </p>
-                  <p className="mt-1 text-[12.5px] leading-relaxed">
-                    {accessGuidance.body}
-                  </p>
-                </div>
-              </div>
-            ) : null}
+            {/* Cloud folders are an occasional target; keep them one quiet
+                click away instead of a permanent second list. */}
             {props.diagnostics?.locations.length ? (
-              <section
-                className="mt-8"
-                aria-label={language.t("disk.storage.connected")}
-              >
-                <h3 className="mb-3 text-[12px] font-semibold tracking-[0.06em] text-text-weaker uppercase">
+              <details className="group mt-8">
+                <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-md px-1 py-1 text-[13px] text-text-weak outline-none select-none hover:text-text-strong focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] [&::-webkit-details-marker]:hidden">
+                  <ChevronRight
+                    className="size-3.5 transition-transform duration-150 group-open:rotate-90"
+                    aria-hidden
+                  />
                   {language.t("disk.storage.connected")}
-                </h3>
-                <StorageDiagnostics
-                  diagnostics={props.diagnostics}
-                  onActivate={props.onActivateStorageLocation}
-                  canView={(location) => props.canViewLocation(location.path)}
-                />
-              </section>
+                </summary>
+                <div className="mt-3">
+                  <StorageDiagnostics
+                    diagnostics={props.diagnostics}
+                    onActivate={props.onActivateStorageLocation}
+                    canView={(location) => props.canViewLocation(location.path)}
+                  />
+                </div>
+              </details>
             ) : null}
 
             <div className="mt-6">
