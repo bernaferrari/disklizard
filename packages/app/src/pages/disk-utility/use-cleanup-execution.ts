@@ -41,6 +41,7 @@ type CleanupExecutionOptions = {
 /** Owns authorize/consume execution and result surfaces; map reconciliation is
  * a separate callback. Batch guards read current protections after every await. */
 export function useCleanupExecution(options: CleanupExecutionOptions) {
+  const cleanupBusy = useRef(false)
   const current = useRef(options)
   current.current = options
   const {
@@ -106,7 +107,7 @@ export function useCleanupExecution(options: CleanupExecutionOptions) {
 
   async function trashNode(node: DiskScanNode) {
     const api = disk
-    if (!api) return
+    if (!api || cleanupBusy.current) return
     if (!ensureCleanupProtectionsReady()) return
     if (inventoryDeletionNeedsRescan(node)) {
       showDeveloperArtifactRescanGuidance(node)
@@ -118,6 +119,7 @@ export function useCleanupExecution(options: CleanupExecutionOptions) {
       showDeveloperArtifactRescanGuidance(node)
       return
     }
+    cleanupBusy.current = true
     setDeleting(true)
     try {
       assertCleanupProtectionsReady(
@@ -165,6 +167,7 @@ export function useCleanupExecution(options: CleanupExecutionOptions) {
       ])
       setCleanupResultsOpen(true)
     } finally {
+      cleanupBusy.current = false
       setDeleting(false)
     }
   }
@@ -202,8 +205,9 @@ export function useCleanupExecution(options: CleanupExecutionOptions) {
   async function deleteCollected() {
     const api = disk
     const items = effectiveCollection
-    if (!api || !items.length) return
+    if (!api || !items.length || cleanupBusy.current) return
     if (!ensureCleanupProtectionsReady()) return
+    cleanupBusy.current = true
     setDeleting(true)
     setDeletionProgress({ completed: 0, total: items.length })
     try {
@@ -289,6 +293,7 @@ export function useCleanupExecution(options: CleanupExecutionOptions) {
       collectionSurface.close()
       setCleanupResultsOpen(true)
     } finally {
+      cleanupBusy.current = false
       setDeleting(false)
       setDeletionProgress(null)
     }

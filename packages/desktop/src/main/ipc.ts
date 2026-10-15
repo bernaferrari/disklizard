@@ -224,6 +224,7 @@ export function registerIpcHandlers(deps: Deps) {
   }
 
   const stopDiskSnapshotOwner = async (owner: string, retainTrustedSubtree = false) => {
+    const request = diskSnapshotRequests.get(owner)
     if (!retainTrustedSubtree) {
       detachDiskSnapshotOwner(owner)
       diskDeleteAuthorizations.removeOwner(owner)
@@ -234,10 +235,14 @@ export function registerIpcHandlers(deps: Deps) {
       // authority after its renderer-lifetime tracking has been detached.
       await diskSnapshots.stop(owner)
     } catch (error) {
-      detachDiskSnapshotOwner(owner)
-      diskDeleteAuthorizations.removeOwner(owner)
+      if (diskSnapshotRequests.get(owner) === request) {
+        detachDiskSnapshotOwner(owner)
+        diskDeleteAuthorizations.removeOwner(owner)
+      }
       throw error
     }
+    // Unsubscription yields; a replacement may now own the same scan ID.
+    if (diskSnapshotRequests.get(owner) !== request) return
     detachDiskSnapshotOwner(owner)
     diskDeleteAuthorizations.retainOwnerAsTrustedSubtree(owner)
   }

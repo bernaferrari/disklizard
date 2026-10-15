@@ -23,6 +23,26 @@ async function temp() {
 }
 
 describe("disk snapshot wire codec", () => {
+  test("round-trips legitimate dot-prefixed descendants while rejecting parent escapes", async () => {
+    const rootPath = await temp()
+    const treePath = path.join(rootPath, "dots.ndjson")
+    const child: DiskNode = {
+      name: "..cache", path: path.join(rootPath, "..cache"), size: 3,
+      isDir: false, ext: "", children: [],
+    }
+    const root: DiskNode = {
+      name: path.basename(rootPath), path: rootPath, size: 3,
+      isDir: true, ext: "", children: [child], sharedStorageEvidence: "complete",
+    }
+    await encodeDiskSnapshotTree(treePath, root)
+    expect(await decodeDiskSnapshotTree(treePath, { rootPath, options: {}, rootIsDirectory: true })).toEqual(root)
+    const escapedTreePath = path.join(rootPath, "escaped.ndjson")
+    await encodeDiskSnapshotTree(escapedTreePath, {
+      ...root, children: [{ ...child, path: path.join(rootPath, "..", "escaped") }],
+    })
+    expect(await decodeDiskSnapshotTree(escapedTreePath, { rootPath, options: {}, rootIsDirectory: true })).toBeUndefined()
+  })
+
   test("owns schema-9 metadata encoding and expected-cache validation", () => {
     const expected = {
       rootPath: "/tmp/project",

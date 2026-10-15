@@ -98,6 +98,7 @@ class FakeDiskSnapshotManager {
   readonly roots = new Map<string, DiskNode>()
   readonly scans: Array<{ owner: string; rootPath: string; options: ScanOptions }> = []
   readonly stopped: string[] = []
+  readonly stopGates = new Map<string, Promise<void>>()
   readonly pending = new Map<string, Promise<DiskNode>>()
   readonly updates = new Map<string, (update: unknown) => void>()
 
@@ -125,6 +126,7 @@ class FakeDiskSnapshotManager {
   async stop(owner: string) {
     this.stopped.push(owner)
     this.owners.delete(owner)
+    await this.stopGates.get(owner)
   }
 
   activeOwners() {
@@ -219,6 +221,25 @@ const revealPath = handlers.get("disklizard:reveal-path")!
 afterAll(() => mock.restore())
 
 describe("disk snapshot IPC lifecycle", () => {
+  test.each(["success", "failure"])("a delayed retained-watcher stop (%s) cannot detach a replacement scan", async (outcome) => {
+    const sender = new FakeSender(outcome === "success" ? 911 : 912)
+    const owner = `${sender.id}:reused`
+    await scanPath(event(sender), "/tmp/old-focused", {}, "reused")
+    const gate = Promise.withResolvers<void>()
+    diskSnapshots.stopGates.set(owner, gate.promise)
+    const stopping = stopWatching(event(sender), "reused", { retainTrustedSubtree: true })
+      .then(() => undefined, (error: unknown) => error)
+    const replacement = await scanPath(event(sender), "/tmp/replacement-focused", {}, "reused")
+    if (outcome === "success") gate.resolve()
+    else gate.reject(new Error("old unsubscribe failed"))
+    await stopping
+    diskSnapshots.stopGates.delete(owner)
+    expect(sender.listenerCount("destroyed")).toBe(1)
+    diskSnapshots.updates.get(owner)!({ root: replacement, changedPaths: [replacement.path], revision: 1 })
+    expect(sender.sent.filter(item => item.channel === "disklizard:scan-update")).toHaveLength(1)
+    await stopWatching(event(sender), "reused")
+  })
+
   test("completed scans keep updates live and retire replaced watcher callbacks", async () => {
     const sender = new FakeSender(910)
     const owner = "910:live"
