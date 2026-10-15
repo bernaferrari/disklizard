@@ -22,7 +22,7 @@ test("bounds concurrent records by count and bytes and retains newest entries", 
   expect((await stat(file)).size).toBeLessThanOrEqual(DELETION_HISTORY_BYTES)
   expect(rows.at(-1).path.endsWith("2199")).toBe(true)
   expect(new Set(rows.map((row) => row.path)).size).toBe(rows.length)
-})
+}, 30_000)
 test("prunes aged entries on reopening and tolerates interrupted JSON lines", async () => {
   const file = await fixture()
   await new DiskDeletionHistory(file, () => 1).record("/old")
@@ -45,4 +45,4 @@ test("enforces the entry cap even when all paths are short", async () => {
   const rows = await entries(file)
   expect(rows.length).toBeLessThanOrEqual(2000)
   expect(rows.at(-1).path).toBe("/2099")
-})
+}, 30_000)

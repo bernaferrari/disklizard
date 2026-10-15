@@ -31,7 +31,7 @@ const LEGACY_TREE_FILE_NAME = /^tree-\d+-[0-9a-f-]+\.bin$/
 const SNAPSHOT_YIELD_INTERVAL = 256
 
 type Watcher = Pick<typeof ParcelWatcher, "getEventsSince" | "subscribe" | "writeSnapshot">
-type WatchEvent = ParcelWatcher.Event
+type WatchEvent = ParcelWatcher.Event & { forceRoot?: boolean }
 type Scan = (targetPath: string, options: ScanOptions) => Promise<DiskNode>
 type ScanOwner = number | string
 
@@ -95,7 +95,7 @@ function comparable(value: string) {
 
 function isWithin(root: string, candidate: string) {
   const relative = path.relative(root, candidate)
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative))
 }
 
 function isAncestor(parent: string, child: string) {
@@ -178,23 +178,27 @@ async function loadNativeWatcher(): Promise<Watcher | undefined> {
 async function indexTree(root: DiskNode, signal?: AbortSignal) {
   const nodes = new Map<string, DiskNode>()
   const parents = new Map<string, string>()
-  const pending: Array<{ node: DiskNode; parentPath?: string }> = [{ node: root }]
+  const aggregateOwners = new Map<string, string>()
+  const pending: Array<{ node: DiskNode; parentPath?: string; aggregateOwner?: string }> = [{ node: root }]
   let work = 0
   let visited = 0
   while (pending.length > 0) {
     signal?.throwIfAborted()
-    const { node, parentPath } = pending.pop()!
+    const { node, parentPath, aggregateOwner } = pending.pop()!
     if (++visited > MAX_MATERIALIZED_DISK_TREE_NODES) throw new Error("Delta tree exceeds the node limit")
     const nodePath = comparable(node.path)
     if (!node.isOther) nodes.set(nodePath, node)
+    if (aggregateOwner) aggregateOwners.set(nodePath, aggregateOwner)
     if (parentPath) parents.set(nodePath, parentPath)
     for (let index = node.children.length - 1; index >= 0; index--) {
-      pending.push({ node: node.children[index]!, parentPath: nodePath })
+      pending.push({ node: node.children[index]!, parentPath: nodePath,
+        aggregateOwner: aggregateOwner ?? (node.isOther ? parentPath : undefined),
+      })
       if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
     }
     if (++work % SNAPSHOT_YIELD_INTERVAL === 0) await yieldToMainEventLoop()
   }
-  return { nodes, parents }
+  return { nodes, parents, aggregateOwners }
 }
 
 /**
@@ -202,9 +206,12 @@ async function indexTree(root: DiskNode, signal?: AbortSignal) {
  * be rescanned and safely spliced into the lossy, max-children scan tree.
  */
 export async function deltaRoots(root: DiskNode, events: readonly WatchEvent[], signal?: AbortSignal) {
-  if (events.length > MAX_DELTA_EVENTS) return [comparable(root.path)]
+  signal?.throwIfAborted()
   const rootPath = comparable(root.path)
-  const { nodes, parents } = await indexTree(root, signal)
+  // Failure invalidation is stronger than an ordinary FSEvents ancestor hint.
+  if (events.length > MAX_DELTA_EVENTS || events.some(event => event.forceRoot && comparable(event.path) === rootPath))
+    return [rootPath]
+  const { nodes, parents, aggregateOwners } = await indexTree(root, signal)
   const candidates: string[] = []
   const normalizedEvents: WatchEvent[] = []
   let work = 0
@@ -248,6 +255,11 @@ export async function deltaRoots(root: DiskNode, events: readonly WatchEvent[], 
     while (isWithin(rootPath, candidate)) {
       const node = nodes.get(candidate)
       if (node) {
+        const owner = aggregateOwners.get(candidate)
+        if (owner) {
+          candidate = owner
+          continue
+        }
         if (!node.isDir) {
           resolved = candidate
           break
@@ -640,6 +652,32 @@ export class DiskSnapshotManager {
     })
   }
 
+  private async replayJournal(
+    rootPath: string,
+    checkpoint: string,
+    options: ScanOptions,
+    watcher: Watcher,
+  ) {
+    try {
+      const events = await watcher.getEventsSince(
+        rootPath,
+        checkpoint,
+        watcherOptions(options, this.platform),
+      )
+      options.signal?.throwIfAborted()
+      return { events, continuous: true }
+    } catch {
+      options.signal?.throwIfAborted()
+      // Dropped FSEvents or an unavailable journal invalidate the entire old
+      // tree. A root event forces applyDiskDelta to traverse it again rather
+      // than either failing the scan or trusting incomplete change history.
+      return {
+        events: [{ path: rootPath, type: "update", forceRoot: true } satisfies WatchEvent],
+        continuous: false,
+      }
+    }
+  }
+
   private async persist(rootPath: string, options: ScanOptions, root: DiskNode, checkpoint: string) {
     const paths = this.paths(rootPath, options)
     await this.withCacheKey(paths.key, async () => {
@@ -728,9 +766,10 @@ export class DiskSnapshotManager {
   private queue(active: ActiveScan, error: Error | null, events: WatchEvent[]) {
     if (active.stopped) return
     if (error) {
-      active.pending.set(active.rootPath, { path: active.rootPath, type: "update" })
+      active.pending.set(active.rootPath, { path: active.rootPath, type: "update", forceRoot: true })
     } else {
-      for (const event of events) active.pending.set(event.path, event)
+      for (const event of events) active.pending.set(event.path,
+        active.pending.get(event.path)?.forceRoot ? { ...event, forceRoot: true } : event)
     }
     if (!active.root) return
     this.scheduleRefresh(active, this.debounceMs)
@@ -852,6 +891,7 @@ export class DiskSnapshotManager {
     onUpdate: (update: DiskSnapshotUpdate) => void,
     forceFresh = false,
   ): Promise<DiskSnapshotResult> {
+    options.signal?.throwIfAborted()
     await this.stop(owner)
     options.signal?.throwIfAborted()
     const report = options.onProgress
@@ -881,6 +921,7 @@ export class DiskSnapshotManager {
     }
     stage("scan", 0)
     const normalizedRoot = await realpath(rootPath).catch(() => comparable(rootPath))
+    options.signal?.throwIfAborted()
     const active: ActiveScan = {
       owner,
       rootPath: normalizedRoot,
@@ -923,18 +964,38 @@ export class DiskSnapshotManager {
       }
     }
 
+    const resetCheckpoint = async () => {
+      const previous = candidate
+      candidate = undefined
+      try {
+        if (watcher) candidate = await this.checkpoint(normalizedRoot, options, watcher)
+      } catch {
+        options.signal?.throwIfAborted()
+        // A fresh map is still useful without a usable cache checkpoint.
+      } finally {
+        previous?.release()
+      }
+    }
+    const reconcileInventory = async (root: DiskNode) => {
+      if (!normalizeDeveloperArtifactInventoryOptions(options.developerArtifactInventory) ||
+          root.developerArtifactInventory) return root
+      // Local deltas intentionally discard the root-wide inventory. During an
+      // initial/open scan, rebuild it before returning or caching the result.
+      // The new checkpoint must precede that traversal to retain its mutations.
+      await resetCheckpoint()
+      return this.scanTree(normalizedRoot, options)
+    }
+
     let cached: LoadedSnapshot | undefined
     try {
       // Used after a mutation whose allocated-byte ownership cannot be inferred
       // from the old tree (for example, a clone-accounted pathname removal).
       cached = !forceFresh && candidate ? await this.load(normalizedRoot, options) : undefined
       if (cached && watcher && candidate) {
+        const replay = await this.replayJournal(normalizedRoot, cached.checkpoint.path, options, watcher)
+        if (!replay.continuous) await resetCheckpoint()
         const events = [
-          ...(await watcher.getEventsSince(
-            normalizedRoot,
-            cached.checkpoint.path,
-            watcherOptions(options, this.platform),
-          )),
+          ...replay.events,
           ...active.pending.values(),
         ]
         active.pending.clear()
@@ -947,19 +1008,27 @@ export class DiskSnapshotManager {
         }
         stage("reconcile", 85)
         const delta = await applyDiskDelta(cached.root, events, this.scanTree, options)
-        active.root = delta.root
+        const root = await reconcileInventory(delta.root)
+        const rebuiltInventory = root !== delta.root
+        active.root = root
         stage("save", 98)
-        await this.persist(normalizedRoot, options, delta.root, candidate.path).catch(() => undefined)
+        if (candidate) await this.persist(normalizedRoot, options, root, candidate.path).catch(() => undefined)
         if (active.pending.size) this.queue(active, null, [])
-        return { ...delta, source: "delta" }
+        return {
+          root,
+          changedPaths: rebuiltInventory ? [normalizedRoot] : delta.changedPaths,
+          source: replay.continuous && !rebuiltInventory ? "delta" : "scan",
+        }
       }
 
       let root = await this.scanTree(normalizedRoot, options)
       stage("reconcile", 85)
       let changedPaths: string[] = []
       if (candidate && watcher) {
+        const replay = await this.replayJournal(normalizedRoot, candidate.path, options, watcher)
+        if (!replay.continuous) await resetCheckpoint()
         const events = [
-          ...(await watcher.getEventsSince(normalizedRoot, candidate.path, watcherOptions(options, this.platform))),
+          ...replay.events,
           ...active.pending.values(),
         ]
         active.pending.clear()
@@ -967,9 +1036,12 @@ export class DiskSnapshotManager {
           const delta = await applyDiskDelta(root, events, this.scanTree, options)
           root = delta.root
           changedPaths = delta.changedPaths
+          const reconciled = await reconcileInventory(root)
+          if (reconciled !== root) changedPaths = [normalizedRoot]
+          root = reconciled
         }
         stage("save", 98)
-        await this.persist(normalizedRoot, options, root, candidate.path).catch(() => undefined)
+        if (candidate) await this.persist(normalizedRoot, options, root, candidate.path).catch(() => undefined)
       }
       active.root = root
       if (active.pending.size) this.queue(active, null, [])

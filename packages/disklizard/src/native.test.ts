@@ -1,10 +1,10 @@
 import { afterAll, describe, expect, test } from "bun:test"
 import { existsSync, writeFileSync } from "node:fs"
-import { chmod, link, mkdir, mkdtemp, rm, truncate, writeFile } from "node:fs/promises"
+import { chmod, link, mkdir, mkdtemp, rm, truncate, writeFile, readFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { Worker } from "node:worker_threads"
-import { nativeScannerAvailable, parseNativeMessage, scanPathNative } from "./native"
+import { nativeScannerAvailable, parseNativeMessage, scanPathNative, stopNativeScans } from "./native"
 import type { NativeParseWorkerMessage, NativeParseWorkerRequest } from "./native-parse-worker-contract"
 import { runNativeScannerSidecar } from "./native-sidecar-runner"
 import { scanPathSync } from "./scan"
@@ -493,6 +493,29 @@ setInterval(() => {}, 1_000)`,
     expect(error).toHaveProperty("message", "native cancellation fixture")
   })
 
+  processTest("shutdown waits for a worker to reap a sidecar that ignores TERM", async () => {
+    const root = await mkdtemp(join(tmpdir(), "disklizard-native-drain-"))
+    roots.push(root)
+    const ready = Promise.withResolvers<void>()
+    await withNativeScannerFixture(String.raw`
+import { writeFileSync } from "node:fs"
+import { join } from "node:path"
+const request = JSON.parse((await Bun.stdin.text()).trim())
+process.on("SIGTERM", () => {})
+await new Promise(resolve => setImmediate(resolve))
+writeFileSync(join(request.targetPath, "sidecar-pid"), String(process.pid))
+console.log(JSON.stringify({ type: "progress", progress: { filesScanned: 0, dirsScanned: 0, size: 0, currentPath: request.targetPath } }))
+setInterval(() => {}, 1000)`, async () => {
+      const result = scanPathNative(root, { onProgress: () => ready.resolve() }).catch(error => error)
+      await ready.promise
+      const pid = Number(await readFile(join(root, "sidecar-pid"), "utf8"))
+      expect(Number.isSafeInteger(pid) && pid > 0).toBe(true)
+      await stopNativeScans()
+      expect(await result).toHaveProperty("message", "Scan cancelled")
+      expect(() => process.kill(pid, 0)).toThrow()
+    })
+  }, 15_000)
+
   processTest("escalates protocol-fault termination when the scanner ignores SIGTERM", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-native-ignore-term-"))
     roots.push(root)
@@ -502,81 +525,136 @@ import { writeFileSync } from "node:fs"
 import { join } from "node:path"
 const request = JSON.parse((await Bun.stdin.text()).trim())
 process.on("SIGTERM", () => writeFileSync(join(request.targetPath, "term-observed"), "yes"))
+// Let Bun install and dispatch the signal watcher before provoking a fault.
+await new Promise((resolve) => setImmediate(resolve))
 console.log("not-json")
 setInterval(() => {}, 1_000)`)
 
     const startedAt = Date.now()
     const error = await rejection(
       runNativeScannerSidecar(workerRequest(scannerPath, root), {
-        terminationGraceMs: 40,
         forceKillWaitMs: 80,
       }),
     )
 
     expect(error.message).toBe("Native scanner returned an invalid message")
     expect(existsSync(termObserved)).toBe(true)
-    // The escalation itself is bounded by 40ms grace + 80ms force-kill; this
-    // wall-clock ceiling only proves it cannot hang. Keep it tolerant of a
-    // loaded runner's process scheduling, not just an idle laptop.
+    // Use the production TERM grace period: 40ms can kill a loaded Bun child
+    // before its signal handler runs. The wall-clock ceiling still proves the
+    // ignoring child is killed and its inherited pipes cannot hang the caller.
     expect(Date.now() - startedAt).toBeLessThan(3_000)
   })
 
   processTest("bounds inherited pipes after the faulty scanner already exited", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-native-inherited-pipe-"))
     roots.push(root)
-    const scannerPath = await createNativeScannerFixture(String.raw`
+    const release = join(root, "release-descendant")
+    const exited = join(root, "descendant-exited")
+    const descendantSource = `
+const { existsSync, writeFileSync } = require("node:fs")
+writeFileSync(process.argv[1], "ready")
+setTimeout(() => {
+  console.log("not-json")
+  setInterval(() => {
+    if (existsSync(process.argv[2])) {
+      writeFileSync(process.argv[3], "exited")
+      process.exit(0)
+    }
+  }, 10)
+}, 75)`
+    const scannerPath = await createNativeScannerFixture(`
 import { spawn } from "node:child_process"
-await Bun.stdin.text()
-const descendant = spawn(process.execPath, ["-e", "setTimeout(() => { console.log('not-json'); setTimeout(() => process.exit(0), 2000) }, 75)"], {
+import { existsSync } from "node:fs"
+import { join } from "node:path"
+const request = JSON.parse((await Bun.stdin.text()).trim())
+const ready = join(request.targetPath, "descendant-ready")
+const descendant = spawn(process.execPath, ["-e", ${JSON.stringify(descendantSource)}, ready, join(request.targetPath, "release-descendant"), join(request.targetPath, "descendant-exited")], {
   detached: true,
   stdio: ["ignore", "inherit", "inherit"],
 })
 descendant.unref()
+while (!existsSync(ready)) await Bun.sleep(5)
 process.exit(0)`)
-
-    const startedAt = Date.now()
-    const error = await rejection(
-      runNativeScannerSidecar(workerRequest(scannerPath, root), {
-        terminationGraceMs: 40,
-        forceKillWaitMs: 80,
-        postExitPipeWaitMs: 600,
-      }),
-    )
-
-    expect(error.message).toBe("Native scanner returned an invalid message")
-    expect(Date.now() - startedAt).toBeLessThan(1_000)
-  })
+    let deadlineTriggered = false
+    const deadline = setTimeout(() => {
+      deadlineTriggered = true
+      writeFileSync(release, "release")
+    }, 8_000)
+    try {
+      const error = await rejection(runNativeScannerSidecar(workerRequest(scannerPath, root), {
+        terminationGraceMs: 40, forceKillWaitMs: 80, postExitPipeWaitMs: 600,
+      }))
+      expect(error.message).toBe("Native scanner returned an invalid message")
+      // The descriptor holder cannot exit until explicitly released. Returning
+      // now proves bounded pipe teardown without timing Bun process startup.
+      expect(deadlineTriggered).toBe(false)
+      expect(existsSync(release)).toBe(false)
+    } finally {
+      clearTimeout(deadline)
+      await writeFile(release, "release")
+      const end = Date.now() + 3_000
+      while (!existsSync(exited) && Date.now() < end) await Bun.sleep(10)
+      expect(existsSync(exited)).toBe(true)
+    }
+  }, 15_000)
 
   processTest("rejects a successful frame when an exited scanner leaks inherited pipes", async () => {
     const root = await mkdtemp(join(tmpdir(), "disklizard-native-leaked-success-pipe-"))
     roots.push(root)
-    const scannerPath = await createNativeScannerFixture(String.raw`
+    const release = join(root, "release-descendant")
+    const exited = join(root, "descendant-exited")
+    const descendantSource = `
+const { existsSync, writeFileSync } = require("node:fs")
+writeFileSync(process.argv[1], "ready")
+setTimeout(() => {
+  setInterval(() => {
+    if (existsSync(process.argv[2])) {
+      writeFileSync(process.argv[3], "exited")
+      process.exit(0)
+    }
+  }, 10)
+}, 75)`
+    const scannerPath = await createNativeScannerFixture(`
 import { spawn } from "node:child_process"
+import { existsSync } from "node:fs"
+import { join } from "node:path"
 const request = JSON.parse((await Bun.stdin.text()).trim())
-const descendant = spawn(process.execPath, ["-e", "setTimeout(() => process.exit(0), 2000)"], {
+const ready = join(request.targetPath, "descendant-ready")
+const descendant = spawn(process.execPath, ["-e", ${JSON.stringify(descendantSource)}, ready, join(request.targetPath, "release-descendant"), join(request.targetPath, "descendant-exited")], {
   detached: true,
   stdio: ["ignore", "inherit", "inherit"],
 })
 descendant.unref()
+while (!existsSync(ready)) await Bun.sleep(5)
 console.log(JSON.stringify({
-  type: "done",
-  protocol: 2,
-  rootPath: request.targetPath,
+  type: "done", protocol: 2, rootPath: request.targetPath,
   root: { n: "fixture-root", s: 0, d: true, c: [] },
 }))
 process.exit(0)`)
+    let deadlineTriggered = false
+    const deadline = setTimeout(() => {
+      deadlineTriggered = true
+      writeFileSync(release, "release")
+    }, 8_000)
+    try {
+      const error = await rejection(runNativeScannerSidecar(workerRequest(scannerPath, root), {
+        terminationGraceMs: 40, forceKillWaitMs: 80, postExitPipeWaitMs: 600,
+      }))
+      expect(error.message).toBe("Native scanner pipes did not close after process exit")
+      // The descriptor holder cannot exit until explicitly released. Returning
+      // now proves bounded pipe teardown without timing Bun process startup.
+      expect(deadlineTriggered).toBe(false)
+      expect(existsSync(release)).toBe(false)
+    } finally {
+      clearTimeout(deadline)
+      await writeFile(release, "release")
+      const end = Date.now() + 3_000
+      while (!existsSync(exited) && Date.now() < end) await Bun.sleep(10)
+      expect(existsSync(exited)).toBe(true)
+    }
+  }, 15_000)
 
-    const startedAt = Date.now()
-    const error = await rejection(
-      runNativeScannerSidecar(workerRequest(scannerPath, root), {
-        terminationGraceMs: 40,
-        forceKillWaitMs: 80,
-      }),
-    )
 
-    expect(error.message).toBe("Native scanner pipes did not close after process exit")
-    expect(Date.now() - startedAt).toBeLessThan(1_000)
-  })
 })
 
 type ComparableNode = Pick<

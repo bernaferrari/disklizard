@@ -122,6 +122,7 @@ describe("ViewMorph lifecycle", () => {
     const previousWindow = globals.window
     globalThis.requestAnimationFrame = clock.request
     globalThis.cancelAnimationFrame = clock.cancel
+    // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc requires an assertion for this partial DOM test double.
     globalThis.getComputedStyle = (() => ({
       getPropertyValue: () => "",
     })) as unknown as typeof getComputedStyle
@@ -130,6 +131,7 @@ describe("ViewMorph lifecycle", () => {
     const center = { cx: 32, cy: 32, maxR: 30 }
     let centerReads = 0
     const morph = new ViewMorph(
+      // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc requires an assertion for this partial DOM test double.
       { width: 64, height: 64 } as HTMLCanvasElement,
       countingCtx(),
       () => {

@@ -36,7 +36,26 @@ bun run lint
 bun run test:disklizard
 ```
 
+The canonical test command includes scanner, desktop, renderer core, storage
+interface, and localization tests. To check the rendered browser journey and
+record interaction measurements against a production build:
+
+```bash
+bun run --cwd packages/app typecheck:e2e
+bun run --cwd packages/app test:e2e:disk
+bun run --cwd packages/app benchmark:disk-ui
+```
+
+From `packages/app`, install the test browser once with
+`bun x playwright install chromium`. The browser journey uses isolated fixture data; native scan, preview,
+snapshot, and Trash behavior can be checked locally with
+`bun run --cwd packages/desktop verify:packaged-smoke`. This builds a disposable
+unsigned package without publishing a release.
+
 To package the app, run `package:mac`, `package:win`, or `package:linux` from `packages/desktop` on the corresponding platform. Artifacts go to `packages/desktop/dist`.
+
+The [architecture guide](docs/architecture.md) describes feature ownership and
+the state and lifecycle invariants enforced by the tests.
 
 ## Cleanup safety
 

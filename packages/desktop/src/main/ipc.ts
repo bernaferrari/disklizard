@@ -17,13 +17,14 @@ import { DiskDeleteAuthorizationManager } from "./disk-delete-authorization"
 import { runGuardedDiskDelete, type DiskDeleteOptions } from "./disk-delete-precondition"
 import { quickLookCommand, readDiskPreview } from "./disk-preview"
 import { publishDriveFacts } from "./disk-drive-facts"
-import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scanPath } from "./disk-scanner"
+import { assertSafeDeletionPath, getDriveFacts, getDrives, mountExclusions, scanPath, stopNativeScans } from "./disk-scanner"
 import type { ScanOptions, ScanProgress } from "./disk-scanner"
 import { DiskSnapshotManager } from "./disk-snapshot"
 import { getStore, removeStoreFileIfEmpty } from "./store"
 import { getPinchZoomEnabled, openExternalURL, setPinchZoomEnabled, setTitlebar, updateTitlebar } from "./windows"
 import type { UpdaterController } from "./updater-controller"
 import { createUpdaterSubscriptions } from "./updater-subscriptions"
+import { installQuitCleanup } from "./quit-cleanup"
 
 // `app.getFileIcon` traps the browser process on macOS 27 (SIGTRAP, brk #0)
 // for ordinary directories, not only the boot volume. The picker still lists
@@ -207,8 +208,10 @@ export function registerIpcHandlers(deps: Deps) {
   // once-listener after every rescan.
   const diskSnapshotSenders = new Map<number, DiskSnapshotSender>()
   const diskSnapshotOwnerSenders = new Map<string, number>()
+  const diskSnapshotRequests = new Map<string, AbortController>()
 
   const detachDiskSnapshotOwner = (owner: string) => {
+    diskSnapshotRequests.delete(owner)
     const senderID = diskSnapshotOwnerSenders.get(owner)
     if (senderID === undefined) return
     diskSnapshotOwnerSenders.delete(owner)
@@ -252,6 +255,7 @@ export function registerIpcHandlers(deps: Deps) {
         diskDeleteAuthorizations.removeSender(sender.id)
         for (const staleOwner of tracked.owners) {
           diskSnapshotOwnerSenders.delete(staleOwner)
+          diskSnapshotRequests.delete(staleOwner)
           void diskSnapshots.stop(staleOwner)
         }
       }
@@ -263,6 +267,7 @@ export function registerIpcHandlers(deps: Deps) {
         diskDeleteAuthorizations.removeSender(sender.id)
         for (const currentOwner of current.owners) {
           diskSnapshotOwnerSenders.delete(currentOwner)
+          diskSnapshotRequests.delete(currentOwner)
           diskScans.get(currentOwner)?.abort(new Error("Scan window closed"))
           diskDeleteAuthorizations.removeOwner(currentOwner)
           void diskSnapshots.stop(currentOwner)
@@ -282,8 +287,16 @@ export function registerIpcHandlers(deps: Deps) {
     }
     diskSnapshotSenders.clear()
     diskSnapshotOwnerSenders.clear()
+    diskSnapshotRequests.clear()
     diskDeleteAuthorizations.clear()
   }
+  let stoppingDiskScans = false
+  installQuitCleanup(app, async () => {
+    stoppingDiskScans = true
+    diskScans.forEach((controller) => controller.abort(new Error("Scan cancelled")))
+    await diskSnapshots.stopAll()
+    await stopNativeScans()
+  }, (error) => log.warn("Could not stop disk scanners before quit", error))
   app.once("will-quit", () => {
     updaterSubscriptions.clear()
     clearDiskSnapshotOwners()
@@ -353,6 +366,7 @@ export function registerIpcHandlers(deps: Deps) {
       },
       requestedScanID?: string,
     ) => {
+      if (stoppingDiskScans) return null
       const maxChildren = parseRendererMaxChildren(options?.maxChildren)
       const senderID = event.sender.id
       const scanID = requestedScanID || "primary"
@@ -376,6 +390,7 @@ export function registerIpcHandlers(deps: Deps) {
       let latestProgress: ScanProgress | undefined
       diskScans.set(owner, controller)
       trackDiskSnapshotOwner(event.sender, owner)
+      diskSnapshotRequests.set(owner, controller)
       try {
         const excludePaths = [
           diskSnapshotCache,
@@ -397,6 +412,7 @@ export function registerIpcHandlers(deps: Deps) {
           signal: controller.signal,
           excludePaths,
           onProgress: (progress) => {
+            if (controller.signal.aborted || diskScans.get(owner) !== controller) return
             latestProgress = progress
             if (progress.percent !== undefined && Number.isFinite(progress.percent)) {
               if (process.platform === "darwin") {
@@ -425,11 +441,13 @@ export function registerIpcHandlers(deps: Deps) {
           },
         }
         try {
+          if (controller.signal.aborted || diskScans.get(owner) !== controller) return null
           const result = await diskSnapshots.scan(
             owner,
             targetPath,
             scanOptions,
             (update) => {
+              if (controller.signal.aborted || diskSnapshotRequests.get(owner) !== controller) return
               if (event.sender.isDestroyed()) {
                 void stopDiskSnapshotOwner(owner)
                 return
@@ -441,6 +459,7 @@ export function registerIpcHandlers(deps: Deps) {
             },
             options?.forceFresh === true,
           )
+          if (controller.signal.aborted || diskScans.get(owner) !== controller) return null
           diskDeleteAuthorizations.updateRoot(owner, senderID, result.root)
           // Snapshot restores deliberately skip traversal. Tell the renderer
           // the completion source so it never turns cache latency into a
@@ -466,11 +485,10 @@ export function registerIpcHandlers(deps: Deps) {
           })
           return result.root
         } catch (error) {
-          if (controller.signal.aborted) {
-            await stopDiskSnapshotOwner(owner)
-            return null
-          }
+          // A superseded request no longer owns this scan ID's watcher or authority.
+          if (diskScans.get(owner) !== controller) return null
           await stopDiskSnapshotOwner(owner)
+          if (controller.signal.aborted) return null
           throw error
         }
       } finally {

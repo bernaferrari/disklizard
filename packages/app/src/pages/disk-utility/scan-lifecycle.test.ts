@@ -11,10 +11,12 @@ describe("root scan review lifecycle", () => {
     const nativeScan = new Promise<void>((resolve) => (settle = resolve))
 
     function startManualRootScan() {
-      clearReviewForRootScan<string>({
-        setCollection: (items) => (collection = items),
-        setDragNode: (node) => (dragNode = node),
-        setDropActive: (active) => (dropActive = active),
+      clearReviewForRootScan({
+        clearCollection: () => (collection = []),
+        cancelDrag: () => {
+          dragNode = null
+          dropActive = false
+        },
         closeReview: () => (reviewClosed = true),
       })
       return nativeScan

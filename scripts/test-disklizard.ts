@@ -49,6 +49,7 @@ const desktopTests = testFiles(desktopCwd, desktopCwd, (rel) =>
   rel.split(sep).some((segment) => segment === "onboarding" || segment.startsWith("onboarding.")),
 )
 const storageTests = testFiles(resolve(appCwd, "src/pages/disk-utility"), appCwd)
+const coreTests = testFiles(resolve(appCwd, "src/core"), appCwd)
 const localizationTests = testFiles(resolve(appCwd, "src/i18n"), appCwd)
 
 const steps = [
@@ -67,8 +68,8 @@ const steps = [
   {
     name: "storage interface",
     cwd: appCwd,
-    tests: storageTests,
-    args: ["test", "--preload", "./happydom.ts", ...storageTests],
+    tests: [...coreTests, ...storageTests],
+    args: ["test", "--preload", "./happydom.ts", ...coreTests, ...storageTests],
   },
   {
     name: "standalone localization",

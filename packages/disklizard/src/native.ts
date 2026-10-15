@@ -18,6 +18,13 @@ export {
 } from "./native-protocol"
 export type { NativeDoneValidation, NativeMessage } from "./native-protocol"
 
+// Requests may reject promptly on cancellation, but process ownership ends only
+// when the worker has reaped its sidecar and exited.
+const activeNativeScans = new Set<() => Promise<void>>()
+export async function stopNativeScans(): Promise<void> {
+  await Promise.all([...activeNativeScans].map(stop => stop()))
+}
+
 type NativeRequest = {
   targetPath: string
   maxDepth: number
@@ -119,17 +126,22 @@ export async function scanPathNative(targetPath: string, options: ScanOptions = 
       if ("root" in result) resolve(result.root)
       else reject(result.error)
     }
+    const exited = new Promise<void>(resolve => worker.once("exit", () => resolve()))
+    let stopping: Promise<void> | undefined
     const stopWorker = () => {
+      if (stopping) return stopping
+      stopping = exited
       try {
+        // The worker owns TERM/KILL escalation and inherited-pipe deadlines.
+        // Terminating it first can strand the sidecar it is responsible for.
         worker.postMessage({ type: "cancel" })
       } catch {
         void worker.terminate()
-        return
       }
-      const force = setTimeout(() => void worker.terminate(), 1_000)
-      force.unref()
-      worker.once("exit", () => clearTimeout(force))
+      return stopping
     }
+    activeNativeScans.add(stopWorker)
+    void exited.then(() => activeNativeScans.delete(stopWorker))
     const onAbort = () => {
       stopWorker()
       finish({ error: normalizedOptions.signal?.reason ?? new Error("Scan cancelled") })

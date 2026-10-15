@@ -49,7 +49,7 @@ describe("desktop snapshot pipeline benchmark", () => {
     for (const payload of Object.values(report.payloads)) {
       expect(payload).toMatchObject({
         encoding: "ndjson-parent-index",
-        schema: 8,
+        schema: 9,
         format: 1,
         nodeRecords: 257,
         inventoryItemRecords: 0,

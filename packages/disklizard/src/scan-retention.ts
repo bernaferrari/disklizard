@@ -69,7 +69,7 @@ export class ChildRetention {
   ) {}
 
   add(child: DiskNode | null): void {
-    if (!child || (child.size <= 0 && child.children.length === 0 && !child.hardLink)) return
+    if (!child || (child.size <= 0 && apparentBytes(child) <= 0 && child.children.length === 0 && !child.hardLink)) return
     this.totalSize += child.size
     this.totalLogicalSize += apparentBytes(child)
     this.modifiedAt = Math.max(this.modifiedAt, child.modifiedAt ?? 0)
@@ -91,7 +91,7 @@ export class ChildRetention {
   finish(): RetainedChildren {
     this.preservedOverflow.sort(compareNodesBySize)
     const children = this.preservedOverflow.length ? [...this.top, ...this.preservedOverflow] : this.top
-    if (this.restSize > 0) {
+    if (this.restSize > 0 || this.restLogicalSize > 0) {
       children.push({
         name: `Other (${this.restCount} ${this.restCount === 1 ? "item" : "items"})`,
         path: joinChildPath(this.parentPath, "__other__"),

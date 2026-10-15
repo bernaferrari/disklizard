@@ -62,7 +62,7 @@ describe("chooseFolderAndScan", () => {
 
   test("the storage page registers File → Scan Folder onto the same chooseFolder+startScan helper", () => {
     const page = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), "index.tsx"),
+      join(dirname(fileURLToPath(import.meta.url)), "use-disk-utility-workspace.tsx"),
       "utf8"
     )
     expect(page).toContain(`register(DISK_CHOOSE_FOLDER_COMMAND`)

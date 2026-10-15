@@ -56,11 +56,12 @@ describe("DiskLizard standalone desktop runtime", () => {
   test("macOS window leaves room for traffic lights and a draggable titlebar", () => {
     const windows = source("windows.ts")
     const styles = readFileSync(join(dir, "../../../app/src/pages/disk-utility/styles.ts"), "utf8")
-    const page = readFileSync(join(dir, "../../../app/src/pages/disk-utility/index.tsx"), "utf8")
+    const titlebar = readFileSync(join(dir, "../../../app/src/pages/disk-utility/DiskWorkspaceHeader.tsx"), "utf8")
+    const page = readFileSync(join(dir, "../../../app/src/pages/disk-utility/DiskUtilityView.tsx"), "utf8")
     expect(windows).toMatch(/trafficLightPosition:\s*\{\s*x:\s*16,\s*y:\s*22\s*\}/)
     expect(styles).toContain("MAC_TRAFFIC_LIGHT_INSET")
     expect(styles).toContain("-webkit-app-region: drag")
-    expect(page).toContain("data-tauri-drag-region")
+    expect(titlebar).toContain("data-tauri-drag-region")
     expect(page).toContain("data-os={platform.os}")
   })
 

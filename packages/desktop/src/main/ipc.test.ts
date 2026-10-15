@@ -62,6 +62,7 @@ mock.module("./disk-scanner", () => ({
   getDrives: async () => [],
   mountExclusions: () => [],
   scanPath: () => undefined,
+  stopNativeScans: async () => {},
 }))
 mock.module("./native-translations", () => ({ nativeT: (key: string) => key }))
 mock.module("./store", () => ({
@@ -97,6 +98,8 @@ class FakeDiskSnapshotManager {
   readonly roots = new Map<string, DiskNode>()
   readonly scans: Array<{ owner: string; rootPath: string; options: ScanOptions }> = []
   readonly stopped: string[] = []
+  readonly pending = new Map<string, Promise<DiskNode>>()
+  readonly updates = new Map<string, (update: unknown) => void>()
 
   async scan(
     owner: string,
@@ -106,8 +109,9 @@ class FakeDiskSnapshotManager {
     _forceFresh: boolean,
   ) {
     this.owners.add(owner)
+    this.updates.set(owner, _onUpdate)
     this.scans.push({ owner, rootPath, options })
-    const root: DiskNode = this.roots.get(rootPath) ?? {
+    const root: DiskNode = await this.pending.get(rootPath) ?? this.roots.get(rootPath) ?? {
       name: path.basename(rootPath),
       path: rootPath,
       size: 0,
@@ -171,7 +175,11 @@ class FakeSender extends EventEmitter {
     return this.destroyed
   }
 
-  send() {}
+  readonly sent: Array<{ channel: string; args: unknown[] }> = []
+
+  send(channel: string, ...args: unknown[]) {
+    this.sent.push({ channel, args })
+  }
 
   setZoomFactor(factor: number) {
     this.zoomFactor = factor
@@ -211,6 +219,20 @@ const revealPath = handlers.get("disklizard:reveal-path")!
 afterAll(() => mock.restore())
 
 describe("disk snapshot IPC lifecycle", () => {
+  test("completed scans keep updates live and retire replaced watcher callbacks", async () => {
+    const sender = new FakeSender(910)
+    const owner = "910:live"
+    const root = await scanPath(event(sender), "/tmp/live-old", {}, "live")
+    const oldUpdate = diskSnapshots.updates.get(owner)!
+    oldUpdate({ root, changedPaths: ["/tmp/live-old"], revision: 1 })
+    expect(sender.sent.filter(item => item.channel === "disklizard:scan-update")).toHaveLength(1)
+    await scanPath(event(sender), "/tmp/live-new", {}, "live")
+    oldUpdate({ root, changedPaths: ["/tmp/live-old"], revision: 2 })
+    expect(sender.sent.filter(item => item.channel === "disklizard:scan-update")).toHaveLength(1)
+    diskSnapshots.updates.get(owner)!({ root, changedPaths: ["/tmp/live-new"], revision: 1 })
+    expect(sender.sent.filter(item => item.channel === "disklizard:scan-update")).toHaveLength(2)
+  })
+
   test("volume actions reject paths outside the mounted volume inventory", async () => {
     const sender = new FakeSender(909)
     for (const channel of ["disklizard:eject-volume", "disklizard:reveal-volume"]) {
@@ -543,4 +565,21 @@ describe("disk snapshot IPC lifecycle", () => {
       await rm(rootPath, { recursive: true, force: true })
     }
   })
+})
+
+
+test("an older same-ID rejection cannot stop its replacement scan owner", async () => {
+  const sender = new FakeSender(184)
+  const pending = Promise.withResolvers<DiskNode>()
+  const original = diskSnapshots
+  original.pending.set("/old-scan", pending.promise)
+  const older = scanPath(event(sender), "/old-scan", {}, "replacement")
+  // Wait for the original handler to cross the scan-manager seam.
+  while (!original.scans.some(scan => scan.rootPath === "/old-scan")) await new Promise(resolve => setImmediate(resolve))
+  await scanPath(event(sender), "/new-scan", {}, "replacement")
+  const stopped = original.stopped.length
+  pending.reject(new Error("Old operation failed after replacement"))
+  expect(await older).toBeNull()
+  expect(original.owners.has("184:replacement")).toBe(true)
+  expect(original.stopped.slice(stopped)).not.toContain("184:replacement")
 })

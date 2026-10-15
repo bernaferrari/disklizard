@@ -73,6 +73,7 @@ describe("map hover", () => {
       },
     }
     const map = Object.create(Sunburst.prototype) as Sunburst
+    // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc requires an assertion for this partial DOM test double.
     map.ctx = context as unknown as CanvasRenderingContext2D
     map.options = { padAngle: 0.001 } as Sunburst["options"]
     map.dpr = 1
@@ -494,6 +495,7 @@ describe("sunburst resize", () => {
       },
       getBoundingClientRect: () => ({ width: 800, height: 500 }),
     }
+    // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc requires an assertion for this partial DOM test double.
     map.ctx = {
       clearRect: () => {
         painted = false

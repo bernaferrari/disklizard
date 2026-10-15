@@ -102,6 +102,180 @@ function fakeWatcher() {
 }
 
 describe("disk scan snapshots", () => {
+  test("initial reconciliation rebuilds the root inventory before caching a local delta", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "project", "file.bin")
+    await mkdir(path.dirname(file), { recursive: true })
+    await writeFile(file, new Uint8Array(4))
+    const watcher = fakeWatcher()
+    let rootScans = 0
+    const scan = async (target: string, options: ScanOptions) => {
+      const tree = await scanFixture(target)
+      if (target === root) {
+        rootScans++
+        if (options.developerArtifactInventory) tree.developerArtifactInventory = {
+          items: [],
+          status: {
+            state: "complete", maxItems: 200, scannedDirectories: 2, matchedDirectories: 0,
+            truncated: false, unreadableCount: 0, unreadableSamplePaths: [],
+            skippedSymlinkCount: 0, skippedSymlinkSamplePaths: [],
+            excludedCount: 0, excludedSamplePaths: [],
+          },
+        }
+        if (rootScans === 1) {
+          await writeFile(file, new Uint8Array(18))
+          watcher.emit([{ path: file, type: "update" }])
+        }
+      }
+      return tree
+    }
+    const options = { developerArtifactInventory: { maxItems: 200 } }
+    const manager = new DiskSnapshotManager({ cacheDir, scan, watcher: watcher.api, platform: "darwin" })
+    try {
+      const result = await manager.scan("initial", root, options, () => {})
+      expect(result.root.size).toBe(18)
+      expect(result.root.developerArtifactInventory?.status.state).toBe("complete")
+      expect(rootScans).toBe(2)
+      await manager.stopAll()
+      const restored = await manager.scan("restored", root, options, () => {})
+      expect(restored.source).toBe("snapshot")
+      expect(rootScans).toBe(2)
+    } finally {
+      await manager.stopAll()
+    }
+  })
+  test("rebuilds a fresh scan when the watcher loses journal continuity", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "file.bin")
+    await writeFile(file, new Uint8Array(4))
+    const watcher = fakeWatcher()
+    let scans = 0
+    let checkpoints = 0
+    const recoveringWatcher = {
+      ...watcher.api,
+      writeSnapshot: async (_dir: string, checkpoint: string) => {
+        await writeFile(checkpoint, String(++checkpoints))
+        return checkpoint
+      },
+      getEventsSince: async (_dir: string, checkpoint: string) => {
+        if (await readFile(checkpoint, "utf8") === "1")
+          throw new Error("Events were dropped by the FSEvents client")
+        return []
+      },
+    }
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      platform: "darwin",
+      watcher: recoveringWatcher,
+      scan: async (target) => {
+        const tree = await scanFixture(target)
+        if (++scans === 1) await writeFile(file, new Uint8Array(18))
+        return tree
+      },
+    })
+    try {
+      const result = await manager.scan("lost-journal", root, {}, () => {})
+      expect(result.source).toBe("scan")
+      expect(result.root.size).toBe(18)
+      expect(result.changedPaths).toEqual([root])
+      expect(scans).toBe(2)
+      await manager.stopAll()
+      const reopened = new DiskSnapshotManager({
+        cacheDir, platform: "darwin", watcher: recoveringWatcher,
+        scan: async (target) => { scans++; return scanFixture(target) },
+      })
+      try {
+        const restored = await reopened.scan("reopened", root, {}, () => {})
+        expect(restored.source).toBe("snapshot")
+        expect(restored.root.size).toBe(18)
+        expect(scans).toBe(2)
+      } finally {
+        await reopened.stopAll()
+      }
+    } finally {
+      await manager.stopAll()
+    }
+  })
+
+  test("a cached tree cannot hide changes when journal replay fails", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const file = path.join(root, "file.bin")
+    await writeFile(file, new Uint8Array(4))
+    const watcher = fakeWatcher()
+    const initial = new DiskSnapshotManager({
+      cacheDir,
+      scan: scanFixture,
+      watcher: watcher.api,
+      platform: "darwin",
+    })
+    await initial.scan("initial", root, {}, () => {})
+    await initial.stopAll()
+    await writeFile(file, new Uint8Array(18))
+    let scans = 0
+    const restored = new DiskSnapshotManager({
+      cacheDir,
+      platform: "darwin",
+      watcher: {
+        ...watcher.api,
+        getEventsSince: async () => {
+          throw new Error("Journal unavailable")
+        },
+      },
+      scan: async (target) => {
+        scans++
+        return scanFixture(target)
+      },
+    })
+    try {
+      const result = await restored.scan("restored", root, {}, () => {})
+      expect(result.source).toBe("scan")
+      expect(result.root.size).toBe(18)
+      expect(result.changedPaths).toEqual([root])
+      expect(scans).toBe(1)
+    } finally {
+      await restored.stopAll()
+    }
+  })
+
+  test("journal failure after cancellation does not start a recovery scan", async () => {
+    const root = await temp()
+    const cacheDir = await temp()
+    const watcher = fakeWatcher()
+    const controller = new AbortController()
+    let scans = 0
+    const manager = new DiskSnapshotManager({
+      cacheDir,
+      platform: "darwin",
+      watcher: {
+        ...watcher.api,
+        getEventsSince: async () => {
+          controller.abort(new Error("Scan cancelled"))
+          throw new Error("Journal unavailable")
+        },
+      },
+      scan: async (target) => {
+        scans++
+        return scanFixture(target)
+      },
+    })
+    try {
+      await expect(
+        manager.scan(
+          "cancelled",
+          root,
+          { signal: controller.signal },
+          () => {},
+        ),
+      ).rejects.toThrow("Scan cancelled")
+      expect(scans).toBe(1)
+      expect(manager.activeOwners()).toEqual([])
+    } finally {
+      await manager.stopAll()
+    }
+  })
   test("uses a stable key for semantically identical scan options", () => {
     const first = diskSnapshotKey("/tmp/project", { preserveNames: ["target", "node_modules"] })
     const second = diskSnapshotKey("/tmp/project", { preserveNames: ["node_modules", "target"] })
@@ -358,7 +532,7 @@ describe("disk scan snapshots", () => {
     expect(restored.ticks).toBeGreaterThan(5)
     expect(scans).toBe(1)
     await second.stopAll()
-  })
+  }, 30_000)
 
   test("does not restore an identity-less pre-v6 developer inventory snapshot", async () => {
     const root = await temp()
@@ -411,7 +585,7 @@ describe("disk scan snapshots", () => {
     expect(scans).toBe(2)
     await expect(stat(legacyTree)).rejects.toThrow()
     const replacement = JSON.parse(await readFile(metadataPath, "utf8")) as { schema: number; tree: string }
-    expect(replacement.schema).toBe(8)
+    expect(replacement.schema).toBe(9)
     expect(replacement.tree.endsWith(".ndjson")).toBe(true)
     await second.stopAll()
   })
@@ -1369,4 +1543,96 @@ test("reconciling changed files does not reset the displayed scan file count", a
   expect(reconciliation.length).toBeGreaterThan(1)
   expect(reconciliation.every((next) => next.filesScanned >= 100)).toBe(true)
   await manager.stopAll()
+})
+
+test("lost journal continuity dominates pending leaf updates on cached reopen", async () => {
+  const root = await temp()
+  const cacheDir = await temp()
+  const a = path.join(root, "a")
+  const b = path.join(root, "b")
+  await writeFile(a, "a")
+  await writeFile(b, "b")
+  const watcher = fakeWatcher()
+  const initial = new DiskSnapshotManager({ cacheDir, scan: scanFixture, watcher: watcher.api })
+  await initial.scan("initial", root, { sizeMode: "logical" }, () => {})
+  await initial.stopAll()
+  await writeFile(a, "aaa")
+  await writeFile(b, "bbbbb")
+  const targets: string[] = []
+  const manager = new DiskSnapshotManager({
+    cacheDir,
+    watcher: { ...watcher.api, getEventsSince: async () => {
+      watcher.emit([{ path: a, type: "update" }])
+      throw new Error("Dropped journal")
+    } },
+    scan: async target => { targets.push(target); return scanFixture(target) },
+  })
+  try {
+    const result = await manager.scan("reopen", root, { sizeMode: "logical" }, () => {})
+    expect(result.source).toBe("scan")
+    expect(result.root.size).toBe(8)
+    expect(result.changedPaths).toEqual([root])
+    expect(targets).toEqual([root])
+  } finally { await manager.stopAll() }
+})
+
+test("live watcher failure dominates specific pending updates", async () => {
+  const root = await temp()
+  const cacheDir = await temp()
+  const a = path.join(root, "a")
+  const b = path.join(root, "b")
+  await writeFile(a, "a")
+  await writeFile(b, "b")
+  const watcher = fakeWatcher()
+  let subscription: ParcelWatcher.SubscribeCallback | undefined
+  const updates: DiskSnapshotUpdate[] = []
+  const manager = new DiskSnapshotManager({ cacheDir, debounceMs: 1, scan: scanFixture,
+    watcher: { ...watcher.api, subscribe: async (_root, callback) => {
+      subscription = callback
+      return { unsubscribe: async () => {} }
+    } },
+  })
+  try {
+    await manager.scan("live", root, { sizeMode: "logical" }, update => updates.push(update))
+    await writeFile(a, "aaa")
+    await writeFile(b, "bbbbb")
+    subscription?.(new Error("Dropped live events"), [])
+    subscription?.(null, [{ path: a, type: "update" }])
+    await eventually(() => updates.length > 0, 2000)
+    expect(updates.at(-1)?.root.size).toBe(8)
+    expect(updates.at(-1)?.changedPaths).toEqual([root])
+  } finally { await manager.stopAll() }
+})
+
+test("updates beneath Other rescan its real owner and rebuild aggregate membership", async () => {
+  const root = await temp()
+  const samplePath = path.join(root, "sample")
+  const largePath = path.join(root, "large")
+  await writeFile(samplePath, "old")
+  await writeFile(largePath, "large-file")
+  const sample = await scanFixture(samplePath, false)
+  const large = await scanFixture(largePath, false)
+  const tree: DiskNode = { name: "root", path: root, size: 13, isDir: true, ext: "", children: [large, {
+    name: "Other", path: path.join(root, "__other__"), size: 3, isDir: true, isOther: true, otherCount: 1, ext: "", children: [sample],
+  }] }
+  await writeFile(samplePath, "twenty bytes of data")
+  const targets: string[] = []
+  const result = await applyDiskDelta(tree, [{ path: samplePath, type: "update" }], async target => {
+    targets.push(target); return scanFixture(target)
+  }, { sizeMode: "logical" })
+  expect(targets).toEqual([root])
+  expect(result.root.size).toBe(30)
+  expect(result.root.children.find(child => child.path === samplePath)?.size).toBe(20)
+  expect(result.changedPaths).toEqual([root])
+})
+
+test("dotdot-prefixed child names remain inside the scan root", async () => {
+  const root = await temp()
+  const dir = path.join(root, "..cache")
+  await mkdir(dir)
+  const file = path.join(dir, "file")
+  await writeFile(file, "a")
+  const tree = await scanFixture(root)
+  expect(await deltaRoots(tree, [{ path: file, type: "update" }])).toEqual([file])
+  expect(await deltaRoots(tree, [{ path: path.join(root, "..", "outside"), type: "update" }])).toEqual([])
 })

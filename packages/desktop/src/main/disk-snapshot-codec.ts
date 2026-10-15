@@ -11,7 +11,8 @@ import { MAX_MATERIALIZED_DISK_TREE_NODES } from "./disk-tree-budget"
 
 // v8 replaces the monolithic V8 blob with bounded records so persistence,
 // parsing, and validation can yield to Electron's main event loop.
-const SNAPSHOT_SCHEMA = 8
+// Sparse apparent-byte retention and complete watcher invalidation require a fresh accounting generation.
+const SNAPSHOT_SCHEMA = 9
 const SNAPSHOT_FORMAT = 1
 const SNAPSHOT_WRITE_BATCH_BYTES = 256 * 1024
 const MAX_SNAPSHOT_RECORD_BYTES = 256 * 1024

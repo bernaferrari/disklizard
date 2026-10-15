@@ -30,7 +30,7 @@ function dir(
 
 describe("retained scan tabs", () => {
   it("presents parked maps as ordinary saved-map buttons rather than an incomplete tab pattern", () => {
-    const page = readFileSync(new URL("./index.tsx", import.meta.url), "utf8")
+    const page = readFileSync(new URL("./DiskUtilityView.tsx", import.meta.url), "utf8")
     expect(page).toContain('role="group"')
     expect(page).not.toContain('role="tablist"')
     expect(page).not.toContain('role="tab"')

@@ -23,7 +23,7 @@ async function temp() {
 }
 
 describe("disk snapshot wire codec", () => {
-  test("owns schema-8 metadata encoding and expected-cache validation", () => {
+  test("owns schema-9 metadata encoding and expected-cache validation", () => {
     const expected = {
       rootPath: "/tmp/project",
       optionsHash: "0123456789abcdef0123456789abcdef",
@@ -35,13 +35,13 @@ describe("disk snapshot wire codec", () => {
       tree: "tree-123-00000000-0000-4000-8000-000000000000.ndjson",
     })
 
-    expect(JSON.parse(encoded)).toMatchObject({ schema: 8, ...expected })
-    expect(decodeDiskSnapshotMetadata(encoded, expected)).toMatchObject({ schema: 8, ...expected })
+    expect(JSON.parse(encoded)).toMatchObject({ schema: 9, ...expected })
+    expect(decodeDiskSnapshotMetadata(encoded, expected)).toMatchObject({ schema: 9, ...expected })
     expect(decodeDiskSnapshotMetadata(encoded, { ...expected, rootPath: "/tmp/other" })).toBeUndefined()
-    expect(decodeDiskSnapshotMetadata(encoded.replace('"schema":8', '"schema":7'), expected)).toBeUndefined()
+    expect(decodeDiskSnapshotMetadata(encoded.replace('"schema":9', '"schema":8'), expected)).toBeUndefined()
   })
 
-  test("decodes an existing schema-8 tree whose Other node predates aggregate counts", async () => {
+  test("decodes an existing schema-9 tree whose Other node predates aggregate counts", async () => {
     const rootPath = await temp()
     const treePath = path.join(rootPath, "existing.ndjson")
     const aggregatePath = path.join(rootPath, "__other__")

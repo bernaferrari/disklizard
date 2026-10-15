@@ -9,7 +9,7 @@ import {
 import { ChevronDown, Eject, FolderOpen, RotateCw, X } from "lucide-react"
 import { Network } from "lucide-react"
 import { useEffect, useId, useState } from "react"
-import type { DiskDriveInfo, DiskScanNode } from "./types"
+import type { DiskDriveInfo } from "./types"
 import { formatBytes, formatCount, shortBytes } from "./format"
 import {
   formatScanDuration,
@@ -18,29 +18,9 @@ import {
   type ScanPerformance,
 } from "./scan-metrics"
 import { diskLanguageText, useLanguage, usePlatform } from "./runtime"
-import type { ScanDiscovery } from "./live-scan"
 
-export type VolumeScanJob = {
-  id: string
-  /** Folder jobs run in the background alongside volume scans. */
-  kind?: "volume" | "folder"
-  status: "scanning" | "complete" | "failed"
-  label: string
-  sourcePath: string
-  drive: DiskDriveInfo
-  files: number
-  bytes: number
-  pct: number
-  currentPath: string
-  startedAt: number
-  completedAt?: number
-  /** Only a fresh traversal earns a throughput measurement. */
-  source?: "scan" | "snapshot" | "delta"
-  tree?: DiskScanNode
-  error?: string
-  /** Top-level items the scanner has finished, in arrival order. */
-  discoveries?: readonly ScanDiscovery[]
-}
+import type { VolumeScanJob } from "./scan-jobs"
+export type { VolumeScanJob } from "./scan-jobs"
 
 export type VolumePressure = "ok" | "tight" | "critical"
 
@@ -246,6 +226,7 @@ export function VolumeRow(props: {
   return (
     <div
       id={props.job ? `disklizard-volume-${props.job.id}` : undefined}
+      data-scan-files={scanning ? props.job?.files : undefined}
       className="group relative flex items-center gap-5 rounded-2xl bg-[var(--dl-well)] px-5 py-5 shadow-[inset_0_0_0_0.5px_var(--dl-separator)] transition-colors duration-150 hover:bg-[var(--dl-well-strong)] max-sm:flex-wrap"
     >
       {volumeInfo?.icon ? (
@@ -498,7 +479,10 @@ export function FolderJobRow(props: {
         bytes: shortBytes(job.bytes),
       })
   return (
-    <div className="flex items-center gap-4 rounded-2xl bg-[var(--dl-well)] px-5 py-4 shadow-[inset_0_0_0_0.5px_var(--dl-separator)]">
+    <div
+      className="flex items-center gap-4 rounded-2xl bg-[var(--dl-well)] px-5 py-4 shadow-[inset_0_0_0_0.5px_var(--dl-separator)]"
+      data-scan-files={scanning ? job.files : undefined}
+    >
       <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--dl-well-strong)] text-text-weak">
         <FolderOpen className="size-5" strokeWidth={1.75} aria-hidden />
       </span>

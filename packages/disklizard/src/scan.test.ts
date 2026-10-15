@@ -341,7 +341,7 @@ describe("disk scanner", () => {
     roots.push(root)
     const first = join(root, "first.bin")
     await writeFile(first, new Uint8Array(4096))
-    await Promise.all([link(first, join(root, "second.bin")), link(first, join(root, "third.bin"))])
+    await Promise.all(Array.from({ length: 16 }, (_, index) => link(first, join(root, `alias-${index}.bin`))))
     const stats = await stat(first)
     const expectedPhysical = platform() === "win32" ? stats.size : stats.blocks * 512
     const options = { sizeMode: "physical" as const, maxChildren: 1, concurrency: 4 }
@@ -351,13 +351,15 @@ describe("disk scanner", () => {
       scanPath(root, { ...options, useWorker: true }),
     ])
 
-    // Only the charged member survives the cutoff; the filesystem says there
-    // are three pathnames, so a lexical reallocation would be unproven.
+    // The bounded Other sample cannot retain all 17 pathnames. Even though
+    // sampled aliases preserve apparent bytes, the incomplete group cannot
+    // justify moving the physical charge to a lexical alias.
     for (const result of [local, worker]) {
-      expect(result.children).toHaveLength(1)
+      expect(result.children).toHaveLength(2)
       expect(result.children[0]).toMatchObject({ hardLink: "primary", size: expectedPhysical })
+      expect(result.children[1]).toMatchObject({ isOther: true, size: 0, logicalSize: stats.size * 16, otherCount: 16 })
       expect(result.size).toBe(expectedPhysical)
-      expect(result.logicalSize).toBe(stats.size * 3)
+      expect(result.logicalSize).toBe(stats.size * 17)
     }
   })
 

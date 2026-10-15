@@ -1275,7 +1275,12 @@ export function scanWorkerHref() {
   return new URL("./scan-worker.ts", import.meta.url)
 }
 
-function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNode> {
+export function scanInWorker(
+  targetPath: string,
+  options: ScanOptions,
+  createWorker: (url: URL, options: import("node:worker_threads").WorkerOptions) => Worker =
+    (url, workerOptions) => new Worker(url, workerOptions),
+): Promise<DiskNode> {
   const normalizedOptions = normalizeScanOptions(options)
   const {
     onProgress,
@@ -1296,7 +1301,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
       return
     }
 
-    const worker = new Worker(scanWorkerHref(), {
+    const worker = createWorker(scanWorkerHref(), {
       workerData: {
         targetPath,
         maxDepth,
@@ -1373,7 +1378,7 @@ function scanInWorker(targetPath: string, options: ScanOptions): Promise<DiskNod
     })
 
     worker.on("exit", (code) => {
-      if (!settled && code !== 0) finish({ error: new Error(`Scan worker exited with code ${code}`) })
+      if (!settled) finish({ error: new Error(`Scan worker exited with code ${code}`) })
     })
   })
 }

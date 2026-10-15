@@ -9,6 +9,8 @@ import { scanPath as scanPathTypeScript } from "../../../disklizard/src/scan"
 import type { DiskNode, ScanOptions } from "../../../disklizard/src/types"
 import { scanPathNative } from "./disk-scanner-native"
 
+export { stopNativeScans } from "./disk-scanner-native"
+
 export type DiskScanBackend = "native" | "typescript-fallback"
 
 export type DiskScanResult = {

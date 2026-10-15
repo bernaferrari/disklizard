@@ -586,13 +586,14 @@ export async function runPackagedAppSmoke(input: {
   platform?: NodeJS.Platform
 }) {
   const platform = supportedPlatform(input.platform ?? process.platform)
-  const workspaceDirectory = path.resolve(scriptDirectory, "../../..")
   const desktopPackage = JSON.parse(await readFile(path.resolve(scriptDirectory, "../package.json"), "utf8")) as {
     version?: unknown
   }
   if (typeof desktopPackage.version !== "string") throw new Error("Desktop package version is missing")
   const evidenceDirectory = path.join(path.dirname(input.reportPath), `packaged-smoke-${platform}`)
-  const runtimeDirectory = path.join(workspaceDirectory, "test-results", `packaged-smoke-runtime-${randomUUID()}`)
+  // Keep the large disposable corpus and extracted app outside the repository
+  // so project watchers do not process thousands of setup/teardown events.
+  const runtimeDirectory = path.join(homedir(), ".cache", `disklizard-packaged-smoke-${randomUUID()}`)
   let launchTarget: Awaited<ReturnType<typeof prepareArtifactLaunch>> | undefined
   let opened: Awaited<ReturnType<typeof openPackagedWindow>> | undefined
   try {

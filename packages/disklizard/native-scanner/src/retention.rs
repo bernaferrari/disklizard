@@ -50,6 +50,7 @@ impl ChildRetention {
 
     pub(crate) fn push(&mut self, node: CompactNode, preserve_names: &HashSet<String>) {
         if node.size == 0
+            && node.logical_size.unwrap_or(0) == 0
             && node.children.is_empty()
             && node.hard_link.is_none()
             && !node.has_shared_storage_risk
@@ -77,7 +78,7 @@ impl ChildRetention {
         self.preserved.sort_unstable_by(compare_nodes);
         self.top.extend(self.preserved);
 
-        let evidence_became_partial = if self.hidden_size == 0 {
+        let evidence_became_partial = if self.hidden_size == 0 && self.hidden_logical_size == 0 {
             self.hidden_has_shared_storage_risk
         } else {
             self.top.push(other_node(
@@ -217,6 +218,21 @@ mod tests {
             signatures: None,
             scan_issues: None,
         }
+    }
+
+    #[test]
+    fn preserves_sparse_apparent_bytes_including_zero_allocation_overflow() {
+        let mut retention = ChildRetention::new(1);
+        retention.push(file("empty", 0, 0, false), &HashSet::new());
+        retention.push(file("sparse-a", 0, 8, false), &HashSet::new());
+        retention.push(file("sparse-b", 0, 16, false), &HashSet::new());
+        let retained = retention.finish("root".into()).node;
+        assert_eq!(retained.size, 0);
+        assert_eq!(retained.logical_size, Some(24));
+        assert_eq!(retained.children.len(), 2);
+        assert_eq!(retained.children[0].name, "sparse-a");
+        assert!(retained.children[1].is_other);
+        assert_eq!(retained.children[1].logical_size, Some(16));
     }
 
     #[test]
