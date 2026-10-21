@@ -5,9 +5,25 @@
 <h1 align="center">DiskLizard</h1>
 <p align="center">See what's using your disk. Review what can go.</p>
 
-DiskLizard is a desktop disk explorer for macOS, Windows, and Linux. Scan a drive or folder, browse its contents as a map, tiles, or layers, and find large files and developer artifacts such as dependencies, build output, and caches. Cleanup is a separate review step that moves approved items to Trash or Recycle Bin.
+DiskLizard is a desktop disk explorer for macOS, Windows, and Linux. Scan a drive or folder, see where the space goes, and review what can be removed before anything moves to Trash.
 
 > DiskLizard is under active development. Packaged releases are not available yet; the first public beta will be in English.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/storage-map-dark.png">
+  <img src="docs/screenshots/storage-map.png" alt="DiskLizard's storage map: a ring chart of folder sizes with a ranked list of the largest folders">
+</picture>
+
+- **See the whole disk at once.** An interactive ring map shows every folder by size; click to zoom in, click the center to zoom back out.
+- **Switch to tiles** for a rectangle view of the same data, with the same colors and navigation.
+- **Find developer clutter.** Dependencies, build output, and caches are grouped by type and project, with how to restore each one.
+- **Nothing is deleted by surprise.** Drag or select items into a review, check the total, then move them to Trash or Recycle Bin.
+
+| Browse as tiles | Review before cleaning up |
+| --- | --- |
+| <a href="docs/screenshots/storage-tiles.png"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/storage-tiles-dark.png"><img src="docs/screenshots/storage-tiles.png" alt="Nested tiles showing how folders and files use disk space"></picture></a> | <a href="docs/screenshots/cleanup-review.png"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/cleanup-review-dark.png"><img src="docs/screenshots/cleanup-review.png" alt="Cleanup candidates grouped by artifact type, with two build folders selected for review"></picture></a> |
+
+*Screenshots use the browser demo with sample data and follow your light or dark theme. Click an image to view it at full size.*
 
 ## Run locally
 
