@@ -96,9 +96,11 @@ test("cleanup opens specific explanations without selecting and only bulk-select
     expect(host.querySelector('[aria-label^="Select everything"]')).toBeNull()
     await act(async () => button("Select all").click())
     expect(collected).toEqual([ready.path])
-    const group = [...host.querySelectorAll("button")].find((button) =>
-      button.textContent?.includes("Other folders")
-    )!
+    const group = [
+      ...host.querySelectorAll<HTMLButtonElement>(
+        "[data-cleanup-group-toggle]"
+      ),
+    ].find((button) => button.textContent?.includes("Other folders"))!
     expect(group.getAttribute("aria-expanded")).toBe("false")
     await act(async () =>
       group.dispatchEvent(

@@ -504,6 +504,9 @@ export class Sunburst {
   hoverPulseT = 1
   /** True while a full-reveal (mode "enter") transition is in flight. */
   private enterMode = false
+  /** 0–1: how far the rest of the map has stepped back for a hover. */
+  hoverFocus = 0
+  darkTheme = false
   /** Which two-step choreography the current transition is playing. */
   navigation: NavigationKind = "none"
   navigationTravel = 1
@@ -1122,10 +1125,27 @@ export class Sunburst {
     }
 
     // Every visible ring is inspectable; depth is information, not decoration.
+    // Pointing at a folder lights its whole branch — the folder and what is
+    // inside it — while the rest of the map steps back, so the number in the
+    // center always has an obvious owner.
     const hoverBlend = 1 - Math.exp(-dt / 0.07)
+    const pointed = this.hovered?.path ?? this.highlightPath
+    const pointedPrefix = pointed
+      ? pointed.replaceAll("\\", "/").replace(/\/+$/, "") + "/"
+      : ""
+    const focusing =
+      !!this.hovered ||
+      (!!this.highlightPath && this.highlightPath !== this.selectedPath)
+    this.hoverFocus = this.reducedMotion
+      ? Number(focusing)
+      : lerp(this.hoverFocus, Number(focusing), hoverBlend)
     for (const s of this.segments) {
       const target =
-        this.highlightPath === s.path || this.hovered?.path === s.path ? 1 : 0
+        !!pointed &&
+        (s.path === pointed ||
+          s.path.replaceAll("\\", "/").startsWith(pointedPrefix))
+          ? 1
+          : 0
       s.targetHover = target
       s.hover = this.reducedMotion
         ? target
@@ -1161,6 +1181,11 @@ export class Sunburst {
   /** True when there is animation, an enter pulse, or an unsettled hover spring. */
   private _needsFrame(): boolean {
     if (this.animating || this.entering || this.hoverPulseStart > 0) return true
+    const focusTarget = Number(
+      !!this.hovered ||
+        (!!this.highlightPath && this.highlightPath !== this.selectedPath)
+    )
+    if (Math.abs(this.hoverFocus - focusTarget) > 0.001) return true
     for (const s of this.segments) {
       if (Math.abs(s.hover - s.targetHover) > 0.001) return true
     }
@@ -1242,12 +1267,20 @@ export class Sunburst {
     }
     ctx.fillStyle = oklchCss(base.L, base.C, s.tone?.h ?? s.hue)
     ctx.fill()
+    const recede = this.hoverFocus * (1 - s.hover)
+    if (recede > 0.001 && !isSel) {
+      ctx.fillStyle = this.theme.background
+      // Fading toward near-black muddies hues, so dark mode steps back less.
+      ctx.globalAlpha = s.opacity * recede * (this.darkTheme ? 0.3 : 0.42)
+      ctx.fill()
+      ctx.globalAlpha = s.opacity
+    }
     if (s.hover > 0.001 && !isSel) {
       // Keep the original hue and boundary; a brief white wash peaks once,
       // then settles to a soft highlight without shifting the arc.
       const flash =
         this.highlightPath === s.path ? Math.sin(Math.PI * this.hoverPulseT) : 0
-      ctx.fillStyle = `oklch(1 0 0 / ${s.hover * (0.11 + flash * 0.06)})`
+      ctx.fillStyle = `oklch(1 0 0 / ${s.hover * (0.14 + flash * 0.06)})`
       ctx.fill()
     }
 
@@ -1293,6 +1326,8 @@ export class Sunburst {
 
   _refreshTheme() {
     const style = getComputedStyle(document.documentElement)
+    this.darkTheme =
+      document.documentElement.getAttribute("data-color-scheme") === "dark"
     const background =
       style.getPropertyValue("--background-base").trim() || "#0c0c14"
     this.theme = {

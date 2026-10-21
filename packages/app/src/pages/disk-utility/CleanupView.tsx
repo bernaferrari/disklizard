@@ -5,14 +5,14 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
-  Database,
+  DatabaseZap,
+  FileClock,
   Folder,
   Hammer,
   Info,
   Lock,
   Minus,
   Package,
-  ScrollText,
   Search,
   Sparkles,
   Wrench,
@@ -34,6 +34,7 @@ import {
 import { CleanupFilters, cleanupToolbarControl } from "./CleanupFilters"
 import { CleanupInspector } from "./CleanupInspector"
 import { CollectionDropTarget } from "./CollectionDropTarget"
+import { cleanupGroupColor } from "./cleanup-colors"
 import { formatBytes } from "./format"
 import { useLanguage, type DiskLanguageKey } from "./runtime"
 import type { DiskScanNode, DiskCleanupLock } from "./types"
@@ -64,8 +65,8 @@ const PREVIEW_ROWS = 4
 const CATEGORY_ICON: Partial<Record<DiskLanguageKey, LucideIcon>> = {
   "disk.ui.cleanup.dependencies": Package,
   "disk.ui.cleanup.buildOutput": Hammer,
-  "disk.ui.cleanup.category.caches": Database,
-  "disk.ui.cleanup.category.logs": ScrollText,
+  "disk.ui.cleanup.category.caches": DatabaseZap,
+  "disk.ui.cleanup.category.logs": FileClock,
   "disk.ui.cleanup.category.tools": Wrench,
   "disk.ui.cleanup.category.other": Folder,
 }
@@ -181,7 +182,16 @@ export function CleanupView(props: {
   const filtered =
     props.agePreset !== "all" || props.ecosystem !== "all" || !!search.trim()
   const empty = groups.length === 0 && locked.length === 0
+  const groupColors = new Map(
+    groups.map((group, index) => [group.key, cleanupGroupColor(group, index)])
+  )
+  const maxItemBytes = Math.max(
+    1,
+    ...groups.flatMap((group) => group.items.map((item) => item.bytes))
+  )
   const rows = {
+    colorFor: (key: string) => groupColors.get(key) ?? "var(--text-weaker)",
+    maxItemBytes,
     locations,
     restriction: props.restriction,
     accessFor: props.accessFor,
@@ -255,6 +265,22 @@ export function CleanupView(props: {
               </PopoverContent>
             </Popover>
           </div>
+          {!empty ? (
+            <CleanupOverview
+              groups={groups}
+              colorFor={rows.colorFor}
+              selectedBytes={(group) =>
+                group.items.reduce(
+                  (sum, item) =>
+                    props.isCollected(item.node.path) ||
+                    props.coveredBy(item.node.path)
+                      ? sum + item.bytes
+                      : sum,
+                  0
+                )
+              }
+            />
+          ) : null}
           {/* Unverified sizes change how far the list can be trusted, so this
               caveat stays visible — once, quietly, not on every row. */}
           {blanketIncomplete ? (
@@ -535,6 +561,127 @@ function ToolbarSelect<T extends string>(props: {
   )
 }
 
+function cleanupGroupAnchor(key: string) {
+  return `cleanup-group-${key.replace(/[^a-zA-Z0-9_-]/g, "-")}`
+}
+
+/** A category's icon in its color, so the list visibly matches the bar. */
+function GroupBadge(props: { icon: LucideIcon; color: string }) {
+  const Icon = props.icon
+  return (
+    <span
+      className="grid size-7 shrink-0 place-items-center rounded-lg"
+      style={{
+        background: `color-mix(in oklab, ${props.color} 18%, transparent)`,
+        color: props.color,
+      }}
+      aria-hidden
+    >
+      <Icon className="size-3.5" strokeWidth={2} />
+    </span>
+  )
+}
+
+/**
+ * The picture before the list: everything that could be freed as one bar,
+ * split by kind. Each segment fills in as its items are selected, so the
+ * selection is visible as progress rather than only as a number.
+ */
+function CleanupOverview(props: {
+  groups: readonly CleanupGroup[]
+  colorFor: (key: string) => string
+  selectedBytes: (group: CleanupGroup) => number
+}) {
+  const language = useLanguage()
+  // A kind can appear in both sections (caches that are safe and caches to
+  // check); the picture counts each kind once.
+  const kinds = new Map<
+    string,
+    { key: string; group: CleanupGroup; bytes: number; selected: number }
+  >()
+  for (const group of props.groups) {
+    if (group.bytes <= 0) continue
+    const kind = group.label ?? group.labelKey
+    const entry = kinds.get(kind)
+    if (entry) {
+      entry.bytes += group.bytes
+      entry.selected += props.selectedBytes(group)
+    } else
+      kinds.set(kind, {
+        key: group.key,
+        group,
+        bytes: group.bytes,
+        selected: props.selectedBytes(group),
+      })
+  }
+  const groups = [...kinds.values()].toSorted((a, b) => b.bytes - a.bytes)
+  if (!groups.length) return null
+  const legend = groups.slice(0, 6)
+  return (
+    <div className="mt-5 max-w-[880px]">
+      <div className="flex h-3 w-full gap-[3px]" aria-hidden>
+        {groups.map((group) => {
+          const color = props.colorFor(group.key)
+          const selected = Math.min(1, group.selected / group.bytes)
+          return (
+            <div
+              key={group.key}
+              className="relative h-full min-w-[4px] overflow-hidden rounded-[3px]"
+              style={{
+                flexGrow: group.bytes,
+                flexBasis: 0,
+                background: `color-mix(in oklab, ${color} 42%, var(--background-base))`,
+              }}
+            >
+              <div
+                className="h-full transition-[width] duration-300 ease-out"
+                style={{ width: `${selected * 100}%`, background: color }}
+              />
+            </div>
+          )
+        })}
+      </div>
+      {/* Each kind is one pill — icon, name and size on its own tint — so a
+          size can never be read as belonging to its neighbour. */}
+      <ul className="mt-3 flex flex-wrap gap-1.5">
+        {legend.map((group) => {
+          const color = props.colorFor(group.key)
+          const Icon = CATEGORY_ICON[group.group.labelKey] ?? Box
+          return (
+            <li key={group.key}>
+              <button
+                type="button"
+                className="flex h-7 items-center gap-1.5 rounded-full pr-2.5 pl-2 text-[12.5px] transition-[filter] outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-[var(--dl-focus)] dark:hover:brightness-125"
+                style={{
+                  background: `color-mix(in oklab, ${color} 16%, transparent)`,
+                }}
+                onClick={() =>
+                  document
+                    .getElementById(cleanupGroupAnchor(group.key))
+                    ?.scrollIntoView({ block: "start", behavior: "smooth" })
+                }
+              >
+                <Icon
+                  className="size-3.5 shrink-0"
+                  style={{ color }}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="font-medium text-text-strong">
+                  {group.group.label ?? language.t(group.group.labelKey)}
+                </span>
+                <span className="text-text-weak tabular-nums">
+                  {formatBytes(group.bytes)}
+                </span>
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 function Section(props: {
   title: string
   description?: string
@@ -584,6 +731,10 @@ type RowProps = {
   onCollect: (nodes: readonly DiskScanNode[]) => void
   onRelease?: (nodes: readonly DiskScanNode[]) => void
   onInspect: (item: CleanupItem) => void
+  /** The color a group carries from the summary bar into the list. */
+  colorFor: (groupKey: string) => string
+  /** Largest item in view, so row size bars share one scale. */
+  maxItemBytes: number
 }
 
 /** Shared 16px box so items, categories, and the select-all action align. */
@@ -633,10 +784,12 @@ function GroupRow(props: RowProps & { group: CleanupGroup; bulk?: boolean }) {
   const [limit, setLimit] = useState(PREVIEW_ROWS)
   if (group.items.length === 1)
     return (
-      <ul>
+      <ul id={cleanupGroupAnchor(group.key)}>
         <ItemRow
           {...props}
           item={group.items[0]}
+          color={props.colorFor(group.key)}
+          badge={CATEGORY_ICON[group.labelKey] ?? Box}
           category={group.label ?? language.t(group.labelKey)}
         />
       </ul>
@@ -659,8 +812,9 @@ function GroupRow(props: RowProps & { group: CleanupGroup; bulk?: boolean }) {
   const CategoryIcon = CATEGORY_ICON[group.labelKey] ?? Box
   const count = language.plural("disk.count.item", group.items.length)
   const label = group.label ?? language.t(group.labelKey)
+  const color = props.colorFor(group.key)
   return (
-    <div data-cleanup-group>
+    <div data-cleanup-group id={cleanupGroupAnchor(group.key)}>
       <div
         className={cn(
           "flex h-12 items-center gap-3 rounded-lg pl-3",
@@ -681,12 +835,11 @@ function GroupRow(props: RowProps & { group: CleanupGroup; bulk?: boolean }) {
             }
           />
         ) : (
-          <CategoryIcon
-            className="size-4 shrink-0 text-text-weaker"
-            strokeWidth={1.75}
-            aria-hidden
-          />
+          // Keeps badges in one column whether or not the group can be
+          // selected as a whole.
+          <span className="size-4 shrink-0" aria-hidden />
         )}
+        <GroupBadge icon={CategoryIcon} color={color} />
         <button
           type="button"
           data-cleanup-navigation
@@ -742,7 +895,13 @@ function GroupRow(props: RowProps & { group: CleanupGroup; bulk?: boolean }) {
           <>
             <ul className="ml-6">
               {group.items.slice(0, limit).map((item) => (
-                <ItemRow key={item.node.path} item={item} nested {...props} />
+                <ItemRow
+                  key={item.node.path}
+                  item={item}
+                  nested
+                  color={color}
+                  {...props}
+                />
               ))}
             </ul>
             {group.items.length > limit ||
@@ -821,6 +980,9 @@ function ItemRow(
     /** Lone items sit at category level, so they name their category. */
     category?: string
     nested?: boolean
+    color?: string
+    /** A lone item standing in for its group shows the group's badge. */
+    badge?: LucideIcon
   }
 ) {
   const language = useLanguage()
@@ -861,6 +1023,9 @@ function ItemRow(
           props.onToggle(item.node)
         }}
       />
+      {props.badge && props.color ? (
+        <GroupBadge icon={props.badge} color={props.color} />
+      ) : null}
       <button
         type="button"
         data-cleanup-item
@@ -925,8 +1090,23 @@ function ItemRow(
             {language.t("disk.ui.cleanup.partlyRead")}
           </span>
         ) : null}
-        <span className="w-20 shrink-0 text-right text-[13px] text-text-strong tabular-nums">
-          {formatBytes(item.bytes)}
+        {/* Size reads as a length first and a number second. */}
+        <span className="flex w-24 shrink-0 flex-col items-end gap-1.5">
+          <span className="text-[13px] leading-4 text-text-strong tabular-nums">
+            {formatBytes(item.bytes)}
+          </span>
+          <span
+            className="h-[3px] w-full overflow-hidden rounded-full bg-[var(--dl-well)]"
+            aria-hidden
+          >
+            <span
+              className="block h-full rounded-full"
+              style={{
+                width: `${Math.max(2, (item.bytes / props.maxItemBytes) * 100)}%`,
+                background: props.color ?? "var(--text-weaker)",
+              }}
+            />
+          </span>
         </span>
         <span className="w-3.5 shrink-0" aria-hidden />
       </button>

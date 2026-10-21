@@ -52,7 +52,7 @@ describe("map-to-tiles arc geometry", () => {
 })
 
 describe("map hover", () => {
-  it("adds only a subtle white wash without moving or outlining the arc", () => {
+  it("adds only a white wash without moving or outlining the arc", () => {
     const radii: number[] = []
     const fills: string[] = []
     let strokes = 0
@@ -98,7 +98,7 @@ describe("map hover", () => {
 
     expect(radii).toEqual([200, 100, 200, 100])
     expect(fills[1]).toBe(fills[0])
-    expect(fills[2]).toBe("oklch(1 0 0 / 0.11)")
+    expect(fills[2]).toBe("oklch(1 0 0 / 0.14)")
     expect(strokes).toBe(0)
   })
 })
