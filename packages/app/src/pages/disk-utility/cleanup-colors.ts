@@ -10,6 +10,7 @@ const CATEGORY_HUE: Partial<Record<DiskLanguageKey, number>> = {
   "disk.ui.cleanup.dependencies": 290,
   "disk.ui.cleanup.category.caches": 195,
   "disk.ui.cleanup.category.logs": 70,
+  "disk.ui.cleanup.category.temporary": 20,
   "disk.ui.cleanup.category.tools": 160,
 }
 

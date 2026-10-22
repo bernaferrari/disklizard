@@ -156,6 +156,28 @@ export const DISK_RECOGNITION_LANGUAGE_KEYS = [
   "dart/pub regenerates it",
   "macOS caches",
   "mvn clean regenerates it",
+  // Windows and Linux locations
+  "Temporary files",
+  "Apps re-create temporary files as needed",
+  "npm package cache",
+  "npm re-downloads packages",
+  "Yarn package cache",
+  "Yarn re-downloads packages",
+  "pnpm package store",
+  "pnpm re-downloads packages",
+  "pip package cache",
+  "pip re-downloads packages",
+  "NuGet HTTP cache",
+  "Go build cache",
+  "Go rebuilds it on the next build",
+  "Shader cache",
+  "Graphics drivers rebuild it as needed",
+  "Internet cache",
+  "Thumbnail cache",
+  "Thumbnails are regenerated when folders are viewed",
+  "Flatpak app cache",
+  "Crash dumps",
+  "Only needed to diagnose past crashes",
 ] as const
 
 export type DiskRecognitionLanguageKey =

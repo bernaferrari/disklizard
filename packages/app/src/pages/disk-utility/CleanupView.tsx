@@ -7,6 +7,7 @@ import {
   ChevronRight,
   DatabaseZap,
   FileClock,
+  Hourglass,
   Folder,
   Hammer,
   Info,
@@ -67,6 +68,7 @@ const CATEGORY_ICON: Partial<Record<DiskLanguageKey, LucideIcon>> = {
   "disk.ui.cleanup.buildOutput": Hammer,
   "disk.ui.cleanup.category.caches": DatabaseZap,
   "disk.ui.cleanup.category.logs": FileClock,
+  "disk.ui.cleanup.category.temporary": Hourglass,
   "disk.ui.cleanup.category.tools": Wrench,
   "disk.ui.cleanup.category.other": Folder,
 }

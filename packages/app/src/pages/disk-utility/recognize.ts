@@ -126,6 +126,8 @@ export type Recognition = {
   confidence?: ArtifactConfidence
   /** Conservative bulk-cleanup posture. Never use `review` or `protected` for automatic selection. */
   cleanup?: DeveloperArtifactCleanupReadiness
+  /** Scratch space apps recreate (Temp folders); grouped apart from caches. */
+  temporary?: boolean
 }
 
 export type DeveloperArtifactContext = {
@@ -634,6 +636,131 @@ const PATH_HINTS: { re: RegExp; r: Recognition }[] = [
       developer: "toolchain-cache",
       ecosystem: "go",
       confidence: "verified",
+    },
+  },
+  // — Windows and Linux: well-known locations apps and toolchains recreate —
+  {
+    re: /(?:^|\/)AppData\/Local\/Temp(?:\/|$)|^[a-z]:\/Windows\/Temp(?:\/|$)/i,
+    r: {
+      tag: "Temporary files",
+      safety: "cache",
+      hint: "Apps re-create temporary files as needed",
+      temporary: true,
+    },
+  },
+  {
+    re: /^\/(?:var\/)?tmp(?:\/|$)/i,
+    r: {
+      tag: "Temporary files",
+      safety: "cache",
+      hint: "Apps re-create temporary files as needed",
+      temporary: true,
+    },
+  },
+  {
+    re: /\/AppData\/(?:Local|Roaming)\/npm-cache(?:\/|$)/i,
+    r: {
+      tag: "npm package cache",
+      safety: "cache",
+      hint: "npm re-downloads packages",
+      developer: "toolchain-cache",
+      ecosystem: "node",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/Yarn\/Cache(?:\/|$)/i,
+    r: {
+      tag: "Yarn package cache",
+      safety: "cache",
+      hint: "Yarn re-downloads packages",
+      developer: "toolchain-cache",
+      ecosystem: "node",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/(?:AppData\/Local\/pnpm|\.local\/share\/pnpm)\/store(?:\/|$)/i,
+    r: {
+      tag: "pnpm package store",
+      safety: "cache",
+      hint: "pnpm re-downloads packages",
+      developer: "toolchain-cache",
+      ecosystem: "node",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/pip\/[Cc]ache(?:\/|$)|\/\.cache\/pip(?:\/|$)/i,
+    r: {
+      tag: "pip package cache",
+      safety: "cache",
+      hint: "pip re-downloads packages",
+      developer: "toolchain-cache",
+      ecosystem: "python",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/NuGet\/(?:v3-cache|Cache)(?:\/|$)/i,
+    r: {
+      tag: "NuGet HTTP cache",
+      safety: "cache",
+      hint: "NuGet restores packages",
+      developer: "toolchain-cache",
+      ecosystem: "dotnet",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/(?:AppData\/Local|\.cache)\/go-build(?:\/|$)/i,
+    r: {
+      tag: "Go build cache",
+      safety: "cache",
+      hint: "Go rebuilds it on the next build",
+      developer: "toolchain-cache",
+      ecosystem: "go",
+      confidence: "verified",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/(?:D3DSCache|NVIDIA\/(?:DX|GL)Cache|AMD\/(?:DxCache|DxcCache|GLCache))(?:\/|$)|\/\.cache\/mesa_shader_cache(?:\/|$)/i,
+    r: {
+      tag: "Shader cache",
+      safety: "cache",
+      hint: "Graphics drivers rebuild it as needed",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/Microsoft\/Windows\/INetCache(?:\/|$)/i,
+    r: {
+      tag: "Internet cache",
+      safety: "cache",
+      hint: "Apps re-create as needed",
+    },
+  },
+  {
+    re: /\/\.cache\/thumbnails(?:\/|$)|\/AppData\/Local\/Microsoft\/Windows\/Explorer\/thumbcache/i,
+    r: {
+      tag: "Thumbnail cache",
+      safety: "cache",
+      hint: "Thumbnails are regenerated when folders are viewed",
+    },
+  },
+  {
+    re: /\/\.var\/app\/[^/]+\/cache(?:\/|$)/i,
+    r: {
+      tag: "Flatpak app cache",
+      safety: "cache",
+      hint: "Apps re-create as needed",
+    },
+  },
+  {
+    re: /\/AppData\/Local\/CrashDumps(?:\/|$)/i,
+    r: {
+      tag: "Crash dumps",
+      safety: "logs",
+      hint: "Only needed to diagnose past crashes",
     },
   },
   {

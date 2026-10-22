@@ -644,3 +644,86 @@ describe("fileKind", () => {
     expect(fileKind("zip").safety).toBe("unknown")
   })
 })
+
+describe("Windows and Linux locations", () => {
+  const named = (path: string) => {
+    const name = path.split(/[\\/]/).pop()!
+    return at(dir(name, 100), path)
+  }
+
+  it("groups temp folders as temporary files on every platform", () => {
+    for (const path of [
+      "C:\\Users\\dev\\AppData\\Local\\Temp",
+      "C:\\Windows\\Temp",
+      "/tmp",
+      "/var/tmp",
+    ])
+      expect(recognize(named(path))).toMatchObject({
+        tag: "Temporary files",
+        safety: "cache",
+        temporary: true,
+      })
+    // A project folder that happens to be called "tmp" is not system temp.
+    expect(recognize(named("/home/dev/project/tmp")).temporary).toBeUndefined()
+  })
+
+  it("recognizes per-user package and build caches", () => {
+    const cases: [string, string, string][] = [
+      [
+        "C:\\Users\\dev\\AppData\\Local\\npm-cache",
+        "npm package cache",
+        "node",
+      ],
+      [
+        "C:\\Users\\dev\\AppData\\Local\\Yarn\\Cache",
+        "Yarn package cache",
+        "node",
+      ],
+      [
+        "C:\\Users\\dev\\AppData\\Local\\pnpm\\store",
+        "pnpm package store",
+        "node",
+      ],
+      ["/home/dev/.local/share/pnpm/store", "pnpm package store", "node"],
+      [
+        "C:\\Users\\dev\\AppData\\Local\\pip\\Cache",
+        "pip package cache",
+        "python",
+      ],
+      ["/home/dev/.cache/pip", "pip package cache", "python"],
+      [
+        "C:\\Users\\dev\\AppData\\Local\\NuGet\\v3-cache",
+        "NuGet HTTP cache",
+        "dotnet",
+      ],
+      ["C:\\Users\\dev\\AppData\\Local\\go-build", "Go build cache", "go"],
+      ["/home/dev/.cache/go-build", "Go build cache", "go"],
+    ]
+    for (const [path, tag, ecosystem] of cases)
+      expect(recognize(named(path))).toMatchObject({
+        tag,
+        ecosystem,
+        developer: "toolchain-cache",
+        safety: "cache",
+        cleanup: "eligible",
+      })
+  })
+
+  it("recognizes app caches and crash dumps", () => {
+    expect(
+      recognize(named("C:\\Users\\dev\\AppData\\Local\\D3DSCache"))
+    ).toMatchObject({ tag: "Shader cache", safety: "cache" })
+    expect(
+      recognize(named("/home/dev/.cache/mesa_shader_cache"))
+    ).toMatchObject({ tag: "Shader cache" })
+    expect(recognize(named("/home/dev/.cache/thumbnails"))).toMatchObject({
+      tag: "Thumbnail cache",
+    })
+    expect(
+      recognize(named("/home/dev/.var/app/com.spotify.Client/cache"))
+    ).toMatchObject({ tag: "Flatpak app cache" })
+    expect(
+      recognize(named("C:\\Users\\dev\\AppData\\Local\\CrashDumps"))
+    ).toMatchObject({ tag: "Crash dumps", safety: "logs" })
+  })
+})

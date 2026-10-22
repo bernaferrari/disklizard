@@ -823,6 +823,7 @@ export const DISK_LANGUAGE_TEXT = {
   "disk.ui.cleanup.moreItems": "Show {count} more",
   "disk.ui.cleanup.category.caches": "Caches",
   "disk.ui.cleanup.category.logs": "Logs",
+  "disk.ui.cleanup.category.temporary": "Temporary files",
   "disk.ui.cleanup.category.tools": "Tool data",
   "disk.ui.cleanup.category.other": "Other folders",
   "disk.ui.cleanup.other": "Other items",

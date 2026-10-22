@@ -174,6 +174,7 @@ const CLEANUP_CATEGORIES = {
   dependencies: "disk.ui.cleanup.dependencies",
   builds: "disk.ui.cleanup.buildOutput",
   caches: "disk.ui.cleanup.category.caches",
+  temporary: "disk.ui.cleanup.category.temporary",
   logs: "disk.ui.cleanup.category.logs",
   tools: "disk.ui.cleanup.category.tools",
   other: "disk.ui.cleanup.category.other",
@@ -184,6 +185,7 @@ function cleanupCategory(item: CleanupItem): keyof typeof CLEANUP_CATEGORIES {
   if (r.confidence === "ambiguous") return "other"
   if (r.developer === "dependencies") return "dependencies"
   if (r.developer === "build-output") return "builds"
+  if (r.temporary) return "temporary"
   if (r.developer === "toolchain-cache" || r.safety === "cache") return "caches"
   if (r.safety === "logs") return "logs"
   return r.developer ? "tools" : "other"

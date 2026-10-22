@@ -321,3 +321,34 @@ test("cleanup search, project grouping and age sorting retain independent choice
     searched.ready.flatMap((group) => group.items).map((item) => item.node.path)
   ).toEqual([other.path])
 })
+
+test("temp folders get their own Temporary files group, apart from caches", () => {
+  const temp = node("/tmp", 70)
+  const cache = node("/home/dev/.cache/thumbnails", 30)
+  const summary = buildCleanupSummary({
+    ...options,
+    os: "linux",
+    developerItems: [],
+    suggestions: [
+      {
+        safety: "cache",
+        bytes: 100,
+        count: 2,
+        items: [item(temp), item(cache)],
+      },
+    ],
+  })
+  const { ready, review } = partitionCleanupGroups(summary)
+  const groups = [...ready, ...review].map((group) => [
+    group.labelKey,
+    group.items.map((entry) => entry.node.path),
+  ])
+  expect(groups).toContainEqual([
+    "disk.ui.cleanup.category.temporary",
+    ["/tmp"],
+  ])
+  expect(groups).toContainEqual([
+    "disk.ui.cleanup.category.caches",
+    ["/home/dev/.cache/thumbnails"],
+  ])
+})
