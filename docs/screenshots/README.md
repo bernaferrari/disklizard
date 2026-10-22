@@ -6,7 +6,7 @@ personal filesystem contents.
 To refresh them:
 
 1. Start the browser demo: `bun run --cwd packages/app dev`.
-2. Open `/?fixture=demo&theme=light` at a 1440 × 1040 viewport, device scale
+2. Open `/?fixture=demo&theme=light` at a 1440 × 1120 viewport, device scale
    factor 2, with reduced motion.
 3. Scan **Macintosh HD** and wait for the completed map. Move the pointer off
    the map, then capture `storage-map.png`.
